@@ -1,1 +1,1 @@
-测试Github Actions: 构建Gomobile+Android,并Release。
+支持Edge接口的网页版本, 可从右上角菜单一键打开.
