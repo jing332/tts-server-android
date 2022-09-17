@@ -1,1 +1,1 @@
-测试Github Actions， 构建Gomobile+Android,并Release.
+测试Github Actions: 构建Gomobile+Android,并Release。
