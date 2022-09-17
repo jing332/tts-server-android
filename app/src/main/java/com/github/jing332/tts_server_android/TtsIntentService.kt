@@ -26,17 +26,6 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             if (err.isNotEmpty()) {
                 Toast.makeText(context, "关闭失败：$err", Toast.LENGTH_SHORT).show()
             }
-            /*if (serverClosing) {
-                Toast.makeText(context, "莫要再点了 正在关闭中", Toast.LENGTH_SHORT).show()
-            } else {
-                serverClosing = true
-                val err = Tts_server_lib.closeServer(0)*//* 5s *//*
-                if (err.isNotEmpty()) {
-                    Toast.makeText(context, "关闭失败：$err", Toast.LENGTH_SHORT).show()
-                }
-                serverClosing = false
-            }*/
-
         }
     }
 

@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             logList.add("服务已在运行, 监听地址: localhost:${TtsIntentService.port}")
         } else {
             logList.add("请点击启动按钮, 然后在通知查看服务状态。")
+            logList.add("网页版(Edge)可在右上角菜单一键打开\n")
             logList.add("关闭请点关闭按钮, 并等待响应。")
             logList.add("启动后可直接返回桌面，只要通知在就代表服务在运行中。")
         }
@@ -115,10 +116,14 @@ class MainActivity : AppCompatActivity() {
                 tv.movementMethod = LinkMovementMethod()
 
                 val htmlStr = "特别感谢(他们的代码对我帮助很大):  <br />" +
+                        "&emsp;<a href= 'https://github.com/asters1/tts'>asters1/tts(Go实现)</a>" +
+                        "&emsp;<a href= 'https://github.com/wxxxcxx/ms-ra-forwarder'>ms-ra-forwarder</a>" +
                         "<a href='https://github.com/ag2s20150909/TTS'>TTS APP</a>" +
                         "&emsp;<a href= 'https://github.com/gedoor/legado'>阅读APP</a>"
+
+
                 tv.text = Html.fromHtml(htmlStr)
-                tv.gravity = Gravity.CENTER /*居中*/
+                tv.gravity = Gravity.CENTER /* 居中 */
                 dlg.setView(tv)
 
                 dlg.setTitle("关于")
@@ -126,8 +131,20 @@ class MainActivity : AppCompatActivity() {
                     .create().show()
                 true
             }
-            R.id.menu_checkUpdate -> { /*{检查更新}按钮*/
+            R.id.menu_checkUpdate -> { /* {检查更新}按钮 */
                 checkUpdate()
+                true
+            }
+            R.id.menu_openWeb -> { /* {打开网页版} 按钮 */
+                if (TtsIntentService.IsRunning) {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse("http://localhost:${TtsIntentService.port}")
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "请先启动服务！", Toast.LENGTH_LONG).show()
+                }
+
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -206,7 +223,7 @@ class MainActivity : AppCompatActivity() {
                         downLoadAndInstall(body, downloadUrl, tag)
                     } else {
                         runOnUiThread {
-                            Toast.makeText(this@MainActivity, "不需要更新", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@MainActivity, "不需要更新", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } catch (e: Exception) {
