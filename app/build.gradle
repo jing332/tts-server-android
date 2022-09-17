@@ -1,0 +1,99 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+//    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk 33
+    defaultConfig {
+        applicationId 'com.github.jing332.tts_server_android'
+        minSdk 21
+        targetSdk 33
+        versionCode 2
+        versionName "0.1_${releaseTime()}"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs{
+        release{
+            v1SigningEnabled true
+            v2SigningEnabled true
+            enableV3Signing = true
+            enableV4Signing = true
+            //签名文件 从local.properties取值
+            Properties pro =  new Properties()
+            InputStream input = project.rootProject.file("local.properties").newDataInputStream()
+            pro.load(input)
+            storeFile file(pro.getProperty("KEY_PATH"))
+            storePassword pro.getProperty("KEY_PASSWORD")
+            keyAlias pro.getProperty("ALIAS_NAME")
+            keyPassword pro.getProperty("ALIAS_PASSWORD")
+
+        }
+    }
+
+    buildTypes {
+        release {
+			//签名apk
+			signingConfig signingConfigs.release
+            minifyEnabled true
+            //资源缩减
+//            shrinkResources true
+            // Zipalign优化
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {//修改apk文件名
+                outputFileName = "TTS-Server-v${variant.versionName}.apk"
+            }
+    }
+}
+
+dependencies {
+    coreLibraryDesugaring('com.android.tools:desugar_jdk_libs:1.1.6')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    implementation 'androidx.core:core-ktx:1.7.0'
+
+    //UI
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+//    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
+
+
+//    kapt('com.squareup.moshi:moshi-kotlin-codegen:1.14.0')
+//    implementation('com.squareup.moshi:moshi:1.14.0')
+
+//    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
+
+static def releaseTime() {
+    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
+}

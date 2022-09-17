@@ -1,0 +1,88 @@
+name: Build Test
+
+on:
+  push:
+    branches:
+      - "master"
+    paths-ignore:
+      - "README.md"
+      - "CHANGELOG.md"
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.1
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Build Go Lib
+        run: |
+          cd tts-server-lib
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          gomobile init
+          go get golang.org/x/mobile/bind
+          gomobile bind -v -target="android/arm,android/arm64" -androidapi=19
+          cp -f *.aar $GITHUB_WORKSPACE/app/libs
+
+      - name: Upload to Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: tts-server-lib
+          path: |
+            tts-server-lib/*.aar
+            tts-server-lib/*.jar
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Init Sign
+        run: |
+          touch local.properties
+          echo ALIAS_NAME='${{ secrets.ALIAS_NAME }}' >> local.properties
+          echo ALIAS_PASSWORD='${{ secrets.ALIAS_PASSWORD }}' >> local.properties
+          echo KEY_PASSWORD='${{ secrets.KEY_PASSWORD }}' >> local.properties
+          echo KEY_PATH='./key.jks' >> local.properties
+          # 从Secrets读取无换行符Base64解码, 然后保存到到app/key.jks
+          echo ${{ secrets.KEY_STORE }} | base64 --decode > $GITHUB_WORKSPACE/app/key.jks
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew assembleRelease --build-cache --parallel --daemon --warning-mode all
+
+      - name: Organize the Files
+        run: |
+          mkdir -p ${{ github.workspace }}/apk/
+          rm -f ${{ github.workspace }}/apk/*
+          cp ${{ github.workspace }}/app/build/outputs/apk/*/*.apk ${{ github.workspace }}/apk/
+          cp ${{ github.workspace }}/app/build/outputs/apk/*/*.json ${{ github.workspace }}/apk/
+
+      - name: Get VerName
+        run: |
+          echo "ver_name=$(grep 'versionName' apk/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
+
+      - name: Upload App To Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: TTS-Server_${{ env.ver_name }}
+          path: ${{ github.workspace }}/apk/*.apk

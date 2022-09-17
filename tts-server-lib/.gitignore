@@ -1,0 +1,4 @@
+*.aar
+*.jar
+.idea
+build.cmd

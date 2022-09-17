@@ -1,0 +1,64 @@
+name: Build Release
+
+on:
+  push:
+    branches: 
+      - "master"
+    paths:
+      - "CHANGELOG.md"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+      
+    - name: Init Sign
+      run: |
+        echo ALIAS_NAME='${{ secrets.ALIAS_NAME }}' >> gradle.properties
+        echo ALIAS_PASSWORD='${{ secrets.ALIAS_PASSWORD }}' >> gradle.properties
+        echo KEY_PASSWORD='${{ secrets.KEY_PASSWORD }}' >> gradle.properties
+        echo KEY_PATH='./key.jks' >> gradle.properties
+        # 从Secrets读取无换行符Base64解码, 然后保存到到app/key.jks
+        echo ${{ secrets.KEY_STORE }} | base64 --decode > $GITHUB_WORKSPACE/app/key.jks
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew assembleRelease --build-cache --parallel --daemon --warning-mode all
+      
+    - name: Organize the Files
+      run: |
+        mkdir -p ${{ github.workspace }}/apk/
+        rm -f ${{ github.workspace }}/apk/*
+        cp ${{ github.workspace }}/app/build/outputs/apk/*/*.apk ${{ github.workspace }}/apk/
+        cp ${{ github.workspace }}/app/build/outputs/apk/*/*.json ${{ github.workspace }}/apk/
+        
+    - name: Get VerName
+      run: |
+          echo "ver_name=$(grep 'versionName' apk/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
+          
+    - name: Upload App To Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: TTS-Server_${{ env.ver_name }}
+        path: ${{ github.workspace }}/apk/*.apk  
+        
+    - uses: softprops/action-gh-release@v0.1.14
+      with:
+        name: ${{ env.ver_name }}
+        tag_name: ${{ env.ver_name }}
+       # body_path: ${{ github.workspace }}/CHANGELOG.md
+        draft: false
+        prerelease: false
+        files: ${{ github.workspace }}/apk/*apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}    
