@@ -88,7 +88,7 @@ jobs:
       with:
         name: ${{ env.ver_name }}
         tag_name: ${{ env.ver_name }}
-       # body_path: ${{ github.workspace }}/CHANGELOG.md
+        body_path: ${{ github.workspace }}/CHANGELOG.md
         draft: false
         prerelease: false
         files: ${{ github.workspace }}/apk/*apk
