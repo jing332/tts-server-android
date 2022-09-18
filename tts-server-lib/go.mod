@@ -3,7 +3,7 @@ module tts-server-lib
 go 1.19
 
 require (
-	github.com/jing332/tts-server-go v0.0.0-20220918000053-2cdc48e2d77f
+	github.com/jing332/tts-server-go v0.0.0-20220918135549-3bc41a54b7cf
 	github.com/sirupsen/logrus v1.9.0
 )
 
