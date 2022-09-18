@@ -1,11 +1,13 @@
 package com.github.jing332.tts_server_android
 
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
@@ -15,11 +17,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okio.IOException
-import org.json.JSONObject
-import java.math.BigDecimal
 
 
 class MainActivity : AppCompatActivity() {
@@ -85,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        checkUpdate()
+        MyTools.checkUpdate(this)
     }
 
     /*点击返回键返回桌面而不是退出程序*/
@@ -132,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_checkUpdate -> { /* {检查更新}按钮 */
-                checkUpdate()
+                MyTools.checkUpdate(this)
                 true
             }
             R.id.menu_openWeb -> { /* {打开网页版} 按钮 */
@@ -151,18 +148,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     //监听广播
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
             val logText = intent?.getStringExtra("sendLog")
             val isClosed = intent?.getBooleanExtra("isClosed", false)
-            val isQuit = intent?.getBooleanExtra("isQuit", false)
             runOnUiThread {
                 when {
-//                    isQuit == true -> { /*通知上的退出按钮，顺便关闭Activity。*/
-//                        finish()
-//                    }
                     isClosed == true -> { /*服务已关闭*/
                         setControlStatus(true) /*设置运行按钮可点击*/
                         Toast.makeText(ctx, "服务已关闭", Toast.LENGTH_SHORT).show()
@@ -188,79 +180,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /*从Github检查更新*/
-    private fun checkUpdate() {
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("https://api.github.com/repos/jing332/tts-server-android/releases/latest")
-            .get()
-            .build()
-        client.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onFailure(call: okhttp3.Call, e: IOException) {
-                Log.d(TAG, "check update onFailure: ${e.message}")
-                runOnUiThread {
-                    Toast.makeText(this@MainActivity, "检查更新失败 请检查网络", Toast.LENGTH_SHORT).show()
-                }
-            }
 
-            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                try {
-                    val s = response.body?.string()
-                    val json = JSONObject(s)
-                    val tag: String = json.getString("tag_name")
-                    val downloadUrl: String =
-                        json.getJSONArray("assets").getJSONObject(0)
-                            .getString("browser_download_url")
-                    val body: String = json.getString("body") /*本次更新内容*/
-
-                    val versionName = BigDecimal(tag.split("_")[1].trim())
-                    val pm = this@MainActivity.packageManager
-                    val pi = pm.getPackageInfo(this@MainActivity.packageName, 0)
-                    val appVersionName =
-                        BigDecimal(pi.versionName.split("_").toTypedArray()[1].trim { it <= ' ' })
-                    /*对比版本*/
-                    if (appVersionName < versionName) {
-                        downLoadAndInstall(body, downloadUrl, tag)
-                    } else {
-                        runOnUiThread {
-                            Toast.makeText(this@MainActivity, "不需要更新", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                } catch (e: Exception) {
-                    runOnUiThread {
-                        Toast.makeText(this@MainActivity, "检查更新失败", Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
-                    }
-                }
-            }
-        })
-    }
-
-    private fun downLoadAndInstall(body: String, downloadUrl: String, tag: String) {
-        try {
-            runOnUiThread {
-                AlertDialog.Builder(this@MainActivity)
-                    .setTitle("有新版本")
-                    .setMessage("版本号: $tag\n\n$body")
-                    .setPositiveButton(
-                        "Github下载"
-                    ) { dialog: DialogInterface?, which: Int ->
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse(downloadUrl)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                    }
-                    .setNegativeButton(
-                        "Github加速"
-                    ) { dialog: DialogInterface?, which: Int ->
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse("https://ghproxy.com/$downloadUrl")
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                    }
-                    .create().show()
-            }
-        } catch (ignored: java.lang.Exception) {
-        }
-    }
 }

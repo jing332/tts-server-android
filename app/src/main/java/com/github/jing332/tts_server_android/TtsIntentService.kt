@@ -122,12 +122,6 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         sendBroadcast(i)
     }
 
-//    private fun sendQuitMsg() {
-//        var i = Intent(ACTION_SEND)
-//        i.putExtra("isQuit", true)
-//        sendBroadcast(i)
-//    }
-
     class Receiver : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {/*点击通知上的退出按钮*/
             Log.d("TtsIntentService", "onReceive")
