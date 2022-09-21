@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,15 +13,11 @@ import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var adapter: LogViewAdapter
 
     lateinit var myReceiver: MyReceiver
+    var mLastPosition = -1
+    var mLastItemCount = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,17 +61,31 @@ class MainActivity : AppCompatActivity() {
         adapter = LogViewAdapter(logList)
         rvLog.adapter = adapter
         val layoutManager = LinearLayoutManager(this@MainActivity)
+        layoutManager.stackFromEnd = true
         rvLog.layoutManager = layoutManager
+
+        rvLog.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                mLastItemCount = recyclerView.layoutManager!!.itemCount
+                /* 当前状态为停止滑动状态SCROLL_STATE_IDLE时 */
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (recyclerView.layoutManager is LinearLayoutManager) {
+                        mLastPosition = layoutManager.findLastVisibleItemPosition()
+                    }
+                }
+            }
+        })
+
 
         /*注册广播*/
         myReceiver = MyReceiver()
-        var intentFilter = IntentFilter(TtsIntentService.ACTION_SEND)
+        val intentFilter = IntentFilter(TtsIntentService.ACTION_SEND)
         registerReceiver(myReceiver, intentFilter)
         /*启动按钮*/
         btnStart.setOnClickListener {
             adapter.removeAll()
             /*启动服务*/
-            var i = Intent(this.applicationContext, TtsIntentService::class.java)
+            val i = Intent(this.applicationContext, TtsIntentService::class.java)
             i.putExtra("port", etPort.text.toString().toInt())
             startService(i)
             /*设置{启动}按钮为禁用*/
@@ -109,6 +122,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /*菜单点击事件*/
+    @SuppressLint("BatteryLife")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_about -> { /*{关于}按钮*/
@@ -185,6 +199,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     logText?.isEmpty() == false -> { /*非空 追加日志*/
                         adapter.append(logText.toString())
+                        /* 判断是否在最底部 */
+                        if (mLastPosition == mLastItemCount - 1 || mLastPosition == mLastItemCount - 2) {
+                            rvLog.scrollToPosition(adapter.itemCount - 1)
+                        }
                     }
                 }
             }
