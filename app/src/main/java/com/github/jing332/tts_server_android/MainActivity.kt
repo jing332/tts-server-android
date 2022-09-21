@@ -52,10 +52,11 @@ class MainActivity : AppCompatActivity() {
             setControlStatus(false)
             logList.add("服务已在运行, 监听地址: localhost:${TtsIntentService.port}")
         } else {
-            logList.add("请点击启动按钮, 然后在通知查看服务状态。")
-            logList.add("网页版(Edge)可在右上角菜单一键打开\n")
+            logList.add("请点击启动按钮")
+            logList.add("然后右上角菜单打开网页版↗️")
+            logList.add("随后生成链接导入阅读APP即可使用\n")
             logList.add("关闭请点关闭按钮, 并等待响应。")
-            logList.add("启动后可直接返回桌面，只要通知在就代表服务在运行中。")
+            logList.add("⚠️注意: 本APP需常驻后台运行！⚠️")
         }
 
         adapter = LogViewAdapter(logList)
@@ -81,7 +82,6 @@ class MainActivity : AppCompatActivity() {
         /*关闭按钮*/
         btnClose.setOnClickListener {
             if (TtsIntentService.IsRunning) { /*服务运行中*/
-                btnClose.isEnabled = false /*先禁用关闭按钮 以免多次点击*/
                 TtsIntentService.closeServer(this) /*关闭服务 然后将通过广播通知MainActivity*/
             }
         }

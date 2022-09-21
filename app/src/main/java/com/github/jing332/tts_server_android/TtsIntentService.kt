@@ -18,14 +18,14 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         var Isinited = false /*已经初始化GoLib*/
         var port: Int = 1233 /*监听端口*/
 
-        var serverClosing = false
-
         /*关闭服务，如有Http请求需要等待*/
-        fun closeServer(context: Context) {
+        fun closeServer(context: Context): Boolean {
             val err = Tts_server_lib.closeServer(0)/* 5s */
             if (err.isNotEmpty()) {
                 Toast.makeText(context, "关闭失败：$err", Toast.LENGTH_SHORT).show()
+                return false
             }
+            return true
         }
     }
 
