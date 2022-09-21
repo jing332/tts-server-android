@@ -9,8 +9,8 @@ import (
 import (
 	"fmt"
 	"github.com/jing332/tts-server-go/service"
-	"github.com/jing332/tts-server-go/service/azure"
-	"github.com/jing332/tts-server-go/service/edge"
+// 	"github.com/jing332/tts-server-go/service/azure"
+// 	"github.com/jing332/tts-server-go/service/edge"
 	"strings"
 )
 
@@ -34,8 +34,8 @@ func RunServer(port int64, cb LogCallback) {
 }
 
 func CloseServer(timeout int64) string {
-	edge.CloseConn()
-	azure.CloseConn() //time.Duration(timeout)
+// 	edge.CloseConn()
+// 	azure.CloseConn() //time.Duration(timeout)
 	err := s.Shutdown(time.Second * 5)
 	if err != nil {
 		return err.Error()

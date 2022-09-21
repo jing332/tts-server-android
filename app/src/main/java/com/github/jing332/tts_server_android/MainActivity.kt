@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.*
@@ -17,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
@@ -144,6 +148,26 @@ class MainActivity : AppCompatActivity() {
 
                 true
             }
+            R.id.menu_killBattery -> { /* {电池优化}按钮 */
+                val intent = Intent()
+                val pm = getSystemService(POWER_SERVICE) as PowerManager
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (pm.isIgnoringBatteryOptimizations(packageName)) {
+                        Toast.makeText(this, "已忽略电池优化", Toast.LENGTH_SHORT).show()
+                    } else {
+                        try {
+                            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                            intent.data = Uri.parse("package:$packageName")
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            Toast.makeText(this, "系统不支持 请手动操作", Toast.LENGTH_SHORT).show()
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

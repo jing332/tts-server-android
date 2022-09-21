@@ -9,6 +9,9 @@
         android:id="@+id/menu_checkUpdate"
         android:title="检查更新" />
     <item
+        android:id="@+id/menu_killBattery"
+        android:title="电池优化" />
+    <item
         android:id="@+id/menu_about"
         android:title="关于" />
 </menu>
