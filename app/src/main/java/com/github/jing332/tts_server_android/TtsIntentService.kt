@@ -69,7 +69,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                     .setContentText("监听地址: localhost:$port")
                     .setSmallIcon(R.mipmap.notification_ic)
                     .setContentIntent(pendingIntent)
-                    .addAction(R.drawable.ic_launcher_background, "退出", closePendingIntent)
+                    .addAction(R.mipmap.notification_ic, "退出", closePendingIntent)
                     .build()
 
         } else { /*SDK < Android 8*/
