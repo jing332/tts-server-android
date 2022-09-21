@@ -67,7 +67,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                 builder
                     .setContentTitle("TTS Server正在运行中...")
                     .setContentText("监听地址: localhost:$port")
-                    .setSmallIcon(R.mipmap.notification_ic)
+                    .setSmallIcon(R.drawable.ic_notifi)
                     .setContentIntent(pendingIntent)
                     .addAction(R.mipmap.notification_ic, "退出", closePendingIntent)
                     .build()
