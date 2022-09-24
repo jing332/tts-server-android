@@ -126,7 +126,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             Log.d("LogCallback", s)
             sendLog(s)
         }
-        /*启动动Go服务并阻塞等待,直到关闭*/
+        /*启动Go服务并阻塞等待,直到关闭*/
         Tts_server_lib.runServer(port.toLong(), cb)
         sendClosedMsg()
     }

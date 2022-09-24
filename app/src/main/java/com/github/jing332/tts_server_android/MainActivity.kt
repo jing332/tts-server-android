@@ -79,7 +79,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-
         /*注册广播*/
         myReceiver = MyReceiver()
         val intentFilter = IntentFilter(TtsIntentService.ACTION_SEND)
@@ -103,18 +102,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         MyTools.checkUpdate(this)
-    }
-
-    /*点击返回键返回桌面而不是退出程序*/
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            val home = Intent(Intent.ACTION_MAIN)
-            home.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            home.addCategory(Intent.CATEGORY_HOME)
-            startActivity(home)
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
     }
 
     /*右上角更多菜单*/
