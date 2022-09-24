@@ -13,7 +13,10 @@ import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.*
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -121,6 +124,17 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    /* 准备菜单 */
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        val item = menu?.findItem(R.id.menu_wakeLock)
+        item?.isCheckable = true /* 设置{唤醒锁}菜单为可选中的 */
+        /* 从配置文件读取并更新isWakeLock */
+        TtsIntentService.isWakeLock = SharedPrefsUtils.getWakeLock(this)
+        item?.isChecked = TtsIntentService.isWakeLock
+        return true
+    }
+
     /*菜单点击事件*/
     @SuppressLint("BatteryLife")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -181,6 +195,13 @@ class MainActivity : AppCompatActivity() {
                 }
                 true
             }
+            R.id.menu_wakeLock -> { /* 唤醒锁 */
+                item.isChecked = !item.isChecked /* 更新选中状态 */
+                TtsIntentService.isWakeLock = item.isChecked
+                SharedPrefsUtils.setWakeLock(this, item.isChecked)
+                Toast.makeText(this, "${item.isChecked} 重启服务以生效", Toast.LENGTH_SHORT).show()
+                true
+            }
 
             else -> super.onOptionsItemSelected(item)
         }
@@ -221,6 +242,4 @@ class MainActivity : AppCompatActivity() {
             btnClose.isEnabled = true
         }
     }
-
-
 }

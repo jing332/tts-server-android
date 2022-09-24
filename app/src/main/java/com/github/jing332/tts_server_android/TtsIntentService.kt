@@ -1,19 +1,24 @@
 package com.github.jing332.tts_server_android
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
+import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
 import tts_server_lib.LogCallback
 import tts_server_lib.Tts_server_lib
 
+
 class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) {
     companion object {
+        const val TAG = "TtsIntentService"
         var ACTION_SEND = "service.send" /*广播ID*/
+        var isWakeLock = false
         var IsRunning = false /*服务是否在运行*/
         var Isinited = false /*已经初始化GoLib*/
         var port: Int = 1233 /*监听端口*/
@@ -29,6 +34,10 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         }
     }
 
+    private lateinit var mWakeLock: PowerManager.WakeLock /* 唤醒锁 */
+
+    @Deprecated("Deprecated in Java")
+    @SuppressLint("WakelockTimeout")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         IsRunning = true
         port = intent?.getIntExtra("port", 1233)!!
@@ -62,7 +71,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             service.createNotificationChannel(chan)
 
-            var builder = Notification.Builder(applicationContext, chanId)
+            val builder = Notification.Builder(applicationContext, chanId)
             notification =
                 builder
                     .setContentTitle("TTS Server正在运行中...")
@@ -73,8 +82,8 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                     .build()
 
         } else { /*SDK < Android 8*/
-            var action = Notification.Action(0, "退出", closePendingIntent)
-            var builder = Notification.Builder(applicationContext)
+            val action = Notification.Action(0, "退出", closePendingIntent)
+            val builder = Notification.Builder(applicationContext)
             notification = builder
                 .setContentTitle("TTS Server正在运行中...")
                 .setContentText("监听地址: localhost:$port")
@@ -85,21 +94,35 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         }
         startForeground(1, notification) //启动前台服务
 
+        if (isWakeLock) { /* 启动唤醒锁 */
+            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+            mWakeLock = powerManager.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "tts_server:ttsTag"
+            )
+            mWakeLock.acquire()
+        }
+
         return super.onStartCommand(intent, flags, startId)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onDestroy() {
         IsRunning = false
+        if (isWakeLock) { /* 释放唤醒锁 */
+            mWakeLock.release()
+        }
         super.onDestroy()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onHandleIntent(intent: Intent?) {
         if (!Isinited) { /*初始化Go: 设置日志转发，注册Http.Server*/
             Tts_server_lib.init()
             Isinited = true
         }
         /*来自Go的日志*/
-        var cb = LogCallback { s ->
+        val cb = LogCallback { s ->
             Log.d("LogCallback", s)
             sendLog(s)
         }
@@ -110,14 +133,14 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
 
     //发送日志给MainActivity
     private fun sendLog(msg: String) {
-        var i = Intent(ACTION_SEND)
+        val i = Intent(ACTION_SEND)
         i.putExtra("sendLog", msg)
         sendBroadcast(i)
     }
 
     //发送关闭消息给MainActivity
     private fun sendClosedMsg() {
-        var i = Intent(ACTION_SEND)
+        val i = Intent(ACTION_SEND)
         i.putExtra("isClosed", true)
         sendBroadcast(i)
     }
@@ -128,5 +151,4 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             closeServer(ctx!!)
         }
     }
-
 }

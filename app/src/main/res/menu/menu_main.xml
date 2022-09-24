@@ -9,6 +9,9 @@
         android:id="@+id/menu_checkUpdate"
         android:title="检查更新" />
     <item
+        android:id="@+id/menu_wakeLock"
+        android:title="唤醒锁" />
+    <item
         android:id="@+id/menu_killBattery"
         android:title="电池优化" />
     <item

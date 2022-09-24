@@ -3,22 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.github.jing332.tts_server_android">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TtsServer">
         <activity
             android:name="com.github.jing332.tts_server_android.MainActivity"
-            android:screenOrientation="portrait"
+            android:exported="true"
             android:launchMode="singleTop"
-            android:exported="true">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,10 +33,11 @@
             android:exported="false"
             tools:ignore="Instantiatable" />
 
-        <receiver android:name=".TtsIntentService$Receiver"
+        <receiver
+            android:name=".TtsIntentService$Receiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="quit_action"/>
+                <action android:name="quit_action" />
             </intent-filter>
         </receiver>
     </application>
