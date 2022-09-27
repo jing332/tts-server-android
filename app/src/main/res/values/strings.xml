@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TTS Server</string>
+    <string name="app_switch">开关</string>
 </resources>

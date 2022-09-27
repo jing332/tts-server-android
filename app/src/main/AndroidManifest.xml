@@ -22,10 +22,13 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
+
+        <activity android:name=".ScSwitchActivity"/>
 
         <service
             android:name="com.github.jing332.tts_server_android.TtsIntentService"
