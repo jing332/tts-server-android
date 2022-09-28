@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     var mLastPosition = -1
     var mLastItemCount = -1
 
+    var isWakeLock = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -89,6 +91,7 @@ class MainActivity : AppCompatActivity() {
             /*启动服务*/
             val i = Intent(this.applicationContext, TtsIntentService::class.java)
             i.putExtra("port", etPort.text.toString().toInt())
+            i.putExtra("isWakeLock", isWakeLock)
             startService(i)
             /*设置{启动}按钮为禁用*/
             setControlStatus(false)
@@ -117,8 +120,8 @@ class MainActivity : AppCompatActivity() {
         val item = menu?.findItem(R.id.menu_wakeLock)
         item?.isCheckable = true /* 设置{唤醒锁}菜单为可选中的 */
         /* 从配置文件读取并更新isWakeLock */
-        TtsIntentService.isWakeLock = SharedPrefsUtils.getWakeLock(this)
-        item?.isChecked = TtsIntentService.isWakeLock
+        isWakeLock = SharedPrefsUtils.getWakeLock(this)
+        item?.isChecked = isWakeLock
         return true
     }
 
@@ -131,12 +134,13 @@ class MainActivity : AppCompatActivity() {
                 val tv = TextView(this)
                 tv.movementMethod = LinkMovementMethod()
 
-                val htmlStr = "特别感谢(他们的代码对我帮助很大):  <br />" +
-                        "&emsp;<a href= 'https://github.com/asters1/tts'>asters1/tts(Go实现)</a>" +
-                        "&emsp;<a href= 'https://github.com/wxxxcxx/ms-ra-forwarder'>ms-ra-forwarder</a>" +
-                        "<a href='https://github.com/ag2s20150909/TTS'>TTS APP</a>" +
-                        "&emsp;<a href= 'https://github.com/gedoor/legado'>阅读APP</a>"
-
+                val htmlStr =
+                    "Github开源地址: <a href = 'https://github.com/jing332/tts-server-android'>tts-server-android</a> <br/>" +
+                            "特别感谢(他们的代码对我帮助很大):  <br/>" +
+                            "&emsp;<a href= 'https://github.com/asters1/tts'>asters1/tts(Go实现)</a>" +
+                            "&emsp;<a href= 'https://github.com/wxxxcxx/ms-ra-forwarder'>ms-ra-forwarder</a>" +
+                            "&emsp;<a href='https://github.com/ag2s20150909/TTS'>TTS APP</a>" +
+                            "&emsp;<a href= 'https://github.com/gedoor/legado'>阅读APP</a>"
 
                 tv.text = Html.fromHtml(htmlStr)
                 tv.gravity = Gravity.CENTER /* 居中 */
@@ -184,7 +188,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_wakeLock -> { /* 唤醒锁 */
                 item.isChecked = !item.isChecked /* 更新选中状态 */
-                TtsIntentService.isWakeLock = item.isChecked
+                isWakeLock = item.isChecked
                 SharedPrefsUtils.setWakeLock(this, item.isChecked)
                 Toast.makeText(this, "${item.isChecked} 重启服务以生效", Toast.LENGTH_SHORT).show()
                 true

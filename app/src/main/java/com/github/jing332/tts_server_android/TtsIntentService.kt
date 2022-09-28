@@ -17,11 +17,11 @@ import tts_server_lib.Tts_server_lib
 class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) {
     companion object {
         const val TAG = "TtsIntentService"
-        var ACTION_SEND = "service.send" /*广播ID*/
-        var isWakeLock = false
-        var IsRunning = false /*服务是否在运行*/
-        var Isinited = false /*已经初始化GoLib*/
-        var port: Int = 1233 /*监听端口*/
+        var ACTION_SEND = "service.send" /* 广播ID */
+        private var isWakeLock = false /* 是否使用唤醒锁 */
+        var IsRunning = false /* 服务是否在运行 */
+        var Isinited = false /* 已经初始化GoLib */
+        var port: Int = 1233 /* 监听端口 */
 
         /*关闭服务，如有Http请求需要等待*/
         fun closeServer(context: Context): Boolean {
@@ -41,6 +41,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         IsRunning = true
         port = intent?.getIntExtra("port", 1233)!!
+        isWakeLock = intent.getBooleanExtra("isWakeLock", false)
 
         val notification: Notification
         /*Android 12(S)+ 必须指定PendingIntent.FLAG_*/
