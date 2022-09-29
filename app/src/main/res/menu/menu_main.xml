@@ -15,6 +15,9 @@
         android:id="@+id/menu_killBattery"
         android:title="电池优化" />
     <item
+        android:id="@+id/menu_shortcut"
+        android:title="桌面快捷方式" />
+    <item
         android:id="@+id/menu_about"
         android:title="关于" />
 </menu>

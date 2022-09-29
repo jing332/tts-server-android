@@ -103,7 +103,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             )
             mWakeLock.acquire()
         }
-
+        Toast.makeText(this, "服务已启动", Toast.LENGTH_SHORT).show()
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -112,6 +112,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         if (isWakeLock) { /* 释放唤醒锁 */
             mWakeLock.release()
         }
+        Toast.makeText(this, "服务已关闭", Toast.LENGTH_SHORT).show()
         super.onDestroy()
     }
 
@@ -126,6 +127,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             Log.d("LogCallback", s)
             sendLog(s)
         }
+
         sendRunningMsg()
         /*启动Go服务并阻塞等待,直到关闭*/
         Tts_server_lib.runServer(port.toLong(), cb)

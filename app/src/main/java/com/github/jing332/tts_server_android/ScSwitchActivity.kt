@@ -12,12 +12,10 @@ class ScSwitchActivity : Activity() {
 
         if (TtsIntentService.IsRunning) {
             TtsIntentService.closeServer(this)
-            Toast.makeText(this, "服务已关闭", Toast.LENGTH_SHORT).show()
         } else {
             val i = Intent(this.applicationContext, TtsIntentService::class.java)
             i.putExtra("isWakeLock", SharedPrefsUtils.getWakeLock(this))
             startService(i)
-            Toast.makeText(this, "服务已启动", Toast.LENGTH_SHORT).show()
         }
 
         finish()

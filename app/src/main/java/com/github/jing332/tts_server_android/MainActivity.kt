@@ -104,6 +104,11 @@ class MainActivity : AppCompatActivity() {
         MyTools.checkUpdate(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(myReceiver)
+    }
+
     /*右上角更多菜单*/
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflation: MenuInflater = menuInflater
@@ -190,6 +195,10 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "${item.isChecked} 重启服务以生效", Toast.LENGTH_SHORT).show()
                 true
             }
+            R.id.menu_shortcut -> {
+                MyTools.addShortcut(this, "开关")
+                true
+            }
 
             else -> super.onOptionsItemSelected(item)
         }
@@ -206,11 +215,11 @@ class MainActivity : AppCompatActivity() {
                     isRunning == true -> { /* 服务正在运行 */
                         adapter.removeAll()/* 清空日志 */
                         setControlStatus(false)
-                        Toast.makeText(this@MainActivity, "服务已启动", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this@MainActivity, "服务已启动", Toast.LENGTH_SHORT).show()
                     }
                     isClosed == true -> { /*服务已关闭*/
                         setControlStatus(true) /*设置运行按钮可点击*/
-                        Toast.makeText(ctx, "服务已关闭", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(ctx, "服务已关闭", Toast.LENGTH_SHORT).show()
                     }
                     logText?.isEmpty() == false -> { /*非空 追加日志*/
                         adapter.append(logText.toString())
