@@ -79,7 +79,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                     .setContentText("监听地址: localhost:$port")
                     .setSmallIcon(R.drawable.ic_app_notification)
                     .setContentIntent(pendingIntent)
-                    .addAction(R.mipmap.notification_ic, "退出", closePendingIntent)
+                    .addAction(R.mipmap.ic_app_notification, "退出", closePendingIntent)
                     .build()
 
         } else { /*SDK < Android 8*/
@@ -109,7 +109,6 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
 
     @Deprecated("Deprecated in Java")
     override fun onDestroy() {
-        IsRunning = false
         if (isWakeLock) { /* 释放唤醒锁 */
             mWakeLock.release()
         }
@@ -127,10 +126,13 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             Log.d("LogCallback", s)
             sendLog(s)
         }
+        sendRunningMsg()
         /*启动Go服务并阻塞等待,直到关闭*/
         Tts_server_lib.runServer(port.toLong(), cb)
+        IsRunning = false
         sendClosedMsg()
     }
+
 
     //发送日志给MainActivity
     private fun sendLog(msg: String) {
@@ -143,6 +145,13 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     private fun sendClosedMsg() {
         val i = Intent(ACTION_SEND)
         i.putExtra("isClosed", true)
+        sendBroadcast(i)
+    }
+
+    /* 发送正在运行中消息 */
+    private fun sendRunningMsg() {
+        val i = Intent(ACTION_SEND)
+        i.putExtra("isRunning", IsRunning)
         sendBroadcast(i)
     }
 

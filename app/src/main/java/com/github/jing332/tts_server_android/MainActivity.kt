@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         layoutManager.stackFromEnd = true
         rvLog.layoutManager = layoutManager
 
+        /* 用来判断是否在日志列表最底部 以确认是否自动滚动 */
         rvLog.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 mLastItemCount = recyclerView.layoutManager!!.itemCount
@@ -87,15 +88,11 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(myReceiver, intentFilter)
         /*启动按钮*/
         btnStart.setOnClickListener {
-            adapter.removeAll()
             /*启动服务*/
             val i = Intent(this.applicationContext, TtsIntentService::class.java)
             i.putExtra("port", etPort.text.toString().toInt())
             i.putExtra("isWakeLock", isWakeLock)
             startService(i)
-            /*设置{启动}按钮为禁用*/
-            setControlStatus(false)
-            Toast.makeText(this, "服务已启动", Toast.LENGTH_SHORT).show()
         }
         /*关闭按钮*/
         btnClose.setOnClickListener {
@@ -203,8 +200,14 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
             val logText = intent?.getStringExtra("sendLog")
             val isClosed = intent?.getBooleanExtra("isClosed", false)
+            val isRunning = intent?.getBooleanExtra("isRunning", false)
             runOnUiThread {
                 when {
+                    isRunning == true -> { /* 服务正在运行 */
+                        adapter.removeAll()/* 清空日志 */
+                        setControlStatus(false)
+                        Toast.makeText(this@MainActivity, "服务已启动", Toast.LENGTH_SHORT).show()
+                    }
                     isClosed == true -> { /*服务已关闭*/
                         setControlStatus(true) /*设置运行按钮可点击*/
                         Toast.makeText(ctx, "服务已关闭", Toast.LENGTH_SHORT).show()
