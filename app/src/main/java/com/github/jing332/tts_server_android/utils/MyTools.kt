@@ -116,7 +116,7 @@ object MyTools {
             addShortcutIntent.putExtra(
                 Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(
-                    ctx, R.mipmap.ic_launcher
+                    ctx, R.drawable.ic_switch
                 )
             )
 
