@@ -1,14 +1,21 @@
-package com.github.jing332.tts_server_android
+package com.github.jing332.tts_server_android.service
 
 import android.content.Intent
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import android.util.Log
 import androidx.annotation.RequiresApi
+import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
 
 /* 快捷开关 */
 @RequiresApi(Build.VERSION_CODES.N)
 class QSTileService : TileService() {
+    override fun startActivity(intent: Intent?) {
+        Log.e("TAG", intent.toString())
+        super.startActivity(intent)
+    }
+
     override fun onStartListening() {
         super.onStartListening()
 
@@ -37,4 +44,5 @@ class QSTileService : TileService() {
         qsTile.updateTile()
 
     }
+
 }

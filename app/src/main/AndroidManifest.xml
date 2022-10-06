@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TtsServer">
         <activity
-            android:name="com.github.jing332.tts_server_android.MainActivity"
+            android:name="com.github.jing332.tts_server_android.ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -31,17 +31,17 @@
         </activity>
 
         <activity
-            android:name=".ScSwitchActivity"
+            android:name=".ui.ScSwitchActivity"
             android:theme="@android:style/Theme.NoDisplay" />
 
         <service
-            android:name="com.github.jing332.tts_server_android.TtsIntentService"
+            android:name="com.github.jing332.tts_server_android.service.TtsIntentService"
             android:enabled="true"
             android:exported="false"
             tools:ignore="Instantiatable" />
 
         <service
-            android:name=".QSTileService"
+            android:name=".service.QSTileService"
             android:exported="true"
             android:icon="@drawable/ic_app_notification"
             android:label="@string/app_name"
@@ -52,7 +52,7 @@
         </service>
 
         <receiver
-            android:name=".TtsIntentService$Receiver"
+            android:name=".service.TtsIntentService$Receiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="quit_action" />

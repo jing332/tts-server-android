@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android
+package com.github.jing332.tts_server_android.utils
 
 import android.app.Activity
 import android.app.PendingIntent
@@ -13,6 +13,9 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.ui.MainActivity
+import com.github.jing332.tts_server_android.ui.ScSwitchActivity
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException

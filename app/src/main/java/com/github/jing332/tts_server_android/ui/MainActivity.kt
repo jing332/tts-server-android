@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android
+package com.github.jing332.tts_server_android.ui
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -12,7 +12,10 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
-import android.view.*
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -21,6 +24,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.jing332.tts_server_android.GoLog
+import com.github.jing332.tts_server_android.GoLogLevel
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.service.TtsIntentService
+import com.github.jing332.tts_server_android.utils.MyTools
+import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var btnClose: Button
 
     lateinit var rvLog: RecyclerView
-    lateinit var logList: ArrayList<String>
+    lateinit var logList: ArrayList<GoLog>
     lateinit var adapter: LogViewAdapter
 
     lateinit var myReceiver: MyReceiver
@@ -54,13 +63,14 @@ class MainActivity : AppCompatActivity() {
         if (TtsIntentService.IsRunning) { //服务在运行
             etPort.setText(TtsIntentService.port.toString()) //设置监听端口
             setControlStatus(false)
-            logList.add("服务已在运行, 监听地址: localhost:${TtsIntentService.port}")
+            val msg = "服务已在运行, 监听地址: localhost:${TtsIntentService.port}"
+            logList.add(GoLog(GoLogLevel.WarnLevel, msg))
         } else {
-            logList.add("请点击启动按钮")
-            logList.add("然后右上角菜单打开网页版↗️")
-            logList.add("随后生成链接导入阅读APP即可使用\n")
-            logList.add("关闭请点关闭按钮, 并等待响应。")
-            logList.add("⚠️注意: 本APP需常驻后台运行！⚠️")
+            val msg = "请点击启动按钮\n然后右上角菜单打开网页版↗️\n" +
+                    "随后生成链接导入阅读APP即可使用\n" +
+                    "\n关闭请点关闭按钮, 并等待响应。\n" +
+                    "⚠️注意: 本APP需常驻后台运行！⚠️"
+            logList.add(GoLog(GoLogLevel.InfoLevel, msg))
         }
 
         adapter = LogViewAdapter(logList)
@@ -85,6 +95,9 @@ class MainActivity : AppCompatActivity() {
         /*注册广播*/
         myReceiver = MyReceiver()
         val intentFilter = IntentFilter(TtsIntentService.ACTION_SEND)
+        intentFilter.addAction(TtsIntentService.ACTION_ON_STARTED)
+        intentFilter.addAction(TtsIntentService.ACTION_ON_CLOSED)
+        intentFilter.addAction(TtsIntentService.ACTION_ON_LOG)
         registerReceiver(myReceiver, intentFilter)
         /*启动按钮*/
         btnStart.setOnClickListener {
@@ -204,36 +217,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //监听广播
+    /* 监听广播 */
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
-            val logText = intent?.getStringExtra("sendLog")
-            val isClosed = intent?.getBooleanExtra("isClosed", false)
-            val isRunning = intent?.getBooleanExtra("isRunning", false)
-            runOnUiThread {
-                when {
-                    isRunning == true -> { /* 服务正在运行 */
-                        adapter.removeAll()/* 清空日志 */
-                        setControlStatus(false)
-//                        Toast.makeText(this@MainActivity, "服务已启动", Toast.LENGTH_SHORT).show()
+            when (intent?.action) {
+                TtsIntentService.ACTION_ON_LOG -> {
+                    val data = intent.getSerializableExtra("data") as GoLog
+                    adapter.append(data)
+                    /* 判断是否在最底部 */
+                    if (mLastPosition == mLastItemCount - 1 || mLastPosition == mLastItemCount - 2) {
+                        rvLog.scrollToPosition(adapter.itemCount - 1)
                     }
-                    isClosed == true -> { /*服务已关闭*/
-                        setControlStatus(true) /*设置运行按钮可点击*/
-//                        Toast.makeText(ctx, "服务已关闭", Toast.LENGTH_SHORT).show()
-                    }
-                    logText?.isEmpty() == false -> { /*非空 追加日志*/
-                        adapter.append(logText.toString())
-                        /* 判断是否在最底部 */
-                        if (mLastPosition == mLastItemCount - 1 || mLastPosition == mLastItemCount - 2) {
-                            rvLog.scrollToPosition(adapter.itemCount - 1)
-                        }
-                    }
+                }
+                TtsIntentService.ACTION_ON_STARTED -> {
+                    adapter.removeAll() /* 清空日志 */
+                    setControlStatus(false)
+                }
+                TtsIntentService.ACTION_ON_CLOSED -> {
+                    setControlStatus(true) /* 设置运行按钮可点击 */
                 }
             }
         }
     }
 
-    /*设置底部按钮、端口 是否可点击*/
+    /* 设置底部按钮、端口 是否可点击 */
     fun setControlStatus(enable: Boolean) {
         if (enable) { //可点击{运行}按钮，编辑
             etPort.isEnabled = true

@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android
+package com.github.jing332.tts_server_android.service
 
 import android.annotation.SuppressLint
 import android.app.*
@@ -10,6 +10,9 @@ import android.os.Build
 import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
+import com.github.jing332.tts_server_android.GoLog
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.ui.MainActivity
 import tts_server_lib.LogCallback
 import tts_server_lib.Tts_server_lib
 
@@ -17,7 +20,11 @@ import tts_server_lib.Tts_server_lib
 class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) {
     companion object {
         const val TAG = "TtsIntentService"
-        var ACTION_SEND = "service.send" /* 广播ID */
+        var ACTION_SEND = "service.send_log" /* 广播ID */
+        const val ACTION_ON_LOG = "service.on_log"
+        const val ACTION_ON_CLOSED = "service.on_closed"
+        const val ACTION_ON_STARTED = "service.on_started"
+
         private var isWakeLock = false /* 是否使用唤醒锁 */
         var IsRunning = false /* 服务是否在运行 */
         var Isinited = false /* 已经初始化GoLib */
@@ -25,7 +32,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
 
         /*关闭服务，如有Http请求需要等待*/
         fun closeServer(context: Context): Boolean {
-            val err = Tts_server_lib.closeServer(0)/* 5s */
+            val err = Tts_server_lib.closeServer()/* 5s */
             if (err.isNotEmpty()) {
                 Toast.makeText(context, "关闭失败：$err", Toast.LENGTH_SHORT).show()
                 return false
@@ -118,42 +125,41 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
 
     @Deprecated("Deprecated in Java")
     override fun onHandleIntent(intent: Intent?) {
-        if (!Isinited) { /*初始化Go: 设置日志转发，注册Http.Server*/
-            Tts_server_lib.init()
+        if (!Isinited) { /* 初始化Go: 设置日志转发，注册Http.Server */
+            /* 来自Go的日志 */
+            val cb = LogCallback { level, msg ->
+                Log.d("LogCallback", "$level $msg")
+                sendLog(GoLog(level, msg))
+            }
+            Tts_server_lib.init(cb)
             Isinited = true
         }
-        /*来自Go的日志*/
-        val cb = LogCallback { s ->
-            Log.d("LogCallback", s)
-            sendLog(s)
-        }
 
-        sendRunningMsg()
+        sendStartedMsg()
         /*启动Go服务并阻塞等待,直到关闭*/
-        Tts_server_lib.runServer(port.toLong(), cb)
+        Tts_server_lib.runServer(port.toLong())
         IsRunning = false
         sendClosedMsg()
     }
 
 
-    //发送日志给MainActivity
-    private fun sendLog(msg: String) {
-        val i = Intent(ACTION_SEND)
-        i.putExtra("sendLog", msg)
+    /* 广播日志消息 */
+    private fun sendLog(data: GoLog) {
+        val i = Intent(ACTION_ON_LOG)
+        i.putExtra("data", data)
         sendBroadcast(i)
     }
 
-    //发送关闭消息给MainActivity
+    /* 广播启动消息 */
+    private fun sendStartedMsg() {
+        val i = Intent(ACTION_ON_STARTED)
+        sendBroadcast(i)
+    }
+
+    /* 广播关闭消息 */
     private fun sendClosedMsg() {
-        val i = Intent(ACTION_SEND)
+        val i = Intent(ACTION_ON_CLOSED)
         i.putExtra("isClosed", true)
-        sendBroadcast(i)
-    }
-
-    /* 发送正在运行中消息 */
-    private fun sendRunningMsg() {
-        val i = Intent(ACTION_SEND)
-        i.putExtra("isRunning", IsRunning)
         sendBroadcast(i)
     }
 
