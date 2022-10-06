@@ -7,35 +7,33 @@ import (
 )
 
 import (
-	"fmt"
 	"github.com/jing332/tts-server-go/service"
-// 	"github.com/jing332/tts-server-go/service/azure"
-// 	"github.com/jing332/tts-server-go/service/edge"
-	"strings"
 )
 
 type LogCallback interface {
-	Log(msg string)
+	Log(level int32, msg string)
 }
 
 var w LogHandler
 var s *service.GracefulServer
 
-func Init() {
+func Init(cb LogCallback) {
+	w.cb = cb //转发log到android
+	log.SetOutput(w)
 	log.SetFormatter(new(MyFormatter))
+
 	s = &service.GracefulServer{}
 	s.HandleFunc()
 }
 
-func RunServer(port int64, cb LogCallback) {
-	w.onWrite = cb //转发log到android
-	log.SetOutput(w)
-	s.ListenAndServe(port)
+func RunServer(port int64) {
+	err := s.ListenAndServe(port)
+	if err != nil {
+		log.Error(err)
+	}
 }
 
-func CloseServer(timeout int64) string {
-// 	edge.CloseConn()
-// 	azure.CloseConn() //time.Duration(timeout)
+func CloseServer() string {
 	err := s.Shutdown(time.Second * 5)
 	if err != nil {
 		return err.Error()
@@ -44,12 +42,12 @@ func CloseServer(timeout int64) string {
 }
 
 type LogHandler struct {
-	w       io.Writer
-	onWrite LogCallback
+	w  io.Writer
+	cb LogCallback
 }
 
 func (lh LogHandler) Write(p []byte) (n int, err error) {
-	lh.onWrite.Log(string(p))
+	//lh.cb.Log(string(p))
 	return 0, err
 }
 
@@ -61,6 +59,6 @@ type MyFormatter struct {
 }
 
 func (f *MyFormatter) Format(entry *log.Entry) ([]byte, error) {
-	msg := fmt.Sprintf("[%s] %s", strings.ToUpper(entry.Level.String()), entry.Message)
-	return []byte(msg), nil
+	w.cb.Log(int32(entry.Level), entry.Message)
+	return nil, nil
 }
