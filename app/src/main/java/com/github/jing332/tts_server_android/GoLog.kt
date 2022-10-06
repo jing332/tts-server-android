@@ -11,7 +11,7 @@ class GoLog(var level: Int, var msg: String) : Serializable {
     fun toColor(): Int {
         return when {
             level == GoLogLevel.WarnLevel -> {
-                Color.YELLOW
+                Color.rgb(255, 215, 0) /* 金色 */
             }
             level <= GoLogLevel.ErrorLevel -> {
                 Color.RED
