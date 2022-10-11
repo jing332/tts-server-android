@@ -38,6 +38,29 @@
             android:name=".ui.ScSwitchActivity"
             android:theme="@android:style/Theme.NoDisplay" />
 
+        <activity
+            android:name=".service.tts.CheckVoiceData"
+            android:exported="true"
+            android:label="CheckVoiceData">
+            <intent-filter>
+                <action android:name="android.speech.tts.engine.CHECK_TTS_DATA" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".service.tts.TtsService"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.TTS_SERVICE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.speech.tts"
+                android:resource="@xml/tts_engine" />
+        </service>
+
         <service
             android:name="com.github.jing332.tts_server_android.service.TtsIntentService"
             android:enabled="true"
