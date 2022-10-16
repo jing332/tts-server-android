@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Spinner
+        android:id="@+id/spinner_language"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/label_language"
+        android:prompt="@string/select_lang_title"
+        android:spinnerMode="dialog"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_api"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_language"
+        app:layout_constraintStart_toStartOf="@+id/spinner_api"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_api" />
+
+    <TextView
+        android:id="@+id/tv_voice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_voice"
+        app:layout_constraintStart_toStartOf="@+id/spinner_language"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_language" />
+
+    <Spinner
+        android:id="@+id/spinner_voice"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/label_voice"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_language"
+        app:layout_constraintStart_toStartOf="@+id/tv_voice"
+        app:layout_constraintTop_toBottomOf="@+id/tv_voice" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/btn_save_changed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_voice" />
+
+    <Button
+        android:id="@+id/btn_openTtsSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/btn_open_tts_settings"
+        app:layout_constraintEnd_toStartOf="@+id/btn_save"
+        app:layout_constraintTop_toTopOf="@+id/btn_save" />
+
+    <Spinner
+        android:id="@+id/spinner_foramt"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/label_audio_format"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_voice"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_audio_format"
+        app:layout_constraintStart_toStartOf="@+id/spinner_voice"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_voice" />
+
+    <SeekBar
+        android:id="@+id/seekBar_volume"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:max="100"
+        android:progress="50"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_foramt"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_volume"
+        app:layout_constraintStart_toStartOf="@+id/spinner_foramt"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_foramt" />
+
+    <TextView
+        android:id="@+id/tv_currentVolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0%"
+        app:layout_constraintBottom_toTopOf="@+id/seekBar_volume"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/label_api"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner_api"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/label_api"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

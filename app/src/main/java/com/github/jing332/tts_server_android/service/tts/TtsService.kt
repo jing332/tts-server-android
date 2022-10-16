@@ -1,17 +1,29 @@
 package com.github.jing332.tts_server_android.service.tts
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioFormat
 import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.os.Build
+import android.os.PowerManager
+import android.os.SystemClock
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeechService
 import android.text.TextUtils
 import android.util.Log
-import android.widget.Toast
+import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
+import com.github.jing332.tts_server_android.utils.GcManger
+import com.github.jing332.tts_server_android.utils.NormUtil
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import java.io.IOException
@@ -20,8 +32,36 @@ import java.util.*
 
 
 class TtsService : TextToSpeechService() {
-    private val TAG = "TtsService"
+    companion object {
+        const val TAG = "TtsService"
+    }
+
     private val currentLanguage: MutableList<String> = mutableListOf("zho", "CHN", "")
+
+    lateinit var ttsConfig: TtsConfig
+    private val mReceiver: MyReceiver by lazy { return@lazy MyReceiver() }
+    private val mWakeLock by lazy {
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        return@lazy powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE,
+            "tts-server:tts"
+        )
+    }
+
+    var isSynthesizing = false
+
+    override fun onCreate() {
+        super.onCreate()
+        val intentFilter = IntentFilter(TtsSettingsActivity.ACTION_ON_CONFIG_CHANGED)
+        registerReceiver(mReceiver, intentFilter)
+        mWakeLock.acquire(60 * 20 * 100)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(mReceiver)
+        mWakeLock.release()
+    }
 
     override fun onIsLanguageAvailable(lang: String?, country: String?, variant: String?): Int {
         return if (Locale.SIMPLIFIED_CHINESE.isO3Language == lang || Locale.US.isO3Language == lang) {
@@ -36,7 +76,7 @@ class TtsService : TextToSpeechService() {
 
     override fun onLoadLanguage(lang: String?, country: String?, variant: String?): Int {
         val result = onIsLanguageAvailable(lang, country, variant)
-        Log.i(TAG, "onLoadLanguage ret: $result, $lang, $country, $variant")
+//        Log.i(TAG, "onLoadLanguage ret: $result, $lang, $country, $variant")
         currentLanguage.clear()
         currentLanguage.addAll(
             mutableListOf(
@@ -45,47 +85,108 @@ class TtsService : TextToSpeechService() {
                 variant.toString()
             )
         )
+
+        if (!this::ttsConfig.isInitialized) {
+            ttsConfig = TtsConfig().loadConfig(this)
+        }
+
         return result
     }
 
     override fun onStop() {
-        Log.e("TTS", "onStop")
+        Log.d(TAG, "onStop")
+        isSynthesizing = false
     }
 
+    private val norm: NormUtil by lazy {
+        return@lazy NormUtil(500F, 0F, 100F, 0F)
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
+        val startTime = SystemClock.elapsedRealtime()
+        synchronized(this) {
+            reNewWakeLock()
+
+            val text = request?.charSequenceText.toString()
+            Log.d(TAG, "接收到文本: $text")
+            if (text.isEmpty()) {
+                Log.d(TAG, "文本为空，跳过")
+                callback!!.start(
+                    16000,
+                    AudioFormat.ENCODING_PCM_16BIT, 1
+                )
+                callback.done()
+                return
+            }
+
+            GlobalScope.launch {
+                while (isSynthesizing) {
+                    try {
+                        delay(100)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
+                    }
+                    val time = SystemClock.elapsedRealtime() - startTime
+                    //超时15秒后跳过,保证长句不会被跳过
+                    if (time > 15000) {
+                        callback!!.error(TextToSpeech.ERROR_NETWORK_TIMEOUT)
+                        isSynthesizing = false
+                    }
+                }
+            }
+            synthesizeText(request, callback)
+        }
+    }
+
+    private fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
+        val rate = request?.speechRate?.toFloat()
         val arg = tts_server_lib.CreationArg()
         arg.text = request?.charSequenceText.toString()
-        val rate = request?.speechRate?.toFloat()
-
-        arg.voiceName = "zh-CN-XiaoxiaoNeural"
-        arg.voiceId = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
+        arg.voiceName = ttsConfig.voiceName
+        arg.voiceId = ttsConfig.voiceId
         arg.style = "general"
         arg.styleDegree = "1.0"
         arg.role = "default"
-        if (rate != null) {
-            arg.rate = "${(rate - 20 * 2)}%"
-        }
-        arg.volume = "0%"
-        arg.format = "audio-24khz-48kbitrate-mono-mp3"
+        arg.rate = "${norm.normalize(rate!!) - 50}%"
+        arg.volume = ttsConfig.volumeToPctString()
+        arg.format = ttsConfig.format
+
         val format = TtsFormatManger.getFormat(arg.format)
+        Log.d(TAG, "$arg")
         if (format == null) {
             Log.e(TAG, "不支持解码此格式: ${arg.format}")
+            callback!!.start(
+                16000,
+                AudioFormat.ENCODING_PCM_16BIT, 1
+            )
+            callback.error(TextToSpeech.ERROR_INVALID_REQUEST)
             return
         }
-        Log.e(TAG, "${arg.rate}")
 
-        callback?.start(format.HZ, format.BitRate.toInt(), 1)
+        callback?.start(format.hz, format.bitRate, 1)
         try {
             val audio = tts_server_lib.Tts_server_lib.getCreationAudio(arg)
-            Log.e(TAG, "获取成功, size: ${audio.size}")
-
-            doDecode(callback!!, "", audio)
+            if (audio != null) {
+                Log.i(TAG, "获取音频成功, size: ${audio.size}")
+                doDecode(callback!!, "", audio)
+            } else {
+                callback?.error()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    var isSynthesizing = false
+    private fun reNewWakeLock() {
+        if (!mWakeLock.isHeld) {
+            mWakeLock.acquire(60 * 20 * 1000)
+            GcManger.doGC()
+            Log.i(TAG, "刷新WakeLock 20分钟")
+        }
+    }
+
+
     private val currentMime: String? = null
     private var mediaCodec: MediaCodec? = null
     private var oldMime: String? = null
@@ -101,7 +202,8 @@ class TtsService : TextToSpeechService() {
         if (mediaCodec == null || mime != oldMime) {
             if (null != mediaCodec) {
                 mediaCodec!!.release()
-//                GcManger.getInstance().doGC()
+                GcManger.doGC()
+                System.gc()
             }
             try {
                 mediaCodec = MediaCodec.createDecoderByType(mime)
@@ -142,22 +244,17 @@ class TtsService : TextToSpeechService() {
                 mime = trackFormat.getString(MediaFormat.KEY_MIME)
                 if (!TextUtils.isEmpty(mime) && mime!!.startsWith("audio")) {
                     audioTrackIndex = i
-                    Log.d(TAG, "找到音频流的索引为：$audioTrackIndex")
-                    Log.d(TAG, "找到音频流的mime为：$mime")
+                    Log.d(TAG, "找到音频流的index：$audioTrackIndex, mime：$mime")
                     break
                 }
             }
             //没有找到音频流的情况下
             if (audioTrackIndex == -1) {
                 Log.e(TAG, "initAudioDecoder: 没有找到音频流")
-//                updateNotification("TTS服务-错误中", "没有找到音频流")
                 cb.done()
                 isSynthesizing = false
                 return
             }
-
-            //Log.e("Track", trackFormat.toString());
-
 
             //opus的音频必须设置这个才能正确的解码
             /* if ("audio/opus" == mime) {
@@ -262,6 +359,7 @@ class TtsService : TextToSpeechService() {
             mediaCodec.reset()
             cb.done()
             isSynthesizing = false
+            Log.d(TAG, "播放完毕")
         } catch (e: Exception) {
             Log.e(TAG, "doDecode", e)
             cb.error()
@@ -285,6 +383,14 @@ class TtsService : TextToSpeechService() {
         }
         cb.done()
         isSynthesizing = false
+    }
+
+    inner class MyReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == TtsSettingsActivity.ACTION_ON_CONFIG_CHANGED) {
+                ttsConfig.loadConfig(this@TtsService)
+            }
+        }
     }
 
 }

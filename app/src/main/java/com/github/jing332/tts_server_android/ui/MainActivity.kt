@@ -34,7 +34,7 @@ import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        val TAG = "MainActivity"
+        const val TAG = "MainActivity"
     }
 
     lateinit var etPort: EditText

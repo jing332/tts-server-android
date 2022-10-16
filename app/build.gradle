@@ -1,7 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-//    id 'kotlin-kapt'
+    id 'kotlinx-serialization'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -47,8 +48,6 @@ android {
         }
     }
 
-
-
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_11
@@ -66,28 +65,31 @@ android {
                 outputFileName = "TTS-Server-v${variant.versionName}.apk"
             }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
     coreLibraryDesugaring('com.android.tools:desugar_jdk_libs:1.1.6')
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.8.0'
 
     //UI
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
 
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
+    implementation('org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1')
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
 //    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
 
-
-//    kapt('com.squareup.moshi:moshi-kotlin-codegen:1.14.0')
-//    implementation('com.squareup.moshi:moshi:1.14.0')
-
-//    implementation 'androidx.work:work-runtime-ktx:2.7.1'
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

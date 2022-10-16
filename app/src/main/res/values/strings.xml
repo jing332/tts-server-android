@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">TTS Server</string>
     <string name="app_switch">开关</string>
+    <string name="select_lang_title">请选择语言</string>
+    <string name="label_api">接口：</string>
+    <string name="label_language">语言：</string>
+    <string name="label_audio_format">音频格式：</string>
+    <string name="label_voice">声音：</string>
+    <string name="label_volume">音量：</string>
+    <string name="btn_save_changed">保存更改</string>
+    <string name="btn_open_tts_settings">打开TTS设置</string>
 </resources>

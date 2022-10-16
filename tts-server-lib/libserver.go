@@ -1,7 +1,7 @@
 package tts_server_lib
 
 import (
-	"github.com/jing332/tts-server-go/service"
+	"github.com/jing332/tts-server-go/server"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"time"
@@ -12,14 +12,14 @@ type LogCallback interface {
 }
 
 var w LogHandler
-var s *service.GracefulServer
+var s *server.GracefulServer
 
 func Init(cb LogCallback) {
 	w.cb = cb //转发log到android
 	log.SetOutput(w)
 	log.SetFormatter(new(MyFormatter))
 
-	s = &service.GracefulServer{}
+	s = &server.GracefulServer{}
 	s.HandleFunc()
 }
 
