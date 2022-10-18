@@ -3,9 +3,6 @@ package com.github.jing332.tts_server_android.service.tts.data
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-//@Serializable
-//class CreationVoices : List<CreationVoicesItem>()
-
 @Serializable
 data class CreationVoicesItem(
     @SerialName("id") val id: String,

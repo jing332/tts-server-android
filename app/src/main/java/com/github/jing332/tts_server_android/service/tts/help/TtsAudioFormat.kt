@@ -1,6 +1,6 @@
-package com.github.jing332.tts_server_android.service.tts
+package com.github.jing332.tts_server_android.service.tts.help
 
-class TtsOutputFormat(
+class TtsAudioFormat(
     val name: String,
     val value: String,
     val hz: Int,

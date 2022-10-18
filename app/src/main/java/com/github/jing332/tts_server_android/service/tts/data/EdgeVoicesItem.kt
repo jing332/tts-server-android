@@ -4,6 +4,7 @@ package com.github.jing332.tts_server_android.service.tts.data
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class EdgeVoicesItem (
     @SerialName("FriendlyName")
     val friendlyName: String,

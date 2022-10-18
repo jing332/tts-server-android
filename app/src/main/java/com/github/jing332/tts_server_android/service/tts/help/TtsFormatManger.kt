@@ -1,58 +1,58 @@
-package com.github.jing332.tts_server_android.service.tts
+package com.github.jing332.tts_server_android.service.tts.help
 
 import android.media.AudioFormat
 
 object TtsFormatManger {
-    val formats = arrayListOf<TtsOutputFormat>()
+    val formats = arrayListOf<TtsAudioFormat>()
 
     init {
         formats.add(
-            TtsOutputFormat(
+            TtsAudioFormat(
                 "webm-24khz-16bit-mono-opus",
                 24000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsOutputFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = false),
+                TtsAudioFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = false),
                 true
             )
         )
         formats.add(
-            TtsOutputFormat(
+            TtsAudioFormat(
                 "audio-16khz-32kbitrate-mono-mp3",
                 16000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsOutputFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true),
+                TtsAudioFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true),
                 true
             )
         )
         formats.add(
-            TtsOutputFormat(
+            TtsAudioFormat(
                 "audio-24khz-48kbitrate-mono-mp3",
                 24000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsOutputFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true), true
+                TtsAudioFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true), true
             )
         )
         formats.add(
-            TtsOutputFormat(
+            TtsAudioFormat(
                 "audio-24khz-96kbitrate-mono-mp3",
                 24000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsOutputFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true), true
+                TtsAudioFormat.SupportedApi(isEdge = false, isAzure = true, isCreation = true), true
             )
         )
 
         formats.add(
-            TtsOutputFormat(
+            TtsAudioFormat(
                 "audio-48khz-96kbitrate-mono-mp3",
                 48000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsOutputFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true), true
+                TtsAudioFormat.SupportedApi(isEdge = false, isAzure = true, isCreation = true), true
             )
         )
     }
 
     /* 通过name查找格式Item */
-    fun getFormat(name: String): TtsOutputFormat? {
+    fun getFormat(name: String): TtsAudioFormat? {
         formats.forEach { v ->
             if (v.name == name) {
                 return v
@@ -71,25 +71,18 @@ object TtsFormatManger {
 
     fun getFormatsBySupportedApi(api: Int): ArrayList<String> {
         val list = arrayListOf<String>()
-        formats.forEach { v ->
-            when (api) {
-                TtsOutputFormat.API_EDGE -> {
-                    if (v.supportedApi.isEdge){
-                        list.add(v.value)
-                    }
-                }
-                TtsOutputFormat.API_AZURE -> {
-                    if (v.supportedApi.isAzure){
-                        list.add(v.value)
-                    }
-                }
-                TtsOutputFormat.API_CREATION -> {
-                    if (v.supportedApi.isCreation){
-                        list.add(v.value)
-                    }
-                }
+        when (api) {
+            TtsAudioFormat.API_EDGE -> {
+                formats.forEach { if (it.supportedApi.isEdge) list.add(it.value) }
+            }
+            TtsAudioFormat.API_AZURE -> {
+                formats.forEach { if (it.supportedApi.isAzure) list.add(it.value) }
+            }
+            TtsAudioFormat.API_CREATION -> {
+                formats.forEach { if (it.supportedApi.isCreation) list.add(it.value) }
             }
         }
+
         return list
     }
 }

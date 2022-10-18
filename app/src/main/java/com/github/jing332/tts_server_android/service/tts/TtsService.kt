@@ -17,7 +17,11 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeechService
 import android.text.TextUtils
 import android.util.Log
-import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
+import com.github.jing332.tts_server_android.BuildConfig
+import com.github.jing332.tts_server_android.service.tts.help.ByteArrayMediaDataSource
+import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
+import com.github.jing332.tts_server_android.service.tts.help.TtsConfig
+import com.github.jing332.tts_server_android.service.tts.help.TtsFormatManger
 import com.github.jing332.tts_server_android.utils.GcManger
 import com.github.jing332.tts_server_android.utils.NormUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -26,20 +30,24 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
+import tts_server_lib.Tts_server_lib
 import java.io.IOException
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.charset.StandardCharsets
 import java.util.*
 
 
 class TtsService : TextToSpeechService() {
     companion object {
         const val TAG = "TtsService"
+        const val ACTION_ON_CONFIG_CHANGED = "action_on_config_changed"
     }
 
     private val currentLanguage: MutableList<String> = mutableListOf("zho", "CHN", "")
 
-    lateinit var ttsConfig: TtsConfig
-    private val mReceiver: MyReceiver by lazy { return@lazy MyReceiver() }
+    private val ttsConfig: TtsConfig by lazy { TtsConfig().loadConfig(this) }
+    private val mReceiver: MyReceiver by lazy { MyReceiver() }
     private val mWakeLock by lazy {
         val powerManager = getSystemService(POWER_SERVICE) as PowerManager
         return@lazy powerManager.newWakeLock(
@@ -52,7 +60,7 @@ class TtsService : TextToSpeechService() {
 
     override fun onCreate() {
         super.onCreate()
-        val intentFilter = IntentFilter(TtsSettingsActivity.ACTION_ON_CONFIG_CHANGED)
+        val intentFilter = IntentFilter(ACTION_ON_CONFIG_CHANGED)
         registerReceiver(mReceiver, intentFilter)
         mWakeLock.acquire(60 * 20 * 100)
     }
@@ -70,13 +78,11 @@ class TtsService : TextToSpeechService() {
     }
 
     override fun onGetLanguage(): Array<String> {
-        Log.i(TAG, "onGetLanguage: ${currentLanguage.toTypedArray()}")
         return currentLanguage.toTypedArray()
     }
 
     override fun onLoadLanguage(lang: String?, country: String?, variant: String?): Int {
         val result = onIsLanguageAvailable(lang, country, variant)
-//        Log.i(TAG, "onLoadLanguage ret: $result, $lang, $country, $variant")
         currentLanguage.clear()
         currentLanguage.addAll(
             mutableListOf(
@@ -86,9 +92,9 @@ class TtsService : TextToSpeechService() {
             )
         )
 
-        if (!this::ttsConfig.isInitialized) {
-            ttsConfig = TtsConfig().loadConfig(this)
-        }
+//        if (!this::ttsConfig.isInitialized) {
+//            ttsConfig = TtsConfig().loadConfig(this)
+//        }
 
         return result
     }
@@ -140,22 +146,13 @@ class TtsService : TextToSpeechService() {
     }
 
     private fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
-        val rate = request?.speechRate?.toFloat()
-        val arg = tts_server_lib.CreationArg()
-        arg.text = request?.charSequenceText.toString()
-        arg.voiceName = ttsConfig.voiceName
-        arg.voiceId = ttsConfig.voiceId
-        arg.style = "general"
-        arg.styleDegree = "1.0"
-        arg.role = "default"
-        arg.rate = "${norm.normalize(rate!!) - 50}%"
-        arg.volume = ttsConfig.volumeToPctString()
-        arg.format = ttsConfig.format
+        val rate = "${norm.normalize(request?.speechRate?.toFloat()!!) - 50}%"
+        val text = request.charSequenceText.toString()
+        val pitch = "0%"
 
-        val format = TtsFormatManger.getFormat(arg.format)
-        Log.d(TAG, "$arg")
+        val format = TtsFormatManger.getFormat(ttsConfig.format)
         if (format == null) {
-            Log.e(TAG, "不支持解码此格式: ${arg.format}")
+            Log.e(TAG, "不支持解码此格式: ${ttsConfig.format}")
             callback!!.start(
                 16000,
                 AudioFormat.ENCODING_PCM_16BIT, 1
@@ -166,7 +163,7 @@ class TtsService : TextToSpeechService() {
 
         callback?.start(format.hz, format.bitRate, 1)
         try {
-            val audio = tts_server_lib.Tts_server_lib.getCreationAudio(arg)
+            val audio = getAudio(ttsConfig.api, text, rate, pitch)
             if (audio != null) {
                 Log.i(TAG, "获取音频成功, size: ${audio.size}")
                 doDecode(callback!!, "", audio)
@@ -176,6 +173,36 @@ class TtsService : TextToSpeechService() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun getAudio(api: Int, text: String, rate: String, pitch: String): ByteArray? {
+        Log.e(TAG, "api: ${api}")
+        when (api) {
+            TtsAudioFormat.API_EDGE -> {
+                return Tts_server_lib.getEdgeAudio(
+                    ttsConfig.voiceName,
+                    text,
+                    rate,
+                    pitch,
+                    ttsConfig.format
+                )
+            }
+            TtsAudioFormat.API_CREATION -> {
+                val arg = tts_server_lib.CreationArg()
+                arg.text = text
+                arg.voiceName = ttsConfig.voiceName
+                arg.voiceId = ttsConfig.voiceId
+                arg.style = "general"
+                arg.styleDegree = "1.0"
+                arg.role = "default"
+                arg.rate = rate
+                arg.volume = ttsConfig.volumeToPctString()
+                arg.format = ttsConfig.format
+                Log.d(TAG, arg.toString())
+                return Tts_server_lib.getCreationAudio(arg)
+            }
+        }
+        return null
     }
 
     private fun reNewWakeLock() {
@@ -257,45 +284,47 @@ class TtsService : TextToSpeechService() {
             }
 
             //opus的音频必须设置这个才能正确的解码
-            /* if ("audio/opus" == mime) {
-                 //Log.d(TAG, ByteString.of(trackFormat.getByteBuffer("csd-0")).hex());
-                 val buf = Buffer()
-                 // Magic Signature：固定头，占8个字节，为字符串OpusHead
-                 buf.write("OpusHead".getBytes(StandardCharsets.UTF_8))
-                 // Version：版本号，占1字节，固定为0x01
-                 buf.writeByte(1)
-                 // Channel Count：通道数，占1字节，根据音频流通道自行设置，如0x02
-                 buf.writeByte(1)
-                 // Pre-skip：回放的时候从解码器中丢弃的samples数量，占2字节，为小端模式，默认设置0x00,
-                 buf.writeShortLe(0)
-                 // Input Sample Rate (Hz)：音频流的Sample Rate，占4字节，为小端模式，根据实际情况自行设置
-                 buf.writeIntLe(currentFormat.HZ)
-                 //Output Gain：输出增益，占2字节，为小端模式，没有用到默认设置0x00, 0x00就好
-                 buf.writeShortLe(0)
-                 // Channel Mapping Family：通道映射系列，占1字节，默认设置0x00就好
-                 buf.writeByte(0)
-                 //Channel Mapping Table：可选参数，上面的Family默认设置0x00的时候可忽略
-                 if (BuildConfig.DEBUG) {
-                     Log.e(TAG,
-                         trackFormat!!.getByteBuffer("csd-1")!!
-                             .order(ByteOrder.nativeOrder()).long.toString() + ""
-                     )
-                     Log.e(TAG,
-                         trackFormat.getByteBuffer("csd-2")!!
-                             .order(ByteOrder.nativeOrder()).long.toString() + ""
-                     )
-                     Log.e(TAG, ByteString.of(*trackFormat.getByteBuffer("csd-2")!!.array()).hex())
-                 }
-                 val csd1bytes = byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                 val csd2bytes = byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                 val hd: ByteString = buf.readByteString()
-                 val csd0: ByteBuffer = ByteBuffer.wrap(hd.toByteArray())
-                 trackFormat!!.setByteBuffer("csd-0", csd0)
-                 val csd1: ByteBuffer = ByteBuffer.wrap(csd1bytes)
-                 trackFormat.setByteBuffer("csd-1", csd1)
-                 val csd2: ByteBuffer = ByteBuffer.wrap(csd2bytes)
-                 trackFormat.setByteBuffer("csd-2", csd2)
-             }*/
+            if ("audio/opus" == mime) {
+                //Log.d(TAG, ByteString.of(trackFormat.getByteBuffer("csd-0")).hex());
+                val buf = okio.Buffer()
+                // Magic Signature：固定头，占8个字节，为字符串OpusHead
+                buf.write("OpusHead".toByteArray(StandardCharsets.UTF_8))
+                // Version：版本号，占1字节，固定为0x01
+                buf.writeByte(1)
+                // Channel Count：通道数，占1字节，根据音频流通道自行设置，如0x02
+                buf.writeByte(1)
+                // Pre-skip：回放的时候从解码器中丢弃的samples数量，占2字节，为小端模式，默认设置0x00,
+                buf.writeShortLe(0)
+                // Input Sample Rate (Hz)：音频流的Sample Rate，占4字节，为小端模式，根据实际情况自行设置
+                buf.writeIntLe(TtsFormatManger.getFormat(ttsConfig.format)?.hz!!)
+                //Output Gain：输出增益，占2字节，为小端模式，没有用到默认设置0x00, 0x00就好
+                buf.writeShortLe(0)
+                // Channel Mapping Family：通道映射系列，占1字节，默认设置0x00就好
+                buf.writeByte(0)
+                //Channel Mapping Table：可选参数，上面的Family默认设置0x00的时候可忽略
+                if (BuildConfig.DEBUG) {
+                    Log.e(
+                        TAG,
+                        trackFormat!!.getByteBuffer("csd-1")!!
+                            .order(ByteOrder.nativeOrder()).long.toString() + ""
+                    )
+                    Log.e(
+                        TAG,
+                        trackFormat.getByteBuffer("csd-2")!!
+                            .order(ByteOrder.nativeOrder()).long.toString() + ""
+                    )
+                    Log.e(TAG, ByteString.of(*trackFormat.getByteBuffer("csd-2")!!.array()).hex())
+                }
+                val csd1bytes = byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+                val csd2bytes = byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+                val hd: ByteString = buf.readByteString()
+                val csd0: ByteBuffer = ByteBuffer.wrap(hd.toByteArray())
+                trackFormat!!.setByteBuffer("csd-0", csd0)
+                val csd1: ByteBuffer = ByteBuffer.wrap(csd1bytes)
+                trackFormat.setByteBuffer("csd-1", csd1)
+                val csd2: ByteBuffer = ByteBuffer.wrap(csd2bytes)
+                trackFormat.setByteBuffer("csd-2", csd2)
+            }
 
             //选择此音轨
             mediaExtractor.selectTrack(audioTrackIndex)
@@ -387,7 +416,7 @@ class TtsService : TextToSpeechService() {
 
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == TtsSettingsActivity.ACTION_ON_CONFIG_CHANGED) {
+            if (intent?.action == ACTION_ON_CONFIG_CHANGED) {
                 ttsConfig.loadConfig(this@TtsService)
             }
         }

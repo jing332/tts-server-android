@@ -9,10 +9,17 @@ import (
 
 var edgeApi *edge.TTS
 
-func GetEdgeAudio(ssml, format string) ([]byte, error) {
+func GetEdgeAudio(voiceName, text, rate, pitch, format string) ([]byte, error) {
 	if edgeApi == nil {
 		edgeApi = &edge.TTS{}
 	}
+	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">
+<voice name="` + voiceName + `">
+        <!-- <mstts:express-as style="News" styledegree="1.0"> -->
+            <prosody rate="` + rate + `" pitch="` + pitch + `">` + text + `</prosody>
+        <!-- </mstts:express-as> -->
+    </voice>
+</speak>`
 
 	return edgeApi.GetAudio(ssml, format)
 }

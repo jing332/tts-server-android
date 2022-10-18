@@ -7,6 +7,11 @@
     <string name="label_audio_format">音频格式：</string>
     <string name="label_voice">声音：</string>
     <string name="label_volume">音量：</string>
-    <string name="btn_save_changed">保存更改</string>
+    <string name="btn_apply_changes">应用更改</string>
     <string name="btn_open_tts_settings">打开TTS设置</string>
+    <string name="loading">加载中</string>
+    <string name="voice_id_not_found">声音ID: %s未找到 请尝试清空缓存</string>
+    <string name="api_edge">微软Edge-大声朗读接口</string>
+    <string name="api_azure">微软Azure-网页演示接口(暂不支持)</string>
+    <string name="api_creation">微软Creation-网页演示接口</string>
 </resources>

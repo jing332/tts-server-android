@@ -52,8 +52,6 @@ android {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = '11'
@@ -68,6 +66,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
 }
 
@@ -81,15 +80,12 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-
+    implementation 'androidx.activity:activity-ktx:1.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha02'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
-    implementation('org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1')
-
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-
-//    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
-
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

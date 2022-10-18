@@ -20,4 +20,9 @@
     <item
         android:id="@+id/menu_about"
         android:title="关于" />
+    <item
+        android:id="@+id/app_bar_switch"
+        android:title="Switch"
+        app:actionLayout="@layout/button_item"
+        app:showAsAction="always" />
 </menu>

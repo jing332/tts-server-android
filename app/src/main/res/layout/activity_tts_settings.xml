@@ -44,23 +44,24 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_voice" />
 
     <Button
-        android:id="@+id/btn_save"
+        android:id="@+id/btn_apply_changes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/btn_save_changed"
+        android:enabled="false"
+        android:text="@string/btn_apply_changes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/spinner_voice" />
 
     <Button
-        android:id="@+id/btn_openTtsSettings"
+        android:id="@+id/btn_openTtsConfig"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/btn_open_tts_settings"
-        app:layout_constraintEnd_toStartOf="@+id/btn_save"
-        app:layout_constraintTop_toTopOf="@+id/btn_save" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_apply_changes"
+        app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
 
     <Spinner
         android:id="@+id/spinner_foramt"

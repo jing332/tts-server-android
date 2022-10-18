@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.service.tts
+package com.github.jing332.tts_server_android.service.tts.help
 
 import android.content.Context
 
@@ -11,7 +11,7 @@ class TtsConfig(
     var volume: Int
 ) {
     constructor() : this(
-        TtsOutputFormat.API_CREATION,
+        TtsAudioFormat.API_CREATION,
         "zh-CN",
         "zh-CN-XiaoxiaoNeural",
         "5f55541d-c844-4e04-a7f8-1723ffbea4a9",
@@ -28,7 +28,7 @@ class TtsConfig(
 
     fun loadConfig(ctx: Context): TtsConfig {
         this.ctx = ctx
-        api = getConfigInt("api", TtsOutputFormat.API_CREATION)
+        api = getConfigInt("api", TtsAudioFormat.API_CREATION)
         locale = getConfigString("locale", "zh-CN")
         voiceName = getConfigString("voiceName", "zh-CN-XiaoxiaoNeural")
         voiceId = getConfigString("voiceId", "5f55541d-c844-4e04-a7f8-1723ffbea4a9")
