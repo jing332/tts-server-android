@@ -101,7 +101,7 @@ class TtsService : TextToSpeechService() {
     }
 
     private val norm: NormUtil by lazy {
-        return@lazy NormUtil(500F, 0F, 100F, 0F)
+        return@lazy NormUtil(500F, 0F, 200F, 0F)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -142,7 +142,7 @@ class TtsService : TextToSpeechService() {
     }
 
     private fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
-        val rate = "${norm.normalize(request?.speechRate?.toFloat()!!) - 50}%"
+        val rate = "${norm.normalize(request?.speechRate?.toFloat()!!) - 100}%"
         val text = request.charSequenceText.toString()
         val pitch = "${request.pitch - 100}%"
         Log.e(TAG, "pitch: $pitch")
