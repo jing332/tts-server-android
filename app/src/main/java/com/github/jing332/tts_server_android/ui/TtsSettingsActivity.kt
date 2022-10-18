@@ -25,7 +25,11 @@ class TtsSettingsActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         const val TAG = "TtsActivity"
     }
 
-    private lateinit var binding: ActivityTtsSettingsBinding
+    private val binding: ActivityTtsSettingsBinding by lazy {
+        ActivityTtsSettingsBinding.inflate(
+            layoutInflater
+        )
+    }
     private val model: TtsSettingsViewModel by viewModels()
 
     private val spinnerApiAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
@@ -36,7 +40,6 @@ class TtsSettingsActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityTtsSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.spinnerApi.adapter = spinnerApiAdapter

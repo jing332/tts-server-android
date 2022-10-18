@@ -14,4 +14,14 @@
     <string name="api_edge">微软Edge-大声朗读接口</string>
     <string name="api_azure">微软Azure-网页演示接口(暂不支持)</string>
     <string name="api_creation">微软Creation-网页演示接口</string>
+    <string name="tts_config">TTS配置</string>
+    <string name="open_web">打开网页版</string>
+    <string name="check_update">检查更新</string>
+    <string name="wake_lock">唤醒锁</string>
+    <string name="background_whitelist">电池优化白名单</string>
+    <string name="desktop_shortcut">桌面快捷方式</string>
+    <string name="about">关于</string>
+    <string name="added_background_whitelist">已加入后台白名单</string>
+    <string name="please_start_service">请先启动服务</string>
+    <string name="restart_service_to_update">重启服务以生效</string>
 </resources>

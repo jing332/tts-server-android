@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_openConfigUI"
+        android:title="@string/tts_config"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/menu_openWeb"
-        android:title="打开网页版" />
+        android:title="@string/open_web" />
     <item
         android:id="@+id/menu_checkUpdate"
-        android:title="检查更新" />
+        android:title="@string/check_update" />
     <item
         android:id="@+id/menu_wakeLock"
-        android:title="唤醒锁" />
+        android:checkable="true"
+        android:title="@string/wake_lock" />
     <item
         android:id="@+id/menu_killBattery"
-        android:title="电池优化" />
+        android:title="@string/background_whitelist" />
     <item
         android:id="@+id/menu_shortcut"
-        android:title="桌面快捷方式" />
+        android:title="@string/desktop_shortcut" />
     <item
         android:id="@+id/menu_about"
-        android:title="关于" />
-    <item
-        android:id="@+id/app_bar_switch"
-        android:title="Switch"
-        app:actionLayout="@layout/button_item"
-        app:showAsAction="always" />
+        android:title="@string/about" />
+  
 </menu>

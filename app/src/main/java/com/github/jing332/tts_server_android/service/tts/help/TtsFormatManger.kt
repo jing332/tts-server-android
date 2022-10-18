@@ -9,7 +9,7 @@ object TtsFormatManger {
         formats.add(
             TtsAudioFormat(
                 "webm-24khz-16bit-mono-opus",
-                24000,
+                24000 * 2,
                 AudioFormat.ENCODING_PCM_16BIT,
                 TtsAudioFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = false),
                 true
@@ -20,7 +20,7 @@ object TtsFormatManger {
                 "audio-16khz-32kbitrate-mono-mp3",
                 16000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsAudioFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true),
+                TtsAudioFormat.SupportedApi(isEdge = false, isAzure = true, isCreation = true),
                 true
             )
         )
@@ -37,7 +37,7 @@ object TtsFormatManger {
                 "audio-24khz-96kbitrate-mono-mp3",
                 24000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsAudioFormat.SupportedApi(isEdge = false, isAzure = true, isCreation = true), true
+                TtsAudioFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true), true
             )
         )
 
@@ -61,13 +61,13 @@ object TtsFormatManger {
         return null
     }
 
-    fun getAllFormatName(): ArrayList<String> {
+    /*fun getAllFormatName(): ArrayList<String> {
         val list = arrayListOf<String>()
         formats.forEach { v ->
             list.add(v.name)
         }
         return list
-    }
+    }*/
 
     fun getFormatsBySupportedApi(api: Int): ArrayList<String> {
         val list = arrayListOf<String>()

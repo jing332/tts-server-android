@@ -92,10 +92,6 @@ class TtsService : TextToSpeechService() {
             )
         )
 
-//        if (!this::ttsConfig.isInitialized) {
-//            ttsConfig = TtsConfig().loadConfig(this)
-//        }
-
         return result
     }
 
@@ -150,7 +146,6 @@ class TtsService : TextToSpeechService() {
         val text = request.charSequenceText.toString()
         val pitch = "${request.pitch - 100}%"
         Log.e(TAG, "pitch: $pitch")
-
 
         val format = TtsFormatManger.getFormat(ttsConfig.format)
         if (format == null) {
@@ -216,7 +211,7 @@ class TtsService : TextToSpeechService() {
     }
 
 
-    private val currentMime: String? = null
+    private val currentMime: String = ""
     private var mediaCodec: MediaCodec? = null
     private var oldMime: String? = null
 
@@ -248,7 +243,6 @@ class TtsService : TextToSpeechService() {
         return mediaCodec as MediaCodec
     }
 
-
     @Synchronized
     private fun doDecode(cb: SynthesisCallback, data: ByteArray) {
         isSynthesizing = true
@@ -258,9 +252,9 @@ class TtsService : TextToSpeechService() {
                 //在高版本上使用自定义MediaDataSource
                 mediaExtractor.setDataSource(ByteArrayMediaDataSource(data))
             } else {
-                //在低版本上使用Base64音频数据
+                //在低版本上使用Base64音频数据/ Base64.encodeToString(data, Base64.DEFAULT)
                 mediaExtractor.setDataSource(
-                    "data:" + currentMime.toString() + ";base64," + data.toByteString().base64()
+                    "data:" + currentMime + ";base64," + data.toByteString().base64()
                 )
             }
 
@@ -380,7 +374,8 @@ class TtsService : TextToSpeechService() {
                         outputBuffer.get(pcmData)
                         outputBuffer.clear() //用完后清空，复用
                     }
-                    cb.audioAvailable(pcmData, 0, bufferInfo.size)
+                    writeToCallBack(cb, pcmData)
+//                    cb.audioAvailable(pcmData, 0, bufferInfo.size)
                     //释放
                     mediaCodec.releaseOutputBuffer(outputIndex, false)
                     //再次获取数据
@@ -396,6 +391,20 @@ class TtsService : TextToSpeechService() {
             cb.error()
             isSynthesizing = false
             //GcManger.getInstance().doGC();
+        }
+    }
+
+    private fun writeToCallBack(callback: SynthesisCallback, audio: ByteArray) {
+        try {
+            val maxBufferSize: Int = callback.maxBufferSize
+            var offset = 0
+            while (offset < audio.size) {
+                val bytesToWrite = maxBufferSize.coerceAtMost(audio.size - offset)
+                callback.audioAvailable(audio, offset, bytesToWrite)
+                offset += bytesToWrite
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
