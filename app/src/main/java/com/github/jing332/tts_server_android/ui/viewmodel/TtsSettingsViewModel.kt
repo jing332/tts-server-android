@@ -87,7 +87,7 @@ class TtsSettingsViewModel : ViewModel() {
         val tmpVoiceList = arrayListOf<SpinnerItemData>()
         when (ttsConfig.api) {
             TtsAudioFormat.API_EDGE -> {
-                edgeVoices.forEachIndexed { index, item ->
+                edgeVoices.forEach { item ->
                     if (item.locale == languageLiveData.value!!.list[position].value)
                         tmpVoiceList.add(SpinnerItemData(item.shortName, item.shortName))
                 }
@@ -155,10 +155,10 @@ class TtsSettingsViewModel : ViewModel() {
 
         val tmpLangList = arrayListOf<SpinnerItemData>()
 
-        edgeVoices.forEachIndexed { index, item ->
-            tmpLangList.forEach {
-                if (it.value == item.locale) return@forEachIndexed
-            }
+        edgeVoices.forEach { item ->
+            for (it in tmpLangList)
+                if (it.value == item.locale) return@forEach
+
             tmpLangList.add(SpinnerItemData(item.locale, item.locale))
         }
         tmpLangList.sortByDescending { it.displayName }

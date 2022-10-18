@@ -141,6 +141,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /*菜单点击事件*/
+    @Suppress("DEPRECATION")
     @SuppressLint("BatteryLife")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -219,6 +220,7 @@ class MainActivity : AppCompatActivity() {
 
     /* 监听广播 */
     inner class MyReceiver : BroadcastReceiver() {
+        @Suppress("DEPRECATION")
         override fun onReceive(ctx: Context?, intent: Intent?) {
             when (intent?.action) {
                 TtsIntentService.ACTION_ON_LOG -> {

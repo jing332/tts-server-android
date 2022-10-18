@@ -17,6 +17,7 @@ import tts_server_lib.LogCallback
 import tts_server_lib.Tts_server_lib
 
 
+@Suppress("DEPRECATION")
 class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) {
     companion object {
         const val TAG = "TtsIntentService"
@@ -128,7 +129,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         if (!Isinited) { /* 初始化Go: 设置日志转发，注册Http.Server */
             /* 来自Go的日志 */
             val cb = LogCallback { level, msg ->
-                Log.d("LogCallback", "$level $msg")
+                Log.d(TAG, "$level $msg")
                 sendLog(GoLog(level, msg))
             }
             Tts_server_lib.init(cb)

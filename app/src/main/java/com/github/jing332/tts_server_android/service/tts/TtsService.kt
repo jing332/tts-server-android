@@ -56,7 +56,7 @@ class TtsService : TextToSpeechService() {
         )
     }
 
-    var isSynthesizing = false
+    private var isSynthesizing = false
 
     override fun onCreate() {
         super.onCreate()
@@ -148,7 +148,9 @@ class TtsService : TextToSpeechService() {
     private fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         val rate = "${norm.normalize(request?.speechRate?.toFloat()!!) - 50}%"
         val text = request.charSequenceText.toString()
-        val pitch = "0%"
+        val pitch = "${request.pitch - 100}%"
+        Log.e(TAG, "pitch: $pitch")
+
 
         val format = TtsFormatManger.getFormat(ttsConfig.format)
         if (format == null) {
@@ -166,7 +168,7 @@ class TtsService : TextToSpeechService() {
             val audio = getAudio(ttsConfig.api, text, rate, pitch)
             if (audio != null) {
                 Log.i(TAG, "获取音频成功, size: ${audio.size}")
-                doDecode(callback!!, "", audio)
+                doDecode(callback!!, audio)
             } else {
                 callback?.error()
             }
@@ -176,7 +178,7 @@ class TtsService : TextToSpeechService() {
     }
 
     private fun getAudio(api: Int, text: String, rate: String, pitch: String): ByteArray? {
-        Log.e(TAG, "api: ${api}")
+        Log.e(TAG, "api:$api")
         when (api) {
             TtsAudioFormat.API_EDGE -> {
                 return Tts_server_lib.getEdgeAudio(
@@ -248,7 +250,7 @@ class TtsService : TextToSpeechService() {
 
 
     @Synchronized
-    private fun doDecode(cb: SynthesisCallback, format: String, data: ByteArray) {
+    private fun doDecode(cb: SynthesisCallback, data: ByteArray) {
         isSynthesizing = true
         try {
             val mediaExtractor = MediaExtractor()
@@ -338,11 +340,11 @@ class TtsService : TextToSpeechService() {
             mediaCodec.start()
             val bufferInfo = MediaCodec.BufferInfo()
             var inputBuffer: ByteBuffer?
-            val TIME_OUT_US: Long = 10000
+            val timeoutUs: Long = 10000
             while (isSynthesizing) {
                 //获取可用的inputBuffer，输入参数-1代表一直等到，0代表不等待，10*1000代表10秒超时
                 //超时时间10秒
-                val inputIndex = mediaCodec.dequeueInputBuffer(TIME_OUT_US)
+                val inputIndex = mediaCodec.dequeueInputBuffer(timeoutUs)
                 if (inputIndex < 0) {
                     break
                 }
@@ -367,7 +369,7 @@ class TtsService : TextToSpeechService() {
                 }
 
                 //取解码后的数据
-                var outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, TIME_OUT_US)
+                var outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
                 //不一定能一次取完，所以要循环取
                 var outputBuffer: ByteBuffer?
                 var pcmData: ByteArray
@@ -382,7 +384,7 @@ class TtsService : TextToSpeechService() {
                     //释放
                     mediaCodec.releaseOutputBuffer(outputIndex, false)
                     //再次获取数据
-                    outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, TIME_OUT_US)
+                    outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
                 }
             }
             mediaCodec.reset()
@@ -398,21 +400,21 @@ class TtsService : TextToSpeechService() {
     }
 
 
-    @Synchronized
-    private fun doUnDecode(cb: SynthesisCallback, format: String, data: ByteString) {
-        isSynthesizing = true
-        val length: Int = data.toByteArray().size
-        //最大BufferSize
-        val maxBufferSize = cb.maxBufferSize
-        var offset = 0
-        while (offset < length && isSynthesizing) {
-            val bytesToWrite = Math.min(maxBufferSize, length - offset)
-            cb.audioAvailable(data.toByteArray(), offset, bytesToWrite)
-            offset += bytesToWrite
-        }
-        cb.done()
-        isSynthesizing = false
-    }
+    /* @Synchronized
+     private fun doUnDecode(cb: SynthesisCallback, format: String, data: ByteString) {
+         isSynthesizing = true
+         val length: Int = data.toByteArray().size
+         //最大BufferSize
+         val maxBufferSize = cb.maxBufferSize
+         var offset = 0
+         while (offset < length && isSynthesizing) {
+             val bytesToWrite = Math.min(maxBufferSize, length - offset)
+             cb.audioAvailable(data.toByteArray(), offset, bytesToWrite)
+             offset += bytesToWrite
+         }
+         cb.done()
+         isSynthesizing = false
+     }*/
 
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {

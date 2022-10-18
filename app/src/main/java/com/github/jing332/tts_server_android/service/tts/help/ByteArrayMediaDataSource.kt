@@ -16,7 +16,7 @@ class ByteArrayMediaDataSource(data: ByteArray) : MediaDataSource() {
         if (endPosition > data!!.size) {
             size2 -= endPosition - data!!.size
         }
-        System.arraycopy(data, position.toInt(), buffer, offset, size2)
+        data?.let { System.arraycopy(it, position.toInt(), buffer, offset, size2) }
         return size2
     }
 

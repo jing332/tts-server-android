@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
@@ -57,6 +58,7 @@ object MyTools {
         })
     }
 
+    @Suppress("DEPRECATION")
     fun checkVersionFromJson(ctx: Context, s: String) {
         val json = JSONObject(s)
         val tag: String = json.getString("tag_name")
@@ -88,7 +90,7 @@ object MyTools {
             .setMessage("版本号: $tag\n\n$body")
             .setPositiveButton(
                 "Github下载"
-            ) { dialog: DialogInterface?, which: Int ->
+            ) { _: DialogInterface?, _: Int ->
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse(downloadUrl)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -96,7 +98,7 @@ object MyTools {
             }
             .setNegativeButton(
                 "Github加速"
-            ) { dialog: DialogInterface?, which: Int ->
+            ) { _: DialogInterface?, _: Int ->
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse("https://ghproxy.com/$downloadUrl")
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -106,6 +108,8 @@ object MyTools {
     }
 
     /* 添加快捷方式 */
+    @SuppressLint("UnspecifiedImmutableFlag")
+    @Suppress("DEPRECATION")
     fun addShortcut(ctx: Context, name: String) {
         if (Build.VERSION.SDK_INT < 26) { /* Android8.0 */
             Toast.makeText(ctx, "如失败 请手动授予权限", Toast.LENGTH_SHORT).show()
