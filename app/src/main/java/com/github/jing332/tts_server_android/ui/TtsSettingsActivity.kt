@@ -14,7 +14,6 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.databinding.ActivityTtsSettingsBinding
 import com.github.jing332.tts_server_android.service.tts.TtsService
-import com.github.jing332.tts_server_android.ui.viewmodel.TtsSettingsViewModel
 import com.github.jing332.tts_server_android.ui.widget.WaitDialog
 import tts_server_lib.*
 

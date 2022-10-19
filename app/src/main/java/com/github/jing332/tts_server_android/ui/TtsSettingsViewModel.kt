@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.viewmodel
+package com.github.jing332.tts_server_android.ui
 
 import android.content.Context
 import android.util.Log

@@ -3,7 +3,7 @@ package com.github.jing332.tts_server_android.utils
 import android.os.SystemClock
 
 
-object GcManger {
+object GcManager {
     var last: Long = 0
 
     /**
