@@ -86,7 +86,9 @@ class TtsManager(val context: Context) {
                 })
             sendLog(LogLevel.INFO, "播放完毕")
         } else {
-            callback?.error()
+            sendLog(LogLevel.ERROR, "音频内容为空！")
+//            callback?.error()
+            callback?.done()
         }
         stop()
     }
