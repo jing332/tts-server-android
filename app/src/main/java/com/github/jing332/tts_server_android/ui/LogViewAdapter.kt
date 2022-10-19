@@ -1,18 +1,19 @@
 package com.github.jing332.tts_server_android.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.github.jing332.tts_server_android.GoLog
+import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
 
 //显示日志的适配器
-class LogViewAdapter(private val dataSet: ArrayList<GoLog>) :
+class LogViewAdapter(private val dataSet: ArrayList<MyLog>) :
     RecyclerView.Adapter<LogViewAdapter.ViewHolder>() {
     //追加日志
-    fun append(data: GoLog) {
+    fun append(data: MyLog) {
         if (itemCount > 100) { //日志条目超过便移除第2行日志Item
             dataSet.removeAt(1)
             notifyItemRemoved(1)
@@ -21,8 +22,9 @@ class LogViewAdapter(private val dataSet: ArrayList<GoLog>) :
         notifyItemInserted(dataSet.size)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun removeAll() {
-        dataSet.removeAll(dataSet)
+        dataSet.clear()
         notifyDataSetChanged()
     }
 

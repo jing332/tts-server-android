@@ -11,22 +11,21 @@ import android.speech.tts.SynthesisRequest
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeechService
 import android.util.Log
-import com.github.jing332.tts_server_android.service.tts.help.TtsConfig
 import com.github.jing332.tts_server_android.service.tts.help.TtsManager
 import com.github.jing332.tts_server_android.utils.GcManager
 import java.util.*
 
 
-class TtsService : TextToSpeechService() {
+class SystemTtsService : TextToSpeechService() {
     companion object {
         const val TAG = "TtsService"
         const val ACTION_ON_CONFIG_CHANGED = "action_on_config_changed"
+        const val ACTION_ON_LOG = "action_on_log"
     }
 
     private val currentLanguage: MutableList<String> = mutableListOf("zho", "CHN", "")
 
-    //    private val ttsConfig: TtsConfig by lazy { TtsConfig().loadConfig(this) }
-    private val ttsManager: TtsManager by lazy { TtsManager(TtsConfig().loadConfig(this)) }
+    private val ttsManager: TtsManager by lazy { TtsManager(this) }
 
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
     private val mWakeLock by lazy {
@@ -85,7 +84,7 @@ class TtsService : TextToSpeechService() {
             reNewWakeLock()
             val text = request?.charSequenceText.toString()
             Log.d(TAG, "接收到文本: $text")
-            if (text.isEmpty()) {
+            if (text.isBlank()) {
                 Log.d(TAG, "文本为空，跳过")
                 callback!!.start(
                     16000,
@@ -110,7 +109,7 @@ class TtsService : TextToSpeechService() {
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_ON_CONFIG_CHANGED) {
-                ttsManager.ttsConfig.loadConfig(this@TtsService)
+                ttsManager.ttsConfig.loadConfig(this@SystemTtsService)
             }
         }
     }

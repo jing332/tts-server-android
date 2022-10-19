@@ -10,7 +10,7 @@ import android.os.Build
 import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
-import com.github.jing332.tts_server_android.GoLog
+import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ui.MainActivity
 import tts_server_lib.LogCallback
@@ -130,7 +130,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             /* 来自Go的日志 */
             val cb = LogCallback { level, msg ->
                 Log.d(TAG, "$level $msg")
-                sendLog(GoLog(level, msg))
+                sendLog(MyLog(level, msg))
             }
             Tts_server_lib.init(cb)
             Isinited = true
@@ -145,7 +145,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
 
 
     /* 广播日志消息 */
-    private fun sendLog(data: GoLog) {
+    private fun sendLog(data: MyLog) {
         val i = Intent(ACTION_ON_LOG)
         i.putExtra("data", data)
         sendBroadcast(i)

@@ -22,8 +22,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.jing332.tts_server_android.GoLog
-import com.github.jing332.tts_server_android.GoLogLevel
+import com.github.jing332.tts_server_android.MyLog
+import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private val logList: ArrayList<GoLog> by lazy { ArrayList() }
+    private val logList: ArrayList<MyLog> by lazy { ArrayList() }
     private val logAdapter: LogViewAdapter by lazy { LogViewAdapter(logList) }
 
     private val myReceiver: MyReceiver by lazy { MyReceiver() }
@@ -59,13 +59,13 @@ class MainActivity : AppCompatActivity() {
             binding.etPort.setText(TtsIntentService.port.toString()) //设置监听端口
             setControlStatus(false)
             val msg = "服务已在运行, 监听地址: localhost:${TtsIntentService.port}"
-            logList.add(GoLog(GoLogLevel.WarnLevel, msg))
+            logList.add(MyLog(LogLevel.WARN, msg))
         } else {
             val msg = "请点击启动按钮\n然后右上角菜单打开网页版↗️\n" +
                     "随后生成链接导入阅读APP即可使用\n" +
                     "\n关闭请点关闭按钮, 并等待响应。\n" +
                     "⚠️注意: 本APP需常驻后台运行！⚠️"
-            logList.add(GoLog(GoLogLevel.InfoLevel, msg))
+            logList.add(MyLog(LogLevel.INFO, msg))
         }
 
         binding.rvLog.adapter = logAdapter
@@ -232,10 +232,11 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
             when (intent?.action) {
                 TtsIntentService.ACTION_ON_LOG -> {
-                    val data = intent.getSerializableExtra("data") as GoLog
+                    val data = intent.getSerializableExtra("data") as MyLog
                     logAdapter.append(data)
+//                    mLastPosition.
                     /* 判断是否在最底部 */
-                    if (mLastPosition == mLastItemCount - 1 || mLastPosition == mLastItemCount - 2) {
+                    if (mLastPosition == mLastItemCount - 1 || mLastPosition == mLastItemCount - 2|| mLastPosition == mLastItemCount - 3) {
                         binding.rvLog.scrollToPosition(logAdapter.itemCount - 1)
                     }
                 }

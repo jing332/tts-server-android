@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TtsServer">
         <activity
-            android:name="com.github.jing332.tts_server_android.ui.MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
@@ -58,7 +58,6 @@
             </intent-filter>
         </activity>
 
-
         <service
             android:name=".service.tts.SystemTtsService"
             android:exported="true"
@@ -74,7 +73,7 @@
         </service>
 
         <service
-            android:name="com.github.jing332.tts_server_android.service.TtsIntentService"
+            android:name=".service.TtsIntentService"
             android:enabled="true"
             android:exported="false"
             tools:ignore="Instantiatable" />

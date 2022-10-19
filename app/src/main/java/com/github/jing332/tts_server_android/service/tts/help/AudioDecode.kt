@@ -7,7 +7,7 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import com.github.jing332.tts_server_android.BuildConfig
-import com.github.jing332.tts_server_android.service.tts.TtsService
+import com.github.jing332.tts_server_android.service.tts.SystemTtsService
 import com.github.jing332.tts_server_android.utils.GcManager
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
@@ -109,17 +109,17 @@ class AudioDecode {
                 //Channel Mapping Table：可选参数，上面的Family默认设置0x00的时候可忽略
                 if (BuildConfig.DEBUG) {
                     Log.e(
-                        TtsService.TAG,
+                        SystemTtsService.TAG,
                         trackFormat!!.getByteBuffer("csd-1")!!
                             .order(ByteOrder.nativeOrder()).long.toString() + ""
                     )
                     Log.e(
-                        TtsService.TAG,
+                        SystemTtsService.TAG,
                         trackFormat.getByteBuffer("csd-2")!!
                             .order(ByteOrder.nativeOrder()).long.toString() + ""
                     )
                     Log.e(
-                        TtsService.TAG,
+                        SystemTtsService.TAG,
                         ByteString.of(*trackFormat.getByteBuffer("csd-2")!!.array()).hex()
                     )
                 }
