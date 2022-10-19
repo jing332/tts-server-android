@@ -11,7 +11,7 @@ object TtsFormatManger {
                 "webm-24khz-16bit-mono-opus",
                 24000 * 2,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsAudioFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = false),
+                TtsAudioFormat.SupportedApi.EDGE or TtsAudioFormat.SupportedApi.AZURE,
                 true
             )
         )
@@ -20,7 +20,7 @@ object TtsFormatManger {
                 "audio-16khz-32kbitrate-mono-mp3",
                 16000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsAudioFormat.SupportedApi(isEdge = false, isAzure = true, isCreation = true),
+                TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
                 true
             )
         )
@@ -29,7 +29,8 @@ object TtsFormatManger {
                 "audio-24khz-48kbitrate-mono-mp3",
                 24000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsAudioFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true), true
+                TtsAudioFormat.SupportedApi.EDGE or TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+                true
             )
         )
         formats.add(
@@ -37,7 +38,8 @@ object TtsFormatManger {
                 "audio-24khz-96kbitrate-mono-mp3",
                 24000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsAudioFormat.SupportedApi(isEdge = true, isAzure = true, isCreation = true), true
+                TtsAudioFormat.SupportedApi.EDGE or TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+                true
             )
         )
 
@@ -46,7 +48,8 @@ object TtsFormatManger {
                 "audio-48khz-96kbitrate-mono-mp3",
                 48000,
                 AudioFormat.ENCODING_PCM_16BIT,
-                TtsAudioFormat.SupportedApi(isEdge = false, isAzure = true, isCreation = true), true
+                TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+                true
             )
         )
     }
@@ -69,20 +72,15 @@ object TtsFormatManger {
         return list
     }*/
 
-    fun getFormatsBySupportedApi(api: Int): ArrayList<String> {
+    fun getFormatsBySupportedApi(@TtsAudioFormat.SupportedApi api: Int): ArrayList<String> {
         val list = arrayListOf<String>()
-        when (api) {
-            TtsAudioFormat.API_EDGE -> {
-                formats.forEach { if (it.supportedApi.isEdge) list.add(it.value) }
-            }
-            TtsAudioFormat.API_AZURE -> {
-                formats.forEach { if (it.supportedApi.isAzure) list.add(it.value) }
-            }
-            TtsAudioFormat.API_CREATION -> {
-                formats.forEach { if (it.supportedApi.isCreation) list.add(it.value) }
-            }
+        formats.forEach {
+            if (api and it.supportedApi != 0)
+                list.add(it.value)
         }
 
         return list
     }
+
+
 }

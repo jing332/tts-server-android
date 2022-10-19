@@ -18,8 +18,8 @@ import android.speech.tts.TextToSpeechService
 import android.text.TextUtils
 import android.util.Log
 import com.github.jing332.tts_server_android.BuildConfig
+import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.service.tts.help.ByteArrayMediaDataSource
-import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.tts.help.TtsConfig
 import com.github.jing332.tts_server_android.service.tts.help.TtsFormatManger
 import com.github.jing332.tts_server_android.utils.GcManger
@@ -30,7 +30,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
-import tts_server_lib.Tts_server_lib
+import tts_server_lib.CreationApi
+import tts_server_lib.EdgeApi
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -172,11 +173,14 @@ class TtsService : TextToSpeechService() {
         }
     }
 
+    private val mEdgeApi: EdgeApi by lazy { EdgeApi() }
+    private val mCreationApi:CreationApi by lazy { CreationApi() }
+
     private fun getAudio(api: Int, text: String, rate: String, pitch: String): ByteArray? {
         Log.e(TAG, "api:$api")
         when (api) {
-            TtsAudioFormat.API_EDGE -> {
-                return Tts_server_lib.getEdgeAudio(
+            TtsApiType.EDGE -> {
+                return mEdgeApi.getEdgeAudio(
                     ttsConfig.voiceName,
                     text,
                     rate,
@@ -184,7 +188,7 @@ class TtsService : TextToSpeechService() {
                     ttsConfig.format
                 )
             }
-            TtsAudioFormat.API_CREATION -> {
+            TtsApiType.CREATION -> {
                 val arg = tts_server_lib.CreationArg()
                 arg.text = text
                 arg.voiceName = ttsConfig.voiceName
@@ -196,7 +200,7 @@ class TtsService : TextToSpeechService() {
                 arg.volume = ttsConfig.volumeToPctString()
                 arg.format = ttsConfig.format
                 Log.d(TAG, arg.toString())
-                return Tts_server_lib.getCreationAudio(arg)
+                return mCreationApi.getCreationAudio(arg)
             }
         }
         return null
@@ -375,10 +379,7 @@ class TtsService : TextToSpeechService() {
                         outputBuffer.clear() //用完后清空，复用
                     }
                     writeToCallBack(cb, pcmData)
-//                    cb.audioAvailable(pcmData, 0, bufferInfo.size)
-                    //释放
                     mediaCodec.releaseOutputBuffer(outputIndex, false)
-                    //再次获取数据
                     outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
                 }
             }
@@ -390,7 +391,7 @@ class TtsService : TextToSpeechService() {
             Log.e(TAG, "doDecode", e)
             cb.error()
             isSynthesizing = false
-            //GcManger.getInstance().doGC();
+            GcManger.doGC()
         }
     }
 
@@ -398,7 +399,7 @@ class TtsService : TextToSpeechService() {
         try {
             val maxBufferSize: Int = callback.maxBufferSize
             var offset = 0
-            while (offset < audio.size) {
+            while (offset < audio.size && isSynthesizing) {
                 val bytesToWrite = maxBufferSize.coerceAtMost(audio.size - offset)
                 callback.audioAvailable(audio, offset, bytesToWrite)
                 offset += bytesToWrite
@@ -408,23 +409,6 @@ class TtsService : TextToSpeechService() {
         }
     }
 
-
-    /* @Synchronized
-     private fun doUnDecode(cb: SynthesisCallback, format: String, data: ByteString) {
-         isSynthesizing = true
-         val length: Int = data.toByteArray().size
-         //最大BufferSize
-         val maxBufferSize = cb.maxBufferSize
-         var offset = 0
-         while (offset < length && isSynthesizing) {
-             val bytesToWrite = Math.min(maxBufferSize, length - offset)
-             cb.audioAvailable(data.toByteArray(), offset, bytesToWrite)
-             offset += bytesToWrite
-         }
-         cb.done()
-         isSynthesizing = false
-     }*/
-
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_ON_CONFIG_CHANGED) {
@@ -432,5 +416,4 @@ class TtsService : TextToSpeechService() {
             }
         }
     }
-
 }

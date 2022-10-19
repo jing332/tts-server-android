@@ -7,11 +7,17 @@ import (
 	"net/http"
 )
 
-var edgeApi *edge.TTS
+type EdgeApi struct {
+	edgeApi *edge.TTS
+}
 
-func GetEdgeAudio(voiceName, text, rate, pitch, format string) ([]byte, error) {
-	if edgeApi == nil {
-		edgeApi = &edge.TTS{}
+func NewEdgeApi() *EdgeApi {
+	return new(EdgeApi)
+}
+
+func (e *EdgeApi) GetEdgeAudio(voiceName, text, rate, pitch, format string) ([]byte, error) {
+	if e.edgeApi == nil {
+		e.edgeApi = &edge.TTS{}
 	}
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">
 <voice name="` + voiceName + `">
@@ -21,7 +27,7 @@ func GetEdgeAudio(voiceName, text, rate, pitch, format string) ([]byte, error) {
     </voice>
 </speak>`
 
-	return edgeApi.GetAudio(ssml, format)
+	return e.edgeApi.GetAudio(ssml, format)
 }
 
 func GetEdgeVoices() ([]byte, error) {
@@ -39,15 +45,17 @@ func GetEdgeVoices() ([]byte, error) {
 
 type CreationArg creation.SpeakArg
 
-var creationApi *creation.TTS
+type CreationApi struct {
+	tts *creation.TTS
+}
 
-func GetCreationAudio(arg *CreationArg) ([]byte, error) {
-	if creationApi == nil {
-		creationApi = &creation.TTS{}
+func (c *CreationApi) GetCreationAudio(arg *CreationArg) ([]byte, error) {
+	if c.tts == nil {
+		c.tts = &creation.TTS{}
 	}
 
 	s := creation.SpeakArg(*arg)
-	audio, err := creationApi.GetAudio(&s)
+	audio, err := c.tts.GetAudio(&s)
 	if err != nil {
 		return nil, err
 	}

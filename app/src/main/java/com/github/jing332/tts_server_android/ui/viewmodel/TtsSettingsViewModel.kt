@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.tts.help.TtsConfig
 import com.github.jing332.tts_server_android.service.tts.help.TtsFormatManger
@@ -65,13 +66,13 @@ class TtsSettingsViewModel : ViewModel() {
         updateFormatLiveData()
         GlobalScope.launch {
             when (position) {
-                TtsAudioFormat.API_EDGE -> {
+                TtsApiType.EDGE -> {
                     useEdgeApi()
                 }
-                TtsAudioFormat.API_AZURE -> {
+                TtsApiType.AZURE -> {
 
                 }
-                TtsAudioFormat.API_CREATION -> {
+                TtsApiType.CREATION -> {
                     useCreationApi()
                 }
             }
@@ -86,13 +87,13 @@ class TtsSettingsViewModel : ViewModel() {
         ttsConfig.locale = languageLiveData.value!!.list[position].value
         val tmpVoiceList = arrayListOf<SpinnerItemData>()
         when (ttsConfig.api) {
-            TtsAudioFormat.API_EDGE -> {
+            TtsApiType.EDGE -> {
                 edgeVoices.forEach { item ->
                     if (item.locale == languageLiveData.value!!.list[position].value)
                         tmpVoiceList.add(SpinnerItemData(item.shortName, item.shortName))
                 }
             }
-            TtsAudioFormat.API_CREATION -> {
+            TtsApiType.CREATION -> {
                 creationVoices.forEach {
                     if (it.locale == languageLiveData.value!!.list[position].value)
                         tmpVoiceList.add(SpinnerItemData(it.properties.localName, it.shortName))
@@ -116,7 +117,7 @@ class TtsSettingsViewModel : ViewModel() {
         }
         Log.d(TAG, "voiceSelected ${ttsConfig.voiceName}")
         /* 如果是creation，就查找ID */
-        if (ttsConfig.api == TtsAudioFormat.API_CREATION) {
+        if (ttsConfig.api == TtsApiType.CREATION) {
             creationVoices.forEach {
                 if (ttsConfig.voiceName == it.shortName) {
                     ttsConfig.voiceId = it.id
@@ -139,7 +140,7 @@ class TtsSettingsViewModel : ViewModel() {
     }
 
     private fun useEdgeApi() {
-        ttsConfig.api = TtsAudioFormat.API_EDGE
+        ttsConfig.api = TtsApiType.EDGE
         if (!this::edgeVoices.isInitialized) {
             /* 使用本地缓存或远程下载 */
             val cachePath = "$cacheDir/edge/voices.json"
@@ -171,7 +172,7 @@ class TtsSettingsViewModel : ViewModel() {
     }
 
     private fun useCreationApi() {
-        ttsConfig.api = TtsAudioFormat.API_CREATION
+        ttsConfig.api = TtsApiType.CREATION
         val cacheFilepath = "$cacheDir/creation/voices.json"
         val data: ByteArray
         if (FileUtils.fileExists(cacheFilepath)) {
@@ -213,7 +214,12 @@ class TtsSettingsViewModel : ViewModel() {
 
     /* 根据API更新音频格式 */
     private fun updateFormatLiveData() {
-        val formats = TtsFormatManger.getFormatsBySupportedApi(ttsConfig.api)
+        val api = when (ttsConfig.api) {
+            0 -> TtsAudioFormat.SupportedApi.EDGE
+            1 -> TtsAudioFormat.SupportedApi.AZURE
+            else -> TtsAudioFormat.SupportedApi.CREATION //2
+        }
+        val formats = TtsFormatManger.getFormatsBySupportedApi(api)
         var selected = 0
         val tmpFormats = arrayListOf<SpinnerItemData>()
         formats.forEachIndexed { index, v ->

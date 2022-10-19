@@ -1,11 +1,9 @@
-package com.github.jing332.tts_server_android.service.tts.help
+package com.github.jing332.tts_server_android.service.tts
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.util.Log
-import android.widget.Toast
 
 class CheckVoiceData : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {

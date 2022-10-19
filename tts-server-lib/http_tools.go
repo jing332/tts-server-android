@@ -11,7 +11,9 @@ func HttpGet(url, header string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header = tools.GetHeader(header)
+	if header != "" {
+		req.Header = tools.GetHeader(header)
+	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err

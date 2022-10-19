@@ -39,7 +39,7 @@
             android:theme="@android:style/Theme.NoDisplay" />
 
         <activity
-            android:name=".service.tts.help.CheckVoiceData"
+            android:name=".service.tts.CheckVoiceData"
             android:exported="true"
             android:label="CheckVoiceData">
             <intent-filter>
@@ -50,8 +50,8 @@
 
         <activity
             android:name=".ui.TtsSettingsActivity"
-            android:launchMode="singleInstance"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.speech.tts.engine.CONFIGURE_ENGINE" />
                 <category android:name="android.intent.category.DEFAULT" />

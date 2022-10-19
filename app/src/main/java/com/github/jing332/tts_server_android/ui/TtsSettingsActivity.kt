@@ -11,8 +11,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.databinding.ActivityTtsSettingsBinding
-import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.tts.TtsService
 import com.github.jing332.tts_server_android.ui.viewmodel.TtsSettingsViewModel
 import com.github.jing332.tts_server_android.ui.widget.WaitDialog
@@ -106,11 +106,11 @@ class TtsSettingsActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         binding.btnApplyChanges.isEnabled = isInit
         when (parent?.id) {
             R.id.spinner_api -> {
-                if (position == TtsAudioFormat.API_AZURE) {
+                if (position == TtsApiType.AZURE) {
                     binding.spinnerApi.setSelection(0)
                     return
                 }
-                binding.seekBarVolume.isEnabled = position != TtsAudioFormat.API_EDGE
+                binding.seekBarVolume.isEnabled = position != TtsApiType.EDGE
                 val waitDialog = WaitDialog(this)
                 waitDialog.show()
                 model.apiSelected(position) { waitDialog.dismiss() }
