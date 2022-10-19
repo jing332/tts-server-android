@@ -36,7 +36,7 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           go get golang.org/x/mobile/bind
-          gomobile bind -v -target="android/arm,android/arm64" -androidapi=19
+          gomobile bind -ldflags "-s -w" -v -target="android/arm,android/arm64" -androidapi=19
           cp -f *.aar $GITHUB_WORKSPACE/app/libs
 
       - name: Upload to Artifact

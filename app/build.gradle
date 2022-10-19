@@ -17,14 +17,14 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs{
-        release{
+    signingConfigs {
+        release {
             v1SigningEnabled true
             v2SigningEnabled true
             enableV3Signing = true
             enableV4Signing = true
             //签名文件 从local.properties取值
-            Properties pro =  new Properties()
+            Properties pro = new Properties()
             InputStream input = project.rootProject.file("local.properties").newDataInputStream()
             pro.load(input)
             storeFile file(pro.getProperty("KEY_PATH"))
@@ -37,11 +37,11 @@ android {
 
     buildTypes {
         release {
-			//签名apk
-			signingConfig signingConfigs.release
+            //签名apk
+            signingConfig signingConfigs.release
             minifyEnabled true
             //资源缩减
-//            shrinkResources true
+            shrinkResources true
             // Zipalign优化
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -85,7 +85,7 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.5.3'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha02'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.squareup.okio:okio:3.2.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 

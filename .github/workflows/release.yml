@@ -3,7 +3,7 @@ name: Build Release
 on:
   push:
     branches: 
-      - "master"
+      - "dev"
     paths:
       - "CHANGELOG.md"
   workflow_dispatch:

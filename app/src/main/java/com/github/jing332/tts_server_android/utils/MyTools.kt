@@ -15,48 +15,41 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.ScSwitchActivity
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okio.IOException
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONObject
+import tts_server_lib.Tts_server_lib
 import java.math.BigDecimal
 
 
 object MyTools {
-    val TAG = "MyTools"
+    const val TAG = "MyTools"
 
     /*从Github检查更新*/
+    @OptIn(DelicateCoroutinesApi::class)
     fun checkUpdate(act: Activity) {
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("https://api.github.com/repos/jing332/tts-server-android/releases/latest")
-            .get()
-            .build()
-        client.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onFailure(call: okhttp3.Call, e: IOException) {
-                Log.d(MainActivity.TAG, "check update onFailure: ${e.message}")
-                act.runOnUiThread {
-                    Toast.makeText(act, "检查更新失败 请检查网络", Toast.LENGTH_SHORT).show()
-                }
+        GlobalScope.launch {
+            var data: ByteArray? = null
+            try {
+                data = Tts_server_lib.httpGet(
+                    "https://api.github.com/repos/jing332/tts-server-android/releases/latest",
+                    ""
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                act.runOnUiThread { Toast.makeText(act, "检查更新失败 请检查网络", Toast.LENGTH_SHORT).show() }
             }
-
-            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                try {
-                    val s = response.body?.string()
-                    act.runOnUiThread {
-                        checkVersionFromJson(act, s.toString())
-                    }
-                } catch (e: Exception) {
-                    act.runOnUiThread {
-                        Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
-                    }
-                }
+            act.runOnUiThread {
+                if (data == null)
+                    Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show()
+                else
+                    checkVersionFromJson(act, data.decodeToString())
             }
-        })
+        }
     }
+
 
     @Suppress("DEPRECATION")
     fun checkVersionFromJson(ctx: Context, s: String) {
