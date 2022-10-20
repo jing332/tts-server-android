@@ -19,10 +19,6 @@ android {
 
     signingConfigs {
         release {
-            v1SigningEnabled true
-            v2SigningEnabled true
-            enableV3Signing = true
-            enableV4Signing = true
             //签名文件 从local.properties取值
             Properties pro = new Properties()
             InputStream input = project.rootProject.file("local.properties").newDataInputStream()
@@ -37,14 +33,25 @@ android {
 
     buildTypes {
         release {
-            //签名apk
             signingConfig signingConfigs.release
             minifyEnabled true
-            //资源缩减
             shrinkResources true
-            // Zipalign优化
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a' //select ABIs to build APKs for
+            universalApk true //generate an additional APK that contains all the ABIs
         }
     }
 
@@ -57,11 +64,14 @@ android {
         jvmTarget = '11'
     }
 
-    android.applicationVariants.all {
-        variant ->
-            variant.outputs.all {//修改apk文件名
-                outputFileName = "TTS-Server-v${variant.versionName}.apk"
-            }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output -> //修改apk文件名
+            def abiName = output.getFilter(com.android.build.OutputFile.ABI)
+            if (abiName == null)
+                output.outputFileName = "TTS-Server-v${variant.versionName}.apk"
+            else
+                output.outputFileName = "TTS-Server-v${variant.versionName}_${abiName}.apk"
+        }
     }
 
     buildFeatures {
