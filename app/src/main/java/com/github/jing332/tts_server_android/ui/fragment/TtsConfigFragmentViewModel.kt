@@ -6,11 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.TtsApiType
+import com.github.jing332.tts_server_android.service.tts.data.CreationVoicesItem
+import com.github.jing332.tts_server_android.service.tts.data.EdgeVoicesItem
 import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.tts.help.TtsConfig
 import com.github.jing332.tts_server_android.service.tts.help.TtsFormatManger
-import com.github.jing332.tts_server_android.service.tts.data.CreationVoicesItem
-import com.github.jing332.tts_server_android.service.tts.data.EdgeVoicesItem
 import com.github.jing332.tts_server_android.utils.FileUtils
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -28,6 +28,8 @@ class TtsConfigFragmentViewModel : ViewModel() {
     val apiLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val languageLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val voiceLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
+    val voiceStyleLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
+    val voiceRoleLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val audioFormatLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val volumeLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
     val isSplitSentencesLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
@@ -58,7 +60,6 @@ class TtsConfigFragmentViewModel : ViewModel() {
         isSplitSentencesLiveData.value = ttsConfig.isSplitSentences
 
         cacheDir = context.cacheDir.path
-
     }
 
     /* {接口}选中变更 */
@@ -118,15 +119,45 @@ class TtsConfigFragmentViewModel : ViewModel() {
             ttsConfig.voiceName = it.list[position].value
         }
         Log.d(TAG, "voiceSelected ${ttsConfig.voiceName}")
-        /* 如果是creation，就查找ID */
+
         if (ttsConfig.api == TtsApiType.CREATION) {
-            creationVoices.forEach {
-                if (ttsConfig.voiceName == it.shortName) {
-                    ttsConfig.voiceId = it.id
+            creationVoices.forEach { voiceItem ->
+                if (ttsConfig.voiceName == voiceItem.shortName) {
+                    ttsConfig.voiceId = voiceItem.id
+                    /* 风格 */
+                    val styleList = arrayListOf(SpinnerItemData("无", ""))
+                    var selectedStyle = 0
+                    if (voiceItem.properties.voiceStyleNames.isNotBlank())
+                        voiceItem.properties.voiceStyleNames.split(",").apply {
+                            styleList[0] = SpinnerItemData("默认", "")
+                            forEachIndexed { index, styleName ->
+                                if (styleName != "Default")
+                                    styleList.add(SpinnerItemData(styleName, styleName))
+                                if (ttsConfig.voiceStyle == styleName)
+                                    selectedStyle = index + 1
+                            }
+                        }
+
+                    voiceStyleLiveData.value = SpinnerData(styleList, selectedStyle)
+
+                    /* 角色 */
+                    val roleList = arrayListOf(SpinnerItemData("无", ""))
+                    var selectedRole = 0
+                    if (voiceItem.properties.voiceRoleNames.isNotBlank())
+                        voiceItem.properties.voiceRoleNames.split(",").apply {
+                            roleList[0] = SpinnerItemData("默认", "")
+                            forEachIndexed { index, roleName ->
+                                if (roleName != "Default")
+                                    roleList.add(SpinnerItemData(roleName, roleName))
+                                if (ttsConfig.voiceRole == roleName)
+                                    selectedRole = index + 1
+
+                            }
+                        }
+                    voiceRoleLiveData.value = SpinnerData(roleList, selectedRole)
                     return
                 }
             }
-            Log.e(TAG, "未找到Voice ID")
         }
     }
 
@@ -161,20 +192,22 @@ class TtsConfigFragmentViewModel : ViewModel() {
         }
 
         val tmpLangList = arrayListOf<SpinnerItemData>()
-
         edgeVoices.forEach { item ->
             for (it in tmpLangList)
                 if (it.value == item.locale) return@forEach
 
             tmpLangList.add(SpinnerItemData(item.locale, item.locale))
         }
-        tmpLangList.sortByDescending { it.displayName }
+        tmpLangList.sortBy { it.displayName }
         var selected = 0
         tmpLangList.forEachIndexed { index, item ->
             if (ttsConfig.locale == item.value)
                 selected = index
         }
         languageLiveData.postValue(SpinnerData(tmpLangList, selected))
+        /* Edge接口不支持风格和角色，故设为无 */
+        voiceStyleLiveData.postValue(SpinnerData(arrayListOf(SpinnerItemData("无", "")), 0))
+        voiceRoleLiveData.postValue(SpinnerData(arrayListOf(SpinnerItemData("无", "")), 0))
     }
 
     private fun useCreationApi() {
@@ -237,7 +270,17 @@ class TtsConfigFragmentViewModel : ViewModel() {
         audioFormatLiveData.postValue(SpinnerData(tmpFormats, selected))
     }
 
+    fun voiceStyleSelected(position: Int) {
+        ttsConfig.voiceStyle = voiceStyleLiveData.value!!.list[position].value
+    }
 
-    class SpinnerData(var list: List<SpinnerItemData>, var position: Int)
+    fun voiceROleSelected(position: Int) {
+        ttsConfig.voiceRole = voiceRoleLiveData.value!!.list[position].value
+    }
+
+    class SpinnerData(var list: List<SpinnerItemData>, var position: Int) {
+
+    }
+
     class SpinnerItemData(var displayName: String, var value: String)
 }

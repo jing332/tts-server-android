@@ -17,7 +17,6 @@ import com.github.jing332.tts_server_android.databinding.FragmentTtsLogBinding
 import com.github.jing332.tts_server_android.service.tts.SystemTtsService.Companion.ACTION_ON_LOG
 import com.github.jing332.tts_server_android.ui.LogViewAdapter
 
-
 class TtsLogFragment : Fragment() {
     companion object {
         const val TAG = "TtsLogFragment"
@@ -32,7 +31,7 @@ class TtsLogFragment : Fragment() {
         LogViewAdapter(
             arrayListOf(
                 MyLog(
-                    LogLevel.INFO,
+                    LogLevel.WARN,
                     "请保持此页面存活以监听实时日志"
                 )
             )

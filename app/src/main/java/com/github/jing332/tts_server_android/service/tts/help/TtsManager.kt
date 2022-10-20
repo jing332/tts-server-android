@@ -70,7 +70,7 @@ class TtsManager(val context: Context) {
                 if (!isSynthesizing) return@forEach
                 getAudioAndDecodePlay(it, rate, pitch, callback)
             }
-        }else{
+        } else {
             getAudioAndDecodePlay(text, rate, pitch, callback)
         }
 
@@ -139,9 +139,9 @@ class TtsManager(val context: Context) {
                 arg.text = text
                 arg.voiceName = ttsConfig.voiceName
                 arg.voiceId = ttsConfig.voiceId
-                arg.style = "general"
+                arg.style = ttsConfig.voiceStyle
                 arg.styleDegree = "1.0"
-                arg.role = "default"
+                arg.role = ttsConfig.voiceRole
                 arg.rate = rate
                 arg.volume = ttsConfig.volumeToPctString()
                 arg.format = ttsConfig.format

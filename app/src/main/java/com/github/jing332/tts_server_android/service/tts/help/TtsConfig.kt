@@ -7,6 +7,8 @@ class TtsConfig(
     var api: Int,
     var locale: String,
     var voiceName: String,
+    var voiceStyle: String,
+    var voiceRole: String,
     var voiceId: String,
     var format: String,
     var volume: Int,
@@ -16,6 +18,7 @@ class TtsConfig(
         TtsApiType.CREATION,
         "zh-CN",
         "zh-CN-XiaoxiaoNeural",
+        "", "",
         "5f55541d-c844-4e04-a7f8-1723ffbea4a9",
         "audio-24khz-48kbitrate-mono-mp3",
         50, false
@@ -30,6 +33,8 @@ class TtsConfig(
         api = getConfig(ctx, "api", TtsApiType.CREATION)
         locale = getConfig(ctx, "locale", "zh-CN")
         voiceName = getConfig(ctx, "voiceName", "zh-CN-XiaoxiaoNeural")
+        voiceStyle = getConfig(ctx, "voiceStyle", voiceStyle)
+        voiceRole = getConfig(ctx, "voiceRole", voiceRole)
         voiceId = getConfig(ctx, "voiceId", "5f55541d-c844-4e04-a7f8-1723ffbea4a9")
         format = getConfig(ctx, "format", "audio-24khz-48kbitrate-mono-mp3")
         volume = getConfig(ctx, "volume", 50)
@@ -41,6 +46,8 @@ class TtsConfig(
         setConfig(ctx, "api", api)
         setConfig(ctx, "locale", locale)
         setConfig(ctx, "voiceName", voiceName)
+        setConfig(ctx, "voiceStyle", voiceStyle)
+        setConfig(ctx, "voiceRole", voiceRole)
         setConfig(ctx, "voiceId", voiceId)
         setConfig(ctx, "format", format)
         setConfig(ctx, "volume", volume)
@@ -74,7 +81,7 @@ class TtsConfig(
         return pref.getBoolean(key, default)
     }
 
-    private fun setConfig(ctx:Context, key:String, value :Boolean){
+    private fun setConfig(ctx: Context, key: String, value: Boolean) {
         ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE).edit()
             .putBoolean(key, value)
             .apply()

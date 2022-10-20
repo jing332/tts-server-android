@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/label_api"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner_api"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/label_api"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
 
     <Spinner
         android:id="@+id/spinner_language"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:contentDescription="@string/label_language"
-        android:prompt="@string/select_lang_title"
+        android:prompt="@string/label_language"
         android:spinnerMode="dialog"
         app:layout_constraintEnd_toEndOf="@+id/spinner_api"
         app:layout_constraintStart_toStartOf="@+id/textView3"
@@ -43,25 +64,32 @@
         app:layout_constraintStart_toStartOf="@+id/tv_voice"
         app:layout_constraintTop_toBottomOf="@+id/tv_voice" />
 
-    <Button
-        android:id="@+id/btn_apply_changes"
+    <TextView
+        android:id="@+id/label_voiceStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="16dp"
-        android:enabled="false"
-        android:text="@string/btn_apply_changes"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/spinner_voice" />
+        android:layout_marginTop="8dp"
+        android:text="@string/label_voice_style"
+        app:layout_constraintStart_toStartOf="@+id/spinner_voice"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_voice" />
 
-    <Button
-        android:id="@+id/btn_openTtsConfig"
+    <Spinner
+        android:id="@+id/spinner_voiceStyle"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/label_voice_role"
+        app:layout_constraintEnd_toStartOf="@+id/spinner_voiceRole"
+        app:layout_constraintStart_toStartOf="@+id/spinner_voice"
+        app:layout_constraintTop_toBottomOf="@+id/label_voiceStyle" />
+
+    <TextView
+        android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/btn_open_tts_settings"
-        app:layout_constraintEnd_toStartOf="@+id/btn_apply_changes"
-        app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
+        android:layout_marginTop="8dp"
+        android:text="@string/label_audio_format"
+        app:layout_constraintStart_toStartOf="@+id/spinner_voiceStyle"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_voiceStyle" />
 
     <Spinner
         android:id="@+id/spinner_foramt"
@@ -72,14 +100,6 @@
         app:layout_constraintStart_toStartOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/label_audio_format"
-        app:layout_constraintStart_toStartOf="@+id/spinner_voice"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_voice" />
 
     <SeekBar
         android:id="@+id/seekBar_volume"
@@ -109,34 +129,55 @@
         app:layout_constraintStart_toEndOf="@+id/textView5"
         tools:ignore="HardcodedText" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/label_api"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/spinner_api"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="@string/label_api"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/switch_split_sentences"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:minHeight="48dp"
         android:text="@string/split_long_sentces"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/seekBar_volume"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_volume" />
+
+    <Button
+        android:id="@+id/btn_apply_changes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="16dp"
+        android:enabled="false"
+        android:text="@string/btn_apply_changes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_voice" />
+
+    <Button
+        android:id="@+id/btn_openTtsConfig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/btn_open_tts_settings"
+        app:layout_constraintEnd_toStartOf="@+id/btn_apply_changes"
+        app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
+
+    <TextView
+        android:id="@+id/label_voiceRole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_voice_role"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_voiceRole"
+        app:layout_constraintStart_toStartOf="@+id/spinner_voiceRole" />
+
+    <Spinner
+        android:id="@+id/spinner_voiceRole"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/label_voice_role"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_voice"
+        app:layout_constraintStart_toEndOf="@+id/spinner_voiceStyle"
+        app:layout_constraintTop_toTopOf="@+id/spinner_voiceStyle" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

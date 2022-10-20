@@ -31,6 +31,8 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     private val spinnerApiAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerLanguageAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerVoiceAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
+    private val spinnerVoiceStyleAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
+    private val spinnerVoiceRoleAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerFormatAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
 
     override fun onCreateView(
@@ -47,11 +49,15 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         binding.spinnerApi.adapter = spinnerApiAdapter
         binding.spinnerLanguage.adapter = spinnerLanguageAdapter
         binding.spinnerVoice.adapter = spinnerVoiceAdapter
+        binding.spinnerVoiceStyle.adapter = spinnerVoiceStyleAdapter
+        binding.spinnerVoiceRole.adapter = spinnerVoiceRoleAdapter
         binding.spinnerForamt.adapter = spinnerFormatAdapter
 
         binding.spinnerApi.onItemSelectedListener = this
         binding.spinnerLanguage.onItemSelectedListener = this
         binding.spinnerVoice.onItemSelectedListener = this
+        binding.spinnerVoiceStyle.onItemSelectedListener = this
+        binding.spinnerVoiceRole.onItemSelectedListener = this
         binding.spinnerForamt.onItemSelectedListener = this
 
         binding.btnOpenTtsConfig.setOnClickListener(this)
@@ -87,6 +93,16 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         model.voiceLiveData.observe(this) { data ->
             Log.d(TAG, "voiceList size:${data.list.size}")
             updateSpinner(binding.spinnerVoice, data)
+        }
+        /* 风格 */
+        model.voiceStyleLiveData.observe(this) { data ->
+            Log.d(TAG, "styleList size:${data.list.size}")
+            updateSpinner(binding.spinnerVoiceStyle, data)
+        }
+        /* 角色 */
+        model.voiceRoleLiveData.observe(this) { data ->
+            Log.d(TAG, "roleList size:${data.list.size}")
+            updateSpinner(binding.spinnerVoiceRole, data)
         }
         /* 音频格式列表 */
         model.audioFormatLiveData.observe(this) { data ->
@@ -133,6 +149,12 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             R.id.spinner_voice -> {
                 model.voiceSelected(position)
                 isInit = true
+            }
+            R.id.spinner_voiceStyle -> {
+                model.voiceStyleSelected(position)
+            }
+            R.id.spinner_voiceRole -> {
+                model.voiceROleSelected(position)
             }
             R.id.spinner_foramt -> model.formatSelected(position)
         }
