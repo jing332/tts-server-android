@@ -68,7 +68,10 @@ class TtsManager(val context: Context) {
             val sentences = text.split(regex).filter { it.isNotBlank() }
             sentences.forEach {
                 if (!isSynthesizing) return@forEach
-                getAudioAndDecodePlay(it, rate, pitch, callback)
+                val s = it.replace("”", "")
+                Log.e(TAG, "Text $s")
+                if (s.isNotBlank())
+                    getAudioAndDecodePlay(it, rate, pitch, callback)
             }
         } else {
             getAudioAndDecodePlay(text, rate, pitch, callback)

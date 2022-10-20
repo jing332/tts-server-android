@@ -148,13 +148,14 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             R.id.spinner_language -> model.languageSelected(position)
             R.id.spinner_voice -> {
                 model.voiceSelected(position)
-                isInit = true
+
             }
             R.id.spinner_voiceStyle -> {
                 model.voiceStyleSelected(position)
             }
             R.id.spinner_voiceRole -> {
                 model.voiceROleSelected(position)
+                isInit = true
             }
             R.id.spinner_foramt -> model.formatSelected(position)
         }
