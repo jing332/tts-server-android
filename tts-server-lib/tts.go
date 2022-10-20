@@ -8,26 +8,19 @@ import (
 )
 
 type EdgeApi struct {
-	edgeApi *edge.TTS
-}
-
-func NewEdgeApi() *EdgeApi {
-	return new(EdgeApi)
+	tts *edge.TTS
 }
 
 func (e *EdgeApi) GetEdgeAudio(voiceName, text, rate, pitch, format string) ([]byte, error) {
-	if e.edgeApi == nil {
-		e.edgeApi = &edge.TTS{}
+	if e.tts == nil {
+		e.tts = &edge.TTS{}
 	}
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">
 <voice name="` + voiceName + `">
-        <!-- <mstts:express-as style="News" styledegree="1.0"> -->
-            <prosody rate="` + rate + `" pitch="` + pitch + `">` + text + `</prosody>
-        <!-- </mstts:express-as> -->
-    </voice>
-</speak>`
+<prosody rate="` + rate + `" pitch="` + pitch + `">` + text + `</prosody>
+</voice></speak>`
 
-	return e.edgeApi.GetAudio(ssml, format)
+	return e.tts.GetAudio(ssml, format)
 }
 
 func GetEdgeVoices() ([]byte, error) {

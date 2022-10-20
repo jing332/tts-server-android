@@ -26,4 +26,5 @@
     <string name="restart_service_to_update">重启服务以生效</string>
     <string name="config">配置</string>
     <string name="log">日志</string>
+    <string name="split_long_sentces">分割长句</string>
 </resources>

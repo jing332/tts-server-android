@@ -21,9 +21,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.LogLevel
+import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
@@ -46,8 +45,6 @@ class MainActivity : AppCompatActivity() {
     private val logAdapter: LogViewAdapter by lazy { LogViewAdapter(logList) }
 
     private val myReceiver: MyReceiver by lazy { MyReceiver() }
-    private var mLastPosition = -1
-    private var mLastItemCount = -1
 
     private var isWakeLock = false
 
@@ -72,19 +69,6 @@ class MainActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.stackFromEnd = true
         binding.rvLog.layoutManager = layoutManager
-
-        /* 用来判断是否在日志列表最底部 以确认是否自动滚动 */
-        binding.rvLog.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                mLastItemCount = recyclerView.layoutManager!!.itemCount
-                /* 当前状态为停止滑动状态SCROLL_STATE_IDLE时 */
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (recyclerView.layoutManager is LinearLayoutManager) {
-                        mLastPosition = layoutManager.findLastVisibleItemPosition()
-                    }
-                }
-            }
-        })
 
         /*注册广播*/
         val intentFilter = IntentFilter(TtsIntentService.ACTION_SEND)
@@ -233,12 +217,12 @@ class MainActivity : AppCompatActivity() {
             when (intent?.action) {
                 TtsIntentService.ACTION_ON_LOG -> {
                     val data = intent.getSerializableExtra("data") as MyLog
+                    val layout = binding.rvLog.layoutManager as LinearLayoutManager
+                    val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
                     logAdapter.append(data)
-//                    mLastPosition.
                     /* 判断是否在最底部 */
-                    if (mLastPosition == mLastItemCount - 1 || mLastPosition == mLastItemCount - 2|| mLastPosition == mLastItemCount - 3) {
+                    if (isBottom)
                         binding.rvLog.scrollToPosition(logAdapter.itemCount - 1)
-                    }
                 }
                 TtsIntentService.ACTION_ON_STARTED -> {
                     logAdapter.removeAll() /* 清空日志 */

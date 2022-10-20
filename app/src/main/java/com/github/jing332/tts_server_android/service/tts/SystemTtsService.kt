@@ -83,7 +83,8 @@ class SystemTtsService : TextToSpeechService() {
         synchronized(this) {
             reNewWakeLock()
             val text = request?.charSequenceText.toString()
-            Log.d(TAG, "接收到文本: $text")
+            Log.d(TAG, "开始合成: $text")
+
             if (text.isBlank()) {
                 Log.d(TAG, "文本为空，跳过")
                 callback!!.start(

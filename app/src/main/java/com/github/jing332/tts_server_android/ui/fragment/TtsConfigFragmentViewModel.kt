@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui
+package com.github.jing332.tts_server_android.ui.fragment
 
 import android.content.Context
 import android.util.Log
@@ -20,7 +20,7 @@ import kotlinx.serialization.json.Json
 import tts_server_lib.Tts_server_lib
 import java.io.File
 
-class TtsSettingsViewModel : ViewModel() {
+class TtsConfigFragmentViewModel : ViewModel() {
     companion object {
         const val TAG = "TtsSettingsViewModel"
     }
@@ -30,6 +30,7 @@ class TtsSettingsViewModel : ViewModel() {
     val voiceLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val audioFormatLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val volumeLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
+    val isSplitSentencesLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
 
     private lateinit var ttsConfig: TtsConfig
     private val json = Json { ignoreUnknownKeys = true }
@@ -54,6 +55,7 @@ class TtsSettingsViewModel : ViewModel() {
         }
         apiLiveData.value = SpinnerData(apiListData, ttsConfig.api)
         volumeLiveData.value = ttsConfig.volume
+        isSplitSentencesLiveData.value = ttsConfig.isSplitSentences
 
         cacheDir = context.cacheDir.path
 
@@ -137,6 +139,10 @@ class TtsSettingsViewModel : ViewModel() {
     fun volumeChanged(volume: Int) {
         volumeLiveData.value = volume
         ttsConfig.volume = volume
+    }
+
+    fun isSplitSentencesChanged(isChecked: Boolean) {
+        ttsConfig.isSplitSentences = isChecked
     }
 
     private fun useEdgeApi() {

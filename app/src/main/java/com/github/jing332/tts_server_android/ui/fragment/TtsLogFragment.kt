@@ -23,9 +23,6 @@ class TtsLogFragment : Fragment() {
         const val TAG = "TtsLogFragment"
     }
 
-    private var mLastPosition = -1
-    private var mLastItemCount = -1
-
     private val logAdapter: LogViewAdapter by lazy { LogViewAdapter(arrayListOf()) }
 
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
@@ -54,15 +51,25 @@ class TtsLogFragment : Fragment() {
 
         /* 用来判断是否在日志列表最底部 以确认是否自动滚动 */
         binding.recyclerViewLog.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                mLastItemCount = recyclerView.layoutManager!!.itemCount
-                /* 当前状态为停止滑动状态SCROLL_STATE_IDLE时 */
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (recyclerView.layoutManager is LinearLayoutManager) {
-                        mLastPosition = layoutManager.findLastVisibleItemPosition()
-                    }
-                }
-            }
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                val layout = recyclerView.layoutManager as LinearLayoutManager
+//                if (layout.findLastVisibleItemPosition() == layout.itemCount - 1) {
+//                    Log.e(TAG, "在最底部")
+////                    Toast.makeText(this@TtsLogFragment.context, "在最底部", Toast.LENGTH_SHORT).show()
+//                    // We have reached the end of the recycler view.
+//                }
+//
+//                super.onScrolled(recyclerView, dx, dy)
+//            }
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                mLastItemCount = recyclerView.layoutManager!!.itemCount
+//                /* 当前状态为停止滑动状态SCROLL_STATE_IDLE时 */
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                    if (recyclerView.layoutManager is LinearLayoutManager) {
+//                        mLastPosition = layoutManager.findLastVisibleItemPosition()
+//                    }
+//                }
+//            }
         })
 
         requireContext().registerReceiver(mReceiver, IntentFilter(ACTION_ON_LOG))
@@ -79,14 +86,19 @@ class TtsLogFragment : Fragment() {
             if (intent!!.action == ACTION_ON_LOG) {
                 val log = intent.getSerializableExtra("data") as MyLog
                 Log.i(TAG, "接收到Log: ${log.level}, ${log.msg}")
+
+                val layout = binding.recyclerViewLog.layoutManager as LinearLayoutManager
+                val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
                 logAdapter.append(log)
-                /* 判断是否在最底部 */
-                if (mLastPosition == mLastItemCount - 1 || mLastPosition == mLastItemCount - 2|| mLastPosition == mLastItemCount - 3) {
+                if (isBottom)
                     binding.recyclerViewLog.scrollToPosition(logAdapter.itemCount - 1)
-                }
             }
         }
 
+    }
+
+    fun RecyclerView?.getCurrentPosition(): Int {
+        return (this?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
     }
 
 }

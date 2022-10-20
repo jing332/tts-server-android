@@ -62,15 +62,40 @@ class TtsManager(val context: Context) {
         }
 
         callback?.start(format.hz, format.bitRate, 1)
+        if (ttsConfig.isSplitSentences) {
+            /* 分句 */
+            val regex = Regex("[。？?！!;；]")
+            val sentences = text.split(regex).filter { it.isNotBlank() }
+            sentences.forEach {
+                if (!isSynthesizing) return@forEach
+                getAudioAndDecodePlay(it, rate, pitch, callback)
+            }
+        }else{
+            getAudioAndDecodePlay(text, rate, pitch, callback)
+        }
 
+        stop()
+    }
 
+    /* 获取音频并解码播放*/
+    private fun getAudioAndDecodePlay(
+        text: String,
+        rate: String,
+        pitch: String,
+        callback: SynthesisCallback?
+    ) {
         var audio: ByteArray? = null
         val timeCost = measureTimeMillis {
-            try {
-                audio = getAudio(ttsConfig.api, text, rate, pitch)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
+            for (i in 1..1000) {
+                try {
+                    audio = getAudio(ttsConfig.api, text, rate, pitch)
+                    return@measureTimeMillis
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
+                }
+                sendLog(LogLevel.WARN, "开始第${i}次重试...")
+                Thread.sleep(2000) // 2s
             }
         }
 
@@ -86,11 +111,9 @@ class TtsManager(val context: Context) {
                 })
             sendLog(LogLevel.INFO, "播放完毕")
         } else {
-            sendLog(LogLevel.ERROR, "音频内容为空！")
-//            callback?.error()
+            sendLog(LogLevel.WARN, "音频内容为空！")
             callback?.done()
         }
-        stop()
     }
 
     private val mEdgeApi: EdgeApi by lazy { EdgeApi() }

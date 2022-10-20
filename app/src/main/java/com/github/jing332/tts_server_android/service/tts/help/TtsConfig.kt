@@ -9,7 +9,8 @@ class TtsConfig(
     var voiceName: String,
     var voiceId: String,
     var format: String,
-    var volume: Int
+    var volume: Int,
+    var isSplitSentences: Boolean
 ) {
     constructor() : this(
         TtsApiType.CREATION,
@@ -17,7 +18,7 @@ class TtsConfig(
         "zh-CN-XiaoxiaoNeural",
         "5f55541d-c844-4e04-a7f8-1723ffbea4a9",
         "audio-24khz-48kbitrate-mono-mp3",
-        50
+        50, false
     )
 
     /* 转为百分比字符串 */
@@ -26,43 +27,56 @@ class TtsConfig(
     }
 
     fun loadConfig(ctx: Context): TtsConfig {
-        api = getConfigInt(ctx, "api", TtsApiType.CREATION)
-        locale = getConfigString(ctx, "locale", "zh-CN")
-        voiceName = getConfigString(ctx, "voiceName", "zh-CN-XiaoxiaoNeural")
-        voiceId = getConfigString(ctx, "voiceId", "5f55541d-c844-4e04-a7f8-1723ffbea4a9")
-        format = getConfigString(ctx, "format", "audio-24khz-48kbitrate-mono-mp3")
-        volume = getConfigInt(ctx, "volume", 50)
+        api = getConfig(ctx, "api", TtsApiType.CREATION)
+        locale = getConfig(ctx, "locale", "zh-CN")
+        voiceName = getConfig(ctx, "voiceName", "zh-CN-XiaoxiaoNeural")
+        voiceId = getConfig(ctx, "voiceId", "5f55541d-c844-4e04-a7f8-1723ffbea4a9")
+        format = getConfig(ctx, "format", "audio-24khz-48kbitrate-mono-mp3")
+        volume = getConfig(ctx, "volume", 50)
+        isSplitSentences = getConfig(ctx, "isSplitSentences", false)
         return this
     }
 
     fun writeConfig(ctx: Context) {
-        setConfigInt(ctx,"api", api)
-        setConfigString(ctx, "locale", locale)
-        setConfigString(ctx, "voiceName", voiceName)
-        setConfigString(ctx, "voiceId", voiceId)
-        setConfigString(ctx, "format", format)
-        setConfigInt(ctx, "volume", volume)
+        setConfig(ctx, "api", api)
+        setConfig(ctx, "locale", locale)
+        setConfig(ctx, "voiceName", voiceName)
+        setConfig(ctx, "voiceId", voiceId)
+        setConfig(ctx, "format", format)
+        setConfig(ctx, "volume", volume)
+        setConfig(ctx, "isSplitSentences", isSplitSentences)
     }
 
-    private fun getConfigString(ctx: Context, key: String, default: String): String {
+    private fun getConfig(ctx: Context, key: String, default: String): String {
         val pref = ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE)
         return pref.getString(key, default).toString()
     }
 
-    private fun setConfigString(ctx: Context, key: String, value: String) {
+    private fun setConfig(ctx: Context, key: String, value: String) {
         ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE).edit()
             .putString(key, value)
             .apply()
     }
 
-    private fun getConfigInt(ctx: Context, key: String, default: Int): Int {
+    private fun getConfig(ctx: Context, key: String, default: Int): Int {
         val pref = ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE)
         return pref.getInt(key, default)
     }
 
-    private fun setConfigInt(ctx: Context, key: String, value: Int) {
+    private fun setConfig(ctx: Context, key: String, value: Int) {
         ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE).edit()
             .putInt(key, value)
+            .apply()
+    }
+
+    private fun getConfig(ctx: Context, key: String, default: Boolean): Boolean {
+        val pref = ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE)
+        return pref.getBoolean(key, default)
+    }
+
+    private fun setConfig(ctx:Context, key:String, value :Boolean){
+        ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE).edit()
+            .putBoolean(key, value)
             .apply()
     }
 

@@ -18,14 +18,15 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
 import com.github.jing332.tts_server_android.service.tts.SystemTtsService
-import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
-import com.github.jing332.tts_server_android.ui.TtsSettingsViewModel
 import com.github.jing332.tts_server_android.ui.widget.WaitDialog
 
 class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener {
-    val binding: FragmentTtsConfigBinding by lazy { FragmentTtsConfigBinding.inflate(layoutInflater) }
-    val model: TtsSettingsViewModel by viewModels()
+    companion object {
+        const val TAG = "TtsConfigFragment"
+    }
 
+    val binding: FragmentTtsConfigBinding by lazy { FragmentTtsConfigBinding.inflate(layoutInflater) }
+    val model: TtsConfigFragmentViewModel by viewModels()
 
     private val spinnerApiAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerLanguageAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
@@ -68,23 +69,28 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
                 binding.btnApplyChanges.isEnabled = true
             }
         })
+        binding.switchSplitSentences.setOnCheckedChangeListener { buttonView, isChecked ->
+            binding.btnApplyChanges.isEnabled = isChecked != model.isSplitSentencesLiveData.value
+            model.isSplitSentencesChanged(isChecked)
+        }
+
         /* 接口列表 */
         model.apiLiveData.observe(this) { data ->
             updateSpinner(binding.spinnerApi, data)
         }
         /* 语言列表 */
         model.languageLiveData.observe(this) { data ->
-            Log.d(TtsSettingsActivity.TAG, "languageList size:${data.list.size}")
+            Log.d(TAG, "languageList size:${data.list.size}")
             updateSpinner(binding.spinnerLanguage, data)
         }
         /* 声音列表 */
         model.voiceLiveData.observe(this) { data ->
-            Log.d(TtsSettingsActivity.TAG, "voiceList size:${data.list.size}")
+            Log.d(TAG, "voiceList size:${data.list.size}")
             updateSpinner(binding.spinnerVoice, data)
         }
         /* 音频格式列表 */
         model.audioFormatLiveData.observe(this) { data ->
-            Log.d(TtsSettingsActivity.TAG, "audioFormatList size:${data.list.size}")
+            Log.d(TAG, "audioFormatList size:${data.list.size}")
             updateSpinner(binding.spinnerForamt, data)
             spinnerFormatAdapter.clear()
             data.list.forEach {
@@ -94,14 +100,18 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         }
         /* 音量 */
         model.volumeLiveData.observe(this) {
-            Log.d(TtsSettingsActivity.TAG, "volume:$it")
+            Log.d(TAG, "volume:$it")
             binding.seekBarVolume.progress = it
         }
+        /* 分割长句 */
+        model.isSplitSentencesLiveData.observe(this) {
+            Log.d(TAG, "isSplitSentences $it")
+            binding.switchSplitSentences.isChecked = it
+        }
+
         /* 加载数据并更新列表 */
         model.loadData(this.requireContext())
-
     }
-
 
     private var isInit = false
 
@@ -154,7 +164,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun updateSpinner(spinner: Spinner, data: TtsSettingsViewModel.SpinnerData) {
+    private fun updateSpinner(spinner: Spinner, data: TtsConfigFragmentViewModel.SpinnerData) {
         spinner.also {
             val adapter = it.adapter as ArrayAdapter<String>
             adapter.clear()
