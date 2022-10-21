@@ -17,46 +17,66 @@ import androidx.appcompat.app.AlertDialog
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import tts_server_lib.Tts_server_lib
 import java.math.BigDecimal
 
 
 object MyTools {
     const val TAG = "MyTools"
+    private val json = Json { ignoreUnknownKeys = true }
 
     /*从Github检查更新*/
     @OptIn(DelicateCoroutinesApi::class)
     fun checkUpdate(act: Activity) {
         GlobalScope.launch {
-            var data: ByteArray? = null
             try {
-                data = Tts_server_lib.httpGet(
+                val data = Tts_server_lib.httpGet(
                     "https://api.github.com/repos/jing332/tts-server-android/releases/latest",
                     ""
                 )
+                act.runOnUiThread {
+                    if (data == null)
+                        Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show()
+                    else
+                        checkVersionFromJson(act, data.decodeToString())
+                }
             } catch (e: Exception) {
+                act.runOnUiThread { Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show() }
                 e.printStackTrace()
-                act.runOnUiThread { Toast.makeText(act, "检查更新失败 请检查网络", Toast.LENGTH_SHORT).show() }
             }
-            act.runOnUiThread {
-                if (data == null)
-                    Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show()
-                else
-                    checkVersionFromJson(act, data.decodeToString())
-            }
+
         }
     }
 
-
     @Suppress("DEPRECATION")
-    fun checkVersionFromJson(ctx: Context, s: String) {
-        val json = JSONObject(s)
-        val tag: String = json.getString("tag_name")
-        val downloadUrl: String =
-            json.getJSONArray("assets").getJSONObject(0)
-                .getString("browser_download_url")
-        val body: String = json.getString("body") /*本次更新内容*/
+    private fun checkVersionFromJson(ctx: Context, s: String) {
+        val bean = json.decodeFromString<GithubReleaseApiBean>(s)
+        var apkUniversalUrl = ""
+        var apkArmV8aUrl = ""
+        var apkArmV7aUrl = ""
+        bean.assets.forEach {
+            if (it.name.contains("arm64-v8a")) {
+                apkArmV8aUrl = it.browserDownloadUrl
+            } else if (it.name.contains("armeabi-v7a")) {
+                apkArmV7aUrl = it.browserDownloadUrl
+            } else {
+                apkUniversalUrl = it.browserDownloadUrl
+            }
+        }
+
+        var downloadUrl = ""
+        if (Build.SUPPORTED_ABIS.contains("arm64-v8a"))
+            downloadUrl = apkArmV8aUrl
+        else if (Build.SUPPORTED_ABIS.contains("armeabi-v7a")) {
+            downloadUrl = apkArmV7aUrl
+        }
+        if (downloadUrl.isEmpty())
+            downloadUrl = apkUniversalUrl
+
+        val tag = bean.tagName
+        val body = bean.body
         /* 远程版本号 */
         val versionName = BigDecimal(tag.split("_")[1].trim())
         val pi = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
