@@ -14,5 +14,15 @@ object SharedPrefsUtils {
         editor.apply()
     }
 
+    fun setToken(ctx: Context, token: String) {
+        val editor = ctx.getSharedPreferences("config", Context.MODE_PRIVATE).edit()
+        editor.putString("token", token)
+        editor.apply()
+    }
+
+    fun getToken(ctx: Context): String {
+        val pref = ctx.getSharedPreferences("config", Context.MODE_PRIVATE)
+        return pref.getString("token", "").toString()
+    }
 
 }

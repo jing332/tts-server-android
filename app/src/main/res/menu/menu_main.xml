@@ -10,8 +10,8 @@
         android:id="@+id/menu_openWeb"
         android:title="@string/open_web" />
     <item
-        android:id="@+id/menu_checkUpdate"
-        android:title="@string/check_update" />
+        android:id="@+id/menu_setToken"
+        android:title="@string/set_token" />
     <item
         android:id="@+id/menu_wakeLock"
         android:checkable="true"
@@ -23,7 +23,10 @@
         android:id="@+id/menu_shortcut"
         android:title="@string/desktop_shortcut" />
     <item
+        android:id="@+id/menu_checkUpdate"
+        android:title="@string/check_update" />
+    <item
         android:id="@+id/menu_about"
         android:title="@string/about" />
-  
+
 </menu>

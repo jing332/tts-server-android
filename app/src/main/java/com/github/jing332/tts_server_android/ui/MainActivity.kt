@@ -1,10 +1,7 @@
 package com.github.jing332.tts_server_android.ui
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +13,7 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -47,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private val myReceiver: MyReceiver by lazy { MyReceiver() }
 
     private var isWakeLock = false
+    private var token = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +80,7 @@ class MainActivity : AppCompatActivity() {
             /*启动服务*/
             val i = Intent(this.applicationContext, TtsIntentService::class.java)
             i.putExtra("port", binding.etPort.text.toString().toInt())
+            i.putExtra("token", token)
             i.putExtra("isWakeLock", isWakeLock)
             startService(i)
         }
@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity() {
         val item = menu?.findItem(R.id.menu_wakeLock)
         /* 从配置文件读取并更新isWakeLock */
         isWakeLock = SharedPrefsUtils.getWakeLock(this)
+        token = SharedPrefsUtils.getToken(this)
         item?.isChecked = isWakeLock
         return true
     }
@@ -165,6 +166,23 @@ class MainActivity : AppCompatActivity() {
                     ).show()
                 }
 
+                true
+            }
+            R.id.menu_setToken -> {
+                val builder = AlertDialog.Builder(this).setTitle(getString(R.string.set_token))
+                val editText = EditText(this)
+                editText.setText(token)
+                builder.setView(editText)
+                builder.setPositiveButton(
+                    android.R.string.ok
+                ) { dialog, which ->
+                    val text = editText.text.toString()
+                    if (text != token)
+                        Toast.makeText(this, "Token已设为：${text}", Toast.LENGTH_SHORT).show()
+                    token = text
+                    SharedPrefsUtils.setToken(this, token)
+                }
+                builder.create().show()
                 true
             }
             R.id.menu_killBattery -> { /* {电池优化}按钮 */

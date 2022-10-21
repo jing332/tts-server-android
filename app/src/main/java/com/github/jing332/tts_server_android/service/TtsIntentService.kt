@@ -30,6 +30,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         var IsRunning = false /* 服务是否在运行 */
         var Isinited = false /* 已经初始化GoLib */
         var port: Int = 1233 /* 监听端口 */
+        var token: String = ""
 
         /*关闭服务，如有Http请求需要等待*/
         fun closeServer(context: Context): Boolean {
@@ -49,8 +50,73 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         IsRunning = true
         port = intent?.getIntExtra("port", 1233)!!
+        token = intent.getStringExtra("token").toString()
         isWakeLock = intent.getBooleanExtra("isWakeLock", false)
 
+        initNotification()
+
+        if (isWakeLock) { /* 启动唤醒锁 */
+            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+            mWakeLock = powerManager.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "tts_server:ttsTag"
+            )
+            mWakeLock.acquire()
+        }
+        Toast.makeText(this, "服务已启动", Toast.LENGTH_SHORT).show()
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onDestroy() {
+        if (isWakeLock) { /* 释放唤醒锁 */
+            mWakeLock.release()
+        }
+        Toast.makeText(this, "服务已关闭", Toast.LENGTH_SHORT).show()
+        super.onDestroy()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onHandleIntent(intent: Intent?) {
+        if (!Isinited) { /* 初始化Go: 设置日志转发，注册Http.Server */
+            /* 来自Go的日志 */
+            val cb = LogCallback { level, msg ->
+                Log.d(TAG, "$level $msg")
+                sendLog(MyLog(level, msg))
+            }
+            Tts_server_lib.init(cb)
+            Isinited = true
+        }
+
+        sendStartedMsg()
+        /*启动Go服务并阻塞等待,直到关闭*/
+        Tts_server_lib.runServer(port.toLong(), token)
+        IsRunning = false
+        sendClosedMsg()
+    }
+
+
+    /* 广播日志消息 */
+    private fun sendLog(data: MyLog) {
+        val i = Intent(ACTION_ON_LOG)
+        i.putExtra("data", data)
+        sendBroadcast(i)
+    }
+
+    /* 广播启动消息 */
+    private fun sendStartedMsg() {
+        val i = Intent(ACTION_ON_STARTED)
+        sendBroadcast(i)
+    }
+
+    /* 广播关闭消息 */
+    private fun sendClosedMsg() {
+        val i = Intent(ACTION_ON_CLOSED)
+        i.putExtra("isClosed", true)
+        sendBroadcast(i)
+    }
+
+    private fun initNotification() {
         val notification: Notification
         /*Android 12(S)+ 必须指定PendingIntent.FLAG_*/
         val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -102,66 +168,6 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                 .build()
         }
         startForeground(1, notification) //启动前台服务
-
-        if (isWakeLock) { /* 启动唤醒锁 */
-            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
-            mWakeLock = powerManager.newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK,
-                "tts_server:ttsTag"
-            )
-            mWakeLock.acquire()
-        }
-        Toast.makeText(this, "服务已启动", Toast.LENGTH_SHORT).show()
-        return super.onStartCommand(intent, flags, startId)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onDestroy() {
-        if (isWakeLock) { /* 释放唤醒锁 */
-            mWakeLock.release()
-        }
-        Toast.makeText(this, "服务已关闭", Toast.LENGTH_SHORT).show()
-        super.onDestroy()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onHandleIntent(intent: Intent?) {
-        if (!Isinited) { /* 初始化Go: 设置日志转发，注册Http.Server */
-            /* 来自Go的日志 */
-            val cb = LogCallback { level, msg ->
-                Log.d(TAG, "$level $msg")
-                sendLog(MyLog(level, msg))
-            }
-            Tts_server_lib.init(cb)
-            Isinited = true
-        }
-
-        sendStartedMsg()
-        /*启动Go服务并阻塞等待,直到关闭*/
-        Tts_server_lib.runServer(port.toLong())
-        IsRunning = false
-        sendClosedMsg()
-    }
-
-
-    /* 广播日志消息 */
-    private fun sendLog(data: MyLog) {
-        val i = Intent(ACTION_ON_LOG)
-        i.putExtra("data", data)
-        sendBroadcast(i)
-    }
-
-    /* 广播启动消息 */
-    private fun sendStartedMsg() {
-        val i = Intent(ACTION_ON_STARTED)
-        sendBroadcast(i)
-    }
-
-    /* 广播关闭消息 */
-    private fun sendClosedMsg() {
-        val i = Intent(ACTION_ON_CLOSED)
-        i.putExtra("isClosed", true)
-        sendBroadcast(i)
     }
 
     class Receiver : BroadcastReceiver() {

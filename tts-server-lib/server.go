@@ -23,7 +23,8 @@ func Init(cb LogCallback) {
 	s.HandleFunc()
 }
 
-func RunServer(port int64) {
+func RunServer(port int64, token string) {
+	s.Token = token
 	err := s.ListenAndServe(port)
 	if err != nil {
 		log.Error(err)
