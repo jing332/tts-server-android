@@ -12,6 +12,8 @@ import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.service.tts.SystemTtsService
 import com.github.jing332.tts_server_android.utils.NormUtil
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import tts_server_lib.CreationApi
 import tts_server_lib.EdgeApi
 import kotlin.system.measureTimeMillis
@@ -25,28 +27,23 @@ class TtsManager(val context: Context) {
     private var isSynthesizing = false
     private val audioDecode: AudioDecode by lazy { AudioDecode() }
     private val norm: NormUtil by lazy { NormUtil(500F, 0F, 200F, 0F) }
+    private val channel: Channel<ByteArray?> by lazy { Channel(3) }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun stop() {
         isSynthesizing = false
         audioDecode.stop()
+        if (ttsConfig.isSplitSentences && !channel.isEmpty)
+            try {
+                channel.cancel()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
     }
 
-    fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
-//        val startTime = SystemClock.elapsedRealtime()
-//        GlobalScope.launch {
-//            Log.e(TAG, "启动一个超时循环")
-//            while (isSynthesizing) {
-//                val time = SystemClock.elapsedRealtime() - startTime
-//                //超时15秒后跳过,保证长句不会被跳过
-//                if (time > 15000) {
-//                    callback?.done()
-//                    stop()
-//                }
-//            }
-//            Log.e(TAG, "已经过超时循环")
-//        }
-
         val text = request?.charSequenceText.toString()
         val rate = "${norm.normalize(request?.speechRate?.toFloat()!!) - 100}%"
         val pitch = "${request.pitch - 100}%"
@@ -65,20 +62,63 @@ class TtsManager(val context: Context) {
         if (ttsConfig.isSplitSentences) {
             /* 分句 */
             val regex = Regex("[。？?！!;；]")
-            val sentences = text.split(regex).filter { it.isNotBlank() }
-            sentences.forEach {
-                if (!isSynthesizing) return@forEach
-                val s = it.replace("”", "")
-                Log.e(TAG, "Text $s")
-                if (s.isNotBlank())
-                    getAudioAndDecodePlay(it, rate, pitch, callback)
+            val sentences = text.split(regex).filter { it.replace("”", "").isNotBlank() }
+            /* 异步获取音频、缓存 */
+            GlobalScope.launch {
+                sentences.forEach {
+                    if (!isSynthesizing) return@forEach
+                    Log.e(TAG, "Text $it")
+                    asyncGetAudio(it, rate, pitch)
+                }
             }
-        } else {
+            /* 阻塞接收 */
+            repeat(sentences.size) {
+                val data = channel.receive()
+                if (data == null) {
+                    sendLog(LogLevel.WARN, "音频为空！")
+                } else {
+                    val hz = TtsFormatManger.getFormat(ttsConfig.format)?.hz ?: 16000
+                    audioDecode.doDecode(
+                        data,
+                        hz,
+                        onRead = { writeToCallBack(callback!!, it) },
+                        error = {
+                            sendLog(LogLevel.ERROR, "解码失败: $it")
+                        })
+                }
+            }
+        } else { /* 不使用分段*/
             getAudioAndDecodePlay(text, rate, pitch, callback)
         }
 
         stop()
     }
+
+    private suspend fun asyncGetAudio(
+        text: String,
+        rate: String,
+        pitch: String
+    ) {
+        var audioData: ByteArray? = null
+        val timeCost = measureTimeMillis {
+            for (i in 1..1000) {
+                try {
+                    audioData = getAudio(
+                        ttsConfig.api, text, rate, pitch
+                    )
+                    return@measureTimeMillis
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
+                }
+                sendLog(LogLevel.WARN, "开始第${i}次重试...")
+                Thread.sleep(2000) // 2s
+            }
+        }
+        sendLog(LogLevel.INFO, "获取音频成功, 大小: ${audioData!!.size / 1024}KB, 耗时: ${timeCost}ms")
+        channel.send(audioData)
+    }
+
 
     /* 获取音频并解码播放*/
     private fun getAudioAndDecodePlay(
@@ -170,6 +210,7 @@ class TtsManager(val context: Context) {
     }
 
     private fun sendLog(level: Int, msg: String) {
+        Log.e(TAG, "$level, $msg")
         val intent = Intent(SystemTtsService.ACTION_ON_LOG)
         intent.putExtra("data", MyLog(level, msg))
         context.sendBroadcast(intent)

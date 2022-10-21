@@ -13,6 +13,7 @@ import android.speech.tts.TextToSpeechService
 import android.util.Log
 import com.github.jing332.tts_server_android.service.tts.help.TtsManager
 import com.github.jing332.tts_server_android.utils.GcManager
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
@@ -94,8 +95,9 @@ class SystemTtsService : TextToSpeechService() {
                 callback.done()
                 return
             }
-
-            ttsManager.synthesizeText(request, callback)
+            runBlocking {
+                ttsManager.synthesizeText(request, callback)
+            }
         }
     }
 
