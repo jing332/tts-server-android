@@ -85,4 +85,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: TTS-Server_${{ env.ver_name }}
-          path: ${{ github.workspace }}/apk/*.apk
+          path: ${{ github.workspace }}/apk/*${{ env.ver_name }}.apk
