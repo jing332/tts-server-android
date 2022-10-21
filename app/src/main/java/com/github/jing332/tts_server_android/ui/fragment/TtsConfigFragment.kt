@@ -119,7 +119,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             Log.d(TAG, "volume:$it")
             binding.seekBarVolume.progress = it
         }
-        /* 分割长句 */
+        /* 是否分割长段 */
         model.isSplitSentencesLiveData.observe(this) {
             Log.d(TAG, "isSplitSentences $it")
             binding.switchSplitSentences.isChecked = it
@@ -129,11 +129,13 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         model.loadData(this.requireContext())
     }
 
-    private var isInit = false
+    private var isInit = 0
 
     /* Spinner选择变更 */
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        binding.btnApplyChanges.isEnabled = isInit
+        Log.e(TAG, "{parent?.id} ${parent.toString()}")
+        if (isInit >= 2)
+            binding.btnApplyChanges.isEnabled = true
         when (parent?.id) {
             R.id.spinner_api -> {
                 if (position == TtsApiType.AZURE) {
@@ -148,14 +150,14 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             R.id.spinner_language -> model.languageSelected(position)
             R.id.spinner_voice -> {
                 model.voiceSelected(position)
-
+                isInit++
             }
             R.id.spinner_voiceStyle -> {
                 model.voiceStyleSelected(position)
             }
             R.id.spinner_voiceRole -> {
                 model.voiceROleSelected(position)
-                isInit = true
+                isInit++
             }
             R.id.spinner_foramt -> model.formatSelected(position)
         }
