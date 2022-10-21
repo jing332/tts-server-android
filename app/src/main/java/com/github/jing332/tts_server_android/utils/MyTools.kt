@@ -14,8 +14,6 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.ui.ScSwitchActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -103,7 +101,13 @@ object MyTools {
     /* 添加快捷方式 */
     @SuppressLint("UnspecifiedImmutableFlag")
     @Suppress("DEPRECATION")
-    fun addShortcut(ctx: Context, name: String) {
+    fun addShortcut(
+        ctx: Context,
+        name: String,
+        id: String,
+        iconResId: Int,
+        launcherIntent: Intent
+    ) {
         if (Build.VERSION.SDK_INT < 26) { /* Android8.0 */
             Toast.makeText(ctx, "如失败 请手动授予权限", Toast.LENGTH_SHORT).show()
             val addShortcutIntent = Intent("com.android.launcher.action.INSTALL_SHORTCUT")
@@ -113,13 +117,11 @@ object MyTools {
             addShortcutIntent.putExtra(
                 Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(
-                    ctx, R.drawable.ic_switch
+                    ctx, iconResId
                 )
             )
 
-            // 设置关联程序
-            val launcherIntent = Intent(Intent.ACTION_MAIN)
-            launcherIntent.setClass(ctx, ScSwitchActivity::class.java)
+            launcherIntent.action = Intent.ACTION_MAIN
             launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER)
             addShortcutIntent
                 .putExtra(Intent.EXTRA_SHORTCUT_INTENT, launcherIntent)
@@ -129,16 +131,13 @@ object MyTools {
         } else {
             val shortcutManager: ShortcutManager = ctx.getSystemService(ShortcutManager::class.java)
             if (shortcutManager.isRequestPinShortcutSupported) {
-                val intent = Intent(
-                    ctx, ScSwitchActivity::class.java
-                )
-                intent.action = Intent.ACTION_VIEW
-                val pinShortcutInfo = ShortcutInfo.Builder(ctx, "tts_server")
+                launcherIntent.action = Intent.ACTION_VIEW
+                val pinShortcutInfo = ShortcutInfo.Builder(ctx, id)
                     .setIcon(
-                        Icon.createWithResource(ctx, R.drawable.ic_switch)
+                        Icon.createWithResource(ctx, iconResId)
                     )
-                    .setIntent(intent)
-                    .setShortLabel("开关")
+                    .setIntent(launcherIntent)
+                    .setShortLabel(name)
                     .build()
                 val pinnedShortcutCallbackIntent = shortcutManager
                     .createShortcutResultIntent(pinShortcutInfo)

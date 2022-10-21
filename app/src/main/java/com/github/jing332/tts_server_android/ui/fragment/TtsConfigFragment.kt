@@ -75,7 +75,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
                 binding.btnApplyChanges.isEnabled = true
             }
         })
-        binding.switchSplitSentences.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchSplitSentences.setOnCheckedChangeListener { _, isChecked ->
             binding.btnApplyChanges.isEnabled = isChecked != model.isSplitSentencesLiveData.value
             model.isSplitSentencesChanged(isChecked)
         }

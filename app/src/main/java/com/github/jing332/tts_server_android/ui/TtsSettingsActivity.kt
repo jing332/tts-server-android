@@ -1,6 +1,9 @@
 package com.github.jing332.tts_server_android.ui
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -10,6 +13,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityTtsSettingsBinding
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
+import com.github.jing332.tts_server_android.utils.MyTools
 
 class TtsSettingsActivity : AppCompatActivity() {
     companion object {
@@ -41,6 +45,27 @@ class TtsSettingsActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_tts_settings, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_desktopShortcut -> {
+                MyTools.addShortcut(
+                    this,
+                    getString(R.string.tts_config),
+                    "tts_config",
+                    R.mipmap.ic_launcher_round,
+                    Intent(this, TtsSettingsActivity::class.java)
+                )
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     class FragmentAdapter(fragmentActivity: FragmentActivity) :

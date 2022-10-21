@@ -11,7 +11,6 @@ import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
@@ -101,8 +100,7 @@ class MainActivity : AppCompatActivity() {
 
     /*右上角更多菜单*/
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflation: MenuInflater = menuInflater
-        inflation.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
@@ -175,7 +173,7 @@ class MainActivity : AppCompatActivity() {
                 builder.setView(editText)
                 builder.setPositiveButton(
                     android.R.string.ok
-                ) { dialog, which ->
+                ) { _, which ->
                     val text = editText.text.toString()
                     if (text != token)
                         Toast.makeText(this, "Token已设为：${text}", Toast.LENGTH_SHORT).show()
@@ -220,7 +218,13 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_shortcut -> {
-                MyTools.addShortcut(this, getString(R.string.app_switch))
+                MyTools.addShortcut(
+                    this,
+                    getString(R.string.app_switch),
+                    "server_switch",
+                    R.drawable.ic_switch,
+                    Intent(this, ScSwitchActivity::class.java)
+                )
                 true
             }
 

@@ -13,4 +13,17 @@
             android:targetPackage="com.github.jing332.tts_server_android" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher_round"
+        android:shortcutDisabledMessage="@string/tts_config"
+        android:shortcutId="shortcuts_tts_config"
+        android:shortcutLongLabel="@string/tts_config"
+        android:shortcutShortLabel="@string/tts_config">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.github.jing332.tts_server_android.ui.TtsSettingsActivity"
+            android:targetPackage="com.github.jing332.tts_server_android" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
 </shortcuts>
