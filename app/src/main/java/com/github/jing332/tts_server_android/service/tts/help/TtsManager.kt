@@ -27,7 +27,7 @@ class TtsManager(val context: Context) {
     private var isSynthesizing = false
     private val audioDecode: AudioDecode by lazy { AudioDecode() }
     private val norm: NormUtil by lazy { NormUtil(500F, 0F, 200F, 0F) }
-    private val channel: Channel<ByteArray?> by lazy { Channel(3) }
+    private val channel: Channel<ChannelData> by lazy { Channel(3) }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun stop() {
@@ -67,24 +67,27 @@ class TtsManager(val context: Context) {
             GlobalScope.launch {
                 sentences.forEach {
                     if (!isSynthesizing) return@forEach
-                    Log.e(TAG, "Text $it")
                     asyncGetAudio(it, rate, pitch)
                 }
             }
             /* 阻塞接收 */
             repeat(sentences.size) {
                 val data = channel.receive()
-                if (data == null) {
+                if (data.audio == null) {
                     sendLog(LogLevel.WARN, "音频为空！")
                 } else {
                     val hz = TtsFormatManger.getFormat(ttsConfig.format)?.hz ?: 16000
                     audioDecode.doDecode(
-                        data,
+                        data.audio!!,
                         hz,
                         onRead = { writeToCallBack(callback!!, it) },
                         error = {
                             sendLog(LogLevel.ERROR, "解码失败: $it")
                         })
+                    val str = if (data.text.length > 20)
+                        data.text.substring(0, 19) + "..."
+                    else data.text
+                    sendLog(LogLevel.WARN, "\n播放完毕：$str")
                 }
             }
         } else { /* 不使用分段*/
@@ -94,6 +97,7 @@ class TtsManager(val context: Context) {
         stop()
     }
 
+    /* 获取音频并发送到Channel*/
     private suspend fun asyncGetAudio(
         text: String,
         rate: String,
@@ -116,7 +120,7 @@ class TtsManager(val context: Context) {
             }
         }
         sendLog(LogLevel.INFO, "获取音频成功, 大小: ${audioData!!.size / 1024}KB, 耗时: ${timeCost}ms")
-        channel.send(audioData)
+        channel.send(ChannelData(text, audioData))
     }
 
 
@@ -215,4 +219,6 @@ class TtsManager(val context: Context) {
         intent.putExtra("data", MyLog(level, msg))
         context.sendBroadcast(intent)
     }
+
+    class ChannelData(var text: String, var audio: ByteArray?)
 }
