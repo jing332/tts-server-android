@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.service.tts.data.CreationVoicesItem
 import com.github.jing332.tts_server_android.service.tts.data.EdgeVoicesItem
@@ -132,7 +133,12 @@ class TtsConfigFragmentViewModel : ViewModel() {
                             styleList[0] = SpinnerItemData("默认", "")
                             forEachIndexed { index, styleName ->
                                 if (styleName != "Default")
-                                    styleList.add(SpinnerItemData(styleName, styleName))
+                                    styleList.add(
+                                        SpinnerItemData(
+                                            CnLocalMap.get(styleName),
+                                            styleName
+                                        )
+                                    )
                                 if (ttsConfig.voiceStyle == styleName)
                                     selectedStyle = index + 1
                             }
@@ -148,7 +154,12 @@ class TtsConfigFragmentViewModel : ViewModel() {
                             roleList[0] = SpinnerItemData("默认", "")
                             forEachIndexed { index, roleName ->
                                 if (roleName != "Default")
-                                    roleList.add(SpinnerItemData(roleName, roleName))
+                                    roleList.add(
+                                        SpinnerItemData(
+                                            CnLocalMap.get(roleName),
+                                            roleName
+                                        )
+                                    )
                                 if (ttsConfig.voiceRole == roleName)
                                     selectedRole = index + 1
 
@@ -196,7 +207,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
             for (it in tmpLangList)
                 if (it.value == item.locale) return@forEach
 
-            tmpLangList.add(SpinnerItemData(item.locale, item.locale))
+            tmpLangList.add(SpinnerItemData(CnLocalMap.getLanguage(item.locale), item.locale))
         }
         tmpLangList.sortBy { it.displayName }
         var selected = 0
@@ -238,11 +249,11 @@ class TtsConfigFragmentViewModel : ViewModel() {
 
         val dataList = arrayListOf<SpinnerItemData>()
         var selected = 0
-        for ((i, v) in tmpLanguageList.withIndex()) {
+        tmpLanguageList.forEachIndexed { i, v ->
             if (ttsConfig.locale == v) { /* 选中配置文件中的位置 */
                 selected = i
             }
-            dataList.add(SpinnerItemData(v, v))
+            dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
         }
         languageLiveData.postValue(SpinnerData(dataList, selected))
     }
@@ -274,13 +285,10 @@ class TtsConfigFragmentViewModel : ViewModel() {
         ttsConfig.voiceStyle = voiceStyleLiveData.value!!.list[position].value
     }
 
-    fun voiceROleSelected(position: Int) {
+    fun voiceRoleSelected(position: Int) {
         ttsConfig.voiceRole = voiceRoleLiveData.value!!.list[position].value
     }
 
-    class SpinnerData(var list: List<SpinnerItemData>, var position: Int) {
-
-    }
-
+    class SpinnerData(var list: List<SpinnerItemData>, var position: Int)
     class SpinnerItemData(var displayName: String, var value: String)
 }

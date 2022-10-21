@@ -133,7 +133,6 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
 
     /* Spinner选择变更 */
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        Log.e(TAG, "{parent?.id} ${parent.toString()}")
         if (isInit >= 2)
             binding.btnApplyChanges.isEnabled = true
         when (parent?.id) {
@@ -156,7 +155,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
                 model.voiceStyleSelected(position)
             }
             R.id.spinner_voiceRole -> {
-                model.voiceROleSelected(position)
+                model.voiceRoleSelected(position)
                 isInit++
             }
             R.id.spinner_foramt -> model.formatSelected(position)
