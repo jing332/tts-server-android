@@ -14,6 +14,7 @@ import com.github.jing332.tts_server_android.service.tts.SystemTtsService
 import com.github.jing332.tts_server_android.utils.NormUtil
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import tts_server_lib.AzureApi
 import tts_server_lib.CreationApi
 import tts_server_lib.EdgeApi
 import kotlin.system.measureTimeMillis
@@ -34,11 +35,11 @@ class TtsManager(val context: Context) {
         audioDecode.stop()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
         val text = request?.charSequenceText.toString().trim()
-        val rate = "${norm.normalize(request?.speechRate?.toFloat()!!) - 100}%"
+        val rate = "${(norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()}%"
         val pitch = "${request.pitch - 100}%"
         val format = TtsFormatManger.getFormat(ttsConfig.format)
         if (format == null) {
@@ -70,8 +71,10 @@ class TtsManager(val context: Context) {
                     channel.close()
                     return@repeat
                 }
-                val data = channel.receive()
-                if (data.audio == null) {
+                val data = if (!channel.isClosedForSend)
+                    channel.receive()
+                else null
+                if (data?.audio == null) {
                     sendLog(LogLevel.WARN, "音频为空！")
                 } else {
                     val hz = TtsFormatManger.getFormat(ttsConfig.format)?.hz ?: 16000
@@ -163,24 +166,48 @@ class TtsManager(val context: Context) {
     }
 
     private val mEdgeApi: EdgeApi by lazy { EdgeApi() }
+    private val mAzureApi: AzureApi by lazy { AzureApi() }
     private val mCreationApi: CreationApi by lazy { CreationApi() }
 
     private fun getAudio(api: Int, text: String, rate: String, pitch: String): ByteArray? {
+        val voice = ttsConfig.voiceName
+        val style = ttsConfig.voiceStyle.ifEmpty { "general" }
+        val role = ttsConfig.voiceRole
+        val volume = ttsConfig.volumeToPctString()
+        val format = ttsConfig.format
         when (api) {
             TtsApiType.EDGE -> {
-                val volumeStr = ttsConfig.volumeToPctString()
                 sendLog(
                     Log.INFO,
-                    "\n请求音频(Edge): voiceName=${ttsConfig.voiceName}, text=$text, rate=$rate, " +
-                            "pitch=$pitch, volume=${volumeStr}, format=${ttsConfig.format}"
+                    "\n请求音频(Edge): voiceName=${voice}, text=$text, rate=$rate, " +
+                            "pitch=$pitch, volume=${volume}, format=${format}"
                 )
                 return mEdgeApi.getEdgeAudio(
-                    ttsConfig.voiceName,
+                    voice,
                     text,
                     rate,
                     pitch,
-                    volumeStr,
-                    ttsConfig.format
+                    volume,
+                    format
+                )
+            }
+            TtsApiType.AZURE -> {
+                sendLog(
+                    LogLevel.INFO,
+                    "\n请求音频(Azure): voiceName=${voice}, text=$text, style=${style}" +
+                            ", role=${role}, rate=$rate, " +
+                            "pitch=$pitch, volume=${volume}, format=$format"
+                )
+                return mAzureApi.getAudio(
+                    voice,
+                    text,
+                    style,
+                    "1.0",
+                    role,
+                    rate,
+                    pitch,
+                    volume,
+                    format
                 )
             }
             TtsApiType.CREATION -> {
@@ -190,10 +217,10 @@ class TtsManager(val context: Context) {
                 arg.voiceId = ttsConfig.voiceId
                 arg.style = ttsConfig.voiceStyle
                 arg.styleDegree = "1.0"
-                arg.role = ttsConfig.voiceRole
+                arg.role = role
                 arg.rate = rate
-                arg.volume = ttsConfig.volumeToPctString()
-                arg.format = ttsConfig.format
+                arg.volume = volume
+                arg.format = format
                 sendLog(LogLevel.INFO, "\n请求音频: $arg")
                 return mCreationApi.getCreationAudio(arg)
             }

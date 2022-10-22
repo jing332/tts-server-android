@@ -15,7 +15,6 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
 import com.github.jing332.tts_server_android.service.tts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.widget.WaitDialog
@@ -137,10 +136,6 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             binding.btnApplyChanges.isEnabled = true
         when (parent?.id) {
             R.id.spinner_api -> {
-                if (position == TtsApiType.AZURE) {
-                    binding.spinnerApi.setSelection(0)
-                    return
-                }
                 val waitDialog = WaitDialog(requireContext())
                 waitDialog.show()
                 model.apiSelected(position) { waitDialog.dismiss() }

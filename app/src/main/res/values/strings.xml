@@ -14,7 +14,7 @@
     <string name="loading">加载中</string>
     <string name="voice_id_not_found">声音ID: %s未找到 请尝试清空缓存</string>
     <string name="api_edge">微软Edge-大声朗读接口</string>
-    <string name="api_azure">微软Azure-网页演示接口(暂不支持)</string>
+    <string name="api_azure">微软Azure-网页演示接口</string>
     <string name="api_creation">微软Creation-网页演示接口</string>
     <string name="tts_config">TTS配置</string>
     <string name="open_web">打开网页版</string>

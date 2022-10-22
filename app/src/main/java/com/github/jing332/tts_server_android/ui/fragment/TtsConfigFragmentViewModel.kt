@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
+import com.github.jing332.tts_server_android.service.tts.data.AzureVoiceBean
 import com.github.jing332.tts_server_android.service.tts.data.CreationVoicesItem
 import com.github.jing332.tts_server_android.service.tts.data.EdgeVoicesItem
 import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
@@ -16,6 +17,7 @@ import com.github.jing332.tts_server_android.utils.FileUtils
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import tts_server_lib.Tts_server_lib
@@ -36,11 +38,16 @@ class TtsConfigFragmentViewModel : ViewModel() {
     val isSplitSentencesLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
 
     private lateinit var ttsConfig: TtsConfig
-    private val json = Json { ignoreUnknownKeys = true }
+    @OptIn(ExperimentalSerializationApi::class)
+    private val json = Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }
 
     var cacheDir: String = ""
-    lateinit var creationVoices: List<CreationVoicesItem>
     lateinit var edgeVoices: List<EdgeVoicesItem>
+    lateinit var azureVoices: List<AzureVoiceBean>
+    lateinit var creationVoices: List<CreationVoicesItem>
 
     fun loadData(context: Context) {
         Log.d(TAG, "loadData")
@@ -70,15 +77,9 @@ class TtsConfigFragmentViewModel : ViewModel() {
         updateFormatLiveData()
         GlobalScope.launch {
             when (position) {
-                TtsApiType.EDGE -> {
-                    useEdgeApi()
-                }
-                TtsApiType.AZURE -> {
-
-                }
-                TtsApiType.CREATION -> {
-                    useCreationApi()
-                }
+                TtsApiType.EDGE -> useEdgeApi()
+                TtsApiType.AZURE -> useAzureApi()
+                TtsApiType.CREATION -> useCreationApi()
             }
             finally.invoke()
         }
@@ -95,6 +96,12 @@ class TtsConfigFragmentViewModel : ViewModel() {
                 edgeVoices.forEach { item ->
                     if (item.locale == languageLiveData.value!!.list[position].value)
                         tmpVoiceList.add(SpinnerItemData(item.shortName, item.shortName))
+                }
+            }
+            TtsApiType.AZURE -> {
+                azureVoices.forEach {
+                    if (it.locale == ttsConfig.locale)
+                        tmpVoiceList.add(SpinnerItemData(it.localName, it.shortName))
                 }
             }
             TtsApiType.CREATION -> {
@@ -114,6 +121,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
         voiceLiveData.value = SpinnerData(tmpVoiceList, selectedPos)
     }
 
+    /* {声音}选中已变更，更新风格和角色*/
     fun voiceSelected(position: Int) {
         voiceLiveData.value?.also {
             it.position = position
@@ -121,55 +129,96 @@ class TtsConfigFragmentViewModel : ViewModel() {
         }
         Log.d(TAG, "voiceSelected ${ttsConfig.voiceName}")
 
-        if (ttsConfig.api == TtsApiType.CREATION) {
-            creationVoices.forEach { voiceItem ->
-                if (ttsConfig.voiceName == voiceItem.shortName) {
-                    ttsConfig.voiceId = voiceItem.id
-                    /* 风格 */
-                    val styleList = arrayListOf(SpinnerItemData("无", ""))
-                    var selectedStyle = 0
-                    if (voiceItem.properties.voiceStyleNames.isNotBlank())
-                        voiceItem.properties.voiceStyleNames.split(",").apply {
+        when (ttsConfig.api) {
+            TtsApiType.AZURE -> {
+                azureVoices.forEach { voiceItem ->
+                    if (ttsConfig.voiceName == voiceItem.shortName) {
+                        /* 风格 */
+                        val styleList = arrayListOf(SpinnerItemData("无", ""))
+                        var selectedStyle = 0
+                        voiceItem.styleList?.let {
                             styleList[0] = SpinnerItemData("默认", "")
-                            forEachIndexed { index, styleName ->
-                                if (styleName != "Default")
-                                    styleList.add(
-                                        SpinnerItemData(
-                                            CnLocalMap.get(styleName),
-                                            styleName
-                                        )
-                                    )
+                            voiceItem.styleList.forEachIndexed { index, styleName ->
+                                styleList.add(SpinnerItemData(CnLocalMap.get(styleName), styleName))
                                 if (ttsConfig.voiceStyle == styleName)
                                     selectedStyle = index + 1
                             }
                         }
+                        voiceStyleLiveData.value = SpinnerData(styleList, selectedStyle)
 
-                    voiceStyleLiveData.value = SpinnerData(styleList, selectedStyle)
-
-                    /* 角色 */
-                    val roleList = arrayListOf(SpinnerItemData("无", ""))
-                    var selectedRole = 0
-                    if (voiceItem.properties.voiceRoleNames.isNotBlank())
-                        voiceItem.properties.voiceRoleNames.split(",").apply {
+                        /* 角色 */
+                        val roleList = arrayListOf(SpinnerItemData("无", ""))
+                        var selectedRole = 0
+                        voiceItem.rolePlayList?.let {
                             roleList[0] = SpinnerItemData("默认", "")
-                            forEachIndexed { index, roleName ->
-                                if (roleName != "Default")
-                                    roleList.add(
-                                        SpinnerItemData(
-                                            CnLocalMap.get(roleName),
-                                            roleName
-                                        )
+                            voiceItem.rolePlayList.forEachIndexed { index, roleName ->
+                                roleList.add(
+                                    SpinnerItemData(
+                                        CnLocalMap.get(roleName),
+                                        roleName
                                     )
+                                )
                                 if (ttsConfig.voiceRole == roleName)
                                     selectedRole = index + 1
-
                             }
                         }
-                    voiceRoleLiveData.value = SpinnerData(roleList, selectedRole)
-                    return
+                        voiceRoleLiveData.value = SpinnerData(roleList, selectedRole)
+                        return
+                    }
                 }
             }
+            TtsApiType.CREATION -> {
+                creationVoices.forEach { voiceItem ->
+                    if (ttsConfig.voiceName == voiceItem.shortName) {
+                        ttsConfig.voiceId = voiceItem.id
+                        /* 风格 */
+                        val styleList = arrayListOf(SpinnerItemData("无", ""))
+                        var selectedStyle = 0
+                        if (voiceItem.properties.voiceStyleNames.isNotBlank())
+                            voiceItem.properties.voiceStyleNames.split(",").apply {
+                                styleList[0] = SpinnerItemData("默认", "")
+                                forEachIndexed { index, styleName ->
+                                    if (styleName != "Default")
+                                        styleList.add(
+                                            SpinnerItemData(
+                                                CnLocalMap.get(styleName),
+                                                styleName
+                                            )
+                                        )
+                                    if (ttsConfig.voiceStyle == styleName)
+                                        selectedStyle = index + 1
+                                }
+                            }
+
+                        voiceStyleLiveData.value = SpinnerData(styleList, selectedStyle)
+
+                        /* 角色 */
+                        val roleList = arrayListOf(SpinnerItemData("无", ""))
+                        var selectedRole = 0
+                        if (voiceItem.properties.voiceRoleNames.isNotBlank())
+                            voiceItem.properties.voiceRoleNames.split(",").apply {
+                                roleList[0] = SpinnerItemData("默认", "")
+                                forEachIndexed { index, roleName ->
+                                    if (roleName != "Default")
+                                        roleList.add(
+                                            SpinnerItemData(
+                                                CnLocalMap.get(roleName),
+                                                roleName
+                                            )
+                                        )
+                                    if (ttsConfig.voiceRole == roleName)
+                                        selectedRole = index + 1
+
+                                }
+                            }
+                        voiceRoleLiveData.value = SpinnerData(roleList, selectedRole)
+                        return
+                    }
+                }
+            }
+
         }
+
     }
 
     fun formatSelected(position: Int) {
@@ -219,6 +268,43 @@ class TtsConfigFragmentViewModel : ViewModel() {
         /* Edge接口不支持风格和角色，故设为无 */
         voiceStyleLiveData.postValue(SpinnerData(arrayListOf(SpinnerItemData("无", "")), 0))
         voiceRoleLiveData.postValue(SpinnerData(arrayListOf(SpinnerItemData("无", "")), 0))
+    }
+
+    private fun useAzureApi() {
+        ttsConfig.api = TtsApiType.AZURE
+        val cacheFilepath = "$cacheDir/azure/voices.json"
+        val data: ByteArray
+        if (FileUtils.fileExists(cacheFilepath)) {
+            data = File(cacheFilepath).readBytes()
+        } else {
+            try {
+                data = Tts_server_lib.getAzureVoice()
+                FileUtils.saveFile(cacheFilepath, data)
+            } catch (e: Exception) {
+                Log.e(TAG, "获取Azure Voices数据失败")
+                e.printStackTrace()
+                return
+            }
+        }
+
+        azureVoices = json.decodeFromString(data.decodeToString())
+        val languageList = arrayListOf<String>()
+        azureVoices.forEach {
+            if (!languageList.contains(it.locale)) {
+                languageList.add(it.locale)
+            }
+        }
+        languageList.sort()
+
+        val dataList = arrayListOf<SpinnerItemData>()
+        var selected = 0
+        languageList.forEachIndexed { i, v ->
+            if (ttsConfig.locale == v) { /* 选中配置文件中的位置 */
+                selected = i
+            }
+            dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
+        }
+        languageLiveData.postValue(SpinnerData(dataList, selected))
     }
 
     private fun useCreationApi() {
