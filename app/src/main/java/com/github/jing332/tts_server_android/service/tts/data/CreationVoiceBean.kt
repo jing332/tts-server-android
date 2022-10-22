@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreationVoicesItem(
+data class CreationVoiceBean(
     @SerialName("id") val id: String,
     @SerialName("locale") val locale: String,
     @SerialName("name") val name: String,

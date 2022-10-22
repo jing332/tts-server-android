@@ -8,10 +8,28 @@ object TtsFormatManger {
     init {
         formats.add(
             TtsAudioFormat(
+                "webm-16khz-16bit-mono-opus",
+                24000 * 2,
+                AudioFormat.ENCODING_PCM_16BIT,
+                TtsAudioFormat.SupportedApi.AZURE,
+                true
+            )
+        )
+        formats.add(
+            TtsAudioFormat(
                 "webm-24khz-16bit-mono-opus",
                 24000 * 2,
                 AudioFormat.ENCODING_PCM_16BIT,
                 TtsAudioFormat.SupportedApi.EDGE or TtsAudioFormat.SupportedApi.AZURE,
+                true
+            )
+        )
+        formats.add(
+            TtsAudioFormat(
+                "webm-24khz-16bit-24kbps-mono-opus",
+                24000 * 2,
+                AudioFormat.ENCODING_PCM_16BIT,
+                TtsAudioFormat.SupportedApi.AZURE,
                 true
             )
         )

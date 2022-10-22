@@ -8,8 +8,8 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.service.tts.data.AzureVoiceBean
-import com.github.jing332.tts_server_android.service.tts.data.CreationVoicesItem
-import com.github.jing332.tts_server_android.service.tts.data.EdgeVoicesItem
+import com.github.jing332.tts_server_android.service.tts.data.CreationVoiceBean
+import com.github.jing332.tts_server_android.service.tts.data.EdgeVoiceBean
 import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.tts.help.TtsConfig
 import com.github.jing332.tts_server_android.service.tts.help.TtsFormatManger
@@ -45,9 +45,9 @@ class TtsConfigFragmentViewModel : ViewModel() {
     }
 
     var cacheDir: String = ""
-    lateinit var edgeVoices: List<EdgeVoicesItem>
+    lateinit var edgeVoices: List<EdgeVoiceBean>
     lateinit var azureVoices: List<AzureVoiceBean>
-    lateinit var creationVoices: List<CreationVoicesItem>
+    lateinit var creationVoices: List<CreationVoiceBean>
 
     fun loadData(context: Context) {
         Log.d(TAG, "loadData")

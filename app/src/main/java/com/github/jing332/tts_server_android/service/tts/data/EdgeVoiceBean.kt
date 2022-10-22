@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EdgeVoicesItem (
+data class EdgeVoiceBean (
     @SerialName("FriendlyName")
     val friendlyName: String,
     @SerialName("Locale")

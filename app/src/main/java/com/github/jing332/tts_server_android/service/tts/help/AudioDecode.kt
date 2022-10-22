@@ -50,7 +50,6 @@ class AudioDecode {
         return mediaCodec as MediaCodec
     }
 
-
     @Synchronized
     fun doDecode(
         srcData: ByteArray,
