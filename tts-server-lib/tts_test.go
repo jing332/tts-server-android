@@ -17,3 +17,11 @@ func TestEdge(t *testing.T) {
 	}
 
 }
+
+func TestUploadLog(t *testing.T) {
+	url, err := UploadLog("myqqwqwqiasdslog")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(url)
+}

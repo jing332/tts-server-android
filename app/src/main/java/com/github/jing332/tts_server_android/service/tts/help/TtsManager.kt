@@ -42,7 +42,7 @@ class TtsManager(val context: Context) {
         val pitch = "${request.pitch - 100}%"
         val format = TtsFormatManger.getFormat(ttsConfig.format)
         if (format == null) {
-            Log.e(TAG, "不支持解码此格式: ${ttsConfig.format}")
+            sendLog(LogLevel.ERROR, "不支持解码此格式: ${ttsConfig.format}")
             callback!!.start(
                 16000,
                 AudioFormat.ENCODING_PCM_16BIT, 1

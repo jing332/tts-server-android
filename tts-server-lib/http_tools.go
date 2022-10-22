@@ -4,6 +4,7 @@ import (
 	"github.com/asters1/tools"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func HttpGet(url, header string) ([]byte, error) {
@@ -24,4 +25,20 @@ func HttpGet(url, header string) ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
+}
+
+func UploadLog(log string) (string, error) {
+	uploadUrl := "https://bin.kv2.dev"
+	req, err := http.NewRequest(http.MethodPost, uploadUrl, strings.NewReader(log))
+	if err != nil {
+		return "", err
+	}
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+
+	return uploadUrl + res.Request.URL.Path, nil
 }
