@@ -141,7 +141,6 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
                     binding.spinnerApi.setSelection(0)
                     return
                 }
-                binding.seekBarVolume.isEnabled = position != TtsApiType.EDGE
                 val waitDialog = WaitDialog(requireContext())
                 waitDialog.show()
                 model.apiSelected(position) { waitDialog.dismiss() }

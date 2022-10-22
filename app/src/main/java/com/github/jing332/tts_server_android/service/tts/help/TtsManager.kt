@@ -168,15 +168,18 @@ class TtsManager(val context: Context) {
     private fun getAudio(api: Int, text: String, rate: String, pitch: String): ByteArray? {
         when (api) {
             TtsApiType.EDGE -> {
+                val volumeStr = ttsConfig.volumeToPctString()
                 sendLog(
                     Log.INFO,
-                    "\n请求音频(Edge): voiceName=${ttsConfig.voiceName}, text=$text, rate=$rate, pitch=$pitch, format=${ttsConfig.format}"
+                    "\n请求音频(Edge): voiceName=${ttsConfig.voiceName}, text=$text, rate=$rate, " +
+                            "pitch=$pitch, volume=${volumeStr}, format=${ttsConfig.format}"
                 )
                 return mEdgeApi.getEdgeAudio(
                     ttsConfig.voiceName,
                     text,
                     rate,
                     pitch,
+                    volumeStr,
                     ttsConfig.format
                 )
             }
