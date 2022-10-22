@@ -29,22 +29,15 @@ class TtsManager(val context: Context) {
     private val norm: NormUtil by lazy { NormUtil(500F, 0F, 200F, 0F) }
     private val channel: Channel<ChannelData> by lazy { Channel(3) }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun stop() {
         isSynthesizing = false
         audioDecode.stop()
-        if (ttsConfig.isSplitSentences && !channel.isEmpty)
-            try {
-                channel.cancel()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
-        val text = request?.charSequenceText.toString()
+        val text = request?.charSequenceText.toString().trim()
         val rate = "${norm.normalize(request?.speechRate?.toFloat()!!) - 100}%"
         val pitch = "${request.pitch - 100}%"
         val format = TtsFormatManger.getFormat(ttsConfig.format)
@@ -68,10 +61,15 @@ class TtsManager(val context: Context) {
                 sentences.forEach {
                     if (!isSynthesizing) return@forEach
                     asyncGetAudio(it, rate, pitch)
+                    delay(500)
                 }
             }
             /* 阻塞接收 */
             repeat(sentences.size) {
+                if (!isSynthesizing) {
+                    channel.close()
+                    return@repeat
+                }
                 val data = channel.receive()
                 if (data.audio == null) {
                     sendLog(LogLevel.WARN, "音频为空！")
@@ -87,7 +85,7 @@ class TtsManager(val context: Context) {
                     val str = if (data.text.length > 20)
                         data.text.substring(0, 19) + "..."
                     else data.text
-                    sendLog(LogLevel.WARN, "\n播放完毕：$str")
+                    sendLog(LogLevel.WARN, "播放完毕：$str")
                 }
             }
         } else { /* 不使用分段*/
@@ -98,6 +96,7 @@ class TtsManager(val context: Context) {
     }
 
     /* 获取音频并发送到Channel*/
+    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun asyncGetAudio(
         text: String,
         rate: String,
@@ -116,13 +115,13 @@ class TtsManager(val context: Context) {
                     sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
                 }
                 sendLog(LogLevel.WARN, "开始第${i}次重试...")
-                Thread.sleep(2000) // 2s
+                delay(2000)
             }
         }
         sendLog(LogLevel.INFO, "获取音频成功, 大小: ${audioData!!.size / 1024}KB, 耗时: ${timeCost}ms")
-        channel.send(ChannelData(text, audioData))
+        if (!channel.isClosedForSend)
+            channel.send(ChannelData(text, audioData))
     }
-
 
     /* 获取音频并解码播放*/
     private fun getAudioAndDecodePlay(
