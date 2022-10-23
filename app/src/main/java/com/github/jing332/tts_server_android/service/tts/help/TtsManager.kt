@@ -49,7 +49,7 @@ class TtsManager(val context: Context) {
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(capacity = 3) {
         val regex = Regex("[。？?！!;；]")
         val sentences = text.split(regex).filter { it.replace("”", "").isNotBlank() }
-        sentences.forEach {
+        sentences.forEach { str ->
             var audioData: ByteArray? = null
             val timeCost = measureTimeMillis {
                 for (i in 1..1000) {
@@ -57,7 +57,7 @@ class TtsManager(val context: Context) {
                         return@produce
                     try {
                         audioData = getAudio(
-                            ttsConfig.api, it, rate, pitch
+                            ttsConfig.api, str, rate, pitch
                         )
                         return@measureTimeMillis
                     } catch (e: Exception) {
@@ -68,8 +68,13 @@ class TtsManager(val context: Context) {
                     delay(2000)
                 }
             }
-            sendLog(LogLevel.INFO, "获取音频成功, 大小: ${audioData!!.size / 1024}KB, 耗时: ${timeCost}ms")
-            send(ChannelData(it, audioData))
+            audioData?.let {
+                sendLog(
+                    LogLevel.INFO,
+                    "获取音频成功, 大小: ${it.size / 1024}KB, 耗时: ${timeCost}ms"
+                )
+            }
+            send(ChannelData(str, audioData))
             delay(500)
         }
     }
