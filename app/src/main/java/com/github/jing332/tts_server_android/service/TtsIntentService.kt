@@ -26,7 +26,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         const val ACTION_ON_CLOSED = "service.on_closed"
         const val ACTION_ON_STARTED = "service.on_started"
 
-        private var isWakeLock = false /* 是否使用唤醒锁 */
+        private var mIsWakeLock = false /* 是否使用唤醒锁 */
         var IsRunning = false /* 服务是否在运行 */
         var Isinited = false /* 已经初始化GoLib */
         var port: Int = 1233 /* 监听端口 */
@@ -49,13 +49,13 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     @SuppressLint("WakelockTimeout")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         IsRunning = true
-        port = intent?.getIntExtra("port", 1233)!!
-        token = intent.getStringExtra("token").toString()
-        isWakeLock = intent.getBooleanExtra("isWakeLock", false)
+        port = intent?.getIntExtra("port", 1233) ?: 1233
+        token = intent?.getStringExtra("token") ?: ""
+        mIsWakeLock = intent?.getBooleanExtra("isWakeLock", false) ?: false
 
         initNotification()
 
-        if (isWakeLock) { /* 启动唤醒锁 */
+        if (mIsWakeLock) { /* 启动唤醒锁 */
             val powerManager = getSystemService(POWER_SERVICE) as PowerManager
             mWakeLock = powerManager.newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK,
@@ -69,7 +69,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
 
     @Deprecated("Deprecated in Java")
     override fun onDestroy() {
-        if (isWakeLock) { /* 释放唤醒锁 */
+        if (mIsWakeLock) { /* 释放唤醒锁 */
             mWakeLock.release()
         }
         Toast.makeText(this, "服务已关闭", Toast.LENGTH_SHORT).show()

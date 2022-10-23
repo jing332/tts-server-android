@@ -38,6 +38,7 @@ class QSTileService : TileService() {
         } else {/* 打开 */
             val i = Intent(this.applicationContext, TtsIntentService::class.java)
             i.putExtra("isWakeLock", SharedPrefsUtils.getWakeLock(this))
+            i.putExtra("token", SharedPrefsUtils.getToken(this))
             startService(i)
             qsTile.state = Tile.STATE_ACTIVE
         }
