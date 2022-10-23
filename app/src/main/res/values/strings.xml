@@ -8,7 +8,8 @@
     <string name="label_voice_style">风格：</string>
     <string name="label_audio_format">音频格式：</string>
     <string name="label_volume">音量：</string>
-    <string name="split_long_sentces">分割长句</string>
+    <string name="label_rate">语速：</string>
+    <string name="split_long_sentences">分割长句</string>
     <string name="btn_apply_changes">应用更改</string>
     <string name="btn_open_tts_settings">打开TTS设置</string>
     <string name="loading">加载中</string>
@@ -29,4 +30,6 @@
     <string name="config">配置</string>
     <string name="log">日志</string>
     <string name="set_token">设置Token</string>
+    <string name="with_system_or_app">跟随系统或APP</string>
+
 </resources>

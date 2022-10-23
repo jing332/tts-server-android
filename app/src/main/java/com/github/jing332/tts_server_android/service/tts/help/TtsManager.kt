@@ -77,8 +77,11 @@ class TtsManager(val context: Context) {
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
         val text = request?.charSequenceText.toString().trim()
-        val rate = "${(norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()}%"
-        val pitch = "${request.pitch - 100}%"
+        val rate =
+            if (ttsConfig.rate == 0) "${(norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()}%"
+            else ttsConfig.rateToPcmString()
+
+        val pitch = "${request?.pitch?.minus(100)}%"
         val format = TtsFormatManger.getFormat(ttsConfig.format)
         if (format == null) {
             sendLog(LogLevel.ERROR, "不支持解码此格式: ${ttsConfig.format}")

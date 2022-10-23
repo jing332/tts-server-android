@@ -35,9 +35,11 @@ class TtsConfigFragmentViewModel : ViewModel() {
     val voiceRoleLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val audioFormatLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val volumeLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
+    val rateLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
     val isSplitSentencesLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
 
     private lateinit var ttsConfig: TtsConfig
+
     @OptIn(ExperimentalSerializationApi::class)
     private val json = Json {
         ignoreUnknownKeys = true
@@ -65,6 +67,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
         }
         apiLiveData.value = SpinnerData(apiListData, ttsConfig.api)
         volumeLiveData.value = ttsConfig.volume
+        rateLiveData.value = ttsConfig.rate
         isSplitSentencesLiveData.value = ttsConfig.isSplitSentences
 
         cacheDir = context.cacheDir.path
@@ -230,6 +233,11 @@ class TtsConfigFragmentViewModel : ViewModel() {
     fun volumeChanged(volume: Int) {
         volumeLiveData.value = volume
         ttsConfig.volume = volume
+    }
+
+    fun rateChanged(rate: Int) {
+        rateLiveData.value = rate
+        ttsConfig.rate = rate
     }
 
     fun isSplitSentencesChanged(isChecked: Boolean) {

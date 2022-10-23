@@ -3,7 +3,6 @@ package com.github.jing332.tts_server_android.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,8 @@ import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBindin
 import com.github.jing332.tts_server_android.service.tts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.widget.WaitDialog
 
-class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener {
+class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener,
+    SeekBar.OnSeekBarChangeListener {
     companion object {
         const val TAG = "TtsConfigFragment"
     }
@@ -50,30 +50,20 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         binding.spinnerVoice.adapter = spinnerVoiceAdapter
         binding.spinnerVoiceStyle.adapter = spinnerVoiceStyleAdapter
         binding.spinnerVoiceRole.adapter = spinnerVoiceRoleAdapter
-        binding.spinnerForamt.adapter = spinnerFormatAdapter
+        binding.spinnerFormat.adapter = spinnerFormatAdapter
 
         binding.spinnerApi.onItemSelectedListener = this
         binding.spinnerLanguage.onItemSelectedListener = this
         binding.spinnerVoice.onItemSelectedListener = this
         binding.spinnerVoiceStyle.onItemSelectedListener = this
         binding.spinnerVoiceRole.onItemSelectedListener = this
-        binding.spinnerForamt.onItemSelectedListener = this
+        binding.spinnerFormat.onItemSelectedListener = this
 
         binding.btnOpenTtsConfig.setOnClickListener(this)
         binding.btnApplyChanges.setOnClickListener(this)
 
-        binding.seekBarVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            @SuppressLint("SetTextI18n")
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                binding.tvCurrentVolume.text = "${progress - 50}%"
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                model.volumeChanged(seekBar!!.progress)
-                binding.btnApplyChanges.isEnabled = true
-            }
-        })
+        binding.seekBarRate.setOnSeekBarChangeListener(this)
+        binding.seekBarVolume.setOnSeekBarChangeListener(this)
         binding.switchSplitSentences.setOnCheckedChangeListener { _, isChecked ->
             binding.btnApplyChanges.isEnabled = isChecked != model.isSplitSentencesLiveData.value
             model.isSplitSentencesChanged(isChecked)
@@ -106,18 +96,24 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         /* 音频格式列表 */
         model.audioFormatLiveData.observe(this) { data ->
             Log.d(TAG, "audioFormatList size:${data.list.size}")
-            updateSpinner(binding.spinnerForamt, data)
+            updateSpinner(binding.spinnerFormat, data)
             spinnerFormatAdapter.clear()
             data.list.forEach {
                 spinnerFormatAdapter.add(it.displayName)
             }
-            binding.spinnerForamt.setSelection(data.position)
+            binding.spinnerFormat.setSelection(data.position)
         }
         /* 音量 */
         model.volumeLiveData.observe(this) {
             Log.d(TAG, "volume:$it")
             binding.seekBarVolume.progress = it
         }
+        /* 语速 */
+        model.rateLiveData.observe(this) {
+            Log.d(TAG, "rate:$it")
+            binding.seekBarRate.progress = it
+        }
+
         /* 是否分割长段 */
         model.isSplitSentencesLiveData.observe(this) {
             Log.d(TAG, "isSplitSentences $it")
@@ -152,7 +148,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
                 model.voiceRoleSelected(position)
                 isInit++
             }
-            R.id.spinner_foramt -> model.formatSelected(position)
+            R.id.spinner_format -> model.formatSelected(position)
         }
     }
 
@@ -161,8 +157,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     override fun onClick(v: View?) {
         when (v) {
             binding.btnOpenTtsConfig -> {
-                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                intent.action = "com.android.settings.TTS_SETTINGS"
+                val intent = Intent("com.android.settings.TTS_SETTINGS")
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 this.startActivity(intent)
             }
@@ -200,6 +195,35 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
                 )
             } else {
                 it.setSelection(data.position)
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        when (seekBar?.id) {
+            R.id.seekBar_volume -> {
+                binding.tvCurrentVolume.text = "${progress - 50}%"
+            }
+            R.id.seekBar_rate -> {
+                if (progress == 0)
+                    binding.rateValue.text = "跟随系统或朗读APP"
+                else
+                    binding.rateValue.text = "${(progress - 50) * 2}%"
+            }
+        }
+
+    }
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        binding.btnApplyChanges.isEnabled = true
+        when (seekBar?.id) {
+            R.id.seekBar_volume -> {
+                model.volumeChanged(seekBar.progress)
+            }
+            R.id.seekBar_rate -> {
+                model.rateChanged(seekBar.progress)
             }
         }
     }

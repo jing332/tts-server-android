@@ -10,8 +10,10 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -35,7 +37,8 @@
                 android:contentDescription="@string/label_api"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/textView6"
-                app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                app:layout_constraintTop_toBottomOf="@+id/textView6"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
 
             <Spinner
@@ -47,7 +50,8 @@
                 android:spinnerMode="dialog"
                 app:layout_constraintEnd_toEndOf="@+id/spinner_api"
                 app:layout_constraintStart_toStartOf="@+id/textView3"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                app:layout_constraintTop_toBottomOf="@+id/textView3"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -74,7 +78,8 @@
                 android:contentDescription="@string/label_voice"
                 app:layout_constraintEnd_toEndOf="@+id/spinner_language"
                 app:layout_constraintStart_toStartOf="@+id/tv_voice"
-                app:layout_constraintTop_toBottomOf="@+id/tv_voice" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_voice"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
             <TextView
                 android:id="@+id/label_voiceStyle"
@@ -92,7 +97,8 @@
                 android:contentDescription="@string/label_voice_role"
                 app:layout_constraintEnd_toStartOf="@+id/spinner_voiceRole"
                 app:layout_constraintStart_toStartOf="@+id/spinner_voice"
-                app:layout_constraintTop_toBottomOf="@+id/label_voiceStyle" />
+                app:layout_constraintTop_toBottomOf="@+id/label_voiceStyle"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -104,13 +110,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/spinner_voiceStyle" />
 
             <Spinner
-                android:id="@+id/spinner_foramt"
+                android:id="@+id/spinner_format"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:contentDescription="@string/label_audio_format"
                 app:layout_constraintEnd_toEndOf="@+id/spinner_voice"
                 app:layout_constraintStart_toStartOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
 
             <SeekBar
@@ -119,7 +126,7 @@
                 android:layout_height="40dp"
                 android:max="100"
                 android:progress="50"
-                app:layout_constraintEnd_toEndOf="@+id/spinner_foramt"
+                app:layout_constraintEnd_toEndOf="@+id/spinner_format"
                 app:layout_constraintStart_toStartOf="@+id/textView5"
                 app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -129,14 +136,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/label_volume"
-                app:layout_constraintStart_toStartOf="@+id/spinner_foramt"
-                app:layout_constraintTop_toBottomOf="@+id/spinner_foramt" />
+                app:layout_constraintStart_toStartOf="@+id/spinner_format"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_format" />
 
             <TextView
                 android:id="@+id/tv_currentVolume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0%"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/seekBar_volume"
                 app:layout_constraintStart_toEndOf="@+id/textView5"
                 tools:ignore="HardcodedText" />
@@ -146,24 +154,23 @@
                 android:id="@+id/switch_split_sentences"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="12dp"
                 android:minHeight="48dp"
-                android:text="@string/split_long_sentces"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/seekBar_volume"
-                app:layout_constraintTop_toBottomOf="@+id/seekBar_volume" />
+                android:text="@string/split_long_sentences"
+                app:layout_constraintEnd_toStartOf="@+id/btn_openTtsConfig"
+                app:layout_constraintTop_toTopOf="@+id/btn_openTtsConfig" />
 
             <Button
                 android:id="@+id/btn_apply_changes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="9dp"
                 android:enabled="false"
                 android:text="@string/btn_apply_changes"
-                app:layout_constraintEnd_toEndOf="@+id/spinner_voice"
-                app:layout_constraintTop_toBottomOf="@+id/switch_split_sentences" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/seekBar_rate"
+                app:layout_constraintTop_toBottomOf="@+id/seekBar_rate" />
 
             <Button
                 android:id="@+id/btn_openTtsConfig"
@@ -190,6 +197,34 @@
                 app:layout_constraintEnd_toEndOf="@+id/spinner_voice"
                 app:layout_constraintStart_toEndOf="@+id/spinner_voiceStyle"
                 app:layout_constraintTop_toTopOf="@+id/spinner_voiceStyle" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/label_rate"
+                app:layout_constraintStart_toStartOf="@+id/seekBar_volume"
+                app:layout_constraintTop_toBottomOf="@+id/seekBar_volume" />
+
+            <SeekBar
+                android:id="@+id/seekBar_rate"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                app:layout_constraintEnd_toEndOf="@+id/seekBar_volume"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView7"
+                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+            <TextView
+                android:id="@+id/rate_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/textView7"
+                app:layout_constraintTop_toTopOf="@+id/textView7"
+                android:text="@string/with_system_or_app" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

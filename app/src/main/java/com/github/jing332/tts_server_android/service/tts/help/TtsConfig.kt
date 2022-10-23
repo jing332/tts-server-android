@@ -12,6 +12,7 @@ class TtsConfig(
     var voiceId: String,
     var format: String,
     var volume: Int,
+    var rate: Int,
     var isSplitSentences: Boolean
 ) {
     constructor() : this(
@@ -21,13 +22,18 @@ class TtsConfig(
         "", "",
         "5f55541d-c844-4e04-a7f8-1723ffbea4a9",
         "audio-24khz-48kbitrate-mono-mp3",
-        50, false
+        50, 0, false
     )
 
     /* 转为百分比字符串 */
     fun volumeToPctString(): String {
         return "${volume - 50}%"
     }
+
+    fun rateToPcmString(): String {
+        return "${(rate - 50) * 2}%"
+    }
+
 
     fun loadConfig(ctx: Context): TtsConfig {
         api = getConfig(ctx, "api", TtsApiType.CREATION)
@@ -38,6 +44,7 @@ class TtsConfig(
         voiceId = getConfig(ctx, "voiceId", "5f55541d-c844-4e04-a7f8-1723ffbea4a9")
         format = getConfig(ctx, "format", "audio-24khz-48kbitrate-mono-mp3")
         volume = getConfig(ctx, "volume", 50)
+        rate = getConfig(ctx, "rate", 0)
         isSplitSentences = getConfig(ctx, "isSplitSentences", false)
         return this
     }
@@ -51,6 +58,7 @@ class TtsConfig(
         setConfig(ctx, "voiceId", voiceId)
         setConfig(ctx, "format", format)
         setConfig(ctx, "volume", volume)
+        setConfig(ctx, "rate", rate)
         setConfig(ctx, "isSplitSentences", isSplitSentences)
     }
 
