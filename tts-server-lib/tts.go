@@ -68,14 +68,14 @@ type AzureApi struct {
 	tts *azure.TTS
 }
 
-func (a AzureApi) GetAudio(voiceName, text, style, styleDegree, role, rate, pitch, volume, foramt string) ([]byte, error) {
+func (a AzureApi) GetAudio(voiceName, text, style, styleDegree, role, rate, pitch, volume, format string) ([]byte, error) {
 	if a.tts == nil {
 		a.tts = &azure.TTS{}
 	}
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
 		`<voice name="` + voiceName + `"><mstts:express-as style="` + style + `" styledegree="` + styleDegree + `" role="` + role + `">` +
 		`<prosody rate="` + rate + `" pitch="` + pitch + `" volume="` + volume + `">` + text + `</prosody></mstts:express-as></voice></speak>`
-	return a.tts.GetAudio(ssml, foramt)
+	return a.tts.GetAudio(ssml, format)
 }
 
 func GetAzureVoice() ([]byte, error) {
