@@ -173,7 +173,7 @@ class MainActivity : AppCompatActivity() {
                 builder.setView(editText)
                 builder.setPositiveButton(
                     android.R.string.ok
-                ) { _, which ->
+                ) { _, _ ->
                     val text = editText.text.toString()
                     if (text != token)
                         Toast.makeText(this, "Token已设为：${text}", Toast.LENGTH_SHORT).show()
