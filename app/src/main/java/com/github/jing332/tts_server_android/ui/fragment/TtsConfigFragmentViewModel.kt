@@ -1,9 +1,12 @@
 package com.github.jing332.tts_server_android.ui.fragment
 
 import android.content.Context
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
@@ -14,6 +17,7 @@ import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.tts.help.TtsConfig
 import com.github.jing332.tts_server_android.service.tts.help.TtsFormatManger
 import com.github.jing332.tts_server_android.utils.FileUtils
+import com.github.jing332.tts_server_android.utils.toastOnUi
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -22,8 +26,9 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import tts_server_lib.Tts_server_lib
 import java.io.File
+import java.util.*
 
-class TtsConfigFragmentViewModel : ViewModel() {
+class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
     companion object {
         const val TAG = "TtsSettingsViewModel"
     }
@@ -385,4 +390,34 @@ class TtsConfigFragmentViewModel : ViewModel() {
 
     class SpinnerData(var list: List<SpinnerItemData>, var position: Int)
     class SpinnerItemData(var displayName: String, var value: String)
+
+
+    fun speakTest(finally: () -> Unit) {
+        var tts: TextToSpeech? = null
+        tts = TextToSpeech(App.context, {
+            tts?.speak(
+                "如果喜欢这个项目的话请点个Star吧",
+                TextToSpeech.QUEUE_FLUSH,
+                null,
+                Random().nextInt().toString()
+            )
+        }, "com.github.jing332.tts_server_android")
+        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {}
+            override fun onDone(utteranceId: String?) { finally.invoke() }
+            @Deprecated("Deprecated in Java", ReplaceWith("finally.invoke()"))
+            override fun onError(utteranceId: String?) { finally.invoke() }
+            override fun onStop(utteranceId: String?, interrupted: Boolean) {
+                super.onStop(utteranceId, interrupted)
+                finally.invoke()
+            }
+        })
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS)
+            App.context.toastOnUi("初始化成功！")
+        else
+            App.context.toastOnUi("初始化失败！")
+    }
 }

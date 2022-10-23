@@ -17,6 +17,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
 import com.github.jing332.tts_server_android.service.tts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.widget.WaitDialog
+import com.github.jing332.tts_server_android.utils.runOnUI
 
 class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener,
     SeekBar.OnSeekBarChangeListener {
@@ -24,8 +25,12 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         const val TAG = "TtsConfigFragment"
     }
 
-    val binding: FragmentTtsConfigBinding by lazy { FragmentTtsConfigBinding.inflate(layoutInflater) }
-    val model: TtsConfigFragmentViewModel by viewModels()
+    private val binding: FragmentTtsConfigBinding by lazy {
+        FragmentTtsConfigBinding.inflate(
+            layoutInflater
+        )
+    }
+    private val model: TtsConfigFragmentViewModel by viewModels()
 
     private val spinnerApiAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerLanguageAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
@@ -61,6 +66,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
 
         binding.btnOpenTtsConfig.setOnClickListener(this)
         binding.btnApplyChanges.setOnClickListener(this)
+        binding.btnTest.setOnClickListener(this)
 
         binding.seekBarRate.setOnSeekBarChangeListener(this)
         binding.seekBarVolume.setOnSeekBarChangeListener(this)
@@ -155,16 +161,21 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     override fun onClick(v: View?) {
-        when (v) {
-            binding.btnOpenTtsConfig -> {
+        when (v?.id) {
+            R.id.btn_openTtsConfig -> {
                 val intent = Intent("com.android.settings.TTS_SETTINGS")
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 this.startActivity(intent)
             }
-            binding.btnApplyChanges -> {
+            R.id.btn_apply_changes -> {
                 v.isEnabled = false
                 model.saveConfig(requireContext())
                 requireContext().sendBroadcast(Intent(SystemTtsService.ACTION_ON_CONFIG_CHANGED))
+            }
+            R.id.btn_test -> {
+                v.isEnabled = false
+                binding.btnApplyChanges.callOnClick()
+                model.speakTest { runOnUI { v.isEnabled = true } }
             }
         }
     }

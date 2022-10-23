@@ -30,6 +30,7 @@
     <string name="config">配置</string>
     <string name="log">日志</string>
     <string name="set_token">设置Token</string>
-    <string name="with_system_or_app">跟随系统或APP</string>
+    <string name="with_system_or_app">跟随系统或朗读APP</string>
+    <string name="speak_test">朗读测试</string>
 
 </resources>

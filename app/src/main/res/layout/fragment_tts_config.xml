@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
@@ -154,31 +154,33 @@
                 android:id="@+id/switch_split_sentences"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:minHeight="48dp"
                 android:text="@string/split_long_sentences"
-                app:layout_constraintEnd_toStartOf="@+id/btn_openTtsConfig"
-                app:layout_constraintTop_toTopOf="@+id/btn_openTtsConfig" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seekBar_rate" />
 
             <Button
                 android:id="@+id/btn_apply_changes"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="9dp"
                 android:enabled="false"
                 android:text="@string/btn_apply_changes"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/seekBar_rate"
-                app:layout_constraintTop_toBottomOf="@+id/seekBar_rate" />
+                app:layout_constraintTop_toBottomOf="@+id/switch_split_sentences" />
 
             <Button
                 android:id="@+id/btn_openTtsConfig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="10dp"
                 android:text="@string/btn_open_tts_settings"
-                app:layout_constraintEnd_toStartOf="@+id/btn_apply_changes"
+                app:layout_constraintEnd_toStartOf="@+id/btn_test"
                 app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
 
             <TextView
@@ -220,10 +222,19 @@
                 android:id="@+id/rate_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/with_system_or_app"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/textView7"
-                app:layout_constraintTop_toTopOf="@+id/textView7"
-                android:text="@string/with_system_or_app" />
+                app:layout_constraintTop_toTopOf="@+id/textView7" />
+
+            <Button
+                android:id="@+id/btn_test"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/speak_test"
+                app:layout_constraintEnd_toStartOf="@+id/btn_apply_changes"
+                app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
