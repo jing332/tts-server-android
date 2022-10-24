@@ -8,6 +8,7 @@ class TtsConfig(
     var locale: String,
     var voiceName: String,
     var voiceStyle: String,
+    var voiceStyleDegree: Int,
     var voiceRole: String,
     var voiceId: String,
     var format: String,
@@ -19,7 +20,7 @@ class TtsConfig(
         TtsApiType.CREATION,
         "zh-CN",
         "zh-CN-XiaoxiaoNeural",
-        "", "",
+        "", 100, "",
         "5f55541d-c844-4e04-a7f8-1723ffbea4a9",
         "audio-24khz-48kbitrate-mono-mp3",
         50, 0, false
@@ -40,6 +41,7 @@ class TtsConfig(
         locale = getConfig(ctx, "locale", "zh-CN")
         voiceName = getConfig(ctx, "voiceName", "zh-CN-XiaoxiaoNeural")
         voiceStyle = getConfig(ctx, "voiceStyle", voiceStyle)
+        voiceStyleDegree = getConfig(ctx, "voiceStyleDegree", voiceStyleDegree)
         voiceRole = getConfig(ctx, "voiceRole", voiceRole)
         voiceId = getConfig(ctx, "voiceId", "5f55541d-c844-4e04-a7f8-1723ffbea4a9")
         format = getConfig(ctx, "format", "audio-24khz-48kbitrate-mono-mp3")
@@ -54,6 +56,7 @@ class TtsConfig(
         setConfig(ctx, "locale", locale)
         setConfig(ctx, "voiceName", voiceName)
         setConfig(ctx, "voiceStyle", voiceStyle)
+        setConfig(ctx, "voiceStyleDegree", voiceStyleDegree)
         setConfig(ctx, "voiceRole", voiceRole)
         setConfig(ctx, "voiceId", voiceId)
         setConfig(ctx, "format", format)

@@ -236,6 +236,21 @@
                 app:layout_constraintEnd_toStartOf="@+id/btn_apply_changes"
                 app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
 
+            <TextView
+                android:id="@+id/tv_styleDegree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:lineSpacingMultiplier="0.7"
+                android:text="@string/voice_degree_value"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toTopOf="@+id/spinner_voiceStyle"
+                app:layout_constraintStart_toEndOf="@+id/label_voiceStyle"
+                app:layout_constraintTop_toTopOf="@+id/label_voiceStyle"
+                app:layout_constraintVertical_bias="0.53" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

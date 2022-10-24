@@ -37,6 +37,7 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
     val languageLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val voiceLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val voiceStyleLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
+    val voiceStyleDegreeLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
     val voiceRoleLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val audioFormatLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val volumeLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
@@ -71,6 +72,7 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
             }
         }
         apiLiveData.value = SpinnerData(apiListData, ttsConfig.api)
+        voiceStyleDegreeLiveData.value = ttsConfig.voiceStyleDegree
         volumeLiveData.value = ttsConfig.volume
         rateLiveData.value = ttsConfig.rate
         isSplitSentencesLiveData.value = ttsConfig.isSplitSentences
@@ -82,6 +84,7 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
     @OptIn(DelicateCoroutinesApi::class)
     fun apiSelected(position: Int, finally: () -> Unit) {
         ttsConfig.api = position
+        apiLiveData.value?.position = position
         updateFormatLiveData()
         GlobalScope.launch {
             when (position) {
@@ -250,7 +253,6 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
     }
 
     private fun useEdgeApi() {
-        ttsConfig.api = TtsApiType.EDGE
         if (!this::edgeVoices.isInitialized) {
             /* 使用本地缓存或远程下载 */
             val cachePath = "$cacheDir/edge/voices.json"
@@ -284,7 +286,6 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
     }
 
     private fun useAzureApi() {
-        ttsConfig.api = TtsApiType.AZURE
         val cacheFilepath = "$cacheDir/azure/voices.json"
         val data: ByteArray
         if (FileUtils.fileExists(cacheFilepath)) {
@@ -321,7 +322,6 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
     }
 
     private fun useCreationApi() {
-        ttsConfig.api = TtsApiType.CREATION
         val cacheFilepath = "$cacheDir/creation/voices.json"
         val data: ByteArray
         if (FileUtils.fileExists(cacheFilepath)) {
@@ -388,6 +388,11 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
         ttsConfig.voiceRole = voiceRoleLiveData.value!!.list[position].value
     }
 
+    fun voiceStyleDegreeChanged(progress: Int) {
+        voiceStyleDegreeLiveData.value = progress
+        ttsConfig.voiceStyleDegree = progress
+    }
+
     class SpinnerData(var list: List<SpinnerItemData>, var position: Int)
     class SpinnerItemData(var displayName: String, var value: String)
 
@@ -404,9 +409,15 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
         }, "com.github.jing332.tts_server_android")
         tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {}
-            override fun onDone(utteranceId: String?) { finally.invoke() }
+            override fun onDone(utteranceId: String?) {
+                finally.invoke()
+            }
+
             @Deprecated("Deprecated in Java", ReplaceWith("finally.invoke()"))
-            override fun onError(utteranceId: String?) { finally.invoke() }
+            override fun onError(utteranceId: String?) {
+                finally.invoke()
+            }
+
             override fun onStop(utteranceId: String?, interrupted: Boolean) {
                 super.onStop(utteranceId, interrupted)
                 finally.invoke()

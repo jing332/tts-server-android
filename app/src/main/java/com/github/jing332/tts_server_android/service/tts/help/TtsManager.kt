@@ -176,6 +176,7 @@ class TtsManager(val context: Context) {
     private fun getAudio(api: Int, text: String, rate: String, pitch: String): ByteArray? {
         val voice = ttsConfig.voiceName
         val style = ttsConfig.voiceStyle.ifEmpty { "general" }
+        val styleDegree = "${(ttsConfig.voiceStyleDegree * 0.01).toFloat()}"
         val role = ttsConfig.voiceRole.ifEmpty { "default" }
         val volume = ttsConfig.volumeToPctString()
         val format = ttsConfig.format
@@ -199,6 +200,7 @@ class TtsManager(val context: Context) {
                 sendLog(
                     LogLevel.INFO,
                     "\n请求音频(Azure): voiceName=${voice}, text=$text, style=${style}" +
+                            ", styleDegree=$styleDegree" +
                             ", role=${role}, rate=$rate, " +
                             "pitch=$pitch, volume=${volume}, format=$format"
                 )
@@ -206,7 +208,7 @@ class TtsManager(val context: Context) {
                     voice,
                     text,
                     style,
-                    "1.0",
+                    styleDegree,
                     role,
                     rate,
                     pitch,
@@ -220,7 +222,7 @@ class TtsManager(val context: Context) {
                 arg.voiceName = ttsConfig.voiceName
                 arg.voiceId = ttsConfig.voiceId
                 arg.style = ttsConfig.voiceStyle
-                arg.styleDegree = "1.0"
+                arg.styleDegree = styleDegree
                 arg.role = role
                 arg.rate = rate
                 arg.volume = volume

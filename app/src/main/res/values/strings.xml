@@ -37,5 +37,7 @@
     <string name="tts_idel">TTS空闲中</string>
     <string name="tts_playing">TTS播放中：</string>
     <string name="system_tts_service">系统TTS服务</string>
+    <string name="voice_degree_value">强度：%s \n(长按下方设置)</string>
+    <string name="reset">重置</string>
 
 </resources>
