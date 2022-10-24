@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
 
                 val htmlStr =
                     "Github开源地址: <a href = 'https://github.com/jing332/tts-server-android'>tts-server-android</a> <br/>" +
-                            "特别感谢(他们的代码对我帮助很大):  <br/>" +
+                            "特别感谢以下开源项目:  <br/>" +
                             "&emsp;<a href= 'https://github.com/asters1/tts'>asters1/tts(Go实现)</a>" +
                             "&emsp;<a href= 'https://github.com/wxxxcxx/ms-ra-forwarder'>ms-ra-forwarder</a>" +
                             "&emsp;<a href='https://github.com/ag2s20150909/TTS'>TTS APP</a>" +
@@ -176,7 +176,11 @@ class MainActivity : AppCompatActivity() {
                 ) { _, _ ->
                     val text = editText.text.toString()
                     if (text != token)
-                        Toast.makeText(this, "Token已设为：${text}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            getString(R.string.token_set_to) + text,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     token = text
                     SharedPrefsUtils.setToken(this, token)
                 }
@@ -199,7 +203,11 @@ class MainActivity : AppCompatActivity() {
                             intent.data = Uri.parse("package:$packageName")
                             startActivity(intent)
                         } catch (e: Exception) {
-                            Toast.makeText(this, "系统不支持 请手动操作", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                getString(R.string.system_not_support_please_manual_set),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             e.printStackTrace()
                         }
                     }

@@ -5,11 +5,13 @@ import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Build
 import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ui.MainActivity
@@ -25,6 +27,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         const val ACTION_ON_LOG = "service.on_log"
         const val ACTION_ON_CLOSED = "service.on_closed"
         const val ACTION_ON_STARTED = "service.on_started"
+        const val ACTION_NOTIFICATION_EXIT = "notification_exit"
 
         private var mIsWakeLock = false /* 是否使用唤醒锁 */
         var IsRunning = false /* 服务是否在运行 */
@@ -44,6 +47,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     }
 
     private lateinit var mWakeLock: PowerManager.WakeLock /* 唤醒锁 */
+    private val mReceiver: MyReceiver by lazy { MyReceiver() }
 
     @Deprecated("Deprecated in Java")
     @SuppressLint("WakelockTimeout")
@@ -63,7 +67,9 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             )
             mWakeLock.acquire()
         }
-        Toast.makeText(this, "服务已启动", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.service_started), Toast.LENGTH_SHORT).show()
+        /* 注册广播 */
+        registerReceiver(mReceiver, IntentFilter(ACTION_NOTIFICATION_EXIT))
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -72,7 +78,8 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         if (mIsWakeLock) { /* 释放唤醒锁 */
             mWakeLock.release()
         }
-        Toast.makeText(this, "服务已关闭", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.service_closed), Toast.LENGTH_SHORT).show()
+        unregisterReceiver(mReceiver)
         super.onDestroy()
     }
 
@@ -112,18 +119,16 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     /* 广播关闭消息 */
     private fun sendClosedMsg() {
         val i = Intent(ACTION_ON_CLOSED)
-        i.putExtra("isClosed", true)
         sendBroadcast(i)
     }
 
     private fun initNotification() {
-        val notification: Notification
         /*Android 12(S)+ 必须指定PendingIntent.FLAG_*/
-        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
             PendingIntent.FLAG_IMMUTABLE
-        } else {
+        else
             0
-        }
+
         /*点击通知跳转*/
         val pendingIntent =
             PendingIntent.getActivity(
@@ -132,48 +137,52 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                     MainActivity::class.java
                 ), pendingIntentFlags
             )
-
         /*当点击退出按钮时发送广播*/
-        val quitIntent = Intent(this, Receiver::class.java).apply { action = "quit_action" }
         val closePendingIntent: PendingIntent =
-            PendingIntent.getBroadcast(this, 0, quitIntent, pendingIntentFlags)
+            PendingIntent.getBroadcast(
+                this,
+                0,
+                Intent(ACTION_NOTIFICATION_EXIT),
+                pendingIntentFlags
+            )
 
         val chanId = "server_status"
+        val smallIconRes: Int
+        val builder = Notification.Builder(applicationContext)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {/*Android 8.0+ 要求必须设置通知信道*/
-            val chan = NotificationChannel(chanId, "前台服务", NotificationManager.IMPORTANCE_NONE)
+            val chan = NotificationChannel(
+                chanId,
+                getString(R.string.tts_server_status),
+                NotificationManager.IMPORTANCE_NONE
+            )
             chan.lightColor = Color.BLUE
             chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
             val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             service.createNotificationChannel(chan)
-
-            val builder = Notification.Builder(applicationContext, chanId)
-            notification =
-                builder
-                    .setContentTitle("TTS Server正在运行中...")
-                    .setContentText("监听地址: localhost:$port")
-                    .setSmallIcon(R.drawable.ic_app_notification)
-                    .setContentIntent(pendingIntent)
-                    .addAction(R.mipmap.ic_app_notification, "退出", closePendingIntent)
-                    .build()
-
-        } else { /*SDK < Android 8*/
-            val action = Notification.Action(0, "退出", closePendingIntent)
-            val builder = Notification.Builder(applicationContext)
-            notification = builder
-                .setContentTitle("TTS Server正在运行中...")
-                .setContentText("监听地址: localhost:$port")
-                .setSmallIcon(R.mipmap.ic_app_notification)
-                .setContentIntent(pendingIntent)
-                .addAction(action)
-                .build()
+            smallIconRes = R.drawable.ic_app_notification
+            builder.setChannelId(chanId)
+        } else {
+            smallIconRes = R.mipmap.ic_app_notification
         }
+
+        val notification = builder
+            .setColor(ContextCompat.getColor(this, R.color.purple_200))
+            .setContentTitle(getString(R.string.tts_server_running))
+            .setContentText(getString(R.string.listen_address_local) + port)
+            .setSmallIcon(smallIconRes)
+            .setContentIntent(pendingIntent)
+            .addAction(0, getString(R.string.exit), closePendingIntent)
+            .build()
         startForeground(1, notification) //启动前台服务
     }
 
-    class Receiver : BroadcastReceiver() {
+    inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {/*点击通知上的退出按钮*/
-            Log.d("TtsIntentService", "onReceive")
-            closeServer(ctx!!)
+            when (intent?.action) {
+                ACTION_NOTIFICATION_EXIT -> {
+                    closeServer(ctx!!)
+                }
+            }
         }
     }
 }

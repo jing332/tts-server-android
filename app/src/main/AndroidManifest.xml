@@ -89,13 +89,5 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-
-        <receiver
-            android:name=".service.TtsIntentService$Receiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="quit_action" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>
