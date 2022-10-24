@@ -30,9 +30,10 @@ class TtsManager(val context: Context) {
     }
 
     var ttsConfig: TtsConfig = TtsConfig().loadConfig(context)
-    private var isSynthesizing = false
+    var isSynthesizing = false
     private val audioDecode: AudioDecode by lazy { AudioDecode() }
     private val norm: NormUtil by lazy { NormUtil(500F, 0F, 200F, 0F) }
+
 
     fun stop() {
         isSynthesizing = false

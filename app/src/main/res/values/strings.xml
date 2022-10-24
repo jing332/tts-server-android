@@ -32,5 +32,10 @@
     <string name="set_token">设置Token</string>
     <string name="with_system_or_app">跟随系统或朗读APP</string>
     <string name="speak_test">朗读测试</string>
+    <string name="kill_process">结束进程</string>
+    <string name="cancel">取消</string>
+    <string name="tts_idel">TTS空闲中</string>
+    <string name="tts_playing">TTS播放中：</string>
+    <string name="system_tts_service">系统TTS服务</string>
 
 </resources>

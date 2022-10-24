@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.utils
+package com.github.jing332.tts_server_android.bean
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

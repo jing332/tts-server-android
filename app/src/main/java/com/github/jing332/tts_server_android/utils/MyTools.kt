@@ -14,6 +14,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.github.jing332.tts_server_android.bean.GithubReleaseApiBean
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

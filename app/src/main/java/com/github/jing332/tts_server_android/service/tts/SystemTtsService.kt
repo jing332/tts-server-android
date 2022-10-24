@@ -1,20 +1,30 @@
 package com.github.jing332.tts_server_android.service.tts
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.media.AudioFormat
+import android.os.Build
 import android.os.PowerManager
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeechService
 import android.util.Log
+import androidx.core.content.ContextCompat
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.service.tts.help.TtsManager
+import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
 import com.github.jing332.tts_server_android.utils.GcManager
 import kotlinx.coroutines.runBlocking
 import java.util.*
+import kotlin.system.exitProcess
 
 
 class SystemTtsService : TextToSpeechService() {
@@ -22,12 +32,14 @@ class SystemTtsService : TextToSpeechService() {
         const val TAG = "TtsService"
         const val ACTION_ON_CONFIG_CHANGED = "action_on_config_changed"
         const val ACTION_ON_LOG = "action_on_log"
+        const val ACTION_CANCEL = "action_cancel"
+        const val ACTION_KILL_PROCESS = "action_kill_process"
+        const val NOTIFICATION_CHAN_ID = "system_tts_service"
+        const val NOTIFICATION_ID = 2
     }
 
-    private val currentLanguage: MutableList<String> = mutableListOf("zho", "CHN", "")
-
-    private val ttsManager: TtsManager by lazy { TtsManager(this) }
-
+    private val mCurrentLanguage: MutableList<String> = mutableListOf("zho", "CHN", "")
+    private val mTtsManager: TtsManager by lazy { TtsManager(this) }
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
     private val mWakeLock by lazy {
         val powerManager = getSystemService(POWER_SERVICE) as PowerManager
@@ -40,9 +52,14 @@ class SystemTtsService : TextToSpeechService() {
 
     override fun onCreate() {
         super.onCreate()
+        /* 注册广播 */
         val intentFilter = IntentFilter(ACTION_ON_CONFIG_CHANGED)
+        intentFilter.addAction(ACTION_KILL_PROCESS)
+        intentFilter.addAction(ACTION_CANCEL)
         registerReceiver(mReceiver, intentFilter)
+
         mWakeLock.acquire(60 * 20 * 100)
+        startForegroundService()
     }
 
     override fun onDestroy() {
@@ -58,13 +75,13 @@ class SystemTtsService : TextToSpeechService() {
     }
 
     override fun onGetLanguage(): Array<String> {
-        return currentLanguage.toTypedArray()
+        return mCurrentLanguage.toTypedArray()
     }
 
     override fun onLoadLanguage(lang: String?, country: String?, variant: String?): Int {
         val result = onIsLanguageAvailable(lang, country, variant)
-        currentLanguage.clear()
-        currentLanguage.addAll(
+        mCurrentLanguage.clear()
+        mCurrentLanguage.addAll(
             mutableListOf(
                 lang.toString(),
                 country.toString(),
@@ -77,15 +94,14 @@ class SystemTtsService : TextToSpeechService() {
 
     override fun onStop() {
         Log.d(TAG, "onStop")
-        ttsManager.stop()
+        mTtsManager.stop()
     }
 
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         synchronized(this) {
             reNewWakeLock()
-            val text = request?.charSequenceText.toString()
-            Log.d(TAG, "开始合成: $text")
-
+            val text = request?.charSequenceText.toString().trim()
+            updateNotification(getString(R.string.tts_playing), text)
             if (text.isBlank()) {
                 Log.d(TAG, "文本为空，跳过")
                 callback!!.start(
@@ -96,8 +112,9 @@ class SystemTtsService : TextToSpeechService() {
                 return
             }
             runBlocking {
-                ttsManager.synthesizeText(request, callback)
+                mTtsManager.synthesizeText(request, callback)
             }
+            updateNotification(getString(R.string.tts_idel), "")
         }
     }
 
@@ -109,11 +126,98 @@ class SystemTtsService : TextToSpeechService() {
         }
     }
 
+
+    private lateinit var mNotificationBuilder: Notification.Builder
+    private lateinit var mNotificationManager: NotificationManager
+
+    /* 启动前台服务通知 */
+    private fun startForegroundService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val chan = NotificationChannel(
+                NOTIFICATION_CHAN_ID,
+                getString(R.string.system_tts_service),
+                NotificationManager.IMPORTANCE_NONE
+            )
+            chan.lightColor = Color.CYAN
+            chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            mNotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            mNotificationManager.createNotificationChannel(chan)
+        }
+        startForeground(NOTIFICATION_ID, getNotification())
+    }
+
+    /* 更新通知 */
+    private fun updateNotification(title: String, content: String) {
+        val bigTextStyle = Notification.BigTextStyle().bigText(content).setSummaryText("TTS")
+        mNotificationBuilder.style = bigTextStyle
+        mNotificationBuilder.setContentTitle(title)
+        mNotificationBuilder.setContentText(content)
+        startForeground(NOTIFICATION_ID, mNotificationBuilder.build())
+    }
+
+    /* 获取通知 */
+    @Suppress("DEPRECATION")
+    private fun getNotification(): Notification {
+        val notification: Notification
+        /*Android 12(S)+ 必须指定PendingIntent.FLAG_*/
+        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_IMMUTABLE
+        } else {
+            0
+        }
+        /*点击通知跳转*/
+        val pendingIntent =
+            PendingIntent.getActivity(
+                this, 0, Intent(
+                    this,
+                    TtsSettingsActivity::class.java
+                ), pendingIntentFlags
+            )
+
+
+        val killProcessPendingIntent = PendingIntent.getBroadcast(
+            this, 0, Intent(
+                ACTION_KILL_PROCESS
+            ), pendingIntentFlags
+        )
+        val cancelPendingIntent =
+            PendingIntent.getBroadcast(this, 0, Intent(ACTION_CANCEL), pendingIntentFlags)
+
+        mNotificationBuilder = Notification.Builder(applicationContext)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mNotificationBuilder.setChannelId(NOTIFICATION_CHAN_ID)
+        }
+        notification = mNotificationBuilder
+            .setSmallIcon(R.mipmap.ic_app_notification)
+            .setContentIntent(pendingIntent)
+            .setColor(ContextCompat.getColor(this, R.color.purple_200))
+            .addAction(0, getString(R.string.kill_process), killProcessPendingIntent)
+            .addAction(0, getString(R.string.cancel), cancelPendingIntent)
+            .build()
+
+        return notification
+    }
+
+    @Suppress("DEPRECATION")
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == ACTION_ON_CONFIG_CHANGED) {
-                ttsManager.ttsConfig.loadConfig(this@SystemTtsService)
+            when (intent?.action) {
+                ACTION_ON_CONFIG_CHANGED -> {
+                    mTtsManager.ttsConfig.loadConfig(this@SystemTtsService)
+                }
+                ACTION_KILL_PROCESS -> {
+                    stopForeground(true)
+                    exitProcess(0)
+                }
+                ACTION_CANCEL -> {
+                    if (mTtsManager.isSynthesizing)
+                        onStop()
+                    else
+                        stopForeground(true)
+                }
             }
+
         }
     }
 }

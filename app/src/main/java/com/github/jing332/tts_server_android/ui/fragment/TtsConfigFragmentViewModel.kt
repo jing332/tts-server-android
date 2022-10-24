@@ -8,11 +8,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.bean.AzureVoiceBean
+import com.github.jing332.tts_server_android.bean.CreationVoiceBean
+import com.github.jing332.tts_server_android.bean.EdgeVoiceBean
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
-import com.github.jing332.tts_server_android.service.tts.data.AzureVoiceBean
-import com.github.jing332.tts_server_android.service.tts.data.CreationVoiceBean
-import com.github.jing332.tts_server_android.service.tts.data.EdgeVoiceBean
 import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.tts.help.TtsConfig
 import com.github.jing332.tts_server_android.service.tts.help.TtsFormatManger
