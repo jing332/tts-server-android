@@ -176,7 +176,7 @@ class TtsManager(val context: Context) {
     private fun getAudio(api: Int, text: String, rate: String, pitch: String): ByteArray? {
         val voice = ttsConfig.voiceName
         val style = ttsConfig.voiceStyle.ifEmpty { "general" }
-        val role = ttsConfig.voiceRole
+        val role = ttsConfig.voiceRole.ifEmpty { "default" }
         val volume = ttsConfig.volumeToPctString()
         val format = ttsConfig.format
         when (api) {
