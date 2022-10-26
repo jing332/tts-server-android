@@ -17,7 +17,6 @@ import com.github.jing332.tts_server_android.service.tts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.tts.help.TtsConfig
 import com.github.jing332.tts_server_android.service.tts.help.TtsFormatManger
 import com.github.jing332.tts_server_android.utils.FileUtils
-import com.github.jing332.tts_server_android.utils.toastOnUi
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,7 +27,7 @@ import tts_server_lib.Tts_server_lib
 import java.io.File
 import java.util.*
 
-class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
+class TtsConfigFragmentViewModel : ViewModel() {
     companion object {
         const val TAG = "TtsSettingsViewModel"
     }
@@ -52,10 +51,10 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
         explicitNulls = false
     }
 
-    var cacheDir: String = ""
-    lateinit var edgeVoices: List<EdgeVoiceBean>
-    lateinit var azureVoices: List<AzureVoiceBean>
-    lateinit var creationVoices: List<CreationVoiceBean>
+    private var cacheDir: String = ""
+    private lateinit var edgeVoices: List<EdgeVoiceBean>
+    private lateinit var azureVoices: List<AzureVoiceBean>
+    private lateinit var creationVoices: List<CreationVoiceBean>
 
     fun loadData(context: Context) {
         Log.d(TAG, "loadData")
@@ -106,19 +105,34 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
             TtsApiType.EDGE -> {
                 edgeVoices.forEach { item ->
                     if (item.locale == languageLiveData.value!!.list[position].value)
-                        tmpVoiceList.add(SpinnerItemData(item.shortName, item.shortName))
+                        tmpVoiceList.add(
+                            SpinnerItemData(
+                                CnLocalMap.getEdgeVoice(item.shortName) + "（${item.shortName}）",
+                                item.shortName
+                            )
+                        )
                 }
             }
             TtsApiType.AZURE -> {
                 azureVoices.forEach {
                     if (it.locale == ttsConfig.locale)
-                        tmpVoiceList.add(SpinnerItemData(it.localName, it.shortName))
+                        tmpVoiceList.add(
+                            SpinnerItemData(
+                                it.localName + "（${it.shortName}）",
+                                it.shortName
+                            )
+                        )
                 }
             }
             TtsApiType.CREATION -> {
                 creationVoices.forEach {
                     if (it.locale == languageLiveData.value!!.list[position].value)
-                        tmpVoiceList.add(SpinnerItemData(it.properties.localName, it.shortName))
+                        tmpVoiceList.add(
+                            SpinnerItemData(
+                                it.properties.localName + "（${it.shortName}）",
+                                it.shortName
+                            )
+                        )
                 }
             }
         }
@@ -150,7 +164,12 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
                         voiceItem.styleList?.let {
                             styleList[0] = SpinnerItemData("默认", "")
                             voiceItem.styleList.forEachIndexed { index, styleName ->
-                                styleList.add(SpinnerItemData(CnLocalMap.get(styleName), styleName))
+                                styleList.add(
+                                    SpinnerItemData(
+                                        CnLocalMap.getStyleAndRole(styleName),
+                                        styleName
+                                    )
+                                )
                                 if (ttsConfig.voiceStyle == styleName)
                                     selectedStyle = index + 1
                             }
@@ -165,7 +184,7 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
                             voiceItem.rolePlayList.forEachIndexed { index, roleName ->
                                 roleList.add(
                                     SpinnerItemData(
-                                        CnLocalMap.get(roleName),
+                                        CnLocalMap.getStyleAndRole(roleName),
                                         roleName
                                     )
                                 )
@@ -192,7 +211,7 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
                                     if (styleName != "Default")
                                         styleList.add(
                                             SpinnerItemData(
-                                                CnLocalMap.get(styleName),
+                                                CnLocalMap.getStyleAndRole(styleName),
                                                 styleName
                                             )
                                         )
@@ -213,7 +232,7 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
                                     if (roleName != "Default")
                                         roleList.add(
                                             SpinnerItemData(
-                                                CnLocalMap.get(roleName),
+                                                CnLocalMap.getStyleAndRole(roleName),
                                                 roleName
                                             )
                                         )
@@ -273,7 +292,7 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
 
             tmpLangList.add(SpinnerItemData(CnLocalMap.getLanguage(item.locale), item.locale))
         }
-        tmpLangList.sortBy { it.displayName }
+        tmpLangList.sortBy { it.value }
         var selected = 0
         tmpLangList.forEachIndexed { index, item ->
             if (ttsConfig.locale == item.value)
@@ -396,7 +415,7 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
     class SpinnerData(var list: List<SpinnerItemData>, var position: Int)
     class SpinnerItemData(var displayName: String, var value: String)
 
-
+    /* 开始朗读测试 */
     fun speakTest(finally: () -> Unit) {
         var tts: TextToSpeech? = null
         tts = TextToSpeech(App.context, {
@@ -423,12 +442,5 @@ class TtsConfigFragmentViewModel : ViewModel(), TextToSpeech.OnInitListener {
                 finally.invoke()
             }
         })
-    }
-
-    override fun onInit(status: Int) {
-        if (status == TextToSpeech.SUCCESS)
-            App.context.toastOnUi("初始化成功！")
-        else
-            App.context.toastOnUi("初始化失败！")
     }
 }

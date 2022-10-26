@@ -239,10 +239,8 @@ class SystemTtsService : TextToSpeechService() {
                         stopForeground(true)
                         isNotificationDisplayed = false
                     }
-
                 }
             }
-
         }
     }
 }

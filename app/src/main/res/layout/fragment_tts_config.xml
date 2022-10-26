@@ -167,7 +167,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="9dp"
                 android:enabled="false"
                 android:text="@string/btn_apply_changes"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -178,9 +177,10 @@
                 android:id="@+id/btn_openTtsConfig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:text="@string/btn_open_tts_settings"
                 app:layout_constraintEnd_toStartOf="@+id/btn_test"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/switch_split_sentences"
                 app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
 
             <TextView
