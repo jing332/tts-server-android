@@ -34,10 +34,12 @@ class TtsManager(val context: Context) {
     private val audioDecode: AudioDecode by lazy { AudioDecode() }
     private val norm: NormUtil by lazy { NormUtil(500F, 0F, 200F, 0F) }
 
-
     fun stop() {
         isSynthesizing = false
         audioDecode.stop()
+        if (ttsConfig.api == TtsApiType.CREATION) {
+            mCreationApi.cancel()
+        }
     }
 
     lateinit var producer: ReceiveChannel<ChannelData>
@@ -135,7 +137,7 @@ class TtsManager(val context: Context) {
                 })
             sendLog(LogLevel.INFO, "播放完毕")
         } else {
-            sendLog(LogLevel.WARN, "音频内容为空！")
+            sendLog(LogLevel.WARN, "音频内容为空或被终止请求")
             callback?.done()
         }
     }
@@ -153,8 +155,12 @@ class TtsManager(val context: Context) {
                 audio = getAudio(ttsConfig.api, text, rate, pitch)
                 return audio
             } catch (e: Exception) {
-                e.printStackTrace()
-                sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
+                if (e.message?.endsWith("context canceled") == true) { /* 为主动取消请求 */
+                    return null
+                } else {
+                    e.printStackTrace()
+                    sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
+                }
             }
             sendLog(LogLevel.WARN, "开始第${i}次重试...")
             delay(2000)
