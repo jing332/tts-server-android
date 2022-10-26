@@ -51,31 +51,15 @@ class TtsManager(val context: Context) {
         val regex = Regex("[。？?！!;；]")
         val sentences = text.split(regex).filter { it.replace("”", "").isNotBlank() }
         sentences.forEach { str ->
-            var audioData: ByteArray? = null
-            val timeCost = measureTimeMillis {
-                for (i in 1..1000) {
-                    if (!isSynthesizing)
-                        return@produce
-                    try {
-                        audioData = getAudio(
-                            ttsConfig.api, str, rate, pitch
-                        )
-                        return@measureTimeMillis
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
-                    }
-                    sendLog(LogLevel.WARN, "开始第${i}次重试...")
-                    delay(2000)
-                }
-            }
-            audioData?.let {
+            var audio: ByteArray?
+            val timeCost = measureTimeMillis { audio = getAudioUseRetry(text, rate, pitch) }
+            audio?.let {
                 sendLog(
                     LogLevel.INFO,
                     "获取音频成功, 大小: ${it.size / 1024}KB, 耗时: ${timeCost}ms"
                 )
             }
-            send(ChannelData(str, audioData))
+            send(ChannelData(str, audio))
             delay(500)
         }
     }
@@ -131,32 +115,19 @@ class TtsManager(val context: Context) {
     }
 
     /* 获取音频并解码播放*/
-    private fun getAudioAndDecodePlay(
+    private suspend fun getAudioAndDecodePlay(
         text: String,
         rate: String,
         pitch: String,
         callback: SynthesisCallback?
     ) {
-        var audio: ByteArray? = null
-        val timeCost = measureTimeMillis {
-            for (i in 1..1000) {
-                try {
-                    audio = getAudio(ttsConfig.api, text, rate, pitch)
-                    return@measureTimeMillis
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
-                }
-                sendLog(LogLevel.WARN, "开始第${i}次重试...")
-                Thread.sleep(2000) // 2s
-            }
-        }
-
+        val audio: ByteArray?
+        val timeCost = measureTimeMillis { audio = getAudioUseRetry(text, rate, pitch) }
         if (audio != null) {
-            sendLog(LogLevel.INFO, "获取音频成功, 大小: ${audio!!.size / 1024}KB, 耗时: ${timeCost}ms")
+            sendLog(LogLevel.INFO, "获取音频成功, 大小: ${audio.size / 1024}KB, 耗时: ${timeCost}ms")
             val hz = TtsFormatManger.getFormat(ttsConfig.format)?.hz ?: 16000
             audioDecode.doDecode(
-                audio!!,
+                audio,
                 hz,
                 onRead = { writeToCallBack(callback!!, it) },
                 error = {
@@ -167,6 +138,28 @@ class TtsManager(val context: Context) {
             sendLog(LogLevel.WARN, "音频内容为空！")
             callback?.done()
         }
+    }
+
+    /* 获取音频，失败则重试 */
+    private suspend fun getAudioUseRetry(
+        text: String,
+        rate: String,
+        pitch: String,
+    ): ByteArray? {
+        var audio: ByteArray?
+        for (i in 1..1000) {
+            if (!isSynthesizing) return null
+            try {
+                audio = getAudio(ttsConfig.api, text, rate, pitch)
+                return audio
+            } catch (e: Exception) {
+                e.printStackTrace()
+                sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
+            }
+            sendLog(LogLevel.WARN, "开始第${i}次重试...")
+            delay(2000)
+        }
+        return null
     }
 
     private val mEdgeApi: EdgeApi by lazy { EdgeApi() }
@@ -234,6 +227,7 @@ class TtsManager(val context: Context) {
         return null
     }
 
+    /* 写入PCM音频到系统组件 */
     private fun writeToCallBack(callback: SynthesisCallback, pcmData: ByteArray) {
         try {
             val maxBufferSize: Int = callback.maxBufferSize

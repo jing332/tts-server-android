@@ -34,18 +34,19 @@
     <string name="speak_test">朗读测试</string>
     <string name="kill_process">结束进程</string>
     <string name="cancel">取消</string>
-    <string name="tts_idel">TTS空闲中</string>
-    <string name="tts_playing">TTS播放中：</string>
+    <string name="tts_state_idle">TTS空闲中</string>
+    <string name="tts_state_playing">TTS播放中：</string>
     <string name="system_tts_service">系统TTS服务</string>
     <string name="voice_degree_value">强度：%s \n(长按下方设置)</string>
-    <string name="reset">重置</string>
     <string name="token_set_to">Token已设为：</string>
     <string name="system_not_support_please_manual_set">系统不支持，请手动操作</string>
     <string name="service_started">服务已启动</string>
     <string name="service_closed">服务已关闭</string>
     <string name="tts_server_status">TTS服务器状态</string>
+    <string name="reset">重置</string>
     <string name="exit">退出</string>
     <string name="tts_server_running">TTS Server正在运行中</string>
     <string name="listen_address_local">监听地址: localhost:</string>
+    <string name="auto_closed_later_notification">稍后将会自动关闭本通知</string>
 
 </resources>

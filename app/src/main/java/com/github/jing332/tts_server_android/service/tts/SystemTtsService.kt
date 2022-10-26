@@ -22,11 +22,12 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.service.tts.help.TtsManager
 import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
 import com.github.jing332.tts_server_android.utils.GcManager
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
 
 
+@Suppress("DEPRECATION")
 class SystemTtsService : TextToSpeechService() {
     companion object {
         const val TAG = "TtsService"
@@ -59,7 +60,6 @@ class SystemTtsService : TextToSpeechService() {
         registerReceiver(mReceiver, intentFilter)
 
         mWakeLock.acquire(60 * 20 * 100)
-        startForegroundService()
     }
 
     override fun onDestroy() {
@@ -100,21 +100,24 @@ class SystemTtsService : TextToSpeechService() {
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         synchronized(this) {
             reNewWakeLock()
+            startForegroundService()
             val text = request?.charSequenceText.toString().trim()
-            updateNotification(getString(R.string.tts_playing), text)
+            updateNotification(getString(R.string.tts_state_playing), text)
             if (text.isBlank()) {
-                Log.d(TAG, "文本为空，跳过")
-                callback!!.start(
+                callback?.start(
                     16000,
                     AudioFormat.ENCODING_PCM_16BIT, 1
                 )
-                callback.done()
+                callback?.done()
                 return
             }
             runBlocking {
                 mTtsManager.synthesizeText(request, callback)
             }
-            updateNotification(getString(R.string.tts_idel), "")
+            updateNotification(
+                getString(R.string.tts_state_idle),
+                getString(R.string.auto_closed_later_notification)
+            )
         }
     }
 
@@ -129,22 +132,42 @@ class SystemTtsService : TextToSpeechService() {
 
     private lateinit var mNotificationBuilder: Notification.Builder
     private lateinit var mNotificationManager: NotificationManager
+    private var isNotificationDisplayed = false
+
+    private val scope = object : CoroutineScope {
+        override val coroutineContext = Job()
+    }
 
     /* 启动前台服务通知 */
     private fun startForegroundService() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val chan = NotificationChannel(
-                NOTIFICATION_CHAN_ID,
-                getString(R.string.system_tts_service),
-                NotificationManager.IMPORTANCE_NONE
-            )
-            chan.lightColor = Color.CYAN
-            chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-            mNotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            mNotificationManager.createNotificationChannel(chan)
+        if (!isNotificationDisplayed) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val chan = NotificationChannel(
+                    NOTIFICATION_CHAN_ID,
+                    getString(R.string.system_tts_service),
+                    NotificationManager.IMPORTANCE_NONE
+                )
+                chan.lightColor = Color.CYAN
+                chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+                mNotificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                mNotificationManager.createNotificationChannel(chan)
+            }
+            startForeground(NOTIFICATION_ID, getNotification())
+            isNotificationDisplayed = true
+
+            scope.launch {
+                while (true) {
+                    delay(5000)
+                    if (!mTtsManager.isSynthesizing) {
+                        stopForeground(true)
+                        isNotificationDisplayed = false
+                        return@launch
+                    }
+                }
+            }
+
         }
-        startForeground(NOTIFICATION_ID, getNotification())
     }
 
     /* 更新通知 */
@@ -175,7 +198,6 @@ class SystemTtsService : TextToSpeechService() {
                 ), pendingIntentFlags
             )
 
-
         val killProcessPendingIntent = PendingIntent.getBroadcast(
             this, 0, Intent(
                 ACTION_KILL_PROCESS
@@ -203,18 +225,21 @@ class SystemTtsService : TextToSpeechService() {
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_ON_CONFIG_CHANGED -> {
+                ACTION_ON_CONFIG_CHANGED -> { /* 配置更改 */
                     mTtsManager.ttsConfig.loadConfig(this@SystemTtsService)
                 }
-                ACTION_KILL_PROCESS -> {
+                ACTION_KILL_PROCESS -> { /* 通知按钮{结束进程} */
                     stopForeground(true)
                     exitProcess(0)
                 }
-                ACTION_CANCEL -> {
+                ACTION_CANCEL -> { /* 通知按钮{取消}*/
                     if (mTtsManager.isSynthesizing)
-                        onStop()
-                    else
+                        onStop() /* 取消当前播放 */
+                    else /* 无播放，关闭通知 */ {
                         stopForeground(true)
+                        isNotificationDisplayed = false
+                    }
+
                 }
             }
 
