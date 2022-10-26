@@ -52,7 +52,7 @@ class TtsManager(val context: Context) {
         val sentences = text.split(regex).filter { it.replace("”", "").isNotBlank() }
         sentences.forEach { str ->
             var audio: ByteArray?
-            val timeCost = measureTimeMillis { audio = getAudioUseRetry(text, rate, pitch) }
+            val timeCost = measureTimeMillis { audio = getAudioUseRetry(str, rate, pitch) }
             audio?.let {
                 sendLog(
                     LogLevel.INFO,
