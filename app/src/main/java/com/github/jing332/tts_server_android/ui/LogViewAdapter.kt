@@ -1,6 +1,9 @@
 package com.github.jing332.tts_server_android.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.utils.longToastOnUi
 
 //显示日志的适配器
 class LogViewAdapter(private val dataSet: ArrayList<MyLog>) :
@@ -48,6 +52,13 @@ class LogViewAdapter(private val dataSet: ArrayList<MyLog>) :
         val data = dataSet[position]
         viewHolder.textView.text = data.msg
         viewHolder.textView.setTextColor(data.toColor())
+        viewHolder.itemView.setOnLongClickListener {
+            val cm = it.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+            val mClipData = ClipData.newPlainText("log", viewHolder.textView.text.trim())
+            cm?.setPrimaryClip(mClipData)
+            it.context.longToastOnUi(it.context.getString(R.string.copied))
+            true
+        }
     }
 
     override fun getItemCount() = dataSet.size
