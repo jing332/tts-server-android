@@ -166,7 +166,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         }
 
         val notification = builder
-            .setColor(ContextCompat.getColor(this, R.color.purple_200))
+            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setContentTitle(getString(R.string.tts_server_running))
             .setContentText(getString(R.string.listen_address_local) + port)
             .setSmallIcon(smallIconRes)

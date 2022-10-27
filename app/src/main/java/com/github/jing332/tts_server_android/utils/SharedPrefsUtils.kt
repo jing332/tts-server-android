@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.utils
 
 import android.content.Context
+import androidx.preference.PreferenceManager
 
 object SharedPrefsUtils {
     fun getWakeLock(ctx: Context): Boolean {
@@ -25,4 +26,8 @@ object SharedPrefsUtils {
         return pref.getString("token", "").toString()
     }
 
+    fun getUseDnsEdge(ctx: Context): Boolean {
+        val pref = PreferenceManager.getDefaultSharedPreferences(ctx)
+        return pref.getBoolean("useDnsEdge", false)
+    }
 }

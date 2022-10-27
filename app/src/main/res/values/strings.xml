@@ -50,4 +50,7 @@
     <string name="auto_closed_later_notification">稍后将会自动关闭本通知</string>
     <string name="copied">已复制</string>
 
+    <string name="menu_sys_tts_settings">系统TTS配置</string>
+    <string name="menu_settings">设置</string>
+    <string name="title_activity_settings">设置</string>
 </resources>

@@ -19,11 +19,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TtsServer">
         <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_settings">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.TtsServer.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
@@ -34,27 +44,26 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-
         <activity
             android:name=".ui.ScSwitchActivity"
             android:theme="@android:style/Theme.NoDisplay" />
-
         <activity
             android:name=".service.tts.CheckVoiceData"
             android:exported="true"
             android:label="CheckVoiceData">
             <intent-filter>
                 <action android:name="android.speech.tts.engine.CHECK_TTS_DATA" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.TtsSettingsActivity"
             android:exported="true"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.speech.tts.engine.CONFIGURE_ENGINE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -66,19 +75,19 @@
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.intent.action.TTS_SERVICE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <meta-data
                 android:name="android.speech.tts"
                 android:resource="@xml/tts_engine" />
         </service>
-
         <service
             android:name=".service.TtsIntentService"
             android:enabled="true"
             android:exported="false"
             tools:ignore="Instantiatable" />
-
         <service
             android:name=".service.QSTileService"
             android:exported="true"
@@ -90,4 +99,5 @@
             </intent-filter>
         </service>
     </application>
+
 </manifest>

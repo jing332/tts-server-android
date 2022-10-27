@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
-        android:id="@+id/menu_openConfigUI"
-        android:title="@string/tts_config"
-        app:showAsAction="ifRoom" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_openWeb"
         android:title="@string/open_web" />
@@ -17,16 +11,7 @@
         android:checkable="true"
         android:title="@string/wake_lock" />
     <item
-        android:id="@+id/menu_killBattery"
-        android:title="@string/background_whitelist" />
-    <item
         android:id="@+id/menu_shortcut"
         android:title="@string/desktop_shortcut" />
-    <item
-        android:id="@+id/menu_checkUpdate"
-        android:title="@string/check_update" />
-    <item
-        android:id="@+id/menu_about"
-        android:title="@string/about" />
 
 </menu>

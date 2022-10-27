@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:id="@+id/group1">
+        <item
+            android:id="@+id/nav_systts_settings"
+            android:icon="@drawable/ic_tts"
+            android:title="@string/menu_sys_tts_settings" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/menu_settings" />
+    </group>
+
+    <group android:id="@+id/group2">
+        <item
+            android:id="@+id/nav_killBattery"
+            android:icon="@drawable/ic_battery"
+            android:title="@string/background_whitelist" />
+        <item
+            android:id="@+id/nav_checkUpdate"
+            android:icon="@drawable/ic_check_update"
+            android:title="@string/check_update" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_about"
+            android:title="@string/about" />
+    </group>
+</menu>

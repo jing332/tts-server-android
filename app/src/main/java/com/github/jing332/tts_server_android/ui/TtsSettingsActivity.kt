@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -15,7 +14,7 @@ import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
 import com.github.jing332.tts_server_android.utils.MyTools
 
-class TtsSettingsActivity : AppCompatActivity() {
+class TtsSettingsActivity : BackActivity() {
     companion object {
         const val TAG = "TtsSettingsActivity"
     }
@@ -48,7 +47,7 @@ class TtsSettingsActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_tts_settings, menu)
+        menuInflater.inflate(R.menu.menu_systts_settings, menu)
         return true
     }
 
