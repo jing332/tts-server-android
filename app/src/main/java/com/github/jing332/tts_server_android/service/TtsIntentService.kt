@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ui.MainActivity
+import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
 import tts_server_lib.LogCallback
 import tts_server_lib.Tts_server_lib
 
@@ -35,14 +36,9 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         var port: Int = 1233 /* 监听端口 */
         var token: String = ""
 
-        /*关闭服务，如有Http请求需要等待*/
-        fun closeServer(context: Context): Boolean {
-            val err = Tts_server_lib.closeServer()/* 5s */
-            if (err.isNotEmpty()) {
-                Toast.makeText(context, "关闭失败：$err", Toast.LENGTH_SHORT).show()
-                return false
-            }
-            return true
+        /* 强制关闭服务 */
+        fun closeServer() {
+            Tts_server_lib.closeServer()
         }
     }
 
@@ -96,8 +92,9 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         }
 
         sendStartedMsg()
+        val useDnsEdge = SharedPrefsUtils.getUseDnsEdge(this)
         /*启动Go服务并阻塞等待,直到关闭*/
-        Tts_server_lib.runServer(port.toLong(), token)
+        Tts_server_lib.runServer(port.toLong(), token, useDnsEdge)
         IsRunning = false
         sendClosedMsg()
     }
@@ -180,7 +177,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         override fun onReceive(ctx: Context?, intent: Intent?) {/*点击通知上的退出按钮*/
             when (intent?.action) {
                 ACTION_NOTIFICATION_EXIT -> {
-                    closeServer(ctx!!)
+                    closeServer()
                 }
             }
         }

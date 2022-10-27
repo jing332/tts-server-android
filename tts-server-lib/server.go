@@ -23,20 +23,19 @@ func Init(cb LogCallback) {
 	s.HandleFunc()
 }
 
-func RunServer(port int64, token string) {
+func RunServer(port int64, token string, useDnsEdge bool) {
 	s.Token = token
+	s.UseDnsEdge = useDnsEdge
 	err := s.ListenAndServe(port)
 	if err != nil {
 		log.Error(err)
 	}
+	s = nil
 }
 
-func CloseServer() string {
-	err := s.Shutdown(time.Second * 5)
-	if err != nil {
-		return err.Error()
-	}
-	return ""
+func CloseServer() {
+	s.Close()
+	s.Shutdown(time.Second * 5)
 }
 
 type LogHandler struct {

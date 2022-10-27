@@ -32,7 +32,7 @@ class QSTileService : TileService() {
 
         if (qsTile.state == Tile.STATE_ACTIVE) { /* 关闭 */
             if (TtsIntentService.IsRunning) {
-                TtsIntentService.closeServer(this)
+                TtsIntentService.closeServer()
             }
             qsTile.state = Tile.STATE_INACTIVE
         } else {/* 打开 */

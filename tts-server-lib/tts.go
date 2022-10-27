@@ -10,12 +10,13 @@ import (
 )
 
 type EdgeApi struct {
-	tts *edge.TTS
+	tts          *edge.TTS
+	useDnsLookup bool
 }
 
 func (e *EdgeApi) GetEdgeAudio(voiceName, text, rate, pitch, volume, format string) ([]byte, error) {
 	if e.tts == nil {
-		e.tts = &edge.TTS{}
+		e.tts = &edge.TTS{UseDnsLookup: e.useDnsLookup}
 	}
 	ssml := `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='en-US'><voice name='` + voiceName + `'><prosody pitch='` + pitch + `' rate ='` + rate + `' volume='` + volume + `'>` + text + `</prosody></voice></speak>`
 	return e.tts.GetAudio(ssml, format)

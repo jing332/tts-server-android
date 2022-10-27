@@ -13,7 +13,7 @@ class ScSwitchActivity : Activity() {
         setContentView(R.layout.activity_none)
 
         if (TtsIntentService.IsRunning) {
-            TtsIntentService.closeServer(this)
+            TtsIntentService.closeServer()
         } else {
             val i = Intent(this.applicationContext, TtsIntentService::class.java)
             i.putExtra("isWakeLock", SharedPrefsUtils.getWakeLock(this))

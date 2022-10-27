@@ -86,10 +86,10 @@ class MainActivity : AppCompatActivity() {
             i.putExtra("isWakeLock", isWakeLock)
             startService(i)
         }
-        /*关闭按钮*/
+        /* 关闭按钮 */
         binding.btnClose.setOnClickListener {
             if (TtsIntentService.IsRunning) { /*服务运行中*/
-                TtsIntentService.closeServer(this) /*关闭服务 然后将通过广播通知MainActivity*/
+                TtsIntentService.closeServer() /*关闭服务 然后将通过广播通知MainActivity*/
             }
         }
 
