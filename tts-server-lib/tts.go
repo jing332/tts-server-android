@@ -7,6 +7,7 @@ import (
 	"github.com/jing332/tts-server-go/service/edge"
 	"io"
 	"net/http"
+	"regexp"
 )
 
 type EdgeApi struct {
@@ -18,7 +19,9 @@ func (e *EdgeApi) GetEdgeAudio(voiceName, text, rate, pitch, volume, format stri
 	if e.tts == nil {
 		e.tts = &edge.TTS{UseDnsLookup: e.useDnsLookup}
 	}
-	ssml := `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='en-US'><voice name='` + voiceName + `'><prosody pitch='` + pitch + `' rate ='` + rate + `' volume='` + volume + `'>` + text + `</prosody></voice></speak>`
+	ssml := `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='en-US'>` +
+		`<voice name='` + voiceName + `'><prosody pitch='` + pitch + `' rate ='` + rate + `' volume='` + volume + `'>` +
+		specialCharReplace(text) + `</prosody></voice></speak>`
 	return e.tts.GetAudio(ssml, format)
 }
 
@@ -45,7 +48,7 @@ func (a *AzureApi) GetAudio(voiceName, text, style, styleDegree, role, rate, pit
 	}
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
 		`<voice name="` + voiceName + `"><mstts:express-as style="` + style + `" styledegree="` + styleDegree + `" role="` + role + `">` +
-		`<prosody rate="` + rate + `" pitch="` + pitch + `" volume="` + volume + `">` + text + `</prosody></mstts:express-as></voice></speak>`
+		`<prosody rate="` + rate + `" pitch="` + pitch + `" volume="` + volume + `">` + specialCharReplace(text) + `</prosody></mstts:express-as></voice></speak>`
 	return a.tts.GetAudio(ssml, format)
 }
 
@@ -74,6 +77,7 @@ func (c *CreationApi) GetCreationAudio(arg *CreationArg) ([]byte, error) {
 	var ctx context.Context
 	ctx, c.cancel = context.WithCancel(context.Background())
 
+	arg.Text = specialCharReplace(arg.Text)
 	s := creation.SpeakArg(*arg)
 	audio, err := c.tts.GetAudioUseContext(ctx, &s)
 	if err != nil {
@@ -94,4 +98,11 @@ func GetCreationVoices() ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
+}
+
+var charRegexp = regexp.MustCompile(`[<>&\\/]`)
+
+// specialCharReplace 过滤掉特殊字符: <,>,$,\,/
+func specialCharReplace(s string) string {
+	return charRegexp.ReplaceAllString(s, "")
 }
