@@ -4,7 +4,6 @@ import (
 	"github.com/jing332/tts-server-go/server"
 	log "github.com/sirupsen/logrus"
 	"io"
-	"time"
 )
 
 type LogCallback interface {
@@ -34,8 +33,9 @@ func RunServer(port int64, token string, useDnsEdge bool) {
 }
 
 func CloseServer() {
-	s.Close()
-	s.Shutdown(time.Second * 5)
+	if s != nil {
+		s.Close()
+	}
 }
 
 type LogHandler struct {

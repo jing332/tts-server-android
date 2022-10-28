@@ -32,7 +32,6 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
 
         private var mIsWakeLock = false /* 是否使用唤醒锁 */
         var IsRunning = false /* 服务是否在运行 */
-        var Isinited = false /* 已经初始化GoLib */
         var port: Int = 1233 /* 监听端口 */
         var token: String = ""
 
@@ -81,15 +80,12 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
 
     @Deprecated("Deprecated in Java")
     override fun onHandleIntent(intent: Intent?) {
-        if (!Isinited) { /* 初始化Go: 设置日志转发，注册Http.Server */
-            /* 来自Go的日志 */
-            val cb = LogCallback { level, msg ->
-                Log.d(TAG, "$level $msg")
-                sendLog(MyLog(level, msg))
-            }
-            Tts_server_lib.init(cb)
-            Isinited = true
+        /* 初始化Go: 设置日志转发，注册Http.Server */
+        val cb = LogCallback { level, msg ->
+            Log.d(TAG, "$level $msg")
+            sendLog(MyLog(level, msg))
         }
+        Tts_server_lib.init(cb)
 
         sendStartedMsg()
         val useDnsEdge = SharedPrefsUtils.getUseDnsEdge(this)
