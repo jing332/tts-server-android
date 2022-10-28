@@ -54,4 +54,5 @@
     <string name="menu_settings">设置</string>
     <string name="title_activity_settings">设置</string>
     <string name="copy_address">复制地址</string>
+    <string name="ok_reset">已重置</string>
 </resources>

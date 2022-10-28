@@ -10,6 +10,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityTtsSettingsBinding
+import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
 import com.github.jing332.tts_server_android.utils.MyTools

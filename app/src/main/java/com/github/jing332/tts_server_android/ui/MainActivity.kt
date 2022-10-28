@@ -14,7 +14,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +27,7 @@ import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.utils.MyTools
 import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
+import com.github.jing332.tts_server_android.utils.toastOnUi
 import tts_server_lib.Tts_server_lib
 
 
@@ -45,9 +45,6 @@ class MainActivity : AppCompatActivity() {
 
     private val logList: ArrayList<MyLog> by lazy { ArrayList() }
     private val logAdapter: LogViewAdapter by lazy { LogViewAdapter(logList) }
-
-    private var isWakeLock = false
-    private var token = ""
 
     @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,9 +137,7 @@ class MainActivity : AppCompatActivity() {
         super.onPrepareOptionsMenu(menu)
         val item = menu?.findItem(R.id.menu_wakeLock)
         /* 从配置文件读取并更新isWakeLock */
-        isWakeLock = SharedPrefsUtils.getWakeLock(this)
-        token = SharedPrefsUtils.getToken(this)
-        item?.isChecked = isWakeLock
+        item?.isChecked = SharedPrefsUtils.getWakeLock(this)
         return true
     }
 
@@ -150,7 +145,7 @@ class MainActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     @SuppressLint("BatteryLife")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+        when (item.itemId) {
             R.id.menu_openWeb -> { /* {打开网页版} 按钮 */
                 if (TtsIntentService.instance?.isRunning == true) {
                     val intent = Intent(Intent.ACTION_VIEW)
@@ -159,16 +154,11 @@ class MainActivity : AppCompatActivity() {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                 } else {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.please_start_service),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    toastOnUi(R.string.please_start_service)
                 }
-
-                true
             }
             R.id.menu_setToken -> {
+                val token = SharedPrefsUtils.getToken(this)
                 val builder = AlertDialog.Builder(this).setTitle(getString(R.string.set_token))
                 val editText = EditText(this)
                 editText.setText(token)
@@ -177,28 +167,20 @@ class MainActivity : AppCompatActivity() {
                     android.R.string.ok
                 ) { _, _ ->
                     val text = editText.text.toString()
-                    if (text != token)
-                        Toast.makeText(
-                            this,
-                            getString(R.string.token_set_to) + text.ifEmpty { "空" },
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    token = text
-                    SharedPrefsUtils.setToken(this, token)
+                    if (text != token) {
+                        toastOnUi(getString(R.string.token_set_to) + text.ifEmpty { "空" })
+                        SharedPrefsUtils.setToken(this, text)
+                    }
+                }.setNegativeButton(R.string.reset) { _, _ ->
+                    SharedPrefsUtils.setToken(this, "")
+                    toastOnUi(getString(R.string.ok_reset))
                 }
                 builder.create().show()
-                true
             }
             R.id.menu_wakeLock -> { /* 唤醒锁 */
                 item.isChecked = !item.isChecked /* 更新选中状态 */
-                isWakeLock = item.isChecked
                 SharedPrefsUtils.setWakeLock(this, item.isChecked)
-                Toast.makeText(
-                    this,
-                    getString(R.string.restart_service_to_update),
-                    Toast.LENGTH_SHORT
-                ).show()
-                true
+                toastOnUi(R.string.restart_service_to_update)
             }
             R.id.menu_shortcut -> {
                 MyTools.addShortcut(
@@ -208,11 +190,9 @@ class MainActivity : AppCompatActivity() {
                     R.drawable.ic_switch,
                     Intent(this, ScSwitchActivity::class.java)
                 )
-                true
             }
-
-            else -> super.onOptionsItemSelected(item)
         }
+        return true
     }
 
     /* 监听广播 */
@@ -279,22 +259,14 @@ class MainActivity : AppCompatActivity() {
         val pm = getSystemService(POWER_SERVICE) as PowerManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (pm.isIgnoringBatteryOptimizations(packageName)) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.added_background_whitelist),
-                    Toast.LENGTH_SHORT
-                ).show()
+                toastOnUi(R.string.added_background_whitelist)
             } else {
                 try {
                     intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
                     intent.data = Uri.parse("package:$packageName")
                     startActivity(intent)
                 } catch (e: Exception) {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.system_not_support_please_manual_set),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    toastOnUi(R.string.system_not_support_please_manual_set)
                     e.printStackTrace()
                 }
             }

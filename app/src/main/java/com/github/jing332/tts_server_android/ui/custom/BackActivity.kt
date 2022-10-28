@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui
+package com.github.jing332.tts_server_android.ui.custom
 
 import android.os.Bundle
 import android.view.MenuItem

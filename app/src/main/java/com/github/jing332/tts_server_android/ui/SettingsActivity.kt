@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.ui
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.ui.custom.BackActivity
 
 class SettingsActivity : BackActivity() {
 
