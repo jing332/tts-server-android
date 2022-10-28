@@ -7,21 +7,16 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
 
+/* 桌面长按菜单{开关} */
 class ScSwitchActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_none)
-
-        if (TtsIntentService.IsRunning) {
-            TtsIntentService.closeServer()
-        } else {
-            val i = Intent(this.applicationContext, TtsIntentService::class.java)
-            i.putExtra("isWakeLock", SharedPrefsUtils.getWakeLock(this))
-            i.putExtra("token", SharedPrefsUtils.getToken(this))
-            startService(i)
-        }
+        if (TtsIntentService.instance?.isRunning == true)
+            TtsIntentService.instance?.closeServer()
+        else
+            startService(Intent(this, TtsIntentService::class.java))
 
         finish()
     }
-
 }

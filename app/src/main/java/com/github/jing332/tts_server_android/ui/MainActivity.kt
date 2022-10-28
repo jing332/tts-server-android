@@ -28,6 +28,7 @@ import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.utils.MyTools
 import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
+import tts_server_lib.Tts_server_lib
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         const val TAG = "MainActivity"
     }
 
+    private val myReceiver: MyReceiver by lazy { MyReceiver() }
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(
             layoutInflater
@@ -44,27 +46,14 @@ class MainActivity : AppCompatActivity() {
     private val logList: ArrayList<MyLog> by lazy { ArrayList() }
     private val logAdapter: LogViewAdapter by lazy { LogViewAdapter(logList) }
 
-    private val myReceiver: MyReceiver by lazy { MyReceiver() }
-
     private var isWakeLock = false
     private var token = ""
 
+    @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-        if (TtsIntentService.IsRunning) { //服务在运行
-            binding.etPort.setText(TtsIntentService.port.toString()) //设置监听端口
-            setControlStatus(false)
-            val msg = "服务已在运行, 监听地址: localhost:${TtsIntentService.port}"
-            logList.add(MyLog(LogLevel.WARN, msg))
-        } else {
-            val msg = "请点击启动按钮\n然后右上角菜单打开网页版↗️\n" +
-                    "随后生成链接导入阅读APP即可使用\n" +
-                    "\n关闭请点关闭按钮, 并等待响应。\n" +
-                    "⚠️注意: 本APP需常驻后台运行！⚠️"
-            logList.add(MyLog(LogLevel.INFO, msg))
-        }
 
         binding.rvLog.adapter = logAdapter
         val layoutManager = LinearLayoutManager(this)
@@ -79,17 +68,14 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(myReceiver, intentFilter)
         /*启动按钮*/
         binding.btnStart.setOnClickListener {
-            /*启动服务*/
+            SharedPrefsUtils.setPort(this, binding.etPort.text.toString().toInt())
             val i = Intent(this.applicationContext, TtsIntentService::class.java)
-            i.putExtra("port", binding.etPort.text.toString().toInt())
-            i.putExtra("token", token)
-            i.putExtra("isWakeLock", isWakeLock)
             startService(i)
         }
         /* 关闭按钮 */
         binding.btnClose.setOnClickListener {
-            if (TtsIntentService.IsRunning) { /*服务运行中*/
-                TtsIntentService.closeServer() /*关闭服务 然后将通过广播通知MainActivity*/
+            if (TtsIntentService.instance?.isRunning == true) { /*服务运行中*/
+                TtsIntentService.instance?.closeServer() /*关闭服务 然后将通过广播通知MainActivity*/
             }
         }
 
@@ -103,66 +89,35 @@ class MainActivity : AppCompatActivity() {
 
         binding.nav.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_systts_settings -> {
+                R.id.nav_systts_settings ->
                     startActivity(Intent(this, TtsSettingsActivity::class.java))
-                }
-                R.id.nav_settings -> {
+                R.id.nav_settings ->
                     startActivity(Intent(this, SettingsActivity::class.java))
-                }
-                R.id.nav_killBattery -> {
-                    val intent = Intent()
-                    val pm = getSystemService(POWER_SERVICE) as PowerManager
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (pm.isIgnoringBatteryOptimizations(packageName)) {
-                            Toast.makeText(
-                                this,
-                                getString(R.string.added_background_whitelist),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            try {
-                                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                                intent.data = Uri.parse("package:$packageName")
-                                startActivity(intent)
-                            } catch (e: Exception) {
-                                Toast.makeText(
-                                    this,
-                                    getString(R.string.system_not_support_please_manual_set),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                e.printStackTrace()
-                            }
-                        }
-                    }
-                    true
-                }
-                R.id.nav_checkUpdate -> {
+                R.id.nav_killBattery ->
+                    killBattery()
+                R.id.nav_checkUpdate ->
                     MyTools.checkUpdate(this)
-                }
-                R.id.nav_about -> {
-                    val dlg = AlertDialog.Builder(this)
-                    val tv = TextView(this)
-                    tv.movementMethod = LinkMovementMethod()
+                R.id.nav_about ->
+                    showAboutDialog()
 
-                    val htmlStr =
-                        "Github开源地址: <a href = 'https://github.com/jing332/tts-server-android'>tts-server-android</a> <br/>" +
-                                "特别感谢以下开源项目:  <br/>" +
-                                "&emsp;<a href= 'https://github.com/asters1/tts'>asters1/tts(Go实现)</a>" +
-                                "&emsp;<a href= 'https://github.com/wxxxcxx/ms-ra-forwarder'>ms-ra-forwarder</a>" +
-                                "&emsp;<a href='https://github.com/ag2s20150909/TTS'>TTS APP</a>" +
-                                "&emsp;<a href= 'https://github.com/gedoor/legado'>阅读APP</a>"
-
-                    tv.text = Html.fromHtml(htmlStr)
-                    tv.gravity = Gravity.CENTER /* 居中 */
-                    dlg.setView(tv)
-
-                    dlg.setTitle("关于")
-                        .setMessage("本应用界面使用Kotlin开发，底层服务由Go开发.")
-                        .create().show()
-                }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             true
+        }
+
+        val port = SharedPrefsUtils.getPort(this)
+        binding.etPort.setText(port.toString())
+        if (TtsIntentService.instance?.isRunning == true) {
+            setControlStatus(false)
+            val localIp = Tts_server_lib.getOutboundIP()
+            val msg = "服务已在运行, 监听地址: ${localIp}:${port}"
+            logList.add(MyLog(LogLevel.WARN, msg))
+        } else {
+            val msg = "请点击启动按钮\n然后右上角菜单打开网页版↗️\n" +
+                    "随后生成链接导入阅读APP即可使用\n" +
+                    "\n关闭请点关闭按钮, 并等待响应。\n" +
+                    "⚠️注意: 本APP需常驻后台运行！⚠️"
+            logList.add(MyLog(LogLevel.INFO, msg))
         }
 
         MyTools.checkUpdate(this)
@@ -196,9 +151,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_openWeb -> { /* {打开网页版} 按钮 */
-                if (TtsIntentService.IsRunning) {
+                if (TtsIntentService.instance?.isRunning == true) {
                     val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = Uri.parse("http://localhost:${TtsIntentService.port}")
+                    intent.data =
+                        Uri.parse("http://localhost:${TtsIntentService.instance?.cfg?.port}")
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                 } else {
@@ -223,7 +179,7 @@ class MainActivity : AppCompatActivity() {
                     if (text != token)
                         Toast.makeText(
                             this,
-                            getString(R.string.token_set_to) + text,
+                            getString(R.string.token_set_to) + text.ifEmpty { "空" },
                             Toast.LENGTH_SHORT
                         ).show()
                     token = text
@@ -293,6 +249,54 @@ class MainActivity : AppCompatActivity() {
             binding.etPort.isEnabled = false
             binding.btnStart.isEnabled = false
             binding.btnClose.isEnabled = true
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun showAboutDialog() {
+        val dlg = AlertDialog.Builder(this)
+        val tv = TextView(this)
+        tv.movementMethod = LinkMovementMethod()
+        val htmlStr =
+            "Github开源地址: <a href = 'https://github.com/jing332/tts-server-android'>tts-server-android</a> <br/>" +
+                    "特别感谢以下开源项目:  <br/>" +
+                    "&emsp;<a href= 'https://github.com/asters1/tts'>asters1/tts(Go实现)</a>" +
+                    "&emsp;<a href= 'https://github.com/wxxxcxx/ms-ra-forwarder'>ms-ra-forwarder</a>" +
+                    "&emsp;<a href='https://github.com/ag2s20150909/TTS'>TTS APP</a>" +
+                    "&emsp;<a href= 'https://github.com/gedoor/legado'>阅读APP</a>"
+        tv.text = Html.fromHtml(htmlStr)
+        tv.gravity = Gravity.CENTER /* 居中 */
+        dlg.setView(tv)
+        dlg.setTitle("关于")
+            .setMessage("本应用界面使用Kotlin开发，底层服务由Go开发.")
+            .create().show()
+    }
+
+    @SuppressLint("BatteryLife")
+    private fun killBattery() {
+        val intent = Intent()
+        val pm = getSystemService(POWER_SERVICE) as PowerManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (pm.isIgnoringBatteryOptimizations(packageName)) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.added_background_whitelist),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                try {
+                    intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                    intent.data = Uri.parse("package:$packageName")
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.system_not_support_please_manual_set),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    e.printStackTrace()
+                }
+            }
         }
     }
 }

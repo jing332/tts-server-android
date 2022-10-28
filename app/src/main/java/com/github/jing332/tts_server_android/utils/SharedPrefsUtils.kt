@@ -26,6 +26,18 @@ object SharedPrefsUtils {
         return pref.getString("token", "").toString()
     }
 
+    fun setPort(ctx: Context, port: Int) {
+        val editor = ctx.getSharedPreferences("config", Context.MODE_PRIVATE).edit()
+        editor.putInt("port", port)
+        editor.apply()
+    }
+
+    fun getPort(ctx: Context): Int {
+        val pref = ctx.getSharedPreferences("config", Context.MODE_PRIVATE)
+        return pref.getInt("port", 1233)
+    }
+
+
     fun getUseDnsEdge(ctx: Context): Boolean {
         val pref = PreferenceManager.getDefaultSharedPreferences(ctx)
         return pref.getBoolean("useDnsEdge", false)

@@ -2,6 +2,7 @@ package tts_server_lib
 
 import (
 	"github.com/asters1/tools"
+	tts_server_go "github.com/jing332/tts-server-go"
 	"io"
 	"net/http"
 	"strings"
@@ -41,4 +42,8 @@ func UploadLog(log string) (string, error) {
 	defer res.Body.Close()
 
 	return uploadUrl + res.Request.URL.Path, nil
+}
+
+func GetOutboundIP() string{
+	return tts_server_go.GetOutboundIPString()
 }

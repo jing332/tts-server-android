@@ -46,11 +46,12 @@
     <string name="reset">重置</string>
     <string name="exit">退出</string>
     <string name="tts_server_running">TTS Server正在运行中</string>
-    <string name="listen_address_local">监听地址: localhost:</string>
+    <string name="listen_address_local">监听地址：%s</string>
     <string name="auto_closed_later_notification">稍后将会自动关闭本通知</string>
     <string name="copied">已复制</string>
 
     <string name="menu_sys_tts_settings">系统TTS配置</string>
     <string name="menu_settings">设置</string>
     <string name="title_activity_settings">设置</string>
+    <string name="copy_address">复制地址</string>
 </resources>

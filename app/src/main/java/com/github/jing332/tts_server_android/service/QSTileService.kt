@@ -8,18 +8,16 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
 
-/* 快捷开关 */
+/* 快捷开关(Android 7+) */
 @RequiresApi(Build.VERSION_CODES.N)
 class QSTileService : TileService() {
     override fun startActivity(intent: Intent?) {
-        Log.e("TAG", intent.toString())
         super.startActivity(intent)
     }
 
     override fun onStartListening() {
         super.onStartListening()
-
-        if (TtsIntentService.IsRunning) {
+        if (TtsIntentService.instance?.isRunning == true) {
             qsTile.state = Tile.STATE_ACTIVE
         } else {
             qsTile.state = Tile.STATE_INACTIVE
@@ -29,21 +27,16 @@ class QSTileService : TileService() {
 
     override fun onClick() {
         super.onClick()
-
         if (qsTile.state == Tile.STATE_ACTIVE) { /* 关闭 */
-            if (TtsIntentService.IsRunning) {
-                TtsIntentService.closeServer()
+            if (TtsIntentService.instance?.isRunning == true) {
+                TtsIntentService.instance?.closeServer()
             }
             qsTile.state = Tile.STATE_INACTIVE
         } else {/* 打开 */
             val i = Intent(this.applicationContext, TtsIntentService::class.java)
-            i.putExtra("isWakeLock", SharedPrefsUtils.getWakeLock(this))
-            i.putExtra("token", SharedPrefsUtils.getToken(this))
             startService(i)
             qsTile.state = Tile.STATE_ACTIVE
         }
         qsTile.updateTile()
-
     }
-
 }

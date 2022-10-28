@@ -2,10 +2,7 @@ package com.github.jing332.tts_server_android.service
 
 import android.annotation.SuppressLint
 import android.app.*
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.graphics.Color
 import android.os.Build
 import android.os.PowerManager
@@ -15,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ui.MainActivity
-import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
+import com.github.jing332.tts_server_android.utils.toastOnUi
 import tts_server_lib.LogCallback
 import tts_server_lib.Tts_server_lib
 
@@ -24,77 +21,79 @@ import tts_server_lib.Tts_server_lib
 class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) {
     companion object {
         const val TAG = "TtsIntentService"
-        var ACTION_SEND = "service.send_log" /* 广播ID */
+        const val ACTION_SEND = "service.send_log" /* 广播ID */
         const val ACTION_ON_LOG = "service.on_log"
         const val ACTION_ON_CLOSED = "service.on_closed"
         const val ACTION_ON_STARTED = "service.on_started"
-        const val ACTION_NOTIFICATION_EXIT = "notification_exit"
+        const val ACTION_NOTIFY_EXIT = "notify_exit" /* 通知的{退出}按钮*/
+        const val ACTION_NOTIFY_COPY_ADDRESS = "notify_copy_address"
+        var instance: TtsIntentService? = null
 
-        private var mIsWakeLock = false /* 是否使用唤醒锁 */
-        var IsRunning = false /* 服务是否在运行 */
-        var port: Int = 1233 /* 监听端口 */
-        var token: String = ""
-
-        /* 强制关闭服务 */
-        fun closeServer() {
-            Tts_server_lib.closeServer()
-        }
     }
 
-    private lateinit var mWakeLock: PowerManager.WakeLock /* 唤醒锁 */
+    private var listenAddress = ""
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
+    private val mWakeLock: PowerManager.WakeLock by lazy {
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "tts_server:ttsTag"
+        )
+    }
+
+    var isRunning = false /* 服务是否在运行 */
+        private set
+    lateinit var cfg: TtsServerConfig
+        private set
 
     @Deprecated("Deprecated in Java")
     @SuppressLint("WakelockTimeout")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        IsRunning = true
-        port = intent?.getIntExtra("port", 1233) ?: 1233
-        token = intent?.getStringExtra("token") ?: ""
-        mIsWakeLock = intent?.getBooleanExtra("isWakeLock", false) ?: false
+        Toast.makeText(this, getString(R.string.service_started), Toast.LENGTH_SHORT).show()
+        instance = this
+        isRunning = true
+        cfg = TtsServerConfig(this)
+        val localIp = Tts_server_lib.getOutboundIP()
+        listenAddress = "${localIp}:${cfg.port}"
 
         initNotification()
+        if (cfg.isWakeLock) mWakeLock.acquire()
 
-        if (mIsWakeLock) { /* 启动唤醒锁 */
-            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
-            mWakeLock = powerManager.newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK,
-                "tts_server:ttsTag"
-            )
-            mWakeLock.acquire()
-        }
-        Toast.makeText(this, getString(R.string.service_started), Toast.LENGTH_SHORT).show()
         /* 注册广播 */
-        registerReceiver(mReceiver, IntentFilter(ACTION_NOTIFICATION_EXIT))
+        IntentFilter(ACTION_NOTIFY_EXIT).apply {
+            addAction(ACTION_NOTIFY_COPY_ADDRESS)
+            registerReceiver(mReceiver, this)
+        }
         return super.onStartCommand(intent, flags, startId)
     }
 
     @Deprecated("Deprecated in Java")
     override fun onDestroy() {
-        if (mIsWakeLock) { /* 释放唤醒锁 */
-            mWakeLock.release()
-        }
-        Toast.makeText(this, getString(R.string.service_closed), Toast.LENGTH_SHORT).show()
-        unregisterReceiver(mReceiver)
         super.onDestroy()
+        if (cfg.isWakeLock) mWakeLock.release()
+        unregisterReceiver(mReceiver)
+        Toast.makeText(this, getString(R.string.service_closed), Toast.LENGTH_SHORT).show()
     }
 
     @Deprecated("Deprecated in Java")
     override fun onHandleIntent(intent: Intent?) {
+        sendStartedMsg()
         /* 初始化Go: 设置日志转发，注册Http.Server */
         val cb = LogCallback { level, msg ->
             Log.d(TAG, "$level $msg")
             sendLog(MyLog(level, msg))
         }
         Tts_server_lib.init(cb)
-
-        sendStartedMsg()
-        val useDnsEdge = SharedPrefsUtils.getUseDnsEdge(this)
         /*启动Go服务并阻塞等待,直到关闭*/
-        Tts_server_lib.runServer(port.toLong(), token, useDnsEdge)
-        IsRunning = false
+        Tts_server_lib.runServer(cfg.port.toLong(), cfg.token, cfg.isUseDnsEdge)
+        isRunning = false
         sendClosedMsg()
     }
 
+    /* 强制关闭服务 */
+    fun closeServer() {
+        Tts_server_lib.closeServer()
+    }
 
     /* 广播日志消息 */
     private fun sendLog(data: MyLog) {
@@ -135,7 +134,14 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             PendingIntent.getBroadcast(
                 this,
                 0,
-                Intent(ACTION_NOTIFICATION_EXIT),
+                Intent(ACTION_NOTIFY_EXIT),
+                pendingIntentFlags
+            )
+        val copyAddrPendingIntent =
+            PendingIntent.getBroadcast(
+                this,
+                0,
+                Intent(ACTION_NOTIFY_COPY_ADDRESS),
                 pendingIntentFlags
             )
 
@@ -157,23 +163,29 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         } else {
             smallIconRes = R.mipmap.ic_app_notification
         }
-
         val notification = builder
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setContentTitle(getString(R.string.tts_server_running))
-            .setContentText(getString(R.string.listen_address_local) + port)
+            .setContentText(getString(R.string.listen_address_local, listenAddress))
             .setSmallIcon(smallIconRes)
             .setContentIntent(pendingIntent)
             .addAction(0, getString(R.string.exit), closePendingIntent)
+            .addAction(0, getString(R.string.copy_address), copyAddrPendingIntent)
             .build()
         startForeground(1, notification) //启动前台服务
     }
 
+
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {/*点击通知上的退出按钮*/
             when (intent?.action) {
-                ACTION_NOTIFICATION_EXIT -> {
+                ACTION_NOTIFY_EXIT -> {
                     closeServer()
+                }
+                ACTION_NOTIFY_COPY_ADDRESS -> {
+                    val cm = ctx?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+                    cm?.setPrimaryClip(ClipData.newPlainText("address", listenAddress))
+                    ctx?.toastOnUi(R.string.copied)
                 }
             }
         }
