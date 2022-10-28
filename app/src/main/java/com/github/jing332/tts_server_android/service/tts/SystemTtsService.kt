@@ -50,7 +50,6 @@ class SystemTtsService : TextToSpeechService() {
         )
     }
 
-
     override fun onCreate() {
         super.onCreate()
         /* 注册广播 */
@@ -60,6 +59,7 @@ class SystemTtsService : TextToSpeechService() {
         registerReceiver(mReceiver, intentFilter)
 
         mWakeLock.acquire(60 * 20 * 100)
+        mTtsManager.loadConfig()
     }
 
     override fun onDestroy() {
@@ -128,7 +128,6 @@ class SystemTtsService : TextToSpeechService() {
             Log.i(TAG, "刷新WakeLock 20分钟")
         }
     }
-
 
     private lateinit var mNotificationBuilder: Notification.Builder
     private lateinit var mNotificationManager: NotificationManager
@@ -226,7 +225,7 @@ class SystemTtsService : TextToSpeechService() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 ACTION_ON_CONFIG_CHANGED -> { /* 配置更改 */
-                    mTtsManager.ttsConfig.loadConfig(this@SystemTtsService)
+                    mTtsManager.loadConfig()
                 }
                 ACTION_KILL_PROCESS -> { /* 通知按钮{结束进程} */
                     stopForeground(true)

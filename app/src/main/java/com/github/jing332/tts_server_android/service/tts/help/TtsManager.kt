@@ -6,6 +6,7 @@ import android.media.AudioFormat
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.speech.tts.TextToSpeech
+import android.text.TextUtils
 import android.util.Log
 import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.MyLog
@@ -30,6 +31,8 @@ class TtsManager(val context: Context) {
     }
 
     var ttsConfig: TtsConfig = TtsConfig().loadConfig(context)
+    lateinit var audioFormat: TtsAudioFormat
+
     var isSynthesizing = false
     private val audioDecode: AudioDecode by lazy { AudioDecode() }
     private val norm: NormUtil by lazy { NormUtil(500F, 0F, 200F, 0F) }
@@ -40,6 +43,11 @@ class TtsManager(val context: Context) {
         if (ttsConfig.api == TtsApiType.CREATION) {
             mCreationApi.cancel()
         }
+    }
+    /* 加载配置 */
+    fun loadConfig() {
+        ttsConfig.loadConfig(context)
+        audioFormat = TtsFormatManger.getFormat(ttsConfig.format) ?: TtsFormatManger.getDefault()
     }
 
     lateinit var producer: ReceiveChannel<ChannelData>
@@ -66,26 +74,16 @@ class TtsManager(val context: Context) {
         }
     }
 
+    /* 开始转语音 */
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
         val text = request?.charSequenceText.toString().trim()
+        val pitch = "${request?.pitch?.minus(100)}%"
         val rate =
             if (ttsConfig.rate == 0) "${(norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()}%"
             else ttsConfig.rateToPcmString()
 
-        val pitch = "${request?.pitch?.minus(100)}%"
-        val format = TtsFormatManger.getFormat(ttsConfig.format)
-        if (format == null) {
-            sendLog(LogLevel.ERROR, "不支持解码此格式: ${ttsConfig.format}")
-            callback!!.start(
-                16000,
-                AudioFormat.ENCODING_PCM_16BIT, 1
-            )
-            callback.error(TextToSpeech.ERROR_INVALID_REQUEST)
-            return
-        }
-
-        callback?.start(format.hz, format.bitRate, 1)
+        callback?.start(audioFormat.hz, audioFormat.bitRate, 1)
         if (ttsConfig.isSplitSentences) { /* 分句 */
             /* 异步获取音频、缓存 */
             producer = producer(text, rate, pitch)
@@ -95,16 +93,15 @@ class TtsManager(val context: Context) {
                 if (data.audio == null) {
                     sendLog(LogLevel.WARN, "音频为空！")
                 } else {
-                    val hz = TtsFormatManger.getFormat(ttsConfig.format)?.hz ?: 16000
                     audioDecode.doDecode(
-                        data.audio!!,
-                        hz,
+                        data.audio,
+                        audioFormat.hz,
                         onRead = { writeToCallBack(callback!!, it) },
                         error = {
                             sendLog(LogLevel.ERROR, "解码失败: $it")
                         })
                     val str = if (data.text.length > 20)
-                        data.text.substring(0, 19) + "..."
+                        data.text.substring(0, 19) + "···"
                     else data.text
                     sendLog(LogLevel.WARN, "播放完毕：$str")
                 }
@@ -255,5 +252,6 @@ class TtsManager(val context: Context) {
         context.sendBroadcast(intent)
     }
 
-    class ChannelData(var text: String, var audio: ByteArray?)
+    /* 分句缓存Data */
+    class ChannelData(val text: String, val audio: ByteArray?)
 }
