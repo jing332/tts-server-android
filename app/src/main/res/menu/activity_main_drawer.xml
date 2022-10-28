@@ -10,14 +10,14 @@
             android:title="@string/menu_sys_tts_settings" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings"
+            android:icon="@drawable/ic_baseline_settings_24"
             android:title="@string/menu_settings" />
     </group>
 
     <group android:id="@+id/group2">
         <item
             android:id="@+id/nav_killBattery"
-            android:icon="@drawable/ic_battery"
+            android:icon="@drawable/ic_baseline_battery_full_24"
             android:title="@string/background_whitelist" />
         <item
             android:id="@+id/nav_checkUpdate"
@@ -25,7 +25,7 @@
             android:title="@string/check_update" />
         <item
             android:id="@+id/nav_about"
-            android:icon="@drawable/ic_about"
+            android:icon="@drawable/ic_baseline_info_24"
             android:title="@string/about" />
     </group>
 </menu>
