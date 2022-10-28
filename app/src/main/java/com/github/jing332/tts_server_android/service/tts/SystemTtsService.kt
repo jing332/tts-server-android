@@ -22,6 +22,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.service.tts.help.TtsManager
 import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
 import com.github.jing332.tts_server_android.utils.GcManager
+import com.github.jing332.tts_server_android.utils.StringUtils
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
@@ -103,7 +104,7 @@ class SystemTtsService : TextToSpeechService() {
             startForegroundService()
             val text = request?.charSequenceText.toString().trim()
             updateNotification(getString(R.string.tts_state_playing), text)
-            if (text.isBlank()) {
+            if (StringUtils.isSilent(text)) {
                 callback?.start(
                     16000,
                     AudioFormat.ENCODING_PCM_16BIT, 1
