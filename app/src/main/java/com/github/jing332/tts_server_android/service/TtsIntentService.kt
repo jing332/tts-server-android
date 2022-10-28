@@ -72,6 +72,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         super.onDestroy()
         if (cfg.isWakeLock) mWakeLock.release()
         unregisterReceiver(mReceiver)
+        stopForeground(true)
         Toast.makeText(this, getString(R.string.service_closed), Toast.LENGTH_SHORT).show()
     }
 

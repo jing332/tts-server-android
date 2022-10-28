@@ -60,12 +60,6 @@ class MainActivity : AppCompatActivity() {
         layoutManager.stackFromEnd = true
         binding.rvLog.layoutManager = layoutManager
 
-        /*注册广播*/
-        val intentFilter = IntentFilter(TtsIntentService.ACTION_SEND)
-        intentFilter.addAction(TtsIntentService.ACTION_ON_STARTED)
-        intentFilter.addAction(TtsIntentService.ACTION_ON_CLOSED)
-        intentFilter.addAction(TtsIntentService.ACTION_ON_LOG)
-        registerReceiver(myReceiver, intentFilter)
         /*启动按钮*/
         binding.btnStart.setOnClickListener {
             SharedPrefsUtils.setPort(this, binding.etPort.text.toString().toInt())
@@ -118,6 +112,13 @@ class MainActivity : AppCompatActivity() {
                     "\n关闭请点关闭按钮, 并等待响应。\n" +
                     "⚠️注意: 本APP需常驻后台运行！⚠️"
             logList.add(MyLog(LogLevel.INFO, msg))
+        }
+
+        /*注册广播*/
+        IntentFilter(TtsIntentService.ACTION_ON_LOG).apply {
+            addAction(TtsIntentService.ACTION_ON_STARTED)
+            addAction(TtsIntentService.ACTION_ON_CLOSED)
+            registerReceiver(myReceiver, this)
         }
 
         MyTools.checkUpdate(this)

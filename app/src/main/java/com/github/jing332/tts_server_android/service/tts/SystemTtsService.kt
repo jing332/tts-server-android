@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.service.tts.help.TtsManager
 import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
+import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.utils.GcManager
 import com.github.jing332.tts_server_android.utils.StringUtils
 import kotlinx.coroutines.*
@@ -32,10 +33,9 @@ import kotlin.system.exitProcess
 class SystemTtsService : TextToSpeechService() {
     companion object {
         const val TAG = "TtsService"
-        const val ACTION_ON_CONFIG_CHANGED = "action_on_config_changed"
-        const val ACTION_ON_LOG = "action_on_log"
-        const val ACTION_CANCEL = "action_cancel"
-        const val ACTION_KILL_PROCESS = "action_kill_process"
+        const val ACTION_ON_LOG = "on_log"
+        const val ACTION_NOTIFY_CANCEL = "NOTIFY_cancel"
+        const val ACTION_KILL_PROCESS = "kill_process"
         const val NOTIFICATION_CHAN_ID = "system_tts_service"
         const val NOTIFICATION_ID = 2
     }
@@ -54,10 +54,10 @@ class SystemTtsService : TextToSpeechService() {
     override fun onCreate() {
         super.onCreate()
         /* 注册广播 */
-        val intentFilter = IntentFilter(ACTION_ON_CONFIG_CHANGED)
-        intentFilter.addAction(ACTION_KILL_PROCESS)
-        intentFilter.addAction(ACTION_CANCEL)
-        registerReceiver(mReceiver, intentFilter)
+        IntentFilter(ACTION_KILL_PROCESS).apply {
+            addAction(ACTION_NOTIFY_CANCEL)
+            registerReceiver(mReceiver, this)
+        }
 
         mWakeLock.acquire(60 * 20 * 100)
         mTtsManager.loadConfig()
@@ -67,6 +67,7 @@ class SystemTtsService : TextToSpeechService() {
         super.onDestroy()
         unregisterReceiver(mReceiver)
         mWakeLock.release()
+        stopForeground(true)
     }
 
     override fun onIsLanguageAvailable(lang: String?, country: String?, variant: String?): Int {
@@ -204,7 +205,7 @@ class SystemTtsService : TextToSpeechService() {
             ), pendingIntentFlags
         )
         val cancelPendingIntent =
-            PendingIntent.getBroadcast(this, 0, Intent(ACTION_CANCEL), pendingIntentFlags)
+            PendingIntent.getBroadcast(this, 0, Intent(ACTION_NOTIFY_CANCEL), pendingIntentFlags)
 
         mNotificationBuilder = Notification.Builder(applicationContext)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -225,14 +226,14 @@ class SystemTtsService : TextToSpeechService() {
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_ON_CONFIG_CHANGED -> { /* 配置更改 */
+                TtsConfigFragment.ACTION_ON_CONFIG_CHANGED -> { /* 配置更改 */
                     mTtsManager.loadConfig()
                 }
                 ACTION_KILL_PROCESS -> { /* 通知按钮{结束进程} */
                     stopForeground(true)
                     exitProcess(0)
                 }
-                ACTION_CANCEL -> { /* 通知按钮{取消}*/
+                ACTION_NOTIFY_CANCEL -> { /* 通知按钮{取消}*/
                     if (mTtsManager.isSynthesizing)
                         onStop() /* 取消当前播放 */
                     else /* 无播放，关闭通知 */ {

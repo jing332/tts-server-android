@@ -15,7 +15,6 @@ import androidx.fragment.app.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
-import com.github.jing332.tts_server_android.service.tts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.widget.WaitDialog
 import com.github.jing332.tts_server_android.utils.runOnUI
 
@@ -23,6 +22,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     SeekBar.OnSeekBarChangeListener {
     companion object {
         const val TAG = "TtsConfigFragment"
+        const val ACTION_ON_CONFIG_CHANGED = "on_config_changed"
     }
 
     private val binding: FragmentTtsConfigBinding by lazy {
@@ -222,7 +222,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             R.id.btn_apply_changes -> {
                 v.isEnabled = false
                 model.saveConfig(requireContext())
-                requireContext().sendBroadcast(Intent(SystemTtsService.ACTION_ON_CONFIG_CHANGED))
+                requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
             }
             R.id.btn_test -> {
                 v.isEnabled = false
