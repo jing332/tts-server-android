@@ -56,6 +56,7 @@ class SystemTtsService : TextToSpeechService() {
         /* 注册广播 */
         IntentFilter(ACTION_KILL_PROCESS).apply {
             addAction(ACTION_NOTIFY_CANCEL)
+            addAction(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED)
             registerReceiver(mReceiver, this)
         }
 
