@@ -100,9 +100,20 @@ func GetCreationVoices() ([]byte, error) {
 	return data, nil
 }
 
-var charRegexp = regexp.MustCompile(`[<>&\\/]`)
+var charRegexp = regexp.MustCompile(`['"<>&/\\]`)
+var entityMap = map[string]string{
+	`'`: `&apos;`,
+	`"`: `&quot;`,
+	`<`: `&lt;`,
+	`>`: `&gt;`,
+	`&`: `&amp;`,
+	`/`: ``,
+	`\`: ``,
+}
 
-// specialCharReplace 过滤掉特殊字符: <,>,$,\,/
+// specialCharReplace 过滤掉特殊字符
 func specialCharReplace(s string) string {
-	return charRegexp.ReplaceAllString(s, "")
+	return charRegexp.ReplaceAllStringFunc(s, func(s2 string) string {
+		return entityMap[s2]
+	})
 }
