@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.utils
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.DialogInterface
@@ -14,6 +13,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.GithubReleaseApiBean
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -30,24 +30,28 @@ object MyTools {
 
     /*从Github检查更新*/
     @OptIn(DelicateCoroutinesApi::class)
-    fun checkUpdate(act: Activity) {
+    fun checkUpdate(ctx: Context) {
         GlobalScope.launch {
             try {
                 val data = Tts_server_lib.httpGet(
                     "https://api.github.com/repos/jing332/tts-server-android/releases/latest",
                     ""
                 )
-                act.runOnUiThread {
-                    if (data == null)
-                        Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show()
-                    else
-                        checkVersionFromJson(act, data.decodeToString())
+                if (data == null) {
+                    ctx.toastOnUi(R.string.check_update_failed)
+                } else {
+                    try {
+                        checkVersionFromJson(ctx, data.decodeToString())
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        ctx.toastOnUi(R.string.check_update_failed)
+                    }
                 }
-            } catch (e: Exception) {
-                act.runOnUiThread { Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show() }
-                e.printStackTrace()
-            }
 
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ctx.toastOnUi(R.string.check_update_failed)
+            }
         }
     }
 
@@ -79,16 +83,15 @@ object MyTools {
         val tag = bean.tagName
         val body = bean.body
         /* 远程版本号 */
-        val versionName = BigDecimal(tag.split("_")[1].trim())
+        val removeVersion = BigDecimal(tag.split("_")[1].trim())
         val pi = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
-        val appVersionName = /* 本地版本号 */
+        val appVersion = /* 本地版本号 */
             BigDecimal(pi.versionName.split("_").toTypedArray()[1].trim { it <= ' ' })
-        Log.d(TAG, "appVersionName: $appVersionName, versionName: $versionName")
-        if (appVersionName < versionName) {/* 需要更新 */
-            downLoadAndInstall(ctx, body, downloadUrl, tag)
-        } else {
-            Toast.makeText(ctx, "当前已是最新版", Toast.LENGTH_SHORT).show()
-        }
+        Log.d(TAG, "appVersionName: $appVersion, versionName: $removeVersion")
+        if (removeVersion > appVersion) {/* 需要更新 */
+            runOnUI { downLoadAndInstall(ctx, body, downloadUrl, tag) }
+        } else
+            ctx.toastOnUi(R.string.current_is_last_version)
     }
 
     private fun downLoadAndInstall(
@@ -97,6 +100,7 @@ object MyTools {
         downloadUrl: String,
         tag: String
     ) {
+
         AlertDialog.Builder(ctx)
             .setTitle("有新版本")
             .setMessage("版本号: $tag\n\n$body")

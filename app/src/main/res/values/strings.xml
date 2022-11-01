@@ -55,4 +55,6 @@
     <string name="title_activity_settings">设置</string>
     <string name="copy_address">复制地址</string>
     <string name="ok_reset">已重置</string>
+    <string name="check_update_failed">检查更新失败</string>
+    <string name="current_is_last_version">当前已是最新版</string>
 </resources>
