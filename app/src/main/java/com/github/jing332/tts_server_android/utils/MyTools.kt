@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import tts_server_lib.Tts_server_lib
+import java.math.BigDecimal
 
 
 object MyTools {
@@ -33,26 +34,20 @@ object MyTools {
         GlobalScope.launch {
             try {
                 val data = Tts_server_lib.httpGet(
-                    "https://api.github.com/repos/jing332/file/releases/latest",
+                    "https://api.github.com/repos/jing332/tts-server-android/releases/latest",
                     ""
                 )
                 act.runOnUiThread {
                     if (data == null)
                         Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show()
-                    else {
-                        try {
-                            checkVersionFromJson(act, data.decodeToString())
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show()
-                        }
-
-                    }
+                    else
+                        checkVersionFromJson(act, data.decodeToString())
                 }
             } catch (e: Exception) {
                 act.runOnUiThread { Toast.makeText(act, "检查更新失败", Toast.LENGTH_SHORT).show() }
                 e.printStackTrace()
             }
+
         }
     }
 
@@ -83,13 +78,13 @@ object MyTools {
 
         val tag = bean.tagName
         val body = bean.body
-
-        val removeVer = tag.replace(".", "").toLong()
+        /* 远程版本号 */
+        val versionName = BigDecimal(tag.split("_")[1].trim())
         val pi = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
-        val localVer = pi.versionName.replace(".", "").toLong()
-        Log.i(TAG, "远程版本：$removeVer, 本地版本：$localVer")
-
-        if (removeVer > localVer) {/* 需要更新 */
+        val appVersionName = /* 本地版本号 */
+            BigDecimal(pi.versionName.split("_").toTypedArray()[1].trim { it <= ' ' })
+        Log.d(TAG, "appVersionName: $appVersionName, versionName: $versionName")
+        if (appVersionName < versionName) {/* 需要更新 */
             downLoadAndInstall(ctx, body, downloadUrl, tag)
         } else {
             Toast.makeText(ctx, "当前已是最新版", Toast.LENGTH_SHORT).show()

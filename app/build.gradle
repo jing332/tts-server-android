@@ -5,20 +5,14 @@ plugins {
     id 'kotlin-kapt'
 }
 
-static def releaseTime() {
-    return new Date().format("yy.MMddHH", TimeZone.getTimeZone("GMT+8"))
-}
-
-def gitCommits = Integer.parseInt('git rev-list HEAD --count'.execute().text.trim())
-
 android {
     compileSdk 33
     defaultConfig {
         applicationId 'com.github.jing332.tts_server_android'
         minSdk 21
         targetSdk 33
-        versionCode gitCommits
-        versionName "1.${releaseTime()}"
+        versionCode 2
+        versionName "0.1_${releaseTime()}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,6 +27,7 @@ android {
             storePassword pro.getProperty("KEY_PASSWORD")
             keyAlias pro.getProperty("ALIAS_NAME")
             keyPassword pro.getProperty("ALIAS_PASSWORD")
+
         }
     }
 
@@ -98,7 +93,7 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.0'
 
 
-    implementation 'androidx.activity:activity-ktx:1.6.1'
+    implementation 'androidx.activity:activity-ktx:1.6.0'
     implementation 'androidx.fragment:fragment-ktx:1.5.4'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha03'
 
@@ -111,4 +106,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
+
+static def releaseTime() {
+    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
 }
