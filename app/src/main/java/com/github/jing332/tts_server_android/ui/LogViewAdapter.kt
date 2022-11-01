@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.utils.longToastOnUi
+import com.github.jing332.tts_server_android.util.longToastOnUi
 
 //显示日志的适配器
 class LogViewAdapter(private val dataSet: ArrayList<MyLog>) :

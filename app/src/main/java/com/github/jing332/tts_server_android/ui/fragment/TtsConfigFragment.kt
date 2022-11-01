@@ -16,7 +16,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
 import com.github.jing332.tts_server_android.ui.widget.WaitDialog
-import com.github.jing332.tts_server_android.utils.runOnUI
+import com.github.jing332.tts_server_android.util.runOnUI
 
 class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener,
     SeekBar.OnSeekBarChangeListener {

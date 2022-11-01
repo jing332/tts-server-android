@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ui.MainActivity
-import com.github.jing332.tts_server_android.utils.toastOnUi
+import com.github.jing332.tts_server_android.util.toastOnUi
 import tts_server_lib.LogCallback
 import tts_server_lib.Tts_server_lib
 
@@ -21,7 +21,6 @@ import tts_server_lib.Tts_server_lib
 class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) {
     companion object {
         const val TAG = "TtsIntentService"
-        const val ACTION_SEND = "service.send_log" /* 广播ID */
         const val ACTION_ON_LOG = "service.on_log"
         const val ACTION_ON_CLOSED = "service.on_closed"
         const val ACTION_ON_STARTED = "service.on_started"

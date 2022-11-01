@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 /* https://github.com/gedoor/legado/blob/master/app/src/main/java/io/legado/app/utils/ToastUtils.kt */
-package com.github.jing332.tts_server_android.utils
+package com.github.jing332.tts_server_android.util
 
 import android.content.Context
 import android.widget.Toast

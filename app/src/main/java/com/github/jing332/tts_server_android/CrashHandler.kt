@@ -4,7 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.utils.longToastOnUi
+import com.github.jing332.tts_server_android.util.longToastOnUi
 import tts_server_lib.Tts_server_lib
 import java.time.LocalDateTime
 

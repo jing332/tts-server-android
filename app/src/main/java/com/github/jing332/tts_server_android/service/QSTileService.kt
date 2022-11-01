@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import android.util.Log
 import androidx.annotation.RequiresApi
-import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
 
 /* 快捷开关(Android 7+) */
 @RequiresApi(Build.VERSION_CODES.N)

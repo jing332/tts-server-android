@@ -13,7 +13,7 @@ import com.github.jing332.tts_server_android.databinding.ActivityTtsSettingsBind
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
-import com.github.jing332.tts_server_android.utils.MyTools
+import com.github.jing332.tts_server_android.util.MyTools
 
 class TtsSettingsActivity : BackActivity() {
     companion object {

@@ -2,17 +2,14 @@ package com.github.jing332.tts_server_android.service.tts.help
 
 import android.content.Context
 import android.content.Intent
-import android.media.AudioFormat
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
-import android.speech.tts.TextToSpeech
-import android.text.TextUtils
 import android.util.Log
 import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.service.tts.SystemTtsService
-import com.github.jing332.tts_server_android.utils.NormUtil
+import com.github.jing332.tts_server_android.util.NormUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope

@@ -1,7 +1,7 @@
 package com.github.jing332.tts_server_android.service
 
 import android.content.Context
-import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
+import com.github.jing332.tts_server_android.util.SharedPrefsUtils
 
 class TtsServerConfig(ctx: Context) {
     var port: Int = 1233
@@ -16,9 +16,9 @@ class TtsServerConfig(ctx: Context) {
         isUseDnsEdge = SharedPrefsUtils.getUseDnsEdge(ctx)
     }
 
-    fun writeConfig(ctx: Context){
-        SharedPrefsUtils.setPort(ctx, port)
-        SharedPrefsUtils.setToken(ctx, token)
-        SharedPrefsUtils.setWakeLock(ctx,isWakeLock)
-    }
+//    fun writeConfig(ctx: Context){
+//        SharedPrefsUtils.setPort(ctx, port)
+//        SharedPrefsUtils.setToken(ctx, token)
+//        SharedPrefsUtils.setWakeLock(ctx,isWakeLock)
+//    }
 }

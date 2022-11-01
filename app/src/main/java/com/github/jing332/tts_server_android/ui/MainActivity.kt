@@ -25,9 +25,9 @@ import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
-import com.github.jing332.tts_server_android.utils.MyTools
-import com.github.jing332.tts_server_android.utils.SharedPrefsUtils
-import com.github.jing332.tts_server_android.utils.toastOnUi
+import com.github.jing332.tts_server_android.util.MyTools
+import com.github.jing332.tts_server_android.util.SharedPrefsUtils
+import com.github.jing332.tts_server_android.util.toastOnUi
 import tts_server_lib.Tts_server_lib
 
 

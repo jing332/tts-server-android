@@ -22,8 +22,8 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.service.tts.help.TtsManager
 import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
-import com.github.jing332.tts_server_android.utils.GcManager
-import com.github.jing332.tts_server_android.utils.StringUtils
+import com.github.jing332.tts_server_android.util.GcManager
+import com.github.jing332.tts_server_android.util.StringUtils
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess

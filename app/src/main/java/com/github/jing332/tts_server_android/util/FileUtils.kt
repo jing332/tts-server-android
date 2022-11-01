@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.utils
+package com.github.jing332.tts_server_android.util
 
 import java.io.File
 import java.io.FileOutputStream

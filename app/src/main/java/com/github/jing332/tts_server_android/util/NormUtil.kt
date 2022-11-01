@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.utils
+package com.github.jing332.tts_server_android.util
 
 /**
  * Construct the normalization utility, allow the normalization range to be specified.

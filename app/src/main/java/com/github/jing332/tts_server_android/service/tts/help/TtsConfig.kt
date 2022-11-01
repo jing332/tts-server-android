@@ -1,8 +1,10 @@
 package com.github.jing332.tts_server_android.service.tts.help
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.github.jing332.tts_server_android.constant.TtsApiType
 
+@SuppressLint("SdCardPath")
 class TtsConfig(
     var api: Int,
     var locale: String,
@@ -16,6 +18,20 @@ class TtsConfig(
     var rate: Int,
     var isSplitSentences: Boolean
 ) {
+    companion object {
+        const val KEY_API = "api"
+        const val KEY_LOCALE = "locale"
+        const val KEY_VOICE_NAME = "voiceName"
+        const val KEY_VOICE_STYLE = "voiceStyle"
+        const val KEY_VOICE_STYLE_DEGREE = "voiceStyleDegree"
+        const val KEY_VOICE_ROLE = "voiceRole"
+        const val KEY_VOICE_ID = "voiceId"
+        const val KEY_FORMAT = "format"
+        const val KEY_VOLUME = "volume"
+        const val KEY_RATE = "rate"
+        const val KEY_IS_SPLIT_SENTENCES = "isSplitSentences"
+    }
+
     constructor() : this(
         TtsApiType.CREATION,
         "zh-CN",
@@ -35,67 +51,36 @@ class TtsConfig(
         return "${(rate - 50) * 2}%"
     }
 
-
     fun loadConfig(ctx: Context): TtsConfig {
-        api = getConfig(ctx, "api", TtsApiType.CREATION)
-        locale = getConfig(ctx, "locale", "zh-CN")
-        voiceName = getConfig(ctx, "voiceName", "zh-CN-XiaoxiaoNeural")
-        voiceStyle = getConfig(ctx, "voiceStyle", voiceStyle)
-        voiceStyleDegree = getConfig(ctx, "voiceStyleDegree", voiceStyleDegree)
-        voiceRole = getConfig(ctx, "voiceRole", voiceRole)
-        voiceId = getConfig(ctx, "voiceId", "5f55541d-c844-4e04-a7f8-1723ffbea4a9")
-        format = getConfig(ctx, "format", "audio-24khz-48kbitrate-mono-mp3")
-        volume = getConfig(ctx, "volume", 50)
-        rate = getConfig(ctx, "rate", 0)
-        isSplitSentences = getConfig(ctx, "isSplitSentences", false)
+        val pref = ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE)
+        api = pref.getInt(KEY_API, TtsApiType.CREATION)
+        locale = pref.getString(KEY_LOCALE, locale) ?: locale
+        voiceName = pref.getString(KEY_VOICE_NAME, voiceName) ?: voiceName
+        voiceStyle = pref.getString(KEY_VOICE_STYLE, voiceStyle) ?: voiceStyle
+        voiceId = pref.getString(KEY_VOICE_ID, voiceId) ?: voiceId
+        format = pref.getString(KEY_FORMAT, format) ?: format
+        volume = pref.getInt(KEY_VOLUME, volume)
+        rate = pref.getInt(KEY_RATE, rate)
+        isSplitSentences = pref.getBoolean(KEY_IS_SPLIT_SENTENCES, false)
+
         return this
     }
 
     fun writeConfig(ctx: Context) {
-        setConfig(ctx, "api", api)
-        setConfig(ctx, "locale", locale)
-        setConfig(ctx, "voiceName", voiceName)
-        setConfig(ctx, "voiceStyle", voiceStyle)
-        setConfig(ctx, "voiceStyleDegree", voiceStyleDegree)
-        setConfig(ctx, "voiceRole", voiceRole)
-        setConfig(ctx, "voiceId", voiceId)
-        setConfig(ctx, "format", format)
-        setConfig(ctx, "volume", volume)
-        setConfig(ctx, "rate", rate)
-        setConfig(ctx, "isSplitSentences", isSplitSentences)
-    }
-
-    private fun getConfig(ctx: Context, key: String, default: String): String {
-        val pref = ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE)
-        return pref.getString(key, default).toString()
-    }
-
-    private fun setConfig(ctx: Context, key: String, value: String) {
-        ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE).edit()
-            .putString(key, value)
-            .apply()
-    }
-
-    private fun getConfig(ctx: Context, key: String, default: Int): Int {
-        val pref = ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE)
-        return pref.getInt(key, default)
-    }
-
-    private fun setConfig(ctx: Context, key: String, value: Int) {
-        ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE).edit()
-            .putInt(key, value)
-            .apply()
-    }
-
-    private fun getConfig(ctx: Context, key: String, default: Boolean): Boolean {
-        val pref = ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE)
-        return pref.getBoolean(key, default)
-    }
-
-    private fun setConfig(ctx: Context, key: String, value: Boolean) {
-        ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE).edit()
-            .putBoolean(key, value)
-            .apply()
+        ctx.getSharedPreferences("tts_service", Context.MODE_PRIVATE).edit().apply {
+            putInt(KEY_API, api)
+            putString(KEY_LOCALE, locale)
+            putString(KEY_VOICE_NAME, voiceName)
+            putString(KEY_VOICE_STYLE, voiceStyle)
+            putInt(KEY_VOICE_STYLE_DEGREE, voiceStyleDegree)
+            putString(KEY_VOICE_ROLE, voiceRole)
+            putString(KEY_VOICE_ID, voiceId)
+            putString(KEY_FORMAT, format)
+            putInt(KEY_VOLUME, volume)
+            putInt(KEY_RATE, rate)
+            putBoolean(KEY_IS_SPLIT_SENTENCES, isSplitSentences)
+            apply()
+        }
     }
 
     override fun toString(): String {
