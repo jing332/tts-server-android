@@ -1,10 +1,8 @@
 package com.github.jing332.tts_server_android.service.tts.help
 
-import android.annotation.SuppressLint
 import android.content.Context
 import com.github.jing332.tts_server_android.constant.TtsApiType
 
-@SuppressLint("SdCardPath")
 class TtsConfig(
     var api: Int,
     var locale: String,
