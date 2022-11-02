@@ -2,8 +2,38 @@ package com.github.jing332.tts_server_android.util
 
 import java.io.File
 import java.io.FileOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
 object FileUtils {
+    fun saveObject(obj: Any, filePath: String) {
+        try {
+            val fos = File(filePath).outputStream()
+            val oos = ObjectOutputStream(fos)
+            oos.writeObject(obj)
+            oos.flush()
+            oos.close()
+            fos.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> readObject(filePath: String): T? {
+        try {
+            val fis = File(filePath).inputStream()
+            val ois = ObjectInputStream(fis)
+            val obj = ois.readObject() as T
+            ois.close()
+            fis.close()
+            return obj
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
     fun fileExists(file: File): Boolean {
         runCatching {
             if (file.isFile)

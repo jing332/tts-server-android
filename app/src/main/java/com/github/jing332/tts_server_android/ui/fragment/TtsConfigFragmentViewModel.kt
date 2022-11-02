@@ -58,7 +58,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
 
     fun loadData(context: Context) {
         Log.d(TAG, "loadData")
-        ttsConfig = TtsConfig().loadConfig(context)
+        ttsConfig = TtsConfig.read()
 
         val apiListData = arrayListOf<SpinnerItemData>()
         context.apply {
@@ -70,10 +70,10 @@ class TtsConfigFragmentViewModel : ViewModel() {
                 apiListData.add(SpinnerItemData(it, ""))
             }
         }
-        apiLiveData.value = SpinnerData(apiListData, ttsConfig.api)
-        voiceStyleDegreeLiveData.value = ttsConfig.voiceStyleDegree
-        volumeLiveData.value = ttsConfig.volume
-        rateLiveData.value = ttsConfig.rate
+        apiLiveData.value = SpinnerData(apiListData, ttsConfig.list[0].api)
+        voiceStyleDegreeLiveData.value = ttsConfig.list[0].voiceStyleDegree
+        volumeLiveData.value = ttsConfig.list[0].volume
+        rateLiveData.value = ttsConfig.list[0].rate
         isSplitSentencesLiveData.value = ttsConfig.isSplitSentences
 
         cacheDir = context.cacheDir.path
@@ -82,7 +82,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
     /* {接口}选中变更 */
     @OptIn(DelicateCoroutinesApi::class)
     fun apiSelected(position: Int, finally: () -> Unit) {
-        ttsConfig.api = position
+        ttsConfig.list[0].api = position
         apiLiveData.value?.position = position
         updateFormatLiveData()
         GlobalScope.launch {
@@ -99,9 +99,9 @@ class TtsConfigFragmentViewModel : ViewModel() {
     fun languageSelected(position: Int) {
         Log.d(TAG, "languageSelected: $position")
         languageLiveData.value?.position = position
-        ttsConfig.locale = languageLiveData.value!!.list[position].value
+        ttsConfig.list[0].locale = languageLiveData.value!!.list[position].value
         val tmpVoiceList = arrayListOf<SpinnerItemData>()
-        when (ttsConfig.api) {
+        when (ttsConfig.list[0].api) {
             TtsApiType.EDGE -> {
                 edgeVoices.forEach { item ->
                     if (item.locale == languageLiveData.value!!.list[position].value)
@@ -115,7 +115,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
             }
             TtsApiType.AZURE -> {
                 azureVoices.forEach {
-                    if (it.locale == ttsConfig.locale)
+                    if (it.locale == ttsConfig.list[0].locale)
                         tmpVoiceList.add(
                             SpinnerItemData(
                                 it.localName + "（${it.shortName}）",
@@ -139,7 +139,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
         tmpVoiceList.sortBy { it.displayName }
         var selectedPos = 0
         tmpVoiceList.forEachIndexed { index, itemData ->
-            if (itemData.value == ttsConfig.voiceName) {
+            if (itemData.value == ttsConfig.list[0].voiceName) {
                 selectedPos = index
             }
         }
@@ -150,14 +150,14 @@ class TtsConfigFragmentViewModel : ViewModel() {
     fun voiceSelected(position: Int) {
         voiceLiveData.value?.also {
             it.position = position
-            ttsConfig.voiceName = it.list[position].value
+            ttsConfig.list[0].voiceName = it.list[position].value
         }
-        Log.d(TAG, "voiceSelected ${ttsConfig.voiceName}")
+        Log.d(TAG, "voiceSelected ${ttsConfig.list[0].voiceName}")
 
-        when (ttsConfig.api) {
+        when (ttsConfig.list[0].api) {
             TtsApiType.AZURE -> {
                 azureVoices.forEach { voiceItem ->
-                    if (ttsConfig.voiceName == voiceItem.shortName) {
+                    if (ttsConfig.list[0].voiceName == voiceItem.shortName) {
                         /* 风格 */
                         val styleList = arrayListOf(SpinnerItemData("无", ""))
                         var selectedStyle = 0
@@ -170,7 +170,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
                                         styleName
                                     )
                                 )
-                                if (ttsConfig.voiceStyle == styleName)
+                                if (ttsConfig.list[0].voiceStyle == styleName)
                                     selectedStyle = index + 1
                             }
                         }
@@ -188,7 +188,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
                                         roleName
                                     )
                                 )
-                                if (ttsConfig.voiceRole == roleName)
+                                if (ttsConfig.list[0].voiceRole == roleName)
                                     selectedRole = index + 1
                             }
                         }
@@ -199,8 +199,8 @@ class TtsConfigFragmentViewModel : ViewModel() {
             }
             TtsApiType.CREATION -> {
                 creationVoices.forEach { voiceItem ->
-                    if (ttsConfig.voiceName == voiceItem.shortName) {
-                        ttsConfig.voiceId = voiceItem.id
+                    if (ttsConfig.list[0].voiceName == voiceItem.shortName) {
+                        ttsConfig.list[0].voiceId = voiceItem.id
                         /* 风格 */
                         val styleList = arrayListOf(SpinnerItemData("无", ""))
                         var selectedStyle = 0
@@ -215,7 +215,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
                                                 styleName
                                             )
                                         )
-                                    if (ttsConfig.voiceStyle == styleName)
+                                    if (ttsConfig.list[0].voiceStyle == styleName)
                                         selectedStyle = index + 1
                                 }
                             }
@@ -236,7 +236,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
                                                 roleName
                                             )
                                         )
-                                    if (ttsConfig.voiceRole == roleName)
+                                    if (ttsConfig.list[0].voiceRole == roleName)
                                         selectedRole = index + 1
 
                                 }
@@ -253,18 +253,18 @@ class TtsConfigFragmentViewModel : ViewModel() {
 
     fun formatSelected(position: Int) {
         val value = audioFormatLiveData.value!!.list[position].displayName
-        ttsConfig.format = value
+        ttsConfig.list[0].format = value
         Log.d(TAG, "formatSelected $value")
     }
 
     fun volumeChanged(volume: Int) {
         volumeLiveData.value = volume
-        ttsConfig.volume = volume
+        ttsConfig.list[0].volume = volume
     }
 
     fun rateChanged(rate: Int) {
         rateLiveData.value = rate
-        ttsConfig.rate = rate
+        ttsConfig.list[0].rate = rate
     }
 
     fun isSplitSentencesChanged(isChecked: Boolean) {
@@ -295,7 +295,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
         tmpLangList.sortBy { it.value }
         var selected = 0
         tmpLangList.forEachIndexed { index, item ->
-            if (ttsConfig.locale == item.value)
+            if (ttsConfig.list[0].locale == item.value)
                 selected = index
         }
         languageLiveData.postValue(SpinnerData(tmpLangList, selected))
@@ -332,7 +332,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
         val dataList = arrayListOf<SpinnerItemData>()
         var selected = 0
         languageList.forEachIndexed { i, v ->
-            if (ttsConfig.locale == v) { /* 选中配置文件中的位置 */
+            if (ttsConfig.list[0].locale == v) { /* 选中配置文件中的位置 */
                 selected = i
             }
             dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
@@ -368,7 +368,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
         val dataList = arrayListOf<SpinnerItemData>()
         var selected = 0
         tmpLanguageList.forEachIndexed { i, v ->
-            if (ttsConfig.locale == v) { /* 选中配置文件中的位置 */
+            if (ttsConfig.list[0].locale == v) { /* 选中配置文件中的位置 */
                 selected = i
             }
             dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
@@ -377,12 +377,12 @@ class TtsConfigFragmentViewModel : ViewModel() {
     }
 
     fun saveConfig(context: Context) {
-        ttsConfig.writeConfig(context)
+        ttsConfig.save()
     }
 
     /* 根据API更新音频格式 */
     private fun updateFormatLiveData() {
-        val api = when (ttsConfig.api) {
+        val api = when (ttsConfig.list[0].api) {
             0 -> TtsAudioFormat.SupportedApi.EDGE
             1 -> TtsAudioFormat.SupportedApi.AZURE
             else -> TtsAudioFormat.SupportedApi.CREATION //2
@@ -391,7 +391,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
         var selected = 0
         val tmpFormats = arrayListOf<SpinnerItemData>()
         formats.forEachIndexed { index, v ->
-            if (ttsConfig.format == v) {
+            if (ttsConfig.list[0].format == v) {
                 selected = index
             }
             tmpFormats.add(SpinnerItemData(v, v))
@@ -400,16 +400,16 @@ class TtsConfigFragmentViewModel : ViewModel() {
     }
 
     fun voiceStyleSelected(position: Int) {
-        ttsConfig.voiceStyle = voiceStyleLiveData.value!!.list[position].value
+        ttsConfig.list[0].voiceStyle = voiceStyleLiveData.value!!.list[position].value
     }
 
     fun voiceRoleSelected(position: Int) {
-        ttsConfig.voiceRole = voiceRoleLiveData.value!!.list[position].value
+        ttsConfig.list[0].voiceRole = voiceRoleLiveData.value!!.list[position].value
     }
 
     fun voiceStyleDegreeChanged(progress: Int) {
         voiceStyleDegreeLiveData.value = progress
-        ttsConfig.voiceStyleDegree = progress
+        ttsConfig.list[0].voiceStyleDegree = progress
     }
 
     class SpinnerData(var list: List<SpinnerItemData>, var position: Int)

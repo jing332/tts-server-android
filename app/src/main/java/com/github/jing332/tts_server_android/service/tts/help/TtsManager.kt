@@ -27,7 +27,7 @@ class TtsManager(val context: Context) {
         const val TAG = "TtsManager"
     }
 
-    var ttsConfig: TtsConfig = TtsConfig().loadConfig(context)
+    var ttsConfig: TtsConfig = TtsConfig()
     lateinit var audioFormat: TtsAudioFormat
 
     var isSynthesizing = false
@@ -37,14 +37,16 @@ class TtsManager(val context: Context) {
     fun stop() {
         isSynthesizing = false
         audioDecode.stop()
-        if (ttsConfig.api == TtsApiType.CREATION) {
+        if (ttsConfig.list[0].api == TtsApiType.CREATION) {
             mCreationApi.cancel()
         }
     }
+
     /* 加载配置 */
     fun loadConfig() {
-        ttsConfig.loadConfig(context)
-        audioFormat = TtsFormatManger.getFormat(ttsConfig.format) ?: TtsFormatManger.getDefault()
+        ttsConfig = TtsConfig.read()
+        audioFormat =
+            TtsFormatManger.getFormat(ttsConfig.list[0].format) ?: TtsFormatManger.getDefault()
     }
 
     lateinit var producer: ReceiveChannel<ChannelData>
@@ -77,8 +79,8 @@ class TtsManager(val context: Context) {
         val text = request?.charSequenceText.toString().trim()
         val pitch = "${request?.pitch?.minus(100)}%"
         val rate =
-            if (ttsConfig.rate == 0) "${(norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()}%"
-            else ttsConfig.rateToPcmString()
+            if (ttsConfig.list[0].rate == 0) "${(norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()}%"
+            else ttsConfig.list[0].rateToPcmString()
 
         callback?.start(audioFormat.hz, audioFormat.bitRate, 1)
         if (ttsConfig.isSplitSentences) { /* 分句 */
@@ -121,7 +123,7 @@ class TtsManager(val context: Context) {
         val timeCost = measureTimeMillis { audio = getAudioUseRetry(text, rate, pitch) }
         if (audio != null) {
             sendLog(LogLevel.INFO, "获取音频成功, 大小: ${audio.size / 1024}KB, 耗时: ${timeCost}ms")
-            val hz = TtsFormatManger.getFormat(ttsConfig.format)?.hz ?: 16000
+            val hz = TtsFormatManger.getFormat(ttsConfig.list[0].format)?.hz ?: 16000
             audioDecode.doDecode(
                 audio,
                 hz,
@@ -146,7 +148,7 @@ class TtsManager(val context: Context) {
         for (i in 1..1000) {
             if (!isSynthesizing) return null
             try {
-                audio = getAudio(ttsConfig.api, text, rate, pitch)
+                audio = getAudio(ttsConfig.list[0].api, text, rate, pitch)
                 return audio
             } catch (e: Exception) {
                 if (e.message?.endsWith("context canceled") == true) { /* 为主动取消请求 */
@@ -167,12 +169,12 @@ class TtsManager(val context: Context) {
     private val mCreationApi: CreationApi by lazy { CreationApi() }
 
     private fun getAudio(api: Int, text: String, rate: String, pitch: String): ByteArray? {
-        val voice = ttsConfig.voiceName
-        val style = ttsConfig.voiceStyle.ifEmpty { "general" }
-        val styleDegree = "${(ttsConfig.voiceStyleDegree * 0.01).toFloat()}"
-        val role = ttsConfig.voiceRole.ifEmpty { "default" }
-        val volume = ttsConfig.volumeToPctString()
-        val format = ttsConfig.format
+        val voice = ttsConfig.list[0].voiceName
+        val style = ttsConfig.list[0].voiceStyle.ifEmpty { "general" }
+        val styleDegree = "${(ttsConfig.list[0].voiceStyleDegree * 0.01).toFloat()}"
+        val role = ttsConfig.list[0].voiceRole.ifEmpty { "default" }
+        val volume = ttsConfig.list[0].volumeToPctString()
+        val format = ttsConfig.list[0].format
         when (api) {
             TtsApiType.EDGE -> {
                 sendLog(
@@ -212,9 +214,9 @@ class TtsManager(val context: Context) {
             TtsApiType.CREATION -> {
                 val arg = tts_server_lib.CreationArg()
                 arg.text = text
-                arg.voiceName = ttsConfig.voiceName
-                arg.voiceId = ttsConfig.voiceId
-                arg.style = ttsConfig.voiceStyle
+                arg.voiceName = ttsConfig.list[0].voiceName
+                arg.voiceId = ttsConfig.list[0].voiceId
+                arg.style = ttsConfig.list[0].voiceStyle
                 arg.styleDegree = styleDegree
                 arg.role = role
                 arg.rate = rate
