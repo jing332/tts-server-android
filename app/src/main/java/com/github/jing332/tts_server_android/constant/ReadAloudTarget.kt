@@ -1,0 +1,13 @@
+package com.github.jing332.tts_server_android.constant
+
+import androidx.annotation.IntDef
+
+@IntDef(ReadAloudTarget.DEFAULT, ReadAloudTarget.ASIDE, ReadAloudTarget.DIALOGUE)
+@Retention(AnnotationRetention.SOURCE)
+annotation class ReadAloudTarget {
+    companion object {
+        const val DEFAULT = 0
+        const val ASIDE = 1 //旁白
+        const val DIALOGUE = 2 //对话
+    }
+}

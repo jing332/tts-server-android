@@ -32,6 +32,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     }
     private val model: TtsConfigFragmentViewModel by viewModels()
 
+    private val spinnerRaTargetAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerApiAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerLanguageAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerVoiceAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
@@ -51,6 +52,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding.spinnerReadAloudTarget.adapter = spinnerRaTargetAdapter
         binding.spinnerApi.adapter = spinnerApiAdapter
         binding.spinnerLanguage.adapter = spinnerLanguageAdapter
         binding.spinnerVoice.adapter = spinnerVoiceAdapter
@@ -103,6 +105,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         binding.spinnerVoiceRole.adapter = spinnerVoiceRoleAdapter
         binding.spinnerFormat.adapter = spinnerFormatAdapter
 
+        binding.spinnerReadAloudTarget.onItemSelectedListener = this
         binding.spinnerApi.onItemSelectedListener = this
         binding.spinnerLanguage.onItemSelectedListener = this
         binding.spinnerVoice.onItemSelectedListener = this
@@ -121,6 +124,9 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             model.isSplitSentencesChanged(isChecked)
         }
 
+        model.readAloudTargetLiveData.observe(this) { data ->
+            updateSpinner(binding.spinnerReadAloudTarget, data)
+        }
         /* 接口列表 */
         model.apiLiveData.observe(this) { data ->
             updateSpinner(binding.spinnerApi, data)
@@ -170,7 +176,6 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             Log.d(TAG, "rate:$it")
             binding.seekBarRate.progress = it
         }
-
         /* 是否分割长段 */
         model.isSplitSentencesLiveData.observe(this) {
             Log.d(TAG, "isSplitSentences $it")
@@ -188,6 +193,11 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         if (isInit >= 2)
             binding.btnApplyChanges.isEnabled = true
         when (parent?.id) {
+            R.id.spinner_readAloudTarget -> {
+                model.onReadAloudTargetSelected(position)
+                binding.switchSplitSentences.visibility =
+                    if (position == 0) View.VISIBLE else View.INVISIBLE
+            }
             R.id.spinner_api -> {
                 binding.tvStyleDegree.isVisible = position != TtsApiType.EDGE
                 val waitDialog = WaitDialog(requireContext())

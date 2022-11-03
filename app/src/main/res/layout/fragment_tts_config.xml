@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
@@ -20,14 +20,34 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/label_read_aloud_target"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/spinner_readAloudTarget"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/label_read_aloud_target"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView8"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+            <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/label_api"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/spinner_readAloudTarget" />
 
             <Spinner
                 android:id="@+id/spinner_api"
@@ -153,20 +173,17 @@
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switch_split_sentences"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
                 android:minHeight="48dp"
                 android:text="@string/split_long_sentences"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/seekBar_rate"
                 app:layout_constraintTop_toBottomOf="@+id/seekBar_rate" />
 
             <Button
                 android:id="@+id/btn_apply_changes"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_marginTop="16dp"
                 android:enabled="false"
                 android:text="@string/btn_apply_changes"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -180,7 +197,7 @@
                 android:text="@string/btn_open_tts_settings"
                 app:layout_constraintEnd_toStartOf="@+id/btn_test"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/switch_split_sentences"
+                app:layout_constraintStart_toStartOf="@+id/seekBar_rate"
                 app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
 
             <TextView
@@ -249,7 +266,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/spinner_voiceStyle"
                 app:layout_constraintStart_toEndOf="@+id/label_voiceStyle"
                 app:layout_constraintTop_toTopOf="@+id/label_voiceStyle"
-                app:layout_constraintVertical_bias="0.53" />
+                app:layout_constraintVertical_bias="0.909" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

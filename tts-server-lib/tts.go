@@ -15,6 +15,13 @@ type EdgeApi struct {
 	useDnsLookup bool
 }
 
+func (e *EdgeApi) GetEdgeAudioBySsml(ssml, format string) ([]byte, error) {
+	if e.tts == nil {
+		e.tts = &edge.TTS{UseDnsLookup: e.useDnsLookup}
+	}
+	return e.tts.GetAudio(ssml, format)
+}
+
 func (e *EdgeApi) GetEdgeAudio(voiceName, text, rate, pitch, volume, format string) ([]byte, error) {
 	if e.tts == nil {
 		e.tts = &edge.TTS{UseDnsLookup: e.useDnsLookup}

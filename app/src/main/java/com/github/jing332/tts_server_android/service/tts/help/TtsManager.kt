@@ -7,8 +7,10 @@ import android.speech.tts.SynthesisRequest
 import android.util.Log
 import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.MyLog
+import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.service.tts.SystemTtsService
+import com.github.jing332.tts_server_android.service.tts.help.ssml.EdgeSSML
 import com.github.jing332.tts_server_android.util.NormUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -73,6 +75,37 @@ class TtsManager(val context: Context) {
         }
     }
 
+//    lateinit var multiVoiceProducer: ReceiveChannel<ChannelData>
+
+    @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+    private fun multiVoiceProducer(
+        text: String,
+        pitch: String
+    ): ReceiveChannel<ChannelData> = GlobalScope.produce(capacity = 3) {
+        val asidePro = ttsConfig.list[ReadAloudTarget.ASIDE].toVoiceProperty(pitch)
+        val dialoguePro = ttsConfig.list[ReadAloudTarget.DIALOGUE].toVoiceProperty(pitch)
+        val ssmlList = EdgeSSML.genSsmlForMultiVoice(
+            text, asidePro, dialoguePro
+        )
+        ssmlList.forEach {
+            sendLog(LogLevel.INFO, "发送SSML: ${it.value}")
+            var audio: ByteArray?
+            val timeCost =
+                measureTimeMillis {
+                    audio = mEdgeApi.getEdgeAudioBySsml(it.value, ttsConfig.selectedItem().format)
+                }
+            audio?.let { data ->
+                sendLog(
+                    LogLevel.INFO,
+                    "获取音频成功, 大小: ${data.size / 1024}KB, 耗时: ${timeCost}ms"
+                )
+            }
+            send(ChannelData(it.key, audio))
+            delay(500)
+
+        }
+    }
+
     /* 开始转语音 */
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
@@ -83,10 +116,18 @@ class TtsManager(val context: Context) {
             else ttsConfig.list[0].rateToPcmString()
 
         callback?.start(audioFormat.hz, audioFormat.bitRate, 1)
-        if (ttsConfig.isSplitSentences) { /* 分句 */
-            /* 异步获取音频、缓存 */
-            producer = producer(text, rate, pitch)
-            /* 阻塞接收 */
+
+        var isProducer = false
+        if (ttsConfig.currentSelected == ReadAloudTarget.DEFAULT) {
+            if (ttsConfig.isSplitSentences) {
+                producer = producer(text, rate, pitch)
+                isProducer = true
+            }
+        } else {
+            producer = multiVoiceProducer(text, pitch)
+            isProducer = true
+        }
+        if (isProducer) {
             producer.consumeEach { data ->
                 if (!isSynthesizing) return@consumeEach
                 if (data.audio == null) {
@@ -105,6 +146,30 @@ class TtsManager(val context: Context) {
                     sendLog(LogLevel.WARN, "播放完毕：$str")
                 }
             }
+
+
+//        if (ttsConfig.currentSelected == ReadAloudTarget.DEFAULT || ttsConfig.isSplitSentences) { /* 分句 */
+//            /* 异步获取音频、缓存 */
+//            producer = producer(text, rate, pitch)
+//            /* 阻塞接收 */
+//            producer.consumeEach { data ->
+//                if (!isSynthesizing) return@consumeEach
+//                if (data.audio == null) {
+//                    sendLog(LogLevel.WARN, "音频为空！")
+//                } else {
+//                    audioDecode.doDecode(
+//                        data.audio,
+//                        audioFormat.hz,
+//                        onRead = { writeToCallBack(callback!!, it) },
+//                        error = {
+//                            sendLog(LogLevel.ERROR, "解码失败: $it")
+//                        })
+//                    val str = if (data.text.length > 20)
+//                        data.text.substring(0, 19) + "···"
+//                    else data.text
+//                    sendLog(LogLevel.WARN, "播放完毕：$str")
+//                }
+//            }
         } else { /* 不使用分段*/
             getAudioAndDecodePlay(text, rate, pitch, callback)
         }
