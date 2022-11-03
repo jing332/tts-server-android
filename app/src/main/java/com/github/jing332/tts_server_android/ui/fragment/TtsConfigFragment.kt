@@ -231,7 +231,7 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             }
             R.id.btn_apply_changes -> {
                 v.isEnabled = false
-                model.saveConfig(requireContext())
+                model.saveConfig()
                 requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
             }
             R.id.btn_test -> {
