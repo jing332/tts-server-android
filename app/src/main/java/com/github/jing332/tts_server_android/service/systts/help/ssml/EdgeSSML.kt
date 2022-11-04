@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.service.tts.help.ssml
+package com.github.jing332.tts_server_android.service.systts.help.ssml
 
 class EdgeSSML(var text: String, var property: VoiceProperty) {
     companion object {

@@ -33,12 +33,18 @@ android {
 
     buildTypes {
         release {
+            manifestPlaceholders = [APP_NAME: "@string/app_name"]
             signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [APP_NAME: "@string/app_name_debug"]
+        }
+
     }
     sourceSets {
         main {
@@ -81,6 +87,9 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
     //noinspection GradleDependency
     coreLibraryDesugaring('com.android.tools:desugar_jdk_libs:1.1.6')
 

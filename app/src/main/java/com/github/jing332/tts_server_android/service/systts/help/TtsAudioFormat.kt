@@ -1,8 +1,8 @@
-package com.github.jing332.tts_server_android.service.tts.help
+package com.github.jing332.tts_server_android.service.systts.help
 
 import androidx.annotation.IntDef
 
-class TtsAudioFormat(
+data class TtsAudioFormat(
     val name: String,
     val value: String,
     val hz: Int,
@@ -10,6 +10,9 @@ class TtsAudioFormat(
     @SupportedApi val supportedApi: Int,
     val needDecode: Boolean
 ) {
+//    companion object {
+//        const val DEFAULT = "audio-24khz-48kbitrate-mono-mp3"
+//    }
 
     constructor(
         name: String,
@@ -18,16 +21,6 @@ class TtsAudioFormat(
         @SupportedApi supportedApi: Int,
         needDecode: Boolean
     ) : this(name, name, hz, bitRate, supportedApi, needDecode)
-
-    override fun toString(): String {
-        return "TtsOutputFormat{" +
-                "name='" + name + '\'' +
-                ", value='" + value + '\'' +
-                ", hz=" + hz +
-                ", bitRate=" + bitRate +
-                ", needDecode=" + needDecode +
-                '}'
-    }
 
     @IntDef(flag = true, value = [SupportedApi.AZURE, SupportedApi.EDGE, SupportedApi.CREATION])
     @Retention(AnnotationRetention.SOURCE)
@@ -39,15 +32,15 @@ class TtsAudioFormat(
         }
     }
 
-   /* class SupportedApi(
-        var isEdge: Boolean,
-        var isAzure: Boolean,
-        var isCreation: Boolean
-    )
+    /* class SupportedApi(
+         var isEdge: Boolean,
+         var isAzure: Boolean,
+         var isCreation: Boolean
+     )
 
-    companion object {
-        const val API_EDGE = 0
-        const val API_AZURE = 1
-        const val API_CREATION = 2
-    }*/
+     companion object {
+         const val API_EDGE = 0
+         const val API_AZURE = 1
+         const val API_CREATION = 2
+     }*/
 }

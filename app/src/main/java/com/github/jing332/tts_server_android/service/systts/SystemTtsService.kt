@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.service.tts
+package com.github.jing332.tts_server_android.service.systts
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -19,11 +19,12 @@ import android.speech.tts.TextToSpeechService
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.service.tts.help.TtsManager
+import com.github.jing332.tts_server_android.service.systts.help.TtsManager
 import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
+import com.github.jing332.tts_server_android.util.longToastOnUi
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
@@ -32,7 +33,7 @@ import kotlin.system.exitProcess
 @Suppress("DEPRECATION")
 class SystemTtsService : TextToSpeechService() {
     companion object {
-        const val TAG = "TtsService"
+        const val TAG = "SysTtsService"
         const val ACTION_ON_LOG = "on_log"
         const val ACTION_NOTIFY_CANCEL = "NOTIFY_cancel"
         const val ACTION_KILL_PROCESS = "kill_process"
@@ -61,7 +62,12 @@ class SystemTtsService : TextToSpeechService() {
         }
 
         mWakeLock.acquire(60 * 20 * 100)
-        mTtsManager.loadConfig()
+        try {
+            mTtsManager.loadConfig()
+        } catch (e: ArrayIndexOutOfBoundsException) {
+            longToastOnUi("错误: 缺少朗读目标！")
+            Thread.sleep(1000 * 4)
+        }
     }
 
     override fun onDestroy() {

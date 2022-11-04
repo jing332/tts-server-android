@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.service.tts.help
+package com.github.jing332.tts_server_android.service.systts.help
 
 import android.media.MediaCodec
 import android.media.MediaExtractor
@@ -7,7 +7,7 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import com.github.jing332.tts_server_android.BuildConfig
-import com.github.jing332.tts_server_android.service.tts.SystemTtsService
+import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.util.GcManager
 import okio.ByteString
 import okio.ByteString.Companion.toByteString

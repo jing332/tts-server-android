@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.service.tts.help.ssml
+package com.github.jing332.tts_server_android.service.systts.help.ssml
 
 data class VoiceProperty(val voiceName: String, val prosody: Prosody) {
     fun toString(text: String): String {

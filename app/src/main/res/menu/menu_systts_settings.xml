@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <group>
+        <item
+            android:id="@+id/menu_doSplit"
+            android:checkable="true"
+            android:title="@string/split_long_sentences" />
+        <item
+            android:id="@+id/menu_isMultiVoice"
+            android:checkable="true"
+            android:title="@string/multi_voice" />
+    </group>
     <item
         android:id="@+id/menu_desktopShortcut"
         android:title="@string/desktop_shortcut" />
+
 </menu>

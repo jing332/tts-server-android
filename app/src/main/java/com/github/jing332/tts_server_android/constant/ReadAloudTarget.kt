@@ -9,5 +9,17 @@ annotation class ReadAloudTarget {
         const val DEFAULT = 0
         const val ASIDE = 1 //旁白
         const val DIALOGUE = 2 //对话
+
+        fun toString(@ReadAloudTarget target: Int): String {
+            return when (target) {
+                ASIDE -> {
+                    "旁白"
+                }
+                DIALOGUE -> {
+                    "对话"
+                }
+                else -> ""
+            }
+        }
     }
 }

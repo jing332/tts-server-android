@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.service.tts.help
+package com.github.jing332.tts_server_android.service.systts.help
 
 import android.content.Context
 import android.content.Intent
@@ -9,9 +9,12 @@ import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.constant.TtsApiType
-import com.github.jing332.tts_server_android.service.tts.SystemTtsService
-import com.github.jing332.tts_server_android.service.tts.help.ssml.EdgeSSML
+import com.github.jing332.tts_server_android.data.SysTtsConfig
+import com.github.jing332.tts_server_android.data.SysTtsConfigItem
+import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.service.systts.help.ssml.EdgeSSML
 import com.github.jing332.tts_server_android.util.NormUtil
+import com.github.jing332.tts_server_android.util.longToastOnUi
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -29,7 +32,7 @@ class TtsManager(val context: Context) {
         const val TAG = "TtsManager"
     }
 
-    var ttsConfig: TtsConfig = TtsConfig()
+    var ttsConfig: SysTtsConfig = SysTtsConfig()
     lateinit var audioFormat: TtsAudioFormat
 
     var isSynthesizing = false
@@ -39,22 +42,44 @@ class TtsManager(val context: Context) {
     fun stop() {
         isSynthesizing = false
         audioDecode.stop()
-        if (ttsConfig.list[0].api == TtsApiType.CREATION) {
-            mCreationApi.cancel()
-        }
+//        if (ttsConfig.list[0].api == TtsApiType.CREATION) {
+//            mCreationApi.cancel()
+//        }
     }
 
     /* 加载配置 */
     fun loadConfig() {
-        ttsConfig = TtsConfig.read()
-        audioFormat =
-            TtsFormatManger.getFormat(ttsConfig.list[0].format) ?: TtsFormatManger.getDefault()
+        ttsConfig = SysTtsConfig.read()
+        Log.d(TAG, "loadConfig: $ttsConfig")
+
+        ttsConfig.apply {
+            if (isMultiVoice) {
+                var cfgItem = ttsConfig.currentAsideItem()
+                if (cfgItem == null) {
+                    context.longToastOnUi("错误：缺少朗读对象，使用默认配置！")
+                    cfgItem = SysTtsConfigItem()
+                    ttsConfig.list.add(cfgItem)
+                    ttsConfig.currentAside = ttsConfig.list.size - 1
+                }
+                audioFormat = TtsFormatManger.getFormat(cfgItem.format)
+                    ?: TtsFormatManger.getDefault()
+            } else {
+                var cfgItem = ttsConfig.selectedItem()
+                if (cfgItem == null) {
+                    cfgItem = SysTtsConfigItem()
+                    ttsConfig.list.add(cfgItem)
+                    ttsConfig.currentSelected = ttsConfig.list.size - 1
+                }
+                audioFormat = TtsFormatManger.getFormat(cfgItem.format)
+                    ?: TtsFormatManger.getDefault()
+            }
+        }
     }
 
-    lateinit var producer: ReceiveChannel<ChannelData>
+    private var producer: ReceiveChannel<ChannelData>? = null
 
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
-    private fun producer(
+    private fun splitSentencesProducer(
         text: String,
         rate: String,
         pitch: String
@@ -82,17 +107,34 @@ class TtsManager(val context: Context) {
         text: String,
         pitch: String
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(capacity = 3) {
-        val asidePro = ttsConfig.list[ReadAloudTarget.ASIDE].toVoiceProperty(pitch)
-        val dialoguePro = ttsConfig.list[ReadAloudTarget.DIALOGUE].toVoiceProperty(pitch)
+        val aside = ttsConfig.currentAsideItem() ?: SysTtsConfigItem()
+        val dialogue = ttsConfig.currentDialogueItem() ?: SysTtsConfigItem()
+        val asidePro = aside.toVoiceProperty(pitch)
+        val dialoguePro = dialogue.toVoiceProperty(pitch)
+
         val ssmlList = EdgeSSML.genSsmlForMultiVoice(
             text, asidePro, dialoguePro
         )
         ssmlList.forEach {
-            sendLog(LogLevel.INFO, "发送SSML: ${it.value}")
-            var audio: ByteArray?
+            sendLog(LogLevel.INFO, "\n发送SSML: ${it.value}")
+            var audio: ByteArray? = null
             val timeCost =
                 measureTimeMillis {
-                    audio = mEdgeApi.getEdgeAudioBySsml(it.value, ttsConfig.selectedItem().format)
+                    for (i in 1..1000) {
+                        try {
+                            audio =
+                                mEdgeApi.getEdgeAudioBySsml(
+                                    it.value,
+                                    ttsConfig.selectedItem()?.format
+                                )
+                            return@measureTimeMillis
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
+                        }
+                        sendLog(LogLevel.WARN, "开始第${i}次重试...")
+                        delay(2000)
+                    }
                 }
             audio?.let { data ->
                 sendLog(
@@ -102,7 +144,6 @@ class TtsManager(val context: Context) {
             }
             send(ChannelData(it.key, audio))
             delay(500)
-
         }
     }
 
@@ -112,66 +153,40 @@ class TtsManager(val context: Context) {
         val text = request?.charSequenceText.toString().trim()
         val pitch = "${request?.pitch?.minus(100)}%"
         val rate =
-            if (ttsConfig.list[0].rate == 0) "${(norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()}%"
-            else ttsConfig.list[0].rateToPcmString()
+            if (ttsConfig.selectedItem()?.rate == 0) "${(norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()}%"
+            else ttsConfig.selectedItem()?.rateToPcmString()
+                ?: "0%"
 
         callback?.start(audioFormat.hz, audioFormat.bitRate, 1)
 
-        var isProducer = false
-        if (ttsConfig.currentSelected == ReadAloudTarget.DEFAULT) {
-            if (ttsConfig.isSplitSentences) {
-                producer = producer(text, rate, pitch)
-                isProducer = true
-            }
-        } else {
+        producer = null
+        if (ttsConfig.isMultiVoice) { // 多声音
+            Log.d(TAG, "multiVoiceProducer...")
             producer = multiVoiceProducer(text, pitch)
-            isProducer = true
-        }
-        if (isProducer) {
-            producer.consumeEach { data ->
-                if (!isSynthesizing) return@consumeEach
-                if (data.audio == null) {
-                    sendLog(LogLevel.WARN, "音频为空！")
-                } else {
-                    audioDecode.doDecode(
-                        data.audio,
-                        audioFormat.hz,
-                        onRead = { writeToCallBack(callback!!, it) },
-                        error = {
-                            sendLog(LogLevel.ERROR, "解码失败: $it")
-                        })
-                    val str = if (data.text.length > 20)
-                        data.text.substring(0, 19) + "···"
-                    else data.text
-                    sendLog(LogLevel.WARN, "播放完毕：$str")
-                }
-            }
-
-
-//        if (ttsConfig.currentSelected == ReadAloudTarget.DEFAULT || ttsConfig.isSplitSentences) { /* 分句 */
-//            /* 异步获取音频、缓存 */
-//            producer = producer(text, rate, pitch)
-//            /* 阻塞接收 */
-//            producer.consumeEach { data ->
-//                if (!isSynthesizing) return@consumeEach
-//                if (data.audio == null) {
-//                    sendLog(LogLevel.WARN, "音频为空！")
-//                } else {
-//                    audioDecode.doDecode(
-//                        data.audio,
-//                        audioFormat.hz,
-//                        onRead = { writeToCallBack(callback!!, it) },
-//                        error = {
-//                            sendLog(LogLevel.ERROR, "解码失败: $it")
-//                        })
-//                    val str = if (data.text.length > 20)
-//                        data.text.substring(0, 19) + "···"
-//                    else data.text
-//                    sendLog(LogLevel.WARN, "播放完毕：$str")
-//                }
-//            }
-        } else { /* 不使用分段*/
+        } else if (ttsConfig.currentSelected == ReadAloudTarget.DEFAULT && ttsConfig.isSplitSentences) { // 分句
+            Log.d(TAG, "splitSentences...")
+            producer = splitSentencesProducer(text, rate, pitch)
+        } else { // 不分句
             getAudioAndDecodePlay(text, rate, pitch, callback)
+        }
+
+        producer?.consumeEach { data ->
+            if (!isSynthesizing) return@consumeEach
+            if (data.audio == null) {
+                sendLog(LogLevel.WARN, "音频为空！")
+            } else {
+                audioDecode.doDecode(
+                    data.audio,
+                    audioFormat.hz,
+                    onRead = { writeToCallBack(callback!!, it) },
+                    error = {
+                        sendLog(LogLevel.ERROR, "解码失败: $it")
+                    })
+                val str = if (data.text.length > 20)
+                    data.text.substring(0, 19) + "···"
+                else data.text
+                sendLog(LogLevel.WARN, "播放完毕：$str")
+            }
         }
 
         stop()
@@ -188,10 +203,9 @@ class TtsManager(val context: Context) {
         val timeCost = measureTimeMillis { audio = getAudioUseRetry(text, rate, pitch) }
         if (audio != null) {
             sendLog(LogLevel.INFO, "获取音频成功, 大小: ${audio.size / 1024}KB, 耗时: ${timeCost}ms")
-            val hz = TtsFormatManger.getFormat(ttsConfig.list[0].format)?.hz ?: 16000
             audioDecode.doDecode(
                 audio,
-                hz,
+                audioFormat.hz,
                 onRead = { writeToCallBack(callback!!, it) },
                 error = {
                     sendLog(LogLevel.ERROR, "解码失败: $it")
@@ -213,7 +227,8 @@ class TtsManager(val context: Context) {
         for (i in 1..1000) {
             if (!isSynthesizing) return null
             try {
-                audio = getAudio(ttsConfig.list[0].api, text, rate, pitch)
+                audio =
+                    getAudio(ttsConfig.selectedItem()?.api ?: TtsApiType.AZURE, text, rate, pitch)
                 return audio
             } catch (e: Exception) {
                 if (e.message?.endsWith("context canceled") == true) { /* 为主动取消请求 */
@@ -233,13 +248,15 @@ class TtsManager(val context: Context) {
     private val mAzureApi: AzureApi by lazy { AzureApi() }
     private val mCreationApi: CreationApi by lazy { CreationApi() }
 
+    /* 获取音频 */
     private fun getAudio(api: Int, text: String, rate: String, pitch: String): ByteArray? {
-        val voice = ttsConfig.list[0].voiceName
-        val style = ttsConfig.list[0].voiceStyle.ifEmpty { "general" }
-        val styleDegree = "${(ttsConfig.list[0].voiceStyleDegree * 0.01).toFloat()}"
-        val role = ttsConfig.list[0].voiceRole.ifEmpty { "default" }
-        val volume = ttsConfig.list[0].volumeToPctString()
-        val format = ttsConfig.list[0].format
+        val data = ttsConfig.selectedItem() ?: SysTtsConfigItem()
+        val voice = data.voiceName
+        val style = data.voiceStyle.ifEmpty { "general" }
+        val styleDegree = "${(data.voiceStyleDegree * 0.01).toFloat()}"
+        val role = data.voiceRole.ifEmpty { "default" }
+        val volume = data.volumeToPctString()
+        val format = data.format
         when (api) {
             TtsApiType.EDGE -> {
                 sendLog(
@@ -279,9 +296,9 @@ class TtsManager(val context: Context) {
             TtsApiType.CREATION -> {
                 val arg = tts_server_lib.CreationArg()
                 arg.text = text
-                arg.voiceName = ttsConfig.list[0].voiceName
-                arg.voiceId = ttsConfig.list[0].voiceId
-                arg.style = ttsConfig.list[0].voiceStyle
+                arg.voiceName = data.voiceName
+                arg.voiceId = data.voiceId
+                arg.style = data.voiceStyle
                 arg.styleDegree = styleDegree
                 arg.role = role
                 arg.rate = rate

@@ -8,37 +8,56 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.TtsApiType
+import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
-import com.github.jing332.tts_server_android.ui.widget.WaitDialog
-import com.github.jing332.tts_server_android.util.runOnUI
+import com.github.jing332.tts_server_android.ui.custom.adapter.SysTtsConfigListItemAdapter
+import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity
+import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_DATA
+import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_POSITION
 
-class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener,
-    SeekBar.OnSeekBarChangeListener {
+
+@Suppress("DEPRECATION")
+class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
+    SysTtsConfigListItemAdapter.LongClickListen {
     companion object {
         const val TAG = "TtsConfigFragment"
         const val ACTION_ON_CONFIG_CHANGED = "on_config_changed"
     }
 
+    private val viewModel: TtsConfigFragmentViewModel by activityViewModels()
     private val binding: FragmentTtsConfigBinding by lazy {
         FragmentTtsConfigBinding.inflate(
             layoutInflater
         )
     }
-    private val model: TtsConfigFragmentViewModel by viewModels()
 
-    private val spinnerRaTargetAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
-    private val spinnerApiAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
-    private val spinnerLanguageAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
-    private val spinnerVoiceAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
-    private val spinnerVoiceStyleAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
-    private val spinnerVoiceRoleAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
-    private val spinnerFormatAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
+    private val recyclerAdapter: SysTtsConfigListItemAdapter by lazy {
+        SysTtsConfigListItemAdapter(
+            viewModel, arrayListOf()
+        )
+    }
+
+    private val startForResult =
+        registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
+            val data = result.data?.getSerializableExtra(KEY_DATA)
+            val position = result.data?.getIntExtra(KEY_POSITION, -1) ?: -1
+            data?.let {
+                val cfgItem = data as SysTtsConfigItem
+                viewModel.onEditActivityResult(cfgItem, position)
+                if (position >= 0) {
+                    viewModel.saveData()
+                    requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+                }
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,253 +71,101 @@ class TtsConfigFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.spinnerReadAloudTarget.adapter = spinnerRaTargetAdapter
-        binding.spinnerApi.adapter = spinnerApiAdapter
-        binding.spinnerLanguage.adapter = spinnerLanguageAdapter
-        binding.spinnerVoice.adapter = spinnerVoiceAdapter
-        binding.spinnerVoiceStyle.adapter = spinnerVoiceStyleAdapter
+        recyclerAdapter.switchClick = this
+        recyclerAdapter.editButtonClick = this
+        recyclerAdapter.delButtonClick = this
+        recyclerAdapter.itemLongClick = this
 
-        /* 长按设置风格强度 */
-        binding.spinnerVoiceStyle.setOnLongClickListener {
-            if (model.apiLiveData.value?.position == TtsApiType.EDGE) {
-                return@setOnLongClickListener true
+        val layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewList.apply {
+            this.layoutManager = layoutManager
+            this.adapter = recyclerAdapter
+        }
+
+        binding.fabAddConfig.setOnClickListener {
+            val intent =
+                Intent(requireContext(), TtsConfigEditActivity::class.java)
+            startForResult.launch(intent)
+        }
+
+        viewModel.ttsCfg.observe(this) {
+            it.list.forEach { item ->
+                Log.e(TAG, "observe add $item")
+                recyclerAdapter.append(item, false)
             }
-            AlertDialog.Builder(requireContext()).apply {
-                val linear = LinearLayout(context)
-                linear.orientation = LinearLayout.VERTICAL
-                val tv = TextView(context)
-                tv.setPadding(50, 20, 50, 0)
-                linear.addView(tv)
-
-                val seekbar = SeekBar(context)
-                seekbar.max = 200
-                linear.addView(seekbar)
-                seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                    @SuppressLint("SetTextI18n")
-                    override fun onProgressChanged(
-                        seekBar: SeekBar?,
-                        progress: Int,
-                        fromUser: Boolean
-                    ) {
-                        tv.text = "风格强度：${(progress * 0.01).toFloat()}"
-                        if (progress == 0) seekbar.progress = 1
-                    }
-
-                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                        if (model.voiceStyleDegreeLiveData.value != seekbar.progress) {
-                            model.voiceStyleDegreeChanged(seekbar.progress)
-                            binding.btnApplyChanges.isEnabled = true
-                        }
-                    }
-                })
-                seekbar.progress = model.voiceStyleDegreeLiveData.value ?: 50
-                seekbar.setPadding(50, 20, 50, 50)
-                setView(linear).setNeutralButton(getString(R.string.reset)) { _, _ ->
-                    model.voiceStyleDegreeChanged(100) /* 重置 */
-                    binding.btnApplyChanges.isEnabled = true
-                }.create().show()
-            }
-
-            true
         }
-        binding.spinnerVoiceRole.adapter = spinnerVoiceRoleAdapter
-        binding.spinnerFormat.adapter = spinnerFormatAdapter
-
-        binding.spinnerReadAloudTarget.onItemSelectedListener = this
-        binding.spinnerApi.onItemSelectedListener = this
-        binding.spinnerLanguage.onItemSelectedListener = this
-        binding.spinnerVoice.onItemSelectedListener = this
-        binding.spinnerVoiceStyle.onItemSelectedListener = this
-        binding.spinnerVoiceRole.onItemSelectedListener = this
-        binding.spinnerFormat.onItemSelectedListener = this
-
-        binding.btnOpenTtsConfig.setOnClickListener(this)
-        binding.btnApplyChanges.setOnClickListener(this)
-        binding.btnTest.setOnClickListener(this)
-
-        binding.seekBarRate.setOnSeekBarChangeListener(this)
-        binding.seekBarVolume.setOnSeekBarChangeListener(this)
-        binding.switchSplitSentences.setOnCheckedChangeListener { _, isChecked ->
-            binding.btnApplyChanges.isEnabled = isChecked != model.isSplitSentencesLiveData.value
-            model.isSplitSentencesChanged(isChecked)
+        viewModel.appendItemDataLiveData.observe(this) {
+            recyclerAdapter.append(it, true)
         }
 
-        model.readAloudTargetLiveData.observe(this) { data ->
-            updateSpinner(binding.spinnerReadAloudTarget, data)
-        }
-        /* 接口列表 */
-        model.apiLiveData.observe(this) { data ->
-            updateSpinner(binding.spinnerApi, data)
-        }
-        /* 语言列表 */
-        model.languageLiveData.observe(this) { data ->
-            Log.d(TAG, "languageList size:${data.list.size}")
-            updateSpinner(binding.spinnerLanguage, data)
-        }
-        /* 声音列表 */
-        model.voiceLiveData.observe(this) { data ->
-            Log.d(TAG, "voiceList size:${data.list.size}")
-            updateSpinner(binding.spinnerVoice, data)
-        }
-        /* 风格 */
-        model.voiceStyleLiveData.observe(this) { data ->
-            Log.d(TAG, "styleList size:${data.list.size}")
-            updateSpinner(binding.spinnerVoiceStyle, data)
-        }
-        model.voiceStyleDegreeLiveData.observe(this) { data ->
-            Log.d(TAG, "styleDegree :$data")
-            binding.tvStyleDegree.text =
-                getString(R.string.voice_degree_value, "${(data * 0.01).toFloat()}")
-        }
-        /* 角色 */
-        model.voiceRoleLiveData.observe(this) { data ->
-            Log.d(TAG, "roleList size:${data.list.size}")
-            updateSpinner(binding.spinnerVoiceRole, data)
-        }
-        /* 音频格式列表 */
-        model.audioFormatLiveData.observe(this) { data ->
-            Log.d(TAG, "audioFormatList size:${data.list.size}")
-            updateSpinner(binding.spinnerFormat, data)
-            spinnerFormatAdapter.clear()
-            data.list.forEach {
-                spinnerFormatAdapter.add(it.displayName)
-            }
-            binding.spinnerFormat.setSelection(data.position)
-        }
-        /* 音量 */
-        model.volumeLiveData.observe(this) {
-            Log.d(TAG, "volume:$it")
-            binding.seekBarVolume.progress = it
-        }
-        /* 语速 */
-        model.rateLiveData.observe(this) {
-            Log.d(TAG, "rate:$it")
-            binding.seekBarRate.progress = it
-        }
-        /* 是否分割长段 */
-        model.isSplitSentencesLiveData.observe(this) {
-            Log.d(TAG, "isSplitSentences $it")
-            binding.switchSplitSentences.isChecked = it
+        viewModel.replacedItemDataLiveData.observe(this) {
+            if (it.updateUi)
+                recyclerAdapter.update(it.sysTtsConfigItem, it.position)
+            else
+                recyclerAdapter.updateItemData(it.sysTtsConfigItem, it.position)
         }
 
-        /* 加载数据并更新列表 */
-        model.loadData(this.requireContext())
+        viewModel.loadData()
     }
 
-    private var isInit = 0
+    override fun onPause() {
+        super.onPause()
 
-    /* Spinner选择变更 */
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        if (isInit >= 2)
-            binding.btnApplyChanges.isEnabled = true
-        when (parent?.id) {
-            R.id.spinner_readAloudTarget -> {
-                model.onReadAloudTargetSelected(position)
-                binding.switchSplitSentences.visibility =
-                    if (position == 0) View.VISIBLE else View.INVISIBLE
-            }
-            R.id.spinner_api -> {
-                binding.tvStyleDegree.isVisible = position != TtsApiType.EDGE
-                val waitDialog = WaitDialog(requireContext())
-                waitDialog.show()
-                model.apiSelected(position) { waitDialog.dismiss() }
-            }
-            R.id.spinner_language -> model.languageSelected(position)
-            R.id.spinner_voice -> {
-                model.voiceSelected(position)
-                isInit++
-            }
-            R.id.spinner_voiceStyle -> {
-                model.voiceStyleSelected(position)
-            }
-            R.id.spinner_voiceRole -> {
-                model.voiceRoleSelected(position)
-                isInit++
-            }
-            R.id.spinner_format -> model.formatSelected(position)
-        }
+        viewModel.saveData()
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.btn_openTtsConfig -> {
-                val intent = Intent("com.android.settings.TTS_SETTINGS")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                this.startActivity(intent)
-            }
-            R.id.btn_apply_changes -> {
-                v.isEnabled = false
-                model.saveConfig()
+    override fun onClick(view: View, position: Int) {
+        when (view.id) {
+            R.id.checkBox_switch -> {
+                val checkBox = view as CheckBox
+                viewModel.onCheckBoxChanged(position, checkBox.isChecked)
+                viewModel.saveData()
                 requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
             }
-            R.id.btn_test -> {
-                v.isEnabled = false
-                binding.btnApplyChanges.callOnClick()
-                model.speakTest { runOnUI { v.isEnabled = true } }
+
+            R.id.btn_edit -> {
+                val itemData = recyclerAdapter.itemList[position]
+                val intent =
+                    Intent(requireContext(), TtsConfigEditActivity::class.java)
+                intent.putExtra(KEY_DATA, itemData)
+                intent.putExtra(KEY_POSITION, position)
+                startForResult.launch(intent)
+            }
+            R.id.btn_delete -> {
+                AlertDialog.Builder(requireContext()).setTitle("确认删除？")
+                    .setPositiveButton("删除") { _, _ ->
+                        Log.e(TAG, "remove item: $position")
+                        recyclerAdapter.remove(position)
+                    }
+                    .show()
             }
         }
     }
 
-    private fun buildSpinnerAdapter(): ArrayAdapter<String> {
-        return ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_list_item_1
-        )
-    }
+    override fun onLongClick(view: View, position: Int): Boolean {
+        Log.e(TAG, "onLongClick")
+        val popupMenu = PopupMenu(requireContext(), view)
+        popupMenu.menuInflater.inflate(R.menu.menu_systts_list_item, popupMenu.menu)
 
-    @Suppress("UNCHECKED_CAST")
-    private fun updateSpinner(spinner: Spinner, data: TtsConfigFragmentViewModel.SpinnerData) {
-        spinner.also {
-            val adapter = it.adapter as ArrayAdapter<String>
-            adapter.clear()
-            data.list.forEach { v ->
-                adapter.add(v.displayName)
+        popupMenu.setOnMenuItemClickListener { item ->
+            val itemData = viewModel.ttsCfg.value?.list?.get(position)
+            when (item.itemId) {
+                R.id.menu_global -> {
+                    itemData?.readAloudTarget = ReadAloudTarget.DEFAULT
+                }
+                R.id.menu_setAsDialogue -> {
+                    itemData?.readAloudTarget = ReadAloudTarget.DIALOGUE
+                }
+                R.id.menu_setAsAside -> {
+                    itemData?.readAloudTarget = ReadAloudTarget.ASIDE
+                }
             }
-            /* 解决position相同时不调用onItemSelectedListener */
-            if (it.selectedItemPosition == data.position) {
-                val cb = spinner.onItemSelectedListener
-                cb?.onItemSelected(
-                    spinner,
-                    null,
-                    data.position,
-                    data.position.toLong()
-                )
-            } else {
-                it.setSelection(data.position)
-            }
+
+            recyclerAdapter.update(itemData!!, position)
+            false
         }
+        popupMenu.show()
+
+        return true
     }
-
-    @SuppressLint("SetTextI18n")
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        when (seekBar?.id) {
-            R.id.seekBar_volume -> {
-                binding.tvCurrentVolume.text = "${progress - 50}%"
-            }
-            R.id.seekBar_rate -> {
-                if (progress == 0)
-                    binding.rateValue.text = "跟随系统或朗读APP"
-                else
-                    binding.rateValue.text = "${(progress - 50) * 2}%"
-            }
-        }
-
-    }
-
-    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-    override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        binding.btnApplyChanges.isEnabled = true
-        when (seekBar?.id) {
-            R.id.seekBar_volume -> {
-                model.volumeChanged(seekBar.progress)
-            }
-            R.id.seekBar_rate -> {
-                model.rateChanged(seekBar.progress)
-            }
-        }
-    }
-
 }
