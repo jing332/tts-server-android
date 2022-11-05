@@ -33,7 +33,6 @@ android {
 
     buildTypes {
         release {
-            manifestPlaceholders = [APP_NAME: "@string/app_name"]
             signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
@@ -42,7 +41,9 @@ android {
         }
         debug {
             applicationIdSuffix ".debug"
-            manifestPlaceholders = [APP_NAME: "@string/app_name_debug"]
+            versionNameSuffix 'debug'
+            splits.abi.enable = false
+            splits.density.enable = false
         }
 
     }
@@ -56,8 +57,8 @@ android {
         abi {
             enable true
             reset()
-            include 'armeabi-v7a', 'arm64-v8a' //select ABIs to build APKs for
-            universalApk true //generate an additional APK that contains all the ABIs
+            include 'armeabi-v7a', 'arm64-v8a'
+            universalApk true
         }
     }
 
@@ -87,8 +88,6 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
     //noinspection GradleDependency
     coreLibraryDesugaring('com.android.tools:desugar_jdk_libs:1.1.6')
@@ -96,6 +95,9 @@ dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
+
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
