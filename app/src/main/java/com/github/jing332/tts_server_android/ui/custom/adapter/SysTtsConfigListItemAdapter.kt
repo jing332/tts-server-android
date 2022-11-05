@@ -73,7 +73,7 @@ class SysTtsConfigListItemAdapter(
             tvName.text = data.uiData.displayName
             tvContent.text = data.uiData.content
             tvFormat.text = data.format
-            tvApiType.text = TtsApiType.toString(data.api)
+            tvApiType.text = TtsApiType.toString(data.voiceProperty.api)
             tvRaTarget.text = ReadAloudTarget.toString(data.readAloudTarget)
 
             checkBox.setOnClickListener { switchClick?.onClick(it, position) }

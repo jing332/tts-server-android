@@ -10,9 +10,9 @@ data class TtsAudioFormat(
     @SupportedApi val supportedApi: Int,
     val needDecode: Boolean
 ) {
-//    companion object {
-//        const val DEFAULT = "audio-24khz-48kbitrate-mono-mp3"
-//    }
+    companion object {
+        const val DEFAULT = "audio-24khz-48kbitrate-mono-mp3"
+    }
 
     constructor(
         name: String,

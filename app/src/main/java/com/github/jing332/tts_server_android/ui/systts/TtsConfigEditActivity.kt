@@ -289,10 +289,9 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
                 if (progress == 0)
                     binding.rateValue.text = "跟随系统或朗读APP"
                 else
-                    binding.rateValue.text = "${(progress - 50) * 2}%"
+                    binding.rateValue.text = "${(progress - 100)}%"
             }
         }
-
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {}

@@ -35,8 +35,8 @@
                     android:layout_height="match_parent"
                     android:autofillHints="@string/display_name"
                     android:hint="@string/display_name"
-                    android:text="$1"
                     android:inputType="text"
+                    android:text="$1"
                     tools:ignore="HardcodedText" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -255,6 +255,7 @@
                 android:id="@+id/seekBar_rate"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
+                android:max="200"
                 app:layout_constraintEnd_toEndOf="@+id/seekBar_volume"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textView7"

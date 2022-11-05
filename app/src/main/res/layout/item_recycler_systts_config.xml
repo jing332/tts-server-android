@@ -15,7 +15,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground">
             <ImageView
                 android:id="@+id/btn_edit"
                 android:layout_width="30dp"
@@ -34,14 +35,15 @@
                 android:id="@+id/btn_delete"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_marginTop="1dp"
                 android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/desc_delete_item"
                 android:src="@drawable/ic_baseline_delete_forever_24"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/tv_apiType"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="?editTextColor"
-                android:contentDescription="@string/desc_delete_item">
+                app:layout_constraintTop_toBottomOf="@+id/tv_raTarget"
+                app:tint="?editTextColor">
 
 
             </ImageView>
@@ -52,7 +54,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textSize="20sp"
+                android:layout_marginEnd="8dp"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/btn_edit"
                 app:layout_constraintStart_toEndOf="@+id/checkBox_switch"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="zh-CN-YunxiNeural" />
@@ -93,6 +97,7 @@
                 android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/tv_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name"
                 tools:text="生气-小男孩 | 语速：0% | 音量：0%" />

@@ -2,7 +2,9 @@ package com.github.jing332.tts_server_android.data
 
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.constant.TtsApiType
+import com.github.jing332.tts_server_android.data.VoiceProperty.Companion.DEFAULT_VOICE
+import com.github.jing332.tts_server_android.data.VoiceProperty.Companion.DEFAULT_VOICE_ID
+import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.util.FileUtils
 import java.io.Serializable
 
@@ -34,13 +36,9 @@ data class SysTtsConfig(
             SysTtsConfigItem(
                 TtsConfigListItemData("晓晓 (zh-CN-XiaoxiaoNeural)", "无"), true,
                 ReadAloudTarget.DEFAULT,
-                TtsApiType.CREATION,
                 "zh-CN",
-                "zh-CN-XiaoxiaoNeural",
-                "", 100, "",
-                "5f55541d-c844-4e04-a7f8-1723ffbea4a9",
-                "audio-24khz-48kbitrate-mono-mp3",
-                50, 0
+                VoiceProperty(DEFAULT_VOICE, DEFAULT_VOICE_ID),
+                TtsAudioFormat.DEFAULT,
             )
         ), 0, -1, -1, true, false
     )

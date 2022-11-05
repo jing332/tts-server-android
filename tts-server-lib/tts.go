@@ -59,6 +59,10 @@ func (a *AzureApi) GetAudio(voiceName, text, style, styleDegree, role, rate, pit
 	return a.tts.GetAudio(ssml, format)
 }
 
+func (a *AzureApi) GetAudioBySsml(ssml, format string) ([]byte, error) {
+	return a.tts.GetAudio(ssml, format)
+}
+
 func GetAzureVoice() ([]byte, error) {
 	return azure.GetVoices()
 }
@@ -93,6 +97,10 @@ func (c *CreationApi) GetCreationAudio(arg *CreationArg) ([]byte, error) {
 
 	c.cancel = nil
 	return audio, nil
+}
+
+func (c *CreationApi) GetAudioBySsml(ssml, format string) ([]byte, error) {
+	return c.tts.GetAudioUseContextBySsml(nil, ssml, format)
 }
 
 func GetCreationVoices() ([]byte, error) {
