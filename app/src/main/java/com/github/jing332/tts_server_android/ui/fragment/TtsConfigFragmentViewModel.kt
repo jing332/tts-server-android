@@ -47,8 +47,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
     fun onEditActivityResult(data: SysTtsConfigItem, position: Int) {
         if (position >= 0) { // 为编辑数据
             replacedItemDataLiveData.value = ReplacedData(data, position, true)
-            saveData()
-        } else {
+        } else { //添加
             appendItemDataLiveData.value = data
         }
     }

@@ -36,15 +36,12 @@ class SysTtsConfigListItemAdapter(
         notifyItemRangeChanged(position, itemList.size)
     }
 
-    fun update(item: SysTtsConfigItem, position: Int) {
-        updateItemData(item, position)
-        notifyItemChanged(position)
-    }
-
-    fun updateItemData(item: SysTtsConfigItem, position: Int) {
+    fun update(item: SysTtsConfigItem, position: Int, isUpdateUi: Boolean) {
         viewModel.ttsCfg.value?.list?.set(position, item)
         itemList[position] = item
+        if (isUpdateUi) notifyItemChanged(position)
     }
+
 
     var switchClick: ClickListen? = null
     var editButtonClick: ClickListen? = null

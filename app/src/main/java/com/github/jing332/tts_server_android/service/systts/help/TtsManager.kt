@@ -121,6 +121,7 @@ class TtsManager(val context: Context) {
             val timeCost =
                 measureTimeMillis {
                     for (i in 1..1000) {
+                        if (!isSynthesizing) return@measureTimeMillis
                         try {
                             audio =
                                 mEdgeApi.getEdgeAudioBySsml(

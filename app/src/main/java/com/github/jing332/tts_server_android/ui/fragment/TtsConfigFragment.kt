@@ -52,10 +52,6 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
             data?.let {
                 val cfgItem = data as SysTtsConfigItem
                 viewModel.onEditActivityResult(cfgItem, position)
-                if (position >= 0) {
-                    viewModel.saveData()
-                    requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
-                }
             }
         }
 
@@ -81,36 +77,38 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
             this.layoutManager = layoutManager
             this.adapter = recyclerAdapter
         }
-
+        /* 悬浮加号按钮 */
         binding.fabAddConfig.setOnClickListener {
             val intent =
                 Intent(requireContext(), TtsConfigEditActivity::class.java)
             startForResult.launch(intent)
         }
-
+        /* 监听整个列表数据list */
         viewModel.ttsCfg.observe(this) {
+            Log.d(TAG, "item list changed: $it")
             it.list.forEach { item ->
-                Log.e(TAG, "observe add $item")
                 recyclerAdapter.append(item, false)
             }
         }
+        /* 添加列表数据 */
         viewModel.appendItemDataLiveData.observe(this) {
+            Log.d(TAG, "add item: $it")
             recyclerAdapter.append(it, true)
         }
-
+        /* 替换列表数据 */
         viewModel.replacedItemDataLiveData.observe(this) {
-            if (it.updateUi)
-                recyclerAdapter.update(it.sysTtsConfigItem, it.position)
-            else
-                recyclerAdapter.updateItemData(it.sysTtsConfigItem, it.position)
+            Log.d(TAG, "replace item: $it")
+            recyclerAdapter.update(it.sysTtsConfigItem, it.position, it.updateUi)
+            viewModel.saveData()
+            requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
         }
-
+        /* 从本地加载数据 */
         viewModel.loadData()
     }
 
     override fun onPause() {
         super.onPause()
-
+        /* 保存到本地 */
         viewModel.saveData()
     }
 
@@ -122,7 +120,6 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                 viewModel.saveData()
                 requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
             }
-
             R.id.btn_edit -> {
                 val itemData = recyclerAdapter.itemList[position]
                 val intent =
@@ -143,25 +140,23 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
     }
 
     override fun onLongClick(view: View, position: Int): Boolean {
-        Log.e(TAG, "onLongClick")
+        /* 列表item的长按菜单 */
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.menu_systts_list_item, popupMenu.menu)
-
         popupMenu.setOnMenuItemClickListener { item ->
             val itemData = viewModel.ttsCfg.value?.list?.get(position)
             when (item.itemId) {
-                R.id.menu_global -> {
+                R.id.menu_global -> { /* 全局 */
                     itemData?.readAloudTarget = ReadAloudTarget.DEFAULT
                 }
-                R.id.menu_setAsDialogue -> {
+                R.id.menu_setAsDialogue -> { /* 对话  */
                     itemData?.readAloudTarget = ReadAloudTarget.DIALOGUE
                 }
-                R.id.menu_setAsAside -> {
+                R.id.menu_setAsAside -> { /* 旁白 */
                     itemData?.readAloudTarget = ReadAloudTarget.ASIDE
                 }
             }
-
-            recyclerAdapter.update(itemData!!, position)
+            recyclerAdapter.update(itemData!!, position, true)
             false
         }
         popupMenu.show()
