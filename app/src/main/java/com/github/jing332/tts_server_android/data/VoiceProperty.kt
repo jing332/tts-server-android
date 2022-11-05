@@ -34,7 +34,12 @@ data class VoiceProperty(
     }
 
     fun toString(text: String): String {
-        val element: String = expressAs?.toString(text, prosody) ?: prosody.toString(text)
+        val element = if (api != TtsApiType.EDGE && expressAs != null)
+            expressAs?.toString(text, prosody)
+        else
+            prosody.toString(text)
+
+
         return "<voice name=\"$voiceName\">${element}</voice>"
     }
 }
