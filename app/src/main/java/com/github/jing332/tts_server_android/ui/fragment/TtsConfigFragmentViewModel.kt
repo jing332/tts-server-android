@@ -25,41 +25,65 @@ class TtsConfigFragmentViewModel : ViewModel() {
 
     fun onCheckBoxChanged(position: Int, checked: Boolean): Boolean {
         ttsCfg.value?.apply {
+            /* 检测多语音是否开启 */
             if (checked && ttsCfg.value?.isMultiVoice == false) {
                 val target = list.getOrNull(position)?.readAloudTarget ?: ReadAloudTarget.DEFAULT
                 if (target == ReadAloudTarget.ASIDE || target == ReadAloudTarget.DIALOGUE) {
-                    return true
+                    return false
                 }
             }
 
-            list[position].let { item ->
-                if (checked) { /* 确保同类型只可单选 */
+            list[position].let { data ->
+                if (checked) { //确保同类型只可单选
                     ttsCfg.value!!.list.forEachIndexed { index, it ->
-                        if (it.readAloudTarget == item.readAloudTarget) {
+                        if (it.readAloudTarget == data.readAloudTarget) {
                             it.isEnabled = false
                             replacedItemDataLiveData.value = ReplacedData(it, index, true)
                         }
                     }
                 }
+
                 /* 更新position */
-                when (item.readAloudTarget) {
-                    ReadAloudTarget.ASIDE -> ttsCfg.value?.currentAside = position
-                    ReadAloudTarget.DIALOGUE -> ttsCfg.value?.currentDialogue = position
-                    else -> ttsCfg.value?.currentSelected = position
+                data.isEnabled = checked
+                val pos = if (checked) position else -1 //取消勾选时顺便取消当前配置
+                when (data.readAloudTarget) {
+                    ReadAloudTarget.ASIDE -> currentAside = pos
+                    ReadAloudTarget.DIALOGUE -> currentDialogue = pos
+                    else -> currentSelected = pos
                 }
-                item.isEnabled = checked
-                replacedItemDataLiveData.value = ReplacedData(item, position, false)
+
+                replacedItemDataLiveData.value = ReplacedData(data, position, false)
             }
         }
-        return false
+        return true
     }
 
+    /* 添加或编辑Item */
     fun onEditActivityResult(data: SysTtsConfigItem, position: Int) {
-        if (position >= 0) { // 为编辑数据
+        if (position >= 0) { //编辑
             replacedItemDataLiveData.value = ReplacedData(data, position, true)
         } else { //添加
             appendItemDataLiveData.value = data
         }
+    }
+
+    /**
+     * 检查多语音音频格式是否一致
+     * @return 是否相等
+     */
+    fun checkMultiVoiceFormat(): Boolean {
+
+        ttsCfg.value?.apply {
+            val aside = currentAsideItem()
+            val dialogue = currentDialogueItem()
+            if (aside == null || dialogue == null) {
+                return@apply
+            } else if (aside.isEnabled && dialogue.isEnabled) {
+                if (aside.format != dialogue.format)
+                    return false //格式不相等
+            }
+        }
+        return true
     }
 
     data class ReplacedData(

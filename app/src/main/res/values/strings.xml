@@ -46,35 +46,30 @@
     <string name="tts_server_status">TTS服务器状态</string>
     <string name="reset">重置</string>
     <string name="exit">退出</string>
+    <string name="copied">已复制</string>
+    <string name="ok_reset">已重置</string>
     <string name="tts_server_running">TTS Server正在运行中</string>
     <string name="listen_address_local">监听地址：%s</string>
     <string name="auto_closed_later_notification">稍后将会自动关闭本通知</string>
-    <string name="copied">已复制</string>
 
     <string name="menu_sys_tts_settings">系统TTS配置</string>
     <string name="menu_settings">设置</string>
     <string name="title_activity_settings">设置</string>
     <string name="copy_address">复制地址</string>
-    <string name="ok_reset">已重置</string>
     <string name="check_update_failed">检查更新失败</string>
     <string name="current_is_last_version">当前已是最新版</string>
     <string name="label_read_aloud_target">朗读配置(目标)：</string>
     <string name="enable_aside_and_dialogue">区分旁白和对白</string>
-    <string name="title_activity_tts_config_edit">TtsConfigEditActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="desc_add_config">添加配置</string>
-    <string name="desc_edit_item">编辑条目</string>
+    <string name="title_activity_tts_config_edit">添加或编辑</string>
     <string name="display_name">显示名称</string>
-    <string name="desc_swtich_item">启用或关闭本条目</string>
+
     <string name="multi_voice">多语音(旁白/对白)</string>
     <string name="save">保存</string>
+    <string name="desc_switch_item">启用或关闭本条目</string>
+    <string name="desc_add_config">添加配置</string>
+    <string name="desc_edit_item">编辑条目</string>
     <string name="desc_delete_item">删除本条目</string>
     <string name="please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
+    <string name="warning">警告</string>
+    <string name="msg_aside_and_dialogue_format_different">检测到旁白与对话音频格式不相同，两者采样率不同将会导致音调异常，请手动换为相同格式！</string>
 </resources>

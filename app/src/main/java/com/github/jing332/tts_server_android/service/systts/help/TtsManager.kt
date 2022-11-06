@@ -99,7 +99,6 @@ class TtsManager(val context: Context) {
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
     private fun multiVoiceProducer(
         text: String,
-        pitch: String,
         format: String
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(capacity = 3) {
         val aside = ttsConfig.currentAsideItem() ?: SysTtsConfigItem()
@@ -142,22 +141,25 @@ class TtsManager(val context: Context) {
     /* 开始转语音 */
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
-        val text = request?.charSequenceText.toString().trim()
-        val pitch = "${request?.pitch?.minus(100)}%"
-
         callback?.start(audioFormat.hz, audioFormat.bitRate, 1)
+        val text = request?.charSequenceText.toString().trim()
+        val pitch = request?.pitch?.minus(100) ?: 100
+        val rate = (norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
+        val voicePro = ttsConfig.selectedItem()?.voiceProperty ?: VoiceProperty("")
+        voicePro.prosody.rate = rate
+        voicePro.prosody.pitch = pitch
         val format = audioFormat.value
         producer = null
         if (ttsConfig.isMultiVoice) { // 多声音
             Log.d(TAG, "multiVoiceProducer...")
-            producer = multiVoiceProducer(text, pitch, format)
-        } else if (ttsConfig.currentSelected == ReadAloudTarget.DEFAULT && ttsConfig.isSplitSentences) { // 分句
+            producer = multiVoiceProducer(text, format)
+        } else if (ttsConfig.isSplitSentences &&
+            ttsConfig.selectedItem()?.readAloudTarget == ReadAloudTarget.DEFAULT
+        ) { // 分句
             Log.d(TAG, "splitSentences...")
-            val voicePro = ttsConfig.selectedItem()?.voiceProperty ?: VoiceProperty("")
-            producer = splitSentencesProducer(text, voicePro, audioFormat.value)
+            producer = splitSentencesProducer(text, voicePro, format)
         } else { // 不分句
-            val voicePro = ttsConfig.selectedItem()?.voiceProperty ?: VoiceProperty("")
-            getAudioAndDecodePlay(text, voicePro, audioFormat.value, callback)
+            getAudioAndDecodePlay(text, voicePro, format, callback)
         }
 
         producer?.consumeEach { data ->
@@ -190,7 +192,8 @@ class TtsManager(val context: Context) {
         callback: SynthesisCallback?
     ) {
         val audio: ByteArray?
-        val timeCost = measureTimeMillis { audio = getAudioUseRetry(text, voiceProperty, format) }
+        val timeCost =
+            measureTimeMillis { audio = getAudioUseRetry(text, voiceProperty, format) }
         if (audio != null) {
             sendLog(LogLevel.INFO, "获取音频成功, 大小: ${audio.size / 1024}KB, 耗时: ${timeCost}ms")
             audioDecode.doDecode(

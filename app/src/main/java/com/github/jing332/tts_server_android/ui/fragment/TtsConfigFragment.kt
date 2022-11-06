@@ -22,7 +22,6 @@ import com.github.jing332.tts_server_android.ui.custom.adapter.SysTtsConfigListI
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_DATA
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_POSITION
-import com.github.jing332.tts_server_android.util.longToast
 
 
 @Suppress("DEPRECATION")
@@ -46,6 +45,7 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         )
     }
 
+    /* EditActivity的返回值 */
     private val startForResult =
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             val data = result.data?.getSerializableExtra(KEY_DATA)
@@ -53,6 +53,7 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
             data?.let {
                 val cfgItem = data as SysTtsConfigItem
                 viewModel.onEditActivityResult(cfgItem, position)
+
             }
         }
 
@@ -95,13 +96,25 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         viewModel.appendItemDataLiveData.observe(this) {
             Log.d(TAG, "add item: $it")
             recyclerAdapter.append(it, true)
+            if (!viewModel.checkMultiVoiceFormat()) {
+                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.warning))
+                    .setMessage(getString(R.string.msg_aside_and_dialogue_format_different))
+                    .show()
+            }
         }
         /* 替换列表数据 */
         viewModel.replacedItemDataLiveData.observe(this) {
             Log.d(TAG, "replace item: $it")
             recyclerAdapter.update(it.sysTtsConfigItem, it.position, it.updateUi)
             viewModel.saveData()
-            requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+            if (!viewModel.checkMultiVoiceFormat())
+                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.warning))
+                    .setMessage(getString(R.string.msg_aside_and_dialogue_format_different))
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .show()
+            else
+                requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
         }
         /* 从本地加载数据 */
         viewModel.loadData()
@@ -117,12 +130,15 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         when (view.id) {
             R.id.checkBox_switch -> {
                 val checkBox = view as CheckBox
+                /* 检测是否开启多语音 */
                 if (viewModel.onCheckBoxChanged(position, checkBox.isChecked)) {
-                    longToast(getString(R.string.please_check_multi_voice_option))
-                    checkBox.isChecked = false
-                } else {
                     viewModel.saveData()
                     requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+                } else {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.warning)
+                        .setMessage(R.string.please_check_multi_voice_option).show()
+                    checkBox.isChecked = false
                 }
             }
             R.id.btn_edit -> {

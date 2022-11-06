@@ -102,7 +102,6 @@ class SysTtsLib {
         pro: VoiceProperty,
         format: String,
     ): ByteArray? {
-//        val data = ttsConfig.selectedItem() ?: SysTtsConfigItem()
         val voice = pro.voiceName
         val rate = Prosody.toPcmString(pro.prosody.rate)
         val volume = Prosody.toPcmString(pro.prosody.volume)
