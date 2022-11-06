@@ -61,11 +61,12 @@ class TtsConfigEditViewModel : ViewModel() {
         mTtsCfgItem.uiData.apply {
             val voice = voiceLiveData.value?.selected()?.displayName.toString()
             val style = voiceStyleLiveData.value?.selected()?.displayName
+            val styleDegree = mVoiceProperty.expressAs?.styleDegree ?: 1.0F
             val role = voiceRoleLiveData.value?.selected()?.displayName
             val rate = mTtsCfgItem.voiceProperty.prosody.rate
             val volume = mTtsCfgItem.voiceProperty.prosody.volume
             displayName = inputDisplayName.ifEmpty { voice }
-            content = "$style-$role | 语速：$rate% | 音量：$volume%"
+            content = "$style-$role |强度: <b>${styleDegree}</b>|语速:<b>$rate|</b>音量:<b>$volume</b>"
         }
 
         return mTtsCfgItem
@@ -448,7 +449,7 @@ class TtsConfigEditViewModel : ViewModel() {
     fun voiceStyleDegreeChanged(progress: Int) {
         if (mVoiceProperty.expressAs == null) mVoiceProperty.expressAs = ExpressAs()
         voiceStyleDegreeLiveData.value = progress
-        mVoiceProperty.expressAs?.styleDegree = progress.toFloat() * 0.01F
+        mVoiceProperty.expressAs?.styleDegree = (progress * 0.01).toFloat()
     }
 
     data class SpinnerData(var list: List<SpinnerItemData>, var position: Int) {

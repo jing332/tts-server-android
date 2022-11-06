@@ -10,13 +10,6 @@ data class SysTtsConfigItem(
     var locale: String,
     var voiceProperty: VoiceProperty,
     var format: String,
-//    var voiceName: String,
-//    var voiceStyle: String,
-//    var voiceStyleDegree: Int,
-//    var voiceRole: String,
-//    var voiceId: String,
-//    var volume: Int,
-//    var rate: Int,
 ) : Serializable {
     constructor() : this(
         TtsConfigListItemData(), false,

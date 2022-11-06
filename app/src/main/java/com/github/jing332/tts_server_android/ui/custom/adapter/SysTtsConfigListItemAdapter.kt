@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.ui.custom.adapter
 
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,6 +65,7 @@ class SysTtsConfigListItemAdapter(
         return ViewHolder(view)
     }
 
+    @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = itemList[position]
 
@@ -71,7 +73,7 @@ class SysTtsConfigListItemAdapter(
             checkBox.isChecked = data.isEnabled
 
             tvName.text = data.uiData.displayName
-            tvContent.text = data.uiData.content
+            tvContent.text = Html.fromHtml(data.uiData.content)
             tvFormat.text = data.format
             tvApiType.text = TtsApiType.toString(data.voiceProperty.api)
             tvRaTarget.text = ReadAloudTarget.toString(data.readAloudTarget)
