@@ -22,6 +22,7 @@ import com.github.jing332.tts_server_android.ui.custom.adapter.SysTtsConfigListI
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_DATA
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_POSITION
+import com.github.jing332.tts_server_android.util.longToast
 
 
 @Suppress("DEPRECATION")
@@ -116,9 +117,13 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         when (view.id) {
             R.id.checkBox_switch -> {
                 val checkBox = view as CheckBox
-                viewModel.onCheckBoxChanged(position, checkBox.isChecked)
-                viewModel.saveData()
-                requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+                if (viewModel.onCheckBoxChanged(position, checkBox.isChecked)) {
+                    longToast(getString(R.string.please_check_multi_voice_option))
+                    checkBox.isChecked = false
+                } else {
+                    viewModel.saveData()
+                    requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+                }
             }
             R.id.btn_edit -> {
                 val itemData = recyclerAdapter.itemList[position]

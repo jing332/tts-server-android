@@ -23,25 +23,35 @@ class TtsConfigFragmentViewModel : ViewModel() {
         ttsCfg.value?.save()
     }
 
-    fun onCheckBoxChanged(position: Int, checked: Boolean) {
-        ttsCfg.value?.list?.get(position)?.let { item ->
-            if (checked) {
-                ttsCfg.value!!.list.forEachIndexed { index, it ->
-                    if (it.readAloudTarget == item.readAloudTarget) {
-                        it.isEnabled = false
-                        replacedItemDataLiveData.value = ReplacedData(it, index, true)
-                    }
+    fun onCheckBoxChanged(position: Int, checked: Boolean): Boolean {
+        ttsCfg.value?.apply {
+            if (checked && ttsCfg.value?.isMultiVoice == false) {
+                val target = list.getOrNull(position)?.readAloudTarget ?: ReadAloudTarget.DEFAULT
+                if (target == ReadAloudTarget.ASIDE || target == ReadAloudTarget.DIALOGUE) {
+                    return true
                 }
             }
 
-            when (item.readAloudTarget) {
-                ReadAloudTarget.ASIDE -> ttsCfg.value?.currentAside = position
-                ReadAloudTarget.DIALOGUE -> ttsCfg.value?.currentDialogue = position
-                else -> ttsCfg.value?.currentSelected = position
+            list[position].let { item ->
+                if (checked) { /* 确保同类型只可单选 */
+                    ttsCfg.value!!.list.forEachIndexed { index, it ->
+                        if (it.readAloudTarget == item.readAloudTarget) {
+                            it.isEnabled = false
+                            replacedItemDataLiveData.value = ReplacedData(it, index, true)
+                        }
+                    }
+                }
+                /* 更新position */
+                when (item.readAloudTarget) {
+                    ReadAloudTarget.ASIDE -> ttsCfg.value?.currentAside = position
+                    ReadAloudTarget.DIALOGUE -> ttsCfg.value?.currentDialogue = position
+                    else -> ttsCfg.value?.currentSelected = position
+                }
+                item.isEnabled = checked
+                replacedItemDataLiveData.value = ReplacedData(item, position, false)
             }
-            item.isEnabled = checked
-            replacedItemDataLiveData.value = ReplacedData(item, position, false)
         }
+        return false
     }
 
     fun onEditActivityResult(data: SysTtsConfigItem, position: Int) {

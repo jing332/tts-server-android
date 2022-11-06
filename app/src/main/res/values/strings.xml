@@ -76,4 +76,5 @@
     <string name="multi_voice">多语音(旁白/对白)</string>
     <string name="save">保存</string>
     <string name="desc_delete_item">删除本条目</string>
+    <string name="please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
 </resources>
