@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.service.systts.help
 
 import android.content.Context
 import android.content.Intent
+import android.os.SystemClock
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.util.Log
@@ -103,45 +104,51 @@ class TtsManager(val context: Context) {
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(capacity = 3) {
         val aside = ttsConfig.currentAsideItem() ?: SysTtsConfigItem()
         val dialogue = ttsConfig.currentDialogueItem() ?: SysTtsConfigItem()
-        var startTime = System.currentTimeMillis()
-        sysTtsLib.getAudioForMultiVoice(
-            text,
-            aside.voiceProperty,
-            dialogue.voiceProperty,
-            format,
-            { // onStart:
-                sendLog(LogLevel.INFO, "\n请求音频：$it")
-            },
-            { raText: String, audio: ByteArray? -> // onAudio:
-                val elapsedTime = System.currentTimeMillis() - startTime
-                startTime = System.currentTimeMillis()
-                audio?.let {
-                    sendLog(
-                        LogLevel.INFO,
-                        "获取音频成功, 大小: ${audio.size / 1024}KB, 耗时: ${elapsedTime}ms"
-                    )
+        /* 分割为多语音  */
+        val map = VoiceTools.splitMultiVoice(text, aside.voiceProperty, dialogue.voiceProperty)
+        map.forEach {
+            sendLog(LogLevel.INFO, "\n请求音频：${it.raText}\n${it.voiceProperty}")
+            var audio: ByteArray? = null
+            val timeCost = measureTimeMillis {
+                audio = sysTtsLib.getAudioForRetry(
+                    it.raText,
+                    it.voiceProperty,
+                    format,
+                    100
+                ) { reason, num ->
+                    if (isSynthesizing) {
+                        sendLog(LogLevel.ERROR, "获取音频失败: ${it.raText}\n$reason")
+                        SystemClock.sleep(3000)
+                        sendLog(LogLevel.WARN, "开始第${num}次重试...")
+                        return@getAudioForRetry true // 重试
+                    }
+                    return@getAudioForRetry false //继续重试
                 }
-                runBlocking {
-                    send(ChannelData(raText, audio))
-                    delay(500)
-                }
-            }, // onError:
-            { msg, count ->
-                if (isSynthesizing) {
-                    sendLog(LogLevel.ERROR, "获取音频失败: $msg")
-                    sendLog(LogLevel.WARN, "开始第${count}次重试...")
-                    true // 重试
-                } else {
-                    false
-                }
-            },
-        )
+            }
+
+            if (!isSynthesizing){
+                sendLog(LogLevel.WARN, "已取消播放：${it.raText}")
+                return@produce
+            }
+            audio?.let {
+                sendLog(
+                    LogLevel.INFO,
+                    "获取音频成功, 大小: ${(audio?.size?.div(1024))}KB, 耗时: ${timeCost}ms"
+                )
+            }
+            runBlocking {
+                send(ChannelData(it.raText, audio))
+                delay(500)
+            }
+        }
+
     }
 
     /* 开始转语音 */
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
         callback?.start(audioFormat.hz, audioFormat.bitRate, 1)
+
         val text = request?.charSequenceText.toString().trim()
         val pitch = request?.pitch?.minus(100) ?: 100
         val rate = (norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
@@ -149,6 +156,7 @@ class TtsManager(val context: Context) {
         voicePro.prosody.rate = rate
         voicePro.prosody.pitch = pitch
         val format = audioFormat.value
+
         producer = null
         if (ttsConfig.isMultiVoice) { // 多声音
             Log.d(TAG, "multiVoiceProducer...")
@@ -161,11 +169,11 @@ class TtsManager(val context: Context) {
         } else { // 不分句
             getAudioAndDecodePlay(text, voicePro, format, callback)
         }
-
+        /* 阻塞，接收者 */
         producer?.consumeEach { data ->
             if (!isSynthesizing) return@consumeEach
             if (data.audio == null) {
-                sendLog(LogLevel.WARN, "音频为空！")
+                sendLog(LogLevel.WARN, "音频为空：${data.text}")
             } else {
                 audioDecode.doDecode(
                     data.audio,
@@ -185,7 +193,7 @@ class TtsManager(val context: Context) {
     }
 
     /* 获取音频并解码播放*/
-    private suspend fun getAudioAndDecodePlay(
+    private fun getAudioAndDecodePlay(
         text: String,
         voiceProperty: VoiceProperty,
         format: String,
@@ -211,36 +219,27 @@ class TtsManager(val context: Context) {
     }
 
     /* 获取音频，失败则重试 */
-    private suspend fun getAudioUseRetry(
+    private fun getAudioUseRetry(
         text: String,
         voiceProperty: VoiceProperty, format: String
     ): ByteArray? {
-        var audio: ByteArray?
-        for (i in 1..1000) {
-            if (!isSynthesizing) return null
-            sendLog(
-                LogLevel.INFO, "\n请求音频(${TtsApiType.toString(voiceProperty.api)}): " +
-                        "$voiceProperty"
-            )
-            try {
-                audio =
-                    sysTtsLib.getAudio(
-                        text, voiceProperty,
-                        format
-                    )
-                return audio
-            } catch (e: Exception) {
-                if (e.message?.endsWith("context canceled") == true) { /* 为主动取消请求 */
-                    return null
-                } else {
-                    e.printStackTrace()
-                    sendLog(LogLevel.ERROR, "获取音频失败: ${e.message}")
-                }
+        sendLog(
+            LogLevel.INFO, "\n请求音频(${TtsApiType.toString(voiceProperty.api)}): " +
+                    "$voiceProperty"
+        )
+        return sysTtsLib.getAudioForRetry(
+            text, voiceProperty,
+            format, 100
+        ) { reason, num ->
+            if (!isSynthesizing || reason.endsWith("context canceled")) {
+                return@getAudioForRetry false/* 为主动取消请求 */
+            } else {
+                sendLog(LogLevel.ERROR, "获取音频失败: $reason")
+                SystemClock.sleep(3000)
+                sendLog(LogLevel.WARN, "开始第${num}次重试...")
             }
-            sendLog(LogLevel.WARN, "开始第${i}次重试...")
-            delay(2000)
+            return@getAudioForRetry true
         }
-        return null
     }
 
     /* 写入PCM音频到系统组件 */

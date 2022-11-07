@@ -2,33 +2,41 @@ package tts_server_lib
 
 import (
 	"context"
+	tts_server_go "github.com/jing332/tts-server-go"
+	"github.com/jing332/tts-server-go/service"
 	"github.com/jing332/tts-server-go/service/azure"
 	"github.com/jing332/tts-server-go/service/creation"
 	"github.com/jing332/tts-server-go/service/edge"
 	"io"
 	"net/http"
-	"regexp"
 )
+
+type VoiceProperty service.VoiceProperty
+type VoiceProsody service.Prosody
+type VoiceExpressAs service.ExpressAs
+
+func (v *VoiceProperty) Proto(prosody *VoiceProsody, exp *VoiceExpressAs) *service.VoiceProperty {
+	v.Prosody = (*service.Prosody)(prosody)
+	v.ExpressAs = (*service.ExpressAs)(exp)
+	return (*service.VoiceProperty)(v)
+}
 
 type EdgeApi struct {
 	tts          *edge.TTS
 	useDnsLookup bool
 }
 
-func (e *EdgeApi) GetEdgeAudioBySsml(ssml, format string) ([]byte, error) {
+func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
+	prosody *VoiceProsody) ([]byte, error) {
 	if e.tts == nil {
 		e.tts = &edge.TTS{UseDnsLookup: e.useDnsLookup}
 	}
-	return e.tts.GetAudio(ssml, format)
-}
+	property.Api = service.ApiEdge
+	proto := property.Proto(prosody, nil)
 
-func (e *EdgeApi) GetEdgeAudio(voiceName, text, rate, pitch, volume, format string) ([]byte, error) {
-	if e.tts == nil {
-		e.tts = &edge.TTS{UseDnsLookup: e.useDnsLookup}
-	}
 	ssml := `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='en-US'>` +
-		`<voice name='` + voiceName + `'><prosody pitch='` + pitch + `' rate ='` + rate + `' volume='` + volume + `'>` +
-		specialCharReplace(text) + `</prosody></voice></speak>`
+		proto.ElementString(text) +
+		`</speak>`
 	return e.tts.GetAudio(ssml, format)
 }
 
@@ -49,13 +57,14 @@ type AzureApi struct {
 	tts *azure.TTS
 }
 
-func (a *AzureApi) GetAudio(voiceName, text, style, styleDegree, role, rate, pitch, volume, format string) ([]byte, error) {
+func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
+	prosody *VoiceProsody, expressAS *VoiceExpressAs) ([]byte, error) {
 	if a.tts == nil {
 		a.tts = &azure.TTS{}
 	}
+	proto := property.Proto(prosody, expressAS)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
-		`<voice name="` + voiceName + `"><mstts:express-as style="` + style + `" styledegree="` + styleDegree + `" role="` + role + `">` +
-		`<prosody rate="` + rate + `" pitch="` + pitch + `" volume="` + volume + `">` + specialCharReplace(text) + `</prosody></mstts:express-as></voice></speak>`
+		proto.ElementString(text) + `</speak > `
 	return a.tts.GetAudio(ssml, format)
 }
 
@@ -66,8 +75,6 @@ func (a *AzureApi) GetAudioBySsml(ssml, format string) ([]byte, error) {
 func GetAzureVoice() ([]byte, error) {
 	return azure.GetVoices()
 }
-
-type CreationArg creation.SpeakArg
 
 type CreationApi struct {
 	tts    *creation.TTS
@@ -80,7 +87,8 @@ func (c *CreationApi) Cancel() {
 	}
 }
 
-func (c *CreationApi) GetCreationAudio(arg *CreationArg) ([]byte, error) {
+func (c *CreationApi) GetCreationAudio(text, format string, property *VoiceProperty,
+	prosody *VoiceProsody, expressAS *VoiceExpressAs) ([]byte, error) {
 	if c.tts == nil {
 		c.tts = creation.New()
 	}
@@ -88,9 +96,11 @@ func (c *CreationApi) GetCreationAudio(arg *CreationArg) ([]byte, error) {
 	var ctx context.Context
 	ctx, c.cancel = context.WithCancel(context.Background())
 
-	arg.Text = specialCharReplace(arg.Text)
-	s := creation.SpeakArg(*arg)
-	audio, err := c.tts.GetAudioUseContext(ctx, &s)
+	property.Prosody = (*service.Prosody)(prosody)
+	property.ExpressAs = (*service.ExpressAs)(expressAS)
+
+	text = tts_server_go.SpecialCharReplace(text)
+	audio, err := c.tts.GetAudioUseContext(ctx, text, format, (*service.VoiceProperty)(property))
 	if err != nil {
 		return nil, err
 	}
@@ -99,9 +109,6 @@ func (c *CreationApi) GetCreationAudio(arg *CreationArg) ([]byte, error) {
 	return audio, nil
 }
 
-func (c *CreationApi) GetAudioBySsml(ssml, format string) ([]byte, error) {
-	return c.tts.GetAudioUseContextBySsml(nil, ssml, format)
-}
 
 func GetCreationVoices() ([]byte, error) {
 	token, err := creation.GetToken()
@@ -113,22 +120,4 @@ func GetCreationVoices() ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
-}
-
-var charRegexp = regexp.MustCompile(`['"<>&/\\]`)
-var entityMap = map[string]string{
-	`'`: `&apos;`,
-	`"`: `&quot;`,
-	`<`: `&lt;`,
-	`>`: `&gt;`,
-	`&`: `&amp;`,
-	`/`: ``,
-	`\`: ``,
-}
-
-// specialCharReplace 过滤掉特殊字符
-func specialCharReplace(s string) string {
-	return charRegexp.ReplaceAllStringFunc(s, func(s2 string) string {
-		return entityMap[s2]
-	})
 }

@@ -3,11 +3,11 @@ module tts-server-lib
 go 1.19
 
 require (
-	github.com/jing332/tts-server-go v0.0.0-20221105134501-d25c3c361dc1
+	github.com/jing332/tts-server-go v0.0.0-20221107083047-5cff72677af4
 	github.com/sirupsen/logrus v1.9.0
 )
 
-//replace github.com/jing332/tts-server-go => G:\Users\jing\GolandProjects\tts-server-go
+replace github.com/jing332/tts-server-go => G:\Users\jing\GolandProjects\tts-server-go
 
 require (
 	github.com/asters1/tools v0.1.5 // indirect

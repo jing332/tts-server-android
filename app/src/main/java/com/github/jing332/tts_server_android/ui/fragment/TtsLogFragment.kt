@@ -15,7 +15,7 @@ import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.databinding.FragmentTtsLogBinding
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService.Companion.ACTION_ON_LOG
-import com.github.jing332.tts_server_android.ui.LogViewAdapter
+import com.github.jing332.tts_server_android.ui.custom.adapter.LogViewAdapter
 
 class TtsLogFragment : Fragment() {
     companion object {

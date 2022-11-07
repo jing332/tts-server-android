@@ -20,8 +20,8 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.service.systts.help.TtsManager
-import com.github.jing332.tts_server_android.ui.TtsSettingsActivity
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
+import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.longToastOnUi

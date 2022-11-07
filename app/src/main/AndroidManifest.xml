@@ -47,7 +47,7 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".ui.TtsSettingsActivity"
+            android:name=".ui.systts.TtsSettingsActivity"
             android:exported="true"
             android:launchMode="singleTask" >
             <intent-filter>
