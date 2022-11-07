@@ -12,7 +12,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 2
-        versionName "0.1_${releaseTime()}"
+        versionName "0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,6 +33,7 @@ android {
 
     buildTypes {
         release {
+            versionNameSuffix "_${releaseTime()}"
             signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
@@ -41,7 +42,7 @@ android {
         }
         debug {
             applicationIdSuffix ".debug"
-            versionNameSuffix 'debug'
+            versionNameSuffix "_debug"
             splits.abi.enable = false
             splits.density.enable = false
         }
