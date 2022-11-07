@@ -10,9 +10,6 @@ import java.io.Serializable
 
 data class SysTtsConfig(
     var list: ArrayList<SysTtsConfigItem>,
-    var currentSelected: Int, //默认 全局
-    var currentAside: Int, //旁白
-    var currentDialogue: Int, //对话
     var isSplitSentences: Boolean,
     var isMultiVoice: Boolean
 ) : Serializable {
@@ -40,7 +37,7 @@ data class SysTtsConfig(
                 VoiceProperty(DEFAULT_VOICE, DEFAULT_VOICE_ID),
                 TtsAudioFormat.DEFAULT,
             )
-        ), 0, -1, -1, true, false
+        ),  true, false
     )
 
     fun save() {
@@ -48,14 +45,26 @@ data class SysTtsConfig(
     }
 
     fun selectedItem(): SysTtsConfigItem? {
-        return list.getOrNull(currentSelected)
+        list.forEach {
+            if (it.isEnabled && it.readAloudTarget == ReadAloudTarget.DEFAULT)
+                return it
+        }
+        return null
     }
 
     fun currentAsideItem(): SysTtsConfigItem? {
-        return list.getOrNull(currentAside)
+        list.forEach {
+            if (it.isEnabled && it.readAloudTarget == ReadAloudTarget.ASIDE)
+                return it
+        }
+        return null
     }
 
     fun currentDialogueItem(): SysTtsConfigItem? {
-        return list.getOrNull(currentDialogue)
+        list.forEach {
+            if (it.isEnabled && it.readAloudTarget == ReadAloudTarget.DIALOGUE)
+                return it
+        }
+        return null
     }
 }

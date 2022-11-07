@@ -40,14 +40,8 @@ object VoiceTools {
         val list = arrayListOf<ResultMultiVoiceData>()
         multiVoice.forEach {
             if (!StringUtils.isSilent(it.text)) {
-                val stringBuilder = StringBuilder()
-                stringBuilder.append("<speak xmlns=\"http://www.w3.org/2001/10/synthesis\" xmlns:mstts=\"http://www.w3.org/2001/mstts\" xmlns:emo=\"http://www.w3.org/2009/10/emotionml\" version=\"1.0\" xml:lang=\"en-US\">")
-                val voiceTag =
-                    if (it.isDialogue) dialogueProperty.toString(it.text)
-                    else asideProperty.toString(it.text)
                 val pro = if (it.isDialogue) dialogueProperty else asideProperty
-                val ssml = stringBuilder.append("$voiceTag</speak>").toString()
-                list.add(ResultMultiVoiceData(pro, it.text, ssml))
+                list.add(ResultMultiVoiceData(pro, it.text))
             }
         }
 
@@ -58,11 +52,5 @@ object VoiceTools {
 data class ResultTextTag(val text: String, val isDialogue: Boolean)
 data class ResultMultiVoiceData(
     val voiceProperty: VoiceProperty,
-    val raText: String,
-    val ssml: String
+    val raText: String
 )
-/*
-object Type {
-    const val ASIZE = 0
-    const val DIALOGUE = 1
-}*/

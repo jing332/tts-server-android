@@ -45,13 +45,6 @@ class TtsConfigFragmentViewModel : ViewModel() {
 
                 /* 更新position */
                 data.isEnabled = checked
-                val pos = if (checked) position else -1 //取消勾选时顺便取消当前配置
-                when (data.readAloudTarget) {
-                    ReadAloudTarget.ASIDE -> currentAside = pos
-                    ReadAloudTarget.DIALOGUE -> currentDialogue = pos
-                    else -> currentSelected = pos
-                }
-
                 replacedItemDataLiveData.value = ReplacedData(data, position, false)
             }
         }
@@ -84,6 +77,13 @@ class TtsConfigFragmentViewModel : ViewModel() {
             }
         }
         return true
+    }
+
+    /* 朗读目标更改 */
+    fun onReadAloudTargetChanged(position: Int, @ReadAloudTarget raTarget: Int) {
+        val data = ttsCfg.value!!.list[position]
+        data.readAloudTarget = raTarget
+        replacedItemDataLiveData.value = ReplacedData(data, position, true)
     }
 
     data class ReplacedData(

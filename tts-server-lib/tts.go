@@ -62,6 +62,7 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 	if a.tts == nil {
 		a.tts = &azure.TTS{}
 	}
+	property.Api = service.ApiAzure
 	proto := property.Proto(prosody, expressAS)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
 		proto.ElementString(text) + `</speak > `
@@ -96,11 +97,11 @@ func (c *CreationApi) GetCreationAudio(text, format string, property *VoicePrope
 	var ctx context.Context
 	ctx, c.cancel = context.WithCancel(context.Background())
 
-	property.Prosody = (*service.Prosody)(prosody)
-	property.ExpressAs = (*service.ExpressAs)(expressAS)
+	property.Api = service.ApiCreation
+	proto := property.Proto(prosody, expressAS)
 
 	text = tts_server_go.SpecialCharReplace(text)
-	audio, err := c.tts.GetAudioUseContext(ctx, text, format, (*service.VoiceProperty)(property))
+	audio, err := c.tts.GetAudioUseContext(ctx, text, format, proto)
 	if err != nil {
 		return nil, err
 	}

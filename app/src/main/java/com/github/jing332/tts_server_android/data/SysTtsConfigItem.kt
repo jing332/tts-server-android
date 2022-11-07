@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.data
 
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import java.io.Serializable
 
 data class SysTtsConfigItem(
@@ -17,17 +18,9 @@ data class SysTtsConfigItem(
         VoiceProperty("zh-CN-XiaoxiaoNeural"), ""
     )
 
-
-//    /* 转为百分比字符串 */
-//    fun volumeToPctString(): String {
-//        return "${volume - 50}%"
-//    }
-//
-//    fun rateToPcmString(): String {
-//        return "${(rate - 50) * 2}%"
-//    }
-
-//    fun toVoiceProperty(pitch: String): VoiceProperty {
-//        return VoiceProperty(voiceName, Prosody(rateToPcmString(), volumeToPctString(), pitch))
-//    }
+    constructor(isEnabled: Boolean, @ReadAloudTarget readAloudTarget: Int) : this(
+        TtsConfigListItemData(), isEnabled,
+        readAloudTarget, "zh-CN",
+        VoiceProperty("zh-CN-XiaoxiaoNeural"), TtsAudioFormat.DEFAULT
+    )
 }

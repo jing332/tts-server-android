@@ -165,19 +165,18 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.menu_systts_list_item, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
-            val itemData = viewModel.ttsCfg.value?.list?.get(position)
             when (item.itemId) {
                 R.id.menu_global -> { /* 全局 */
-                    itemData?.readAloudTarget = ReadAloudTarget.DEFAULT
+                    viewModel.onReadAloudTargetChanged(position, ReadAloudTarget.DEFAULT)
                 }
                 R.id.menu_setAsDialogue -> { /* 对话  */
-                    itemData?.readAloudTarget = ReadAloudTarget.DIALOGUE
+                    viewModel.onReadAloudTargetChanged(position, ReadAloudTarget.DIALOGUE)
                 }
                 R.id.menu_setAsAside -> { /* 旁白 */
-                    itemData?.readAloudTarget = ReadAloudTarget.ASIDE
+                    viewModel.onReadAloudTargetChanged(position, ReadAloudTarget.ASIDE)
                 }
             }
-            recyclerAdapter.update(itemData!!, position, true)
+
             false
         }
         popupMenu.show()

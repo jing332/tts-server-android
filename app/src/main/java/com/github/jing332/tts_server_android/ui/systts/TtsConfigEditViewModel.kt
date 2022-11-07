@@ -65,8 +65,9 @@ class TtsConfigEditViewModel : ViewModel() {
             val role = voiceRoleLiveData.value?.selected()?.displayName
             val rate = mTtsCfgItem.voiceProperty.prosody.rate
             val volume = mTtsCfgItem.voiceProperty.prosody.volume
+            val rateStr = if (rate == -100) "跟随" else rate
             displayName = inputDisplayName.ifEmpty { voice }
-            content = "$style-$role |强度: <b>${styleDegree}</b>|语速:<b>$rate|</b>音量:<b>$volume</b>"
+            content = "$style-$role |强度: <b>${styleDegree}</b>|语速:<b>$rateStr|</b>音量:<b>$volume</b>"
         }
 
         return mTtsCfgItem
@@ -176,7 +177,7 @@ class TtsConfigEditViewModel : ViewModel() {
         tmpVoiceList.sortBy { it.displayName }
         var selectedPos = 0
         tmpVoiceList.forEachIndexed { index, itemData ->
-            if (itemData.value == mVoiceProperty?.voiceName) {
+            if (itemData.value == mVoiceProperty.voiceName) {
                 selectedPos = index
             }
         }
@@ -187,14 +188,14 @@ class TtsConfigEditViewModel : ViewModel() {
     fun voiceSelected(position: Int) {
         voiceLiveData.value?.also {
             it.position = position
-            mVoiceProperty?.voiceName = it.list[position].value
+            mVoiceProperty.voiceName = it.list[position].value
         }
-        Log.d(TAG, "voiceSelected ${mVoiceProperty?.voiceName}")
+        Log.d(TAG, "voiceSelected ${mVoiceProperty.voiceName}")
 
         when (mTtsCfgItem.voiceProperty.api) {
             TtsApiType.AZURE -> {
                 mAzureVoices.forEach { voiceItem ->
-                    if (mVoiceProperty?.voiceName == voiceItem.shortName) {
+                    if (mVoiceProperty.voiceName == voiceItem.shortName) {
                         /* 风格 */
                         val styleList = arrayListOf(SpinnerItemData("无", ""))
                         var selectedStyle = 0
@@ -283,6 +284,7 @@ class TtsConfigEditViewModel : ViewModel() {
                     }
                 }
             }
+            TtsApiType.EDGE -> {}
         }
     }
 
@@ -418,8 +420,12 @@ class TtsConfigEditViewModel : ViewModel() {
     /* 根据API更新音频格式 */
     private fun updateFormatLiveData() {
         val api = when (mTtsCfgItem.voiceProperty.api) {
-            0 -> TtsAudioFormat.SupportedApi.EDGE
-            1 -> TtsAudioFormat.SupportedApi.AZURE
+            TtsApiType.EDGE -> {
+                TtsAudioFormat.SupportedApi.EDGE
+            }
+            TtsApiType.AZURE -> {
+                TtsAudioFormat.SupportedApi.AZURE
+            }
             else -> TtsAudioFormat.SupportedApi.CREATION //2
         }
         val formats = TtsFormatManger.getFormatsBySupportedApi(api)
@@ -459,34 +465,4 @@ class TtsConfigEditViewModel : ViewModel() {
     }
 
     data class SpinnerItemData(var displayName: String, var value: String)
-
-    /* 开始朗读测试 */
-//    fun speakTest(finally: () -> Unit) {
-//        var tts: TextToSpeech? = null
-//        tts = TextToSpeech(App.context, {
-//            tts?.speak(
-//                "如果喜欢这个项目的话请点个Star吧",
-//                TextToSpeech.QUEUE_FLUSH,
-//                null,
-//                Random().nextInt().toString()
-//            )
-//        }, "com.github.jing332.tts_server_android")
-//        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-//            override fun onStart(utteranceId: String?) {}
-//            override fun onDone(utteranceId: String?) {
-//                finally.invoke()
-//            }
-//
-//            @Deprecated("Deprecated in Java", ReplaceWith("finally.invoke()"))
-//            override fun onError(utteranceId: String?) {
-//                finally.invoke()
-//            }
-//
-//            override fun onStop(utteranceId: String?, interrupted: Boolean) {
-//                super.onStop(utteranceId, interrupted)
-//                finally.invoke()
-//            }
-//        })
-//    }
-
 }
