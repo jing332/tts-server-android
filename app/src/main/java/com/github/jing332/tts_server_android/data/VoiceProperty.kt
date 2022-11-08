@@ -58,14 +58,18 @@ data class ExpressAs(var style: String, var styleDegree: Float, var role: String
 /* Prosody 基本数值参数 单位: %百分比 */
 @kotlinx.serialization.Serializable
 data class Prosody(var rate: Int, var volume: Int, var pitch: Int) : Serializable, Cloneable {
-    constructor() : this(0, 0, 0)
+    constructor() : this(RATE_FOLLOW_SYSTEM_VALUE, 0, 0)
+
+    companion object {
+        const val RATE_FOLLOW_SYSTEM_VALUE = -100
+    }
 
     public override fun clone(): Prosody {
         return super.clone() as Prosody
     }
 
     fun setRateIfFollowSystem(sysRate: Int): Prosody {
-        if (rate <= -100) rate = sysRate
+        if (rate <= RATE_FOLLOW_SYSTEM_VALUE) rate = sysRate
         return this
     }
 
