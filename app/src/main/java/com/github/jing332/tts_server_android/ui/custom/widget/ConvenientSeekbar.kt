@@ -40,27 +40,25 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
         ta.recycle()
 
         binding.add.setOnClickListener {
-            seekBar.progress += 1
+            progress += 1
+            seekBarChangeListener?.onStopTrackingTouch(this)
         }
         binding.add.setOnLongClickListener {
             progress += 10
+            seekBarChangeListener?.onStopTrackingTouch(this)
             true
         }
 
         binding.remove.setOnClickListener {
-            seekBar.progress -= 1
+            progress -= 1
+            seekBarChangeListener?.onStopTrackingTouch(this)
         }
         binding.remove.setOnLongClickListener {
             progress -= 10
+            seekBarChangeListener?.onStopTrackingTouch(this)
             true
         }
 
-
-//        binding.add.setOnTouchListener { event ->
-//            when(event.action)
-//
-//
-//        }
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
