@@ -57,6 +57,12 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
             }
         }
 
+    fun startEditActivity(){
+        val intent =
+            Intent(requireContext(), TtsConfigEditActivity::class.java)
+        startForResult.launch(intent)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,12 +84,6 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         binding.recyclerViewList.apply {
             this.layoutManager = layoutManager
             this.adapter = recyclerAdapter
-        }
-        /* 悬浮加号按钮 */
-        binding.fabAddConfig.setOnClickListener {
-            val intent =
-                Intent(requireContext(), TtsConfigEditActivity::class.java)
-            startForResult.launch(intent)
         }
         /* 监听整个列表数据list */
         viewModel.ttsCfg.observe(this) {

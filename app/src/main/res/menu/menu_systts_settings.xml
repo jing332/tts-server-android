@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_addConfig"
+        android:icon="@drawable/ic_baseline_white_add_24"
+        android:title="@string/add_config"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:icon="@drawable/ic_baseline_sort_24"
+        android:title="@string/list_sort"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/menu_sortByDisplayName"
+                android:title="@string/display_name" />
+            <item
+                android:id="@+id/menu_sortByRaTarget"
+                android:title="@string/read_aloud_target" />
+            <item
+                android:id="@+id/menu_sortByApi"
+                android:title="@string/api" />
+        </menu>
+    </item>
     <item
         android:id="@+id/menu_desktopShortcut"
         android:title="@string/desktop_shortcut" />
@@ -13,18 +37,4 @@
             android:checkable="true"
             android:title="@string/multi_voice" />
     </group>
-    <item android:title="@string/list_sort" >
-        <menu >
-            <item
-                android:id="@+id/menu_sortByDisplayName"
-                android:title="@string/display_name" />
-            <item
-                android:id="@+id/menu_sortByRaTarget"
-                android:title="@string/read_aloud_target" />
-            <item
-                android:id="@+id/menu_sortByApi"
-                android:title="@string/api" />
-        </menu>
-    </item>
-
 </menu>

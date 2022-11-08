@@ -77,4 +77,5 @@
     <string name="list_sort">列表排序</string>
     <string name="api">接口</string>
     <string name="read_aloud_target">朗读目标</string>
+    <string name="add_config">添加配置</string>
 </resources>

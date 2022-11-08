@@ -102,6 +102,10 @@ class TtsSettingsActivity : BackActivity() {
                     Intent(this, TtsSettingsActivity::class.java)
                 )
             }
+            /* 添加配置 */
+            R.id.menu_addConfig ->{
+                configFragment.startEditActivity()
+            }
             /* 排序 */
             R.id.menu_sortByApi ->{
                 cfgViewModel.sortListByApi()
