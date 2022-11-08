@@ -7,8 +7,8 @@ import android.graphics.Color
 import android.os.Build
 import android.os.PowerManager
 import android.util.Log
-import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ui.MainActivity
@@ -48,7 +48,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     @Deprecated("Deprecated in Java")
     @SuppressLint("WakelockTimeout")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Toast.makeText(this, getString(R.string.service_started), Toast.LENGTH_SHORT).show()
+        toastOnUi(R.string.service_started)
         instance = this
         isRunning = true
         cfg = TtsServerConfig(this)
@@ -72,7 +72,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         if (cfg.isWakeLock) mWakeLock.release()
         unregisterReceiver(mReceiver)
         stopForeground(true)
-        Toast.makeText(this, getString(R.string.service_closed), Toast.LENGTH_SHORT).show()
+        toastOnUi(R.string.service_closed)
     }
 
     @Deprecated("Deprecated in Java")
@@ -99,19 +99,17 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     private fun sendLog(data: MyLog) {
         val i = Intent(ACTION_ON_LOG)
         i.putExtra("data", data)
-        sendBroadcast(i)
+        App.localBroadcast.sendBroadcast(i)
     }
 
     /* 广播启动消息 */
     private fun sendStartedMsg() {
-        val i = Intent(ACTION_ON_STARTED)
-        sendBroadcast(i)
+        App.localBroadcast.sendBroadcast(Intent(ACTION_ON_STARTED))
     }
 
     /* 广播关闭消息 */
     private fun sendClosedMsg() {
-        val i = Intent(ACTION_ON_CLOSED)
-        sendBroadcast(i)
+        App.localBroadcast.sendBroadcast(Intent(ACTION_ON_CLOSED))
     }
 
     private fun initNotification() {

@@ -19,10 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.jing332.tts_server_android.BuildConfig
-import com.github.jing332.tts_server_android.LogLevel
-import com.github.jing332.tts_server_android.MyLog
-import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.ui.custom.adapter.LogViewAdapter
@@ -117,7 +114,8 @@ class MainActivity : AppCompatActivity() {
         IntentFilter(TtsIntentService.ACTION_ON_LOG).apply {
             addAction(TtsIntentService.ACTION_ON_STARTED)
             addAction(TtsIntentService.ACTION_ON_CLOSED)
-            registerReceiver(myReceiver, this)
+            App.localBroadcast.registerReceiver(myReceiver, this)
+//            registerReceiver(myReceiver, this)
         }
 
         MyTools.checkUpdate(this)
@@ -125,7 +123,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(myReceiver)
+        App.localBroadcast.unregisterReceiver(myReceiver)
+//        unregisterReceiver(myReceiver)
     }
 
     /*右上角更多菜单*/

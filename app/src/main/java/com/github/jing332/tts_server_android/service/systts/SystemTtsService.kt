@@ -34,9 +34,9 @@ import kotlin.system.exitProcess
 class SystemTtsService : TextToSpeechService() {
     companion object {
         const val TAG = "SysTtsService"
-        const val ACTION_ON_LOG = "on_log"
-        const val ACTION_NOTIFY_CANCEL = "NOTIFY_cancel"
-        const val ACTION_KILL_PROCESS = "kill_process"
+        const val ACTION_ON_LOG = "SYS_TTS_ON_LOG"
+        const val ACTION_NOTIFY_CANCEL = "SYS_TTS_NOTIFY_CANCEL"
+        const val ACTION_KILL_PROCESS = "SYS_TTS_NOTIFY_EXIT_0"
         const val NOTIFICATION_CHAN_ID = "system_tts_service"
         const val NOTIFICATION_ID = 2
     }
