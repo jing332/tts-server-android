@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_desktopShortcut"
+        android:title="@string/desktop_shortcut" />
     <group>
         <item
             android:id="@+id/menu_doSplit"
@@ -10,8 +13,18 @@
             android:checkable="true"
             android:title="@string/multi_voice" />
     </group>
-    <item
-        android:id="@+id/menu_desktopShortcut"
-        android:title="@string/desktop_shortcut" />
+    <item android:title="@string/list_sort" >
+        <menu >
+            <item
+                android:id="@+id/menu_sortByDisplayName"
+                android:title="@string/display_name" />
+            <item
+                android:id="@+id/menu_sortByRaTarget"
+                android:title="@string/read_aloud_target" />
+            <item
+                android:id="@+id/menu_sortByApi"
+                android:title="@string/api" />
+        </menu>
+    </item>
 
 </menu>

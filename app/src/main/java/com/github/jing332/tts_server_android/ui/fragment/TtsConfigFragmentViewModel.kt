@@ -85,6 +85,30 @@ class TtsConfigFragmentViewModel : ViewModel() {
         replacedItemDataLiveData.value = ReplacedData(data, position, true)
     }
 
+    /* 按API排序 */
+    fun sortListByApi() {
+        ttsCfg.value?.apply {
+            list.sortBy { it.voiceProperty.api }
+            ttsCfg.value = this
+        }
+    }
+
+    /* 按朗读目标排序 */
+    fun sortListByRaTarget() {
+        ttsCfg.value?.apply {
+            list.sortBy { it.readAloudTarget }
+            ttsCfg.value = this
+        }
+    }
+
+    /* 按显示名称排序 */
+    fun sortListByDisplayName() {
+        ttsCfg.value?.apply {
+            list.sortBy { it.uiData.displayName }
+            ttsCfg.value = this
+        }
+    }
+
     data class ReplacedData(
         var sysTtsConfigItem: SysTtsConfigItem,
         var position: Int,

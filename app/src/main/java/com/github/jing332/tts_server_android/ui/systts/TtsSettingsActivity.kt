@@ -102,6 +102,16 @@ class TtsSettingsActivity : BackActivity() {
                     Intent(this, TtsSettingsActivity::class.java)
                 )
             }
+            /* 排序 */
+            R.id.menu_sortByApi ->{
+                cfgViewModel.sortListByApi()
+            }
+            R.id.menu_sortByDisplayName ->{
+                cfgViewModel.sortListByDisplayName()
+            }
+            R.id.menu_sortByRaTarget ->{
+                cfgViewModel.sortListByRaTarget()
+            }
         }
 
         return super.onOptionsItemSelected(item)

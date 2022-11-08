@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.ui.custom.adapter
 
+import android.annotation.SuppressLint
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,12 @@ class SysTtsConfigListItemAdapter(
         itemList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemList.size)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun removeAll() {
+        itemList.clear()
+        notifyDataSetChanged()
     }
 
     fun update(item: SysTtsConfigItem, position: Int, isUpdateUi: Boolean) {

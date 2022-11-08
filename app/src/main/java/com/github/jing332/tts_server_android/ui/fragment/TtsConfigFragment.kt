@@ -88,6 +88,7 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         /* 监听整个列表数据list */
         viewModel.ttsCfg.observe(this) {
             Log.d(TAG, "item list changed: $it")
+            recyclerAdapter.removeAll()
             it.list.forEach { item ->
                 recyclerAdapter.append(item, false)
             }
