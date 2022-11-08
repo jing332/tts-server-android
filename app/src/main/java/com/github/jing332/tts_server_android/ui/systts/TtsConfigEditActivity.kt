@@ -21,7 +21,7 @@ import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 
 class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener,
-    View.OnClickListener, ConvenientSeekbar.SeekBarChangeListener {
+    View.OnClickListener, ConvenientSeekbar.OnSeekBarChangeListener {
 
     companion object {
         const val TAG = "TtsConfigEditActivity"
@@ -71,13 +71,13 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
                 tv.setPadding(50, 20, 50, 0)
                 linear.addView(tv)
 
-                val seekbar = SeekBar(context)
+                val seekbar = ConvenientSeekbar(context)
                 seekbar.max = 200
                 linear.addView(seekbar)
-                seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                seekbar.onSeekBarChangeListener = object : ConvenientSeekbar.OnSeekBarChangeListener {
                     @SuppressLint("SetTextI18n")
                     override fun onProgressChanged(
-                        seekBar: SeekBar?,
+                        seekBar: ConvenientSeekbar,
                         progress: Int,
                         fromUser: Boolean
                     ) {
@@ -85,14 +85,14 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
                         if (progress == 0) seekbar.progress = 1
                     }
 
-                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
+                    override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
                         if (model.voiceStyleDegreeLiveData.value != seekbar.progress) {
                             model.voiceStyleDegreeChanged(seekbar.progress)
                             binding.btnApplyChanges.isEnabled = true
                         }
                     }
-                })
+                }
                 seekbar.progress = model.voiceStyleDegreeLiveData.value ?: 50
                 seekbar.setPadding(50, 20, 50, 50)
                 setView(linear).setNeutralButton(getString(R.string.reset)) { _, _ ->
@@ -118,8 +118,8 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         binding.btnApplyChanges.setOnClickListener(this)
         binding.btnTest.setOnClickListener(this)
 
-        binding.seekBarRate.seekBarChangeListener = this
-        binding.seekBarVolume.seekBarChangeListener = this
+        binding.seekBarRate.onSeekBarChangeListener = this
+        binding.seekBarVolume.onSeekBarChangeListener = this
         binding.switchSplitSentences.setOnCheckedChangeListener { _, isChecked ->
             binding.btnApplyChanges.isEnabled = isChecked != model.isSplitSentencesLiveData.value
 //            model.isSplitSentencesChanged(isChecked)

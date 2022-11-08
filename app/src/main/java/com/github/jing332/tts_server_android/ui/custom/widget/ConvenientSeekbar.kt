@@ -20,6 +20,11 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
 
     private lateinit var binding: ConvenientSeekbarBinding
     val seekBar by lazy { binding.seekBar }
+    var max: Int
+        inline get() = seekBar.max
+        inline set(value) {
+            seekBar.max = value
+        }
     var progress: Int
         inline get() = seekBar.progress
         inline set(value) {
@@ -31,7 +36,7 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
         addView(
             binding.root,
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ConvenientSeekbar)
@@ -41,45 +46,45 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
 
         binding.add.setOnClickListener {
             progress += 1
-            seekBarChangeListener?.onStopTrackingTouch(this)
+            onSeekBarChangeListener?.onStopTrackingTouch(this)
         }
         binding.add.setOnLongClickListener {
             progress += 10
-            seekBarChangeListener?.onStopTrackingTouch(this)
+            onSeekBarChangeListener?.onStopTrackingTouch(this)
             true
         }
 
         binding.remove.setOnClickListener {
             progress -= 1
-            seekBarChangeListener?.onStopTrackingTouch(this)
+            onSeekBarChangeListener?.onStopTrackingTouch(this)
         }
         binding.remove.setOnLongClickListener {
             progress -= 10
-            seekBarChangeListener?.onStopTrackingTouch(this)
+            onSeekBarChangeListener?.onStopTrackingTouch(this)
             true
         }
 
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                seekBarChangeListener?.onProgressChanged(this@ConvenientSeekbar, progress, fromUser)
+                onSeekBarChangeListener?.onProgressChanged(this@ConvenientSeekbar, progress, fromUser)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                seekBarChangeListener?.onStartTrackingTouch(this@ConvenientSeekbar)
+                onSeekBarChangeListener?.onStartTrackingTouch(this@ConvenientSeekbar)
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                seekBarChangeListener?.onStopTrackingTouch(this@ConvenientSeekbar)
+                onSeekBarChangeListener?.onStopTrackingTouch(this@ConvenientSeekbar)
             }
         })
 
 
     }
 
-    var seekBarChangeListener: SeekBarChangeListener? = null
+    var onSeekBarChangeListener: OnSeekBarChangeListener? = null
 
-    interface SeekBarChangeListener {
+    interface OnSeekBarChangeListener {
         fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean)
         fun onStartTrackingTouch(seekBar: ConvenientSeekbar)
         fun onStopTrackingTouch(seekBar: ConvenientSeekbar)
