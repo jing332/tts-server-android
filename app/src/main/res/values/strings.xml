@@ -72,4 +72,6 @@
     <string name="please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
     <string name="warning">警告</string>
     <string name="msg_aside_and_dialogue_format_different">检测到旁白与对话音频格式不相同，两者采样率不同将会导致音调异常，请手动换为相同格式！</string>
+    <string name="desc_seekbar_add">滑动条-增加按钮</string>
+    <string name="desc_seekbar_remove">滑动条-减少按钮</string>
 </resources>

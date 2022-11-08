@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.jing332.tts_server_android.ui.custom.RecyclerViewAtViewPager2
+    <com.github.jing332.tts_server_android.ui.custom.widget.RecyclerViewAtViewPager2
         android:id="@+id/recyclerView_log"
         android:layout_width="0dp"
         android:layout_height="0dp"

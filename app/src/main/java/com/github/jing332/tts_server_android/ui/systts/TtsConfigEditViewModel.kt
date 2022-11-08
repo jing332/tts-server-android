@@ -67,7 +67,10 @@ class TtsConfigEditViewModel : ViewModel() {
             val volume = mTtsCfgItem.voiceProperty.prosody.volume
             val rateStr = if (rate == -100) "跟随" else rate
             displayName = inputDisplayName.ifEmpty { voice }
-            content = "$style-$role |强度: <b>${styleDegree}</b>|语速:<b>$rateStr|</b>音量:<b>$volume</b>"
+            val expressAs =
+                if (apiLiveData.value?.position == TtsApiType.EDGE) ""
+                else "$style-$role | 强度: <b>${styleDegree}</b> | "
+            content = "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b>"
         }
 
         return mTtsCfgItem

@@ -54,9 +54,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toStartOf="@+id/btn_edit"
+                app:layout_constraintEnd_toStartOf="@+id/tv_raTarget"
                 app:layout_constraintStart_toEndOf="@+id/checkBox_switch"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="zh-CN-YunxiNeural" />
@@ -65,10 +64,10 @@
                 android:id="@+id/tv_format"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
                 android:textSize="11sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tv_name"
-                app:layout_constraintTop_toBottomOf="@+id/tv_content"
                 tools:text="audio-16khz-32kbitrate-mono-mp3" />
 
             <TextView
@@ -105,12 +104,11 @@
             <CheckBox
                 android:id="@+id/checkBox_switch"
                 android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
+                android:layout_height="0dp"
+                android:contentDescription="@string/desc_switch_item"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/desc_switch_item"
                 tools:ignore="TouchTargetSizeCheck" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

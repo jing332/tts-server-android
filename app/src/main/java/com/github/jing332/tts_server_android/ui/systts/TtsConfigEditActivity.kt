@@ -17,10 +17,11 @@ import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.widget.WaitDialog
 
 class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener,
-    View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+    View.OnClickListener, ConvenientSeekbar.SeekBarChangeListener {
 
     companion object {
         const val TAG = "TtsConfigEditActivity"
@@ -117,8 +118,8 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         binding.btnApplyChanges.setOnClickListener(this)
         binding.btnTest.setOnClickListener(this)
 
-        binding.seekBarRate.setOnSeekBarChangeListener(this)
-        binding.seekBarVolume.setOnSeekBarChangeListener(this)
+        binding.seekBarRate.seekBarChangeListener = this
+        binding.seekBarVolume.seekBarChangeListener = this
         binding.switchSplitSentences.setOnCheckedChangeListener { _, isChecked ->
             binding.btnApplyChanges.isEnabled = isChecked != model.isSplitSentencesLiveData.value
 //            model.isSplitSentencesChanged(isChecked)
@@ -173,12 +174,12 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         /* 音量 */
         model.volumeLiveData.observe(this) {
             Log.d(TAG, "volume:$it")
-            binding.seekBarVolume.progress = it
+            binding.seekBarVolume.seekBar.progress = it
         }
         /* 语速 */
         model.rateLiveData.observe(this) {
             Log.d(TAG, "rate:$it")
-            binding.seekBarRate.progress = it
+            binding.seekBarRate.seekBar.progress = it
         }
         /* 是否分割长段 */
         model.isSplitSentencesLiveData.observe(this) {
@@ -230,23 +231,23 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     override fun onClick(v: View?) {
-    /*    when (v?.id) {
-            R.id.btn_openTtsConfig -> {
-                val intent = Intent("com.android.settings.TTS_SETTINGS")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                this.startActivity(intent)
-            }
-//            R.id.btn_apply_changes -> {
-//                v.isEnabled = false
-//                model.saveConfig()
-//                sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
-//            }
-            R.id.btn_test -> {
-                v.isEnabled = false
-                binding.btnApplyChanges.callOnClick()
-                model.speakTest { runOnUI { v.isEnabled = true } }
-            }
-        }*/
+        /*    when (v?.id) {
+                R.id.btn_openTtsConfig -> {
+                    val intent = Intent("com.android.settings.TTS_SETTINGS")
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    this.startActivity(intent)
+                }
+    //            R.id.btn_apply_changes -> {
+    //                v.isEnabled = false
+    //                model.saveConfig()
+    //                sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+    //            }
+                R.id.btn_test -> {
+                    v.isEnabled = false
+                    binding.btnApplyChanges.callOnClick()
+                    model.speakTest { runOnUI { v.isEnabled = true } }
+                }
+            }*/
     }
 
     private fun buildSpinnerAdapter(): ArrayAdapter<String> {
@@ -279,33 +280,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        when (seekBar?.id) {
-            R.id.seekBar_volume -> {
-                binding.tvCurrentVolume.text = "${progress - 50}%"
-            }
-            R.id.seekBar_rate -> {
-                if (progress == 0)
-                    binding.rateValue.text = "跟随系统或朗读APP"
-                else
-                    binding.rateValue.text = "${(progress - 100)}%"
-            }
-        }
-    }
-
-    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-    override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        binding.btnApplyChanges.isEnabled = true
-        when (seekBar?.id) {
-            R.id.seekBar_volume -> {
-                model.volumeChanged(seekBar.progress)
-            }
-            R.id.seekBar_rate -> {
-                model.rateChanged(seekBar.progress)
-            }
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_systts_config_edit, menu)
@@ -329,5 +303,34 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
 
         return super.onOptionsItemSelected(item)
     }
+
+    @SuppressLint("SetTextI18n")
+    override fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {
+        when (seekBar.id) {
+            R.id.seekBar_volume -> {
+                binding.tvCurrentVolume.text = "${progress - 50}%"
+            }
+            R.id.seekBar_rate -> {
+                if (progress == 0)
+                    binding.rateValue.text = "跟随系统或朗读APP"
+                else
+                    binding.rateValue.text = "${(progress - 100)}%"
+            }
+        }
+    }
+
+    override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
+    override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
+        binding.btnApplyChanges.isEnabled = true
+        when (seekBar.id) {
+            R.id.seekBar_volume -> {
+                model.volumeChanged(seekBar.progress)
+            }
+            R.id.seekBar_rate -> {
+                model.rateChanged(seekBar.progress)
+            }
+        }
+    }
+
 
 }

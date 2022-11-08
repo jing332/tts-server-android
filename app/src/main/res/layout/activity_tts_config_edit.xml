@@ -162,15 +162,15 @@
                 tools:ignore="DuplicateSpeakableTextCheck" />
 
 
-            <SeekBar
+            <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
                 android:id="@+id/seekBar_volume"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:max="100"
-                android:progress="50"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="@+id/spinner_format"
                 app:layout_constraintStart_toStartOf="@+id/textView5"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                app:max="100"
+                app:progress="50" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -251,13 +251,12 @@
                 app:layout_constraintStart_toStartOf="@+id/seekBar_volume"
                 app:layout_constraintTop_toBottomOf="@+id/seekBar_volume" />
 
-            <SeekBar
+            <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
                 android:id="@+id/seekBar_rate"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:max="200"
+                app:max="200"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="@+id/seekBar_volume"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textView7"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
 

@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.custom
+package com.github.jing332.tts_server_android.ui.custom.widget
 
 import android.content.Context
 import android.util.AttributeSet
