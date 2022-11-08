@@ -9,7 +9,7 @@ import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
 
 class TtsConfigFragmentViewModel : ViewModel() {
     companion object {
-        const val TAG = "TtsSettingsViewModel"
+        const val TAG = "TtsConfigFragmentViewModel"
     }
 
     val ttsCfg: MutableLiveData<SysTtsConfig> by lazy { MutableLiveData() }

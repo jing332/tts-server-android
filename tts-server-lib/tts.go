@@ -37,7 +37,12 @@ func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
 	ssml := `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='en-US'>` +
 		proto.ElementString(text) +
 		`</speak>`
-	return e.tts.GetAudio(ssml, format)
+	audio, err := e.tts.GetAudio(ssml, format)
+	if err != nil {
+		e.tts = nil
+		return nil, err
+	}
+	return audio, nil
 }
 
 func GetEdgeVoices() ([]byte, error) {
@@ -66,7 +71,12 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 	proto := property.Proto(prosody, expressAS)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
 		proto.ElementString(text) + `</speak > `
-	return a.tts.GetAudio(ssml, format)
+	audio, err := a.tts.GetAudio(ssml, format)
+	if err != nil {
+		a.tts = nil
+		return nil, err
+	}
+	return audio, nil
 }
 
 func (a *AzureApi) GetAudioBySsml(ssml, format string) ([]byte, error) {
