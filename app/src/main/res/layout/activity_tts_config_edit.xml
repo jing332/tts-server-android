@@ -166,6 +166,7 @@
                 android:id="@+id/seekBar_volume"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="@+id/spinner_format"
                 app:layout_constraintStart_toStartOf="@+id/textView5"
                 app:layout_constraintTop_toBottomOf="@+id/textView5"
@@ -187,43 +188,9 @@
                 android:layout_height="wrap_content"
                 android:text="0%"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/seekBar_volume"
+                app:layout_constraintBottom_toBottomOf="@+id/textView5"
                 app:layout_constraintStart_toEndOf="@+id/textView5"
                 tools:ignore="HardcodedText" />
-
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_split_sentences"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:minHeight="48dp"
-                android:text="@string/split_long_sentences"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/seekBar_rate"
-                app:layout_constraintTop_toBottomOf="@+id/seekBar_rate" />
-
-            <Button
-                android:id="@+id/btn_apply_changes"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:enabled="false"
-                android:text="@string/btn_apply_changes"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/seekBar_rate"
-                app:layout_constraintTop_toBottomOf="@+id/switch_split_sentences" />
-
-            <Button
-                android:id="@+id/btn_openTtsConfig"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_open_tts_settings"
-                android:visibility="gone"
-                app:layout_constraintEnd_toStartOf="@+id/btn_test"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/seekBar_rate"
-                app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
 
             <TextView
                 android:id="@+id/label_voiceRole"
@@ -246,7 +213,7 @@
                 android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/label_rate"
                 app:layout_constraintStart_toStartOf="@+id/seekBar_volume"
                 app:layout_constraintTop_toBottomOf="@+id/seekBar_volume" />
@@ -254,11 +221,12 @@
             <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
                 android:id="@+id/seekBar_rate"
                 android:layout_width="0dp"
-                app:max="200"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="@+id/seekBar_volume"
                 app:layout_constraintStart_toStartOf="@+id/textView7"
-                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                app:layout_constraintTop_toBottomOf="@+id/textView7"
+                app:max="200" />
 
             <TextView
                 android:id="@+id/rate_value"
@@ -268,16 +236,6 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/textView7"
                 app:layout_constraintTop_toTopOf="@+id/textView7" />
-
-            <Button
-                android:id="@+id/btn_test"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@string/speak_test"
-                android:visibility="gone"
-                app:layout_constraintEnd_toStartOf="@+id/btn_apply_changes"
-                app:layout_constraintTop_toTopOf="@+id/btn_apply_changes" />
 
             <TextView
                 android:id="@+id/tv_styleDegree"

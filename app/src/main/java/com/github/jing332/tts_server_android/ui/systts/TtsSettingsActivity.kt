@@ -79,7 +79,7 @@ class TtsSettingsActivity : BackActivity() {
                 }
                 cfgViewModel.ttsCfg.value?.apply {
                     isSplitSentences = menuItemDoSplit?.isChecked == true
-                    isMultiVoice = menuItemMultiVoice?.isChecked ==true
+                    isMultiVoice = menuItemMultiVoice?.isChecked == true
                 }?.save()
             }
             R.id.menu_isMultiVoice -> { /* 二者只能选一 */
@@ -89,7 +89,7 @@ class TtsSettingsActivity : BackActivity() {
                 }
                 cfgViewModel.ttsCfg.value?.apply {
                     isSplitSentences = menuItemDoSplit?.isChecked == true
-                    isMultiVoice = menuItemMultiVoice?.isChecked ==true
+                    isMultiVoice = menuItemMultiVoice?.isChecked == true
                 }?.save()
             }
 
@@ -103,18 +103,25 @@ class TtsSettingsActivity : BackActivity() {
                 )
             }
             /* 添加配置 */
-            R.id.menu_addConfig ->{
+            R.id.menu_addConfig -> {
                 configFragment.startEditActivity()
             }
             /* 排序 */
-            R.id.menu_sortByApi ->{
+            R.id.menu_sortByApi -> {
                 cfgViewModel.sortListByApi()
             }
-            R.id.menu_sortByDisplayName ->{
+            R.id.menu_sortByDisplayName -> {
                 cfgViewModel.sortListByDisplayName()
             }
-            R.id.menu_sortByRaTarget ->{
+            R.id.menu_sortByRaTarget -> {
                 cfgViewModel.sortListByRaTarget()
+            }
+
+            R.id.menu_importConfig -> {
+                configFragment.importConfig()
+            }
+            R.id.menu_exportConfig -> {
+                configFragment.exportConfig()
             }
         }
 
@@ -130,6 +137,7 @@ class TtsSettingsActivity : BackActivity() {
         override fun getItemCount(): Int {
             return fragmentList.size
         }
+
         override fun createFragment(position: Int): Fragment {
             return fragmentList[position]
         }

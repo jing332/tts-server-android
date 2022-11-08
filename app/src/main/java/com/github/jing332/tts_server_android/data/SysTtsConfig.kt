@@ -6,25 +6,26 @@ import com.github.jing332.tts_server_android.data.VoiceProperty.Companion.DEFAUL
 import com.github.jing332.tts_server_android.data.VoiceProperty.Companion.DEFAULT_VOICE_ID
 import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.util.FileUtils
-import java.io.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
 
+@kotlinx.serialization.Serializable
 data class SysTtsConfig(
     var list: ArrayList<SysTtsConfigItem>,
     var isSplitSentences: Boolean,
     var isMultiVoice: Boolean
-) : Serializable {
-
+)  {
     companion object {
-        private const val serialVersionUID = 1L
-
-        private val filepath by lazy { "${App.context.filesDir.absolutePath}/system_tts.dat" }
+        private val filepath by lazy { "${App.context.filesDir.absolutePath}/system_tts_config.json" }
         fun read(): SysTtsConfig {
-            val data = FileUtils.readObject<SysTtsConfig>(filepath)
-            data?.let {
-                if (it.list.isNotEmpty())
-                    return it
+            return try {
+                val str = File(filepath).readText()
+                Json.decodeFromString<SysTtsConfig>(str)
+            } catch (e: Exception) {
+                return SysTtsConfig()
             }
-            return SysTtsConfig()
         }
     }
 
@@ -33,15 +34,14 @@ data class SysTtsConfig(
             SysTtsConfigItem(
                 TtsConfigListItemData("晓晓 (zh-CN-XiaoxiaoNeural)", "无"), true,
                 ReadAloudTarget.DEFAULT,
-                "zh-CN",
                 VoiceProperty(DEFAULT_VOICE, DEFAULT_VOICE_ID),
                 TtsAudioFormat.DEFAULT,
             )
-        ),  true, false
+        ), true, false
     )
 
     fun save() {
-        FileUtils.saveObject(this, filepath)
+        FileUtils.saveFile(filepath, Json.encodeToString(this).toByteArray())
     }
 
     fun selectedItem(): SysTtsConfigItem? {

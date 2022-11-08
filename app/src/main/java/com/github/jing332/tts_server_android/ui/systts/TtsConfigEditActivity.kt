@@ -21,7 +21,7 @@ import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 
 class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener,
-    View.OnClickListener, ConvenientSeekbar.OnSeekBarChangeListener {
+    ConvenientSeekbar.OnSeekBarChangeListener {
 
     companion object {
         const val TAG = "TtsConfigEditActivity"
@@ -74,30 +74,29 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
                 val seekbar = ConvenientSeekbar(context)
                 seekbar.max = 200
                 linear.addView(seekbar)
-                seekbar.onSeekBarChangeListener = object : ConvenientSeekbar.OnSeekBarChangeListener {
-                    @SuppressLint("SetTextI18n")
-                    override fun onProgressChanged(
-                        seekBar: ConvenientSeekbar,
-                        progress: Int,
-                        fromUser: Boolean
-                    ) {
-                        tv.text = "风格强度：${(progress * 0.01).toFloat()}"
-                        if (progress == 0) seekbar.progress = 1
-                    }
+                seekbar.onSeekBarChangeListener =
+                    object : ConvenientSeekbar.OnSeekBarChangeListener {
+                        @SuppressLint("SetTextI18n")
+                        override fun onProgressChanged(
+                            seekBar: ConvenientSeekbar,
+                            progress: Int,
+                            fromUser: Boolean
+                        ) {
+                            tv.text = "风格强度：${(progress * 0.01).toFloat()}"
+                            if (progress == 0) seekbar.progress = 1
+                        }
 
-                    override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
-                    override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
-                        if (model.voiceStyleDegreeLiveData.value != seekbar.progress) {
-                            model.voiceStyleDegreeChanged(seekbar.progress)
-                            binding.btnApplyChanges.isEnabled = true
+                        override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
+                        override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
+                            if (model.voiceStyleDegreeLiveData.value != seekbar.progress) {
+                                model.voiceStyleDegreeChanged(seekbar.progress)
+                            }
                         }
                     }
-                }
                 seekbar.progress = model.voiceStyleDegreeLiveData.value ?: 50
                 seekbar.setPadding(50, 20, 50, 50)
                 setView(linear).setNeutralButton(getString(R.string.reset)) { _, _ ->
                     model.voiceStyleDegreeChanged(100) /* 重置 */
-                    binding.btnApplyChanges.isEnabled = true
                 }.create().show()
             }
 
@@ -114,16 +113,9 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         binding.spinnerVoiceRole.onItemSelectedListener = this
         binding.spinnerFormat.onItemSelectedListener = this
 
-        binding.btnOpenTtsConfig.setOnClickListener(this)
-        binding.btnApplyChanges.setOnClickListener(this)
-        binding.btnTest.setOnClickListener(this)
 
         binding.seekBarRate.onSeekBarChangeListener = this
         binding.seekBarVolume.onSeekBarChangeListener = this
-        binding.switchSplitSentences.setOnCheckedChangeListener { _, isChecked ->
-            binding.btnApplyChanges.isEnabled = isChecked != model.isSplitSentencesLiveData.value
-//            model.isSplitSentencesChanged(isChecked)
-        }
         /* 显示名称*/
         model.displayNameLiveData.observe(this) { text ->
             binding.etDisplayName.setText(text)
@@ -184,7 +176,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         /* 是否分割长段 */
         model.isSplitSentencesLiveData.observe(this) {
             Log.d(TAG, "isSplitSentences $it")
-            binding.switchSplitSentences.isChecked = it
         }
 
         /* 加载数据并更新列表 */
@@ -203,8 +194,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         when (parent?.id) {
             R.id.spinner_readAloudTarget -> {
                 model.onReadAloudTargetSelected(position)
-                binding.switchSplitSentences.visibility =
-                    if (position == 0) View.VISIBLE else View.INVISIBLE
             }
             R.id.spinner_api -> {
                 binding.tvStyleDegree.isVisible = position != TtsApiType.EDGE
@@ -230,25 +219,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-    override fun onClick(v: View?) {
-        /*    when (v?.id) {
-                R.id.btn_openTtsConfig -> {
-                    val intent = Intent("com.android.settings.TTS_SETTINGS")
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    this.startActivity(intent)
-                }
-    //            R.id.btn_apply_changes -> {
-    //                v.isEnabled = false
-    //                model.saveConfig()
-    //                sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
-    //            }
-                R.id.btn_test -> {
-                    v.isEnabled = false
-                    binding.btnApplyChanges.callOnClick()
-                    model.speakTest { runOnUI { v.isEnabled = true } }
-                }
-            }*/
-    }
 
     private fun buildSpinnerAdapter(): ArrayAdapter<String> {
         return ArrayAdapter<String>(
@@ -321,7 +291,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
 
     override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
     override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
-        binding.btnApplyChanges.isEnabled = true
         when (seekBar.id) {
             R.id.seekBar_volume -> {
                 model.volumeChanged(seekBar.progress)

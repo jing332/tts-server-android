@@ -78,4 +78,7 @@
     <string name="api">接口</string>
     <string name="read_aloud_target">朗读目标</string>
     <string name="add_config">添加配置</string>
+    <string name="config_import_export">配置导入/导出</string>
+    <string name="import_config">导入配置</string>
+    <string name="export_config">导出配置</string>
 </resources>

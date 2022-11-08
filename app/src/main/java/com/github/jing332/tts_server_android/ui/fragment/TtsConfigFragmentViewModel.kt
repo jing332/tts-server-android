@@ -6,6 +6,9 @@ import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.SysTtsConfig
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class TtsConfigFragmentViewModel : ViewModel() {
     companion object {
@@ -107,6 +110,28 @@ class TtsConfigFragmentViewModel : ViewModel() {
             list.sortBy { it.uiData.displayName }
             ttsCfg.value = this
         }
+    }
+
+    fun exportConfig(): String {
+        return try {
+            Json.encodeToString(ttsCfg.value?.list)
+        } catch (e: Exception) {
+            "导出失败：${e.message}"
+        }
+    }
+
+    fun importConfig(json: String): String? {
+        try {
+            val list = Json.decodeFromString<List<SysTtsConfigItem>>(json)
+            list.forEach {
+                it.isEnabled = false
+                appendItemDataLiveData.value = it
+            }
+
+        } catch (e: Exception) {
+            return e.message
+        }
+        return null
     }
 
     data class ReplacedData(

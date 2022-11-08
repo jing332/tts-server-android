@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <item
         android:id="@+id/menu_addConfig"
         android:icon="@drawable/ic_baseline_white_add_24"
         android:title="@string/add_config"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
 
     <item
         android:icon="@drawable/ic_baseline_sort_24"
         android:title="@string/list_sort"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
         <menu>
             <item
                 android:id="@+id/menu_sortByDisplayName"
@@ -37,4 +39,15 @@
             android:checkable="true"
             android:title="@string/multi_voice" />
     </group>
+
+    <item android:title="@string/config_import_export">
+        <menu>
+            <item
+                android:id="@+id/menu_importConfig"
+                android:title="@string/import_config" />
+            <item
+                android:id="@+id/menu_exportConfig"
+                android:title="@string/export_config" />
+        </menu>
+    </item>
 </menu>
