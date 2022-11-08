@@ -86,4 +86,16 @@ object TtsFormatManger {
 
         return list
     }
+
+    /**
+     * 判断格式以及采样率是否相同
+     */
+    fun isFormatSampleEqual(format1: String, format2: String): Boolean {
+        return try {
+            format1.split("khz")[0] == format2.split("khz")[0]
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 }

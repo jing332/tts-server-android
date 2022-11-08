@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.widget
+package com.github.jing332.tts_server_android.ui.custom.widget
 
 import android.app.Dialog
 import android.content.Context

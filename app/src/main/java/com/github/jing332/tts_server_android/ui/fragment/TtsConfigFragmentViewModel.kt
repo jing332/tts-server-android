@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.SysTtsConfig
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
+import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
 
 class TtsConfigFragmentViewModel : ViewModel() {
     companion object {
@@ -65,15 +66,13 @@ class TtsConfigFragmentViewModel : ViewModel() {
      * @return 是否相等
      */
     fun checkMultiVoiceFormat(): Boolean {
-
         ttsCfg.value?.apply {
             val aside = currentAsideItem()
             val dialogue = currentDialogueItem()
             if (aside == null || dialogue == null) {
                 return@apply
             } else if (aside.isEnabled && dialogue.isEnabled) {
-                if (aside.format != dialogue.format)
-                    return false //格式不相等
+                return TtsFormatManger.isFormatSampleEqual(aside.format, dialogue.format)
             }
         }
         return true

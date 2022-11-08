@@ -18,7 +18,7 @@ import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
-import com.github.jing332.tts_server_android.ui.widget.WaitDialog
+import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 
 class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener,
     View.OnClickListener, ConvenientSeekbar.SeekBarChangeListener {

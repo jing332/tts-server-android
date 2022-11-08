@@ -38,7 +38,7 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
         seekBar.progress = ta.getInteger(R.styleable.ConvenientSeekbar_progress, 0)
         seekBar.max = ta.getInteger(R.styleable.ConvenientSeekbar_max, 100)
         ta.recycle()
-        
+
         binding.add.setOnClickListener {
             seekBar.progress += 1
         }

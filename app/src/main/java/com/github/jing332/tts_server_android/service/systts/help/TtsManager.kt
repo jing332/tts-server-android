@@ -49,25 +49,37 @@ class TtsManager(val context: Context) {
         ttsConfig = SysTtsConfig.read()
         Log.d(TAG, "loadConfig: $ttsConfig")
 
-
         ttsConfig.apply {
             if (isMultiVoice) {
-                var cfgItem = ttsConfig.currentAsideItem()
-                if (cfgItem == null) {
-                    context.longToastOnUi("错误：缺少朗读对象，使用默认配置！")
-                    cfgItem = SysTtsConfigItem(true, ReadAloudTarget.ASIDE)
-                    ttsConfig.list.add(cfgItem)
+                var aside = ttsConfig.currentAsideItem()
+                if (aside == null) {
+                    context.longToastOnUi("警告：缺少{旁白}，使用默认配置！")
+                    aside = SysTtsConfigItem(true, ReadAloudTarget.ASIDE)
+                    ttsConfig.list.add(aside)
                 }
-                audioFormat = TtsFormatManger.getFormat(cfgItem.format)
+                var dialogue = ttsConfig.currentDialogueItem()
+                if (dialogue == null) {
+                    context.longToastOnUi("警告：缺少{对话}，使用默认配置！")
+                    dialogue = SysTtsConfigItem(true, ReadAloudTarget.DIALOGUE)
+                    ttsConfig.list.add(dialogue)
+                }
+                /* 格式校验 */
+                if (!TtsFormatManger.isFormatSampleEqual(aside.format, dialogue.format)) {
+                    context.longToastOnUi("警告：旁白与对话 格式采样率不相等，\n使用默认格式！")
+                    aside.format = TtsAudioFormat.DEFAULT
+                    dialogue.format = TtsAudioFormat.DEFAULT
+                }
+
+                audioFormat = TtsFormatManger.getFormat(aside.format)
                     ?: TtsFormatManger.getDefault()
             } else {
-                var cfgItem = ttsConfig.selectedItem()
-                if (cfgItem == null) {
-                    cfgItem = SysTtsConfigItem()
-                    ttsConfig.list.add(cfgItem)
-//                    ttsConfig.currentSelected = ttsConfig.list.size - 1
+                var cfg = ttsConfig.selectedItem()
+                if (cfg == null) {
+                    context.longToastOnUi("警告：缺少全局配置，使用默认！")
+                    cfg = SysTtsConfigItem(true, ReadAloudTarget.DEFAULT)
+                    ttsConfig.list.add(cfg)
                 }
-                audioFormat = TtsFormatManger.getFormat(cfgItem.format)
+                audioFormat = TtsFormatManger.getFormat(cfg.format)
                     ?: TtsFormatManger.getDefault()
             }
         }
@@ -85,32 +97,35 @@ class TtsManager(val context: Context) {
         val pitch = request?.pitch?.minus(100) ?: 100
         val sysRate = (norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
 
-        val voicePro = ttsConfig.selectedItem()?.voiceProperty?.copy() ?: VoiceProperty()
-        if (voicePro.prosody.isRateFollowSystem()) voicePro.prosody.rate = sysRate
-        voicePro.prosody.pitch = pitch
         val format = audioFormat.value
 
         producer = null
         if (ttsConfig.isMultiVoice) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
             val aside = ttsConfig.currentAsideItem()?.voiceProperty?.clone() ?: VoiceProperty()
+            aside.prosody.pitch = pitch
             aside.prosody.setRateIfFollowSystem(sysRate)
             val dialogue =
                 ttsConfig.currentDialogueItem()?.voiceProperty?.clone() ?: VoiceProperty()
+            dialogue.prosody.pitch = pitch
             dialogue.prosody.setRateIfFollowSystem(sysRate)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
             producer = multiVoiceProducer(text, format, aside, dialogue)
-        } else if (ttsConfig.isSplitSentences &&
-            ttsConfig.selectedItem()?.readAloudTarget == ReadAloudTarget.DEFAULT
-        ) { //朗读目标为全局时才分句
-            Log.d(TAG, "splitSentences...")
-            producer = splitSentencesProducer(text, format, voicePro)
-        } else { //不分句
-            getAudioAndDecodePlay(text, voicePro, format, callback)
+        } else {
+            val pro = ttsConfig.selectedItem()?.voiceProperty?.copy() ?: VoiceProperty()
+            pro.prosody.setRateIfFollowSystem(sysRate)
+            pro.prosody.pitch = pitch
+            Log.d(TAG, "单语音：${pro}")
+            if (ttsConfig.isSplitSentences && ttsConfig.selectedItem()?.readAloudTarget == ReadAloudTarget.DEFAULT) {
+                Log.d(TAG, "splitSentences...")
+                producer = splitSentencesProducer(text, format, pro)
+            } else
+                getAudioAndDecodePlay(text, pro, format, callback)
         }
+
         /* 阻塞，接收者 */
-        producer?.consumeEach { data ->
+        producer?.consumeEach{ data ->
             val shortText = data.text.limitLength(20)
             if (!isSynthesizing) {
                 sendLog(LogLevel.WARN, "系统已取消播放：${shortText}")
