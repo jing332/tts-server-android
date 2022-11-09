@@ -120,12 +120,18 @@ class TtsManager(val context: Context) {
             if (ttsConfig.isSplitSentences && ttsConfig.selectedItem()?.readAloudTarget == ReadAloudTarget.DEFAULT) {
                 Log.d(TAG, "splitSentences...")
                 producer = splitSentencesProducer(text, format, pro)
-            } else
-                getAudioAndDecodePlay(text, pro, format, callback)
+            } else {
+                if (audioFormat.needDecode) {
+                    getAudioAndDecodePlay(text, pro, format, callback)
+                } else {
+                    getAudioStreamAndPlay(text, pro, format, callback)
+                }
+
+            }
         }
 
         /* 阻塞，接收者 */
-        producer?.consumeEach{ data ->
+        producer?.consumeEach { data ->
             val shortText = data.text.limitLength(20)
             if (!isSynthesizing) {
                 sendLog(LogLevel.WARN, "系统已取消播放：${shortText}")
@@ -237,6 +243,30 @@ class TtsManager(val context: Context) {
             sendLog(LogLevel.INFO, "播放完毕")
         } else {
             sendLog(LogLevel.WARN, "音频内容为空或被终止请求")
+            callback?.done()
+        }
+    }
+
+    private fun getAudioStreamAndPlay(
+        text: String,
+        voiceProperty: VoiceProperty,
+        format: String,
+        callback: SynthesisCallback?
+    ) {
+        for (i in 1..3) {
+            sendLog(Log.INFO, "\n请求音频(Azure边下边播)：$text\n$voiceProperty")
+            val err = sysTtsLib.getAudioStream(text, voiceProperty, format) { data ->
+                writeToCallBack(callback!!, data)
+            }
+            if (err == null) {
+                sendLog(LogLevel.WARN, "播放完毕：${text.limitLength(20)}")
+                return
+            } else {
+                sendLog(LogLevel.ERROR, "请求失败：${text.limitLength(20)}\n$err")
+                SystemClock.sleep(3000)
+                sendLog(LogLevel.WARN, "开始第${i}次重试...")
+            }
+
             callback?.done()
         }
     }

@@ -15,12 +15,12 @@ data class TtsAudioFormat(
     }
 
     constructor(
-        name: String,
+        value: String,
         hz: Int,
         bitRate: Int,
         @SupportedApi supportedApi: Int,
         needDecode: Boolean
-    ) : this(name, name, hz, bitRate, supportedApi, needDecode)
+    ) : this(value, value, hz, bitRate, supportedApi, needDecode)
 
     @IntDef(flag = true, value = [SupportedApi.AZURE, SupportedApi.EDGE, SupportedApi.CREATION])
     @Retention(AnnotationRetention.SOURCE)
@@ -31,16 +31,4 @@ data class TtsAudioFormat(
             const val CREATION = 1 shl 2
         }
     }
-
-    /* class SupportedApi(
-         var isEdge: Boolean,
-         var isAzure: Boolean,
-         var isCreation: Boolean
-     )
-
-     companion object {
-         const val API_EDGE = 0
-         const val API_AZURE = 1
-         const val API_CREATION = 2
-     }*/
 }

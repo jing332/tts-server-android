@@ -60,6 +60,10 @@ func GetEdgeVoices() ([]byte, error) {
 	return data, nil
 }
 
+type ReadCallBack interface {
+	OnRead([]byte)
+}
+
 type AzureApi struct {
 	tts *azure.TTS
 }
@@ -81,6 +85,27 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 		return nil, err
 	}
 	return audio, nil
+}
+
+func (a *AzureApi) GetAudioStream(text, format string, property *VoiceProperty,
+	prosody *VoiceProsody, expressAS *VoiceExpressAs, readCb ReadCallBack) error {
+	if a.tts == nil {
+		a.tts = &azure.TTS{}
+	}
+	property.Api = service.ApiAzure
+	proto := property.Proto(prosody, expressAS)
+
+	text = tts_server_go.SpecialCharReplace(text)
+	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
+		proto.ElementString(text) + `</speak > `
+	err := a.tts.GetAudioStream(ssml, format, func(data []byte) {
+		readCb.OnRead(data)
+	})
+	if err != nil {
+		a.tts = nil
+		return err
+	}
+	return nil
 }
 
 func (a *AzureApi) GetAudioBySsml(ssml, format string) ([]byte, error) {

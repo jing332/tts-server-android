@@ -32,6 +32,32 @@ class SysTtsLib {
     private val mAzureApi: AzureApi by lazy { AzureApi() }
     private val mCreationApi: CreationApi by lazy { CreationApi() }
 
+    fun getAudioStream(
+        text: String,
+        pro: VoiceProperty,
+        format: String,
+        onRead: (ByteArray) -> Unit
+    ): String? {
+        val libPro = toLibProperty(pro)
+        try {
+            mAzureApi.getAudioStream(
+                text,
+                format,
+                libPro.voiceProperty,
+                libPro.voiceProsody,
+                libPro.voiceExpressAs,
+                { data ->
+                    if (data != null)
+                        onRead(data)
+                }
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return e.message
+        }
+        return null
+    }
+
     fun getAudioForRetry(
         text: String,
         pro: VoiceProperty,
