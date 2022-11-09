@@ -83,14 +83,6 @@ class SysTtsLib {
         pro: VoiceProperty,
         format: String,
     ): ByteArray? {
-//        val voice = pro.voiceName
-//        val rate = Prosody.toPcmString(pro.prosody.rate)
-//        val volume = Prosody.toPcmString(pro.prosody.volume)
-//        val pitch = Prosody.toPcmString(pro.prosody.pitch)
-//        val style = pro.expressAs?.style ?: "general"
-//        val styleDegree = "${(pro.expressAs?.styleDegree ?: 1).toFloat()}"
-//        val role = pro.expressAs?.role ?: "default"
-
         val libPro = toLibProperty(pro)
         when (pro.api) {
             TtsApiType.EDGE -> {

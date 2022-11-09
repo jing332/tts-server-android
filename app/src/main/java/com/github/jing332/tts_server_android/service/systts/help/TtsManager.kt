@@ -126,7 +126,7 @@ class TtsManager(val context: Context) {
         producer?.consumeEach { data ->
             val shortText = data.text?.limitLength(20)
             if (!isSynthesizing) {
-                sendLog(LogLevel.WARN, "系统已取消播放：${shortText}")
+                shortText?.apply { sendLog(LogLevel.WARN, "系统已取消播放：${shortText}") }
                 return@consumeEach
             }
             if (data.audio == null) {
@@ -298,30 +298,6 @@ class TtsManager(val context: Context) {
             callback?.done()
         }
     }
-
-    /* 获取音频，失败则重试 */
-//    private fun getAudioUseRetry(
-//        text: String,
-//        voiceProperty: VoiceProperty, format: String
-//    ): ByteArray? {
-//        sendLog(
-//            LogLevel.INFO, "\n请求音频(${TtsApiType.toString(voiceProperty.api)}): " +
-//                    "$voiceProperty"
-//        )
-//        return sysTtsLib.getAudioForRetry(
-//            text, voiceProperty,
-//            format, 100
-//        ) { reason, num ->
-//            if (!isSynthesizing || reason.endsWith("context canceled")) {
-//                return@getAudioForRetry false/* 为主动取消请求 */
-//            } else {
-//                sendLog(LogLevel.ERROR, "获取音频失败: $reason")
-//                SystemClock.sleep(1000)
-//                sendLog(LogLevel.WARN, "开始第${num}次重试...")
-//            }
-//            return@getAudioForRetry true
-//        }
-//    }
 
     /* 写入PCM音频到系统组件 */
     private fun writeToCallBack(callback: SynthesisCallback, pcmData: ByteArray) {
