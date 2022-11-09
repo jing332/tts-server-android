@@ -252,17 +252,25 @@ class TtsManager(val context: Context) {
         format: String,
         callback: SynthesisCallback?
     ) {
+        var lastFailNum = -1
         for (i in 1..3) {
             sendLog(Log.INFO, "\n请求音频(Azure边下边播)：$text\n$voiceProperty")
+            var num = 0
             val err = sysTtsLib.getAudioStream(text, voiceProperty, format) { data ->
-                writeToCallBack(callback!!, data)
+                if (num >= lastFailNum) {
+                    writeToCallBack(callback!!, data)
+                    lastFailNum = -1
+                }
+                num++
             }
+
             if (err == null) {
                 sendLog(LogLevel.WARN, "播放完毕：${text.limitLength(20)}")
                 break
             } else {
                 sendLog(LogLevel.ERROR, "请求失败：${text.limitLength(20)}\n$err")
                 sendLog(LogLevel.WARN, "开始第${i}次重试...")
+                lastFailNum = num
             }
         }
         callback?.done()
