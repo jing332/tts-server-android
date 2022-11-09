@@ -34,6 +34,7 @@ func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
 	property.Api = service.ApiEdge
 	proto := property.Proto(prosody, nil)
 
+	text = tts_server_go.SpecialCharReplace(text)
 	ssml := `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='en-US'>` +
 		proto.ElementString(text) +
 		`</speak>`
@@ -69,6 +70,8 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 	}
 	property.Api = service.ApiAzure
 	proto := property.Proto(prosody, expressAS)
+
+	text = tts_server_go.SpecialCharReplace(text)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
 		proto.ElementString(text) + `</speak > `
 	audio, err := a.tts.GetAudio(ssml, format)
