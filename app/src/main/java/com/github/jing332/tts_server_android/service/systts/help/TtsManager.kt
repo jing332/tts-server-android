@@ -113,7 +113,7 @@ class TtsManager(val context: Context) {
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
             producer = multiVoiceProducer(text, format, aside, dialogue)
         } else {
-            val pro = ttsConfig.selectedItem()?.voiceProperty?.copy() ?: VoiceProperty()
+            val pro = ttsConfig.selectedItem()?.voiceProperty?.clone() ?: VoiceProperty()
             pro.prosody.setRateIfFollowSystem(sysRate)
             pro.prosody.pitch = pitch
             Log.d(TAG, "单语音：${pro}")
@@ -126,7 +126,6 @@ class TtsManager(val context: Context) {
                 } else {
                     getAudioStreamAndPlay(text, pro, format, callback)
                 }
-
             }
         }
 
