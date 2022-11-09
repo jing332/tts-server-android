@@ -260,15 +260,13 @@ class TtsManager(val context: Context) {
             }
             if (err == null) {
                 sendLog(LogLevel.WARN, "播放完毕：${text.limitLength(20)}")
-                return
+                break
             } else {
                 sendLog(LogLevel.ERROR, "请求失败：${text.limitLength(20)}\n$err")
-                SystemClock.sleep(3000)
                 sendLog(LogLevel.WARN, "开始第${i}次重试...")
             }
-
-            callback?.done()
         }
+        callback?.done()
     }
 
     /* 获取音频，失败则重试 */
