@@ -57,28 +57,28 @@ object TtsFormatManger {
             "raw-8khz-16bit-mono-pcm",
             8000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+            TtsAudioFormat.SupportedApi.AZURE,
             false
         ),
         TtsAudioFormat(
             "raw-16khz-16bit-mono-pcm",
             16000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+            TtsAudioFormat.SupportedApi.AZURE,
             false
         ),
         TtsAudioFormat(
             "raw-24khz-16bit-mono-pcm",
             24000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+            TtsAudioFormat.SupportedApi.AZURE,
             false
         ),
         TtsAudioFormat(
             "raw-48khz-16bit-mono-pcm",
             48000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+            TtsAudioFormat.SupportedApi.AZURE,
             false
         )
     )
