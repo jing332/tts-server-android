@@ -6,11 +6,11 @@ import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class SysTtsConfigItem(
-    var uiData: TtsConfigListItemData,
-    var isEnabled: Boolean,
+    var uiData: TtsConfigListItemData, /* UI显示数据 */
+    var isEnabled: Boolean,  /* 是否启用 */
     @ReadAloudTarget var readAloudTarget: Int,
-    var voiceProperty: VoiceProperty,
-    var format: String,
+    var voiceProperty: VoiceProperty, /* 朗读属性 */
+    var format: String, /* 音频格式 */
 ) : Serializable {
     constructor() : this(
         TtsConfigListItemData(), false,
@@ -23,10 +23,4 @@ data class SysTtsConfigItem(
         readAloudTarget,
         VoiceProperty(), TtsAudioFormat.DEFAULT
     )
-
-    var locale: String
-        inline get() = voiceProperty.locale
-        inline set(value) {
-            voiceProperty.locale = value
-        }
 }

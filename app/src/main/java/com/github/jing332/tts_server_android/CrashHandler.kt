@@ -1,9 +1,8 @@
 package com.github.jing332.tts_server_android
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.longToastOnUi
 import tts_server_lib.Tts_server_lib
 import java.time.LocalDateTime
@@ -33,9 +32,7 @@ class CrashHandler(var context: Context) : Thread.UncaughtExceptionHandler {
             log
         }
 
-        val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-        val mClipData = ClipData.newPlainText("Label", copyContent)
-        cm?.setPrimaryClip(mClipData)
+        ClipboardUtils.copyText("TTS-Server崩溃日志", copyContent)
         context.longToastOnUi("已将日志复制到剪贴板")
     }
 }

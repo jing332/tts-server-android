@@ -3,15 +3,15 @@ package com.github.jing332.tts_server_android.constant
 object CnLocalMap {
 
     fun getLanguage(key: String): String {
-        return languageMapMap[key] ?: key
+        return languageMapMap.getOrDefault(key, key)
     }
 
     fun getStyleAndRole(key: String): String {
-        return styleAndRole[key] ?: key
+        return styleAndRole.getOrDefault(key, key)
     }
 
-    fun getEdgeVoice(key:String):String{
-        return edgeVoice[key] ?:key
+    fun getEdgeVoice(key: String): String {
+        return edgeVoice.getOrDefault(key, key)
     }
 
     private val languageMapMap = mapOf(

@@ -8,7 +8,7 @@ data class VoiceProperty(
     @TtsApiType var api: Int,
     var locale: String,
     var voiceName: String,
-    var voiceId: String,
+    var voiceId: String?,
     var prosody: Prosody,
     var expressAs: ExpressAs?
 ) : Serializable, Cloneable {
@@ -27,7 +27,7 @@ data class VoiceProperty(
         TtsApiType.EDGE,
         DEFAULT_LOCALE,
         voiceName,
-        "",
+        null,
         prosody,
         null
     )
@@ -51,7 +51,7 @@ data class VoiceProperty(
 }
 
 @kotlinx.serialization.Serializable
-data class ExpressAs(var style: String, var styleDegree: Float, var role: String) : Serializable {
+data class ExpressAs(var style: String?, var styleDegree: Float, var role: String?) : Serializable {
     constructor() : this("", 1F, "")
 }
 
@@ -68,8 +68,12 @@ data class Prosody(var rate: Int, var volume: Int, var pitch: Int) : Serializabl
         return super.clone() as Prosody
     }
 
+    fun isRateFollowSystem(): Boolean {
+        return rate <= RATE_FOLLOW_SYSTEM_VALUE
+    }
+
     fun setRateIfFollowSystem(sysRate: Int): Prosody {
-        if (rate <= RATE_FOLLOW_SYSTEM_VALUE) rate = sysRate
+        if (isRateFollowSystem()) rate = sysRate
         return this
     }
 

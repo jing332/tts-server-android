@@ -80,7 +80,10 @@ class SysTtsConfigListItemAdapter(
             checkBox.isChecked = data.isEnabled
 
             tvName.text = data.uiData.displayName
-            tvContent.text = Html.fromHtml(data.uiData.content)
+            kotlin.runCatching {
+                tvContent.text = Html.fromHtml(data.uiData.setContent(data.voiceProperty))
+            }
+
             tvFormat.text = data.format
             tvApiType.text = TtsApiType.toString(data.voiceProperty.api)
             tvRaTarget.text = ReadAloudTarget.toString(data.readAloudTarget)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.AzureVoiceBean
 import com.github.jing332.tts_server_android.bean.CreationVoiceBean
@@ -18,9 +19,7 @@ import com.github.jing332.tts_server_android.util.FileUtils
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import tts_server_lib.Tts_server_lib
 import java.io.File
 import java.util.*
@@ -46,11 +45,8 @@ class TtsConfigEditViewModel : ViewModel() {
     private lateinit var mTtsCfgItem: SysTtsConfigItem
     private val mVoiceProperty by lazy { mTtsCfgItem.voiceProperty }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    private val mJson = Json {
-        ignoreUnknownKeys = true
-        explicitNulls = false
-    }
+    private val mJson
+        inline get() = App.jsonBuilder
 
     private var mCacheDir: String = ""
     private lateinit var mEdgeVoices: List<EdgeVoiceBean>
@@ -60,17 +56,17 @@ class TtsConfigEditViewModel : ViewModel() {
     fun getTtsConfigItem(inputDisplayName: String): SysTtsConfigItem {
         mTtsCfgItem.uiData.apply {
             val voice = voiceLiveData.value?.selected()?.displayName.toString()
-            val style = voiceStyleLiveData.value?.selected()?.displayName
-            val styleDegree = mVoiceProperty.expressAs?.styleDegree ?: 1.0F
-            val role = voiceRoleLiveData.value?.selected()?.displayName
-            val rate = mTtsCfgItem.voiceProperty.prosody.rate
-            val volume = mTtsCfgItem.voiceProperty.prosody.volume
-            val rateStr = if (rate == -100) "跟随" else rate
+/*             val style = voiceStyleLiveData.value?.selected()?.displayName
+             val styleDegree = mVoiceProperty.expressAs?.styleDegree ?: 1.0F
+             val role = voiceRoleLiveData.value?.selected()?.displayName
+             val rate = mTtsCfgItem.voiceProperty.prosody.rate
+             val volume = mTtsCfgItem.voiceProperty.prosody.volume
+             val rateStr = if (rate == -100) "跟随" else rate*/
             displayName = inputDisplayName.ifEmpty { voice }
-            val expressAs =
+/*            val expressAs =
                 if (apiLiveData.value?.position == TtsApiType.EDGE) ""
                 else "$style-$role | 强度: <b>${styleDegree}</b> | "
-            content = "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b>"
+            content = "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b>"*/
         }
 
         return mTtsCfgItem
@@ -140,7 +136,7 @@ class TtsConfigEditViewModel : ViewModel() {
     fun languageSelected(position: Int) {
         Log.d(TAG, "languageSelected: $position")
         languageLiveData.value?.position = position
-        mTtsCfgItem.locale = languageLiveData.value!!.list[position].value
+        mTtsCfgItem.voiceProperty.locale = languageLiveData.value!!.list[position].value
         val tmpVoiceList = arrayListOf<SpinnerItemData>()
         when (mTtsCfgItem.voiceProperty.api) {
             TtsApiType.EDGE -> {
@@ -156,7 +152,7 @@ class TtsConfigEditViewModel : ViewModel() {
             }
             TtsApiType.AZURE -> {
                 mAzureVoices.forEach {
-                    if (it.locale == mTtsCfgItem.locale)
+                    if (it.locale == mTtsCfgItem.voiceProperty.locale)
                         tmpVoiceList.add(
                             SpinnerItemData(
                                 it.localName + "（${it.shortName}）",
@@ -335,7 +331,7 @@ class TtsConfigEditViewModel : ViewModel() {
         tmpLangList.sortBy { it.value }
         var selected = 0
         tmpLangList.forEachIndexed { index, item ->
-            if (mTtsCfgItem.locale == item.value)
+            if (mTtsCfgItem.voiceProperty.locale == item.value)
                 selected = index
         }
         languageLiveData.postValue(SpinnerData(tmpLangList, selected))
@@ -372,7 +368,7 @@ class TtsConfigEditViewModel : ViewModel() {
         val dataList = arrayListOf<SpinnerItemData>()
         var selected = 0
         languageList.forEachIndexed { i, v ->
-            if (mTtsCfgItem.locale == v) { /* 选中配置文件中的位置 */
+            if (mTtsCfgItem.voiceProperty.locale == v) { /* 选中配置文件中的位置 */
                 selected = i
             }
             dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
@@ -408,17 +404,13 @@ class TtsConfigEditViewModel : ViewModel() {
         val dataList = arrayListOf<SpinnerItemData>()
         var selected = 0
         tmpLanguageList.forEachIndexed { i, v ->
-            if (mTtsCfgItem.locale == v) { /* 选中配置文件中的位置 */
+            if (mTtsCfgItem.voiceProperty.locale == v) { /* 选中配置文件中的位置 */
                 selected = i
             }
             dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
         }
         languageLiveData.postValue(SpinnerData(dataList, selected))
     }
-
-//    fun saveConfig() {
-//        mTtsCfgItem.save()
-//    }
 
     /* 根据API更新音频格式 */
     private fun updateFormatLiveData() {
@@ -444,18 +436,24 @@ class TtsConfigEditViewModel : ViewModel() {
     }
 
     fun voiceStyleSelected(position: Int) {
+        if (mVoiceProperty.api == TtsApiType.EDGE) return
+
         voiceStyleLiveData.value?.position = position
         if (mVoiceProperty.expressAs == null) mVoiceProperty.expressAs = ExpressAs()
         mVoiceProperty.expressAs?.style = voiceStyleLiveData.value!!.list[position].value
     }
 
     fun voiceRoleSelected(position: Int) {
+        if (mVoiceProperty.api == TtsApiType.EDGE) return
+
         voiceRoleLiveData.value?.position = position
         if (mVoiceProperty.expressAs == null) mVoiceProperty.expressAs = ExpressAs()
         mVoiceProperty.expressAs?.role = voiceRoleLiveData.value!!.list[position].value
     }
 
     fun voiceStyleDegreeChanged(progress: Int) {
+        if (mVoiceProperty.api == TtsApiType.EDGE) return
+
         if (mVoiceProperty.expressAs == null) mVoiceProperty.expressAs = ExpressAs()
         voiceStyleDegreeLiveData.value = progress
         mVoiceProperty.expressAs?.styleDegree = (progress * 0.01).toFloat()

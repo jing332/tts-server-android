@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">TTS Server</string>
     <string name="app_name_debug">Debug-TTS Server </string>
     <string name="app_switch">开关</string>
@@ -81,4 +81,5 @@
     <string name="config_import_export">配置导入/导出</string>
     <string name="import_config">导入配置</string>
     <string name="export_config">导出配置</string>
+    <string name="copy" tools:ignore="PrivateResource">复制</string>
 </resources>

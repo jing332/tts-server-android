@@ -8,7 +8,6 @@ import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.util.FileUtils
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.io.File
 
 @kotlinx.serialization.Serializable
@@ -16,14 +15,15 @@ data class SysTtsConfig(
     var list: ArrayList<SysTtsConfigItem>,
     var isSplitSentences: Boolean,
     var isMultiVoice: Boolean
-)  {
+) {
     companion object {
         private val filepath by lazy { "${App.context.filesDir.absolutePath}/system_tts_config.json" }
         fun read(): SysTtsConfig {
             return try {
                 val str = File(filepath).readText()
-                Json.decodeFromString<SysTtsConfig>(str)
+                App.jsonBuilder.decodeFromString<SysTtsConfig>(str)
             } catch (e: Exception) {
+                e.printStackTrace()
                 return SysTtsConfig()
             }
         }
@@ -41,7 +41,7 @@ data class SysTtsConfig(
     )
 
     fun save() {
-        FileUtils.saveFile(filepath, Json.encodeToString(this).toByteArray())
+        FileUtils.saveFile(filepath, App.jsonBuilder.encodeToString(this).toByteArray())
     }
 
     fun selectedItem(): SysTtsConfigItem? {

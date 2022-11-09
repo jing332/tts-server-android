@@ -22,6 +22,7 @@ import com.github.jing332.tts_server_android.ui.custom.adapter.SysTtsConfigListI
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_DATA
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_POSITION
+import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.toastOnUi
 
@@ -189,21 +190,15 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
 
     fun importConfig() {
         val typeList = arrayOf("从网络地址导入(暂不支持)", "从剪贴板导入")
-        AlertDialog.Builder(requireContext()).setTitle("导入配置")
+        AlertDialog.Builder(requireContext()).setTitle(R.string.import_config)
             .setItems(typeList) { _, which ->
                 when (which) {
                     0 -> {
                     }
                     1 -> {
-                        val clipboard =
-                            (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip
-                        val item =
-                            if ((clipboard?.itemCount ?: -1) >= 0) clipboard?.getItemAt(0) else null
-                        item?.let {
-                            val err = viewModel.importConfig(it.text.toString())
-                            err?.let {
-                                longToast("导入配置失败：$err")
-                            }
+                        val err = viewModel.importConfig(ClipboardUtils.text.toString())
+                        err?.let {
+                            longToast("导入配置失败：$err")
                         }
                     }
                 }
@@ -216,12 +211,9 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         tv.setTextIsSelectable(true)
         tv.setPadding(50, 50, 50, 0)
         tv.text = jsonStr
-        AlertDialog.Builder(requireContext()).setTitle("导出配置").setView(tv)
-            .setPositiveButton("复制配置") { _, _ ->
-                val cm =
-                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-                val mClipData = ClipData.newPlainText("config", jsonStr)
-                cm?.setPrimaryClip(mClipData)
+        AlertDialog.Builder(requireContext()).setTitle(R.string.export_config).setView(tv)
+            .setPositiveButton(R.string.copy) { _, _ ->
+                ClipboardUtils.copyText(jsonStr)
                 toastOnUi(R.string.copied)
             }.show()
     }

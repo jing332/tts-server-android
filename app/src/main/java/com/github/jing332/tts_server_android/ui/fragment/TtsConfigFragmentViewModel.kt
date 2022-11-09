@@ -2,13 +2,13 @@ package com.github.jing332.tts_server_android.ui.fragment
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.SysTtsConfig
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class TtsConfigFragmentViewModel : ViewModel() {
     companion object {
@@ -114,7 +114,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
 
     fun exportConfig(): String {
         return try {
-            Json.encodeToString(ttsCfg.value?.list)
+            App.jsonBuilder.encodeToString(ttsCfg.value?.list)
         } catch (e: Exception) {
             "导出失败：${e.message}"
         }
@@ -122,7 +122,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
 
     fun importConfig(json: String): String? {
         try {
-            val list = Json.decodeFromString<List<SysTtsConfigItem>>(json)
+            val list = App.jsonBuilder.decodeFromString<List<SysTtsConfigItem>>(json)
             list.forEach {
                 it.isEnabled = false
                 appendItemDataLiveData.value = it
