@@ -9,6 +9,7 @@ import (
 	"github.com/jing332/tts-server-go/service/edge"
 	"io"
 	"net/http"
+	"time"
 )
 
 type VoiceProperty service.VoiceProperty
@@ -104,7 +105,7 @@ func (c *CreationApi) Cancel() {
 func (c *CreationApi) GetCreationAudio(text, format string, property *VoiceProperty,
 	prosody *VoiceProsody, expressAS *VoiceExpressAs) ([]byte, error) {
 	if c.tts == nil {
-		c.tts = creation.New()
+		c.tts = &creation.TTS{Client: &http.Client{Timeout: 8}}
 	}
 
 	var ctx context.Context
@@ -114,15 +115,22 @@ func (c *CreationApi) GetCreationAudio(text, format string, property *VoicePrope
 	proto := property.Proto(prosody, expressAS)
 
 	text = tts_server_go.SpecialCharReplace(text)
-	audio, err := c.tts.GetAudioUseContext(ctx, text, format, proto)
-	if err != nil {
-		return nil, err
+
+	for i := 0; i < 3; i++ {
+		audio, err := c.tts.GetAudioUseContext(ctx, text, format, proto)
+		if err != nil {
+			return nil, err
+		}
+		if audio == nil {
+			time.Sleep(time.Second * 1)
+		} else {
+			return audio, nil
+		}
 	}
 
 	c.cancel = nil
-	return audio, nil
+	return nil, nil
 }
-
 
 func GetCreationVoices() ([]byte, error) {
 	token, err := creation.GetToken()
