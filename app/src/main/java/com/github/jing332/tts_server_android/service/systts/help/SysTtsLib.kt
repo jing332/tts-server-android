@@ -45,12 +45,11 @@ class SysTtsLib {
                 format,
                 libPro.voiceProperty,
                 libPro.voiceProsody,
-                libPro.voiceExpressAs,
-                { data ->
-                    if (data != null)
-                        onRead(data)
-                }
-            )
+                libPro.voiceExpressAs
+            ) { data ->
+                if (data != null)
+                    onRead(data)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             return e.message
