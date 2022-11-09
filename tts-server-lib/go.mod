@@ -7,7 +7,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 )
 
-replace github.com/jing332/tts-server-go => G:\Users\jing\GolandProjects\tts-server-go
+// replace github.com/jing332/tts-server-go => G:\Users\jing\GolandProjects\tts-server-go
 
 require (
 	github.com/asters1/tools v0.1.5 // indirect
