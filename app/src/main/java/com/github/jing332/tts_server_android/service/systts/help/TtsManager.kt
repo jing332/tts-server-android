@@ -209,7 +209,7 @@ class TtsManager(val context: Context) {
         text: String,
         voiceProperty: VoiceProperty
     ): ByteArray? {
-        sendLog(LogLevel.INFO, "\n请求音频：${text}\n${voiceProperty}")
+        sendLog(LogLevel.INFO, "<br>请求音频：<b>${text}</b> <br><small><i>${voiceProperty}</small></i>")
         var audio: ByteArray? = null
         val timeCost = measureTimeMillis {
             audio = sysTtsLib.getAudioForRetry(
@@ -230,7 +230,7 @@ class TtsManager(val context: Context) {
         audio?.let {
             sendLog(
                 LogLevel.INFO,
-                "获取音频成功, 大小: ${(audio?.size?.div(1024))}KB, 耗时: ${timeCost}ms"
+                "获取音频成功, 大小: <b>${(audio?.size?.div(1024))}KB</b>, 耗时: <b>${timeCost}ms</b>"
             )
         }
         return audio
@@ -246,9 +246,12 @@ class TtsManager(val context: Context) {
         var audioSize = 0
         for (i in 1..3) {
             if (!isSynthesizing) return
-            sendLog(Log.INFO, "\n请求音频(Azure边下边播)：$text\n$voiceProperty")
+            sendLog(
+                LogLevel.INFO,
+                "<br>请求音频(Azure边下边播)：<b>${text}</b> <br><small><i>${voiceProperty}</small></i>"
+            )
             var currentLength = 0
-            val err = sysTtsLib.getAudioStream(text, voiceProperty, voiceProperty.format) { data ->
+            val err = sysTtsLib.getAudioStream(text, voiceProperty) { data ->
                 if (currentLength >= lastFailLength) {
                     onRead.invoke(data)
                     lastFailLength = -1
@@ -282,7 +285,7 @@ class TtsManager(val context: Context) {
                 error = {
                     sendLog(LogLevel.ERROR, "解码失败: $it")
                 })
-            sendLog(LogLevel.INFO, "播放完毕")
+            sendLog(LogLevel.WARN, "播放完毕：${text.limitLength(20)}")
         } else {
             sendLog(LogLevel.WARN, "音频内容为空或被终止请求")
             callback?.done()

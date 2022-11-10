@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +15,8 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.util.longToastOnUi
 
 //显示日志的适配器
-class LogViewAdapter(private val dataSet: ArrayList<MyLog>) :
-    RecyclerView.Adapter<LogViewAdapter.ViewHolder>() {
+class LogListItemAdapter(private val dataSet: ArrayList<MyLog>) :
+    RecyclerView.Adapter<LogListItemAdapter.ViewHolder>() {
     //追加日志
     fun append(data: MyLog) {
         if (itemCount > 100) { //日志条目超过便移除第2行日志Item
@@ -48,13 +49,16 @@ class LogViewAdapter(private val dataSet: ArrayList<MyLog>) :
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+    @Suppress("DEPRECATION")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = dataSet[position]
-        viewHolder.textView.text = data.msg
-        viewHolder.textView.setTextColor(data.toColor())
-        viewHolder.itemView.setOnLongClickListener {
+//        holder.textView.text =
+        holder.textView.text = Html.fromHtml(data.msg)
+
+        holder.textView.setTextColor(data.toColor())
+        holder.itemView.setOnLongClickListener {
             val cm = it.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-            val mClipData = ClipData.newPlainText("log", viewHolder.textView.text.trim())
+            val mClipData = ClipData.newPlainText("log", holder.textView.text.trim())
             cm?.setPrimaryClip(mClipData)
             it.context.longToastOnUi(it.context.getString(R.string.copied))
             true

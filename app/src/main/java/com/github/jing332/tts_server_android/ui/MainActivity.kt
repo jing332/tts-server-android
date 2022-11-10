@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
-import com.github.jing332.tts_server_android.ui.custom.adapter.LogViewAdapter
+import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
 import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.SharedPrefsUtils
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val logList: ArrayList<MyLog> by lazy { ArrayList() }
-    private val logAdapter: LogViewAdapter by lazy { LogViewAdapter(logList) }
+    private val logAdapter: LogListItemAdapter by lazy { LogListItemAdapter(logList) }
 
     @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {

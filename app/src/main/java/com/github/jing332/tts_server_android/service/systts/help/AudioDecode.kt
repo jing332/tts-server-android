@@ -6,15 +6,13 @@ import android.media.MediaFormat
 import android.os.Build
 import android.text.TextUtils
 import android.util.Log
-import com.github.jing332.tts_server_android.BuildConfig
-import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.util.GcManager
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import java.io.IOException
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
+
 
 class AudioDecode {
     companion object {
@@ -106,22 +104,6 @@ class AudioDecode {
                 // Channel Mapping Family：通道映射系列，占1字节，默认设置0x00就好
                 buf.writeByte(0)
                 //Channel Mapping Table：可选参数，上面的Family默认设置0x00的时候可忽略
-                if (BuildConfig.DEBUG) {
-                    Log.e(
-                        SystemTtsService.TAG,
-                        trackFormat!!.getByteBuffer("csd-1")!!
-                            .order(ByteOrder.nativeOrder()).long.toString() + ""
-                    )
-                    Log.e(
-                        SystemTtsService.TAG,
-                        trackFormat.getByteBuffer("csd-2")!!
-                            .order(ByteOrder.nativeOrder()).long.toString() + ""
-                    )
-                    Log.e(
-                        SystemTtsService.TAG,
-                        ByteString.of(*trackFormat.getByteBuffer("csd-2")!!.array()).hex()
-                    )
-                }
                 val csd1bytes = byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
                 val csd2bytes = byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
                 val hd: ByteString = buf.readByteString()
@@ -153,7 +135,7 @@ class AudioDecode {
                     break
                 }
                 bufferInfo.presentationTimeUs = mediaExtractor.sampleTime
-                //bufferInfo.flags=mediaExtractor.getSampleFlags();
+
                 inputBuffer = mediaCodec.getInputBuffer(inputIndex)
                 if (inputBuffer != null) {
                     inputBuffer.clear()

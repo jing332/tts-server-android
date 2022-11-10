@@ -35,14 +35,13 @@ class SysTtsLib {
     fun getAudioStream(
         text: String,
         pro: VoiceProperty,
-        format: String,
         onRead: (ByteArray) -> Unit
     ): String? {
         val libPro = toLibProperty(pro)
         try {
             mAzureApi.getAudioStream(
                 text,
-                format,
+                pro.format,
                 libPro.voiceProperty,
                 libPro.voiceProsody,
                 libPro.voiceExpressAs
