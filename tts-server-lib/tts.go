@@ -8,6 +8,7 @@ import (
 	"github.com/jing332/tts-server-go/service/creation"
 	"github.com/jing332/tts-server-go/service/edge"
 	"io"
+	"net"
 	"net/http"
 	"time"
 )
@@ -127,10 +128,26 @@ func (c *CreationApi) Cancel() {
 	}
 }
 
+const (
+	rwTimeout   = 10 * time.Second
+	dialTimeout = 5 * time.Second
+)
+
+func timeoutDialer(ctx context.Context, network, addr string) (net.Conn, error) {
+	conn, err := net.DialTimeout(network, addr, dialTimeout)
+	if err != nil {
+		return conn, err
+	}
+	err = conn.SetDeadline(time.Now().Add(rwTimeout))
+	return conn, err
+}
+
 func (c *CreationApi) GetCreationAudio(text, format string, property *VoiceProperty,
 	prosody *VoiceProsody, expressAS *VoiceExpressAs) ([]byte, error) {
 	if c.tts == nil {
-		c.tts = &creation.TTS{Client: &http.Client{Timeout: 8}}
+		c.tts = &creation.TTS{Client: &http.Client{
+			Transport: &http.Transport{
+				DialContext: timeoutDialer}}}
 	}
 
 	var ctx context.Context
@@ -141,20 +158,13 @@ func (c *CreationApi) GetCreationAudio(text, format string, property *VoicePrope
 
 	text = tts_server_go.SpecialCharReplace(text)
 
-	for i := 0; i < 3; i++ {
-		audio, err := c.tts.GetAudioUseContext(ctx, text, format, proto)
-		if err != nil {
-			return nil, err
-		}
-		if audio == nil {
-			time.Sleep(time.Second * 1)
-		} else {
-			return audio, nil
-		}
+	audio, err := c.tts.GetAudioUseContext(ctx, text, format, proto)
+	if err != nil {
+		return nil, err
 	}
 
 	c.cancel = nil
-	return nil, nil
+	return audio, nil
 }
 
 func GetCreationVoices() ([]byte, error) {

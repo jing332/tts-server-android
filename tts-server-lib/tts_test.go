@@ -77,7 +77,3 @@ func TestUploadLog(t *testing.T) {
 	t.Log(url)
 }
 
-func TestSpecialCharReplace(t *testing.T) {
-	s := specialCharReplace("&测试<测试>/测试\\测试,.测试?/")
-	t.Log(s)
-}
