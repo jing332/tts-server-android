@@ -68,7 +68,7 @@ class TtsSettingsActivity : BackActivity() {
     private var menuItemMultiVoice: MenuItem? = null
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        cfgViewModel.ttsCfg.value?.apply {
+        cfgViewModel.ttsCfgLiveData.value?.apply {
             menuItemMultiVoice = menu?.findItem(R.id.menu_isMultiVoice)
             menuItemMultiVoice?.isChecked = isMultiVoice
             menuItemDoSplit = menu?.findItem(R.id.menu_doSplit)
@@ -86,7 +86,7 @@ class TtsSettingsActivity : BackActivity() {
                     toastOnUi("多语音与分割长句冲突 已自动关闭")
                     menuItemMultiVoice?.isChecked = false
                 }
-                cfgViewModel.ttsCfg.value?.apply {
+                cfgViewModel.ttsCfgLiveData.value?.apply {
                     isSplitSentences = menuItemDoSplit?.isChecked == true
                     isMultiVoice = menuItemMultiVoice?.isChecked == true
                 }?.save()
@@ -97,7 +97,7 @@ class TtsSettingsActivity : BackActivity() {
                     toastOnUi("分割长句与多语音冲突 已自动关闭")
                     menuItemDoSplit?.isChecked = false
                 }
-                cfgViewModel.ttsCfg.value?.apply {
+                cfgViewModel.ttsCfgLiveData.value?.apply {
                     isSplitSentences = menuItemDoSplit?.isChecked == true
                     isMultiVoice = menuItemMultiVoice?.isChecked == true
                 }?.save()

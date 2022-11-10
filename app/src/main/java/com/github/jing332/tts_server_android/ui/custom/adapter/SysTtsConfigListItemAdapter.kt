@@ -26,13 +26,13 @@ class SysTtsConfigListItemAdapter(
     }
 
     fun append(item: SysTtsConfigItem, syncModel: Boolean) {
-        if (syncModel) viewModel.ttsCfg.value?.list?.add(item)
+        if (syncModel) viewModel.ttsCfgLiveData.value?.list?.add(item)
         itemList.add(item)
         notifyItemInserted(itemList.size - 1)
     }
 
     fun remove(position: Int) {
-        viewModel.ttsCfg.value?.list?.removeAt(position)
+        viewModel.ttsCfgLiveData.value?.list?.removeAt(position)
         itemList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemList.size)
@@ -45,7 +45,7 @@ class SysTtsConfigListItemAdapter(
     }
 
     fun update(item: SysTtsConfigItem, position: Int, isUpdateUi: Boolean) {
-        viewModel.ttsCfg.value?.list?.set(position, item)
+        viewModel.ttsCfgLiveData.value?.list?.set(position, item)
         itemList[position] = item
         if (isUpdateUi) notifyItemChanged(position)
     }
