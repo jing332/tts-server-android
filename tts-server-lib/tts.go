@@ -8,7 +8,6 @@ import (
 	"github.com/jing332/tts-server-go/service/creation"
 	"github.com/jing332/tts-server-go/service/edge"
 	"io"
-	"net"
 	"net/http"
 	"time"
 )
@@ -128,30 +127,14 @@ func (c *CreationApi) Cancel() {
 	}
 }
 
-const (
-	rwTimeout   = 10 * time.Second
-	dialTimeout = 5 * time.Second
-)
-
-func timeoutDialer(ctx context.Context, network, addr string) (net.Conn, error) {
-	conn, err := net.DialTimeout(network, addr, dialTimeout)
-	if err != nil {
-		return conn, err
-	}
-	err = conn.SetDeadline(time.Now().Add(rwTimeout))
-	return conn, err
-}
-
 func (c *CreationApi) GetCreationAudio(text, format string, property *VoiceProperty,
 	prosody *VoiceProsody, expressAS *VoiceExpressAs) ([]byte, error) {
 	if c.tts == nil {
-		c.tts = &creation.TTS{Client: &http.Client{
-			Transport: &http.Transport{
-				DialContext: timeoutDialer}}}
+		c.tts = creation.New()
 	}
 
 	var ctx context.Context
-	ctx, c.cancel = context.WithCancel(context.Background())
+	ctx, c.cancel = context.WithTimeout(context.Background(), 15 *time.Second)
 
 	property.Api = service.ApiCreation
 	proto := property.Proto(prosody, expressAS)

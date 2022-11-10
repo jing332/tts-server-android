@@ -227,7 +227,7 @@ class TtsManager(val context: Context) {
             ) { reason, num ->
                 if (isSynthesizing) {
                     sendLog(LogLevel.ERROR, "获取音频失败: ${text.limitLength(20)}\n$reason")
-                    SystemClock.sleep(500)
+                    if (num > 3) SystemClock.sleep(3000) else SystemClock.sleep(500)
                     sendLog(LogLevel.WARN, "开始第${num}次重试...")
                     return@getAudioForRetry true // 重试
                 }
