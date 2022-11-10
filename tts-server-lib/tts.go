@@ -39,12 +39,20 @@ func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
 	ssml := `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='en-US'>` +
 		proto.ElementString(text) +
 		`</speak>`
-	audio, err := e.tts.GetAudio(ssml, format)
-	if err != nil {
-		e.tts = nil
-		return nil, err
+
+	for i := 0; i < 3; i++ {
+		audio, err := e.tts.GetAudio(ssml, format)
+		if err != nil {
+			e.tts = nil
+			return nil, err
+		}
+		if len(audio) <= 0 {
+			continue
+		}
+		return audio, nil
 	}
-	return audio, nil
+
+	return nil, nil
 }
 
 func GetEdgeVoices() ([]byte, error) {
@@ -134,7 +142,7 @@ func (c *CreationApi) GetCreationAudio(text, format string, property *VoicePrope
 	}
 
 	var ctx context.Context
-	ctx, c.cancel = context.WithTimeout(context.Background(), 15 *time.Second)
+	ctx, c.cancel = context.WithTimeout(context.Background(), 15*time.Second)
 
 	property.Api = service.ApiCreation
 	proto := property.Proto(prosody, expressAS)
