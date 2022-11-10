@@ -1,10 +1,12 @@
 package com.github.jing332.tts_server_android.ui.systts
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -16,6 +18,8 @@ import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragmentViewModel
 import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
 import com.github.jing332.tts_server_android.util.MyTools
+import com.github.jing332.tts_server_android.util.toastOnUi
+
 
 class TtsSettingsActivity : BackActivity() {
     companion object {
@@ -51,9 +55,13 @@ class TtsSettingsActivity : BackActivity() {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        if (menu is MenuBuilder) {
+            menu.setOptionalIconsVisible(true)
+        }
         menuInflater.inflate(R.menu.menu_systts_settings, menu)
-        return true
+        return super.onCreateOptionsMenu(menu)
     }
 
     private var menuItemDoSplit: MenuItem? = null
@@ -74,7 +82,8 @@ class TtsSettingsActivity : BackActivity() {
         when (item.itemId) {
             R.id.menu_doSplit -> { /* 二者只能选一 */
                 item.isChecked = !item.isChecked
-                if (item.isChecked) {
+                if (item.isChecked && menuItemMultiVoice?.isChecked == true) {
+                    toastOnUi("多语音与分割长句冲突 已自动关闭")
                     menuItemMultiVoice?.isChecked = false
                 }
                 cfgViewModel.ttsCfg.value?.apply {
@@ -84,7 +93,8 @@ class TtsSettingsActivity : BackActivity() {
             }
             R.id.menu_isMultiVoice -> { /* 二者只能选一 */
                 item.isChecked = !item.isChecked
-                if (item.isChecked) {
+                if (item.isChecked && menuItemDoSplit?.isChecked == true) {
+                    toastOnUi("分割长句与多语音冲突 已自动关闭")
                     menuItemDoSplit?.isChecked = false
                 }
                 cfgViewModel.ttsCfg.value?.apply {

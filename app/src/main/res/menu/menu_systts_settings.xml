@@ -17,36 +17,46 @@
         <menu>
             <item
                 android:id="@+id/menu_sortByDisplayName"
-                android:title="@string/display_name" />
+                android:icon="@drawable/ic_baseline_text_fields_24"
+                android:title="@string/sort_by_display_name" />
             <item
                 android:id="@+id/menu_sortByRaTarget"
-                android:title="@string/read_aloud_target" />
+                android:icon="@drawable/ic_baseline_menu_book_24"
+                android:title="@string/sort_by_read_aloud_target" />
             <item
                 android:id="@+id/menu_sortByApi"
-                android:title="@string/api" />
+                android:icon="@drawable/ic_baseline_api_24"
+                android:title="@string/sort_by_api" />
         </menu>
     </item>
     <item
         android:id="@+id/menu_desktopShortcut"
+        android:icon="@drawable/ic_baseline_add_business_24"
         android:title="@string/desktop_shortcut" />
     <group>
         <item
             android:id="@+id/menu_doSplit"
             android:checkable="true"
+            android:icon="@drawable/ic_baseline_content_cut_24"
             android:title="@string/split_long_sentences" />
         <item
             android:id="@+id/menu_isMultiVoice"
             android:checkable="true"
+            android:icon="@drawable/ic_baseline_supervisor_account_24"
             android:title="@string/multi_voice" />
     </group>
 
-    <item android:title="@string/config_import_export">
+    <item
+        android:icon="@drawable/ic_baseline_import_export_24"
+        android:title="@string/config_import_export">
         <menu>
             <item
                 android:id="@+id/menu_importConfig"
+                android:icon="@drawable/ic_baseline_input_24"
                 android:title="@string/import_config" />
             <item
                 android:id="@+id/menu_exportConfig"
+                android:icon="@drawable/ic_baseline_output_24"
                 android:title="@string/export_config" />
         </menu>
     </item>

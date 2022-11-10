@@ -192,6 +192,7 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
 
     fun importConfig() {
         val et = EditText(requireContext())
+        et.hint = "URL网络链接"
         AlertDialog.Builder(requireContext()).setTitle(R.string.import_config).setView(et)
             .setPositiveButton("从剪贴板导入") { _, _ ->
                 viewModel.viewModelScope.launch {

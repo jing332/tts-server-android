@@ -75,8 +75,9 @@
     <string name="warning">警告</string>
     <string name="msg_aside_and_dialogue_format_different">检测到旁白与对话音频格式不相同，两者采样率不同将会导致音调异常，请手动换为相同格式！</string>
     <string name="list_sort">列表排序</string>
-    <string name="api">接口</string>
-    <string name="read_aloud_target">朗读目标</string>
+    <string name="sort_by_api">按接口</string>
+    <string name="sort_by_read_aloud_target">按朗读目标</string>
+    <string name="sort_by_display_name">按显示名称</string>
     <string name="add_config">添加配置</string>
     <string name="config_import_export">配置导入/导出</string>
     <string name="import_config">导入配置</string>

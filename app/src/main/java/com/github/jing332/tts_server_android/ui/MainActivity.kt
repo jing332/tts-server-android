@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.*
@@ -115,7 +116,6 @@ class MainActivity : AppCompatActivity() {
             addAction(TtsIntentService.ACTION_ON_STARTED)
             addAction(TtsIntentService.ACTION_ON_CLOSED)
             App.localBroadcast.registerReceiver(myReceiver, this)
-//            registerReceiver(myReceiver, this)
         }
 
         MyTools.checkUpdate(this)
@@ -124,7 +124,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         App.localBroadcast.unregisterReceiver(myReceiver)
-//        unregisterReceiver(myReceiver)
     }
 
     /*右上角更多菜单*/
@@ -134,12 +133,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     /* 准备菜单 */
+    @SuppressLint("RestrictedApi")
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        super.onPrepareOptionsMenu(menu)
-        val item = menu?.findItem(R.id.menu_wakeLock)
+        if (menu is MenuBuilder) {
+            menu.setOptionalIconsVisible(true)
+        }
+
         /* 从配置文件读取并更新isWakeLock */
+        val item = menu?.findItem(R.id.menu_wakeLock)
         item?.isChecked = SharedPrefsUtils.getWakeLock(this)
-        return true
+
+        return super.onCreateOptionsMenu(menu)
     }
 
     /*菜单点击事件*/
