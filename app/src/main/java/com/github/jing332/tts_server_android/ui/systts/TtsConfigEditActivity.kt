@@ -19,6 +19,7 @@ import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBi
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
+import com.github.jing332.tts_server_android.util.toastOnUi
 
 class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener,
     ConvenientSeekbar.OnSeekBarChangeListener {
@@ -112,7 +113,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         binding.spinnerVoiceStyle.onItemSelectedListener = this
         binding.spinnerVoiceRole.onItemSelectedListener = this
         binding.spinnerFormat.onItemSelectedListener = this
-
 
         binding.seekBarRate.onSeekBarChangeListener = this
         binding.seekBarVolume.onSeekBarChangeListener = this
@@ -213,12 +213,13 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
                 model.voiceRoleSelected(position)
                 isInit++
             }
-            R.id.spinner_format -> model.formatSelected(position)
+            R.id.spinner_format -> {
+                if (model.formatSelected(position)) toastOnUi(R.string.raw_format_is_play_while_downloading)
+            }
         }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
-
 
     private fun buildSpinnerAdapter(): ArrayAdapter<String> {
         return ArrayAdapter<String>(
@@ -259,7 +260,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.systts_config_edit_save -> {
-
                 val intent = Intent()
                 intent.putExtra(
                     KEY_DATA,
@@ -282,7 +282,7 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
             }
             R.id.seekBar_rate -> {
                 if (progress == 0)
-                    binding.rateValue.text = "跟随系统或朗读APP"
+                    binding.rateValue.text = getString(R.string.follow_system_or_read_aloud_app)
                 else
                     binding.rateValue.text = "${(progress - 100)}%"
             }

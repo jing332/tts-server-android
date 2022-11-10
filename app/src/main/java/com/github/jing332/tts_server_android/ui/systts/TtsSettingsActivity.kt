@@ -83,7 +83,7 @@ class TtsSettingsActivity : BackActivity() {
             R.id.menu_doSplit -> { /* 二者只能选一 */
                 item.isChecked = !item.isChecked
                 if (item.isChecked && menuItemMultiVoice?.isChecked == true) {
-                    toastOnUi("多语音与分割长句冲突 已自动关闭")
+                    toastOnUi(R.string.multi_voice_conflicts_split)
                     menuItemMultiVoice?.isChecked = false
                 }
                 cfgViewModel.ttsCfgLiveData.value?.apply {
@@ -94,7 +94,7 @@ class TtsSettingsActivity : BackActivity() {
             R.id.menu_isMultiVoice -> { /* 二者只能选一 */
                 item.isChecked = !item.isChecked
                 if (item.isChecked && menuItemDoSplit?.isChecked == true) {
-                    toastOnUi("分割长句与多语音冲突 已自动关闭")
+                    toastOnUi(R.string.split_conflicts_multi_voice)
                     menuItemDoSplit?.isChecked = false
                 }
                 cfgViewModel.ttsCfgLiveData.value?.apply {

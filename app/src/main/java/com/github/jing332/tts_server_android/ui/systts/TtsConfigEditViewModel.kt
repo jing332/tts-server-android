@@ -56,17 +56,7 @@ class TtsConfigEditViewModel : ViewModel() {
     fun getTtsConfigItem(inputDisplayName: String): SysTtsConfigItem {
         mTtsCfgItem.uiData.apply {
             val voice = voiceLiveData.value?.selected()?.displayName.toString()
-/*             val style = voiceStyleLiveData.value?.selected()?.displayName
-             val styleDegree = mVoiceProperty.expressAs?.styleDegree ?: 1.0F
-             val role = voiceRoleLiveData.value?.selected()?.displayName
-             val rate = mTtsCfgItem.voiceProperty.prosody.rate
-             val volume = mTtsCfgItem.voiceProperty.prosody.volume
-             val rateStr = if (rate == -100) "跟随" else rate*/
             displayName = inputDisplayName.ifEmpty { voice }
-/*            val expressAs =
-                if (apiLiveData.value?.position == TtsApiType.EDGE) ""
-                else "$style-$role | 强度: <b>${styleDegree}</b> | "
-            content = "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b>"*/
         }
 
         return mTtsCfgItem
@@ -91,9 +81,16 @@ class TtsConfigEditViewModel : ViewModel() {
         apiLiveData.value = SpinnerData(apiListData, ttsConfigItem.voiceProperty.api)
 
         val readAloudTargetList = arrayListOf<SpinnerItemData>()
-        arrayOf("全部(默认)", "旁白(解说词)", "对白(人物对话)").forEach {
-            readAloudTargetList.add(SpinnerItemData(it, ""))
+        context.apply {
+            arrayOf(
+                getString(R.string.ra_global),
+                getString(R.string.ra_aside),
+                getString(R.string.ra_dialogue)
+            ).forEach {
+                readAloudTargetList.add(SpinnerItemData(it, ""))
+            }
         }
+
         readAloudTargetLiveData.value =
             SpinnerData(readAloudTargetList, mTtsCfgItem.readAloudTarget)
 
@@ -108,11 +105,6 @@ class TtsConfigEditViewModel : ViewModel() {
     fun onReadAloudTargetSelected(position: Int) {
         Log.d(TAG, "onReadAloudTargetSelected: $position")
         mTtsCfgItem.readAloudTarget = position
-        /*apiLiveData.value?.position = mTtsCfgItem.api
-        apiLiveData.value = apiLiveData.value
-
-        volumeLiveData.value = mTtsCfgItem.volume
-        rateLiveData.value = mTtsCfgItem.rate*/
     }
 
     /* {接口}选中变更 */
@@ -196,10 +188,12 @@ class TtsConfigEditViewModel : ViewModel() {
                 mAzureVoices.forEach { voiceItem ->
                     if (mVoiceProperty.voiceName == voiceItem.shortName) {
                         /* 风格 */
-                        val styleList = arrayListOf(SpinnerItemData("无", ""))
+                        val styleList =
+                            arrayListOf(SpinnerItemData(App.instance.getString(R.string.none), ""))
                         var selectedStyle = 0
                         voiceItem.styleList?.let {
-                            styleList[0] = SpinnerItemData("默认", "")
+                            styleList[0] =
+                                SpinnerItemData(App.instance.getString(R.string.default_str), "")
                             voiceItem.styleList.forEachIndexed { index, styleName ->
                                 styleList.add(
                                     SpinnerItemData(
@@ -239,11 +233,15 @@ class TtsConfigEditViewModel : ViewModel() {
                     if (mVoiceProperty.voiceName == voiceItem.shortName) {
                         mVoiceProperty.voiceId = voiceItem.id
                         /* 风格 */
-                        val styleList = arrayListOf(SpinnerItemData("无", ""))
+                        val styleList =
+                            arrayListOf(SpinnerItemData(App.instance.getString(R.string.none), ""))
                         var selectedStyle = 0
                         if (voiceItem.properties.voiceStyleNames.isNotBlank())
                             voiceItem.properties.voiceStyleNames.split(",").apply {
-                                styleList[0] = SpinnerItemData("默认", "")
+                                styleList[0] = SpinnerItemData(
+                                    App.instance.getString(R.string.default_str),
+                                    ""
+                                )
                                 forEachIndexed { index, styleName ->
                                     if (styleName != "Default")
                                         styleList.add(
@@ -260,11 +258,15 @@ class TtsConfigEditViewModel : ViewModel() {
                         voiceStyleLiveData.value = SpinnerData(styleList, selectedStyle)
 
                         /* 角色 */
-                        val roleList = arrayListOf(SpinnerItemData("无", ""))
+                        val roleList =
+                            arrayListOf(SpinnerItemData(App.instance.getString(R.string.none), ""))
                         var selectedRole = 0
                         if (voiceItem.properties.voiceRoleNames.isNotBlank())
                             voiceItem.properties.voiceRoleNames.split(",").apply {
-                                roleList[0] = SpinnerItemData("默认", "")
+                                roleList[0] = SpinnerItemData(
+                                    App.instance.getString(R.string.default_str),
+                                    ""
+                                )
                                 forEachIndexed { index, roleName ->
                                     if (roleName != "Default")
                                         roleList.add(
@@ -287,25 +289,21 @@ class TtsConfigEditViewModel : ViewModel() {
         }
     }
 
-    fun formatSelected(position: Int) {
+    fun formatSelected(position: Int): Boolean {
         val value = audioFormatLiveData.value!!.list[position].displayName
         mTtsCfgItem.format = value
         Log.d(TAG, "formatSelected $value")
+        if (value.contains("raw")) return true
+        return false
     }
 
     fun volumeChanged(progress: Int) {
-//        volumeLiveData.value = progress - 50
         mVoiceProperty.prosody.volume = progress - 50
     }
 
     fun rateChanged(progress: Int) {
-//        rateLiveData.value = progress - 100
         mVoiceProperty.prosody.rate = progress - 100
     }
-
-//    fun isSplitSentencesChanged(isChecked: Boolean) {
-//        mTtsCfgItem.isSplitSentences = isChecked
-//    }
 
     private fun useEdgeApi() {
         if (!this::mEdgeVoices.isInitialized) {

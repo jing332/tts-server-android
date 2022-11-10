@@ -119,8 +119,7 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.ok) { _, _ -> }
                     .show()
-            else
-                requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+            requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
         }
         /* 从本地加载数据 */
         viewModel.loadData()
@@ -156,8 +155,8 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                 startForResult.launch(intent)
             }
             R.id.btn_delete -> {
-                AlertDialog.Builder(requireContext()).setTitle("确认删除？")
-                    .setPositiveButton("删除") { _, _ ->
+                AlertDialog.Builder(requireContext()).setTitle(R.string.is_confirm_delete)
+                    .setPositiveButton(R.string.delete) { _, _ ->
                         Log.e(TAG, "remove item: $position")
                         recyclerAdapter.remove(position)
                     }
