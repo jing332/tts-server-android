@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
@@ -25,6 +26,7 @@ import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Com
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.toastOnUi
+import kotlinx.coroutines.launch
 
 
 @Suppress("DEPRECATION")
@@ -189,20 +191,23 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
     }
 
     fun importConfig() {
-        val typeList = arrayOf("从网络地址导入(暂不支持)", "从剪贴板导入")
-        AlertDialog.Builder(requireContext()).setTitle(R.string.import_config)
-            .setItems(typeList) { _, which ->
-                when (which) {
-                    0 -> {
-                    }
-                    1 -> {
-                        val err = viewModel.importConfig(ClipboardUtils.text.toString())
-                        err?.let {
-                            longToast("导入配置失败：$err")
-                        }
+        val et = EditText(requireContext())
+        AlertDialog.Builder(requireContext()).setTitle(R.string.import_config).setView(et)
+            .setPositiveButton("从剪贴板导入") { _, _ ->
+                viewModel.viewModelScope.launch {
+                    val err = viewModel.importConfig(ClipboardUtils.text.toString())
+                    err?.let {
+                        longToast("导入配置失败：$err")
                     }
                 }
-            }.show()
+            }.setNegativeButton("从上方URL导入") { _, _ ->
+                val err = viewModel.importConfigByUrl(et.text.toString())
+                err?.let {
+                    longToast("导入配置失败：$err")
+                }
+            }
+
+            .show()
     }
 
     fun exportConfig() {
@@ -215,6 +220,16 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
             .setPositiveButton(R.string.copy) { _, _ ->
                 ClipboardUtils.copyText(jsonStr)
                 toastOnUi(R.string.copied)
+            }.setNegativeButton("上传到URL") { _, _ ->
+                viewModel.viewModelScope.launch {
+                    val result = viewModel.uploadConfigToUrl(jsonStr)
+                    if (result.isSuccess) {
+                        ClipboardUtils.copyText(result.getOrNull())
+                        longToast("已复制URL：\n${result.getOrNull()}")
+                    }
+                }
             }.show()
+
+
     }
 }

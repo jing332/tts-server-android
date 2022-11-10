@@ -9,6 +9,7 @@ import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import tts_server_lib.Tts_server_lib
 
 class TtsConfigFragmentViewModel : ViewModel() {
     companion object {
@@ -112,12 +113,31 @@ class TtsConfigFragmentViewModel : ViewModel() {
         }
     }
 
+    fun uploadConfigToUrl(json: String): Result<String> {
+        return try {
+            val url = Tts_server_lib.uploadConfig(json)
+
+            Result.success(url)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     fun exportConfig(): String {
         return try {
             App.jsonBuilder.encodeToString(ttsCfg.value?.list)
         } catch (e: Exception) {
             "导出失败：${e.message}"
         }
+    }
+
+    fun importConfigByUrl(url: String): String? {
+        val jsonStr = try {
+            Tts_server_lib.httpGet(url, "")
+        } catch (e: Exception) {
+            return e.message
+        }
+        return importConfig(jsonStr.decodeToString())
     }
 
     fun importConfig(json: String): String? {

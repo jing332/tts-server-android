@@ -77,3 +77,11 @@ func TestUploadLog(t *testing.T) {
 	t.Log(url)
 }
 
+func TestUploadConfig(t *testing.T) {
+	s := "{\n    \"Name\": \"Microsoft Server Speech Text to Speech Voice (af-ZA, AdriNeural)\",\n    \"DisplayName\": \"Adri\",\n    \"LocalName\": \"Adri\",\n    \"ShortName\": \"af-ZA-AdriNeural\",\n    \"Gender\": \"Female\",\n    \"Locale\": \"af-ZA\",\n    \"LocaleName\": \"Afrikaans (South Africa)\",\n    \"SampleRateHertz\": \"24000\",\n    \"VoiceType\": \"Neural\",\n    \"Status\": \"GA\",\n    \"WordsPerMinute\": \"147\"\n  }"
+	url, err := UploadConfig(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(url)
+}
