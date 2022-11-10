@@ -291,7 +291,7 @@ class TtsConfigEditViewModel : ViewModel() {
 
     fun formatSelected(position: Int): Boolean {
         val value = audioFormatLiveData.value!!.list[position].displayName
-        mTtsCfgItem.format = value
+        mTtsCfgItem.voiceProperty.format = value
         Log.d(TAG, "formatSelected $value")
         if (value.contains("raw")) return true
         return false
@@ -425,7 +425,7 @@ class TtsConfigEditViewModel : ViewModel() {
         var selected = 0
         val tmpFormats = arrayListOf<SpinnerItemData>()
         formats.forEachIndexed { index, v ->
-            if (mTtsCfgItem.format == v) {
+            if (mTtsCfgItem.voiceProperty.format == v) {
                 selected = index
             }
             tmpFormats.add(SpinnerItemData(v, v))

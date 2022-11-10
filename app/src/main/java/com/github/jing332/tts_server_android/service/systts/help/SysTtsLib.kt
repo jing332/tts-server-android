@@ -60,13 +60,12 @@ class SysTtsLib {
     fun getAudioForRetry(
         text: String,
         pro: VoiceProperty,
-        format: String,
         retryNum: Int,
         onError: (reason: String, num: Int) -> Boolean
     ): ByteArray? {
         for (i in 1..retryNum) {
             try {
-                return getAudio(text, pro, format)
+                return getAudio(text, pro, pro.format)
             } catch (e: Exception) {
                 e.printStackTrace()
                 if (!onError.invoke(e.message ?: "", i)) //不再重试

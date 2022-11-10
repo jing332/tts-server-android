@@ -84,7 +84,7 @@ class SysTtsConfigListItemAdapter(
                 tvContent.text = Html.fromHtml(data.uiData.setContent(data.voiceProperty))
             }
 
-            tvFormat.text = data.format
+            tvFormat.text = data.voiceProperty.format
             tvApiType.text = TtsApiType.toString(data.voiceProperty.api)
             tvRaTarget.text = ReadAloudTarget.toString(data.readAloudTarget)
 

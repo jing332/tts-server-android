@@ -78,7 +78,10 @@ class TtsConfigFragmentViewModel : ViewModel() {
             if (aside == null || dialogue == null) {
                 return@apply
             } else if (aside.isEnabled && dialogue.isEnabled) {
-                return TtsFormatManger.isFormatSampleEqual(aside.format, dialogue.format)
+                return TtsFormatManger.isFormatSampleEqual(
+                    aside.voiceProperty.format,
+                    dialogue.voiceProperty.format
+                )
             }
         }
         return true
@@ -114,6 +117,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
             ttsCfgLiveData.value = this
         }
     }
+
 
     fun uploadConfigToUrl(json: String): Result<String> {
         return try {

@@ -4,7 +4,6 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.VoiceProperty.Companion.DEFAULT_VOICE
 import com.github.jing332.tts_server_android.data.VoiceProperty.Companion.DEFAULT_VOICE_ID
-import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.util.FileUtils
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -34,8 +33,7 @@ data class SysTtsConfig(
             SysTtsConfigItem(
                 TtsConfigListItemData("晓晓 (zh-CN-XiaoxiaoNeural)", "无"), true,
                 ReadAloudTarget.DEFAULT,
-                VoiceProperty(DEFAULT_VOICE, DEFAULT_VOICE_ID),
-                TtsAudioFormat.DEFAULT,
+                VoiceProperty(DEFAULT_VOICE, DEFAULT_VOICE_ID)
             )
         ), true, false
     )

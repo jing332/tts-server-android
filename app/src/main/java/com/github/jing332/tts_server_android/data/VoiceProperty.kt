@@ -1,11 +1,13 @@
 package com.github.jing332.tts_server_android.data
 
 import com.github.jing332.tts_server_android.constant.TtsApiType
+import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class VoiceProperty(
     @TtsApiType var api: Int,
+    var format: String = "",
     var locale: String,
     var voiceName: String,
     var voiceId: String?,
@@ -15,7 +17,7 @@ data class VoiceProperty(
     constructor() : this(DEFAULT_VOICE)
     constructor(voiceName: String) : this(voiceName, Prosody())
     constructor(voiceName: String, voiceId: String) : this(
-        TtsApiType.CREATION,
+        TtsApiType.CREATION, TtsAudioFormat.DEFAULT,
         DEFAULT_LOCALE,
         voiceName,
         voiceId,
@@ -24,7 +26,7 @@ data class VoiceProperty(
     )
 
     constructor(voiceName: String, prosody: Prosody) : this(
-        TtsApiType.EDGE,
+        TtsApiType.EDGE, TtsAudioFormat.DEFAULT,
         DEFAULT_LOCALE,
         voiceName,
         null,
