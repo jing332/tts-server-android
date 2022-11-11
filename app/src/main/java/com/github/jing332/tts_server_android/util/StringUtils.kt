@@ -4,6 +4,8 @@ import java.util.regex.Pattern
 
 object StringUtils {
     private val silentPattern: Pattern = Pattern.compile("[\\s\\p{C}\\p{P}\\p{Z}\\p{S}]")
+    private val splitSentencesRegex = Pattern.compile("[。？?！!;；]")
+
 
     /**
      *  是否为不发音的字符串
@@ -11,6 +13,27 @@ object StringUtils {
     fun isSilent(s: String): Boolean {
         return silentPattern.matcher(s).replaceAll("").isEmpty()
     }
+
+    /**
+     * 分割长句并保留分隔符
+     */
+    fun splitSentences(s: String): List<String> {
+        val m = splitSentencesRegex.matcher(s)
+        val list = splitSentencesRegex.split(s)
+        //保留分隔符
+        if (list.isNotEmpty()) {
+            var count = 0
+            while (count < list.size) {
+                if (m.find()) {
+                    list[count] += m.group()
+                }
+                count++
+            }
+        }
+
+        return list.filter { it.replace("”", "").isNotBlank() }
+    }
+
 
     /**
      * 限制字符串长度，过长自动加 "···"

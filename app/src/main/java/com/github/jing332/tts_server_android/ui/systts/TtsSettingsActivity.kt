@@ -18,7 +18,6 @@ import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragmentViewModel
 import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
 import com.github.jing332.tts_server_android.util.MyTools
-import com.github.jing332.tts_server_android.util.toastOnUi
 
 
 class TtsSettingsActivity : BackActivity() {
@@ -80,23 +79,15 @@ class TtsSettingsActivity : BackActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_doSplit -> { /* 二者只能选一 */
+            R.id.menu_doSplit -> {
                 item.isChecked = !item.isChecked
-                if (item.isChecked && menuItemMultiVoice?.isChecked == true) {
-                    toastOnUi(R.string.multi_voice_conflicts_split)
-                    menuItemMultiVoice?.isChecked = false
-                }
                 cfgViewModel.ttsCfgLiveData.value?.apply {
                     isSplitSentences = menuItemDoSplit?.isChecked == true
                     isMultiVoice = menuItemMultiVoice?.isChecked == true
                 }?.save()
             }
-            R.id.menu_isMultiVoice -> { /* 二者只能选一 */
+            R.id.menu_isMultiVoice -> {
                 item.isChecked = !item.isChecked
-                if (item.isChecked && menuItemDoSplit?.isChecked == true) {
-                    toastOnUi(R.string.split_conflicts_multi_voice)
-                    menuItemDoSplit?.isChecked = false
-                }
                 cfgViewModel.ttsCfgLiveData.value?.apply {
                     isSplitSentences = menuItemDoSplit?.isChecked == true
                     isMultiVoice = menuItemMultiVoice?.isChecked == true

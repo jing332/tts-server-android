@@ -15,21 +15,21 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.util.longToastOnUi
 
 //显示日志的适配器
-class LogListItemAdapter(private val dataSet: ArrayList<MyLog>) :
+class LogListItemAdapter(private val itemList: ArrayList<MyLog>) :
     RecyclerView.Adapter<LogListItemAdapter.ViewHolder>() {
     //追加日志
     fun append(data: MyLog) {
         if (itemCount > 100) { //日志条目超过便移除第2行日志Item
-            dataSet.removeAt(1)
+            itemList.removeAt(1)
             notifyItemRemoved(1)
         }
-        dataSet.add(data)
-        notifyItemInserted(dataSet.size)
+        itemList.add(data)
+        notifyItemInserted(itemList.size)
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun removeAll() {
-        dataSet.clear()
+        itemList.clear()
         notifyDataSetChanged()
     }
 
@@ -51,8 +51,7 @@ class LogListItemAdapter(private val dataSet: ArrayList<MyLog>) :
 
     @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = dataSet[position]
-//        holder.textView.text =
+        val data = itemList[position]
         holder.textView.text = Html.fromHtml(data.msg)
 
         holder.textView.setTextColor(data.toColor())
@@ -65,5 +64,5 @@ class LogListItemAdapter(private val dataSet: ArrayList<MyLog>) :
         }
     }
 
-    override fun getItemCount() = dataSet.size
+    override fun getItemCount() = itemList.size
 }

@@ -14,10 +14,12 @@ import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.data.VoiceProperty
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.util.NormUtil
+import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.limitLength
 import com.github.jing332.tts_server_android.util.toastOnUi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.channels.produce
 import kotlin.system.measureTimeMillis
@@ -102,13 +104,13 @@ class TtsManager(val context: Context) {
             dialogue.prosody.setRateIfFollowSystem(sysRate)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
-            producer = multiVoiceProducer(text, aside, dialogue)
+            producer = multiVoiceProducer(ttsConfig.isSplitSentences, text, aside, dialogue)
         } else { //单语音
             val pro = ttsConfig.selectedItem()?.voiceProperty?.clone() ?: VoiceProperty()
             pro.prosody.setRateIfFollowSystem(sysRate)
             pro.prosody.pitch = pitch
             Log.d(TAG, "单语音：${pro}")
-            if (ttsConfig.isSplitSentences && ttsConfig.selectedItem()?.readAloudTarget == ReadAloudTarget.DEFAULT) {
+            if (ttsConfig.isSplitSentences) {
                 Log.d(TAG, "splitSentences...")
                 producer = splitSentencesProducer(text, pro)
             } else {
@@ -153,17 +155,8 @@ class TtsManager(val context: Context) {
         text: String,
         voiceProperty: VoiceProperty
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
-        val regex = Regex("[。？?！!;；]")
-        val sentences = text.split(regex).filter { it.replace("”", "").isNotBlank() }
-        sentences.forEach { splitedText ->
-            if (audioFormat.needDecode) {
-                val audio = getAudioHelper(splitedText, voiceProperty)
-                send(ChannelData(splitedText, audio))
-            } else {
-                getAudioStreamHelper(splitedText, voiceProperty) {
-                    runBlocking { send(ChannelData(null, it)) }
-                }
-            }
+        StringUtils.splitSentences(text).forEach { splitedText ->
+            getAudioAndSend(this, splitedText, voiceProperty)
             delay(500)
         }
     }
@@ -171,26 +164,27 @@ class TtsManager(val context: Context) {
     /* 多语音生产者 */
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
     private fun multiVoiceProducer(
+        isSplit: Boolean,
         text: String,
         aside: VoiceProperty,
         dialogue: VoiceProperty
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
         /* 分割为多语音  */
         val map = VoiceTools.splitMultiVoice(text, aside, dialogue)
-        map.forEach {
-            if (audioFormat.needDecode) {
-                val audio = getAudioHelper(it.raText, it.voiceProperty)
-                send(ChannelData(it.raText, audio))
-            } else {
-                getAudioStreamHelper(it.raText, it.voiceProperty) {
-                    runBlocking {
-                        send(ChannelData(null, it))
-                    }
+        if (isSplit)
+            map.forEach {
+                StringUtils.splitSentences(it.raText).forEach { splitedText ->
+                    getAudioAndSend(this, splitedText, it.voiceProperty)
+                    delay(500)
                 }
             }
-            delay(500)
-        }
+        else
+            map.forEach {
+                getAudioAndSend(this, it.raText, it.voiceProperty)
+                delay(500)
+            }
     }
+
 
     /* 音频流边下边播生产者 */
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
@@ -202,6 +196,22 @@ class TtsManager(val context: Context) {
             text,
             voiceProperty
         ) { launch(Dispatchers.IO) { send(ChannelData(null, it)) } }
+    }
+
+    /* 获取音频并发送到Channel */
+    private suspend fun getAudioAndSend(
+        channel: SendChannel<ChannelData>,
+        text: String,
+        voiceProperty: VoiceProperty
+    ) {
+        if (audioFormat.needDecode) {
+            val audio = getAudioHelper(text, voiceProperty)
+            channel.send(ChannelData(text, audio))
+        } else {
+            getAudioStreamHelper(text, voiceProperty) {
+                runBlocking { channel.send(ChannelData(null, it)) }
+            }
+        }
     }
 
     /* 完整下载 */
