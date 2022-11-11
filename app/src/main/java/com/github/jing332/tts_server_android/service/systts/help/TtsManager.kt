@@ -33,16 +33,13 @@ class TtsManager(val context: Context) {
     lateinit var audioFormat: TtsAudioFormat
 
     var isSynthesizing = false
-    private val audioDecode by lazy { AudioDecode() }
+    private val audioDecoder by lazy { AudioDecoder() }
     private val norm by lazy { NormUtil(500F, 0F, 200F, 0F) }
     private val sysTtsLib by lazy { SysTtsLib() }
 
     fun stop() {
         isSynthesizing = false
-        audioDecode.stop()
-//        if (ttsConfig.list[0].api == TtsApiType.CREATION) {
-//            mCreationApi.cancel()
-//        }
+        audioDecoder.stop()
     }
 
     /* 加载配置 */
@@ -133,7 +130,7 @@ class TtsManager(val context: Context) {
                 shortText?.apply { sendLog(LogLevel.WARN, "音频为空：${shortText}") }
             } else {
                 if (audioFormat.needDecode) {
-                    audioDecode.doDecode(
+                    audioDecoder.doDecode(
                         srcData = data.audio,
                         sampleRate = audioFormat.hz,
                         onRead = { writeToCallBack(callback!!, it) },
@@ -148,6 +145,7 @@ class TtsManager(val context: Context) {
 
         stop()
     }
+
 
     /* 分割长句生产者 */
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
@@ -233,7 +231,7 @@ class TtsManager(val context: Context) {
                     sendLog(LogLevel.WARN, "开始第${num}次重试...")
                     return@getAudioForRetry true // 重试
                 }
-                return@getAudioForRetry false //继续重试
+                return@getAudioForRetry false //不再重试
             }
         }
 
@@ -288,7 +286,7 @@ class TtsManager(val context: Context) {
     ) {
         val audio = getAudioHelper(text, voiceProperty)
         if (audio != null) {
-            audioDecode.doDecode(
+            audioDecoder.doDecode(
                 audio,
                 audioFormat.hz,
                 onRead = { writeToCallBack(callback!!, it) },

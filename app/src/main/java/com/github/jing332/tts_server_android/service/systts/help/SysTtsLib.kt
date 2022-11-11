@@ -112,7 +112,6 @@ class SysTtsLib {
         }
         return null
     }
-
 }
 
 data class ResultProperty(

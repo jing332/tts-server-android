@@ -14,7 +14,7 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
 
-class AudioDecode {
+class AudioDecoder {
     companion object {
         const val TAG = "AudioDecode"
     }
