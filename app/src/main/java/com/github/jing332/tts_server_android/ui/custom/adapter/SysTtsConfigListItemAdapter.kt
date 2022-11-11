@@ -67,7 +67,7 @@ class SysTtsConfigListItemAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_recycler_systts_config, parent, false)
+            .inflate(R.layout.listitem_systts_config, parent, false)
 
         return ViewHolder(view)
     }
@@ -77,16 +77,22 @@ class SysTtsConfigListItemAdapter(
         val data = itemList[position]
 
         holder.apply {
+            //是否勾选
             checkBox.isChecked = data.isEnabled
-
+            //显示名称
             tvName.text = data.uiData.displayName
             kotlin.runCatching {
                 tvContent.text = Html.fromHtml(data.uiData.setContent(data.voiceProperty))
             }
-
+            //格式
             tvFormat.text = data.voiceProperty.format
+            //接口
             tvApiType.text = TtsApiType.toString(data.voiceProperty.api)
-            tvRaTarget.text = ReadAloudTarget.toString(data.readAloudTarget)
+            //朗读目标
+            ReadAloudTarget.toString(data.readAloudTarget).let {
+                tvRaTarget.visibility = if (it.isEmpty()) View.INVISIBLE else View.VISIBLE
+                tvRaTarget.text = it
+            }
 
             checkBox.setOnClickListener { switchClick?.onClick(it, position) }
             itemView.setOnLongClickListener {

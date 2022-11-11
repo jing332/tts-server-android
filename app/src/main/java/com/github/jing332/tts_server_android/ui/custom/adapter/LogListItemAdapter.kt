@@ -44,7 +44,7 @@ class LogListItemAdapter(private val itemList: ArrayList<MyLog>) :
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.log_itemlist, viewGroup, false)
+            .inflate(R.layout.listitem_log, viewGroup, false)
 
         return ViewHolder(view)
     }
