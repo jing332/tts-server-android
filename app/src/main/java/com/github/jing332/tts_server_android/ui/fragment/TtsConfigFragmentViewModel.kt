@@ -30,6 +30,16 @@ class TtsConfigFragmentViewModel : ViewModel() {
         ttsCfgLiveData.value?.save()
     }
 
+    fun onMenuIsSplitChanged(checked: Boolean) {
+        ttsCfgLiveData.value?.isSplitSentences = checked
+        ttsCfgLiveData.value?.save()
+    }
+
+    fun onMenuMultiVoiceChanged(checked: Boolean) {
+        ttsCfgLiveData.value?.isMultiVoice = checked
+        ttsCfgLiveData.value?.save()
+    }
+
     fun onCheckBoxChanged(position: Int, checked: Boolean): Boolean {
         ttsCfgLiveData.value?.apply {
             /* 检测多语音是否开启 */

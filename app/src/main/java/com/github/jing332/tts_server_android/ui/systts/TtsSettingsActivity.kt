@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityTtsSettingsBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
@@ -63,15 +64,11 @@ class TtsSettingsActivity : BackActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    private var menuItemDoSplit: MenuItem? = null
-    private var menuItemMultiVoice: MenuItem? = null
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         cfgViewModel.ttsCfgLiveData.value?.apply {
-            menuItemMultiVoice = menu?.findItem(R.id.menu_isMultiVoice)
-            menuItemMultiVoice?.isChecked = isMultiVoice
-            menuItemDoSplit = menu?.findItem(R.id.menu_doSplit)
-            menuItemDoSplit?.isChecked = isSplitSentences
+            menu?.findItem(R.id.menu_isMultiVoice)?.isChecked = isMultiVoice
+            menu?.findItem(R.id.menu_doSplit)?.isChecked = isSplitSentences
         }
 
         return super.onPrepareOptionsMenu(menu)
@@ -81,17 +78,13 @@ class TtsSettingsActivity : BackActivity() {
         when (item.itemId) {
             R.id.menu_doSplit -> {
                 item.isChecked = !item.isChecked
-                cfgViewModel.ttsCfgLiveData.value?.apply {
-                    isSplitSentences = menuItemDoSplit?.isChecked == true
-                    isMultiVoice = menuItemMultiVoice?.isChecked == true
-                }?.save()
+                cfgViewModel.onMenuIsSplitChanged(item.isChecked)
+                App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
             }
             R.id.menu_isMultiVoice -> {
                 item.isChecked = !item.isChecked
-                cfgViewModel.ttsCfgLiveData.value?.apply {
-                    isSplitSentences = menuItemDoSplit?.isChecked == true
-                    isMultiVoice = menuItemMultiVoice?.isChecked == true
-                }?.save()
+                cfgViewModel.onMenuMultiVoiceChanged(item.isChecked)
+                App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
             }
 
             R.id.menu_desktopShortcut -> {
