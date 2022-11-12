@@ -2,7 +2,6 @@ package tts_server_lib
 
 import (
 	"context"
-	"fmt"
 	tts_server_go "github.com/jing332/tts-server-go"
 	"github.com/jing332/tts-server-go/service"
 	"github.com/jing332/tts-server-go/service/azure"
@@ -24,7 +23,6 @@ func (v *VoiceProperty) Proto(prosody *VoiceProsody, exp *VoiceExpressAs) *servi
 }
 
 type EdgeApi struct {
-	Timeout      int32
 	tts          *edge.TTS
 	useDnsLookup bool
 }
@@ -42,25 +40,19 @@ func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
 		proto.ElementString(text) +
 		`</speak>`
 
-	succeed := make(chan []byte)
-	failed := make(chan error)
-	go func() {
+	for i := 0; i < 3; i++ {
 		audio, err := e.tts.GetAudio(ssml, format)
 		if err != nil {
 			e.tts = nil
-			failed <- err
+			return nil, err
 		}
-		succeed <- audio
-	}()
-
-	select {
-	case audio := <-succeed:
+		if len(audio) <= 0 {
+			continue
+		}
 		return audio, nil
-	case err := <-failed:
-		return nil, err
-	case <-time.After(time.Duration(e.Timeout) * time.Millisecond):
-		return nil, fmt.Errorf("已超时：%dms", e.Timeout)
 	}
+
+	return nil, nil
 }
 
 func GetEdgeVoices() ([]byte, error) {
@@ -81,8 +73,7 @@ type ReadCallBack interface {
 }
 
 type AzureApi struct {
-	Timeout int32
-	tts     *azure.TTS
+	tts *azure.TTS
 }
 
 func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
@@ -96,26 +87,12 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 	text = tts_server_go.SpecialCharReplace(text)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
 		proto.ElementString(text) + `</speak > `
-
-	succeed := make(chan []byte)
-	failed := make(chan error)
-	go func() {
-		audio, err := a.tts.GetAudio(ssml, format)
-		if err != nil {
-			a.tts = nil
-			failed <- err
-		}
-		succeed <- audio
-	}()
-
-	select {
-	case audio := <-succeed:
-		return audio, nil
-	case err := <-failed:
+	audio, err := a.tts.GetAudio(ssml, format)
+	if err != nil {
+		a.tts = nil
 		return nil, err
-	case <-time.After(time.Duration(a.Timeout) * time.Millisecond):
-		return nil, fmt.Errorf("已超时：%dms", a.Timeout)
 	}
+	return audio, nil
 }
 
 func (a *AzureApi) GetAudioStream(text, format string, property *VoiceProperty,
@@ -129,26 +106,14 @@ func (a *AzureApi) GetAudioStream(text, format string, property *VoiceProperty,
 	text = tts_server_go.SpecialCharReplace(text)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
 		proto.ElementString(text) + `</speak > `
-
-	succeed := make(chan []byte)
-	failed := make(chan error)
-	go func() {
-		err := a.tts.GetAudioStream(ssml, format, func(data []byte) {
-			readCb.OnRead(data)
-		})
-		if err != nil {
-			a.tts = nil
-			failed <- err
-		}
-	}()
-	select {
-	case <-succeed:
-		return nil
-	case err := <-failed:
+	err := a.tts.GetAudioStream(ssml, format, func(data []byte) {
+		readCb.OnRead(data)
+	})
+	if err != nil {
+		a.tts = nil
 		return err
-	case <-time.After(time.Duration(a.Timeout) * time.Millisecond):
-		return fmt.Errorf("已超时：%dms", a.Timeout)
 	}
+	return nil
 }
 
 func (a *AzureApi) GetAudioBySsml(ssml, format string) ([]byte, error) {
@@ -160,9 +125,8 @@ func GetAzureVoice() ([]byte, error) {
 }
 
 type CreationApi struct {
-	Timeout int32
-	tts     *creation.TTS
-	cancel  context.CancelFunc
+	tts    *creation.TTS
+	cancel context.CancelFunc
 }
 
 func (c *CreationApi) Cancel() {
@@ -178,7 +142,7 @@ func (c *CreationApi) GetCreationAudio(text, format string, property *VoicePrope
 	}
 
 	var ctx context.Context
-	ctx, c.cancel = context.WithTimeout(context.Background(), time.Duration(c.Timeout)*time.Millisecond)
+	ctx, c.cancel = context.WithTimeout(context.Background(), 15*time.Second)
 
 	property.Api = service.ApiCreation
 	proto := property.Proto(prosody, expressAS)

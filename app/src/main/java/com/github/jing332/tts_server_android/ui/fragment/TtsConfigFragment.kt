@@ -232,28 +232,4 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
 
 
     }
-
-    @SuppressLint("SetTextI18n")
-    fun setAudioRequestTimeout() {
-       val numPicker = NumberPicker(requireContext())
-        numPicker.maxValue = 30
-        numPicker.minValue = 2
-        numPicker.value= 5
-        val displayList = ArrayList<String>()
-        for (i in 2..30){
-            displayList.add("${i}秒")
-        }
-        numPicker.displayedValues = displayList.toList().toTypedArray()
-
-        numPicker.value = viewModel.audioRequestTimeout / 1000
-        AlertDialog.Builder(requireContext()).setTitle(R.string.set_audio_request_timeout)
-            .setView(numPicker)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                viewModel.audioRequestTimeout = numPicker.value * 1000
-            }
-            .setNegativeButton(R.string.reset) { _, _ ->
-                viewModel.audioRequestTimeout = 5000
-            }
-            .show()
-    }
 }

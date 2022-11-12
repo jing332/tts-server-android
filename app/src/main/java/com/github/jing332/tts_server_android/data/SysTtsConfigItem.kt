@@ -6,7 +6,7 @@ import java.io.Serializable
 @kotlinx.serialization.Serializable
 data class SysTtsConfigItem(
     var uiData: TtsConfigListItemData, /* UI显示数据 */
-    var isEnabled: Boolean = false,  /* 是否启用 */
+    var isEnabled: Boolean,  /* 是否启用 */
     @ReadAloudTarget var readAloudTarget: Int,
     var voiceProperty: VoiceProperty, /* 朗读属性 */
 ) : Serializable {

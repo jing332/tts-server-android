@@ -22,24 +22,22 @@ class TtsConfigFragmentViewModel : ViewModel() {
     val replacedItemDataLiveData: MutableLiveData<ReplacedData> by lazy { MutableLiveData() }
     val appendItemDataLiveData: MutableLiveData<SysTtsConfigItem> by lazy { MutableLiveData() }
 
-    private val ttsCfg: SysTtsConfig inline get() = ttsCfgLiveData.value!!
-
     fun loadData() {
         viewModelScope.runOnIO { ttsCfgLiveData.postValue(SysTtsConfig.read()) }
     }
 
     fun saveData() {
-        ttsCfg.save()
+        ttsCfgLiveData.value?.save()
     }
 
     fun onMenuIsSplitChanged(checked: Boolean) {
-        ttsCfg.isSplitSentences = checked
-        ttsCfg.save()
+        ttsCfgLiveData.value?.isSplitSentences = checked
+        ttsCfgLiveData.value?.save()
     }
 
     fun onMenuMultiVoiceChanged(checked: Boolean) {
-        ttsCfg.isMultiVoice = checked
-        ttsCfg.save()
+        ttsCfgLiveData.value?.isMultiVoice = checked
+        ttsCfgLiveData.value?.save()
     }
 
     fun onCheckBoxChanged(position: Int, checked: Boolean): Boolean {
@@ -101,7 +99,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
 
     /* 朗读目标更改 */
     fun onReadAloudTargetChanged(position: Int, @ReadAloudTarget raTarget: Int) {
-        val data = ttsCfg.list[position]
+        val data = ttsCfgLiveData.value!!.list[position]
         data.readAloudTarget = raTarget
         replacedItemDataLiveData.value = ReplacedData(data, position, true)
     }
@@ -171,16 +169,6 @@ class TtsConfigFragmentViewModel : ViewModel() {
         }
         return null
     }
-
-    /* 音频超时 */
-    var audioRequestTimeout: Int
-        get() {
-            return ttsCfg.timeout
-        }
-        set(value) {
-            ttsCfg.timeout = value
-            ttsCfg.save()
-        }
 
     data class ReplacedData(
         var sysTtsConfigItem: SysTtsConfigItem,
