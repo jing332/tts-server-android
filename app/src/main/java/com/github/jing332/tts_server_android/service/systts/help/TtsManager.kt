@@ -27,6 +27,9 @@ import kotlin.system.measureTimeMillis
 class TtsManager(val context: Context) {
     companion object {
         const val TAG = "TtsManager"
+
+        /* 音频请求间隔 */
+        const val requestInterval = 100L
     }
 
     var ttsConfig: SysTtsConfig = SysTtsConfig()
@@ -154,8 +157,11 @@ class TtsManager(val context: Context) {
         voiceProperty: VoiceProperty
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
         StringUtils.splitSentences(text).forEach { splitedText ->
-            getAudioAndSend(this, splitedText, voiceProperty)
-            delay(500)
+            if (!isSynthesizing) return@produce
+            if (!StringUtils.isSilent(splitedText)) {
+                getAudioAndSend(this, splitedText, voiceProperty)
+                delay(requestInterval)
+            }
         }
     }
 
@@ -172,14 +178,20 @@ class TtsManager(val context: Context) {
         if (isSplit)
             map.forEach {
                 StringUtils.splitSentences(it.raText).forEach { splitedText ->
-                    getAudioAndSend(this, splitedText, it.voiceProperty)
-                    delay(500)
+                    if (!isSynthesizing) return@produce
+                    if (!StringUtils.isSilent(splitedText)) {
+                        getAudioAndSend(this, splitedText, it.voiceProperty)
+                        delay(requestInterval)
+                    }
                 }
             }
         else
             map.forEach {
-                getAudioAndSend(this, it.raText, it.voiceProperty)
-                delay(500)
+                if (!isSynthesizing) return@produce
+                if (!StringUtils.isSilent(it.raText)) {
+                    getAudioAndSend(this, it.raText, it.voiceProperty)
+                    delay(requestInterval)
+                }
             }
     }
 
@@ -202,6 +214,7 @@ class TtsManager(val context: Context) {
         text: String,
         voiceProperty: VoiceProperty
     ) {
+        if (!isSynthesizing) return
         if (audioFormat.needDecode) {
             val audio = getAudioHelper(text, voiceProperty)
             channel.send(ChannelData(text, audio))
@@ -226,8 +239,9 @@ class TtsManager(val context: Context) {
                 100
             ) { reason, num ->
                 if (isSynthesizing) {
-                    sendLog(LogLevel.ERROR, "获取音频失败: ${text.limitLength(20)}\n$reason")
-                    if (num > 3) SystemClock.sleep(3000) else SystemClock.sleep(500)
+                    sendLog(LogLevel.ERROR, "获取音频失败: <b>${text.limitLength(20)}</b> <br>$reason")
+                    if (!reason.startsWith("websocket: close 1006"))
+                        if (num > 3) SystemClock.sleep(3000) else SystemClock.sleep(500)
                     sendLog(LogLevel.WARN, "开始第${num}次重试...")
                     return@getAudioForRetry true // 重试
                 }
