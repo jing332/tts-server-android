@@ -28,17 +28,17 @@ class TtsManager(val context: Context) {
     companion object {
         const val TAG = "TtsManager"
 
-        /* 音频请求间隔 */
+        /* 音频请求间隔 ms */
         const val requestInterval = 100L
     }
 
-    var ttsConfig: SysTtsConfig = SysTtsConfig()
+    var ttsCfg: SysTtsConfig = SysTtsConfig()
     lateinit var audioFormat: TtsAudioFormat
 
     var isSynthesizing = false
     private val audioDecoder by lazy { AudioDecoder() }
     private val norm by lazy { NormUtil(500F, 0F, 200F, 0F) }
-    private val sysTtsLib by lazy { SysTtsLib() }
+    private val sysTtsLib by lazy { SysTtsLib(ttsCfg.timeout) }
 
     fun stop() {
         isSynthesizing = false
@@ -47,32 +47,32 @@ class TtsManager(val context: Context) {
 
     /* 加载配置 */
     fun loadConfig() {
-        ttsConfig = SysTtsConfig.read()
-        Log.d(TAG, "loadConfig: $ttsConfig")
+        ttsCfg = SysTtsConfig.read()
+        Log.d(TAG, "loadConfig: $ttsCfg")
 
-        ttsConfig.apply {
+        ttsCfg.apply {
             if (isMultiVoice) {
-                var aside = ttsConfig.currentAsideItem()
+                var aside = ttsCfg.currentAsideItem()
                 if (aside == null) {
                     context.toastOnUi("警告：缺少{旁白}，使用默认配置！")
                     aside = SysTtsConfigItem(true, ReadAloudTarget.ASIDE)
-                    ttsConfig.list.add(aside)
+                    ttsCfg.list.add(aside)
                 }
-                var dialogue = ttsConfig.currentDialogueItem()
+                var dialogue = ttsCfg.currentDialogueItem()
                 if (dialogue == null) {
                     context.toastOnUi("警告：缺少{对话}，使用默认配置！")
                     dialogue = SysTtsConfigItem(true, ReadAloudTarget.DIALOGUE)
-                    ttsConfig.list.add(dialogue)
+                    ttsCfg.list.add(dialogue)
                 }
 
                 audioFormat = TtsFormatManger.getFormat(aside.voiceProperty.format)
                     ?: TtsFormatManger.getDefault()
             } else {
-                var cfg = ttsConfig.selectedItem()
+                var cfg = ttsCfg.selectedItem()
                 if (cfg == null) {
                     context.toastOnUi("警告：缺少全局配置，使用默认！")
                     cfg = SysTtsConfigItem(true, ReadAloudTarget.DEFAULT)
-                    ttsConfig.list.add(cfg)
+                    ttsCfg.list.add(cfg)
                 }
                 audioFormat = TtsFormatManger.getFormat(cfg.voiceProperty.format)
                     ?: TtsFormatManger.getDefault()
@@ -93,24 +93,24 @@ class TtsManager(val context: Context) {
         val sysRate = (norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
 
         producer = null
-        if (ttsConfig.isMultiVoice) { //多语音
+        if (ttsCfg.isMultiVoice) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
-            val aside = ttsConfig.currentAsideItem()?.voiceProperty?.clone() ?: VoiceProperty()
+            val aside = ttsCfg.currentAsideItem()?.voiceProperty?.clone() ?: VoiceProperty()
             aside.prosody.pitch = pitch
             aside.prosody.setRateIfFollowSystem(sysRate)
             val dialogue =
-                ttsConfig.currentDialogueItem()?.voiceProperty?.clone() ?: VoiceProperty()
+                ttsCfg.currentDialogueItem()?.voiceProperty?.clone() ?: VoiceProperty()
             dialogue.prosody.pitch = pitch
             dialogue.prosody.setRateIfFollowSystem(sysRate)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
-            producer = multiVoiceProducer(ttsConfig.isSplitSentences, text, aside, dialogue)
+            producer = multiVoiceProducer(ttsCfg.isSplitSentences, text, aside, dialogue)
         } else { //单语音
-            val pro = ttsConfig.selectedItem()?.voiceProperty?.clone() ?: VoiceProperty()
+            val pro = ttsCfg.selectedItem()?.voiceProperty?.clone() ?: VoiceProperty()
             pro.prosody.setRateIfFollowSystem(sysRate)
             pro.prosody.pitch = pitch
             Log.d(TAG, "单语音：${pro}")
-            if (ttsConfig.isSplitSentences) {
+            if (ttsCfg.isSplitSentences) {
                 Log.d(TAG, "splitSentences...")
                 producer = splitSentencesProducer(text, pro)
             } else {

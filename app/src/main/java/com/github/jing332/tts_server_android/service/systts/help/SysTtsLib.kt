@@ -5,7 +5,7 @@ import com.github.jing332.tts_server_android.data.VoiceProperty
 import tts_server_lib.*
 
 /* 系统TTS Go库的包装 */
-class SysTtsLib {
+class SysTtsLib(var timeout: Int) {
     companion object {
         const val TAG = "SysTtsLib"
 
@@ -28,9 +28,17 @@ class SysTtsLib {
 
     }
 
-    private val mEdgeApi: EdgeApi by lazy { EdgeApi() }
-    private val mAzureApi: AzureApi by lazy { AzureApi() }
-    private val mCreationApi: CreationApi by lazy { CreationApi() }
+    private val mEdgeApi: EdgeApi by lazy { EdgeApi().apply { timeout = this@SysTtsLib.timeout } }
+    private val mAzureApi: AzureApi by lazy {
+        AzureApi().apply {
+            timeout = this@SysTtsLib.timeout
+        }
+    }
+    private val mCreationApi: CreationApi by lazy {
+        CreationApi().apply {
+            timeout = this@SysTtsLib.timeout
+        }
+    }
 
     fun getAudioStream(
         text: String,

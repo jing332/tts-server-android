@@ -85,3 +85,10 @@ func TestUploadConfig(t *testing.T) {
 	}
 	t.Log(url)
 }
+
+func TestName(t *testing.T) {
+	var i int64 = 100
+
+	duration := time.Duration(i) * time.Millisecond
+	t.Log(duration)
+}
