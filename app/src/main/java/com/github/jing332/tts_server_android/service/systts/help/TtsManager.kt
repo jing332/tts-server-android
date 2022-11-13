@@ -32,6 +32,12 @@ class TtsManager(val context: Context) {
         const val requestInterval = 100L
     }
 
+    interface OnCallBack {
+        fun onUpdateNotification(title: String, content: String)
+    }
+
+    var onCallBack: OnCallBack? = null
+
     var ttsConfig: SysTtsConfig = SysTtsConfig()
     lateinit var audioFormat: TtsAudioFormat
 
@@ -39,6 +45,7 @@ class TtsManager(val context: Context) {
     private val audioDecoder by lazy { AudioDecoder() }
     private val norm by lazy { NormUtil(500F, 0F, 200F, 0F) }
     private val sysTtsLib by lazy { SysTtsLib() }
+
 
     fun stop() {
         isSynthesizing = false
@@ -240,10 +247,14 @@ class TtsManager(val context: Context) {
                 100
             ) { reason, num ->
                 if (isSynthesizing) {
-                    sendLog(LogLevel.ERROR, "获取音频失败: <b>${text.limitLength(20)}</b> <br>$reason")
+                    val shortText = text.limitLength(20)
+                    sendLog(LogLevel.ERROR, "获取音频失败: <b>${shortText}</b> <br>$reason")
                     if (!reason.startsWith("websocket: close 1006"))
                         if (num > 3) SystemClock.sleep(3000) else SystemClock.sleep(500)
-                    sendLog(LogLevel.WARN, "开始第${num}次重试...")
+                    "开始第${num}次重试...".let {
+                        sendLog(LogLevel.WARN, it)
+                        onCallBack?.onUpdateNotification(it, "${shortText}\n${reason}")
+                    }
                     return@getAudioForRetry true // 重试
                 }
                 return@getAudioForRetry false //不再重试

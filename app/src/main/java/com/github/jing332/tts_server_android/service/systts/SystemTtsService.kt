@@ -31,7 +31,7 @@ import kotlin.system.exitProcess
 
 
 @Suppress("DEPRECATION")
-class SystemTtsService : TextToSpeechService() {
+class SystemTtsService : TextToSpeechService(), TtsManager.OnCallBack {
     companion object {
         const val TAG = "SysTtsService"
         const val ACTION_ON_LOG = "SYS_TTS_ON_LOG"
@@ -42,6 +42,7 @@ class SystemTtsService : TextToSpeechService() {
     }
 
     private val mCurrentLanguage: MutableList<String> = mutableListOf("zho", "CHN", "")
+
     private val mTtsManager: TtsManager by lazy { TtsManager(this) }
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
     private val mWakeLock by lazy {
@@ -68,6 +69,9 @@ class SystemTtsService : TextToSpeechService() {
             longToastOnUi("错误: 缺少朗读目标！")
             Thread.sleep(1000 * 4)
         }
+
+        mTtsManager.onCallBack = this
+
     }
 
     override fun onDestroy() {
@@ -130,6 +134,10 @@ class SystemTtsService : TextToSpeechService() {
         }
     }
 
+    override fun onUpdateNotification(title: String, content: String) {
+        updateNotification(title, content)
+    }
+
     private fun reNewWakeLock() {
         if (!mWakeLock.isHeld) {
             mWakeLock.acquire(60 * 20 * 1000)
@@ -179,11 +187,14 @@ class SystemTtsService : TextToSpeechService() {
     }
 
     /* 更新通知 */
-    private fun updateNotification(title: String, content: String) {
-        val bigTextStyle = Notification.BigTextStyle().bigText(content).setSummaryText("TTS")
-        mNotificationBuilder.style = bigTextStyle
+    private fun updateNotification(title: String, content: String? = null) {
+        content?.let {
+            val bigTextStyle = Notification.BigTextStyle().bigText(it).setSummaryText("TTS")
+            mNotificationBuilder.style = bigTextStyle
+            mNotificationBuilder.setContentText(it)
+        }
+
         mNotificationBuilder.setContentTitle(title)
-        mNotificationBuilder.setContentText(content)
         startForeground(NOTIFICATION_ID, mNotificationBuilder.build())
     }
 
@@ -251,4 +262,6 @@ class SystemTtsService : TextToSpeechService() {
             }
         }
     }
+
+
 }
