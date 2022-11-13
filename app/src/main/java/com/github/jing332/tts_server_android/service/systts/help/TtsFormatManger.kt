@@ -5,6 +5,34 @@ import android.media.AudioFormat
 object TtsFormatManger {
     private val formats = arrayListOf<TtsAudioFormat>(
         TtsAudioFormat(
+            "raw-8khz-16bit-mono-pcm",
+            8000,
+            AudioFormat.ENCODING_PCM_16BIT,
+            TtsAudioFormat.SupportedApi.AZURE,
+            false
+        ),
+        TtsAudioFormat(
+            "raw-16khz-16bit-mono-pcm",
+            16000,
+            AudioFormat.ENCODING_PCM_16BIT,
+            TtsAudioFormat.SupportedApi.AZURE,
+            false
+        ),
+        TtsAudioFormat(
+            "raw-24khz-16bit-mono-pcm",
+            24000,
+            AudioFormat.ENCODING_PCM_16BIT,
+            TtsAudioFormat.SupportedApi.AZURE,
+            false
+        ),
+        TtsAudioFormat(
+            "raw-48khz-16bit-mono-pcm",
+            48000,
+            AudioFormat.ENCODING_PCM_16BIT,
+            TtsAudioFormat.SupportedApi.AZURE,
+            false
+        ),
+        TtsAudioFormat(
             "webm-16khz-16bit-mono-opus",
             24000 * 2,
             AudioFormat.ENCODING_PCM_16BIT,
@@ -53,33 +81,27 @@ object TtsFormatManger {
             TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
             true
         ),
+
         TtsAudioFormat(
-            "raw-8khz-16bit-mono-pcm",
-            8000,
+            "ogg-16khz-16bit-mono-opus",
+            16000 * 2,
             AudioFormat.ENCODING_PCM_16BIT,
             TtsAudioFormat.SupportedApi.AZURE,
-            false
+            true
         ),
         TtsAudioFormat(
-            "raw-16khz-16bit-mono-pcm",
-            16000,
+            "ogg-24khz-16bit-mono-opus",
+            24000 * 2,
             AudioFormat.ENCODING_PCM_16BIT,
             TtsAudioFormat.SupportedApi.AZURE,
-            false
+            true
         ),
         TtsAudioFormat(
-            "raw-24khz-16bit-mono-pcm",
-            24000,
-            AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
-            false
-        ),
-        TtsAudioFormat(
-            "raw-48khz-16bit-mono-pcm",
+            "ogg-48khz-16bit-mono-opus",
             48000,
             AudioFormat.ENCODING_PCM_16BIT,
             TtsAudioFormat.SupportedApi.AZURE,
-            false
+            true
         )
     )
 
