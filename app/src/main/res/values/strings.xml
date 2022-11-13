@@ -92,4 +92,5 @@
     <string name="ra_dialogue">对白(人物对话)</string>
     <string name="none">无</string>
     <string name="default_str">默认</string>
+    <string name="set_audio_request_timeout">设置请求音频等待时间</string>
 </resources>

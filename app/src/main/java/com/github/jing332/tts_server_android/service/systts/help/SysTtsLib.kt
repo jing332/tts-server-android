@@ -32,6 +32,18 @@ class SysTtsLib {
     private val mAzureApi: AzureApi by lazy { AzureApi() }
     private val mCreationApi: CreationApi by lazy { CreationApi() }
 
+    /**
+     * 设置超时
+     */
+    fun setTimeout(ms: Int) {
+        mEdgeApi.timeout = ms
+        mAzureApi.timeout = ms
+        mCreationApi.timeout = ms
+    }
+
+    /**
+     * 获取音频流 仅支持Azure
+     */
     fun getAudioStream(
         text: String,
         pro: VoiceProperty,
@@ -56,6 +68,9 @@ class SysTtsLib {
         return null
     }
 
+    /**
+     * 获取音频，失败自动重试
+     */
     fun getAudioForRetry(
         text: String,
         pro: VoiceProperty,
@@ -75,7 +90,9 @@ class SysTtsLib {
         return null
     }
 
-    /* 获取音频 在Go中生成SSML */
+    /**
+     *  获取音频 在Go中生成SSML
+     */
     fun getAudio(
         text: String,
         pro: VoiceProperty,

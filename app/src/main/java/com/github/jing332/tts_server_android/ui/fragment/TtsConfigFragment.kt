@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
@@ -58,7 +59,6 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
             data?.let {
                 val cfgItem = data as SysTtsConfigItem
                 viewModel.onEditActivityResult(cfgItem, position)
-
             }
         }
 
@@ -189,6 +189,32 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         return true
     }
 
+
+    @SuppressLint("SetTextI18n")
+    fun setAudioRequestTimeout() {
+        val numPicker = NumberPicker(requireContext())
+        numPicker.maxValue = 30
+        numPicker.minValue = 2
+        numPicker.value = 5
+        val displayList = ArrayList<String>()
+        for (i in 2..30) {
+            displayList.add("${i}秒")
+        }
+        numPicker.displayedValues = displayList.toList().toTypedArray()
+
+        numPicker.value = viewModel.audioRequestTimeout / 1000 //转为秒
+        AlertDialog.Builder(requireContext()).setTitle(R.string.set_audio_request_timeout)
+            .setView(numPicker)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                viewModel.audioRequestTimeout = numPicker.value * 1000 //转为毫秒
+                App.localBroadcast.sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+            }
+            .setNegativeButton(R.string.reset) { _, _ ->
+                viewModel.audioRequestTimeout = 5000
+            }
+            .show()
+    }
+
     fun importConfig() {
         val et = EditText(requireContext())
         et.hint = "URL网络链接"
@@ -229,7 +255,5 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                     }
                 }
             }.show()
-
-
     }
 }

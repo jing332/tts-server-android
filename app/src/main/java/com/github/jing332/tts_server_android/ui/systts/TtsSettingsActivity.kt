@@ -111,6 +111,10 @@ class TtsSettingsActivity : BackActivity() {
                 cfgViewModel.sortListByRaTarget()
             }
 
+            R.id.menu_setAudioRequestTimeout ->{
+                configFragment.setAudioRequestTimeout()
+            }
+
             R.id.menu_importConfig -> {
                 configFragment.importConfig()
             }

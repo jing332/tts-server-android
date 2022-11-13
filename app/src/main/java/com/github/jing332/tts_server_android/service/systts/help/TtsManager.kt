@@ -51,6 +51,7 @@ class TtsManager(val context: Context) {
         Log.d(TAG, "loadConfig: $ttsConfig")
 
         ttsConfig.apply {
+            sysTtsLib.setTimeout(timeout)
             if (isMultiVoice) {
                 var aside = ttsConfig.currentAsideItem()
                 if (aside == null) {

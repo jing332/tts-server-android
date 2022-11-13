@@ -97,7 +97,7 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 
 	text = tts_server_go.SpecialCharReplace(text)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
-		proto.ElementString(text) + `</speak > `
+		proto.ElementStringHasLang(text) + `</speak > `
 
 	succeed := make(chan []byte)
 	failed := make(chan error)
@@ -132,7 +132,7 @@ func (a *AzureApi) GetAudioStream(text, format string, property *VoiceProperty,
 
 	text = tts_server_go.SpecialCharReplace(text)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
-		proto.ElementString(text) + `</speak > `
+		proto.ElementStringHasLang(text) + `</speak > `
 
 	succeed := make(chan []byte)
 	failed := make(chan error)

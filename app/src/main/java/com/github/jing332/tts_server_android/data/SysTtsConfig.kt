@@ -12,8 +12,9 @@ import java.io.File
 @kotlinx.serialization.Serializable
 data class SysTtsConfig(
     var list: ArrayList<SysTtsConfigItem>,
-    var isSplitSentences: Boolean,
-    var isMultiVoice: Boolean
+    var isSplitSentences: Boolean = true,
+    var isMultiVoice: Boolean = false,
+    var timeout: Int = 5000
 ) {
     companion object {
         private val filepath by lazy { "${App.context.filesDir.absolutePath}/system_tts_config.json" }
@@ -35,7 +36,7 @@ data class SysTtsConfig(
                 ReadAloudTarget.DEFAULT,
                 VoiceProperty(DEFAULT_VOICE, DEFAULT_VOICE_ID)
             )
-        ), true, false
+        ),
     )
 
     fun save() {

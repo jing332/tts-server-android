@@ -47,6 +47,11 @@
     </group>
 
     <item
+        android:id="@+id/menu_setAudioRequestTimeout"
+        android:icon="@drawable/ic_baseline_access_time_24"
+        android:title="@string/set_audio_request_timeout" />
+
+    <item
         android:icon="@drawable/ic_baseline_import_export_24"
         android:title="@string/config_import_export">
         <menu>
