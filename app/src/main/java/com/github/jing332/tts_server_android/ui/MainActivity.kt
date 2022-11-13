@@ -105,9 +105,9 @@ class MainActivity : AppCompatActivity() {
             logList.add(MyLog(LogLevel.WARN, msg))
         } else {
             val msg = "请点击启动按钮\n然后右上角菜单打开网页版↗️" +
-                    "<br>随后生成链接导入阅读APP即可使用" +
-                    "<br><br>关闭请点关闭按钮, 并等待响应。" +
-                    "<br>⚠️注意: 本APP需常驻后台运行！⚠️"
+                    "\n随后生成链接导入阅读APP即可使用" +
+                    "\n\n关闭请点关闭按钮, 并等待响应。" +
+                    "\n⚠️注意: 本APP需常驻后台运行！⚠️"
             logList.add(MyLog(LogLevel.INFO, msg))
         }
 

@@ -15,7 +15,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.util.longToastOnUi
 
 //显示日志的适配器
-class LogListItemAdapter(private val itemList: ArrayList<MyLog>) :
+class LogListItemAdapter(private val itemList: ArrayList<MyLog>, val isHtmlText: Boolean = false) :
     RecyclerView.Adapter<LogListItemAdapter.ViewHolder>() {
     //追加日志
     fun append(data: MyLog) {
@@ -52,7 +52,10 @@ class LogListItemAdapter(private val itemList: ArrayList<MyLog>) :
     @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = itemList[position]
-        holder.textView.text = Html.fromHtml(data.msg)
+
+        holder.textView.text = if (isHtmlText) {
+            Html.fromHtml(data.msg)
+        } else data.msg
 
         holder.textView.setTextColor(data.toColor())
         holder.itemView.setOnLongClickListener {

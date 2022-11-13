@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +33,7 @@ class TtsLogFragment : Fragment() {
                     LogLevel.WARN,
                     "请保持此页面存活以监听实时日志"
                 )
-            )
+            ), isHtmlText = true
         )
     }
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
@@ -68,8 +67,6 @@ class TtsLogFragment : Fragment() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == ACTION_ON_LOG) {
                 val log = intent.getSerializableExtra("data") as MyLog
-                Log.i(TAG, "接收到Log: ${log.level}, ${log.msg}")
-
                 val layout = binding.recyclerViewLog.layoutManager as LinearLayoutManager
                 val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
                 logAdapter.append(log)
@@ -77,6 +74,5 @@ class TtsLogFragment : Fragment() {
                     binding.recyclerViewLog.scrollToPosition(logAdapter.itemCount - 1)
             }
         }
-
     }
 }
