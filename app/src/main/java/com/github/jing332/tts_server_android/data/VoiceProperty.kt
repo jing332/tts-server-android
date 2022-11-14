@@ -6,13 +6,13 @@ import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class VoiceProperty(
-    @TtsApiType var api: Int,
+    @TtsApiType var api: Int = TtsApiType.EDGE,
     var format: String = "",
     var locale: String,
     var voiceName: String,
-    var voiceId: String?,
+    var voiceId: String? = null,
     var prosody: Prosody,
-    var expressAs: ExpressAs?
+    var expressAs: ExpressAs? = null
 ) : Serializable, Cloneable {
     constructor() : this(DEFAULT_VOICE)
     constructor(voiceName: String) : this(voiceName, Prosody())
@@ -53,15 +53,22 @@ data class VoiceProperty(
 }
 
 @kotlinx.serialization.Serializable
-data class ExpressAs(var style: String?, var styleDegree: Float, var role: String?) : Serializable {
+data class ExpressAs(
+    var style: String? = null,
+    var styleDegree: Float = 1F,
+    var role: String? = null
+) :
+    Serializable {
     constructor() : this("", 1F, "")
 }
 
 /* Prosody 基本数值参数 单位: %百分比 */
 @kotlinx.serialization.Serializable
-data class Prosody(var rate: Int, var volume: Int, var pitch: Int) : Serializable, Cloneable {
-    constructor() : this(RATE_FOLLOW_SYSTEM_VALUE, 0, 0)
-
+data class Prosody(
+    var rate: Int = RATE_FOLLOW_SYSTEM_VALUE,
+    var volume: Int = 0,
+    var pitch: Int = 0
+) : Serializable, Cloneable {
     companion object {
         const val RATE_FOLLOW_SYSTEM_VALUE = -100
     }
