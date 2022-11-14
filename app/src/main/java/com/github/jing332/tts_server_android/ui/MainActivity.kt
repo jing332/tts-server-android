@@ -13,6 +13,9 @@ import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.webkit.CookieManager
+import android.webkit.WebStorage
+import android.webkit.WebView
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -20,16 +23,20 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
-import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
+import com.github.jing332.tts_server_android.ui.fragment.ServerLogFragment
+import com.github.jing332.tts_server_android.ui.fragment.ServerWebFragment
 import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.SharedPrefsUtils
 import com.github.jing332.tts_server_android.util.toastOnUi
-import tts_server_lib.Tts_server_lib
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,39 +44,17 @@ class MainActivity : AppCompatActivity() {
         const val TAG = "MainActivity"
     }
 
-    private val myReceiver: MyReceiver by lazy { MyReceiver() }
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(
             layoutInflater
         )
     }
 
-    private val logList: ArrayList<MyLog> by lazy { ArrayList() }
-    private val logAdapter: LogListItemAdapter by lazy { LogListItemAdapter(logList) }
-
     @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-
-        binding.rvLog.adapter = logAdapter
-        val layoutManager = LinearLayoutManager(this)
-        layoutManager.stackFromEnd = true
-        binding.rvLog.layoutManager = layoutManager
-
-        /*启动按钮*/
-        binding.btnStart.setOnClickListener {
-            SharedPrefsUtils.setPort(this, binding.etPort.text.toString().toInt())
-            val i = Intent(this.applicationContext, TtsIntentService::class.java)
-            startService(i)
-        }
-        /* 关闭按钮 */
-        binding.btnClose.setOnClickListener {
-            if (TtsIntentService.instance?.isRunning == true) { /*服务运行中*/
-                TtsIntentService.instance?.closeServer() /*关闭服务 然后将通过广播通知MainActivity*/
-            }
-        }
 
         /* 左上角抽屉按钮 */
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, 0, 0)
@@ -97,35 +82,31 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        val port = SharedPrefsUtils.getPort(this)
-        binding.etPort.setText(port.toString())
-        if (TtsIntentService.instance?.isRunning == true) {
-            setControlStatus(false)
-            val localIp = Tts_server_lib.getOutboundIP()
-            val msg = "服务已在运行, 监听地址: ${localIp}:${port}"
-            logList.add(MyLog(LogLevel.WARN, msg))
-        } else {
-            val msg = "请点击启动按钮\n然后右上角菜单打开网页版↗️" +
-                    "\n随后生成链接导入阅读APP即可使用" +
-                    "\n\n关闭请点关闭按钮, 并等待响应。" +
-                    "\n⚠️注意: 本APP需常驻后台运行！⚠️"
-            logList.add(MyLog(LogLevel.INFO, msg))
-        }
+//        binding.viewPager.isUserInputEnabled = false
 
-        /*注册广播*/
-        IntentFilter(TtsIntentService.ACTION_ON_LOG).apply {
-            addAction(TtsIntentService.ACTION_ON_STARTED)
-            addAction(TtsIntentService.ACTION_ON_CLOSED)
-            App.localBroadcast.registerReceiver(myReceiver, this)
+        //动态设置ViewPager2 灵敏度
+
+        binding.viewPager.reduceDragSensitivity()
+        binding.viewPager.adapter = FragmentAdapter(this)
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding.bottomNavigationView.menu.getItem(position).isChecked = true
+            }
+        })
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.menu_serverLog -> binding.viewPager.setCurrentItem(0, true)
+                R.id.menu_serverWeb -> {
+                    binding.viewPager.setCurrentItem(1, true)
+                }
+            }
+            true
         }
 
         MyTools.checkUpdate(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        App.localBroadcast.unregisterReceiver(myReceiver)
-    }
 
     /*右上角更多菜单*/
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -163,6 +144,19 @@ class MainActivity : AppCompatActivity() {
                     toastOnUi(R.string.please_start_service)
                 }
             }
+            R.id.menu_clearWebData -> {
+                WebView(applicationContext).apply {
+                    clearCache(true)
+                    clearFormData()
+                    clearSslPreferences()
+                }
+                CookieManager.getInstance().apply {
+                    removeAllCookies(null)
+                    flush()
+                }
+                WebStorage.getInstance().deleteAllData()
+                toastOnUi(R.string.cleared)
+            }
             R.id.menu_setToken -> {
                 val token = SharedPrefsUtils.getToken(this)
                 val builder = AlertDialog.Builder(this).setTitle(getString(R.string.set_token))
@@ -199,44 +193,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return true
-    }
-
-    /* 监听广播 */
-    inner class MyReceiver : BroadcastReceiver() {
-        @Suppress("DEPRECATION")
-        override fun onReceive(ctx: Context?, intent: Intent?) {
-            when (intent?.action) {
-                TtsIntentService.ACTION_ON_LOG -> {
-                    val data = intent.getSerializableExtra("data") as MyLog
-                    val layout = binding.rvLog.layoutManager as LinearLayoutManager
-                    val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
-                    logAdapter.append(data)
-                    /* 判断是否在最底部 */
-                    if (isBottom)
-                        binding.rvLog.scrollToPosition(logAdapter.itemCount - 1)
-                }
-                TtsIntentService.ACTION_ON_STARTED -> {
-                    logAdapter.removeAll() /* 清空日志 */
-                    setControlStatus(false)
-                }
-                TtsIntentService.ACTION_ON_CLOSED -> {
-                    setControlStatus(true) /* 设置运行按钮可点击 */
-                }
-            }
-        }
-    }
-
-    /* 设置底部按钮、端口 是否可点击 */
-    fun setControlStatus(enable: Boolean) {
-        if (enable) { //可点击{运行}按钮，编辑
-            binding.etPort.isEnabled = true
-            binding.btnStart.isEnabled = true
-            binding.btnClose.isEnabled = false
-        } else { //禁用按钮，编辑
-            binding.etPort.isEnabled = false
-            binding.btnStart.isEnabled = false
-            binding.btnClose.isEnabled = true
-        }
     }
 
     @Suppress("DEPRECATION")
@@ -286,4 +242,31 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    val logFragment = ServerLogFragment()
+    val webFragment = ServerWebFragment()
+
+    inner class FragmentAdapter(fragmentActivity: FragmentActivity) :
+        FragmentStateAdapter(fragmentActivity) {
+        private val fragmentList = arrayListOf(logFragment, webFragment)
+        override fun getItemCount(): Int {
+            return fragmentList.size
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            return fragmentList[position]
+        }
+    }
+
+    private fun ViewPager2.reduceDragSensitivity(f: Int = 4) {
+        val recyclerViewField = ViewPager2::class.java.getDeclaredField("mRecyclerView")
+        recyclerViewField.isAccessible = true
+        val recyclerView = recyclerViewField.get(this) as RecyclerView
+
+        val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
+        touchSlopField.isAccessible = true
+        val touchSlop = touchSlopField.get(recyclerView) as Int
+        touchSlopField.set(recyclerView, touchSlop * f)       // "8" was obtained experimentally
+    }
 }
+

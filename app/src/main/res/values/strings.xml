@@ -97,4 +97,10 @@
     <string name="setAsDialogue">设为对话</string>
     <string name="setAsAside">设为旁白</string>
     <string name="label_styleDegree">风格强度：</string>
+    <string name="web">网页</string>
+    <string name="clear_web_data">清空网页数据</string>
+    <string name="cleared">已清空</string>
+    <string name="label_port">端口:</string>
+    <string name="close">关闭</string>
+    <string name="start">启动</string>
 </resources>

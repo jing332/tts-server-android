@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_openWeb"
         android:icon="@drawable/ic_baseline_open_in_browser_24"
-        android:title="@string/open_web"
-        app:iconTint="@color/white"
-        app:showAsAction="always" />
+        android:title="@string/open_web" />
+    <item
+        android:id="@+id/menu_clearWebData"
+        android:icon="@drawable/ic_clear"
+        android:title="@string/clear_web_data" />
     <item
         android:id="@+id/menu_setToken"
         android:icon="@drawable/ic_baseline_token_24"
