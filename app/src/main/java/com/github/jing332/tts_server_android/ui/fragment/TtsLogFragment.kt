@@ -10,8 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.MyLog
+import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.databinding.FragmentTtsLogBinding
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService.Companion.ACTION_ON_LOG
 import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
@@ -54,19 +56,19 @@ class TtsLogFragment : Fragment() {
         binding.recyclerViewLog.layoutManager = layoutManager
         binding.recyclerViewLog.adapter = logAdapter
 
-        requireContext().registerReceiver(mReceiver, IntentFilter(ACTION_ON_LOG))
+        App.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_ON_LOG))
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        requireContext().unregisterReceiver(mReceiver)
+        App.localBroadcast.unregisterReceiver(mReceiver)
     }
 
     @Suppress("DEPRECATION")
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent!!.action == ACTION_ON_LOG) {
-                val log = intent.getSerializableExtra("data") as MyLog
+            if (intent?.action == ACTION_ON_LOG) {
+                val log = intent.getSerializableExtra(KEY_DATA) as MyLog
                 val layout = binding.recyclerViewLog.layoutManager as LinearLayoutManager
                 val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
                 logAdapter.append(log)

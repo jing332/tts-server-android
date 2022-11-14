@@ -17,13 +17,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
+import com.github.jing332.tts_server_android.constant.KeyConst.KEY_POSITION
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
 import com.github.jing332.tts_server_android.ui.custom.adapter.SysTtsConfigListItemAdapter
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity
-import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_DATA
-import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.KEY_POSITION
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.toastOnUi

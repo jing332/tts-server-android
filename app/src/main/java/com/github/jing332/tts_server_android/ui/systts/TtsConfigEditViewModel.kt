@@ -40,7 +40,6 @@ class TtsConfigEditViewModel : ViewModel() {
     val audioFormatLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val volumeLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
     val rateLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
-    val isSplitSentencesLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
 
     private lateinit var mTtsCfgItem: SysTtsConfigItem
     private val mVoiceProperty by lazy { mTtsCfgItem.voiceProperty }
@@ -306,6 +305,9 @@ class TtsConfigEditViewModel : ViewModel() {
     }
 
     private fun useEdgeApi() {
+        mVoiceProperty.voiceId = null
+        mVoiceProperty.expressAs = null
+
         if (!this::mEdgeVoices.isInitialized) {
             /* 使用本地缓存或远程下载 */
             val cachePath = "$mCacheDir/edge/voices.json"

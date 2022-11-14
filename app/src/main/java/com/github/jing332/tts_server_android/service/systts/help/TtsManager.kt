@@ -6,8 +6,10 @@ import android.os.SystemClock
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.util.Log
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.MyLog
+import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.SysTtsConfig
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
@@ -91,7 +93,6 @@ class TtsManager(val context: Context) {
 
 
     private var mProducer: ReceiveChannel<ChannelData>? = null
-    private lateinit var currentText: String
 
     /* 开始转语音 */
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
@@ -102,7 +103,6 @@ class TtsManager(val context: Context) {
         val pitch = request?.pitch?.minus(100) ?: 100
         val sysRate = (mNorm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
 
-        currentText = text
         mProducer = null
         if (mTtsCfg.isMultiVoice) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
@@ -348,8 +348,8 @@ class TtsManager(val context: Context) {
     private fun sendLog(level: Int, msg: String) {
         Log.e(TAG, "$level, $msg")
         val intent = Intent(SystemTtsService.ACTION_ON_LOG)
-        intent.putExtra("data", MyLog(level, msg))
-        context.sendBroadcast(intent)
+        intent.putExtra(KEY_DATA, MyLog(level, msg))
+        App.localBroadcast.sendBroadcast(intent)
     }
 
     /* 分句缓存Data */

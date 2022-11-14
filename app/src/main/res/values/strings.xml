@@ -58,7 +58,7 @@
     <string name="copy_address">复制地址</string>
     <string name="check_update_failed">检查更新失败</string>
     <string name="current_is_last_version">当前已是最新版</string>
-    <string name="label_read_aloud_target">朗读配置(目标)：</string>
+    <string name="label_read_aloud_target">朗读目标：</string>
     <string name="enable_aside_and_dialogue">区分旁白和对白</string>
     <string name="title_activity_tts_config_edit">添加或编辑</string>
     <string name="display_name">显示名称</string>

@@ -13,6 +13,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
+import com.github.jing332.tts_server_android.constant.KeyConst.KEY_POSITION
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBinding
@@ -26,8 +28,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
 
     companion object {
         const val TAG = "TtsConfigEditActivity"
-        const val KEY_DATA = "data"
-        const val KEY_POSITION = "position"
     }
 
     private val binding: ActivityTtsConfigEditBinding by lazy {
@@ -172,10 +172,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         model.rateLiveData.observe(this) {
             Log.d(TAG, "rate:$it")
             binding.seekBarRate.seekBar.progress = it
-        }
-        /* 是否分割长段 */
-        model.isSplitSentencesLiveData.observe(this) {
-            Log.d(TAG, "isSplitSentences $it")
         }
 
         /* 加载数据并更新列表 */
