@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.view.ViewGroup.*
 import android.widget.RelativeLayout
 import android.widget.SeekBar
@@ -18,7 +17,9 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
 
-    private lateinit var binding: ConvenientSeekbarBinding
+    private val binding by lazy {
+        ConvenientSeekbarBinding.inflate(LayoutInflater.from(context), this, true)
+    }
     val seekBar by lazy { binding.seekBar }
     var max: Int
         inline get() = seekBar.max
@@ -32,13 +33,6 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
         }
 
     init {
-        binding = ConvenientSeekbarBinding.inflate(LayoutInflater.from(context))
-        addView(
-            binding.root,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ConvenientSeekbar)
         seekBar.progress = ta.getInteger(R.styleable.ConvenientSeekbar_progress, 0)
         seekBar.max = ta.getInteger(R.styleable.ConvenientSeekbar_max, 100)
@@ -67,7 +61,11 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                onSeekBarChangeListener?.onProgressChanged(this@ConvenientSeekbar, progress, fromUser)
+                onSeekBarChangeListener?.onProgressChanged(
+                    this@ConvenientSeekbar,
+                    progress,
+                    fromUser
+                )
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {

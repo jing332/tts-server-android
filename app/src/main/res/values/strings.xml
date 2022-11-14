@@ -93,4 +93,8 @@
     <string name="none">无</string>
     <string name="default_str">默认</string>
     <string name="set_audio_request_timeout">设置请求音频等待时间</string>
+    <string name="setAsDefault">设为默认</string>
+    <string name="setAsDialogue">设为对话</string>
+    <string name="setAsAside">设为旁白</string>
+    <string name="label_styleDegree">风格强度：</string>
 </resources>

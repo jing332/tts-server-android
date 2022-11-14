@@ -35,11 +35,13 @@ class TtsConfigEditViewModel : ViewModel() {
     val languageLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val voiceLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val voiceStyleLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
-    val voiceStyleDegreeLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
     val voiceRoleLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
     val audioFormatLiveData: MutableLiveData<SpinnerData> by lazy { MutableLiveData() }
-    val volumeLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
+
     val rateLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
+    val volumeLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
+
+    val voiceStyleDegreeLiveData: MutableLiveData<Float> by lazy { MutableLiveData() }
 
     private lateinit var mTtsCfgItem: SysTtsConfigItem
     private val mVoiceProperty by lazy { mTtsCfgItem.voiceProperty }
@@ -94,9 +96,9 @@ class TtsConfigEditViewModel : ViewModel() {
             SpinnerData(readAloudTargetList, mTtsCfgItem.readAloudTarget)
 
         ttsConfigItem.voiceProperty.apply {
-            voiceStyleDegreeLiveData.value = (expressAs?.styleDegree?.times(100))?.toInt() ?: 100
-            volumeLiveData.value = prosody.volume + 50
-            rateLiveData.value = prosody.rate + 100
+            voiceStyleDegreeLiveData.value = expressAs?.styleDegree ?: 1F
+            volumeLiveData.value = prosody.volume
+            rateLiveData.value = prosody.rate
         }
         mCacheDir = context.cacheDir.path
     }
@@ -296,17 +298,25 @@ class TtsConfigEditViewModel : ViewModel() {
         return false
     }
 
-    fun volumeChanged(progress: Int) {
-        mVoiceProperty.prosody.volume = progress - 50
+    fun volumeChanged(volume: Int) {
+        mVoiceProperty.prosody.volume = volume
     }
 
-    fun rateChanged(progress: Int) {
-        mVoiceProperty.prosody.rate = progress - 100
+    fun rateChanged(rate: Int) {
+        mVoiceProperty.prosody.rate = rate
+    }
+
+    fun onStyleDegreeChanged(degree: Float) {
+        if (mVoiceProperty.api == TtsApiType.EDGE) return
+
+        if (mVoiceProperty.expressAs == null) mVoiceProperty.expressAs = ExpressAs()
+        mVoiceProperty.expressAs?.styleDegree = degree
     }
 
     private fun useEdgeApi() {
         mVoiceProperty.voiceId = null
         mVoiceProperty.expressAs = null
+
 
         if (!this::mEdgeVoices.isInitialized) {
             /* 使用本地缓存或远程下载 */
@@ -451,13 +461,6 @@ class TtsConfigEditViewModel : ViewModel() {
         mVoiceProperty.expressAs?.role = voiceRoleLiveData.value!!.list[position].value
     }
 
-    fun voiceStyleDegreeChanged(progress: Int) {
-        if (mVoiceProperty.api == TtsApiType.EDGE) return
-
-        if (mVoiceProperty.expressAs == null) mVoiceProperty.expressAs = ExpressAs()
-        voiceStyleDegreeLiveData.value = progress
-        mVoiceProperty.expressAs?.styleDegree = (progress * 0.01).toFloat()
-    }
 
     data class SpinnerData(var list: List<SpinnerItemData>, var position: Int) {
         fun selected(): SpinnerItemData {

@@ -51,6 +51,7 @@ class SysTtsConfigListItemAdapter(
     }
 
 
+    var contentClick: ClickListen? = null
     var switchClick: ClickListen? = null
     var editButtonClick: ClickListen? = null
     var delButtonClick: ClickListen? = null
@@ -95,6 +96,14 @@ class SysTtsConfigListItemAdapter(
             }
 
             checkBox.setOnClickListener { switchClick?.onClick(it, position) }
+            tvContent.setOnClickListener { contentClick?.onClick(it, position) }
+            tvContent.setOnLongClickListener {
+                return@setOnLongClickListener itemLongClick?.onLongClick(
+                    itemView,
+                    position
+                ) ?: false
+            }
+
             itemView.setOnLongClickListener {
                 return@setOnLongClickListener itemLongClick?.onLongClick(
                     itemView,

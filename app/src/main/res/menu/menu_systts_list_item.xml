@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/menu_global"
-        android:title="设为全局" />
+        android:title="@string/setAsDefault" />
     <item
         android:id="@+id/menu_setAsDialogue"
-        android:title="设为对话" />
+        android:title="@string/setAsDialogue" />
     <item
         android:id="@+id/menu_setAsAside"
-        android:title="设为旁白" />
+        android:title="@string/setAsAside" />
 </menu>

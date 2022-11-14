@@ -20,8 +20,10 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_POSITION
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
+import com.github.jing332.tts_server_android.ui.custom.SysTtsNumericalEditView
 import com.github.jing332.tts_server_android.ui.custom.adapter.SysTtsConfigListItemAdapter
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity
 import com.github.jing332.tts_server_android.util.ClipboardUtils
@@ -81,6 +83,7 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         super.onCreate(savedInstanceState)
 
         recyclerAdapter.switchClick = this
+        recyclerAdapter.contentClick = this
         recyclerAdapter.editButtonClick = this
         recyclerAdapter.delButtonClick = this
         recyclerAdapter.itemLongClick = this
@@ -161,6 +164,27 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                         recyclerAdapter.remove(position)
                     }
                     .show()
+            }
+            R.id.tv_content -> {
+                val editView = SysTtsNumericalEditView(requireContext())
+                editView.setPadding(25,25,25,25)
+                viewModel.ttsCfgLiveData.value?.list?.get(position)?.let { itemData ->
+                    itemData.voiceProperty.let { pro ->
+                        editView.setRate(pro.prosody.rate)
+                        editView.setVolume(pro.prosody.volume)
+                        editView.setStyleDegree(pro.expressAs?.styleDegree ?: 1F)
+                        editView.isStyleDegreeVisible = pro.api != TtsApiType.EDGE
+                    }
+                    AlertDialog.Builder(requireContext()).setTitle("数值调节").setView(editView)
+                        .setOnDismissListener {
+                            itemData.voiceProperty.let {
+                                it.prosody.rate = editView.rateValue
+                                it.prosody.volume = editView.volumeValue
+                                it.expressAs?.styleDegree = editView.styleDegreeValue
+                            }
+                            viewModel.onEditActivityResult(itemData, position)
+                        }.show()
+                }
             }
         }
     }

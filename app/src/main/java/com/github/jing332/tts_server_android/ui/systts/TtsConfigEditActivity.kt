@@ -10,8 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_POSITION
@@ -19,12 +17,11 @@ import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
-import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+import com.github.jing332.tts_server_android.ui.custom.SysTtsNumericalEditView
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.toastOnUi
 
-class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener,
-    ConvenientSeekbar.OnSeekBarChangeListener {
+class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
 
     companion object {
         const val TAG = "TtsConfigEditActivity"
@@ -60,49 +57,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         binding.spinnerVoice.adapter = spinnerVoiceAdapter
         binding.spinnerVoiceStyle.adapter = spinnerVoiceStyleAdapter
 
-        /* 长按设置风格强度 */
-        binding.spinnerVoiceStyle.setOnLongClickListener {
-            if (model.apiLiveData.value?.position == TtsApiType.EDGE) {
-                return@setOnLongClickListener true
-            }
-            AlertDialog.Builder(this).apply {
-                val linear = LinearLayout(context)
-                linear.orientation = LinearLayout.VERTICAL
-                val tv = TextView(context)
-                tv.setPadding(50, 20, 50, 0)
-                linear.addView(tv)
-
-                val seekbar = ConvenientSeekbar(context)
-                seekbar.max = 200
-                linear.addView(seekbar)
-                seekbar.onSeekBarChangeListener =
-                    object : ConvenientSeekbar.OnSeekBarChangeListener {
-                        @SuppressLint("SetTextI18n")
-                        override fun onProgressChanged(
-                            seekBar: ConvenientSeekbar,
-                            progress: Int,
-                            fromUser: Boolean
-                        ) {
-                            tv.text = "风格强度：${(progress * 0.01).toFloat()}"
-                            if (progress == 0) seekbar.progress = 1
-                        }
-
-                        override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
-                        override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
-                            if (model.voiceStyleDegreeLiveData.value != seekbar.progress) {
-                                model.voiceStyleDegreeChanged(seekbar.progress)
-                            }
-                        }
-                    }
-                seekbar.progress = model.voiceStyleDegreeLiveData.value ?: 50
-                seekbar.setPadding(50, 20, 50, 50)
-                setView(linear).setNeutralButton(getString(R.string.reset)) { _, _ ->
-                    model.voiceStyleDegreeChanged(100) /* 重置 */
-                }.create().show()
-            }
-
-            true
-        }
         binding.spinnerVoiceRole.adapter = spinnerVoiceRoleAdapter
         binding.spinnerFormat.adapter = spinnerFormatAdapter
 
@@ -114,8 +68,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         binding.spinnerVoiceRole.onItemSelectedListener = this
         binding.spinnerFormat.onItemSelectedListener = this
 
-        binding.seekBarRate.onSeekBarChangeListener = this
-        binding.seekBarVolume.onSeekBarChangeListener = this
         /* 显示名称*/
         model.displayNameLiveData.observe(this) { text ->
             binding.etDisplayName.setText(text)
@@ -143,11 +95,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
             Log.d(TAG, "styleList size:${data.list.size}")
             updateSpinner(binding.spinnerVoiceStyle, data)
         }
-        model.voiceStyleDegreeLiveData.observe(this) { data ->
-            Log.d(TAG, "styleDegree :$data")
-            binding.tvStyleDegree.text =
-                getString(R.string.voice_degree_value, "${(data * 0.01).toFloat()}")
-        }
         /* 角色 */
         model.voiceRoleLiveData.observe(this) { data ->
             Log.d(TAG, "roleList size:${data.list.size}")
@@ -163,15 +110,35 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
             }
             binding.spinnerFormat.setSelection(data.position)
         }
-        /* 音量 */
-        model.volumeLiveData.observe(this) {
-            Log.d(TAG, "volume:$it")
-            binding.seekBarVolume.seekBar.progress = it
-        }
         /* 语速 */
         model.rateLiveData.observe(this) {
             Log.d(TAG, "rate:$it")
-            binding.seekBarRate.seekBar.progress = it
+//            binding.seekBarRate.seekBar.progress = it
+            binding.sysTtsNumericalEditView.setRate(it)
+        }
+        /* 音量 */
+        model.volumeLiveData.observe(this) {
+            Log.d(TAG, "volume:$it")
+
+            binding.sysTtsNumericalEditView.setVolume(it)
+        }
+        /* 风格强度 */
+        model.voiceStyleDegreeLiveData.observe(this) {
+            binding.sysTtsNumericalEditView.setStyleDegree(it)
+        }
+
+        binding.sysTtsNumericalEditView.callback = object : SysTtsNumericalEditView.Callback {
+            override fun onRateChanged(rate: Int) {
+                model.rateChanged(rate)
+            }
+
+            override fun onVolumeChanged(volume: Int) {
+                model.volumeChanged(volume)
+            }
+
+            override fun onStyleDegreeChanged(degree: Float) {
+                model.onStyleDegreeChanged(degree)
+            }
         }
 
         /* 加载数据并更新列表 */
@@ -192,7 +159,7 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
                 model.onReadAloudTargetSelected(position)
             }
             R.id.spinner_api -> {
-                binding.tvStyleDegree.isVisible = position != TtsApiType.EDGE
+                binding.sysTtsNumericalEditView.isStyleDegreeVisible = position != TtsApiType.EDGE
                 val waitDialog = WaitDialog(this)
                 waitDialog.show()
                 model.apiSelected(position) { waitDialog.dismiss() }
@@ -269,33 +236,4 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
 
         return super.onOptionsItemSelected(item)
     }
-
-    @SuppressLint("SetTextI18n")
-    override fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {
-        when (seekBar.id) {
-            R.id.seekBar_volume -> {
-                binding.tvCurrentVolume.text = "${progress - 50}%"
-            }
-            R.id.seekBar_rate -> {
-                if (progress == 0)
-                    binding.rateValue.text = getString(R.string.follow_system_or_read_aloud_app)
-                else
-                    binding.rateValue.text = "${(progress - 100)}%"
-            }
-        }
-    }
-
-    override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
-    override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
-        when (seekBar.id) {
-            R.id.seekBar_volume -> {
-                model.volumeChanged(seekBar.progress)
-            }
-            R.id.seekBar_rate -> {
-                model.rateChanged(seekBar.progress)
-            }
-        }
-    }
-
-
 }
