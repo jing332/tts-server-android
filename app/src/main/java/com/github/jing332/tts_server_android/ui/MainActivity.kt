@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.text.Html
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.Menu
@@ -239,13 +240,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Suppress("DEPRECATION")
-    private fun showAboutDialog() {
-        val dlg = AlertDialog.Builder(this)
-        val tv = TextView(this)
-        tv.movementMethod = LinkMovementMethod()
+    private val aboutHtml: Spanned by lazy {
         val htmlStr =
             "APP开源地址: <a href = 'https://github.com/jing332/tts-server-android'>tts-server-android</a> <br/>" +
-                    "核心服务开源地址(全平台可用edxcr): <a href = 'https://github.com/jing332/tts-server-go'>tts-server-go</a> <br/>" +
+                    "核心服务开源地址(全平台可用): <a href = 'https://github.com/jing332/tts-server-go'>tts-server-go</a> <br/>" +
                     "特别感谢以下开源项目:  <br/>" +
                     "&emsp;<a href= 'https://github.com/asters1/tts'>asters1/tts(Go实现)</a>" +
                     "&emsp;<a href= 'https://github.com/litcc/tts-server'>litcc/tts-server(Rust实现)</a>" +
@@ -253,7 +251,15 @@ class MainActivity : AppCompatActivity() {
                     "&emsp;<a href='https://github.com/ag2s20150909/TTS'>TTS APP</a>" +
                     "&emsp;<a href= 'https://github.com/gedoor/legado'>阅读APP</a>" +
                     "&emsp;<a href= 'https://github.com/gedoor/legado'>V2RayNG</a>"
-        tv.text = Html.fromHtml(htmlStr)
+        Html.fromHtml(htmlStr)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun showAboutDialog() {
+        val dlg = AlertDialog.Builder(this)
+        val tv = TextView(this)
+        tv.movementMethod = LinkMovementMethod()
+        tv.text = aboutHtml
         tv.gravity = Gravity.CENTER /* 居中 */
         dlg.setView(tv)
         dlg.setTitle("关于")
