@@ -31,7 +31,7 @@ import kotlin.system.exitProcess
 
 
 @Suppress("DEPRECATION")
-class SystemTtsService : TextToSpeechService(), TtsManager.OnCallBack {
+class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
     companion object {
         const val TAG = "SysTtsService"
         const val ACTION_ON_LOG = "SYS_TTS_ON_LOG"
@@ -70,7 +70,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.OnCallBack {
             Thread.sleep(1000 * 4)
         }
 
-        mTtsManager.onCallBack = this
+        mTtsManager.callback = this
 
     }
 
@@ -110,11 +110,14 @@ class SystemTtsService : TextToSpeechService(), TtsManager.OnCallBack {
         mTtsManager.stop()
     }
 
+    lateinit var mCurrentText: String
+
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         synchronized(this) {
             reNewWakeLock()
             startForegroundService()
             val text = request?.charSequenceText.toString().trim()
+            mCurrentText = text
             updateNotification(getString(R.string.tts_state_playing), text)
             if (StringUtils.isSilent(text)) {
                 callback?.start(
@@ -134,8 +137,12 @@ class SystemTtsService : TextToSpeechService(), TtsManager.OnCallBack {
         }
     }
 
-    override fun onUpdateNotification(title: String, content: String) {
+    override fun onError(title: String, content: String) {
         updateNotification(title, content)
+    }
+
+    override fun onRetrySuccess() {
+        updateNotification(getString(R.string.tts_state_playing), mCurrentText)
     }
 
     private fun reNewWakeLock() {

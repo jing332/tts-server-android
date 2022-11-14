@@ -32,106 +32,109 @@ class TtsManager(val context: Context) {
         const val requestInterval = 100L
     }
 
-    interface OnCallBack {
-        fun onUpdateNotification(title: String, content: String)
+    interface Callback {
+        fun onError(title: String, content: String)
+        fun onRetrySuccess()
     }
 
-    var onCallBack: OnCallBack? = null
+    var callback: Callback? = null
 
-    var ttsConfig: SysTtsConfig = SysTtsConfig()
-    lateinit var audioFormat: TtsAudioFormat
+    private var mTtsCfg: SysTtsConfig = SysTtsConfig()
+    private lateinit var mAudioFormat: TtsAudioFormat
 
     var isSynthesizing = false
-    private val audioDecoder by lazy { AudioDecoder() }
-    private val norm by lazy { NormUtil(500F, 0F, 200F, 0F) }
-    private val sysTtsLib by lazy { SysTtsLib() }
+    private val mAudioDecoder by lazy { AudioDecoder() }
+    private val mNorm by lazy { NormUtil(500F, 0F, 200F, 0F) }
+    private val mLib by lazy { SysTtsLib() }
 
 
     fun stop() {
         isSynthesizing = false
-        audioDecoder.stop()
+        mAudioDecoder.stop()
     }
 
     /* 加载配置 */
     fun loadConfig() {
-        ttsConfig = SysTtsConfig.read()
-        Log.d(TAG, "loadConfig: $ttsConfig")
+        mTtsCfg = SysTtsConfig.read()
+        Log.d(TAG, "loadConfig: $mTtsCfg")
 
-        ttsConfig.apply {
-            sysTtsLib.setTimeout(timeout)
+        mTtsCfg.apply {
+            mLib.setTimeout(timeout)
             if (isMultiVoice) {
-                var aside = ttsConfig.currentAsideItem()
+                var aside = mTtsCfg.currentAsideItem()
                 if (aside == null) {
                     context.toastOnUi("警告：缺少{旁白}，使用默认配置！")
                     aside = SysTtsConfigItem(true, ReadAloudTarget.ASIDE)
-                    ttsConfig.list.add(aside)
+                    mTtsCfg.list.add(aside)
                 }
-                var dialogue = ttsConfig.currentDialogueItem()
+                var dialogue = mTtsCfg.currentDialogueItem()
                 if (dialogue == null) {
                     context.toastOnUi("警告：缺少{对话}，使用默认配置！")
                     dialogue = SysTtsConfigItem(true, ReadAloudTarget.DIALOGUE)
-                    ttsConfig.list.add(dialogue)
+                    mTtsCfg.list.add(dialogue)
                 }
 
-                audioFormat = TtsFormatManger.getFormat(aside.voiceProperty.format)
+                mAudioFormat = TtsFormatManger.getFormat(aside.voiceProperty.format)
                     ?: TtsFormatManger.getDefault()
             } else {
-                var cfg = ttsConfig.selectedItem()
+                var cfg = mTtsCfg.selectedItem()
                 if (cfg == null) {
                     context.toastOnUi("警告：缺少全局配置，使用默认！")
                     cfg = SysTtsConfigItem(true, ReadAloudTarget.DEFAULT)
-                    ttsConfig.list.add(cfg)
+                    mTtsCfg.list.add(cfg)
                 }
-                audioFormat = TtsFormatManger.getFormat(cfg.voiceProperty.format)
+                mAudioFormat = TtsFormatManger.getFormat(cfg.voiceProperty.format)
                     ?: TtsFormatManger.getDefault()
             }
         }
     }
 
 
-    private var producer: ReceiveChannel<ChannelData>? = null
+    private var mProducer: ReceiveChannel<ChannelData>? = null
+    private lateinit var currentText: String
 
     /* 开始转语音 */
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
-        callback?.start(audioFormat.hz, audioFormat.bitRate, 1)
+        callback?.start(mAudioFormat.hz, mAudioFormat.bitRate, 1)
 
         val text = request?.charSequenceText.toString().trim()
         val pitch = request?.pitch?.minus(100) ?: 100
-        val sysRate = (norm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
+        val sysRate = (mNorm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
 
-        producer = null
-        if (ttsConfig.isMultiVoice) { //多语音
+        currentText = text
+        mProducer = null
+        if (mTtsCfg.isMultiVoice) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
-            val aside = ttsConfig.currentAsideItem()?.voiceProperty?.clone() ?: VoiceProperty()
+            val aside = mTtsCfg.currentAsideItem()?.voiceProperty?.clone() ?: VoiceProperty()
             aside.prosody.pitch = pitch
             aside.prosody.setRateIfFollowSystem(sysRate)
             val dialogue =
-                ttsConfig.currentDialogueItem()?.voiceProperty?.clone() ?: VoiceProperty()
+                mTtsCfg.currentDialogueItem()?.voiceProperty?.clone() ?: VoiceProperty()
             dialogue.prosody.pitch = pitch
             dialogue.prosody.setRateIfFollowSystem(sysRate)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
-            producer = multiVoiceProducer(ttsConfig.isSplitSentences, text, aside, dialogue)
+            mProducer = multiVoiceProducer(mTtsCfg.isSplitSentences, text, aside, dialogue)
         } else { //单语音
-            val pro = ttsConfig.selectedItem()?.voiceProperty?.clone() ?: VoiceProperty()
+            val pro = mTtsCfg.selectedItem()?.voiceProperty?.clone() ?: VoiceProperty()
             pro.prosody.setRateIfFollowSystem(sysRate)
             pro.prosody.pitch = pitch
             Log.d(TAG, "单语音：${pro}")
-            if (ttsConfig.isSplitSentences) {
+            if (mTtsCfg.isSplitSentences) {
                 Log.d(TAG, "splitSentences...")
-                producer = splitSentencesProducer(text, pro)
+                mProducer = splitSentencesProducer(text, pro)
             } else {
-                if (audioFormat.needDecode) {
+                if (mAudioFormat.needDecode) {
                     getAudioAndDecodePlay(text, pro, callback)
                 } else {
-                    producer = audioStreamProducer(text, pro)
+                    mProducer = audioStreamProducer(text, pro)
                 }
             }
         }
 
         /* 阻塞，接收者 */
-        producer?.consumeEach { data ->
+        mProducer?.consumeEach { data ->
             val shortText = data.text?.limitLength(20)
             if (!isSynthesizing) {
                 shortText?.apply { sendLog(LogLevel.WARN, "系统已取消播放：${shortText}") }
@@ -140,10 +143,10 @@ class TtsManager(val context: Context) {
             if (data.audio == null) {
                 shortText?.apply { sendLog(LogLevel.WARN, "音频为空：${shortText}") }
             } else {
-                if (audioFormat.needDecode) {
-                    audioDecoder.doDecode(
+                if (mAudioFormat.needDecode) {
+                    mAudioDecoder.doDecode(
                         srcData = data.audio,
-                        sampleRate = audioFormat.hz,
+                        sampleRate = mAudioFormat.hz,
                         onRead = { writeToCallBack(callback!!, it) },
                         error = {
                             sendLog(LogLevel.ERROR, "解码失败: $shortText")
@@ -223,7 +226,7 @@ class TtsManager(val context: Context) {
         voiceProperty: VoiceProperty
     ) {
         if (!isSynthesizing) return
-        if (audioFormat.needDecode) {
+        if (mAudioFormat.needDecode) {
             val audio = getAudioHelper(text, voiceProperty)
             channel.send(ChannelData(text, audio))
         } else {
@@ -241,7 +244,7 @@ class TtsManager(val context: Context) {
         sendLog(LogLevel.INFO, "<br>请求音频：<b>${text}</b> <br><small><i>${voiceProperty}</small></i>")
         var audio: ByteArray? = null
         val timeCost = measureTimeMillis {
-            audio = sysTtsLib.getAudioForRetry(
+            audio = mLib.getAudioForRetry(
                 text,
                 voiceProperty,
                 100
@@ -253,7 +256,7 @@ class TtsManager(val context: Context) {
                         if (num > 3) SystemClock.sleep(3000) else SystemClock.sleep(500)
                     "开始第${num}次重试...".let {
                         sendLog(LogLevel.WARN, it)
-                        onCallBack?.onUpdateNotification(it, "${shortText}\n${reason}")
+                        callback?.onError("请求音频失败：$it", "${shortText}\n${reason}")
                     }
                     return@getAudioForRetry true // 重试
                 }
@@ -266,6 +269,7 @@ class TtsManager(val context: Context) {
                 LogLevel.INFO,
                 "获取音频成功, 大小: <b>${(audio?.size?.div(1024))}KB</b>, 耗时: <b>${timeCost}ms</b>"
             )
+            callback?.onRetrySuccess()
         }
         return audio
     }
@@ -285,7 +289,7 @@ class TtsManager(val context: Context) {
                 "<br>请求音频(Azure边下边播)：<b>${text}</b> <br><small><i>${voiceProperty}</small></i>"
             )
             var currentLength = 0
-            val err = sysTtsLib.getAudioStream(text, voiceProperty) { data ->
+            val err = mLib.getAudioStream(text, voiceProperty) { data ->
                 if (currentLength >= lastFailLength) {
                     onRead.invoke(data)
                     lastFailLength = -1
@@ -312,9 +316,9 @@ class TtsManager(val context: Context) {
     ) {
         val audio = getAudioHelper(text, voiceProperty)
         if (audio != null) {
-            audioDecoder.doDecode(
+            mAudioDecoder.doDecode(
                 audio,
-                audioFormat.hz,
+                mAudioFormat.hz,
                 onRead = { writeToCallBack(callback!!, it) },
                 error = {
                     sendLog(LogLevel.ERROR, "解码失败: $it")
