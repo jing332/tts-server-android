@@ -12,7 +12,7 @@
 > 左图为服务转发日志界面，用于阅读APP的网络朗读。<br>
 右图为系统TTS配置界面，可被使用系统TTS的APP调用。
 
-  <img src="https://user-images.githubusercontent.com/42014615/197326953-e19f2ac7-5f86-4995-b227-1d56b65ee1b1.jpg" height="150px">
-  <img src="https://user-images.githubusercontent.com/42014615/197327049-07e13e1b-3b84-4538-87c7-3d6001c431f2.jpg" height="150px">
+  <img src="./images/Screenshot_Main.png" height="150px">
+  <img src="./images/Screenshot_SysTTS.png" height="150px">
   
 </details>
