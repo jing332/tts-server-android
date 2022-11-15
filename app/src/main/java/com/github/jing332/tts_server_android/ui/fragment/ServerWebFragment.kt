@@ -84,6 +84,15 @@ class ServerWebFragment : Fragment() {
         binding.webView.clearHistory()
     }
 
+    fun onBackKeyDown(): Boolean {
+        if (binding.webView.canGoBack()){
+            binding.webView.goBack()
+            return true
+        }
+
+        return false
+    }
+
 
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {

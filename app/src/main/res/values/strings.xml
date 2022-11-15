@@ -38,7 +38,6 @@
     <string name="tts_state_idle">TTS空闲中</string>
     <string name="tts_state_playing">TTS播放中：</string>
     <string name="system_tts_service">系统TTS服务</string>
-    <string name="voice_degree_value">强度：%s \n(长按下方设置)</string>
     <string name="token_set_to">Token已设为：</string>
     <string name="system_not_support_please_manual_set">系统不支持，请手动操作</string>
     <string name="service_started">服务已启动</string>

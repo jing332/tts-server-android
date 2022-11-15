@@ -167,7 +167,7 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
             }
             R.id.tv_content -> {
                 val editView = SysTtsNumericalEditView(requireContext())
-                editView.setPadding(25,25,25,25)
+                editView.setPadding(25, 25, 25, 50)
                 viewModel.ttsCfgLiveData.value?.list?.get(position)?.let { itemData ->
                     itemData.voiceProperty.let { pro ->
                         editView.setRate(pro.prosody.rate)
@@ -175,7 +175,8 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                         editView.setStyleDegree(pro.expressAs?.styleDegree ?: 1F)
                         editView.isStyleDegreeVisible = pro.api != TtsApiType.EDGE
                     }
-                    AlertDialog.Builder(requireContext()).setTitle("数值调节").setView(editView)
+                    val dlg = AlertDialog.Builder(requireContext())
+                        .setTitle("数值调节").setView(editView)
                         .setOnDismissListener {
                             itemData.voiceProperty.let {
                                 it.prosody.rate = editView.rateValue
@@ -183,7 +184,9 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                                 it.expressAs?.styleDegree = editView.styleDegreeValue
                             }
                             viewModel.onEditActivityResult(itemData, position)
-                        }.show()
+                        }.create()
+                    dlg.window?.setDimAmount(0.5F)
+                    dlg.show()
                 }
             }
         }

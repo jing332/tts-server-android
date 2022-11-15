@@ -11,6 +11,7 @@ import android.text.Html
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.CookieManager
@@ -241,6 +242,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && binding.viewPager.currentItem == 1) {
+            if (!webFragment.onBackKeyDown())
+                binding.viewPager.setCurrentItem(0, true)
+
+            return true
+        }
+
+        return super.onKeyDown(keyCode, event)
     }
 
     val logFragment = ServerLogFragment()
