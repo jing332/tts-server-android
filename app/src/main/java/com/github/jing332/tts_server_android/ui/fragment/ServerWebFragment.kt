@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -84,8 +86,20 @@ class ServerWebFragment : Fragment() {
         binding.webView.clearHistory()
     }
 
+    @Suppress("DEPRECATION")
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            binding.webView.settings.forceDark =
+                if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+                    Configuration.UI_MODE_NIGHT_YES
+                ) WebSettings.FORCE_DARK_ON
+                else WebSettings.FORCE_DARK_OFF
+        }
+    }
+
     fun onBackKeyDown(): Boolean {
-        if (binding.webView.canGoBack()){
+        if (binding.webView.canGoBack()) {
             binding.webView.goBack()
             return true
         }

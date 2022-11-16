@@ -49,6 +49,7 @@ func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
 		if err != nil {
 			e.tts = nil
 			failed <- err
+			return
 		}
 		succeed <- audio
 	}()
@@ -106,6 +107,7 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 		if err != nil {
 			a.tts = nil
 			failed <- err
+			return
 		}
 		succeed <- audio
 	}()
@@ -143,17 +145,15 @@ func (a *AzureApi) GetAudioStream(text, format string, property *VoiceProperty,
 		if err != nil {
 			a.tts = nil
 			failed <- err
+			return
 		}
+		succeed <- nil
 	}()
 	select {
 	case <-succeed:
 		return nil
 	case err := <-failed:
 		return err
-	case <-time.After(time.Duration(a.Timeout) * time.Millisecond):
-		a.tts.CloseConn()
-		a.tts = nil
-		return fmt.Errorf("已超时：%dms", a.Timeout)
 	}
 }
 

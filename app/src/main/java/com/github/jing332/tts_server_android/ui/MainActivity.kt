@@ -26,7 +26,6 @@ import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.*
@@ -37,6 +36,7 @@ import com.github.jing332.tts_server_android.ui.fragment.ServerWebFragment
 import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.SharedPrefsUtils
+import com.github.jing332.tts_server_android.util.reduceDragSensitivity
 import com.github.jing332.tts_server_android.util.toastOnUi
 
 
@@ -83,11 +83,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-//        binding.viewPager.isUserInputEnabled = false
-
-        //动态设置ViewPager2 灵敏度
-
-        binding.viewPager.reduceDragSensitivity()
+        binding.viewPager.reduceDragSensitivity(8)
         binding.viewPager.adapter = FragmentAdapter(this)
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -268,17 +264,6 @@ class MainActivity : AppCompatActivity() {
         override fun createFragment(position: Int): Fragment {
             return fragmentList[position]
         }
-    }
-
-    private fun ViewPager2.reduceDragSensitivity(f: Int = 4) {
-        val recyclerViewField = ViewPager2::class.java.getDeclaredField("mRecyclerView")
-        recyclerViewField.isAccessible = true
-        val recyclerView = recyclerViewField.get(this) as RecyclerView
-
-        val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
-        touchSlopField.isAccessible = true
-        val touchSlop = touchSlopField.get(recyclerView) as Int
-        touchSlopField.set(recyclerView, touchSlop * f)       // "8" was obtained experimentally
     }
 }
 
