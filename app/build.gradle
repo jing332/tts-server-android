@@ -110,8 +110,6 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.5.4'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha03'
 
-    implementation 'com.google.android.material:material:1.7.0'
-
     implementation 'com.squareup.okio:okio:3.2.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
