@@ -298,7 +298,7 @@ class TtsManager(val context: Context) {
                 currentLength += data.size
             }
             if (err == null) {
-                sendLog(LogLevel.WARN, "播放完毕(${audioSize / 1024}KB)：${text.limitLength(20)}")
+                sendLog(LogLevel.WARN, "下载完成，大小：${audioSize / 1024}KB")
                 break
             } else {
                 sendLog(LogLevel.ERROR, "请求失败：${text.limitLength(20)}\n$err")
