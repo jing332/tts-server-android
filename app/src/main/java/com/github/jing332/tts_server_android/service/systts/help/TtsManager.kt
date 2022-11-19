@@ -42,6 +42,7 @@ class TtsManager(val context: Context) {
     var callback: Callback? = null
 
     private var mTtsCfg: SysTtsConfig = SysTtsConfig()
+    private val replaceHelper: ReplaceHelper by lazy { ReplaceHelper() }
     private lateinit var mAudioFormat: TtsAudioFormat
 
     var isSynthesizing = false
@@ -62,6 +63,10 @@ class TtsManager(val context: Context) {
 
         mTtsCfg.apply {
             mLib.setTimeout(timeout)
+            if (isReplace) {
+                replaceHelper.load()
+            }
+
             if (isMultiVoice) {
                 var aside = mTtsCfg.currentAsideItem()
                 if (aside == null) {
@@ -99,7 +104,11 @@ class TtsManager(val context: Context) {
         isSynthesizing = true
         callback?.start(mAudioFormat.hz, mAudioFormat.bitRate, 1)
 
-        val text = request?.charSequenceText.toString().trim()
+        var text = request?.charSequenceText.toString().trim()
+        if (mTtsCfg.isReplace) {
+            text = replaceHelper.doReplace(text)
+        }
+
         val pitch = request?.pitch?.minus(100) ?: 100
         val sysRate = (mNorm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
 

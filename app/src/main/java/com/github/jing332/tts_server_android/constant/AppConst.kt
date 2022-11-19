@@ -5,6 +5,8 @@ import com.github.jing332.tts_server_android.App
 
 @Suppress("DEPRECATION")
 object AppConst {
+    val replaceRulesPath by lazy { App.context.filesDir.absolutePath + "/" + "/replace_rule.json" }
+
     val appInfo: AppInfo by lazy {
         val appInfo = AppInfo()
         App.context.packageManager.getPackageInfo(
