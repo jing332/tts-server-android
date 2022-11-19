@@ -33,10 +33,10 @@ class ReplaceRuleItemAdapter(val itemList: ArrayList<ReplaceRuleItemData>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = itemList[position]
         holder.binding.apply {
-            checkBox.isSelected = data.isEnabled
+            checkBox.isChecked = data.isEnabled
             checkBox.text = data.name
 
-            checkBox.setOnClickListener { callBack?.switch(position, it.isSelected) }
+            checkBox.setOnClickListener { callBack?.switch(position, checkBox.isChecked) }
             btnEdit.setOnClickListener { callBack?.edit(position) }
             btnDelete.setOnClickListener { callBack?.delete(position) }
         }

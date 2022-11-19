@@ -78,6 +78,7 @@ class ReplaceManagerActivity : BackActivity(), ReplaceRuleItemAdapter.CallBack {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.replace_manager, menu)
+        /* 开关选项 */
         val item = menu?.findItem(R.id.app_bar_switch)
         item!!.apply {
             val switch = actionView?.findViewById<SwitchCompat>(R.id.menu_switch)

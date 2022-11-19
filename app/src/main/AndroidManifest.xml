@@ -20,16 +20,8 @@
         android:theme="@style/Theme.TtsServer"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
-        <activity
-            android:label="添加或编辑规则"
-            android:name=".ui.systts.replace.edit.ReplaceRuleEditActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".ui.systts.TtsConfigEditActivity"
-            android:exported="true"
-            android:label="@string/title_activity_tts_config_edit"
-            android:launchMode="singleTask" />
+
+
         <activity
             android:name=".ui.SettingsActivity"
             android:exported="false"
@@ -51,6 +43,7 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+        <!-- 系统TTS配置 -->
         <activity
             android:name=".ui.systts.TtsSettingsActivity"
             android:exported="true"
@@ -62,9 +55,22 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.systts.TtsConfigEditActivity"
+            android:exported="true"
+            android:label="@string/title_activity_tts_config_edit"
+            android:launchMode="singleTask" />
+
+        <!-- 替换规则 -->
+        <activity
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:exported="true"
+            android:label="@string/title_activity_replace_manager"
             android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.systts.replace.edit.ReplaceRuleEditActivity"
+            android:exported="true"
+            android:label="@string/title_activity_replace_edit" />
+        <!-- Server开关 -->
         <activity
             android:name=".ui.ScSwitchActivity"
             android:theme="@android:style/Theme.NoDisplay" />
@@ -74,7 +80,6 @@
             android:label="CheckVoiceData">
             <intent-filter>
                 <action android:name="android.speech.tts.engine.CHECK_TTS_DATA" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

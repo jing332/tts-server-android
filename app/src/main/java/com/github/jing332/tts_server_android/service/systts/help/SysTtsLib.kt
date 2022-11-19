@@ -41,6 +41,10 @@ class SysTtsLib {
         mCreationApi.timeout = ms
     }
 
+    fun setUseDnsLookup(isEnabled:Boolean){
+        mEdgeApi.useDnsLookup = isEnabled
+    }
+
     /**
      * 获取音频流 仅支持Azure
      */

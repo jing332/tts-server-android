@@ -15,10 +15,7 @@ import com.github.jing332.tts_server_android.data.SysTtsConfig
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.data.VoiceProperty
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
-import com.github.jing332.tts_server_android.util.NormUtil
-import com.github.jing332.tts_server_android.util.StringUtils
-import com.github.jing332.tts_server_android.util.limitLength
-import com.github.jing332.tts_server_android.util.toastOnUi
+import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
@@ -62,6 +59,7 @@ class TtsManager(val context: Context) {
         Log.d(TAG, "loadConfig: $mTtsCfg")
 
         mTtsCfg.apply {
+            mLib.setUseDnsLookup(SharedPrefsUtils.getUseDnsEdge(context))
             mLib.setTimeout(timeout)
             if (isReplace) {
                 replaceHelper.load()

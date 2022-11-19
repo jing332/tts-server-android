@@ -60,6 +60,8 @@
     <string name="label_read_aloud_target">朗读目标：</string>
     <string name="enable_aside_and_dialogue">区分旁白和对白</string>
     <string name="title_activity_tts_config_edit">添加或编辑</string>
+    <string name="title_activity_replace_edit">添加或编辑</string>
+    <string name="title_activity_replace_manager">替换规则管理</string>
     <string name="display_name">显示名称</string>
 
     <string name="multi_voice">多语音(旁白/对白)</string>

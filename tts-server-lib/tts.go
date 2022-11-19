@@ -25,14 +25,14 @@ func (v *VoiceProperty) Proto(prosody *VoiceProsody, exp *VoiceExpressAs) *servi
 
 type EdgeApi struct {
 	Timeout      int32
+	UseDnsLookup bool
 	tts          *edge.TTS
-	useDnsLookup bool
 }
 
 func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
 	prosody *VoiceProsody) ([]byte, error) {
 	if e.tts == nil {
-		e.tts = &edge.TTS{UseDnsLookup: e.useDnsLookup}
+		e.tts = &edge.TTS{UseDnsLookup: e.UseDnsLookup}
 	}
 	property.Api = service.ApiEdge
 	proto := property.Proto(prosody, nil)
