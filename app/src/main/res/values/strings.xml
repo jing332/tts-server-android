@@ -108,4 +108,5 @@
     <string name="add_replace_rule">添加替换规则</string>
     <string name="replace_rule">替换规则</string>
     <string name="replace_as">替换为</string>
+    <string name="insert_pinyin">插入拼音声调</string>
 </resources>

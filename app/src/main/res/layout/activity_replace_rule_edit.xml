@@ -71,8 +71,17 @@
             android:hint="@string/replace_as"
             android:importantForAutofill="no"
             android:inputType="text" />
-
     </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_pinyinList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/insert_pinyin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

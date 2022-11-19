@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.ui.systts.replace.edit
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -24,6 +25,28 @@ class ReplaceRuleEditActivity : BackActivity() {
         setContentView(binding.root)
 
         position = intent.getIntExtra(KeyConst.KEY_POSITION, -1)
+
+        binding.btnPinyinList.setOnClickListener {
+            val pinyinList = "ā á ǎ à ō ó ǒ ò ê ē é ě è ī í ǐ ì ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ")
+            AlertDialog.Builder(this).setItems(
+                pinyinList.toTypedArray()
+            ) { _, which ->
+                val pinyin = pinyinList[which]
+                if (binding.etPattern.hasFocus()) {
+                    binding.etPattern.apply {
+                        text.insert(selectionStart, pinyin)
+                    }
+                } else if (binding.etReplacement.hasFocus()) {
+                    binding.etReplacement.apply {
+                        text.insert(selectionStart, pinyin)
+                    }
+                } else if (binding.etName.hasFocus()) {
+                    binding.etName.apply {
+                        text.insert(selectionStart, pinyin)
+                    }
+                }
+            }.show()
+        }
 
         viewModel.liveData.observe(this) {
             binding.apply {
