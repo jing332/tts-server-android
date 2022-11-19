@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.github.jing332.tts_server_android" >
+    package="com.github.jing332.tts_server_android">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,23 +18,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TtsServer"
+        android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
+        <activity
+            android:label="添加或编辑规则"
+            android:name=".ui.systts.replace.edit.ReplaceRuleEditActivity"
+            android:exported="true">
+        </activity>
         <activity
             android:name=".ui.systts.TtsConfigEditActivity"
             android:exported="true"
             android:label="@string/title_activity_tts_config_edit"
-            android:launchMode="singleTask" >
-        </activity>
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.SettingsActivity"
             android:exported="false"
-            android:label="@string/title_activity_settings" >
-        </activity>
+            android:label="@string/title_activity_settings" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.TtsServer.NoActionBar" >
+            android:theme="@style/Theme.TtsServer.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,19 +54,24 @@
         <activity
             android:name=".ui.systts.TtsSettingsActivity"
             android:exported="true"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.speech.tts.engine.CONFIGURE_ENGINE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.systts.replace.ReplaceManagerActivity"
+            android:exported="true"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.ScSwitchActivity"
             android:theme="@android:style/Theme.NoDisplay" />
         <activity
             android:name=".service.systts.CheckVoiceData"
             android:exported="true"
-            android:label="CheckVoiceData" >
+            android:label="CheckVoiceData">
             <intent-filter>
                 <action android:name="android.speech.tts.engine.CHECK_TTS_DATA" />
 
@@ -75,7 +83,7 @@
             android:name=".service.systts.SystemTtsService"
             android:exported="true"
             android:label="@string/app_name"
-            tools:ignore="ExportedService" >
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.intent.action.TTS_SERVICE" />
 
@@ -96,7 +104,7 @@
             android:exported="true"
             android:icon="@drawable/ic_app_notification"
             android:label="@string/app_name"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE" >
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>

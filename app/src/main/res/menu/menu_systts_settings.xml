@@ -52,6 +52,12 @@
         android:title="@string/set_audio_request_timeout" />
 
     <item
+        android:id="@+id/menu_replace_manager"
+        android:checkable="true"
+        android:icon="@drawable/ic_baseline_find_replace_24"
+        android:title="@string/replace_rule_manager" />
+
+    <item
         android:icon="@drawable/ic_baseline_import_export_24"
         android:title="@string/config_import_export">
         <menu>

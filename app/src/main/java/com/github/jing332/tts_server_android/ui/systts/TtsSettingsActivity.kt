@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.Fragment
@@ -18,6 +19,8 @@ import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragmentViewModel
 import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
+import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
+import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity.Companion.KEY_SWITCH
 import com.github.jing332.tts_server_android.util.MyTools
 
 
@@ -69,6 +72,7 @@ class TtsSettingsActivity : BackActivity() {
         cfgViewModel.ttsCfgLiveData.value?.apply {
             menu?.findItem(R.id.menu_isMultiVoice)?.isChecked = isMultiVoice
             menu?.findItem(R.id.menu_doSplit)?.isChecked = isSplitSentences
+            menu?.findItem(R.id.menu_replace_manager)?.isChecked = isReplace
         }
 
         return super.onPrepareOptionsMenu(menu)
@@ -111,8 +115,13 @@ class TtsSettingsActivity : BackActivity() {
                 cfgViewModel.sortListByRaTarget()
             }
 
-            R.id.menu_setAudioRequestTimeout ->{
+            R.id.menu_setAudioRequestTimeout -> {
                 configFragment.setAudioRequestTimeout()
+            }
+            R.id.menu_replace_manager -> {
+                val intent = Intent(this, ReplaceManagerActivity::class.java)
+                intent.putExtra(KEY_SWITCH, cfgViewModel.ttsCfgLiveData.value?.isReplace)
+                startForResult.launch(intent)
             }
 
             R.id.menu_importConfig -> {
@@ -125,6 +134,14 @@ class TtsSettingsActivity : BackActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val isEnabled = result.data?.getBooleanExtra(KEY_SWITCH, false) ?: false
+                cfgViewModel.onReplaceSwitchChanged(isEnabled)
+            }
+        }
 
     val configFragment = TtsConfigFragment()
     val logFragment = TtsLogFragment()

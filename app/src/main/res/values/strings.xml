@@ -102,4 +102,8 @@
     <string name="label_port">端口:</string>
     <string name="close">关闭</string>
     <string name="start">启动</string>
+    <string name="replace_rule_manager">替换规则管理</string>
+    <string name="add_replace_rule">添加替换规则</string>
+    <string name="replace_rule">替换规则</string>
+    <string name="replace_as">替换为</string>
 </resources>

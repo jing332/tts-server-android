@@ -14,6 +14,7 @@ data class SysTtsConfig(
     var list: ArrayList<SysTtsConfigItem>,
     var isSplitSentences: Boolean = true,
     var isMultiVoice: Boolean = false,
+    var isReplace: Boolean = false,
     var timeout: Int = 5000
 ) {
     companion object {

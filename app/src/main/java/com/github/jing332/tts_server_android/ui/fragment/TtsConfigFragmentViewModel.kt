@@ -42,6 +42,11 @@ class TtsConfigFragmentViewModel : ViewModel() {
         ttsCfg.save()
     }
 
+    fun onReplaceSwitchChanged(isChecked: Boolean) {
+        ttsCfg.isReplace = isChecked
+        ttsCfg.save()
+    }
+
     fun onCheckBoxChanged(position: Int, checked: Boolean): Boolean {
         ttsCfgLiveData.value?.apply {
             /* 检测多语音是否开启 */

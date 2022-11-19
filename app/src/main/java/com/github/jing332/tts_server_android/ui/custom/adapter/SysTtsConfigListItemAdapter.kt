@@ -68,7 +68,7 @@ class SysTtsConfigListItemAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.listitem_systts_config, parent, false)
+            .inflate(R.layout.item_systts_config, parent, false)
 
         return ViewHolder(view)
     }
