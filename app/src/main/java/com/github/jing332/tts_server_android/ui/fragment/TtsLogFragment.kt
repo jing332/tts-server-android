@@ -57,11 +57,13 @@ class TtsLogFragment : Fragment() {
         binding.recyclerViewLog.adapter = logAdapter
 
         App.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_ON_LOG))
+        App.isSysTtsLogEnabled = true
     }
 
     override fun onDestroy() {
         super.onDestroy()
         App.localBroadcast.unregisterReceiver(mReceiver)
+        App.isSysTtsLogEnabled = false
     }
 
     @Suppress("DEPRECATION")

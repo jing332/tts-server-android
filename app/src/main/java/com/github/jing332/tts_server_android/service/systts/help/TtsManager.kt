@@ -144,11 +144,21 @@ class TtsManager(val context: Context) {
         mProducer?.consumeEach { data ->
             val shortText = data.text?.limitLength(20)
             if (!isSynthesizing) {
-                shortText?.apply { sendLog(LogLevel.WARN, "系统已取消播放：${shortText}") }
+                shortText?.apply {
+                    if (App.isSysTtsLogEnabled) sendLog(
+                        LogLevel.WARN,
+                        "系统已取消播放：${shortText}"
+                    )
+                }
                 return@consumeEach
             }
             if (data.audio == null) {
-                shortText?.apply { sendLog(LogLevel.WARN, "音频为空：${shortText}") }
+                shortText?.apply {
+                    if (App.isSysTtsLogEnabled) sendLog(
+                        LogLevel.WARN,
+                        "音频为空：${shortText}"
+                    )
+                }
             } else {
                 if (mAudioFormat.needDecode) {
                     mAudioDecoder.doDecode(
@@ -156,9 +166,9 @@ class TtsManager(val context: Context) {
                         sampleRate = mAudioFormat.hz,
                         onRead = { writeToCallBack(callback!!, it) },
                         error = {
-                            sendLog(LogLevel.ERROR, "解码失败: $shortText")
+                            if (App.isSysTtsLogEnabled) sendLog(LogLevel.ERROR, "解码失败: $shortText")
                         })
-                    sendLog(LogLevel.WARN, "播放完毕：${shortText}")
+                    if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "播放完毕：${shortText}")
                 } else
                     writeToCallBack(callback!!, data.audio)
             }
@@ -248,7 +258,10 @@ class TtsManager(val context: Context) {
         text: String,
         voiceProperty: VoiceProperty
     ): ByteArray? {
-        sendLog(LogLevel.INFO, "<br>请求音频：<b>${text}</b> <br><small><i>${voiceProperty}</small></i>")
+        if (App.isSysTtsLogEnabled) sendLog(
+            LogLevel.INFO,
+            "<br>请求音频：<b>${text}</b> <br><small><i>${voiceProperty}</small></i>"
+        )
         var audio: ByteArray? = null
         val timeCost = measureTimeMillis {
             audio = mLib.getAudioForRetry(
@@ -258,11 +271,14 @@ class TtsManager(val context: Context) {
             ) { reason, num ->
                 if (isSynthesizing) {
                     val shortText = text.limitLength(20)
-                    sendLog(LogLevel.ERROR, "获取音频失败: <b>${shortText}</b> <br>$reason")
+                    if (App.isSysTtsLogEnabled) sendLog(
+                        LogLevel.ERROR,
+                        "获取音频失败: <b>${shortText}</b> <br>$reason"
+                    )
                     if (!reason.startsWith("websocket: close 1006"))
                         if (num > 3) SystemClock.sleep(3000) else SystemClock.sleep(500)
                     "开始第${num}次重试...".let {
-                        sendLog(LogLevel.WARN, it)
+                        if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, it)
                         callback?.onError("请求音频失败：$it", "${shortText}\n${reason}")
                     }
                     return@getAudioForRetry true // 重试
@@ -272,7 +288,7 @@ class TtsManager(val context: Context) {
         }
 
         audio?.let {
-            sendLog(
+            if (App.isSysTtsLogEnabled) sendLog(
                 LogLevel.INFO,
                 "获取音频成功, 大小: <b>${(audio?.size?.div(1024))}KB</b>, 耗时: <b>${timeCost}ms</b>"
             )
@@ -291,7 +307,7 @@ class TtsManager(val context: Context) {
         var audioSize = 0
         for (i in 1..3) {
             if (!isSynthesizing) return
-            sendLog(
+            if (App.isSysTtsLogEnabled) sendLog(
                 LogLevel.INFO,
                 "<br>请求音频(Azure边下边播)：<b>${text}</b> <br><small><i>${voiceProperty}</small></i>"
             )
@@ -305,11 +321,14 @@ class TtsManager(val context: Context) {
                 currentLength += data.size
             }
             if (err == null) {
-                sendLog(LogLevel.WARN, "下载完成，大小：${audioSize / 1024}KB")
+                if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "下载完成，大小：${audioSize / 1024}KB")
                 break
             } else {
-                sendLog(LogLevel.ERROR, "请求失败：${text.limitLength(20)}\n$err")
-                sendLog(LogLevel.WARN, "开始第${i}次重试...")
+                if (App.isSysTtsLogEnabled) sendLog(
+                    LogLevel.ERROR,
+                    "请求失败：${text.limitLength(20)}\n$err"
+                )
+                if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "开始第${i}次重试...")
                 lastFailLength = currentLength
             }
         }
@@ -328,11 +347,11 @@ class TtsManager(val context: Context) {
                 mAudioFormat.hz,
                 onRead = { writeToCallBack(callback!!, it) },
                 error = {
-                    sendLog(LogLevel.ERROR, "解码失败: $it")
+                    if (App.isSysTtsLogEnabled) sendLog(LogLevel.ERROR, "解码失败: $it")
                 })
-            sendLog(LogLevel.WARN, "播放完毕：${text.limitLength(20)}")
+            if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "播放完毕：${text.limitLength(20)}")
         } else {
-            sendLog(LogLevel.WARN, "音频内容为空或被终止请求")
+            if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "音频内容为空或被终止请求")
             callback?.done()
         }
     }

@@ -6,7 +6,6 @@ import android.content.*
 import android.graphics.Color
 import android.os.Build
 import android.os.PowerManager
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.MyLog
@@ -80,8 +79,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         sendStartedMsg()
         /* 初始化Go: 设置日志转发，注册Http.Server */
         val cb = LogCallback { level, msg ->
-            Log.d(TAG, "$level $msg")
-            sendLog(MyLog(level, msg))
+            if (App.isServerLogEnabled) sendLog(MyLog(level, msg))
         }
         Tts_server_lib.init(cb)
         /*启动Go服务并阻塞等待,直到关闭*/

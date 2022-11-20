@@ -14,6 +14,9 @@ class App : Application() {
         val context: Context by lazy { instance.applicationContext }
         val localBroadcast by lazy { LocalBroadcastManager.getInstance(context) }
 
+        var isSysTtsLogEnabled = false
+        var isServerLogEnabled = false
+
         @OptIn(ExperimentalSerializationApi::class)
         val jsonBuilder by lazy {
             Json {

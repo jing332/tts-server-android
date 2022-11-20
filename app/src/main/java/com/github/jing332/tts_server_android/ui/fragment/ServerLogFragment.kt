@@ -53,8 +53,7 @@ class ServerLogFragment : Fragment() {
                 TtsIntentService.instance?.closeServer() /*关闭服务 然后将通过广播通知MainActivity*/
             }
         }
-
-
+        
         val port = SharedPrefsUtils.getPort(requireContext())
         binding.etPort.setText(port.toString())
         if (TtsIntentService.instance?.isRunning == true) {
@@ -76,12 +75,13 @@ class ServerLogFragment : Fragment() {
             addAction(TtsIntentService.ACTION_ON_CLOSED)
             App.localBroadcast.registerReceiver(mReceiver, this)
         }
-
+        App.isServerLogEnabled = true
     }
 
     override fun onDestroy() {
         super.onDestroy()
         App.localBroadcast.unregisterReceiver(mReceiver)
+        App.isServerLogEnabled = false
     }
 
     /* 设置底部按钮、端口 是否可点击 */
