@@ -69,7 +69,7 @@ class TtsSettingsActivity : BackActivity() {
 
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        cfgViewModel.ttsCfgLiveData.value?.apply {
+        cfgViewModel.ttsConfig?.apply {
             menu?.findItem(R.id.menu_isMultiVoice)?.isChecked = isMultiVoice
             menu?.findItem(R.id.menu_doSplit)?.isChecked = isSplitSentences
             menu?.findItem(R.id.menu_replace_manager)?.isChecked = isReplace
@@ -80,17 +80,6 @@ class TtsSettingsActivity : BackActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_doSplit -> {
-                item.isChecked = !item.isChecked
-                cfgViewModel.onMenuIsSplitChanged(item.isChecked)
-                App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
-            }
-            R.id.menu_isMultiVoice -> {
-                item.isChecked = !item.isChecked
-                cfgViewModel.onMenuMultiVoiceChanged(item.isChecked)
-                App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
-            }
-
             R.id.menu_desktopShortcut -> {
                 MyTools.addShortcut(
                     this,
@@ -104,6 +93,7 @@ class TtsSettingsActivity : BackActivity() {
             R.id.menu_addConfig -> {
                 configFragment.startEditActivity()
             }
+
             /* 排序 */
             R.id.menu_sortByApi -> {
                 cfgViewModel.sortListByApi()
@@ -115,19 +105,31 @@ class TtsSettingsActivity : BackActivity() {
                 cfgViewModel.sortListByRaTarget()
             }
 
+            /* 设置 */
+            R.id.menu_doSplit -> {
+                item.isChecked = !item.isChecked
+                cfgViewModel.onMenuIsSplitChanged(item.isChecked)
+                App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
+            }
+            R.id.menu_isMultiVoice -> {
+                item.isChecked = !item.isChecked
+                cfgViewModel.onMenuMultiVoiceChanged(item.isChecked)
+                App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
+            }
             R.id.menu_setAudioRequestTimeout -> {
                 configFragment.setAudioRequestTimeout()
             }
-            R.id.menu_setMinDialogueLen ->{
+            R.id.menu_setMinDialogueLen -> {
                 configFragment.setMinDialogueLength()
             }
 
             R.id.menu_replace_manager -> {
                 val intent = Intent(this, ReplaceManagerActivity::class.java)
-                intent.putExtra(KEY_SWITCH, cfgViewModel.ttsCfgLiveData.value?.isReplace)
+                intent.putExtra(KEY_SWITCH, cfgViewModel.ttsConfig?.isReplace)
                 startForResult.launch(intent)
             }
 
+            /* 导入导出 */
             R.id.menu_importConfig -> {
                 configFragment.importConfig()
             }

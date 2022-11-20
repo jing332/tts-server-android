@@ -86,7 +86,7 @@ class ReplaceManagerActivity : BackActivity(), ReplaceRuleItemAdapter.CallBack {
         if (menu is MenuBuilder) {
             menu.setOptionalIconsVisible(true)
         }
-        menuInflater.inflate(R.menu.replace_manager, menu)
+        menuInflater.inflate(R.menu.menu_replace_manager, menu)
         /* 开关选项 */
         val item = menu?.findItem(R.id.app_bar_switch)
         item!!.apply {

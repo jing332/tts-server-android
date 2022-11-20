@@ -20,8 +20,12 @@ object VoiceTools {
                 tmpStr.deleteAt(tmpStr.length - 1)
                 voiceTagList.add(ResultTextTag(tmpStr.toString(), true))
                 tmpStr.clear()
-            } else if (index == strLen - 1)
-                voiceTagList.add(ResultTextTag(tmpStr.toString(), false))
+            } else if (index == strLen - 1) voiceTagList.add(
+                ResultTextTag(
+                    tmpStr.toString(),
+                    false
+                )
+            )
 
         }
         return voiceTagList
@@ -44,7 +48,8 @@ object VoiceTools {
         multiVoice.forEach {
             if (!StringUtils.isSilent(it.text)) {
                 val pro =
-                    if (it.isDialogue && it.text.lengthOfChinese() >= minDialogueLen) dialogueProperty else asideProperty
+                    if (it.isDialogue && it.text.lengthOfChinese() >= minDialogueLen) dialogueProperty
+                    else asideProperty
                 list.add(ResultMultiVoiceData(pro, it.text))
             }
         }
@@ -55,6 +60,5 @@ object VoiceTools {
 
 data class ResultTextTag(val text: String, val isDialogue: Boolean)
 data class ResultMultiVoiceData(
-    val voiceProperty: VoiceProperty,
-    val raText: String
+    val voiceProperty: VoiceProperty, val raText: String
 )

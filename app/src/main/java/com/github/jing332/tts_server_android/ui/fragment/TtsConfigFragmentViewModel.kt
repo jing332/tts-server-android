@@ -18,59 +18,71 @@ class TtsConfigFragmentViewModel : ViewModel() {
         const val TAG = "TtsConfigFragmentViewModel"
     }
 
-    val ttsCfgLiveData: MutableLiveData<SysTtsConfig> by lazy { MutableLiveData() }
-    val replacedItemDataLiveData: MutableLiveData<ReplacedData> by lazy { MutableLiveData() }
+    val listLiveData: MutableLiveData<ArrayList<SysTtsConfigItem>> by lazy { MutableLiveData() }
     val appendItemDataLiveData: MutableLiveData<SysTtsConfigItem> by lazy { MutableLiveData() }
+    val replacedItemDataLiveData: MutableLiveData<ReplacedData> by lazy { MutableLiveData() }
 
-    val ttsCfg: SysTtsConfig inline get() = ttsCfgLiveData.value!!
+    lateinit var mTtsCfg: SysTtsConfig
+
+    val ttsConfig: SysTtsConfig?
+        get() {
+            return if (this::mTtsCfg.isInitialized) mTtsCfg else null
+        }
 
     fun loadData() {
-        viewModelScope.runOnIO { ttsCfgLiveData.postValue(SysTtsConfig.read()) }
+        viewModelScope.runOnIO {
+            mTtsCfg = SysTtsConfig.read()
+            listLiveData.postValue(mTtsCfg.list)
+        }
     }
 
     fun saveData() {
-        ttsCfg.save()
+        mTtsCfg.save()
+    }
+
+    fun removeItem(position: Int) {
+        mTtsCfg.list.removeAt(position)
+        mTtsCfg.save()
     }
 
     fun onMenuIsSplitChanged(checked: Boolean) {
-        ttsCfg.isSplitSentences = checked
-        ttsCfg.save()
+        mTtsCfg.isSplitSentences = checked
+        mTtsCfg.save()
     }
 
     fun onMenuMultiVoiceChanged(checked: Boolean) {
-        ttsCfg.isMultiVoice = checked
-        ttsCfg.save()
+        mTtsCfg.isMultiVoice = checked
+        mTtsCfg.save()
     }
 
     fun onReplaceSwitchChanged(isChecked: Boolean) {
-        ttsCfg.isReplace = isChecked
-        ttsCfg.save()
+        mTtsCfg.isReplace = isChecked
+        mTtsCfg.save()
     }
 
     fun onCheckBoxChanged(position: Int, checked: Boolean): Boolean {
-        ttsCfgLiveData.value?.apply {
-            /* 检测多语音是否开启 */
-            if (checked && ttsCfgLiveData.value?.isMultiVoice == false) {
-                val target = list.getOrNull(position)?.readAloudTarget ?: ReadAloudTarget.DEFAULT
-                if (target == ReadAloudTarget.ASIDE || target == ReadAloudTarget.DIALOGUE) {
-                    return false
-                }
+        /* 检测多语音是否开启 */
+        if (checked && !mTtsCfg.isMultiVoice) {
+            val target =
+                mTtsCfg.list.getOrNull(position)?.readAloudTarget ?: ReadAloudTarget.DEFAULT
+            if (target == ReadAloudTarget.ASIDE || target == ReadAloudTarget.DIALOGUE) {
+                return false
             }
+        }
 
-            list[position].let { data ->
-                if (checked) { //确保同类型只可单选
-                    ttsCfgLiveData.value!!.list.forEachIndexed { index, it ->
-                        if (it.readAloudTarget == data.readAloudTarget) {
-                            it.isEnabled = false
-                            replacedItemDataLiveData.value = ReplacedData(it, index, true)
-                        }
+        mTtsCfg.list[position].let { data ->
+            if (checked) { //确保同类型只可单选
+                mTtsCfg.list.forEachIndexed { index, it ->
+                    if (it.readAloudTarget == data.readAloudTarget) {
+                        it.isEnabled = false
+                        replaceItem(it, index)
                     }
                 }
-
-                /* 更新position */
-                data.isEnabled = checked
-                replacedItemDataLiveData.value = ReplacedData(data, position, false)
             }
+
+            /* 更新position */
+            data.isEnabled = checked
+            replaceItem(data, position, false)
         }
         return true
     }
@@ -78,10 +90,23 @@ class TtsConfigFragmentViewModel : ViewModel() {
     /* 添加或编辑Item */
     fun onEditActivityResult(data: SysTtsConfigItem, position: Int) {
         if (position >= 0) { //编辑
-            replacedItemDataLiveData.value = ReplacedData(data, position, true)
+            replaceItem(data, position)
         } else { //添加
-            appendItemDataLiveData.value = data
+            appendItem(data)
         }
+    }
+
+    /* 追加Item 同时保存配置文件 */
+    private fun appendItem(data: SysTtsConfigItem) {
+        mTtsCfg.list.add(data)
+        appendItemDataLiveData.value = data
+    }
+
+    /* 替换Item 同时保存配置文件 */
+    private fun replaceItem(data: SysTtsConfigItem, position: Int, isUpdateUi: Boolean = true) {
+        mTtsCfg.list[position] = data
+        mTtsCfg.save()
+        replacedItemDataLiveData.value = ReplacedData(data, position, isUpdateUi)
     }
 
     /**
@@ -89,7 +114,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
      * @return 是否相等
      */
     fun checkMultiVoiceFormat(): Boolean {
-        ttsCfgLiveData.value?.apply {
+        mTtsCfg.apply {
             val aside = currentAsideItem()
             val dialogue = currentDialogueItem()
             if (aside == null || dialogue == null) {
@@ -105,37 +130,37 @@ class TtsConfigFragmentViewModel : ViewModel() {
     }
 
     /* 朗读目标更改 */
-    fun onReadAloudTargetChanged(position: Int, @ReadAloudTarget raTarget: Int) {
-        val data = ttsCfg.list[position]
+    fun setReadAloudTarget(position: Int, @ReadAloudTarget raTarget: Int) {
+        val data = mTtsCfg.list[position]
         data.readAloudTarget = raTarget
-        replacedItemDataLiveData.value = ReplacedData(data, position, true)
+        replaceItem(data, position)
     }
 
     /* 按API排序 */
     fun sortListByApi() {
-        ttsCfgLiveData.value?.apply {
+        mTtsCfg.apply {
             list.sortBy { it.voiceProperty.api }
-            ttsCfgLiveData.value = this
+            listLiveData.value = list
         }
     }
 
     /* 按朗读目标排序 */
     fun sortListByRaTarget() {
-        ttsCfgLiveData.value?.apply {
+        mTtsCfg.apply {
             list.sortBy { it.readAloudTarget }
-            ttsCfgLiveData.value = this
+            listLiveData.value = list
         }
     }
 
     /* 按显示名称排序 */
     fun sortListByDisplayName() {
-        ttsCfgLiveData.value?.apply {
+        mTtsCfg.apply {
             list.sortBy { it.uiData.displayName }
-            ttsCfgLiveData.value = this
+            listLiveData.value = list
         }
     }
 
-
+    /* 上传配置到URL */
     fun uploadConfigToUrl(json: String): Result<String> {
         return try {
             val url = Tts_server_lib.uploadConfig(json)
@@ -146,14 +171,16 @@ class TtsConfigFragmentViewModel : ViewModel() {
         }
     }
 
+    /* 导出配置 */
     fun exportConfig(): String {
         return try {
-            App.jsonBuilder.encodeToString(ttsCfgLiveData.value?.list)
+            App.jsonBuilder.encodeToString(mTtsCfg.list)
         } catch (e: Exception) {
             "导出失败：${e.message}"
         }
     }
 
+    /* 从URL导入配置 */
     fun importConfigByUrl(url: String): String? {
         val jsonStr = try {
             Tts_server_lib.httpGet(url, "")
@@ -163,13 +190,15 @@ class TtsConfigFragmentViewModel : ViewModel() {
         return importConfig(jsonStr.decodeToString())
     }
 
+    /* 从json导入配置 */
     fun importConfig(json: String): String? {
         try {
             val list = App.jsonBuilder.decodeFromString<List<SysTtsConfigItem>>(json)
             list.forEach {
                 it.isEnabled = false
-                appendItemDataLiveData.value = it
+                appendItem(it)
             }
+            mTtsCfg.save()
 
         } catch (e: Exception) {
             return e.message
@@ -177,19 +206,20 @@ class TtsConfigFragmentViewModel : ViewModel() {
         return null
     }
 
-    fun onMinDialogueLength(length: Int) {
-        ttsCfg.minDialogueLength = length
-        ttsCfg.save()
+    /* 设置最小对话汉字数量 */
+    fun setMinDialogueLength(length: Int) {
+        mTtsCfg.minDialogueLength = length
+        mTtsCfg.save()
     }
 
     /* 音频超时 */
     var audioRequestTimeout: Int
         get() {
-            return ttsCfg.timeout
+            return mTtsCfg.timeout
         }
         set(value) {
-            ttsCfg.timeout = value
-            ttsCfg.save()
+            mTtsCfg.timeout = value
+            mTtsCfg.save()
         }
 
     data class ReplacedData(

@@ -142,7 +142,7 @@ object TtsFormatManger {
      */
     fun isFormatSampleEqual(format1: String, format2: String): Boolean {
         return try {
-            format1.split("khz")[0] == format2.split("khz")[0]
+            getFormat(format1)!!.hz == getFormat(format2)!!.hz
         } catch (e: Exception) {
             e.printStackTrace()
             false

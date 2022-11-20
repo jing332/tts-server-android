@@ -14,25 +14,21 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
-import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragmentViewModel
 
 class SysTtsConfigListItemAdapter(
-    val viewModel: TtsConfigFragmentViewModel,
-    var itemList: ArrayList<SysTtsConfigItem>
+    var itemList: ArrayList<SysTtsConfigItem> = arrayListOf()
 ) :
     Adapter<SysTtsConfigListItemAdapter.ViewHolder>() {
     companion object {
         const val TAG = "SysTtsConfigAdapter"
     }
 
-    fun append(item: SysTtsConfigItem, syncModel: Boolean) {
-        if (syncModel) viewModel.ttsCfgLiveData.value?.list?.add(item)
+    fun append(item: SysTtsConfigItem) {
         itemList.add(item)
         notifyItemInserted(itemList.size - 1)
     }
 
     fun remove(position: Int) {
-        viewModel.ttsCfgLiveData.value?.list?.removeAt(position)
         itemList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemList.size)
@@ -44,8 +40,7 @@ class SysTtsConfigListItemAdapter(
         notifyDataSetChanged()
     }
 
-    fun update(item: SysTtsConfigItem, position: Int, isUpdateUi: Boolean) {
-        viewModel.ttsCfgLiveData.value?.list?.set(position, item)
+    fun update(item: SysTtsConfigItem, position: Int, isUpdateUi: Boolean = true) {
         itemList[position] = item
         if (isUpdateUi) notifyItemChanged(position)
     }

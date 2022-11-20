@@ -48,9 +48,7 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
     }
 
     private val recyclerAdapter: SysTtsConfigListItemAdapter by lazy {
-        SysTtsConfigListItemAdapter(
-            viewModel, arrayListOf()
-        )
+        SysTtsConfigListItemAdapter()
     }
 
     /* EditActivity的返回值 */
@@ -94,17 +92,16 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
             this.adapter = recyclerAdapter
         }
         /* 监听整个列表数据list */
-        viewModel.ttsCfgLiveData.observe(this) {
-            Log.d(TAG, "item list changed: $it")
+        viewModel.listLiveData.observe(this) {
             recyclerAdapter.removeAll()
-            it.list.forEach { item ->
-                recyclerAdapter.append(item, false)
+            it.forEach { item ->
+                recyclerAdapter.append(item)
             }
         }
         /* 添加列表数据 */
         viewModel.appendItemDataLiveData.observe(this) {
             Log.d(TAG, "add item: $it")
-            recyclerAdapter.append(it, true)
+            recyclerAdapter.append(it)
             if (!viewModel.checkMultiVoiceFormat()) {
                 AlertDialog.Builder(requireContext()).setTitle(getString(R.string.warning))
                     .setMessage(getString(R.string.msg_aside_and_dialogue_format_different))
@@ -140,7 +137,6 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                 val checkBox = view as CheckBox
                 /* 检测是否开启多语音 */
                 if (viewModel.onCheckBoxChanged(position, checkBox.isChecked)) {
-                    viewModel.saveData()
                     requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
                 } else {
                     AlertDialog.Builder(requireContext())
@@ -162,13 +158,14 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                     .setPositiveButton(R.string.delete) { _, _ ->
                         Log.e(TAG, "remove item: $position")
                         recyclerAdapter.remove(position)
+                        viewModel.removeItem(position)
                     }
                     .show()
             }
             R.id.tv_content -> {
                 val editView = SysTtsNumericalEditView(requireContext())
                 editView.setPadding(25, 25, 25, 50)
-                viewModel.ttsCfgLiveData.value?.list?.get(position)?.let { itemData ->
+                viewModel.ttsConfig!!.list[position].let { itemData ->
                     itemData.voiceProperty.let { pro ->
                         editView.setRate(pro.prosody.rate)
                         editView.setVolume(pro.prosody.volume)
@@ -199,15 +196,16 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_global -> { /* 全局 */
-                    viewModel.onReadAloudTargetChanged(position, ReadAloudTarget.DEFAULT)
+                    viewModel.setReadAloudTarget(position, ReadAloudTarget.DEFAULT)
                 }
                 R.id.menu_setAsDialogue -> { /* 对话  */
-                    viewModel.onReadAloudTargetChanged(position, ReadAloudTarget.DIALOGUE)
+                    viewModel.setReadAloudTarget(position, ReadAloudTarget.DIALOGUE)
                 }
                 R.id.menu_setAsAside -> { /* 旁白 */
-                    viewModel.onReadAloudTargetChanged(position, ReadAloudTarget.ASIDE)
+                    viewModel.setReadAloudTarget(position, ReadAloudTarget.ASIDE)
                 }
             }
+            App.localBroadcast.sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
 
             false
         }
@@ -292,16 +290,15 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         val picker = NumberPicker(requireContext()).apply {
             maxValue = numList.size - 1
             displayedValues = numList.toTypedArray()
-            value = viewModel.ttsCfg.minDialogueLength
+            value = viewModel.ttsConfig!!.minDialogueLength
         }
         AlertDialog.Builder(requireContext()).setTitle("对话文本最小匹配汉字数").setMessage("(包括中文符号)")
             .setView(picker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                toastOnUi(picker.value.toString())
-                viewModel.onMinDialogueLength(picker.value)
+                viewModel.setMinDialogueLength(picker.value)
             }
             .setNegativeButton(R.string.reset) { _, _ ->
-                viewModel.onMinDialogueLength(0)
+                viewModel.setMinDialogueLength(0)
             }
             .show()
     }

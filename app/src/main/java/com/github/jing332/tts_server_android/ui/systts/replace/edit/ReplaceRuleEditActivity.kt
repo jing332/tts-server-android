@@ -63,6 +63,10 @@ class ReplaceRuleEditActivity : BackActivity() {
             doTest()
         }
 
+        binding.btnTest.setOnClickListener {
+            doTest()
+        }
+
         viewModel.liveData.observe(this) {
             binding.apply {
                 etName.setText(it.name)
@@ -88,7 +92,7 @@ class ReplaceRuleEditActivity : BackActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.replace_rule_edit, menu)
+        menuInflater.inflate(R.menu.menu_replace_rule_edit, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -98,7 +102,7 @@ class ReplaceRuleEditActivity : BackActivity() {
                 viewModel.liveData.value?.apply {
                     pattern = binding.etPattern.text.toString()
                     if (pattern.isEmpty()) {
-                        binding.etPattern.error = "不可为空！"
+                        binding.etPattern.error = getString(R.string.cannot_empty)
                         binding.etPattern.requestFocus()
 
                         return true
