@@ -2,7 +2,9 @@ package com.github.jing332.tts_server_android.ui.systts
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -19,6 +21,7 @@ import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBi
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.SysTtsNumericalEditView
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
+import com.github.jing332.tts_server_android.util.runOnUI
 import com.github.jing332.tts_server_android.util.toastOnUi
 
 class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
@@ -113,7 +116,6 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
         /* 语速 */
         model.rateLiveData.observe(this) {
             Log.d(TAG, "rate:$it")
-//            binding.seekBarRate.seekBar.progress = it
             binding.sysTtsNumericalEditView.setRate(it)
         }
         /* 音量 */
@@ -162,7 +164,23 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
                 binding.sysTtsNumericalEditView.isStyleDegreeVisible = position != TtsApiType.EDGE
                 val waitDialog = WaitDialog(this)
                 waitDialog.show()
-                model.apiSelected(position) { waitDialog.dismiss() }
+                model.apiSelected(position) {
+                    waitDialog.dismiss()
+                    runOnUI {
+                        it?.let {
+                            val tv = TextView(this)
+                            tv.text = it
+                            tv.setPadding(20, 20, 20, 0)
+                            tv.setTextColor(Color.RED)
+                            AlertDialog.Builder(this).setTitle("读取语音数据失败：")
+                                .setView(tv).setPositiveButton(
+                                    R.string.retry
+                                ) { _, _ ->
+                                    onItemSelected(parent, view, position, id)
+                                }.show()
+                        }
+                    }
+                }
             }
             R.id.spinner_language -> model.languageSelected(position)
             R.id.spinner_voice -> {

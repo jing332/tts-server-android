@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.AzureVoiceBean
@@ -16,13 +17,11 @@ import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
 import com.github.jing332.tts_server_android.util.FileUtils
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import tts_server_lib.Tts_server_lib
 import java.io.File
-import java.util.*
 
 class TtsConfigEditViewModel : ViewModel() {
     companion object {
@@ -109,19 +108,23 @@ class TtsConfigEditViewModel : ViewModel() {
     }
 
     /* {接口}选中变更 */
-    @OptIn(DelicateCoroutinesApi::class)
-    fun apiSelected(position: Int, finally: () -> Unit) {
+    fun apiSelected(position: Int, finally: (String?) -> Unit) {
         Log.d(TAG, "apiSelected: $position")
         mTtsCfgItem.voiceProperty.api = position
         apiLiveData.value?.position = position
         updateFormatLiveData()
-        GlobalScope.launch {
-            when (position) {
-                TtsApiType.EDGE -> useEdgeApi()
-                TtsApiType.AZURE -> useAzureApi()
-                TtsApiType.CREATION -> useCreationApi()
+        viewModelScope.launch(Dispatchers.IO) {
+            kotlin.runCatching {
+                when (position) {
+                    TtsApiType.EDGE -> useEdgeApi()
+                    TtsApiType.AZURE -> useAzureApi()
+                    TtsApiType.CREATION -> useCreationApi()
+                }
+            }.onFailure {
+                finally.invoke(it.message)
+            }.onSuccess {
+                finally.invoke(null)
             }
-            finally.invoke()
         }
     }
 
@@ -317,7 +320,6 @@ class TtsConfigEditViewModel : ViewModel() {
         mVoiceProperty.voiceId = null
         mVoiceProperty.expressAs = null
 
-
         if (!this::mEdgeVoices.isInitialized) {
             /* 使用本地缓存或远程下载 */
             val cachePath = "$mCacheDir/edge/voices.json"
@@ -356,14 +358,8 @@ class TtsConfigEditViewModel : ViewModel() {
         if (FileUtils.fileExists(cacheFilepath)) {
             data = File(cacheFilepath).readBytes()
         } else {
-            try {
-                data = Tts_server_lib.getAzureVoice()
-                FileUtils.saveFile(cacheFilepath, data)
-            } catch (e: Exception) {
-                Log.e(TAG, "获取Azure Voices数据失败")
-                e.printStackTrace()
-                return
-            }
+            data = Tts_server_lib.getAzureVoice()
+            FileUtils.saveFile(cacheFilepath, data)
         }
 
         mAzureVoices = mJson.decodeFromString(data.decodeToString())
@@ -392,14 +388,8 @@ class TtsConfigEditViewModel : ViewModel() {
         if (FileUtils.fileExists(cacheFilepath)) {
             data = File(cacheFilepath).readBytes()
         } else {
-            try {
-                data = Tts_server_lib.getCreationVoices()
-                FileUtils.saveFile(cacheFilepath, data)
-            } catch (e: Exception) {
-                Log.e(TAG, "获取Creation Voices数据失败")
-                e.printStackTrace()
-                return
-            }
+            data = Tts_server_lib.getCreationVoices()
+            FileUtils.saveFile(cacheFilepath, data)
         }
         mCreationVoices =
             mJson.decodeFromString(data.decodeToString())

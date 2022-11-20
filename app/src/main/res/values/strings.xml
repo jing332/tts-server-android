@@ -113,4 +113,5 @@
     <string name="import_from_clip">从剪贴板导入</string>
     <string name="url_net">URL网络链接</string>
     <string name="import_from_url">从上方URL导入</string>
+    <string name="retry">重试</string>
 </resources>
