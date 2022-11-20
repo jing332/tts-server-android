@@ -110,4 +110,7 @@
     <string name="replace_as">替换为</string>
     <string name="insert_pinyin">插入拼音声调</string>
     <string name="use_regex">使用正则</string>
+    <string name="import_from_clip">从剪贴板导入</string>
+    <string name="url_net">URL网络链接</string>
+    <string name="import_from_url">从上方URL导入</string>
 </resources>

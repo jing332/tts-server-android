@@ -244,16 +244,16 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
 
     fun importConfig() {
         val et = EditText(requireContext())
-        et.hint = "URL网络链接"
+        et.hint = getString(R.string.url_net)
         AlertDialog.Builder(requireContext()).setTitle(R.string.import_config).setView(et)
-            .setPositiveButton("从剪贴板导入") { _, _ ->
+            .setPositiveButton(R.string.import_from_clip) { _, _ ->
                 viewModel.viewModelScope.launch {
                     val err = viewModel.importConfig(ClipboardUtils.text.toString())
                     err?.let {
                         longToast("导入配置失败：$err")
                     }
                 }
-            }.setNegativeButton("从上方URL导入") { _, _ ->
+            }.setNegativeButton(getString(R.string.import_from_url)) { _, _ ->
                 val err = viewModel.importConfigByUrl(et.text.toString())
                 err?.let {
                     longToast("导入配置失败：$err")
