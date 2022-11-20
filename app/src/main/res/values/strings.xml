@@ -114,4 +114,7 @@
     <string name="url_net">URL网络链接</string>
     <string name="import_from_url">从上方URL导入</string>
     <string name="retry">重试</string>
+    <string name="label_result">结果：</string>
+    <string name="test">测试</string>
+    <string name="test_text">测试文本</string>
 </resources>

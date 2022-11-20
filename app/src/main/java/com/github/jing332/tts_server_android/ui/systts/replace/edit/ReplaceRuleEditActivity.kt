@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.ReplaceRuleItemData
@@ -27,9 +28,9 @@ class ReplaceRuleEditActivity : BackActivity() {
         position = intent.getIntExtra(KeyConst.KEY_POSITION, -1)
 
         binding.btnPinyinList.setOnClickListener {
-            val pinyinList = "ā á ǎ à ê ē é ě è ī í ǐ ì ō ó ǒ ò ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ")
+            val pinyinList = "ā á ǎ à ê ē é ě è ī í ǐ ì ō ó ǒ ò ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ").toTypedArray()
             AlertDialog.Builder(this).setItems(
-                pinyinList.toTypedArray()
+                pinyinList
             ) { _, which ->
                 val pinyin = pinyinList[which]
                 if (binding.etPattern.hasFocus()) {
@@ -48,6 +49,20 @@ class ReplaceRuleEditActivity : BackActivity() {
             }.show()
         }
 
+        binding.etPattern.addTextChangedListener {
+            if (binding.etTestText.text.isEmpty()){
+                binding.etTestText.text = it
+            }
+        }
+
+        binding.etReplacement.addTextChangedListener {
+            doTest()
+        }
+
+        binding.etTestText.addTextChangedListener {
+            doTest()
+        }
+
         viewModel.liveData.observe(this) {
             binding.apply {
                 etName.setText(it.name)
@@ -62,6 +77,15 @@ class ReplaceRuleEditActivity : BackActivity() {
         viewModel.load(data)
     }
 
+    private fun doTest() {
+        val text = binding.etTestText.text.toString()
+        val pattern = binding.etPattern.text.toString()
+        val replacement = binding.etReplacement.text.toString()
+        val isRegex = binding.switchIsRegex.isChecked
+
+        val result = viewModel.test(text, pattern, replacement, isRegex).ifEmpty { getString(R.string.none) }
+        binding.tvResult.text = result
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.replace_rule_edit, menu)
