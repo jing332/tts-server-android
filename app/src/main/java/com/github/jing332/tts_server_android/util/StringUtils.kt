@@ -51,3 +51,16 @@ object StringUtils {
 fun String.limitLength(maxLength: Int): String {
     return StringUtils.limitLength(this, maxLength)
 }
+
+/**
+ * 字符串中汉字数量
+ */
+fun String.lengthOfChinese(): Int {
+    var count = 0
+    val c: CharArray = toCharArray()
+    for (i in c.indices) {
+        val len = Integer.toBinaryString(c[i].code)
+        if (len.length > 8) count++
+    }
+    return count
+}

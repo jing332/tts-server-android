@@ -202,7 +202,7 @@ class TtsManager(val context: Context) {
         dialogue: VoiceProperty
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
         /* 分割为多语音  */
-        val map = VoiceTools.splitMultiVoice(text, aside, dialogue)
+        val map = VoiceTools.splitMultiVoice(text, aside, dialogue, mTtsCfg.minDialogueLength)
         if (isSplit)
             map.forEach {
                 StringUtils.splitSentences(it.raText).forEach { splitedText ->

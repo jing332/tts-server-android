@@ -283,4 +283,26 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
                 }
             }.show()
     }
+
+    fun setMinDialogueLength() {
+        val numList = arrayListOf("不限制")
+        for (i in 1..10)
+            numList.add("对话字数 ≥ $i")
+
+        val picker = NumberPicker(requireContext()).apply {
+            maxValue = numList.size - 1
+            displayedValues = numList.toTypedArray()
+            value = viewModel.ttsCfg.minDialogueLength
+        }
+        AlertDialog.Builder(requireContext()).setTitle("对话文本最小匹配汉字数").setMessage("(包括中文符号)")
+            .setView(picker)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                toastOnUi(picker.value.toString())
+                viewModel.onMinDialogueLength(picker.value)
+            }
+            .setNegativeButton(R.string.reset) { _, _ ->
+                viewModel.onMinDialogueLength(0)
+            }
+            .show()
+    }
 }

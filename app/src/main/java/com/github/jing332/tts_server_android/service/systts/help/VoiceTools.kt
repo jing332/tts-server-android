@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.service.systts.help
 
 import com.github.jing332.tts_server_android.data.VoiceProperty
 import com.github.jing332.tts_server_android.util.StringUtils
+import com.github.jing332.tts_server_android.util.lengthOfChinese
 
 object VoiceTools {
     /* 分割旁白和对白 */
@@ -16,6 +17,7 @@ object VoiceTools {
                 voiceTagList.add(ResultTextTag(tmpStr.toString(), false))
                 tmpStr.clear()
             } else if (char == '”') {
+                tmpStr.deleteAt(tmpStr.length - 1)
                 voiceTagList.add(ResultTextTag(tmpStr.toString(), true))
                 tmpStr.clear()
             } else if (index == strLen - 1)
@@ -34,13 +36,15 @@ object VoiceTools {
     fun splitMultiVoice(
         text: String,
         asideProperty: VoiceProperty,
-        dialogueProperty: VoiceProperty
+        dialogueProperty: VoiceProperty,
+        minDialogueLen: Int
     ): List<ResultMultiVoiceData> {
         val multiVoice = splitMultiVoice(text)
         val list = arrayListOf<ResultMultiVoiceData>()
         multiVoice.forEach {
             if (!StringUtils.isSilent(it.text)) {
-                val pro = if (it.isDialogue) dialogueProperty else asideProperty
+                val pro =
+                    if (it.isDialogue && it.text.lengthOfChinese() >= minDialogueLen) dialogueProperty else asideProperty
                 list.add(ResultMultiVoiceData(pro, it.text))
             }
         }

@@ -22,7 +22,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
     val replacedItemDataLiveData: MutableLiveData<ReplacedData> by lazy { MutableLiveData() }
     val appendItemDataLiveData: MutableLiveData<SysTtsConfigItem> by lazy { MutableLiveData() }
 
-    private val ttsCfg: SysTtsConfig inline get() = ttsCfgLiveData.value!!
+    val ttsCfg: SysTtsConfig inline get() = ttsCfgLiveData.value!!
 
     fun loadData() {
         viewModelScope.runOnIO { ttsCfgLiveData.postValue(SysTtsConfig.read()) }
@@ -175,6 +175,11 @@ class TtsConfigFragmentViewModel : ViewModel() {
             return e.message
         }
         return null
+    }
+
+    fun onMinDialogueLength(length: Int) {
+        ttsCfg.minDialogueLength = length
+        ttsCfg.save()
     }
 
     /* 音频超时 */

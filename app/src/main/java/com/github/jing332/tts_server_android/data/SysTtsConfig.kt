@@ -15,7 +15,8 @@ data class SysTtsConfig(
     var isSplitSentences: Boolean = true,
     var isMultiVoice: Boolean = false,
     var isReplace: Boolean = false,
-    var timeout: Int = 5000
+    var timeout: Int = 5000,
+    var minDialogueLength: Int = 0
 ) {
     companion object {
         private val filepath by lazy { "${App.context.filesDir.absolutePath}/system_tts_config.json" }

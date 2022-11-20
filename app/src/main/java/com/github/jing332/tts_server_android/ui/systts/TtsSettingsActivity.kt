@@ -118,6 +118,10 @@ class TtsSettingsActivity : BackActivity() {
             R.id.menu_setAudioRequestTimeout -> {
                 configFragment.setAudioRequestTimeout()
             }
+            R.id.menu_setMinDialogueLen ->{
+                configFragment.setMinDialogueLength()
+            }
+
             R.id.menu_replace_manager -> {
                 val intent = Intent(this, ReplaceManagerActivity::class.java)
                 intent.putExtra(KEY_SWITCH, cfgViewModel.ttsCfgLiveData.value?.isReplace)

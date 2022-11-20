@@ -44,6 +44,10 @@
             android:checkable="true"
             android:icon="@drawable/ic_baseline_supervisor_account_24"
             android:title="@string/multi_voice" />
+        <item
+            android:id="@+id/menu_setMinDialogueLen"
+            android:icon="@drawable/ic_baseline_textsms_24"
+            android:title="@string/set_dialogue_min_match_word_count" />
     </group>
 
     <item
