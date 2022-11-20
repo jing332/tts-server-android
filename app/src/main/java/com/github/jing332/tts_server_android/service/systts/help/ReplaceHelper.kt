@@ -34,8 +34,12 @@ class ReplaceHelper {
     fun doReplace(text: String): String {
         var s = text
         rules.forEach {
-            if (it.isEnabled)
-                s = s.replace(it.pattern, it.replacement)
+            if (it.isEnabled) {
+                s = if (it.isRegex)
+                    s.replace(Regex(it.pattern), it.replacement)
+                else
+                    s.replace(it.pattern, it.replacement)
+            }
         }
 
         return s

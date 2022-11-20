@@ -7,7 +7,14 @@ import com.github.jing332.tts_server_android.data.ReplaceRuleItemData
 class ReplaceRuleEditActivityViewModel : ViewModel() {
     val liveData: MutableLiveData<ReplaceRuleItemData> by lazy { MutableLiveData() }
 
-    fun load(data: ReplaceRuleItemData) {
+    fun load(data: ReplaceRuleItemData?) {
         liveData.value = data
+            ?: ReplaceRuleItemData(
+                true,
+                isRegex = false,
+                name = "",
+                pattern = "",
+                replacement = ""
+            )
     }
 }

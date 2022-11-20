@@ -27,7 +27,7 @@ class ReplaceRuleEditActivity : BackActivity() {
         position = intent.getIntExtra(KeyConst.KEY_POSITION, -1)
 
         binding.btnPinyinList.setOnClickListener {
-            val pinyinList = "ā á ǎ à ō ó ǒ ò ê ē é ě è ī í ǐ ì ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ")
+            val pinyinList = "ā á ǎ à ê ē é ě è ī í ǐ ì ō ó ǒ ò ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ")
             AlertDialog.Builder(this).setItems(
                 pinyinList.toTypedArray()
             ) { _, which ->
@@ -53,12 +53,12 @@ class ReplaceRuleEditActivity : BackActivity() {
                 etName.setText(it.name)
                 etPattern.setText(it.pattern)
                 etReplacement.setText(it.replacement)
+                switchIsRegex.isChecked = it.isRegex
             }
         }
 
-        var data =
+        val data =
             intent.getSerializableExtra(KeyConst.KEY_DATA)?.let { it as ReplaceRuleItemData }
-        if (data == null) data = ReplaceRuleItemData()
         viewModel.load(data)
     }
 
@@ -82,8 +82,7 @@ class ReplaceRuleEditActivity : BackActivity() {
 
                     name = binding.etName.text.toString().ifEmpty { pattern }
                     replacement = binding.etReplacement.text.toString()
-
-
+                    isRegex = binding.switchIsRegex.isChecked
                 }
                 val data = viewModel.liveData.value
 

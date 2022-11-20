@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
+import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
@@ -53,7 +54,6 @@ class ReplaceManagerActivity : BackActivity(), ReplaceRuleItemAdapter.CallBack {
 
         viewModel.load()
     }
-
 
     private val startForResult = registerForActivityResult(StartActivityForResult()) { result ->
         result.data?.apply {
