@@ -2,6 +2,7 @@ package tts_server_lib
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	tts_server_go "github.com/jing332/tts-server-go"
 	"github.com/jing332/tts-server-go/service"
@@ -12,6 +13,11 @@ import (
 	"net/http"
 	"time"
 )
+
+func init() {
+	// 跳过证书验证
+	http.DefaultClient.Transport = &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+}
 
 type VoiceProperty service.VoiceProperty
 type VoiceProsody service.Prosody
@@ -65,6 +71,7 @@ func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
 		return nil, fmt.Errorf("已超时：%dms", e.Timeout)
 	}
 }
+
 
 func GetEdgeVoices() ([]byte, error) {
 	resp, err := http.Get("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4")
