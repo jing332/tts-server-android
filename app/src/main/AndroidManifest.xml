@@ -102,8 +102,8 @@
         <service
             android:name=".service.TtsIntentService"
             android:enabled="true"
-            android:exported="false"
-            tools:ignore="Instantiatable" />
+            android:exported="true"
+            tools:ignore="ExportedService,Instantiatable" />
         <service
             android:name=".service.QSTileService"
             android:exported="true"

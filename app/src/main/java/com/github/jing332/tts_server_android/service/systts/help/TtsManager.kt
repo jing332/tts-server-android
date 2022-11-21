@@ -61,10 +61,7 @@ class TtsManager(val context: Context) {
         mTtsCfg.apply {
             mLib.setUseDnsLookup(SharedPrefsUtils.getUseDnsEdge(context))
             mLib.setTimeout(timeout)
-            if (isReplace) {
-                replaceHelper.load()
-            }
-
+            if (isReplace) replaceHelper.load()
             if (isMultiVoice) {
                 var aside = mTtsCfg.currentAsideItem()
                 if (aside == null) {
@@ -84,7 +81,7 @@ class TtsManager(val context: Context) {
             } else {
                 var cfg = mTtsCfg.selectedItem()
                 if (cfg == null) {
-                    context.toastOnUi("警告：缺少全局配置，使用默认！")
+                    context.toastOnUi("警告：缺少{全部}，使用默认！")
                     cfg = SysTtsConfigItem(true, ReadAloudTarget.DEFAULT)
                     mTtsCfg.list.add(cfg)
                 }
