@@ -1,14 +1,12 @@
 package com.github.jing332.tts_server_android.data.entities
 
-import android.os.Parcelable
 import androidx.room.*
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.SysTtsUiData
-import com.github.jing332.tts_server_android.data.VoiceProperty
-import kotlinx.parcelize.Parcelize
+import com.github.jing332.tts_server_android.data.MsTtsProperty
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 
 @kotlinx.serialization.Serializable
@@ -21,69 +19,75 @@ data class SysTts(
 
     // 是否启用
     @kotlinx.serialization.Transient
-    @ColumnInfo(name = "is_enabled")
     var isEnabled: Boolean = false,
 
     // UI显示名称
-    @ColumnInfo(name = "ui_data")
-    var uiData: SysTtsUiData = SysTtsUiData(""),
-
+    var displayName: String? = null,
 
     // 朗读目标
-    @ColumnInfo(name = "read_aloud_target")
     @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.DEFAULT,
 
-    // 微软TTS属性
-    @ColumnInfo(name = "ms_tts_property")
-    var msTtsProperty: VoiceProperty? = null,
+    // 内置的微软TTS
+    var msTts: MsTtsProperty? = null,
 
     // 自定义的HttpTTS
-    @ColumnInfo(name = "http_tts")
-    var httpTts: HttpTts? = null
+    var httpTts: HttpTtsProperty? = null
 ) : java.io.Serializable {
     val isMsTts: Boolean
-        get() {
-            return msTtsProperty != null
+        inline get() {
+            return msTts != null
         }
 
     val isHttpTts: Boolean
-        get() {
+        inline get() {
             return httpTts != null
         }
 
-    @Parcelize
-    @kotlinx.serialization.Serializable
-    data class HttpTts(var name: String) : java.io.Serializable, Parcelable
+    val readAloudTargetString: String
+        inline get() {
+            return ReadAloudTarget.toString(readAloudTarget)
+        }
+
+    /**
+     * 内容描述
+     */
+    val description: String?
+        inline get() {
+            return if (isMsTts) msTts?.description else null
+        }
+
 
     class Converters {
-        @TypeConverter
-        fun uiDataToString(uiData: SysTtsUiData?): String = App.jsonBuilder.encodeToString(uiData)
+        companion object {
+            @OptIn(ExperimentalSerializationApi::class)
+            val json by lazy {
+                Json {
+                    ignoreUnknownKeys = true
+                    explicitNulls = false //忽略为null的字段} }
+                }
+            }
 
-        @TypeConverter
-        fun stringToUiData(json: String?) = decodeFromString<SysTtsUiData>(json)
-
-        @TypeConverter
-        fun msTtsPropertyToString(pro: VoiceProperty?): String = App.jsonBuilder.encodeToString(pro)
-
-        @TypeConverter
-        fun stringTomsTtsProperty(json: String?) = decodeFromString<VoiceProperty>(json)
-
-        @TypeConverter
-        fun httpTtsToString(httpTts: HttpTts?) = App.jsonBuilder.encodeToString(httpTts)
-
-        @TypeConverter
-        fun stringToHttpTts(json: String?) = decodeFromString<HttpTts>(json)
-
-        private inline fun <reified T> decodeFromString(json: String?): T? {
-            if (json == null) return null
-            return try {
-                App.jsonBuilder.decodeFromString<T>(json.toString())
-            } catch (e: Exception) {
-                null
+            private inline fun <reified T> decodeFromString(s: String?): T? {
+                if (s == null) return null
+                return try {
+                    json.decodeFromString<T>(s.toString())
+                } catch (e: Exception) {
+                    null
+                }
             }
         }
+
+        @TypeConverter
+        fun msTtsPropertyToString(pro: MsTtsProperty?): String =
+            json.encodeToString(pro)
+
+        @TypeConverter
+        fun stringTomsTtsProperty(json: String?) = decodeFromString<MsTtsProperty>(json)
+
+        @TypeConverter
+        fun httpTtsToString(httpTts: HttpTtsProperty?) = json.encodeToString(httpTts)
+
+        @TypeConverter
+        fun stringToHttpTts(json: String?) = decodeFromString<HttpTtsProperty>(json)
     }
-
-
 }
-

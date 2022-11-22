@@ -1,24 +1,18 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
-import android.util.Log
-import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.data.ReplaceRuleItemData
-import kotlinx.serialization.decodeFromString
-import java.io.File
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 
 class ReplaceHelper {
     companion object {
         const val TAG = "ReplaceHelper"
     }
 
-    private lateinit var rules: List<ReplaceRuleItemData>
+    private lateinit var rules: List<ReplaceRule>
 
     fun load(): String? {
         try {
-            val data = File(AppConst.replaceRulesPath).readText()
-            rules = App.jsonBuilder.decodeFromString(data)
-            Log.i(TAG, rules.toString())
+            rules = appDb.replaceRuleDao.all
         } catch (e: Exception) {
             e.printStackTrace()
             rules = arrayListOf()

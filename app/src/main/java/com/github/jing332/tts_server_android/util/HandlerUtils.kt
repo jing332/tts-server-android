@@ -8,6 +8,7 @@ import android.os.Looper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /** This main looper cache avoids synchronization overhead when accessed repeatedly. */
 private val mainLooper: Looper = Looper.getMainLooper()
@@ -39,12 +40,12 @@ fun runOnUI(function: () -> Unit) {
     }
 }
 
-fun CoroutineScope.runOnIO(function: () -> Unit) {
+fun CoroutineScope.runOnIO(function: suspend () -> Unit) {
     if (isMainThread) {
         launch(IO) {
             function()
         }
     } else {
-        function()
+        runBlocking { function() }
     }
 }

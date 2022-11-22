@@ -2,17 +2,15 @@ package com.github.jing332.tts_server_android.ui.systts.replace.edit
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.github.jing332.tts_server_android.data.ReplaceRuleItemData
+import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import java.util.regex.Pattern
 
 class ReplaceRuleEditActivityViewModel : ViewModel() {
-    val liveData: MutableLiveData<ReplaceRuleItemData> by lazy { MutableLiveData() }
+    val liveData: MutableLiveData<ReplaceRule> by lazy { MutableLiveData() }
 
-    fun load(data: ReplaceRuleItemData?) {
+    fun load(data: ReplaceRule?) {
         liveData.value = data
-            ?: ReplaceRuleItemData(
-                true,
-                isRegex = false,
+            ?: ReplaceRule(
                 name = "",
                 pattern = "",
                 replacement = ""

@@ -1,9 +1,10 @@
 package com.github.jing332.tts_server_android.ui.fragment
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.SysTtsConfigItem
+import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.help.SysTtsConfig
@@ -17,6 +18,32 @@ class TtsConfigFragmentViewModel : ViewModel() {
         const val TAG = "TtsConfigFragmentViewModel"
     }
 
+    /**
+     *  兼容旧的配置文件
+     *  return 旧配置文件是否删除成功（如果有）
+     */
+    fun compatOldConfig(): Boolean {
+        val compatConfig = CompatSysTtsConfig.read()
+        compatConfig?.apply {
+            list.forEach {
+                appDb.sysTtsDao.insert(
+                    SysTts(
+                        readAloudTarget = it.readAloudTarget,
+                        msTts = it.voiceProperty,
+                        displayName = it.uiData.displayName,
+                        isEnabled = it.isEnabled
+                    )
+                )
+            }
+            SysTtsConfig.isMultiVoiceEnabled = isMultiVoice
+            SysTtsConfig.isSplitEnabled = isSplitSentences
+            SysTtsConfig.requestTimeout = timeout
+
+            return CompatSysTtsConfig.deleteConfigFile()
+        }
+        return false
+    }
+
     fun onCheckBoxChanged(list: List<SysTts>, position: Int, checked: Boolean): Boolean {
         //检测多语音是否开启
         if (checked && !SysTtsConfig.isMultiVoiceEnabled) {
@@ -28,45 +55,33 @@ class TtsConfigFragmentViewModel : ViewModel() {
         }
 
         list[position].let { data ->
-            if (checked) { //确保同类型只可单选
-                list.forEachIndexed { index, it ->
+            if (checked) { // 确保同类型只可单选
+                list.forEach {
                     if (it.readAloudTarget == data.readAloudTarget) {
-                        it.isEnabled = false
-                        appDb.sysTtsDao.update(it)
+                        appDb.sysTtsDao.update(it.copy(isEnabled = false))
+                        Log.e("TAG", "单选排斥")
                     }
                 }
             }
 
-            // 更新position
-            data.isEnabled = checked
-            appDb.sysTtsDao.update(data)
+            appDb.sysTtsDao.update(data.copy(isEnabled = checked))
         }
         return true
     }
-
-    /* 添加或编辑Item */
-    fun onEditActivityResult(data: SysTts, position: Int) {
-        if (position >= 0) { //编辑
-            appDb.sysTtsDao.update(data)
-        } else { //添加
-            appDb.sysTtsDao.insert(data)
-        }
-    }
-
 
     /**
      * 检查多语音音频格式是否一致
      * @return 是否相等
      */
-    fun checkMultiVoiceFormat(list: List<SysTts>): Boolean {
+    fun checkMultiVoiceFormat(): Boolean {
         val aside = appDb.sysTtsDao.getByReadAloudTarget(ReadAloudTarget.ASIDE)
         val dialogue = appDb.sysTtsDao.getByReadAloudTarget(ReadAloudTarget.DIALOGUE)
         if (aside == null || dialogue == null) {
             return true
         } else if (aside.isEnabled && dialogue.isEnabled) {
             return TtsFormatManger.isFormatSampleEqual(
-                aside.msTtsProperty?.format ?: "",
-                dialogue.msTtsProperty?.format ?: ""
+                aside.msTts?.format ?: "",
+                dialogue.msTts?.format ?: ""
             )
         }
         return true
@@ -128,11 +143,5 @@ class TtsConfigFragmentViewModel : ViewModel() {
         return null
     }
 
-
-    data class ReplacedData(
-        var sysTtsConfigItem: SysTtsConfigItem,
-        var position: Int,
-        val updateUi: Boolean,
-    )
 
 }

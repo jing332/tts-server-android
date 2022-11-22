@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
-import com.github.jing332.tts_server_android.data.ReplaceRuleItemData
+import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import com.github.jing332.tts_server_android.databinding.ActivityReplaceRuleEditBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 
@@ -19,16 +19,15 @@ class ReplaceRuleEditActivity : BackActivity() {
     val binding by lazy { ActivityReplaceRuleEditBinding.inflate(layoutInflater) }
     val viewModel: ReplaceRuleEditActivityViewModel by viewModels()
 
-    var position = -1
+    private val pinyinList by lazy {
+        "ā á ǎ à ê ē é ě è ī í ǐ ì ō ó ǒ ò ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ").toTypedArray()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        position = intent.getIntExtra(KeyConst.KEY_POSITION, -1)
-
         binding.btnPinyinList.setOnClickListener {
-            val pinyinList = "ā á ǎ à ê ē é ě è ī í ǐ ì ō ó ǒ ò ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ").toTypedArray()
             AlertDialog.Builder(this).setItems(
                 pinyinList
             ) { _, which ->
@@ -50,7 +49,7 @@ class ReplaceRuleEditActivity : BackActivity() {
         }
 
         binding.etPattern.addTextChangedListener {
-            if (binding.etTestText.text.isEmpty()){
+            if (binding.etTestText.text.isEmpty()) {
                 binding.etTestText.text = it
             }
         }
@@ -76,8 +75,7 @@ class ReplaceRuleEditActivity : BackActivity() {
             }
         }
 
-        val data =
-            intent.getSerializableExtra(KeyConst.KEY_DATA)?.let { it as ReplaceRuleItemData }
+        val data = intent.getSerializableExtra(KeyConst.KEY_DATA)?.let { it as ReplaceRule }
         viewModel.load(data)
     }
 
@@ -87,7 +85,8 @@ class ReplaceRuleEditActivity : BackActivity() {
         val replacement = binding.etReplacement.text.toString()
         val isRegex = binding.switchIsRegex.isChecked
 
-        val result = viewModel.test(text, pattern, replacement, isRegex).ifEmpty { getString(R.string.none) }
+        val result =
+            viewModel.test(text, pattern, replacement, isRegex).ifEmpty { getString(R.string.none) }
         binding.tvResult.text = result
     }
 
@@ -119,7 +118,6 @@ class ReplaceRuleEditActivity : BackActivity() {
                     KeyConst.KEY_DATA,
                     data
                 )
-                intent.putExtra(KeyConst.KEY_POSITION, position)
                 setResult(Activity.RESULT_OK, intent)
                 finish()
             }

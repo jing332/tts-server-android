@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.cioccarellia.ksprefs.KsPrefs
+import com.drake.brv.utils.BRV
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlin.properties.Delegates
@@ -19,6 +20,7 @@ class App : Application() {
         var isServerLogEnabled = false
 
         val prefs by lazy { KsPrefs(instance) { xmlPrefix = "systts" } }
+
         @OptIn(ExperimentalSerializationApi::class)
         val jsonBuilder by lazy {
             Json {
@@ -33,5 +35,7 @@ class App : Application() {
         super.onCreate()
         instance = this
         CrashHandler(this)
+
+        BRV.modelId = BR.m
     }
 }

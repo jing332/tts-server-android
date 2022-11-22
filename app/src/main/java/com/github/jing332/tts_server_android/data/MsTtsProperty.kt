@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.data
 
 import android.os.Parcelable
+import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import kotlinx.parcelize.Parcelize
@@ -8,7 +9,7 @@ import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 @Parcelize
-data class VoiceProperty(
+data class MsTtsProperty(
     @TtsApiType var api: Int = TtsApiType.EDGE,
     var format: String = "",
     var locale: String,
@@ -43,8 +44,29 @@ data class VoiceProperty(
         const val DEFAULT_VOICE_ID = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
     }
 
-    public override fun clone(): VoiceProperty {
-        val obj = super.clone() as VoiceProperty
+    val description: String
+        inline get() {
+            val rateStr = if (prosody.isRateFollowSystem()) "跟随" else prosody.rate
+            val volume = prosody.volume
+            val style = if (expressAs?.style?.isEmpty() == false) {
+                CnLocalMap.getStyleAndRole(expressAs?.style ?: "")
+            } else "无"
+            val styleDegree = expressAs?.styleDegree ?: 1F
+            val role = if (expressAs?.role?.isEmpty() == false) {
+                CnLocalMap.getStyleAndRole(expressAs?.role ?: "")
+            } else "无"
+            val expressAs =
+                if (api == TtsApiType.EDGE) ""
+                else "$style-$role | 强度: <b>${styleDegree}</b> | "
+            return "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b>"
+        }
+
+    fun apiToString(): String? {
+        return TtsApiType.toString(api)
+    }
+
+    public override fun clone(): MsTtsProperty {
+        val obj = super.clone() as MsTtsProperty
         obj.api = api
         obj.voiceName = voiceName
         obj.voiceId = voiceId

@@ -1,50 +1,16 @@
 package com.github.jing332.tts_server_android.ui.systts.replace
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.data.ReplaceRuleItemData
-import com.github.jing332.tts_server_android.util.FileUtils
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import tts_server_lib.Tts_server_lib
-import java.io.File
 
 class ReplaceManagerViewModel : ViewModel() {
-    val listLiveData: MutableLiveData<ArrayList<ReplaceRuleItemData>> by lazy { MutableLiveData() }
-
-    fun list(): ArrayList<ReplaceRuleItemData> {
-        return listLiveData.value!!
-    }
-
-    fun load() {
-        try {
-            val data = File(AppConst.replaceRulesPath).readText()
-            listLiveData.value = App.jsonBuilder.decodeFromString(data)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            listLiveData.value = arrayListOf()
-        }
-    }
-
-    fun save() {
-        listLiveData.value?.let {
-            FileUtils.saveFile(
-                AppConst.replaceRulesPath,
-                App.jsonBuilder.encodeToString(it).toByteArray()
-            )
-        }
-    }
-
-    fun switchChanged(position: Int, selected: Boolean) {
-        listLiveData.value?.getOrNull(position)?.apply {
-            isEnabled = selected
-        }
-    }
-
     fun exportConfig(): String {
-        return App.jsonBuilder.encodeToString(list())
+        return App.jsonBuilder.encodeToString(appDb.replaceRuleDao.all)
     }
 
     fun uploadConfigToUrl(cfg: String): Result<String> {
@@ -57,9 +23,9 @@ class ReplaceManagerViewModel : ViewModel() {
 
     fun importConfig(jsonStr: String): String? {
         try {
-            val data = App.jsonBuilder.decodeFromString<List<ReplaceRuleItemData>>(jsonStr)
-            list().addAll(data)
-            listLiveData.value = list()
+            App.jsonBuilder.decodeFromString<List<ReplaceRule>>(jsonStr).forEach {
+                appDb.replaceRuleDao.insert(it)
+            }
         } catch (e: Exception) {
             return e.message
         }

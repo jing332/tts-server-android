@@ -13,69 +13,87 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.SwitchCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.viewModelScope
+import com.drake.brv.listener.ItemDifferCallback
+import com.drake.brv.utils.linear
+import com.drake.brv.utils.setup
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
-import com.github.jing332.tts_server_android.data.ReplaceRuleItemData
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import com.github.jing332.tts_server_android.databinding.ActivityReplaceRuleBinding
+import com.github.jing332.tts_server_android.databinding.ItemReplaceRuleBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.edit.ReplaceRuleEditActivity
-import com.github.jing332.tts_server_android.util.ClipboardUtils
-import com.github.jing332.tts_server_android.util.longToastOnUi
-import com.github.jing332.tts_server_android.util.toastOnUi
+import com.github.jing332.tts_server_android.util.*
+import kotlinx.coroutines.flow.conflate
 
 @Suppress("DEPRECATION")
-class ReplaceManagerActivity : BackActivity(), ReplaceRuleItemAdapter.CallBack {
+class ReplaceManagerActivity : BackActivity() {
     companion object {
         const val TAG = "ReplaceRuleActivity"
     }
 
     private val viewModel: ReplaceManagerViewModel by viewModels()
     private val binding by lazy { ActivityReplaceRuleBinding.inflate(layoutInflater) }
-    private val adapter by lazy { ReplaceRuleItemAdapter(arrayListOf()) }
-
-//    private var isReplaceEnabled = false
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        adapter.callBack = this
-        binding.recyclerView.adapter = adapter
-        val layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.layoutManager = layoutManager
+        val brv = binding.recyclerView.linear().setup {
+            addType<ReplaceRule>(R.layout.item_replace_rule)
+            onCreate {
+                val binding = getBinding<ItemReplaceRuleBinding>()
+                binding.btnEdit.setOnClickListener { edit(getModel()) }
+                binding.btnDelete.setOnClickListener { delete(getModel()) }
+                binding.checkBox.setOnClickListener {
+                    appDb.replaceRuleDao.update(getModel())
+                }
+            }
+            onBind { }
 
-        viewModel.listLiveData.observe(this) { data ->
-            adapter.itemList.clear()
-            data.forEach {
-                adapter.append(it)
+            itemDifferCallback = object : ItemDifferCallback {
+                override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+                    return (oldItem as ReplaceRule).id == (newItem as ReplaceRule).id
+                }
             }
         }
 
-        viewModel.load()
+
+        viewModel.viewModelScope.runOnIO {
+            appDb.replaceRuleDao.flowAll().conflate().collect {
+                runOnUI {
+                    if (brv.models == null)
+                        brv.models = it
+                    else brv.setDifferModels(it)
+                }
+            }
+        }
+    }
+
+    fun delete(data: ReplaceRule) {
+        AlertDialog.Builder(this).setTitle(R.string.is_confirm_delete)
+            .setPositiveButton(R.string.delete) { _, _ ->
+                appDb.replaceRuleDao.delete(data)
+            }.show()
+    }
+
+    fun edit(data: ReplaceRule) {
+        val intent = Intent(this, ReplaceRuleEditActivity::class.java)
+        intent.putExtra(KeyConst.KEY_DATA, data)
+        startForResult.launch(intent)
     }
 
     private val startForResult = registerForActivityResult(StartActivityForResult()) { result ->
         result.data?.apply {
-            val position = getIntExtra(KeyConst.KEY_POSITION, -1)
-            val data = getSerializableExtra(KeyConst.KEY_DATA) as ReplaceRuleItemData
-            if (position < 0) {
-                adapter.append(data)
-                viewModel.listLiveData.value?.add(data)
-            } else {
-                adapter.itemList[position] = data
-                adapter.notifyItemChanged(position)
-                viewModel.listLiveData.value!![position] = data
+            val data = getSerializableExtra(KeyConst.KEY_DATA) as ReplaceRule
+            data.let {
+                appDb.replaceRuleDao.insert(data)
             }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        viewModel.save()
     }
 
     @SuppressLint("RestrictedApi")
@@ -147,23 +165,6 @@ class ReplaceManagerActivity : BackActivity(), ReplaceRuleItemAdapter.CallBack {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun switch(position: Int, isSelected: Boolean) {
-        viewModel.switchChanged(position, isSelected)
-    }
 
-    override fun edit(position: Int) {
-        val intent = Intent(this, ReplaceRuleEditActivity::class.java)
-        intent.putExtra(KeyConst.KEY_POSITION, position)
-        intent.putExtra(KeyConst.KEY_DATA, viewModel.listLiveData.value?.get(position))
-        startForResult.launch(intent)
-    }
-
-    override fun delete(position: Int) {
-        AlertDialog.Builder(this).setTitle(R.string.is_confirm_delete)
-            .setPositiveButton(R.string.delete) { _, _ ->
-                adapter.remove(position)
-                viewModel.list().removeAt(position)
-            }.show()
-    }
 
 }

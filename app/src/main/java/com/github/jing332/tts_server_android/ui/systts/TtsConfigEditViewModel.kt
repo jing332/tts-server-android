@@ -13,7 +13,7 @@ import com.github.jing332.tts_server_android.bean.EdgeVoiceBean
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.ExpressAs
-import com.github.jing332.tts_server_android.data.VoiceProperty
+import com.github.jing332.tts_server_android.data.MsTtsProperty
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
@@ -45,10 +45,10 @@ class TtsConfigEditViewModel : ViewModel() {
 
     //    private lateinit var mVoiceProperty: SysTtsConfigItem
     lateinit var mSysTts: SysTts
-    private val mVoiceProperty: VoiceProperty
+    private val mMsTtsProperty: MsTtsProperty
         inline get() {
-            if (mSysTts.msTtsProperty == null) mSysTts.msTtsProperty = VoiceProperty()
-            return mSysTts.msTtsProperty!!
+            if (mSysTts.msTts == null) mSysTts.msTts = MsTtsProperty()
+            return mSysTts.msTts!!
         }
 
     private val mJson
@@ -60,7 +60,8 @@ class TtsConfigEditViewModel : ViewModel() {
     private lateinit var mCreationVoices: List<CreationVoiceBean>
 
     fun getData(inputDisplayName: String): SysTts {
-        mSysTts.uiData.displayName = voiceLiveData.value?.selected()?.displayName.toString()
+        val voice = voiceLiveData.value?.selected()?.displayName.toString()
+        mSysTts.displayName = inputDisplayName.ifBlank { voice }
         return mSysTts
     }
 
@@ -79,8 +80,8 @@ class TtsConfigEditViewModel : ViewModel() {
             }
         }
 
-        displayNameLiveData.value = mSysTts.uiData.displayName
-        apiLiveData.value = SpinnerData(apiListData, mVoiceProperty.api)
+        displayNameLiveData.value = mSysTts.displayName
+        apiLiveData.value = SpinnerData(apiListData, mMsTtsProperty.api)
 
         val readAloudTargetList = arrayListOf<SpinnerItemData>()
         context.apply {
@@ -96,7 +97,7 @@ class TtsConfigEditViewModel : ViewModel() {
         readAloudTargetLiveData.value =
             SpinnerData(readAloudTargetList, mSysTts.readAloudTarget)
 
-        mVoiceProperty.apply {
+        mMsTtsProperty.apply {
             voiceStyleDegreeLiveData.value = expressAs?.styleDegree ?: 1F
             volumeLiveData.value = prosody.volume
             rateLiveData.value = prosody.rate
@@ -112,7 +113,7 @@ class TtsConfigEditViewModel : ViewModel() {
     /* {接口}选中变更 */
     fun apiSelected(position: Int, finally: (String?) -> Unit) {
         Log.d(TAG, "apiSelected: $position")
-        mVoiceProperty.api = position
+        mMsTtsProperty.api = position
         apiLiveData.value?.position = position
         updateFormatLiveData()
         viewModelScope.launch(Dispatchers.IO) {
@@ -134,9 +135,9 @@ class TtsConfigEditViewModel : ViewModel() {
     fun languageSelected(position: Int) {
         Log.d(TAG, "languageSelected: $position")
         languageLiveData.value?.position = position
-        mVoiceProperty.locale = languageLiveData.value!!.list[position].value
+        mMsTtsProperty.locale = languageLiveData.value!!.list[position].value
         val tmpVoiceList = arrayListOf<SpinnerItemData>()
-        when (mVoiceProperty.api) {
+        when (mMsTtsProperty.api) {
             TtsApiType.EDGE -> {
                 mEdgeVoices.forEach { item ->
                     if (item.locale == languageLiveData.value!!.list[position].value)
@@ -150,7 +151,7 @@ class TtsConfigEditViewModel : ViewModel() {
             }
             TtsApiType.AZURE -> {
                 mAzureVoices.forEach {
-                    if (it.locale == mVoiceProperty.locale)
+                    if (it.locale == mMsTtsProperty.locale)
                         tmpVoiceList.add(
                             SpinnerItemData(
                                 it.localName + "（${it.shortName}）",
@@ -174,7 +175,7 @@ class TtsConfigEditViewModel : ViewModel() {
         tmpVoiceList.sortBy { it.displayName }
         var selectedPos = 0
         tmpVoiceList.forEachIndexed { index, itemData ->
-            if (itemData.value == mVoiceProperty.voiceName) {
+            if (itemData.value == mMsTtsProperty.voiceName) {
                 selectedPos = index
             }
         }
@@ -185,14 +186,14 @@ class TtsConfigEditViewModel : ViewModel() {
     fun voiceSelected(position: Int) {
         voiceLiveData.value?.also {
             it.position = position
-            mVoiceProperty.voiceName = it.list[position].value
+            mMsTtsProperty.voiceName = it.list[position].value
         }
-        Log.d(TAG, "voiceSelected ${mVoiceProperty.voiceName}")
+        Log.d(TAG, "voiceSelected ${mMsTtsProperty.voiceName}")
 
-        when (mVoiceProperty.api) {
+        when (mMsTtsProperty.api) {
             TtsApiType.AZURE -> {
                 mAzureVoices.forEach { voiceItem ->
-                    if (mVoiceProperty.voiceName == voiceItem.shortName) {
+                    if (mMsTtsProperty.voiceName == voiceItem.shortName) {
                         /* 风格 */
                         val styleList =
                             arrayListOf(SpinnerItemData(App.instance.getString(R.string.none), ""))
@@ -207,7 +208,7 @@ class TtsConfigEditViewModel : ViewModel() {
                                         styleName
                                     )
                                 )
-                                if (mVoiceProperty.expressAs?.style == styleName)
+                                if (mMsTtsProperty.expressAs?.style == styleName)
                                     selectedStyle = index + 1
                             }
                         }
@@ -225,7 +226,7 @@ class TtsConfigEditViewModel : ViewModel() {
                                         roleName
                                     )
                                 )
-                                if (mVoiceProperty.expressAs?.role == roleName)
+                                if (mMsTtsProperty.expressAs?.role == roleName)
                                     selectedRole = index + 1
                             }
                         }
@@ -236,8 +237,8 @@ class TtsConfigEditViewModel : ViewModel() {
             }
             TtsApiType.CREATION -> {
                 mCreationVoices.forEach { voiceItem ->
-                    if (mVoiceProperty.voiceName == voiceItem.shortName) {
-                        mVoiceProperty.voiceId = voiceItem.id
+                    if (mMsTtsProperty.voiceName == voiceItem.shortName) {
+                        mMsTtsProperty.voiceId = voiceItem.id
                         /* 风格 */
                         val styleList =
                             arrayListOf(SpinnerItemData(App.instance.getString(R.string.none), ""))
@@ -256,7 +257,7 @@ class TtsConfigEditViewModel : ViewModel() {
                                                 styleName
                                             )
                                         )
-                                    if (mVoiceProperty.expressAs?.style == styleName)
+                                    if (mMsTtsProperty.expressAs?.style == styleName)
                                         selectedStyle = index + 1
                                 }
                             }
@@ -281,7 +282,7 @@ class TtsConfigEditViewModel : ViewModel() {
                                                 roleName
                                             )
                                         )
-                                    if (mVoiceProperty.expressAs?.role == roleName)
+                                    if (mMsTtsProperty.expressAs?.role == roleName)
                                         selectedRole = index + 1
 
                                 }
@@ -297,30 +298,30 @@ class TtsConfigEditViewModel : ViewModel() {
 
     fun formatSelected(position: Int): Boolean {
         val value = audioFormatLiveData.value!!.list[position].displayName
-        mVoiceProperty.format = value
+        mMsTtsProperty.format = value
         Log.d(TAG, "formatSelected $value")
         if (value.contains("raw")) return true
         return false
     }
 
     fun volumeChanged(volume: Int) {
-        mVoiceProperty.prosody.volume = volume
+        mMsTtsProperty.prosody.volume = volume
     }
 
     fun rateChanged(rate: Int) {
-        mVoiceProperty.prosody.rate = rate
+        mMsTtsProperty.prosody.rate = rate
     }
 
     fun onStyleDegreeChanged(degree: Float) {
-        if (mVoiceProperty.api == TtsApiType.EDGE) return
+        if (mMsTtsProperty.api == TtsApiType.EDGE) return
 
-        if (mVoiceProperty.expressAs == null) mVoiceProperty.expressAs = ExpressAs()
-        mVoiceProperty.expressAs?.styleDegree = degree
+        if (mMsTtsProperty.expressAs == null) mMsTtsProperty.expressAs = ExpressAs()
+        mMsTtsProperty.expressAs?.styleDegree = degree
     }
 
     private fun useEdgeApi() {
-        mVoiceProperty.voiceId = null
-        mVoiceProperty.expressAs = null
+        mMsTtsProperty.voiceId = null
+        mMsTtsProperty.expressAs = null
 
         if (!this::mEdgeVoices.isInitialized) {
             /* 使用本地缓存或远程下载 */
@@ -345,7 +346,7 @@ class TtsConfigEditViewModel : ViewModel() {
         tmpLangList.sortBy { it.value }
         var selected = 0
         tmpLangList.forEachIndexed { index, item ->
-            if (mVoiceProperty.locale == item.value)
+            if (mMsTtsProperty.locale == item.value)
                 selected = index
         }
         languageLiveData.postValue(SpinnerData(tmpLangList, selected))
@@ -376,7 +377,7 @@ class TtsConfigEditViewModel : ViewModel() {
         val dataList = arrayListOf<SpinnerItemData>()
         var selected = 0
         languageList.forEachIndexed { i, v ->
-            if (mVoiceProperty.locale == v) { /* 选中配置文件中的位置 */
+            if (mMsTtsProperty.locale == v) { /* 选中配置文件中的位置 */
                 selected = i
             }
             dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
@@ -406,7 +407,7 @@ class TtsConfigEditViewModel : ViewModel() {
         val dataList = arrayListOf<SpinnerItemData>()
         var selected = 0
         tmpLanguageList.forEachIndexed { i, v ->
-            if (mVoiceProperty.locale == v) { /* 选中配置文件中的位置 */
+            if (mMsTtsProperty.locale == v) { /* 选中配置文件中的位置 */
                 selected = i
             }
             dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
@@ -416,7 +417,7 @@ class TtsConfigEditViewModel : ViewModel() {
 
     /* 根据API更新音频格式 */
     private fun updateFormatLiveData() {
-        val api = when (mVoiceProperty.api) {
+        val api = when (mMsTtsProperty.api) {
             TtsApiType.EDGE -> {
                 TtsAudioFormat.SupportedApi.EDGE
             }
@@ -429,7 +430,7 @@ class TtsConfigEditViewModel : ViewModel() {
         var selected = 0
         val tmpFormats = arrayListOf<SpinnerItemData>()
         formats.forEachIndexed { index, v ->
-            if (mVoiceProperty.format == v) {
+            if (mMsTtsProperty.format == v) {
                 selected = index
             }
             tmpFormats.add(SpinnerItemData(v, v))
@@ -438,19 +439,19 @@ class TtsConfigEditViewModel : ViewModel() {
     }
 
     fun voiceStyleSelected(position: Int) {
-        if (mVoiceProperty.api == TtsApiType.EDGE) return
+        if (mMsTtsProperty.api == TtsApiType.EDGE) return
 
         voiceStyleLiveData.value?.position = position
-        if (mVoiceProperty.expressAs == null) mVoiceProperty.expressAs = ExpressAs()
-        mVoiceProperty.expressAs?.style = voiceStyleLiveData.value!!.list[position].value
+        if (mMsTtsProperty.expressAs == null) mMsTtsProperty.expressAs = ExpressAs()
+        mMsTtsProperty.expressAs?.style = voiceStyleLiveData.value!!.list[position].value
     }
 
     fun voiceRoleSelected(position: Int) {
-        if (mVoiceProperty.api == TtsApiType.EDGE) return
+        if (mMsTtsProperty.api == TtsApiType.EDGE) return
 
         voiceRoleLiveData.value?.position = position
-        if (mVoiceProperty.expressAs == null) mVoiceProperty.expressAs = ExpressAs()
-        mVoiceProperty.expressAs?.role = voiceRoleLiveData.value!!.list[position].value
+        if (mMsTtsProperty.expressAs == null) mMsTtsProperty.expressAs = ExpressAs()
+        mMsTtsProperty.expressAs?.role = voiceRoleLiveData.value!!.list[position].value
     }
 
 

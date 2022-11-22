@@ -10,7 +10,7 @@ annotation class TtsApiType {
         const val AZURE = 1
         const val CREATION = 2
 
-        fun toString(@TtsApiType apiType: Int): String {
+        fun toString(@TtsApiType apiType: Int): String? {
             return when (apiType) {
                 EDGE -> {
                     "Edge"
@@ -22,7 +22,7 @@ annotation class TtsApiType {
                     "Creation"
                 }
                 else -> {
-                    "unknown"
+                    null
                 }
             }
         }

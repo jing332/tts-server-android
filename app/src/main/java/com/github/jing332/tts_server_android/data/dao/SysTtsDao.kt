@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SysTtsDao {
-    @get:Query("select * from SysTts ORDER BY read_aloud_target ASC")
+    @get:Query("select * from SysTts ORDER BY readAloudTarget ASC")
     val all: List<SysTts>
 
-    @Query("select * from SysTts ORDER BY read_aloud_target ASC")
+    @Query("select * from SysTts ORDER BY readAloudTarget ASC")
     fun flowAll(): Flow<List<SysTts>>
 
     @get:Query("select count(*) from SysTts")
@@ -19,7 +19,7 @@ interface SysTtsDao {
     @Query("select * from SysTts where id = :id")
     fun get(id: Long): SysTts?
 
-    @Query("select * from SysTts where read_aloud_target = :target and is_enabled = '1'")
+    @Query("select * from SysTts where readAloudTarget = :target and isEnabled = '1'")
     fun getByReadAloudTarget(target: Int = ReadAloudTarget.DEFAULT): SysTts?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

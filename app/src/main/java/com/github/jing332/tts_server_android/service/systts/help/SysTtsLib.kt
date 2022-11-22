@@ -1,7 +1,7 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
 import com.github.jing332.tts_server_android.constant.TtsApiType
-import com.github.jing332.tts_server_android.data.VoiceProperty
+import com.github.jing332.tts_server_android.data.MsTtsProperty
 import tts_server_lib.*
 
 /* 系统TTS Go库的包装 */
@@ -9,8 +9,8 @@ class SysTtsLib {
     companion object {
         const val TAG = "SysTtsLib"
 
-        fun toLibProperty(pro: VoiceProperty): ResultProperty {
-            val libPro = tts_server_lib.VoiceProperty()
+        fun toLibProperty(pro: MsTtsProperty): ResultProperty {
+            val libPro = VoiceProperty()
             libPro.api = pro.api.toLong()
             libPro.voiceName = pro.voiceName
             libPro.voiceId = pro.voiceId
@@ -50,7 +50,7 @@ class SysTtsLib {
      */
     fun getAudioStream(
         text: String,
-        pro: VoiceProperty,
+        pro: MsTtsProperty,
         onRead: (ByteArray) -> Unit
     ): String? {
         val libPro = toLibProperty(pro)
@@ -77,7 +77,7 @@ class SysTtsLib {
      */
     fun getAudioForRetry(
         text: String,
-        pro: VoiceProperty,
+        pro: MsTtsProperty,
         retryNum: Int,
         onError: (reason: String, num: Int) -> Boolean
     ): ByteArray? {
@@ -99,7 +99,7 @@ class SysTtsLib {
      */
     fun getAudio(
         text: String,
-        pro: VoiceProperty,
+        pro: MsTtsProperty,
         format: String,
     ): ByteArray? {
         val libPro = toLibProperty(pro)
@@ -136,7 +136,7 @@ class SysTtsLib {
 }
 
 data class ResultProperty(
-    var voiceProperty: tts_server_lib.VoiceProperty,
+    var voiceProperty: VoiceProperty,
     var voiceProsody: VoiceProsody,
     var voiceExpressAs: VoiceExpressAs
 )

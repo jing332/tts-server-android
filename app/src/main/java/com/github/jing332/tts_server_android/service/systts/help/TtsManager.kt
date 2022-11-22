@@ -11,9 +11,10 @@ import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.VoiceProperty
+import com.github.jing332.tts_server_android.data.MsTtsProperty
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.*
@@ -27,7 +28,7 @@ class TtsManager(val context: Context) {
     companion object {
         const val TAG = "TtsManager"
 
-        /* 音频请求间隔 */
+        // 音频请求间隔
         const val requestInterval = 100L
     }
 
@@ -64,7 +65,7 @@ class TtsManager(val context: Context) {
 
     /* 加载配置 */
     fun loadConfig() {
-        com.github.jing332.tts_server_android.help.SysTtsConfig.apply {
+        SysTtsConfig.apply {
             mIsSplitEnabled = isSplitEnabled
             mIsMultiVoiceEnabled = isMultiVoiceEnabled
             mIsReplaceEnabled = isReplaceEnabled
@@ -73,15 +74,15 @@ class TtsManager(val context: Context) {
 
         mSysTts.apply {
             mLib.setUseDnsLookup(SharedPrefsUtils.getUseDnsEdge(context))
-            mLib.setTimeout(com.github.jing332.tts_server_android.help.SysTtsConfig.requestTimeout)
+            mLib.setTimeout(SysTtsConfig.requestTimeout)
             if (mIsReplaceEnabled) mReplacer.load()
-            if (com.github.jing332.tts_server_android.help.SysTtsConfig.isMultiVoiceEnabled) {
+            if (SysTtsConfig.isMultiVoiceEnabled) {
                 mAsideConfig = getByReadAloudTarget(ReadAloudTarget.ASIDE)
                 if (mAsideConfig == null) {
                     context.toastOnUi("警告：缺少{旁白}，使用默认配置！")
                     mAsideConfig = SysTts(
                         readAloudTarget = ReadAloudTarget.ASIDE,
-                        msTtsProperty = VoiceProperty()
+                        msTts = MsTtsProperty()
                     )
                 }
                 mDialogueConfig = getByReadAloudTarget(ReadAloudTarget.DIALOGUE)
@@ -89,21 +90,19 @@ class TtsManager(val context: Context) {
                     context.toastOnUi("警告：缺少{对话}，使用默认配置！")
                     mDialogueConfig = SysTts(
                         readAloudTarget = ReadAloudTarget.ASIDE,
-                        msTtsProperty = VoiceProperty()
+                        msTts = MsTtsProperty()
                     )
                 }
 
                 mAudioFormat =
-                    TtsFormatManger.getFormatOrDefault(mAsideConfig?.msTtsProperty?.format)
+                    TtsFormatManger.getFormatOrDefault(mAsideConfig?.msTts?.format)
             } else {
                 mDefaultConfig = mSysTts.getByReadAloudTarget()
                 if (mDefaultConfig == null) {
                     context.toastOnUi("警告：缺少{全部}，使用默认！")
                     mDefaultConfig = SysTts(isEnabled = true)
                 }
-                mAudioFormat =
-                    TtsFormatManger.getFormatOrDefault(mDefaultConfig?.msTtsProperty?.format)
-                        ?: TtsFormatManger.getDefault()
+                mAudioFormat = TtsFormatManger.getFormatOrDefault(mDefaultConfig?.msTts?.format)
             }
         }
     }
@@ -117,9 +116,7 @@ class TtsManager(val context: Context) {
         callback?.start(mAudioFormat.hz, mAudioFormat.bitRate, 1)
 
         var text = request?.charSequenceText.toString().trim()
-        if (mIsReplaceEnabled) {
-            text = mReplacer.doReplace(text)
-        }
+        if (mIsReplaceEnabled) text = mReplacer.doReplace(text)
 
         val pitch = request?.pitch?.minus(100) ?: 100
         val sysRate = (mNorm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
@@ -127,20 +124,20 @@ class TtsManager(val context: Context) {
         mProducer = null
         if (mIsMultiVoiceEnabled) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
-            val aside = mAsideConfig?.msTtsProperty?.clone() ?: VoiceProperty()
+            val aside = mAsideConfig?.msTts?.clone() ?: MsTtsProperty()
             aside.prosody.pitch = pitch
             aside.prosody.setRateIfFollowSystem(sysRate)
 
             val dialogue =
-                mDialogueConfig?.msTtsProperty?.clone() ?: VoiceProperty()
+                mDialogueConfig?.msTts?.clone() ?: MsTtsProperty()
             dialogue.prosody.pitch = pitch
             dialogue.prosody.setRateIfFollowSystem(sysRate)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
             mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside, dialogue)
         } else { //单语音
-            val pro = mSysTts.getByReadAloudTarget(ReadAloudTarget.DEFAULT)?.msTtsProperty?.clone()
-                ?: VoiceProperty()
+            val pro = mSysTts.getByReadAloudTarget(ReadAloudTarget.DEFAULT)?.msTts?.clone()
+                ?: MsTtsProperty()
             pro.prosody.setRateIfFollowSystem(sysRate)
             pro.prosody.pitch = pitch
 
@@ -199,12 +196,12 @@ class TtsManager(val context: Context) {
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
     private fun splitSentencesProducer(
         text: String,
-        voiceProperty: VoiceProperty
+        msTtsProperty: MsTtsProperty
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
         StringUtils.splitSentences(text).forEach { splitedText ->
             if (!isSynthesizing) return@produce
             if (!StringUtils.isSilent(splitedText)) {
-                getAudioAndSend(this, splitedText, voiceProperty)
+                getAudioAndSend(this, splitedText, msTtsProperty)
                 delay(requestInterval)
             }
         }
@@ -215,8 +212,8 @@ class TtsManager(val context: Context) {
     private fun multiVoiceProducer(
         isSplit: Boolean,
         text: String,
-        aside: VoiceProperty,
-        dialogue: VoiceProperty
+        aside: MsTtsProperty,
+        dialogue: MsTtsProperty
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
         /* 分割为多语音  */
         val map =
@@ -226,7 +223,7 @@ class TtsManager(val context: Context) {
                 StringUtils.splitSentences(it.raText).forEach { splitedText ->
                     if (!isSynthesizing) return@produce
                     if (!StringUtils.isSilent(splitedText)) {
-                        getAudioAndSend(this, splitedText, it.voiceProperty)
+                        getAudioAndSend(this, splitedText, it.msTtsProperty)
                         delay(requestInterval)
                     }
                 }
@@ -235,7 +232,7 @@ class TtsManager(val context: Context) {
             map.forEach {
                 if (!isSynthesizing) return@produce
                 if (!StringUtils.isSilent(it.raText)) {
-                    getAudioAndSend(this, it.raText, it.voiceProperty)
+                    getAudioAndSend(this, it.raText, it.msTtsProperty)
                     delay(requestInterval)
                 }
             }
@@ -246,11 +243,11 @@ class TtsManager(val context: Context) {
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
     private fun audioStreamProducer(
         text: String,
-        voiceProperty: VoiceProperty
+        msTtsProperty: MsTtsProperty
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
         getAudioStreamHelper(
             text,
-            voiceProperty
+            msTtsProperty
         ) { launch(Dispatchers.IO) { send(ChannelData(null, it)) } }
     }
 
@@ -258,14 +255,14 @@ class TtsManager(val context: Context) {
     private suspend fun getAudioAndSend(
         channel: SendChannel<ChannelData>,
         text: String,
-        voiceProperty: VoiceProperty
+        msTtsProperty: MsTtsProperty
     ) {
         if (!isSynthesizing) return
         if (mAudioFormat.needDecode) {
-            val audio = getAudioHelper(text, voiceProperty)
+            val audio = getAudioHelper(text, msTtsProperty)
             channel.send(ChannelData(text, audio))
         } else {
-            getAudioStreamHelper(text, voiceProperty) {
+            getAudioStreamHelper(text, msTtsProperty) {
                 runBlocking { channel.send(ChannelData(null, it)) }
             }
         }
@@ -274,17 +271,17 @@ class TtsManager(val context: Context) {
     /* 完整下载 */
     private fun getAudioHelper(
         text: String,
-        voiceProperty: VoiceProperty
+        msTtsProperty: MsTtsProperty
     ): ByteArray? {
         if (App.isSysTtsLogEnabled) sendLog(
             LogLevel.INFO,
-            "<br>请求音频：<b>${text}</b> <br><small><i>${voiceProperty}</small></i>"
+            "<br>请求音频：<b>${text}</b> <br><small><i>${msTtsProperty}</small></i>"
         )
         var audio: ByteArray? = null
         val timeCost = measureTimeMillis {
             audio = mLib.getAudioForRetry(
                 text,
-                voiceProperty,
+                msTtsProperty,
                 100
             ) { reason, num ->
                 if (isSynthesizing) {
@@ -318,7 +315,7 @@ class TtsManager(val context: Context) {
     /* 音频流 */
     private fun getAudioStreamHelper(
         text: String,
-        voiceProperty: VoiceProperty,
+        msTtsProperty: MsTtsProperty,
         onRead: (ByteArray) -> Unit
     ) {
         var lastFailLength = -1
@@ -327,10 +324,10 @@ class TtsManager(val context: Context) {
             if (!isSynthesizing) return
             if (App.isSysTtsLogEnabled) sendLog(
                 LogLevel.INFO,
-                "<br>请求音频(Azure边下边播)：<b>${text}</b> <br><small><i>${voiceProperty}</small></i>"
+                "<br>请求音频(Azure边下边播)：<b>${text}</b> <br><small><i>${msTtsProperty}</small></i>"
             )
             var currentLength = 0
-            val err = mLib.getAudioStream(text, voiceProperty) { data ->
+            val err = mLib.getAudioStream(text, msTtsProperty) { data ->
                 if (currentLength >= lastFailLength) {
                     onRead.invoke(data)
                     lastFailLength = -1
@@ -355,10 +352,10 @@ class TtsManager(val context: Context) {
     /* 获取音频并解码播放 */
     private fun getAudioAndDecodePlay(
         text: String,
-        voiceProperty: VoiceProperty,
+        msTtsProperty: MsTtsProperty,
         callback: SynthesisCallback?
     ) {
-        val audio = getAudioHelper(text, voiceProperty)
+        val audio = getAudioHelper(text, msTtsProperty)
         if (audio != null) {
             mAudioDecoder.doDecode(
                 audio,

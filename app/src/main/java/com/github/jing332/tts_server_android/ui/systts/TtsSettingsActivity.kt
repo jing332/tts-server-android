@@ -117,7 +117,7 @@ class TtsSettingsActivity : BackActivity() {
                 configFragment.setAudioRequestTimeout()
             }
             R.id.menu_setMinDialogueLen -> {
-                configFragment.setMinDialogueLength()
+                configFragment.showSetMinDialogueLength()
             }
 
             R.id.menu_replace_manager -> {
@@ -126,10 +126,10 @@ class TtsSettingsActivity : BackActivity() {
 
             /* 导入导出 */
             R.id.menu_importConfig -> {
-                configFragment.importConfig()
+                configFragment.showImportConfig()
             }
             R.id.menu_exportConfig -> {
-                configFragment.exportConfig()
+                configFragment.showExportConfig()
             }
         }
 
