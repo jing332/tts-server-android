@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android
 import android.app.Application
 import android.content.Context
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.cioccarellia.ksprefs.KsPrefs
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlin.properties.Delegates
@@ -17,6 +18,7 @@ class App : Application() {
         var isSysTtsLogEnabled = false
         var isServerLogEnabled = false
 
+        val prefs by lazy { KsPrefs(instance) { xmlPrefix = "systts" } }
         @OptIn(ExperimentalSerializationApi::class)
         val jsonBuilder by lazy {
             Json {

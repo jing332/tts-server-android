@@ -1,10 +1,13 @@
 package com.github.jing332.tts_server_android.data
 
+import android.os.Parcelable
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
+@Parcelize
 data class VoiceProperty(
     @TtsApiType var api: Int = TtsApiType.EDGE,
     var format: String = "",
@@ -13,7 +16,7 @@ data class VoiceProperty(
     var voiceId: String? = null,
     var prosody: Prosody,
     var expressAs: ExpressAs? = null
-) : Serializable, Cloneable {
+) : Serializable, Cloneable, Parcelable {
     constructor() : this(DEFAULT_VOICE)
     constructor(voiceName: String) : this(voiceName, Prosody())
     constructor(voiceName: String, voiceId: String) : this(

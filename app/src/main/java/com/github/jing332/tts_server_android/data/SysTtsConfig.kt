@@ -34,7 +34,7 @@ data class SysTtsConfig(
     constructor() : this(
         arrayListOf(
             SysTtsConfigItem(
-                TtsConfigListItemData("晓晓 (zh-CN-XiaoxiaoNeural)", "无"), true,
+                SysTtsUiData("晓晓 (zh-CN-XiaoxiaoNeural)", "无"), true,
                 ReadAloudTarget.DEFAULT,
                 VoiceProperty(DEFAULT_VOICE, DEFAULT_VOICE_ID)
             )

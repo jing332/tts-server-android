@@ -13,6 +13,7 @@
     <item
         android:icon="@drawable/ic_baseline_sort_24"
         android:title="@string/list_sort"
+        android:visible="false"
         app:showAsAction="always">
         <menu>
             <item

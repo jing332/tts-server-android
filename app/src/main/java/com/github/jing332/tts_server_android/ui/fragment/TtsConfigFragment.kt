@@ -18,23 +18,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
-import com.github.jing332.tts_server_android.constant.KeyConst.KEY_POSITION
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.constant.TtsApiType
-import com.github.jing332.tts_server_android.data.SysTtsConfigItem
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
+import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.SysTtsNumericalEditView
 import com.github.jing332.tts_server_android.ui.custom.adapter.SysTtsConfigListItemAdapter
 import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity
+import com.github.jing332.tts_server_android.ui.systts.TtsConfigEditActivity.Companion.RESULT_ADD
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.toastOnUi
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 
 @Suppress("DEPRECATION")
-class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
-    SysTtsConfigListItemAdapter.LongClickListen {
+class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.CallBack {
     companion object {
         const val TAG = "TtsConfigFragment"
         const val ACTION_ON_CONFIG_CHANGED = "on_config_changed"
@@ -47,7 +49,7 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         )
     }
 
-    private val recyclerAdapter: SysTtsConfigListItemAdapter by lazy {
+    private val adapter: SysTtsConfigListItemAdapter by lazy {
         SysTtsConfigListItemAdapter()
     }
 
@@ -55,10 +57,10 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
     private val startForResult =
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             val data = result.data?.getSerializableExtra(KEY_DATA)
-            val position = result.data?.getIntExtra(KEY_POSITION, -1) ?: -1
             data?.let {
-                val cfgItem = data as SysTtsConfigItem
-                viewModel.onEditActivityResult(cfgItem, position)
+                val data = data as SysTts
+                if (result.resultCode == RESULT_ADD) appDb.sysTtsDao.insert(data)
+                else appDb.sysTtsDao.update(data)
             }
         }
 
@@ -66,6 +68,27 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         val intent =
             Intent(requireContext(), TtsConfigEditActivity::class.java)
         startForResult.launch(intent)
+    }
+
+    /* 监听数据库变化 */
+    private fun observeListData() {
+        viewModel.viewModelScope.launch {
+            appDb.sysTtsDao.flowAll().conflate().collect {
+                Log.d(TAG, "setItems: $it")
+                adapter.setItems(it)
+                if (!viewModel.checkMultiVoiceFormat(it)) {
+                    AlertDialog.Builder(requireContext()).setTitle(getString(R.string.warning))
+                        .setMessage(getString(R.string.msg_aside_and_dialogue_format_different))
+                        .show()
+                }
+            }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        observeListData()
     }
 
     override fun onCreateView(
@@ -80,138 +103,12 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        recyclerAdapter.switchClick = this
-        recyclerAdapter.contentClick = this
-        recyclerAdapter.editButtonClick = this
-        recyclerAdapter.delButtonClick = this
-        recyclerAdapter.itemLongClick = this
-
         val layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewList.apply {
-            this.layoutManager = layoutManager
-            this.adapter = recyclerAdapter
+        binding.recyclerViewList.let {
+            it.layoutManager = layoutManager
+            it.adapter = this@TtsConfigFragment.adapter
         }
-        /* 监听整个列表数据list */
-        viewModel.listLiveData.observe(this) {
-            recyclerAdapter.removeAll()
-            it.forEach { item ->
-                recyclerAdapter.append(item)
-            }
-        }
-        /* 添加列表数据 */
-        viewModel.appendItemDataLiveData.observe(this) {
-            Log.d(TAG, "add item: $it")
-            recyclerAdapter.append(it)
-            if (!viewModel.checkMultiVoiceFormat()) {
-                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.warning))
-                    .setMessage(getString(R.string.msg_aside_and_dialogue_format_different))
-                    .show()
-            }
-        }
-        /* 替换列表数据 */
-        viewModel.replacedItemDataLiveData.observe(this) {
-            Log.d(TAG, "replace item: $it")
-            recyclerAdapter.update(it.sysTtsConfigItem, it.position, it.updateUi)
-            viewModel.saveData()
-            if (!viewModel.checkMultiVoiceFormat())
-                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.warning))
-                    .setMessage(getString(R.string.msg_aside_and_dialogue_format_different))
-                    .setCancelable(false)
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .show()
-            requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
-        }
-        /* 从本地加载数据 */
-        viewModel.loadData()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        /* 保存到本地 */
-        viewModel.saveData()
-    }
-
-    override fun onClick(view: View, position: Int) {
-        when (view.id) {
-            R.id.checkBox_switch -> {
-                val checkBox = view as CheckBox
-                /* 检测是否开启多语音 */
-                if (viewModel.onCheckBoxChanged(position, checkBox.isChecked)) {
-                    requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
-                } else {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.warning)
-                        .setMessage(R.string.please_check_multi_voice_option).show()
-                    checkBox.isChecked = false
-                }
-            }
-            R.id.btn_edit -> {
-                val itemData = recyclerAdapter.itemList[position]
-                val intent =
-                    Intent(requireContext(), TtsConfigEditActivity::class.java)
-                intent.putExtra(KEY_DATA, itemData)
-                intent.putExtra(KEY_POSITION, position)
-                startForResult.launch(intent)
-            }
-            R.id.btn_delete -> {
-                AlertDialog.Builder(requireContext()).setTitle(R.string.is_confirm_delete)
-                    .setPositiveButton(R.string.delete) { _, _ ->
-                        Log.e(TAG, "remove item: $position")
-                        recyclerAdapter.remove(position)
-                        viewModel.removeItem(position)
-                    }
-                    .show()
-            }
-            R.id.tv_content -> {
-                val editView = SysTtsNumericalEditView(requireContext())
-                editView.setPadding(25, 25, 25, 50)
-                viewModel.ttsConfig!!.list[position].let { itemData ->
-                    itemData.voiceProperty.let { pro ->
-                        editView.setRate(pro.prosody.rate)
-                        editView.setVolume(pro.prosody.volume)
-                        editView.setStyleDegree(pro.expressAs?.styleDegree ?: 1F)
-                        editView.isStyleDegreeVisible = pro.api != TtsApiType.EDGE
-                    }
-                    val dlg = AlertDialog.Builder(requireContext())
-                        .setTitle("数值调节").setView(editView)
-                        .setOnDismissListener {
-                            itemData.voiceProperty.let {
-                                it.prosody.rate = editView.rateValue
-                                it.prosody.volume = editView.volumeValue
-                                it.expressAs?.styleDegree = editView.styleDegreeValue
-                            }
-                            viewModel.onEditActivityResult(itemData, position)
-                        }.create()
-                    dlg.window?.setDimAmount(0.5F)
-                    dlg.show()
-                }
-            }
-        }
-    }
-
-    override fun onLongClick(view: View, position: Int): Boolean {
-        /* 列表item的长按菜单 */
-        val popupMenu = PopupMenu(requireContext(), view)
-        popupMenu.menuInflater.inflate(R.menu.menu_systts_list_item, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_global -> { /* 全局 */
-                    viewModel.setReadAloudTarget(position, ReadAloudTarget.DEFAULT)
-                }
-                R.id.menu_setAsDialogue -> { /* 对话  */
-                    viewModel.setReadAloudTarget(position, ReadAloudTarget.DIALOGUE)
-                }
-                R.id.menu_setAsAside -> { /* 旁白 */
-                    viewModel.setReadAloudTarget(position, ReadAloudTarget.ASIDE)
-                }
-            }
-            App.localBroadcast.sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
-
-            false
-        }
-        popupMenu.show()
-
-        return true
+        adapter.callBack = this
     }
 
 
@@ -227,15 +124,15 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         }
         numPicker.displayedValues = displayList.toList().toTypedArray()
 
-        numPicker.value = viewModel.audioRequestTimeout / 1000 //转为秒
+        numPicker.value = SysTtsConfig.requestTimeout / 1000 //转为秒
         AlertDialog.Builder(requireContext()).setTitle(R.string.set_audio_request_timeout)
             .setView(numPicker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                viewModel.audioRequestTimeout = numPicker.value * 1000 //转为毫秒
+                SysTtsConfig.requestTimeout = numPicker.value * 1000 //转为毫秒
                 App.localBroadcast.sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
             }
             .setNegativeButton(R.string.reset) { _, _ ->
-                viewModel.audioRequestTimeout = 5000
+                SysTtsConfig.requestTimeout = 5000
             }
             .show()
     }
@@ -290,16 +187,95 @@ class TtsConfigFragment : Fragment(), SysTtsConfigListItemAdapter.ClickListen,
         val picker = NumberPicker(requireContext()).apply {
             maxValue = numList.size - 1
             displayedValues = numList.toTypedArray()
-            value = viewModel.ttsConfig!!.minDialogueLength
+            value = SysTtsConfig.minDialogueLength
         }
         AlertDialog.Builder(requireContext()).setTitle("对话文本最小匹配汉字数").setMessage("(包括中文符号)")
             .setView(picker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                viewModel.setMinDialogueLength(picker.value)
+                SysTtsConfig.minDialogueLength = picker.value
             }
             .setNegativeButton(R.string.reset) { _, _ ->
-                viewModel.setMinDialogueLength(0)
+                SysTtsConfig.minDialogueLength = 0
             }
             .show()
+    }
+
+    override fun onSwitchClick(view: View?, position: Int) {
+        val checkBox = view as CheckBox
+        // 检测是否开启多语音
+        if (viewModel.onCheckBoxChanged(adapter.items, position, checkBox.isChecked)) {
+            requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+        } else {
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.warning)
+                .setMessage(R.string.please_check_multi_voice_option).show()
+            checkBox.isChecked = false
+        }
+    }
+
+    override fun onContentClick(data: SysTts) {
+        val editView = SysTtsNumericalEditView(requireContext())
+        editView.setPadding(25, 25, 25, 50)
+        data.msTtsProperty?.let { pro ->
+            editView.setRate(pro.prosody.rate)
+            editView.setVolume(pro.prosody.volume)
+            editView.setStyleDegree(pro.expressAs?.styleDegree ?: 1F)
+            editView.isStyleDegreeVisible = pro.api != TtsApiType.EDGE
+
+            val dlg = AlertDialog.Builder(requireContext())
+                .setTitle("数值调节").setView(editView)
+                .setOnDismissListener {
+                    data.msTtsProperty?.let {
+                        it.prosody.rate = editView.rateValue
+                        it.prosody.volume = editView.volumeValue
+                        it.expressAs?.styleDegree = editView.styleDegreeValue
+                    }
+                    appDb.sysTtsDao.update(data)
+                }.create()
+            dlg.window?.setDimAmount(0.5F)
+            dlg.show()
+        }
+    }
+
+    override fun onEdit(data: SysTts) {
+        val intent =
+            Intent(requireContext(), TtsConfigEditActivity::class.java)
+        intent.putExtra(KEY_DATA, data)
+        startForResult.launch(intent)
+    }
+
+    override fun onDelete(data: SysTts) {
+        AlertDialog.Builder(requireContext()).setTitle(R.string.is_confirm_delete)
+            .setPositiveButton(R.string.delete) { _, _ ->
+                appDb.sysTtsDao.delete(data)
+            }
+            .show()
+    }
+
+    override fun onItemLongClick(view: View, data: SysTts): Boolean {
+        /* 列表item的长按菜单 */
+        val popupMenu = PopupMenu(requireContext(), view)
+        popupMenu.menuInflater.inflate(R.menu.menu_systts_list_item, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            var target = when (item.itemId) {
+                R.id.menu_setAsDialogue -> {
+                    ReadAloudTarget.DIALOGUE
+                }
+                R.id.menu_setAsAside -> {
+                    ReadAloudTarget.ASIDE
+                }
+                else -> {
+                    ReadAloudTarget.DEFAULT
+                }
+            }
+            data.readAloudTarget = target
+            appDb.sysTtsDao.update(data)
+            App.localBroadcast.sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+
+            false
+        }
+        popupMenu.show()
+
+        return true
     }
 }

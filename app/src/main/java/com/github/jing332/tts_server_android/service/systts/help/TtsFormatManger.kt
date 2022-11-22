@@ -119,6 +119,13 @@ object TtsFormatManger {
         return null
     }
 
+    fun getFormatOrDefault(name: String?): TtsAudioFormat {
+        if (name == null) return getDefault()
+        var f = getFormat(name)
+        if (f == null) f = getDefault()
+        return f
+    }
+
     /*fun getAllFormatName(): ArrayList<String> {
         val list = arrayListOf<String>()
         formats.forEach { v ->

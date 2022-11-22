@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.Fragment
@@ -15,12 +14,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityTtsSettingsBinding
+import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragmentViewModel
 import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
-import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity.Companion.KEY_SWITCH
 import com.github.jing332.tts_server_android.util.MyTools
 
 
@@ -69,11 +68,9 @@ class TtsSettingsActivity : BackActivity() {
 
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        cfgViewModel.ttsConfig?.apply {
-            menu?.findItem(R.id.menu_isMultiVoice)?.isChecked = isMultiVoice
-            menu?.findItem(R.id.menu_doSplit)?.isChecked = isSplitSentences
-            menu?.findItem(R.id.menu_replace_manager)?.isChecked = isReplace
-        }
+        menu?.findItem(R.id.menu_isMultiVoice)?.isChecked = SysTtsConfig.isMultiVoiceEnabled
+        menu?.findItem(R.id.menu_doSplit)?.isChecked = SysTtsConfig.isSplitEnabled
+        menu?.findItem(R.id.menu_replace_manager)?.isChecked = SysTtsConfig.isReplaceEnabled
 
         return super.onPrepareOptionsMenu(menu)
     }
@@ -108,12 +105,12 @@ class TtsSettingsActivity : BackActivity() {
             /* 设置 */
             R.id.menu_doSplit -> {
                 item.isChecked = !item.isChecked
-                cfgViewModel.onMenuIsSplitChanged(item.isChecked)
+                SysTtsConfig.isSplitEnabled = item.isChecked
                 App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
             }
             R.id.menu_isMultiVoice -> {
                 item.isChecked = !item.isChecked
-                cfgViewModel.onMenuMultiVoiceChanged(item.isChecked)
+                SysTtsConfig.isMultiVoiceEnabled = item.isChecked
                 App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
             }
             R.id.menu_setAudioRequestTimeout -> {
@@ -124,9 +121,7 @@ class TtsSettingsActivity : BackActivity() {
             }
 
             R.id.menu_replace_manager -> {
-                val intent = Intent(this, ReplaceManagerActivity::class.java)
-                intent.putExtra(KEY_SWITCH, cfgViewModel.ttsConfig?.isReplace)
-                startForResult.launch(intent)
+                startActivity(Intent(this, ReplaceManagerActivity::class.java))
             }
 
             /* 导入导出 */
@@ -140,14 +135,6 @@ class TtsSettingsActivity : BackActivity() {
 
         return super.onOptionsItemSelected(item)
     }
-
-    private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val isEnabled = result.data?.getBooleanExtra(KEY_SWITCH, false) ?: false
-                cfgViewModel.onReplaceSwitchChanged(isEnabled)
-            }
-        }
 
     val configFragment = TtsConfigFragment()
     val logFragment = TtsLogFragment()

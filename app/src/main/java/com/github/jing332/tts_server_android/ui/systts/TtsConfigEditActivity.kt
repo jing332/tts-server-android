@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -14,9 +13,8 @@ import android.widget.*
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
-import com.github.jing332.tts_server_android.constant.KeyConst.KEY_POSITION
 import com.github.jing332.tts_server_android.constant.TtsApiType
-import com.github.jing332.tts_server_android.data.SysTtsConfigItem
+import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.SysTtsNumericalEditView
@@ -28,6 +26,8 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
 
     companion object {
         const val TAG = "TtsConfigEditActivity"
+        const val RESULT_ADD = 111
+        const val RESULT_EDIT = 222
     }
 
     private val binding: ActivityTtsConfigEditBinding by lazy {
@@ -43,16 +43,13 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
     private val spinnerVoiceRoleAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerFormatAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
 
-    /* -1表示添加 */
-    private var position = -1
+    private var resultCode = RESULT_EDIT
 
     @Suppress("DEPRECATION", "CAST_NEVER_SUCCEEDS")
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        position = intent.getIntExtra(KEY_POSITION, -1)
 
         binding.spinnerReadAloudTarget.adapter = spinnerRaTargetAdapter
         binding.spinnerApi.adapter = spinnerApiAdapter
@@ -145,8 +142,11 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
 
         /* 加载数据并更新列表 */
         var cfg =
-            intent.getSerializableExtra(KEY_DATA)?.let { it as SysTtsConfigItem }
-        if (cfg == null) cfg = SysTtsConfigItem()
+            intent.getSerializableExtra(KEY_DATA)?.let { it as SysTts }
+        if (cfg == null) {
+            cfg = SysTts()
+            resultCode = RESULT_ADD
+        }
         model.loadData(this, cfg)
     }
 
@@ -244,10 +244,10 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
                 val intent = Intent()
                 intent.putExtra(
                     KEY_DATA,
-                    model.getTtsConfigItem(binding.etDisplayName.text.toString())
+                    model.getData(binding.etDisplayName.text.toString())
                 )
-                intent.putExtra(KEY_POSITION, position)
-                setResult(Activity.RESULT_OK, intent)
+
+                setResult(resultCode, intent)
                 finish()
             }
         }

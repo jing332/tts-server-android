@@ -13,7 +13,8 @@ import com.github.jing332.tts_server_android.bean.EdgeVoiceBean
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.ExpressAs
-import com.github.jing332.tts_server_android.data.SysTtsConfigItem
+import com.github.jing332.tts_server_android.data.VoiceProperty
+import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
 import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
 import com.github.jing332.tts_server_android.util.FileUtils
@@ -42,8 +43,13 @@ class TtsConfigEditViewModel : ViewModel() {
 
     val voiceStyleDegreeLiveData: MutableLiveData<Float> by lazy { MutableLiveData() }
 
-    private lateinit var mTtsCfgItem: SysTtsConfigItem
-    private val mVoiceProperty by lazy { mTtsCfgItem.voiceProperty }
+    //    private lateinit var mVoiceProperty: SysTtsConfigItem
+    lateinit var mSysTts: SysTts
+    private val mVoiceProperty: VoiceProperty
+        inline get() {
+            if (mSysTts.msTtsProperty == null) mSysTts.msTtsProperty = VoiceProperty()
+            return mSysTts.msTtsProperty!!
+        }
 
     private val mJson
         inline get() = App.jsonBuilder
@@ -53,18 +59,14 @@ class TtsConfigEditViewModel : ViewModel() {
     private lateinit var mAzureVoices: List<AzureVoiceBean>
     private lateinit var mCreationVoices: List<CreationVoiceBean>
 
-    fun getTtsConfigItem(inputDisplayName: String): SysTtsConfigItem {
-        mTtsCfgItem.uiData.apply {
-            val voice = voiceLiveData.value?.selected()?.displayName.toString()
-            displayName = inputDisplayName.ifEmpty { voice }
-        }
-
-        return mTtsCfgItem
+    fun getData(inputDisplayName: String): SysTts {
+        mSysTts.uiData.displayName = voiceLiveData.value?.selected()?.displayName.toString()
+        return mSysTts
     }
 
-    fun loadData(context: Context, ttsConfigItem: SysTtsConfigItem) {
+    fun loadData(context: Context, data: SysTts) {
         Log.d(TAG, "loadData")
-        this.mTtsCfgItem = ttsConfigItem
+        this.mSysTts = data
 
         val apiListData = arrayListOf<SpinnerItemData>()
         context.apply {
@@ -77,8 +79,8 @@ class TtsConfigEditViewModel : ViewModel() {
             }
         }
 
-        displayNameLiveData.value = ttsConfigItem.uiData.displayName
-        apiLiveData.value = SpinnerData(apiListData, ttsConfigItem.voiceProperty.api)
+        displayNameLiveData.value = mSysTts.uiData.displayName
+        apiLiveData.value = SpinnerData(apiListData, mVoiceProperty.api)
 
         val readAloudTargetList = arrayListOf<SpinnerItemData>()
         context.apply {
@@ -92,9 +94,9 @@ class TtsConfigEditViewModel : ViewModel() {
         }
 
         readAloudTargetLiveData.value =
-            SpinnerData(readAloudTargetList, mTtsCfgItem.readAloudTarget)
+            SpinnerData(readAloudTargetList, mSysTts.readAloudTarget)
 
-        ttsConfigItem.voiceProperty.apply {
+        mVoiceProperty.apply {
             voiceStyleDegreeLiveData.value = expressAs?.styleDegree ?: 1F
             volumeLiveData.value = prosody.volume
             rateLiveData.value = prosody.rate
@@ -104,13 +106,13 @@ class TtsConfigEditViewModel : ViewModel() {
 
     fun onReadAloudTargetSelected(position: Int) {
         Log.d(TAG, "onReadAloudTargetSelected: $position")
-        mTtsCfgItem.readAloudTarget = position
+        mSysTts.readAloudTarget = position
     }
 
     /* {接口}选中变更 */
     fun apiSelected(position: Int, finally: (String?) -> Unit) {
         Log.d(TAG, "apiSelected: $position")
-        mTtsCfgItem.voiceProperty.api = position
+        mVoiceProperty.api = position
         apiLiveData.value?.position = position
         updateFormatLiveData()
         viewModelScope.launch(Dispatchers.IO) {
@@ -132,9 +134,9 @@ class TtsConfigEditViewModel : ViewModel() {
     fun languageSelected(position: Int) {
         Log.d(TAG, "languageSelected: $position")
         languageLiveData.value?.position = position
-        mTtsCfgItem.voiceProperty.locale = languageLiveData.value!!.list[position].value
+        mVoiceProperty.locale = languageLiveData.value!!.list[position].value
         val tmpVoiceList = arrayListOf<SpinnerItemData>()
-        when (mTtsCfgItem.voiceProperty.api) {
+        when (mVoiceProperty.api) {
             TtsApiType.EDGE -> {
                 mEdgeVoices.forEach { item ->
                     if (item.locale == languageLiveData.value!!.list[position].value)
@@ -148,7 +150,7 @@ class TtsConfigEditViewModel : ViewModel() {
             }
             TtsApiType.AZURE -> {
                 mAzureVoices.forEach {
-                    if (it.locale == mTtsCfgItem.voiceProperty.locale)
+                    if (it.locale == mVoiceProperty.locale)
                         tmpVoiceList.add(
                             SpinnerItemData(
                                 it.localName + "（${it.shortName}）",
@@ -187,7 +189,7 @@ class TtsConfigEditViewModel : ViewModel() {
         }
         Log.d(TAG, "voiceSelected ${mVoiceProperty.voiceName}")
 
-        when (mTtsCfgItem.voiceProperty.api) {
+        when (mVoiceProperty.api) {
             TtsApiType.AZURE -> {
                 mAzureVoices.forEach { voiceItem ->
                     if (mVoiceProperty.voiceName == voiceItem.shortName) {
@@ -295,7 +297,7 @@ class TtsConfigEditViewModel : ViewModel() {
 
     fun formatSelected(position: Int): Boolean {
         val value = audioFormatLiveData.value!!.list[position].displayName
-        mTtsCfgItem.voiceProperty.format = value
+        mVoiceProperty.format = value
         Log.d(TAG, "formatSelected $value")
         if (value.contains("raw")) return true
         return false
@@ -343,7 +345,7 @@ class TtsConfigEditViewModel : ViewModel() {
         tmpLangList.sortBy { it.value }
         var selected = 0
         tmpLangList.forEachIndexed { index, item ->
-            if (mTtsCfgItem.voiceProperty.locale == item.value)
+            if (mVoiceProperty.locale == item.value)
                 selected = index
         }
         languageLiveData.postValue(SpinnerData(tmpLangList, selected))
@@ -374,7 +376,7 @@ class TtsConfigEditViewModel : ViewModel() {
         val dataList = arrayListOf<SpinnerItemData>()
         var selected = 0
         languageList.forEachIndexed { i, v ->
-            if (mTtsCfgItem.voiceProperty.locale == v) { /* 选中配置文件中的位置 */
+            if (mVoiceProperty.locale == v) { /* 选中配置文件中的位置 */
                 selected = i
             }
             dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
@@ -404,7 +406,7 @@ class TtsConfigEditViewModel : ViewModel() {
         val dataList = arrayListOf<SpinnerItemData>()
         var selected = 0
         tmpLanguageList.forEachIndexed { i, v ->
-            if (mTtsCfgItem.voiceProperty.locale == v) { /* 选中配置文件中的位置 */
+            if (mVoiceProperty.locale == v) { /* 选中配置文件中的位置 */
                 selected = i
             }
             dataList.add(SpinnerItemData(CnLocalMap.getLanguage(v), v))
@@ -414,7 +416,7 @@ class TtsConfigEditViewModel : ViewModel() {
 
     /* 根据API更新音频格式 */
     private fun updateFormatLiveData() {
-        val api = when (mTtsCfgItem.voiceProperty.api) {
+        val api = when (mVoiceProperty.api) {
             TtsApiType.EDGE -> {
                 TtsAudioFormat.SupportedApi.EDGE
             }
@@ -427,7 +429,7 @@ class TtsConfigEditViewModel : ViewModel() {
         var selected = 0
         val tmpFormats = arrayListOf<SpinnerItemData>()
         formats.forEachIndexed { index, v ->
-            if (mTtsCfgItem.voiceProperty.format == v) {
+            if (mVoiceProperty.format == v) {
                 selected = index
             }
             tmpFormats.add(SpinnerItemData(v, v))

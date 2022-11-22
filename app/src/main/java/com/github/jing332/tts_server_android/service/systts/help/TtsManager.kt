@@ -11,9 +11,9 @@ import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.SysTtsConfig
-import com.github.jing332.tts_server_android.data.SysTtsConfigItem
 import com.github.jing332.tts_server_android.data.VoiceProperty
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.*
@@ -37,16 +37,25 @@ class TtsManager(val context: Context) {
     }
 
     var callback: Callback? = null
-
-    private var mTtsCfg: SysTtsConfig = SysTtsConfig()
-    private val replaceHelper: ReplaceHelper by lazy { ReplaceHelper() }
-    private lateinit var mAudioFormat: TtsAudioFormat
-
     var isSynthesizing = false
     private val mAudioDecoder by lazy { AudioDecoder() }
     private val mNorm by lazy { NormUtil(500F, 0F, 200F, 0F) }
     private val mLib by lazy { SysTtsLib() }
 
+    private val mReplacer: ReplaceHelper by lazy { ReplaceHelper() }
+    private lateinit var mAudioFormat: TtsAudioFormat
+
+
+    private val mSysTts by lazy { appDb.sysTtsDao }
+
+    private var mDefaultConfig: SysTts? = null
+    private var mAsideConfig: SysTts? = null
+    private var mDialogueConfig: SysTts? = null
+
+    private var mIsSplitEnabled = false
+    private var mIsReplaceEnabled = false
+    private var mIsMultiVoiceEnabled = false
+    private var mMinDialogueLen = 0
 
     fun stop() {
         isSynthesizing = false
@@ -55,38 +64,46 @@ class TtsManager(val context: Context) {
 
     /* 加载配置 */
     fun loadConfig() {
-        mTtsCfg = SysTtsConfig.read()
-        Log.d(TAG, "loadConfig: $mTtsCfg")
+        com.github.jing332.tts_server_android.help.SysTtsConfig.apply {
+            mIsSplitEnabled = isSplitEnabled
+            mIsMultiVoiceEnabled = isMultiVoiceEnabled
+            mIsReplaceEnabled = isReplaceEnabled
+            mMinDialogueLen = minDialogueLength
+        }
 
-        mTtsCfg.apply {
+        mSysTts.apply {
             mLib.setUseDnsLookup(SharedPrefsUtils.getUseDnsEdge(context))
-            mLib.setTimeout(timeout)
-            if (isReplace) replaceHelper.load()
-            if (isMultiVoice) {
-                var aside = mTtsCfg.currentAsideItem()
-                if (aside == null) {
+            mLib.setTimeout(com.github.jing332.tts_server_android.help.SysTtsConfig.requestTimeout)
+            if (mIsReplaceEnabled) mReplacer.load()
+            if (com.github.jing332.tts_server_android.help.SysTtsConfig.isMultiVoiceEnabled) {
+                mAsideConfig = getByReadAloudTarget(ReadAloudTarget.ASIDE)
+                if (mAsideConfig == null) {
                     context.toastOnUi("警告：缺少{旁白}，使用默认配置！")
-                    aside = SysTtsConfigItem(true, ReadAloudTarget.ASIDE)
-                    mTtsCfg.list.add(aside)
+                    mAsideConfig = SysTts(
+                        readAloudTarget = ReadAloudTarget.ASIDE,
+                        msTtsProperty = VoiceProperty()
+                    )
                 }
-                var dialogue = mTtsCfg.currentDialogueItem()
-                if (dialogue == null) {
+                mDialogueConfig = getByReadAloudTarget(ReadAloudTarget.DIALOGUE)
+                if (mDialogueConfig == null) {
                     context.toastOnUi("警告：缺少{对话}，使用默认配置！")
-                    dialogue = SysTtsConfigItem(true, ReadAloudTarget.DIALOGUE)
-                    mTtsCfg.list.add(dialogue)
+                    mDialogueConfig = SysTts(
+                        readAloudTarget = ReadAloudTarget.ASIDE,
+                        msTtsProperty = VoiceProperty()
+                    )
                 }
 
-                mAudioFormat = TtsFormatManger.getFormat(aside.voiceProperty.format)
-                    ?: TtsFormatManger.getDefault()
+                mAudioFormat =
+                    TtsFormatManger.getFormatOrDefault(mAsideConfig?.msTtsProperty?.format)
             } else {
-                var cfg = mTtsCfg.selectedItem()
-                if (cfg == null) {
+                mDefaultConfig = mSysTts.getByReadAloudTarget()
+                if (mDefaultConfig == null) {
                     context.toastOnUi("警告：缺少{全部}，使用默认！")
-                    cfg = SysTtsConfigItem(true, ReadAloudTarget.DEFAULT)
-                    mTtsCfg.list.add(cfg)
+                    mDefaultConfig = SysTts(isEnabled = true)
                 }
-                mAudioFormat = TtsFormatManger.getFormat(cfg.voiceProperty.format)
-                    ?: TtsFormatManger.getDefault()
+                mAudioFormat =
+                    TtsFormatManger.getFormatOrDefault(mDefaultConfig?.msTtsProperty?.format)
+                        ?: TtsFormatManger.getDefault()
             }
         }
     }
@@ -100,32 +117,35 @@ class TtsManager(val context: Context) {
         callback?.start(mAudioFormat.hz, mAudioFormat.bitRate, 1)
 
         var text = request?.charSequenceText.toString().trim()
-        if (mTtsCfg.isReplace) {
-            text = replaceHelper.doReplace(text)
+        if (mIsReplaceEnabled) {
+            text = mReplacer.doReplace(text)
         }
 
         val pitch = request?.pitch?.minus(100) ?: 100
         val sysRate = (mNorm.normalize(request?.speechRate?.toFloat()!!) - 100).toInt()
 
         mProducer = null
-        if (mTtsCfg.isMultiVoice) { //多语音
+        if (mIsMultiVoiceEnabled) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
-            val aside = mTtsCfg.currentAsideItem()?.voiceProperty?.clone() ?: VoiceProperty()
+            val aside = mAsideConfig?.msTtsProperty?.clone() ?: VoiceProperty()
             aside.prosody.pitch = pitch
             aside.prosody.setRateIfFollowSystem(sysRate)
+
             val dialogue =
-                mTtsCfg.currentDialogueItem()?.voiceProperty?.clone() ?: VoiceProperty()
+                mDialogueConfig?.msTtsProperty?.clone() ?: VoiceProperty()
             dialogue.prosody.pitch = pitch
             dialogue.prosody.setRateIfFollowSystem(sysRate)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
-            mProducer = multiVoiceProducer(mTtsCfg.isSplitSentences, text, aside, dialogue)
+            mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside, dialogue)
         } else { //单语音
-            val pro = mTtsCfg.selectedItem()?.voiceProperty?.clone() ?: VoiceProperty()
+            val pro = mSysTts.getByReadAloudTarget(ReadAloudTarget.DEFAULT)?.msTtsProperty?.clone()
+                ?: VoiceProperty()
             pro.prosody.setRateIfFollowSystem(sysRate)
             pro.prosody.pitch = pitch
+
             Log.d(TAG, "单语音：${pro}")
-            if (mTtsCfg.isSplitSentences) {
+            if (mIsSplitEnabled) {
                 Log.d(TAG, "splitSentences...")
                 mProducer = splitSentencesProducer(text, pro)
             } else {
@@ -199,7 +219,8 @@ class TtsManager(val context: Context) {
         dialogue: VoiceProperty
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
         /* 分割为多语音  */
-        val map = VoiceTools.splitMultiVoice(text, aside, dialogue, mTtsCfg.minDialogueLength)
+        val map =
+            VoiceTools.splitMultiVoice(text, aside, dialogue, mMinDialogueLen)
         if (isSplit)
             map.forEach {
                 StringUtils.splitSentences(it.raText).forEach { splitedText ->

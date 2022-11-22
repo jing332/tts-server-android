@@ -14,51 +14,55 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.SysTtsConfigItem
+import com.github.jing332.tts_server_android.data.entities.SysTts
 
 class SysTtsConfigListItemAdapter(
-    var itemList: ArrayList<SysTtsConfigItem> = arrayListOf()
+    val items: MutableList<SysTts> = mutableListOf()
 ) :
     Adapter<SysTtsConfigListItemAdapter.ViewHolder>() {
     companion object {
         const val TAG = "SysTtsConfigAdapter"
     }
 
+
+    fun setItems(items: List<SysTts>) {
+        if (items.isNotEmpty()) this.items.clear()
+        this.items.addAll(items)
+        notifyDataSetChanged()
+    }
+
     fun append(item: SysTtsConfigItem) {
-        itemList.add(item)
-        notifyItemInserted(itemList.size - 1)
+//        itemList.add(item)
+//        notifyItemInserted(itemList.size - 1)
     }
 
     fun remove(position: Int) {
-        itemList.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, itemList.size)
+//        itemList.removeAt(position)
+//        notifyItemRemoved(position)
+//        notifyItemRangeChanged(position, itemList.size)
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun removeAll() {
-        itemList.clear()
-        notifyDataSetChanged()
+//        itemList.clear()
+//        notifyDataSetChanged()
     }
 
     fun update(item: SysTtsConfigItem, position: Int, isUpdateUi: Boolean = true) {
-        itemList[position] = item
-        if (isUpdateUi) notifyItemChanged(position)
+//        itemList[position] = item
+//        if (isUpdateUi) notifyItemChanged(position)
     }
 
 
-    var contentClick: ClickListen? = null
-    var switchClick: ClickListen? = null
-    var editButtonClick: ClickListen? = null
-    var delButtonClick: ClickListen? = null
-    var itemLongClick: LongClickListen? = null
-
-    interface ClickListen {
-        fun onClick(view: View, position: Int)
+    interface CallBack {
+        fun onSwitchClick(view: View?,position: Int)
+        fun onContentClick(data: SysTts)
+        fun onEdit(data: SysTts)
+        fun onDelete(data: SysTts)
+        fun onItemLongClick(view: View, data: SysTts): Boolean
     }
 
-    interface LongClickListen {
-        fun onLongClick(view: View, position: Int): Boolean
-    }
+    var callBack: CallBack? = null
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -70,7 +74,7 @@ class SysTtsConfigListItemAdapter(
 
     @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = itemList[position]
+        val data = items[position]
 
         holder.apply {
             //是否勾选
@@ -78,44 +82,42 @@ class SysTtsConfigListItemAdapter(
             //显示名称
             tvName.text = data.uiData.displayName
             kotlin.runCatching {
-                tvContent.text = Html.fromHtml(data.uiData.setContent(data.voiceProperty))
+                tvContent.text = Html.fromHtml(data.uiData.setContent(data.msTtsProperty))
             }
-            //格式
-            tvFormat.text = data.voiceProperty.format
-            //接口
-            tvApiType.text = TtsApiType.toString(data.voiceProperty.api)
+            data.msTtsProperty?.let {
+                //格式
+                tvFormat.text = it.format
+                //接口
+                tvApiType.text = TtsApiType.toString(it.api)
+            }
+
             //朗读目标
             ReadAloudTarget.toString(data.readAloudTarget).let {
                 tvRaTarget.visibility = if (it.isEmpty()) View.INVISIBLE else View.VISIBLE
                 tvRaTarget.text = it
             }
 
-            checkBox.setOnClickListener { switchClick?.onClick(it, position) }
-            tvContent.setOnClickListener { contentClick?.onClick(it, position) }
-            tvContent.setOnLongClickListener {
-                return@setOnLongClickListener itemLongClick?.onLongClick(
-                    itemView,
-                    position
-                ) ?: false
+            checkBox.setOnClickListener {
+                callBack?.onSwitchClick(it, position)
             }
-
+            tvContent.setOnClickListener { callBack?.onContentClick(data) }
+            tvContent.setOnLongClickListener {
+                return@setOnLongClickListener callBack?.onItemLongClick(it, data) ?: false
+            }
             itemView.setOnLongClickListener {
-                return@setOnLongClickListener itemLongClick?.onLongClick(
-                    itemView,
-                    position
-                ) ?: false
+                return@setOnLongClickListener callBack?.onItemLongClick(it, data) ?: false
             }
             btnEdit.setOnClickListener {
-                editButtonClick?.onClick(it, position)
+                callBack?.onEdit(data)
             }
             btnDelete.setOnClickListener {
-                delButtonClick?.onClick(it, position)
+                callBack?.onDelete(data)
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return itemList.size
+        return items.size
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

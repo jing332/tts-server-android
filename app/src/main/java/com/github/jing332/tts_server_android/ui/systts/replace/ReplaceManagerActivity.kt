@@ -13,12 +13,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.SwitchCompat
-import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.ReplaceRuleItemData
 import com.github.jing332.tts_server_android.databinding.ActivityReplaceRuleBinding
+import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.edit.ReplaceRuleEditActivity
 import com.github.jing332.tts_server_android.util.ClipboardUtils
@@ -29,21 +29,18 @@ import com.github.jing332.tts_server_android.util.toastOnUi
 class ReplaceManagerActivity : BackActivity(), ReplaceRuleItemAdapter.CallBack {
     companion object {
         const val TAG = "ReplaceRuleActivity"
-        const val KEY_SWITCH = "switch"
     }
 
     private val viewModel: ReplaceManagerViewModel by viewModels()
     private val binding by lazy { ActivityReplaceRuleBinding.inflate(layoutInflater) }
     private val adapter by lazy { ReplaceRuleItemAdapter(arrayListOf()) }
 
-    private var isReplaceEnabled = false
+//    private var isReplaceEnabled = false
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        isReplaceEnabled = intent?.getBooleanExtra(KEY_SWITCH, false) ?: false
 
         adapter.callBack = this
         binding.recyclerView.adapter = adapter
@@ -89,14 +86,12 @@ class ReplaceManagerActivity : BackActivity(), ReplaceRuleItemAdapter.CallBack {
         menuInflater.inflate(R.menu.menu_replace_manager, menu)
         /* 开关选项 */
         val item = menu?.findItem(R.id.app_bar_switch)
-        item!!.apply {
+        item?.apply {
             val switch = actionView?.findViewById<SwitchCompat>(R.id.menu_switch)
             switch!!.let {
-                it.isChecked = isReplaceEnabled
-
+                it.isChecked = SysTtsConfig.isReplaceEnabled
                 it.setOnClickListener {
-                    val intent = Intent()
-                    intent.putExtra(KEY_SWITCH, switch.isChecked)
+                    SysTtsConfig.isReplaceEnabled = switch.isChecked
                     this@ReplaceManagerActivity.setResult(RESULT_OK, intent)
                 }
             }

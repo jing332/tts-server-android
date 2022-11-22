@@ -5,19 +5,19 @@ import java.io.Serializable
 
 @kotlinx.serialization.Serializable
 data class SysTtsConfigItem(
-    var uiData: TtsConfigListItemData, /* UI显示数据 */
+    var uiData: SysTtsUiData, /* UI显示数据 */
     var isEnabled: Boolean = false,  /* 是否启用 */
     @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.DEFAULT,
     var voiceProperty: VoiceProperty, /* 朗读属性 */
 ) : Serializable {
     constructor() : this(
-        TtsConfigListItemData(), false,
+        SysTtsUiData(), false,
         ReadAloudTarget.DEFAULT,
         VoiceProperty()
     )
 
     constructor(isEnabled: Boolean, @ReadAloudTarget readAloudTarget: Int) : this(
-        TtsConfigListItemData(), isEnabled,
+        SysTtsUiData(), isEnabled,
         readAloudTarget,
         VoiceProperty()
     )
