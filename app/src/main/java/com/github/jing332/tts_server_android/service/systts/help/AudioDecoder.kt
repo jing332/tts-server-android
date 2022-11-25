@@ -48,6 +48,28 @@ class AudioDecoder {
         return mediaCodec as MediaCodec
     }
 
+    /**
+     * 获取音频采样率
+     */
+    fun getFormats(srcData: ByteArray): List<MediaFormat> {
+        kotlin.runCatching {
+            val mediaExtractor = MediaExtractor()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                mediaExtractor.setDataSource(ByteArrayMediaDataSource(srcData))
+            else
+                mediaExtractor.setDataSource(
+                    "data:" + currentMime + ";base64," + srcData.toByteString().base64()
+                )
+
+            val formats = mutableListOf<MediaFormat>()
+            for (i in 0 until mediaExtractor.trackCount) {
+                formats.add(mediaExtractor.getTrackFormat(i))
+            }
+            return formats
+        }
+        return emptyList()
+    }
+
     @Synchronized
     fun doDecode(
         srcData: ByteArray,

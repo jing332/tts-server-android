@@ -90,6 +90,9 @@ class TtsSettingsActivity : BackActivity() {
             R.id.menu_addConfig -> {
                 configFragment.startEditActivity()
             }
+            R.id.menu_addHttpTts ->{
+                configFragment.startHttpTtsEditActivity()
+            }
 
             /* 排序 */
             R.id.menu_sortByApi -> {

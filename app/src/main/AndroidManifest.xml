@@ -55,9 +55,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.systts.TtsConfigEditActivity"
+            android:name=".ui.systts.edit.MsTtsEditActivity"
             android:exported="true"
             android:label="@string/title_activity_tts_config_edit"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.systts.edit.HttpTtsEditActivity"
+            android:exported="true"
+            android:label="@string/title_activity_http_tts"
             android:launchMode="singleTask" />
 
         <!-- 替换规则 -->
@@ -67,7 +72,7 @@
             android:label="@string/title_activity_replace_manager"
             android:launchMode="singleTask" />
         <activity
-            android:name=".ui.systts.replace.edit.ReplaceRuleEditActivity"
+            android:name=".ui.systts.replace.ReplaceRuleEditActivity"
             android:exported="true"
             android:label="@string/title_activity_replace_edit" />
         <!-- Server开关 -->

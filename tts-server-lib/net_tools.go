@@ -32,6 +32,33 @@ func HttpGet(url, header string) ([]byte, error) {
 	return data, nil
 }
 
+func httpPost(url, rawPayload, header string) (io.ReadCloser, error) {
+	payload := strings.NewReader(rawPayload)
+	req, err := http.NewRequest(http.MethodPost, url, payload)
+	if err != nil {
+		return nil, err
+	}
+	if header != "" {
+		req.Header = tools.GetHeader(header)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	//defer resp.Body.Close()
+	//
+	//data, err := io.ReadAll(resp.Body)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//if resp.StatusCode != http.StatusOK {
+	//	return nil, errors.New(string(data))
+	//}
+
+	return resp.Body, nil
+}
+
 func UploadLog(log string) (string, error) {
 	uploadUrl := "https://bin.kv2.dev"
 	req, err := http.NewRequest(http.MethodPost, uploadUrl, strings.NewReader(log))

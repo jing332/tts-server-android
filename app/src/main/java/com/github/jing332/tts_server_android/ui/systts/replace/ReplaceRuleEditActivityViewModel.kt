@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.replace.edit
+package com.github.jing332.tts_server_android.ui.systts.replace
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

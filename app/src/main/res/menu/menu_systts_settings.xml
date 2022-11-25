@@ -4,11 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/menu_addConfig"
-        android:icon="@drawable/ic_baseline_white_add_24"
         android:title="@string/add_config"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
+        android:icon="@drawable/ic_baseline_white_add_24"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/menu_addConfig"
+                android:title="@string/add_internal_tts"
+                tools:ignore="AlwaysShowAction" />
+
+            <item
+                android:id="@+id/menu_addHttpTts"
+                android:title="@string/add_custom_tts" />
+
+        </menu>
+    </item>
 
     <item
         android:icon="@drawable/ic_baseline_sort_24"

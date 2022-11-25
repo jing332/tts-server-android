@@ -1,15 +1,19 @@
 package com.github.jing332.tts_server_android.data.entities
 
+import android.os.Parcelable
 import androidx.room.*
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.MsTtsProperty
+import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 
-@kotlinx.serialization.Serializable
+@Parcelize
+@Serializable
 @TypeConverters(SysTts.Converters::class)
 @Entity(tableName = "sysTts")
 data class SysTts(
@@ -27,43 +31,26 @@ data class SysTts(
     // 朗读目标
     @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.DEFAULT,
 
-    // 内置的微软TTS
-    var msTts: MsTtsProperty? = null,
-
-    // 自定义的HttpTTS
-    var httpTts: HttpTtsProperty? = null
-) : java.io.Serializable {
-    val isMsTts: Boolean
-        inline get() {
-            return msTts != null
-        }
-
-    val isHttpTts: Boolean
-        inline get() {
-            return httpTts != null
-        }
-
+    // TTS属性
+    var tts: BaseTTS? = null,
+    ) : Parcelable {
     val readAloudTargetString: String
         inline get() {
             return ReadAloudTarget.toString(readAloudTarget)
         }
 
-    /**
-     * 内容描述
-     */
-    val description: String?
-        inline get() {
-            return if (isMsTts) msTts?.description else null
-        }
-
+    @Suppress("UNCHECKED_CAST")
+    fun <T> ttsAs(): T {
+        return tts as T
+    }
 
     class Converters {
         companion object {
             @OptIn(ExperimentalSerializationApi::class)
             val json by lazy {
                 Json {
-                    ignoreUnknownKeys = true
-                    explicitNulls = false //忽略为null的字段} }
+                    ignoreUnknownKeys = true //忽略未知
+                    explicitNulls = false //忽略为null的字段
                 }
             }
 
@@ -72,22 +59,20 @@ data class SysTts(
                 return try {
                     json.decodeFromString<T>(s.toString())
                 } catch (e: Exception) {
+                    e.printStackTrace()
                     null
                 }
             }
         }
 
         @TypeConverter
-        fun msTtsPropertyToString(pro: MsTtsProperty?): String =
-            json.encodeToString(pro)
+        fun ttsPropertyToString(pro: BaseTTS): String {
+            return json.encodeToString(pro)
+        }
 
         @TypeConverter
-        fun stringTomsTtsProperty(json: String?) = decodeFromString<MsTtsProperty>(json)
-
-        @TypeConverter
-        fun httpTtsToString(httpTts: HttpTtsProperty?) = json.encodeToString(httpTts)
-
-        @TypeConverter
-        fun stringToHttpTts(json: String?) = decodeFromString<HttpTtsProperty>(json)
+        fun stringToTtsProperty(json: String?): BaseTTS? {
+            return decodeFromString(json)
+        }
     }
 }

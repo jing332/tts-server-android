@@ -25,7 +25,6 @@ import com.github.jing332.tts_server_android.databinding.ActivityReplaceRuleBind
 import com.github.jing332.tts_server_android.databinding.ItemReplaceRuleBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
-import com.github.jing332.tts_server_android.ui.systts.replace.edit.ReplaceRuleEditActivity
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.flow.conflate
 

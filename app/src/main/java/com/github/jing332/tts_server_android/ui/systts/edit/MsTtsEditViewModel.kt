@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts
+package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.content.Context
 import android.util.Log
@@ -12,11 +12,11 @@ import com.github.jing332.tts_server_android.bean.CreationVoiceBean
 import com.github.jing332.tts_server_android.bean.EdgeVoiceBean
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
-import com.github.jing332.tts_server_android.data.ExpressAs
-import com.github.jing332.tts_server_android.data.MsTtsProperty
 import com.github.jing332.tts_server_android.data.entities.SysTts
-import com.github.jing332.tts_server_android.service.systts.help.TtsAudioFormat
-import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
+import com.github.jing332.tts_server_android.model.MsTtsFormatManger
+import com.github.jing332.tts_server_android.model.tts.ExpressAs
+import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
 import com.github.jing332.tts_server_android.util.FileUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +24,7 @@ import kotlinx.serialization.decodeFromString
 import tts_server_lib.Tts_server_lib
 import java.io.File
 
-class TtsConfigEditViewModel : ViewModel() {
+class MsTtsEditViewModel : ViewModel() {
     companion object {
         const val TAG = "TtsSettingsViewModel"
     }
@@ -45,10 +45,9 @@ class TtsConfigEditViewModel : ViewModel() {
 
     //    private lateinit var mVoiceProperty: SysTtsConfigItem
     lateinit var mSysTts: SysTts
-    private val mMsTtsProperty: MsTtsProperty
+    private val mMsTtsProperty: MsTTS
         inline get() {
-            if (mSysTts.msTts == null) mSysTts.msTts = MsTtsProperty()
-            return mSysTts.msTts!!
+            return mSysTts.ttsAs<MsTTS>()
         }
 
     private val mJson
@@ -419,14 +418,14 @@ class TtsConfigEditViewModel : ViewModel() {
     private fun updateFormatLiveData() {
         val api = when (mMsTtsProperty.api) {
             TtsApiType.EDGE -> {
-                TtsAudioFormat.SupportedApi.EDGE
+                MsTtsAudioFormat.SupportedApi.EDGE
             }
             TtsApiType.AZURE -> {
-                TtsAudioFormat.SupportedApi.AZURE
+                MsTtsAudioFormat.SupportedApi.AZURE
             }
-            else -> TtsAudioFormat.SupportedApi.CREATION //2
+            else -> MsTtsAudioFormat.SupportedApi.CREATION //2
         }
-        val formats = TtsFormatManger.getFormatsBySupportedApi(api)
+        val formats = MsTtsFormatManger.getFormatsBySupportedApi(api)
         var selected = 0
         val tmpFormats = arrayListOf<SpinnerItemData>()
         formats.forEachIndexed { index, v ->

@@ -8,7 +8,6 @@ import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.help.SysTtsConfig
-import com.github.jing332.tts_server_android.service.systts.help.TtsFormatManger
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import tts_server_lib.Tts_server_lib
@@ -29,7 +28,7 @@ class TtsConfigFragmentViewModel : ViewModel() {
                 appDb.sysTtsDao.insert(
                     SysTts(
                         readAloudTarget = it.readAloudTarget,
-                        msTts = it.voiceProperty,
+                        tts = it.voiceProperty,
                         displayName = it.uiData.displayName,
                         isEnabled = it.isEnabled
                     )
@@ -79,10 +78,10 @@ class TtsConfigFragmentViewModel : ViewModel() {
         if (aside == null || dialogue == null) {
             return true
         } else if (aside.isEnabled && dialogue.isEnabled) {
-            return TtsFormatManger.isFormatSampleEqual(
-                aside.msTts?.format ?: "",
-                dialogue.msTts?.format ?: ""
-            )
+            return aside.tts?.audioFormat?.sampleRate == dialogue.tts?.audioFormat?.sampleRate
+//            return MsTtsFormatManger.isFormatSampleEqual(
+//                aside.format, dialogue.format
+//            )
         }
         return true
     }

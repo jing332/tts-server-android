@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts
+package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -13,27 +13,30 @@ import android.widget.*
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
+import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
+import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBinding
+import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.SysTtsNumericalEditView
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
+import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.github.jing332.tts_server_android.util.runOnUI
 import com.github.jing332.tts_server_android.util.toastOnUi
 
-class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
+class MsTtsEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
 
     companion object {
         const val TAG = "TtsConfigEditActivity"
-        const val RESULT_ADD = 111
-        const val RESULT_EDIT = 222
+
     }
 
     private val binding: ActivityTtsConfigEditBinding by lazy {
         ActivityTtsConfigEditBinding.inflate(layoutInflater)
     }
-    private val model: TtsConfigEditViewModel by viewModels()
+    private val model: MsTtsEditViewModel by viewModels()
 
     private val spinnerRaTargetAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
     private val spinnerApiAdapter: ArrayAdapter<String> by lazy { buildSpinnerAdapter() }
@@ -142,9 +145,9 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
 
         /* 加载数据并更新列表 */
         var cfg =
-            intent.getSerializableExtra(KEY_DATA)?.let { it as SysTts }
+            intent.getParcelableExtra<SysTts>(KEY_DATA)
         if (cfg == null) {
-            cfg = SysTts()
+            cfg = SysTts(tts = MsTTS())
             resultCode = RESULT_ADD
         }
         model.loadData(this, cfg)
@@ -210,7 +213,7 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun updateSpinner(spinner: Spinner, data: TtsConfigEditViewModel.SpinnerData) {
+    private fun updateSpinner(spinner: Spinner, data: MsTtsEditViewModel.SpinnerData) {
         spinner.also {
             val adapter = it.adapter as ArrayAdapter<String>
             adapter.clear()
@@ -241,6 +244,7 @@ class TtsConfigEditActivity : BackActivity(), AdapterView.OnItemSelectedListener
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.systts_config_edit_save -> {
+                SoftKeyboardUtils.hideSoftKeyboard(this)
                 val intent = Intent()
                 intent.putExtra(
                     KEY_DATA,

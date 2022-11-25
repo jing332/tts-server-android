@@ -120,4 +120,11 @@
     <string name="test_text">测试文本</string>
     <string name="set_dialogue_min_match_word_count">设置对话最小匹配汉字数</string>
     <string name="cannot_empty">不可为空！</string>
+    <string name="title_activity_http_tts">添加或编辑</string>
+    <string name="http_request_header">Http请求头</string>
+    <string name="http_tts_sample_test_text">自定义TTS测试文本</string>
+    <string name="decode_audio">解码音频</string>
+    <string name="add_internal_tts">添加内置TTS</string>
+    <string name="add_custom_tts">添加自定义TTS</string>
+    <string name="label_audio_sample_rate">音频采样率(hz)：</string>
 </resources>

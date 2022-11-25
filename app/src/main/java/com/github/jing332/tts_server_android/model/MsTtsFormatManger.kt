@@ -1,116 +1,117 @@
-package com.github.jing332.tts_server_android.service.systts.help
+package com.github.jing332.tts_server_android.model
 
 import android.media.AudioFormat
+import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
 
-object TtsFormatManger {
-    private val formats = arrayListOf<TtsAudioFormat>(
-        TtsAudioFormat(
+object MsTtsFormatManger {
+    private val formats = arrayListOf<MsTtsAudioFormat>(
+        MsTtsAudioFormat(
             "raw-8khz-16bit-mono-pcm",
             8000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.AZURE,
             false
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "raw-16khz-16bit-mono-pcm",
             16000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.AZURE,
             false
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "raw-24khz-16bit-mono-pcm",
             24000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.AZURE,
             false
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "raw-48khz-16bit-mono-pcm",
             48000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.AZURE,
             false
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "webm-16khz-16bit-mono-opus",
             24000 * 2,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.AZURE,
             true
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "webm-24khz-16bit-mono-opus",
             24000 * 2,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.EDGE or TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.EDGE or MsTtsAudioFormat.SupportedApi.AZURE,
             true
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "webm-24khz-16bit-24kbps-mono-opus",
             24000 * 2,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.AZURE,
             true
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "audio-16khz-32kbitrate-mono-mp3",
             16000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+            MsTtsAudioFormat.SupportedApi.AZURE or MsTtsAudioFormat.SupportedApi.CREATION,
             true
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "audio-24khz-48kbitrate-mono-mp3",
             24000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.EDGE or TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+            MsTtsAudioFormat.SupportedApi.EDGE or MsTtsAudioFormat.SupportedApi.AZURE or MsTtsAudioFormat.SupportedApi.CREATION,
             true
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "audio-24khz-96kbitrate-mono-mp3",
             24000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.EDGE or TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+            MsTtsAudioFormat.SupportedApi.EDGE or MsTtsAudioFormat.SupportedApi.AZURE or MsTtsAudioFormat.SupportedApi.CREATION,
             true
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "audio-48khz-96kbitrate-mono-mp3",
             48000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE or TtsAudioFormat.SupportedApi.CREATION,
+            MsTtsAudioFormat.SupportedApi.AZURE or MsTtsAudioFormat.SupportedApi.CREATION,
             true
         ),
 
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "ogg-16khz-16bit-mono-opus",
             16000 * 2,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.AZURE,
             true
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "ogg-24khz-16bit-mono-opus",
             24000 * 2,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.AZURE,
             true
         ),
-        TtsAudioFormat(
+        MsTtsAudioFormat(
             "ogg-48khz-16bit-mono-opus",
             48000,
             AudioFormat.ENCODING_PCM_16BIT,
-            TtsAudioFormat.SupportedApi.AZURE,
+            MsTtsAudioFormat.SupportedApi.AZURE,
             true
         )
     )
 
-    fun getDefault(): TtsAudioFormat {
+    fun getDefault(): MsTtsAudioFormat {
         return formats[4] //audio-24khz-48kbitrate-mono-mp3
     }
 
     /* 通过name查找格式Item */
-    fun getFormat(name: String): TtsAudioFormat? {
+    fun getFormat(name: String): MsTtsAudioFormat? {
         formats.forEach { v ->
             if (v.name == name) {
                 return v
@@ -119,22 +120,14 @@ object TtsFormatManger {
         return null
     }
 
-    fun getFormatOrDefault(name: String?): TtsAudioFormat {
+    fun getFormatOrDefault(name: String?): MsTtsAudioFormat {
         if (name == null) return getDefault()
         var f = getFormat(name)
         if (f == null) f = getDefault()
         return f
     }
 
-    /*fun getAllFormatName(): ArrayList<String> {
-        val list = arrayListOf<String>()
-        formats.forEach { v ->
-            list.add(v.name)
-        }
-        return list
-    }*/
-
-    fun getFormatsBySupportedApi(@TtsAudioFormat.SupportedApi api: Int): ArrayList<String> {
+    fun getFormatsBySupportedApi(@MsTtsAudioFormat.SupportedApi api: Int): ArrayList<String> {
         val list = arrayListOf<String>()
         formats.forEach {
             if (api and it.supportedApi != 0)
@@ -142,17 +135,5 @@ object TtsFormatManger {
         }
 
         return list
-    }
-
-    /**
-     * 判断格式以及采样率是否相同
-     */
-    fun isFormatSampleEqual(format1: String, format2: String): Boolean {
-        return try {
-            getFormat(format1)!!.hz == getFormat(format2)!!.hz
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
     }
 }

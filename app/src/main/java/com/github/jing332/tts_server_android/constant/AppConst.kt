@@ -2,10 +2,12 @@ package com.github.jing332.tts_server_android.constant
 
 import android.content.pm.PackageManager
 import com.github.jing332.tts_server_android.App
+import com.script.javascript.RhinoScriptEngine
 
 @Suppress("DEPRECATION")
 object AppConst {
-    val replaceRulesPath by lazy { App.context.filesDir.absolutePath + "/" + "/replace_rule.json" }
+    // JS引擎
+    val SCRIPT_ENGINE: RhinoScriptEngine by lazy { RhinoScriptEngine() }
 
     val appInfo: AppInfo by lazy {
         val appInfo = AppInfo()

@@ -14,7 +14,7 @@ val appDb by lazy {
     AppDatabase.createDatabase(App.context)
 }
 
-@Database(version = 2, entities = [SysTts::class, ReplaceRule::class])
+@Database(version = 3, entities = [SysTts::class, ReplaceRule::class])
 abstract class AppDatabase : RoomDatabase() {
     abstract val sysTtsDao: SysTtsDao
     abstract val replaceRuleDao: ReplaceRuleDao

@@ -1,6 +1,6 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
-import com.github.jing332.tts_server_android.data.MsTtsProperty
+import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.lengthOfChinese
 
@@ -39,8 +39,8 @@ object VoiceTools {
      */
     fun splitMultiVoice(
         text: String,
-        asideProperty: MsTtsProperty,
-        dialogueProperty: MsTtsProperty,
+        asideProperty: BaseTTS,
+        dialogueProperty: BaseTTS,
         minDialogueLen: Int
     ): List<ResultMultiVoiceData> {
         val multiVoice = splitMultiVoice(text)
@@ -60,5 +60,5 @@ object VoiceTools {
 
 data class ResultTextTag(val text: String, val isDialogue: Boolean)
 data class ResultMultiVoiceData(
-    val msTtsProperty: MsTtsProperty, val raText: String
+    val ttsProperty: BaseTTS, val speakText: String
 )

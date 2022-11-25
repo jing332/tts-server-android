@@ -1,26 +1,31 @@
-package com.github.jing332.tts_server_android.service.systts.help
+package com.github.jing332.tts_server_android.model.tts
 
 import androidx.annotation.IntDef
 
-data class TtsAudioFormat(
+data class MsTtsAudioFormat(
     val name: String,
     val value: String,
-    val hz: Int,
-    val bitRate: Int,
-    @SupportedApi val supportedApi: Int,
-    val needDecode: Boolean
-) {
+    @SupportedApi val supportedApi: Int = 0,
+) : BaseAudioFormat() {
     companion object {
         const val DEFAULT = "audio-24khz-48kbitrate-mono-mp3"
     }
 
     constructor(
         value: String,
-        hz: Int,
+        sampleRate: Int,
         bitRate: Int,
         @SupportedApi supportedApi: Int,
-        needDecode: Boolean
-    ) : this(value, value, hz, bitRate, supportedApi, needDecode)
+        isNeedDecode: Boolean = true
+    ) : this(value, value, supportedApi) {
+        this.bitRate = bitRate
+        this.sampleRate = sampleRate
+        this.isNeedDecode = isNeedDecode
+    }
+
+    override fun toString(): String {
+        return value
+    }
 
     @IntDef(flag = true, value = [SupportedApi.AZURE, SupportedApi.EDGE, SupportedApi.CREATION])
     @Retention(AnnotationRetention.SOURCE)

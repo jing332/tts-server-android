@@ -20,7 +20,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout"
+                android:id="@+id/textInputLayout_url"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -49,7 +49,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/label_read_aloud_target"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textInputLayout" />
+                app:layout_constraintTop_toBottomOf="@id/textInputLayout_url" />
 
             <Spinner
                 android:id="@+id/spinner_readAloudTarget"
