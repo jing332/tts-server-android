@@ -27,6 +27,9 @@ data class HttpTTS(
     override var rate: Int = 1,
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
 ) : Parcelable, BaseTTS() {
+    override fun isRateFollowSystem(): Boolean {
+        return VALUE_FOLLOW_SYSTEM == rate
+    }
 
     override fun getType(): String {
         return app.getString(R.string.custom)
@@ -34,7 +37,7 @@ data class HttpTTS(
 
     override fun getDescription(): String {
         val rateStr =
-            if (rate == VALUE_FOLLOW_SYSTEM) app.getString(R.string.follow) else rate
+            if (isRateFollowSystem()) app.getString(R.string.follow) else rate
         return "语速：<b>${rateStr}</b> | 音量：<b>${volume}</b>"
     }
 
@@ -55,7 +58,12 @@ data class HttpTTS(
                 this@HttpTTS.rate = rate
                 this@HttpTTS.volume = volume
                 kotlin.runCatching {
-                    val result = AnalyzeUrl(mUrl = url, speakText = "", speakSpeed = rate).eval()
+                    val result = AnalyzeUrl(
+                        mUrl = url,
+                        speakText = "",
+                        speakSpeed = rate,
+                        speakVolume = volume
+                    ).eval()
                     return result?.body ?: "解析url失败"
                 }.onFailure {
                     return "${it.message}"
@@ -73,7 +81,8 @@ data class HttpTTS(
     }
 
     fun getAudioResponse(speakText: String): Response {
-        val a = AnalyzeUrl(mUrl = url, speakText = speakText, speakSpeed = rate)
+        val a =
+            AnalyzeUrl(mUrl = url, speakText = speakText, speakSpeed = rate, speakVolume = volume)
         val urlOption = a.eval()
         urlOption?.let {
             return Net.post(a.baseUrl) {

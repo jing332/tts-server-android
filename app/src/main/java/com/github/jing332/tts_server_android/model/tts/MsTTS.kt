@@ -48,7 +48,7 @@ data class MsTTS(
 
         const val DEFAULT_LOCALE = "zh-CN"
         const val DEFAULT_VOICE = "zh-CN-XiaomiNeural"
-        const val DEFAULT_VOICE_ID = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
+//        const val DEFAULT_VOICE_ID = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
     }
 
     @IgnoredOnParcel
@@ -77,6 +77,10 @@ data class MsTTS(
         set(value) {
             prosody.rate = value
         }
+
+    override fun isRateFollowSystem(): Boolean {
+        return RATE_FOLLOW_SYSTEM == rate
+    }
 
     override fun getDescription(): String {
         val rateStr = if (prosody.isRateFollowSystem) "跟随" else prosody.rate

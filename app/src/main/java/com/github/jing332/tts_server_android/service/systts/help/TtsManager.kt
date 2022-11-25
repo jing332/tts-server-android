@@ -128,21 +128,23 @@ class TtsManager(val context: Context) {
         if (mIsMultiVoiceEnabled) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
 
-            val aside = mAsideConfig?.copy()?.tts
-            aside?.pitch = pitch
-            if (aside?.rate == BaseTTS.VALUE_FOLLOW_SYSTEM) aside.rate = sysRate
+            val aside = mAsideConfig?.tts?.clone<BaseTTS>()?.also {
+                it.pitch = pitch
+                if (it.isRateFollowSystem()) it.rate = sysRate
+            }
 
-            val dialogue =
-                mDialogueConfig?.copy()?.tts
-            dialogue?.pitch = pitch
-            if (dialogue?.rate == BaseTTS.VALUE_FOLLOW_SYSTEM) dialogue.rate = sysRate
+            val dialogue = mDialogueConfig?.tts?.clone<BaseTTS>()?.also {
+                it.pitch = pitch
+                if (it.isRateFollowSystem()) it.rate = sysRate
+            }
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
             mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside!!, dialogue!!)
         } else { //单语音
-            val pro = mDefaultConfig?.copy()?.tts
-            pro?.pitch = pitch
-            if (pro?.rate == BaseTTS.VALUE_FOLLOW_SYSTEM) pro.rate = sysRate
+            val pro = mDefaultConfig?.tts.clone<BaseTTS>()?.also {
+                it.pitch = pitch
+                if (it.isRateFollowSystem()) it.rate = sysRate
+            }
 
             Log.d(TAG, "单语音：${pro}")
             if (mIsSplitEnabled) {
@@ -394,8 +396,8 @@ class TtsManager(val context: Context) {
                     error = {
                         if (App.isSysTtsLogEnabled) sendLog(LogLevel.ERROR, "解码失败: $it")
                     })
-            }else {
-             writeToCallBack(callback, audio)
+            } else {
+                writeToCallBack(callback, audio)
             }
             if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "播放完毕：${text.limitLength(20)}")
         } else {

@@ -23,6 +23,11 @@ sealed class BaseTTS : Parcelable {
     abstract var rate: Int
 
     /**
+     * 语速是否跟随系统
+     */
+    abstract fun isRateFollowSystem(): Boolean
+
+    /**
      * UI 右下角类型
      */
     abstract fun getType(): String
