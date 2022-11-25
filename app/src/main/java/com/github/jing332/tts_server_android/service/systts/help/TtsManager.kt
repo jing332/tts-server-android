@@ -130,19 +130,19 @@ class TtsManager(val context: Context) {
 
             val aside = mAsideConfig?.copy()?.tts
             aside?.pitch = pitch
-            if (aside?.rate == BaseTTS.VALUE_WITH_SYSTEM) aside.rate = sysRate
+            if (aside?.rate == BaseTTS.VALUE_FOLLOW_SYSTEM) aside.rate = sysRate
 
             val dialogue =
                 mDialogueConfig?.copy()?.tts
             dialogue?.pitch = pitch
-            if (dialogue?.rate == BaseTTS.VALUE_WITH_SYSTEM) dialogue.rate = sysRate
+            if (dialogue?.rate == BaseTTS.VALUE_FOLLOW_SYSTEM) dialogue.rate = sysRate
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
             mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside!!, dialogue!!)
         } else { //单语音
             val pro = mDefaultConfig?.copy()?.tts
             pro?.pitch = pitch
-            if (pro?.rate == BaseTTS.VALUE_WITH_SYSTEM) pro.rate = sysRate
+            if (pro?.rate == BaseTTS.VALUE_FOLLOW_SYSTEM) pro.rate = sysRate
 
             Log.d(TAG, "单语音：${pro}")
             if (mIsSplitEnabled) {
@@ -150,7 +150,7 @@ class TtsManager(val context: Context) {
                 mProducer = splitSentencesProducer(text, pro!!)
             } else {
                 if (mAudioFormat.isNeedDecode) {
-                    getAudioAndDecodePlay(text, pro!!, callback)
+                    getAudioAndDecodePlay(text, pro!!, callback!!)
                 } else {
                     mProducer = audioStreamProducer(text, pro!!)
                 }
@@ -184,7 +184,7 @@ class TtsManager(val context: Context) {
                         sampleRate = mAudioFormat.sampleRate,
                         onRead = { writeToCallBack(callback!!, it) },
                         error = {
-                            if (App.isSysTtsLogEnabled) sendLog(LogLevel.ERROR, "解码失败: $shortText")
+                            if (App.isSysTtsLogEnabled) sendLog(LogLevel.ERROR, "解码失败: $it")
                         })
                     if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "播放完毕：${shortText}")
                 } else {
@@ -249,7 +249,7 @@ class TtsManager(val context: Context) {
         tts: BaseTTS,
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
         getAudioStreamHelper(text, tts) {
-            launch { send(ChannelData(audio = it)) }
+            launch { send(ChannelData(audio = it, isNeedDecode = tts.audioFormat.isNeedDecode)) }
         }
     }
 
@@ -257,20 +257,20 @@ class TtsManager(val context: Context) {
     private suspend fun getAudioAndSend(
         channel: SendChannel<ChannelData>,
         text: String,
-        msTtsProperty: BaseTTS
+        tts: BaseTTS
     ) {
         if (!isSynthesizing) return
-        if (msTtsProperty.audioFormat.isNeedDecode) {
-            val audio = getAudioHelper(text, msTtsProperty)
-            channel.send(ChannelData(text, audio, msTtsProperty.audioFormat.isNeedDecode))
+        if (tts.audioFormat.isNeedDecode) {
+            val audio = getAudioHelper(text, tts)
+            channel.send(ChannelData(text, audio, tts.audioFormat.isNeedDecode))
         } else {
-            getAudioStreamHelper(text, msTtsProperty) {
+            getAudioStreamHelper(text, tts) {
                 runBlocking {
                     channel.send(
                         ChannelData(
                             null,
                             it,
-                            msTtsProperty.audioFormat.isNeedDecode
+                            tts.audioFormat.isNeedDecode
                         )
                     )
                 }
@@ -345,7 +345,7 @@ class TtsManager(val context: Context) {
             var breakPoint = false
             var currentLength = 0
             kotlin.runCatching {
-                breakPoint = tts.getAudioStream(text, 4096) { data ->
+                breakPoint = tts.getAudioStream(text, 8192) { data ->
                     if (currentLength >= lastFailLength) {
                         onRead.invoke(data)
                         lastFailLength = -1
@@ -382,21 +382,25 @@ class TtsManager(val context: Context) {
     private fun getAudioAndDecodePlay(
         text: String,
         msTtsProperty: BaseTTS,
-        callback: SynthesisCallback?
+        callback: SynthesisCallback
     ) {
         val audio = getAudioHelper(text, msTtsProperty)
         if (audio != null) {
-            mAudioDecoder.doDecode(
-                audio,
-                mAudioFormat.sampleRate,
-                onRead = { writeToCallBack(callback!!, it) },
-                error = {
-                    if (App.isSysTtsLogEnabled) sendLog(LogLevel.ERROR, "解码失败: $it")
-                })
+            if (msTtsProperty.audioFormat.isNeedDecode) {
+                mAudioDecoder.doDecode(
+                    audio,
+                    mAudioFormat.sampleRate,
+                    onRead = { writeToCallBack(callback, it) },
+                    error = {
+                        if (App.isSysTtsLogEnabled) sendLog(LogLevel.ERROR, "解码失败: $it")
+                    })
+            }else {
+             writeToCallBack(callback, audio)
+            }
             if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "播放完毕：${text.limitLength(20)}")
         } else {
             if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "音频内容为空或被终止请求")
-            callback?.done()
+            callback.done()
         }
     }
 

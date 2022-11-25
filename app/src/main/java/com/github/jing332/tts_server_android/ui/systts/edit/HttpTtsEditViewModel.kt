@@ -1,9 +1,11 @@
 package com.github.jing332.tts_server_android.ui.systts.edit
 
+import android.content.Context
 import android.media.MediaFormat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withMain
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.service.systts.help.AudioDecoder
 import com.github.jing332.tts_server_android.util.runOnIO
@@ -12,17 +14,20 @@ class HttpTtsEditViewModel : ViewModel() {
     fun doTest(
         url: String,
         testText: String,
-        onSuccess: suspend (size: Int, sampleRate: Int, mime: String) -> Unit,
+        onSuccess: suspend (size: Int, sampleRate: Int, mime: String, contentType: String) -> Unit,
         onFailure: suspend (reason: String) -> Unit,
     ) {
         viewModelScope.runOnIO {
             kotlin.runCatching {
-                val audio = HttpTTS(url).getAudio(testText)
-                if (audio == null) withMain { onFailure("音频为空") }
+                val resp = HttpTTS(url).getAudioResponse(testText)
+                val data = resp.body?.bytes()
+                if (data == null) withMain { onFailure("音频为空") }
+                val contentType = resp.header("Content-Type", "无") ?: "无"
 
-                audio?.let {
+                data?.let {
                     val ad = AudioDecoder()
                     val formats = ad.getFormats(it)
+                    resp.body?.close()
 
                     var mSampleRate = 0
                     var mMime = "无"
@@ -31,7 +36,7 @@ class HttpTtsEditViewModel : ViewModel() {
                         mMime = formats[0].getString(MediaFormat.KEY_MIME) ?: ""
                     }
 
-                    withMain { onSuccess(it.size, mSampleRate, mMime) }
+                    withMain { onSuccess(it.size, mSampleRate, mMime, contentType) }
                 }
             }.onFailure {
                 withMain { onFailure(it.message.toString()) }
@@ -39,11 +44,11 @@ class HttpTtsEditViewModel : ViewModel() {
         }
     }
 
-    fun toSampleRateIndex(sampleRate: Int): Int {
-        return when (sampleRate) {
-            24000 -> 1
-            48000 -> 2
-            else -> 0 // 16000
+    fun toSampleRateIndex(sampleRate: Int, context: Context): Int {
+        context.resources.getStringArray(R.array.sample_rate_list).forEachIndexed { index, s ->
+            if (sampleRate == s.toInt())
+                return index
         }
+        return 0
     }
 }

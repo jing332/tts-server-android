@@ -17,7 +17,7 @@ import com.github.jing332.tts_server_android.ui.custom.BackActivity
 @Suppress("DEPRECATION")
 class ReplaceRuleEditActivity : BackActivity() {
     val binding by lazy { ActivityReplaceRuleEditBinding.inflate(layoutInflater) }
-    val viewModel: ReplaceRuleEditActivityViewModel by viewModels()
+    val viewModel: ReplaceRuleEditViewModel by viewModels()
 
     private val pinyinList by lazy {
         "ā á ǎ à ê ē é ě è ī í ǐ ì ō ó ǒ ò ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ").toTypedArray()

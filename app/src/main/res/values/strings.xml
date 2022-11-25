@@ -53,14 +53,14 @@
 
     <string name="menu_sys_tts_settings">系统TTS配置</string>
     <string name="menu_settings">设置</string>
-    <string name="title_activity_settings">设置</string>
+    <string name="title_activity_settings">全局设置</string>
     <string name="copy_address">复制地址</string>
     <string name="check_update_failed">检查更新失败</string>
     <string name="current_is_last_version">当前已是最新版</string>
     <string name="label_read_aloud_target">朗读目标：</string>
     <string name="enable_aside_and_dialogue">区分旁白和对白</string>
-    <string name="title_activity_tts_config_edit">添加或编辑</string>
-    <string name="title_activity_replace_edit">添加或编辑</string>
+    <string name="title_activity_tts_config_edit">编辑内置TTS</string>
+    <string name="title_activity_replace_edit">编辑替换规则</string>
     <string name="title_activity_replace_manager">替换规则管理</string>
     <string name="display_name">显示名称</string>
 
@@ -120,11 +120,14 @@
     <string name="test_text">测试文本</string>
     <string name="set_dialogue_min_match_word_count">设置对话最小匹配汉字数</string>
     <string name="cannot_empty">不可为空！</string>
-    <string name="title_activity_http_tts">添加或编辑</string>
+    <string name="title_activity_http_tts">编辑自定义TTS</string>
     <string name="http_request_header">Http请求头</string>
     <string name="http_tts_sample_test_text">自定义TTS测试文本</string>
     <string name="decode_audio">解码音频</string>
     <string name="add_internal_tts">添加内置TTS</string>
     <string name="add_custom_tts">添加自定义TTS</string>
     <string name="label_audio_sample_rate">音频采样率(hz)：</string>
+    <string name="off_multi_voice_use_global">请关闭多语音选项以使用单语音模式</string>
+    <string name="follow">跟随</string>
+    <string name="custom">自定义</string>
 </resources>

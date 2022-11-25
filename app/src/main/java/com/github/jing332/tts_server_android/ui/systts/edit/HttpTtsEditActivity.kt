@@ -32,6 +32,8 @@ class HttpTtsEditActivity : BackActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        binding.spinnerSampleRate.setSelection(1)
+
         // 获取数据 为null表示Add
         data = intent.getParcelableExtra<SysTts>(KEY_DATA)
         if (data == null) {
@@ -43,7 +45,12 @@ class HttpTtsEditActivity : BackActivity() {
             binding.etName.setText(it.displayName)
             binding.etUrl.setText(tts.url)
 
-            binding.spinnerSampleRate.setSelection(viewModel.toSampleRateIndex(tts.audioFormat.sampleRate))
+            binding.spinnerSampleRate.setSelection(
+                viewModel.toSampleRateIndex(
+                    tts.audioFormat.sampleRate,
+                    this
+                )
+            )
             binding.checkBoxNeedDecode.isChecked = tts.audioFormat.isNeedDecode
         }
 
@@ -52,16 +59,23 @@ class HttpTtsEditActivity : BackActivity() {
             it.isEnabled = false
             val url =
                 binding.etUrl.text.toString()
-            viewModel.doTest(url, binding.etTestText.text.toString(), { size, sampleRate, mime ->
-                AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试成功")
-                    .setMessage("音频大小：${size / 1024}KB \n格式: $mime \n采样率：${sampleRate}hz")
-                    .show()
-                it.isEnabled = true
-            }, { err ->
-                AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试失败").setMessage(err)
-                    .show()
-                binding.btnTest.isEnabled = true
-            })
+            viewModel.doTest(
+                url,
+                binding.etTestText.text.toString(),
+                { size, sampleRate, mime, contentType ->
+                    AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试成功")
+                        .setMessage(
+                            "音频大小：${size / 1024}KB \n格式: $mime " +
+                                    "\n采样率：${sampleRate}hz \nContent-Type：$contentType"
+                        )
+                        .show()
+                    it.isEnabled = true
+                },
+                { err ->
+                    AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试失败").setMessage(err)
+                        .show()
+                    binding.btnTest.isEnabled = true
+                })
         }
 
         binding.textInputLayoutUrl.setEndIconOnClickListener {
@@ -70,7 +84,9 @@ class HttpTtsEditActivity : BackActivity() {
                     "<br><br>内置变量：" +
                     "<br> - 文本：<b>{{speakText}}</b>" +
                     "<br> - 语速：<b>{{speakSpeed}}</b>" +
-                    "<br> - 音量：<b>{{speakVolume}}</b>"
+                    "<br> - 音量：<b>{{speakVolume}}</b>" +
+                    "<br><br> 示例：" +
+                    """<br><i> http://tsn.baidu.com/text2audio,{"method": "POST", "body": "tex={{encodeURI(speakText)}}&spd={{speakSpeed}}&per=4114&cuid=baidu_speech_demo&idx=1&cod=2&lan=zh&ctp=1&pdt=220&vol={{speakVolume}}&aue=6&pit=5&res_tag=audio"}  </i>"""
 
             val tv = TextView(this)
             tv.setTextIsSelectable(true)

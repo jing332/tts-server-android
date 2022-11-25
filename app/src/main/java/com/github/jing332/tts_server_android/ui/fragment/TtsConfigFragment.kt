@@ -41,7 +41,7 @@ class TtsConfigFragment : Fragment() {
         const val ACTION_ON_CONFIG_CHANGED = "on_config_changed"
     }
 
-    private val viewModel: TtsConfigFragmentViewModel by activityViewModels()
+    private val viewModel: TtsConfigViewModel by activityViewModels()
     private val binding: FragmentTtsConfigBinding by lazy {
         FragmentTtsConfigBinding.inflate(
             layoutInflater
@@ -86,12 +86,11 @@ class TtsConfigFragment : Fragment() {
                     checkBoxSwitch.setOnClickListener { view ->
                         onSwitchClick(view, models as List<SysTts>, modelPosition)
                     }
-                    tvDescription.setOnClickListener { showNumEditDialog(getModel()) }
-                    tvDescription.setOnLongClickListener { showItemPopup(itemView, getModel()) }
                     btnEdit.setOnClickListener { edit(getModel()) }
                     btnDelete.setOnClickListener { delete(getModel()) }
                 }
-                itemView.setOnLongClickListener { showItemPopup(itemView, getModel()) }
+                itemView.setOnClickListener { showNumEditDialog(getModel()) }
+                itemView.setOnLongClickListener { showItemPopupMenu(itemView, getModel()) }
             }
 
             onBind {
@@ -182,9 +181,7 @@ class TtsConfigFragment : Fragment() {
             is MsTTS -> MsTtsEditActivity::class.java
             else -> HttpTtsEditActivity::class.java
         }
-        val intent = Intent(requireContext(), cls)
-        intent.putExtra(KEY_DATA, data)
-        startForResult.launch(intent)
+        startForResult.launch(Intent(requireContext(), cls).apply { putExtra(KEY_DATA, data) })
     }
 
     private fun delete(data: SysTts) {
@@ -200,8 +197,8 @@ class TtsConfigFragment : Fragment() {
             .show()
     }
 
-    private fun showItemPopup(view: View, data: SysTts): Boolean {
-        /* 列表item的长按菜单 */
+    /* 列表item的长按菜单 */
+    private fun showItemPopupMenu(view: View, data: SysTts): Boolean {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.menu_systts_list_item, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
@@ -214,15 +211,15 @@ class TtsConfigFragment : Fragment() {
             if (data.isEnabled) {
                 val isMultiVoice = SysTtsConfig.isMultiVoiceEnabled
                 if (target == ReadAloudTarget.DEFAULT) {
-                    if (isMultiVoice) {
-                        longToast("请关闭多语音选项以使用单语音模式")
+                    if (isMultiVoice) { // 开多语音 但想启用单语音
+                        longToast(getString(R.string.off_multi_voice_use_global))
                         return@setOnMenuItemClickListener false
                     }
                 } else if (!isMultiVoice) { // 未开启多语音
                     checkMultiVoiceDialog.show()
                     return@setOnMenuItemClickListener false
                 } else { // 已开启多语音并且target为旁白或对话
-                    if (data.readAloudTarget == ReadAloudTarget.DEFAULT) data.isEnabled = false
+                    if (target == ReadAloudTarget.DEFAULT) data.isEnabled = false
                     appDb.sysTtsDao.update(data.copy(readAloudTarget = target))
                     requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
                     return@setOnMenuItemClickListener false

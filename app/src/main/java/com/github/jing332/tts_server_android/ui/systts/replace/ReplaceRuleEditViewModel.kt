@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import java.util.regex.Pattern
 
-class ReplaceRuleEditActivityViewModel : ViewModel() {
+class ReplaceRuleEditViewModel : ViewModel() {
     val liveData: MutableLiveData<ReplaceRule> by lazy { MutableLiveData() }
 
     fun load(data: ReplaceRule?) {

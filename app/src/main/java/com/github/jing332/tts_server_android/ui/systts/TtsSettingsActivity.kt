@@ -17,7 +17,7 @@ import com.github.jing332.tts_server_android.databinding.ActivityTtsSettingsBind
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
-import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragmentViewModel
+import com.github.jing332.tts_server_android.ui.fragment.TtsConfigViewModel
 import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.MyTools
@@ -28,7 +28,7 @@ class TtsSettingsActivity : BackActivity() {
         const val TAG = "TtsSettingsActivity"
     }
 
-    private val cfgViewModel: TtsConfigFragmentViewModel by viewModels()
+    private val cfgViewModel: TtsConfigViewModel by viewModels()
 
     private val binding: ActivityTtsSettingsBinding by lazy {
         ActivityTtsSettingsBinding.inflate(

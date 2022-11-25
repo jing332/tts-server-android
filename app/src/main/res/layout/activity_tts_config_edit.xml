@@ -178,7 +178,7 @@
                 app:layout_constraintStart_toEndOf="@+id/spinner_voiceStyle"
                 app:layout_constraintTop_toTopOf="@+id/spinner_voiceStyle" />
 
-            <com.github.jing332.tts_server_android.ui.custom.SysTtsNumericalEditView
+            <com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
                 android:id="@+id/sysTtsNumericalEditView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="sample_rate_list">
+        <item>8000</item>
         <item>16000</item>
         <item>24000</item>
         <item>48000</item>

@@ -20,7 +20,7 @@ import tts_server_lib.Tts_server_lib
 
 class ServerLogFragment : Fragment() {
     private val binding by lazy { FragmentServerLogBinding.inflate(layoutInflater) }
-    private val viewModel: ServerLogFragmentViewModel by viewModels()
+    private val viewModel: ServerLogViewModel by viewModels()
 
     private val mReceiver by lazy { MyReceiver() }
     private val logList: ArrayList<MyLog> by lazy { ArrayList() }

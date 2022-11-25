@@ -5,8 +5,10 @@ import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.drake.net.Net
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
-import com.github.jing332.tts_server_android.ui.custom.HttpTtsNumericalEditView
+import com.github.jing332.tts_server_android.ui.custom.HttpTtsNumEditView
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -27,11 +29,13 @@ data class HttpTTS(
 ) : Parcelable, BaseTTS() {
 
     override fun getType(): String {
-        return "自定义"
+        return app.getString(R.string.custom)
     }
 
     override fun getDescription(): String {
-        return "语速：<b>${rate}</b> | 音量：<b>${volume}</b>"
+        val rateStr =
+            if (rate == VALUE_FOLLOW_SYSTEM) app.getString(R.string.follow) else rate
+        return "语速：<b>${rateStr}</b> | 音量：<b>${volume}</b>"
     }
 
     override fun getBottomContent(): String {
@@ -43,16 +47,16 @@ data class HttpTTS(
         view: View?,
         done: (modifiedData: BaseTTS?) -> Unit
     ) {
-        val editView = HttpTtsNumericalEditView(context)
+        val editView = HttpTtsNumEditView(context)
         editView.rate = rate
         editView.volume = volume
-        editView.callBack = object : HttpTtsNumericalEditView.CallBack {
+        editView.callBack = object : HttpTtsNumEditView.CallBack {
             override fun onValueChanged(rate: Int, volume: Int): String {
                 this@HttpTTS.rate = rate
                 this@HttpTTS.volume = volume
                 kotlin.runCatching {
                     val result = AnalyzeUrl(mUrl = url, speakText = "", speakSpeed = rate).eval()
-                    return result?.body ?: "内容为空"
+                    return result?.body ?: "解析url失败"
                 }.onFailure {
                     return "${it.message}"
                 }
@@ -68,20 +72,24 @@ data class HttpTTS(
             .show()
     }
 
-    override fun getAudio(speakText: String): ByteArray? {
+    fun getAudioResponse(speakText: String): Response {
         val a = AnalyzeUrl(mUrl = url, speakText = speakText, speakSpeed = rate)
         val urlOption = a.eval()
         urlOption?.let {
-            val resp = Net.post(a.baseUrl) {
+            return Net.post(a.baseUrl) {
                 body = it.body.toString().toRequestBody(null)
             }.execute<Response>()
-            val body = resp.body?.bytes()
-            if (resp.code != 200) throw  Throwable(body?.contentToString())
-
-            resp.body?.close()
-            return body
         }
         throw Throwable("url格式错误")
+    }
+
+    override fun getAudio(speakText: String): ByteArray? {
+        val resp = getAudioResponse(speakText)
+        val body = resp.body?.bytes()
+        if (resp.code != 200) throw  Throwable(body?.contentToString())
+
+        resp.body?.close()
+        return body
     }
 
     override fun getAudioStream(
@@ -91,29 +99,14 @@ data class HttpTTS(
     ): Boolean {
         onData(getAudio(speakText))
         return false
+        /* getAudioResponse(speakText).body?.byteStream()?.let {
+             val data = ByteArray(chunkSize)
+             while (true) {
+                 val index = it.read(data)
+                 if (index == 0) continue
+                 if (index == -1) break
 
-        /*kotlin.runCatching {
-            val a = AnalyzeUrl(mUrl = url, speakText = speakText, speakSpeed = rate)
-            val urlOption = a.eval()
-            urlOption?.let {
-                val resp = Net.post(a.baseUrl) {
-                    body = it.body.toString().toRequestBody(null)
-                }.execute<Response>()
-                val data = ByteArray(chunkSize)
-
-                resp.body?.byteStream()?.let {
-                    while (true) {
-                        val index = it.read(data)
-                        if (index == 0) continue
-                        if (index == -1) break
-
-                        onData(data.copyOfRange(0, index))
-                    }
-                }
-                resp.body?.close()
-            }
-        }.onFailure {
-            return it.message
-        }*/
+                 onData(data.copyOfRange(0, index))
+             }*/
     }
 }

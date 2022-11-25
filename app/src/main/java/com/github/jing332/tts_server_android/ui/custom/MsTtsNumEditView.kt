@@ -8,10 +8,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ViewSysttsNumericalEditBinding
-import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 
-class SysTtsNumericalEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
@@ -69,7 +69,7 @@ class SysTtsNumericalEditView(context: Context, attrs: AttributeSet?, defaultSty
             R.id.seekbar_rate -> {
                 rateValue = progress - 100
                 if (progress == 0) {
-                    rateValue = BaseTTS.VALUE_WITH_SYSTEM
+                    rateValue = MsTTS.RATE_FOLLOW_SYSTEM
                     binding.tvValueRate.setText(R.string.follow_system_or_read_aloud_app)
                 } else {
                     binding.tvValueRate.text = "${rateValue}%"

@@ -9,6 +9,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlin.properties.Delegates
 
+val app: App by lazy { App.instance }
+
 class App : Application() {
     companion object {
         const val TAG = "App"

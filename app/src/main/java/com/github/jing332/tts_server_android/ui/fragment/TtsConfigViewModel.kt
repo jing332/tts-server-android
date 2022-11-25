@@ -12,7 +12,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import tts_server_lib.Tts_server_lib
 
-class TtsConfigFragmentViewModel : ViewModel() {
+class TtsConfigViewModel : ViewModel() {
     companion object {
         const val TAG = "TtsConfigFragmentViewModel"
     }

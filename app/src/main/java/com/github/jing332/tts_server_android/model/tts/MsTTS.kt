@@ -8,8 +8,8 @@ import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.model.MsTtsFormatManger
 import com.github.jing332.tts_server_android.model.SysTtsLib
-import com.github.jing332.tts_server_android.model.tts.BaseTTS.Companion.VALUE_WITH_SYSTEM
-import com.github.jing332.tts_server_android.ui.custom.SysTtsNumericalEditView
+import com.github.jing332.tts_server_android.model.tts.BaseTTS.Companion.VALUE_FOLLOW_SYSTEM
+import com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -20,8 +20,8 @@ import kotlinx.serialization.Serializable
 @SerialName("internal")
 data class MsTTS(
     @TtsApiType var api: Int = TtsApiType.EDGE,
-    var format: String = "",
-    var locale: String,
+    var format: String = MsTtsAudioFormat.DEFAULT,
+    var locale: String = DEFAULT_LOCALE,
     var voiceName: String,
     var voiceId: String? = null,
     var prosody: Prosody,
@@ -29,7 +29,9 @@ data class MsTTS(
 
     @kotlinx.serialization.Transient
     override var audioFormat: BaseAudioFormat = MsTtsFormatManger.getFormatOrDefault(format),
-    ) : Parcelable, BaseTTS() {
+) : Parcelable, BaseTTS() {
+
+
     constructor() : this(DEFAULT_VOICE)
     constructor(voiceName: String) : this(voiceName, Prosody())
     constructor(voiceName: String, prosody: Prosody) : this(
@@ -42,8 +44,10 @@ data class MsTTS(
     )
 
     companion object {
+        const val RATE_FOLLOW_SYSTEM = -100
+
         const val DEFAULT_LOCALE = "zh-CN"
-        const val DEFAULT_VOICE = "zh-CN-XiaoxiaoNeural"
+        const val DEFAULT_VOICE = "zh-CN-XiaomiNeural"
         const val DEFAULT_VOICE_ID = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
     }
 
@@ -95,7 +99,7 @@ data class MsTTS(
         view: View?,
         done: (modifiedData: BaseTTS?) -> Unit
     ) {
-        val editView = SysTtsNumericalEditView(context)
+        val editView = MsTtsNumEditView(context)
         editView.setPadding(25, 25, 25, 50)
         editView.setRate(prosody.rate)
         editView.setVolume(prosody.volume)
@@ -158,12 +162,12 @@ data class ExpressAs(
 @Serializable
 @Parcelize
 data class Prosody(
-    var rate: Int = VALUE_WITH_SYSTEM,
+    var rate: Int = VALUE_FOLLOW_SYSTEM,
     var volume: Int = 0,
     var pitch: Int = 0
 ) : Parcelable {
     val isRateFollowSystem: Boolean
         get() {
-            return rate <= VALUE_WITH_SYSTEM
+            return rate == -100
         }
 }

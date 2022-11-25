@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ViewHttpTtsNumEditBinding
+import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 
-class HttpTtsNumericalEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+class HttpTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
@@ -46,7 +48,8 @@ class HttpTtsNumericalEditView(context: Context, attrs: AttributeSet?, defaultSt
     override fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {
         when (seekBar) {
             vb.seekBarRate -> {
-                vb.tvValRate.text = "${vb.seekBarRate.progress}"
+                vb.tvValRate.text =
+                    if (progress <= BaseTTS.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app) else progress.toString()
             }
             vb.seekBarVolume -> {
                 vb.tvValVolume.text = "${vb.seekBarVolume.progress}"

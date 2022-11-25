@@ -4,13 +4,17 @@ import android.content.Context
 import android.os.Parcelable
 import android.view.View
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonClassDiscriminator
 
+@OptIn(ExperimentalSerializationApi::class)
 @Parcelize
 @Serializable
+@JsonClassDiscriminator("#type")
 sealed class BaseTTS : Parcelable {
     companion object {
-        const val VALUE_WITH_SYSTEM = 0
+        const val VALUE_FOLLOW_SYSTEM = 0
     }
 
     abstract var audioFormat: BaseAudioFormat

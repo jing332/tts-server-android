@@ -20,7 +20,7 @@ import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
-import com.github.jing332.tts_server_android.ui.custom.SysTtsNumericalEditView
+import com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.github.jing332.tts_server_android.util.runOnUI
@@ -129,7 +129,7 @@ class MsTtsEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
             binding.sysTtsNumericalEditView.setStyleDegree(it)
         }
 
-        binding.sysTtsNumericalEditView.callback = object : SysTtsNumericalEditView.Callback {
+        binding.sysTtsNumericalEditView.callback = object : MsTtsNumEditView.Callback {
             override fun onRateChanged(rate: Int) {
                 model.rateChanged(rate)
             }

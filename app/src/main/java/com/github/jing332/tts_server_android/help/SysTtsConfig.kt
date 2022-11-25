@@ -30,7 +30,7 @@ object SysTtsConfig {
 
     var requestTimeout: Int
         get() {
-            return pull(PreferKey.requestTimeout, 5)
+            return pull(PreferKey.requestTimeout, 5000)
         }
         set(value) {
             push(PreferKey.requestTimeout, value)

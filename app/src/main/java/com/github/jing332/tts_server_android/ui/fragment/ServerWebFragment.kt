@@ -22,7 +22,7 @@ import com.github.jing332.tts_server_android.util.toastOnUi
 
 class ServerWebFragment : Fragment() {
     private val binding by lazy { FragmentServerWebBinding.inflate(layoutInflater) }
-    private val viewModel: ServerWebViewFragmentModel by viewModels()
+    private val viewModel: ServerWebViewModel by viewModels()
 
     private val mReceiver by lazy { MyReceiver() }
 
