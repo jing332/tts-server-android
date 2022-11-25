@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.ui.systts.replace
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +9,8 @@ import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
+import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
 import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import com.github.jing332.tts_server_android.databinding.ActivityReplaceRuleEditBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
@@ -22,6 +23,8 @@ class ReplaceRuleEditActivity : BackActivity() {
     private val pinyinList by lazy {
         "ā á ǎ à ê ē é ě è ī í ǐ ì ō ó ǒ ò ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ").toTypedArray()
     }
+
+    var resultCode = RESULT_EDIT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,8 +78,10 @@ class ReplaceRuleEditActivity : BackActivity() {
             }
         }
 
-        val data = intent.getSerializableExtra(KeyConst.KEY_DATA)?.let { it as ReplaceRule }
-        viewModel.load(data)
+        intent.getParcelableExtra<ReplaceRule>(KeyConst.KEY_DATA).let {
+            if (it == null) resultCode = RESULT_ADD
+            viewModel.load(it)
+        }
     }
 
     private fun doTest() {
@@ -118,7 +123,7 @@ class ReplaceRuleEditActivity : BackActivity() {
                     KeyConst.KEY_DATA,
                     data
                 )
-                setResult(Activity.RESULT_OK, intent)
+                setResult(resultCode, intent)
                 finish()
             }
         }

@@ -34,15 +34,15 @@ class ReplaceManagerActivity : BackActivity() {
         const val TAG = "ReplaceRuleActivity"
     }
 
-    private val viewModel: ReplaceManagerViewModel by viewModels()
-    private val binding by lazy { ActivityReplaceRuleBinding.inflate(layoutInflater) }
+    private val vm: ReplaceManagerViewModel by viewModels()
+    private val vb by lazy { ActivityReplaceRuleBinding.inflate(layoutInflater) }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setContentView(vb.root)
 
-        val brv = binding.recyclerView.linear().setup {
+        val brv = vb.recyclerView.linear().setup {
             addType<ReplaceRule>(R.layout.item_replace_rule)
             onCreate {
                 val binding = getBinding<ItemReplaceRuleBinding>()
@@ -61,8 +61,7 @@ class ReplaceManagerActivity : BackActivity() {
             }
         }
 
-
-        viewModel.viewModelScope.runOnIO {
+        vm.viewModelScope.runOnIO {
             appDb.replaceRuleDao.flowAll().conflate().collect {
                 runOnUI {
                     if (brv.models == null)
@@ -80,7 +79,7 @@ class ReplaceManagerActivity : BackActivity() {
             }.show()
     }
 
-    fun edit(data: ReplaceRule) {
+    private fun edit(data: ReplaceRule) {
         val intent = Intent(this, ReplaceRuleEditActivity::class.java)
         intent.putExtra(KeyConst.KEY_DATA, data)
         startForResult.launch(intent)
@@ -88,9 +87,11 @@ class ReplaceManagerActivity : BackActivity() {
 
     private val startForResult = registerForActivityResult(StartActivityForResult()) { result ->
         result.data?.apply {
-            val data = getSerializableExtra(KeyConst.KEY_DATA) as ReplaceRule
-            data.let {
-                appDb.replaceRuleDao.insert(data)
+            getParcelableExtra<ReplaceRule>(KeyConst.KEY_DATA)?.let {
+                if (result.resultCode == KeyConst.RESULT_ADD)
+                    appDb.replaceRuleDao.insert(it)
+                else
+                    appDb.replaceRuleDao.update(it)
             }
         }
     }
@@ -127,14 +128,14 @@ class ReplaceManagerActivity : BackActivity() {
             R.id.menu_importConfig -> {
                 val et = EditText(this)
                 et.setHint(R.string.url_net)
-                AlertDialog.Builder(this).setView(et)
+                AlertDialog.Builder(this).setTitle(R.string.import_config).setView(et)
                     .setPositiveButton(R.string.import_from_clip) { _, _ ->
-                        val err = viewModel.importConfig(ClipboardUtils.text.toString())
+                        val err = vm.importConfig(ClipboardUtils.text.toString())
                         err?.let {
                             longToastOnUi("导入失败：$it")
                         }
                     }.setNegativeButton(R.string.import_from_url) { _, _ ->
-                        val err = viewModel.importConfigFromUrl(et.text.toString())
+                        val err = vm.importConfigFromUrl(et.text.toString())
                         err?.let {
                             longToastOnUi("导入失败：$it")
                         }
@@ -142,28 +143,29 @@ class ReplaceManagerActivity : BackActivity() {
             }
 
             R.id.menu_exportConfig -> {
-                val jsonStr = viewModel.exportConfig()
+                val jsonStr = vm.exportConfig()
                 val tv = TextView(this)
                 tv.text = jsonStr
-                AlertDialog.Builder(this).setView(tv).setPositiveButton(R.string.copy) { _, _ ->
-                    ClipboardUtils.copyText(jsonStr)
-                    toastOnUi(R.string.copied)
-                }.setNegativeButton("上传到URL") { _, _ ->
-                    val ret = viewModel.uploadConfigToUrl(jsonStr)
-                    if (ret.isSuccess) {
-                        ClipboardUtils.copyText(ret.getOrNull())
-                        longToastOnUi("已复制URL：\n${ret.getOrNull()}")
-                    } else {
-                        longToastOnUi("上传失败：${ret.exceptionOrNull()?.message}")
+                tv.setPadding(50, 50, 50, 0)
+                AlertDialog.Builder(this).setTitle(R.string.export_config).setView(tv)
+                    .setPositiveButton(R.string.copy) { _, _ ->
+                        ClipboardUtils.copyText(jsonStr)
+                        toastOnUi(R.string.copied)
+                    }.setNegativeButton("上传到URL") { _, _ ->
+                        val ret = vm.uploadConfigToUrl(jsonStr)
+                        if (ret.isSuccess) {
+                            ClipboardUtils.copyText(ret.getOrNull())
+                            longToastOnUi("已复制URL：\n${ret.getOrNull()}")
+                        } else {
+                            longToastOnUi("上传失败：${ret.exceptionOrNull()?.message}")
+                        }
                     }
-                }
                     .show()
             }
         }
 
         return super.onOptionsItemSelected(item)
     }
-
 
 
 }
