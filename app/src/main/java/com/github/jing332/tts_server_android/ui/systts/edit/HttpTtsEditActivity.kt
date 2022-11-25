@@ -17,6 +17,7 @@ import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.ActivityHttpTtsEditBinding
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 
 @Suppress("DEPRECATION")
@@ -56,25 +57,25 @@ class HttpTtsEditActivity : BackActivity() {
 
 //        binding.etUrl.setText("http://tsn.baidu.com/text2audio,{\"method\": \"POST\", \"body\": \"tex={{java.encodeURI(java.encodeURI(speakText))}}&spd={{(speakSpeed + 5) / 10 + 4}}&per=4114&cuid=baidu_speech_demo&idx=1&cod=2&lan=zh&ctp=1&pdt=220&vol=5&aue=6&pit=5&res_tag=audio\"}")
         binding.btnTest.setOnClickListener {
-            it.isEnabled = false
             val url =
                 binding.etUrl.text.toString()
+            val waitDialog = WaitDialog(this).apply { show() }
             viewModel.doTest(
                 url,
                 binding.etTestText.text.toString(),
                 { size, sampleRate, mime, contentType ->
+                    waitDialog.dismiss()
                     AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试成功")
                         .setMessage(
                             "音频大小：${size / 1024}KB \n格式：$mime " +
                                     "\n采样率：${sampleRate}hz \nContent-Type：$contentType"
                         )
                         .show()
-                    it.isEnabled = true
                 },
                 { err ->
+                    waitDialog.dismiss()
                     AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试失败").setMessage(err)
                         .show()
-                    binding.btnTest.isEnabled = true
                 })
         }
 
