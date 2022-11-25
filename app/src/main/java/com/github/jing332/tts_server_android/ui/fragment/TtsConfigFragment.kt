@@ -156,8 +156,10 @@ class TtsConfigFragment : Fragment() {
         // 检测是否开启多语音
         if (viewModel.onCheckBoxChanged(list, position, checkBox.isChecked))
             requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
-        else
+        else{
             checkBox.isChecked = false
+            checkMultiVoiceDialog.show()
+        }
     }
 
     private fun showNumEditDialog(data: SysTts) {

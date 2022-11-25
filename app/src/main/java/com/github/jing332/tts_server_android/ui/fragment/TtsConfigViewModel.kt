@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.ui.fragment
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
@@ -58,7 +57,6 @@ class TtsConfigViewModel : ViewModel() {
                 list.forEach {
                     if (it.readAloudTarget == data.readAloudTarget) {
                         appDb.sysTtsDao.update(it.copy(isEnabled = false))
-                        Log.e("TAG", "单选排斥")
                     }
                 }
             }

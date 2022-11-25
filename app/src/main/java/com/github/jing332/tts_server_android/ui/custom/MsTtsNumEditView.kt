@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.ViewSysttsNumericalEditBinding
+import com.github.jing332.tts_server_android.databinding.ViewMsTtsNumEditBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 
@@ -34,11 +34,7 @@ class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
     var callback: Callback? = null
 
     private val binding by lazy {
-        ViewSysttsNumericalEditBinding.inflate(
-            LayoutInflater.from(context),
-            this,
-            true
-        )
+        ViewMsTtsNumEditBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     var rateValue: Int = 0

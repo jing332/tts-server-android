@@ -65,7 +65,7 @@ class HttpTtsEditActivity : BackActivity() {
                 { size, sampleRate, mime, contentType ->
                     AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试成功")
                         .setMessage(
-                            "音频大小：${size / 1024}KB \n格式: $mime " +
+                            "音频大小：${size / 1024}KB \n格式：$mime " +
                                     "\n采样率：${sampleRate}hz \nContent-Type：$contentType"
                         )
                         .show()
