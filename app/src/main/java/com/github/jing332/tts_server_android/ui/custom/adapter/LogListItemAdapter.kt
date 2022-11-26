@@ -10,15 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.github.jing332.tts_server_android.MyLog
+import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.util.longToastOnUi
+import com.github.jing332.tts_server_android.util.longToast
 
 //显示日志的适配器
-class LogListItemAdapter(private val itemList: ArrayList<MyLog>, val isHtmlText: Boolean = false) :
+class LogListItemAdapter(private val itemList: ArrayList<AppLog>, val isHtmlText: Boolean = false) :
     RecyclerView.Adapter<LogListItemAdapter.ViewHolder>() {
     //追加日志
-    fun append(data: MyLog) {
+    fun append(data: AppLog) {
         if (itemCount > 100) { //日志条目超过便移除第2行日志Item
             itemList.removeAt(1)
             notifyItemRemoved(1)
@@ -62,7 +62,7 @@ class LogListItemAdapter(private val itemList: ArrayList<MyLog>, val isHtmlText:
             val cm = it.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
             val mClipData = ClipData.newPlainText("log", holder.textView.text.trim())
             cm?.setPrimaryClip(mClipData)
-            it.context.longToastOnUi(it.context.getString(R.string.copied))
+            it.context.longToast(it.context.getString(R.string.copied))
             true
         }
     }

@@ -11,14 +11,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.LogLevel
-import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.databinding.FragmentTtsLogBinding
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService.Companion.ACTION_ON_LOG
 import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
 
-class TtsLogFragment : Fragment() {
+class SysTtsLogFragment : Fragment() {
     companion object {
         const val TAG = "TtsLogFragment"
     }
@@ -31,7 +31,7 @@ class TtsLogFragment : Fragment() {
     private val logAdapter: LogListItemAdapter by lazy {
         LogListItemAdapter(
             arrayListOf(
-                MyLog(
+                AppLog(
                     LogLevel.WARN,
                     "请保持此页面存活以监听实时日志"
                 )
@@ -70,7 +70,7 @@ class TtsLogFragment : Fragment() {
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_ON_LOG) {
-                val log = intent.getSerializableExtra(KEY_DATA) as MyLog
+                val log = intent.getParcelableExtra<AppLog>(KEY_DATA) as AppLog
                 val layout = binding.recyclerViewLog.layoutManager as LinearLayoutManager
                 val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
                 logAdapter.append(log)

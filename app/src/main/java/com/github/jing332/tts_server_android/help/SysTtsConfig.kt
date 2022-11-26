@@ -1,58 +1,34 @@
 package com.github.jing332.tts_server_android.help
 
-import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.constant.PreferKey
+import com.chibatching.kotpref.KotprefModel
 
-object SysTtsConfig {
-    var isMultiVoiceEnabled: Boolean
-        get() {
-            return pull(PreferKey.isMultiVoiceEnabled, false)
-        }
-        set(value) {
-            push(PreferKey.isMultiVoiceEnabled, value)
-        }
+object SysTtsConfig : KotprefModel() {
+    override val kotprefName: String
+        get() = "systts"
 
-    var isReplaceEnabled: Boolean
-        get() {
-            return App.prefs.pull(PreferKey.isReplaceEnabled, false)
-        }
-        set(value) {
-            push(PreferKey.isReplaceEnabled, value)
-        }
+    /**
+     * 多语音
+     */
+    var isMultiVoiceEnabled by booleanPref()
 
-    var isSplitEnabled: Boolean
-        get() {
-            return pull(PreferKey.isSplitEnabled, false)
-        }
-        set(value) {
-            push(PreferKey.isSplitEnabled, value)
-        }
+    /**
+     * 替换
+     */
+    var isReplaceEnabled by booleanPref()
 
-    var requestTimeout: Int
-        get() {
-            return pull(PreferKey.requestTimeout, 5000)
-        }
-        set(value) {
-            push(PreferKey.requestTimeout, value)
-        }
+    /**
+     * 分割长句
+     */
+    var isSplitEnabled by booleanPref()
 
-    var minDialogueLength: Int
-        get() {
-            return pull(PreferKey.minDialogueLength, 0)
-        }
-        set(value) {
-            push(PreferKey.minDialogueLength, value)
-        }
+    /**
+     * 请求超时(毫秒)
+     */
+    var requestTimeout by intPref(5000)
 
-    private inline fun <reified T : Any> pull(key: String, default: T): T {
-        return App.prefs.pull(key, default)
-    }
-
-    private fun <T : Any> push(
-        key: String,
-        value: T
-    ): Unit = App.prefs.push(
-        key, value
-    )
+    /**
+     * 最小对话文本长度
+     */
+    var minDialogueLength by intPref()
 }
 

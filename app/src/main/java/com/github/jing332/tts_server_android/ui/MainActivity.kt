@@ -30,14 +30,14 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
+import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.ui.fragment.ServerLogFragment
 import com.github.jing332.tts_server_android.ui.fragment.ServerWebFragment
 import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
 import com.github.jing332.tts_server_android.util.MyTools
-import com.github.jing332.tts_server_android.util.SharedPrefsUtils
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
-import com.github.jing332.tts_server_android.util.toastOnUi
+import com.github.jing332.tts_server_android.util.toast
 
 
 class MainActivity : AppCompatActivity() {
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
         /* 从配置文件读取并更新isWakeLock */
         val item = menu?.findItem(R.id.menu_wakeLock)
-        item?.isChecked = SharedPrefsUtils.getWakeLock(this)
+        item?.isChecked = ServerConfig.isWakeLockEnabled
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                 } else {
-                    toastOnUi(R.string.please_start_service)
+                    toast(R.string.please_start_service)
                 }
             }
             R.id.menu_clearWebData -> {
@@ -152,10 +152,10 @@ class MainActivity : AppCompatActivity() {
                     flush()
                 }
                 WebStorage.getInstance().deleteAllData()
-                toastOnUi(R.string.cleared)
+                toast(R.string.cleared)
             }
             R.id.menu_setToken -> {
-                val token = SharedPrefsUtils.getToken(this)
+                val token = ServerConfig.token
                 val builder = AlertDialog.Builder(this).setTitle(getString(R.string.set_token))
                 val editText = EditText(this)
                 editText.setText(token)
@@ -165,19 +165,19 @@ class MainActivity : AppCompatActivity() {
                 ) { _, _ ->
                     val text = editText.text.toString()
                     if (text != token) {
-                        toastOnUi(getString(R.string.token_set_to) + text.ifEmpty { "空" })
-                        SharedPrefsUtils.setToken(this, text)
+                        toast(getString(R.string.token_set_to) + text.ifEmpty { "空" })
+                        ServerConfig.token  =text
                     }
                 }.setNegativeButton(R.string.reset) { _, _ ->
-                    SharedPrefsUtils.setToken(this, "")
-                    toastOnUi(getString(R.string.ok_reset))
+                    ServerConfig.token = ""
+                    toast(getString(R.string.ok_reset))
                 }
                 builder.create().show()
             }
             R.id.menu_wakeLock -> { /* 唤醒锁 */
                 item.isChecked = !item.isChecked /* 更新选中状态 */
-                SharedPrefsUtils.setWakeLock(this, item.isChecked)
-                toastOnUi(R.string.restart_service_to_update)
+                ServerConfig.isWakeLockEnabled = item.isChecked
+                toast(R.string.restart_service_to_update)
             }
             R.id.menu_shortcut -> {
                 MyTools.addShortcut(
@@ -226,14 +226,14 @@ class MainActivity : AppCompatActivity() {
         val pm = getSystemService(POWER_SERVICE) as PowerManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (pm.isIgnoringBatteryOptimizations(packageName)) {
-                toastOnUi(R.string.added_background_whitelist)
+                toast(R.string.added_background_whitelist)
             } else {
                 try {
                     intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
                     intent.data = Uri.parse("package:$packageName")
                     startActivity(intent)
                 } catch (e: Exception) {
-                    toastOnUi(R.string.system_not_support_please_manual_set)
+                    toast(R.string.system_not_support_please_manual_set)
                     e.printStackTrace()
                 }
             }

@@ -16,9 +16,9 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityTtsSettingsBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
-import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
-import com.github.jing332.tts_server_android.ui.fragment.TtsConfigViewModel
-import com.github.jing332.tts_server_android.ui.fragment.TtsLogFragment
+import com.github.jing332.tts_server_android.ui.fragment.SysTtsConfigFragment
+import com.github.jing332.tts_server_android.ui.fragment.SysTtsConfigViewModel
+import com.github.jing332.tts_server_android.ui.fragment.SysTtsLogFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.MyTools
 
@@ -28,7 +28,7 @@ class TtsSettingsActivity : BackActivity() {
         const val TAG = "TtsSettingsActivity"
     }
 
-    private val cfgViewModel: TtsConfigViewModel by viewModels()
+    private val cfgViewModel: SysTtsConfigViewModel by viewModels()
 
     private val binding: ActivityTtsSettingsBinding by lazy {
         ActivityTtsSettingsBinding.inflate(
@@ -109,12 +109,12 @@ class TtsSettingsActivity : BackActivity() {
             R.id.menu_doSplit -> {
                 item.isChecked = !item.isChecked
                 SysTtsConfig.isSplitEnabled = item.isChecked
-                App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
+                App.localBroadcast.sendBroadcast(Intent(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
             }
             R.id.menu_isMultiVoice -> {
                 item.isChecked = !item.isChecked
                 SysTtsConfig.isMultiVoiceEnabled = item.isChecked
-                App.localBroadcast.sendBroadcast(Intent(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
+                App.localBroadcast.sendBroadcast(Intent(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
             }
             R.id.menu_setAudioRequestTimeout -> {
                 configFragment.setAudioRequestTimeout()
@@ -139,8 +139,8 @@ class TtsSettingsActivity : BackActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    val configFragment = TtsConfigFragment()
-    val logFragment = TtsLogFragment()
+    val configFragment = SysTtsConfigFragment()
+    val logFragment = SysTtsLogFragment()
 
     inner class FragmentAdapter(fragmentActivity: FragmentActivity) :
         FragmentStateAdapter(fragmentActivity) {

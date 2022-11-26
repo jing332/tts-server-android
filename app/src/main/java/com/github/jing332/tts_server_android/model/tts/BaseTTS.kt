@@ -52,6 +52,11 @@ sealed class BaseTTS : Parcelable {
     )
 
     /**
+     * 加载配置时调用
+     */
+    abstract fun onLoad()
+
+    /**
      * 完整获取音频
      */
     abstract fun getAudio(speakText: String): ByteArray?

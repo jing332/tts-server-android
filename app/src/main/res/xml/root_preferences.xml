@@ -1,9 +1,9 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory app:title="Edge接口">
+    <PreferenceCategory app:title="@string/pref_title_global_edge">
         <SwitchPreferenceCompat
-            app:key="useDnsEdge"
-            app:summary="而非内置北京微软云节点"
-            app:title="使用DNS解析接口IP" />
+            app:key="isEdgeDnsEnabled"
+            app:summary="@string/pref_edge_dns_summary"
+            app:title="@string/use_dns_lookup_ip" />
     </PreferenceCategory>
 
 </PreferenceScreen>

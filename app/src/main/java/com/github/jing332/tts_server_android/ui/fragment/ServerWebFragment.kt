@@ -17,7 +17,7 @@ import androidx.fragment.app.viewModels
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.databinding.FragmentServerWebBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
-import com.github.jing332.tts_server_android.util.toastOnUi
+import com.github.jing332.tts_server_android.util.toast
 
 
 class ServerWebFragment : Fragment() {
@@ -61,7 +61,7 @@ class ServerWebFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    toastOnUi("跳转APP失败！")
+                    toast("跳转APP失败！")
                 }
                 return super.shouldOverrideUrlLoading(view, request)
             }

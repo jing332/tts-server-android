@@ -6,7 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.TtsApiType
-import com.github.jing332.tts_server_android.model.MsTtsFormatManger
+import com.github.jing332.tts_server_android.help.AppConfig
+import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.tts.BaseTTS.Companion.VALUE_FOLLOW_SYSTEM
 import com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
@@ -30,8 +31,6 @@ data class MsTTS(
     @kotlinx.serialization.Transient
     override var audioFormat: BaseAudioFormat = MsTtsFormatManger.getFormatOrDefault(format),
 ) : Parcelable, BaseTTS() {
-
-
     constructor() : this(DEFAULT_VOICE)
     constructor(voiceName: String) : this(voiceName, Prosody())
     constructor(voiceName: String, prosody: Prosody) : this(
@@ -122,6 +121,19 @@ data class MsTTS(
         dlg.show()
     }
 
+
+    @IgnoredOnParcel
+    private var lastLoadTime: Long = 0
+
+    override fun onLoad() {
+        // 500ms 内只可加载一次
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastLoadTime > 500) {
+            SysTtsLib.setUseDnsLookup(AppConfig.isEdgeDnsEnabled)
+            SysTtsLib.setTimeout(SysTtsConfig.requestTimeout)
+            lastLoadTime = System.currentTimeMillis()
+        }
+    }
 
     override fun getType(): String {
         return TtsApiType.toString(api)

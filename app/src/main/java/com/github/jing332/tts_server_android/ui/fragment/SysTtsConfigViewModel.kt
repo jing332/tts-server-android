@@ -3,7 +3,6 @@ package com.github.jing332.tts_server_android.ui.fragment
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.help.SysTtsConfig
@@ -11,35 +10,9 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import tts_server_lib.Tts_server_lib
 
-class TtsConfigViewModel : ViewModel() {
+class SysTtsConfigViewModel : ViewModel() {
     companion object {
         const val TAG = "TtsConfigFragmentViewModel"
-    }
-
-    /**
-     *  兼容旧的配置文件
-     *  return 旧配置文件是否删除成功（如果有）
-     */
-    fun compatOldConfig(): Boolean {
-        val compatConfig = CompatSysTtsConfig.read()
-        compatConfig?.apply {
-            list.forEach {
-                appDb.sysTtsDao.insert(
-                    SysTts(
-                        readAloudTarget = it.readAloudTarget,
-                        tts = it.voiceProperty,
-                        displayName = it.uiData.displayName,
-                        isEnabled = it.isEnabled
-                    )
-                )
-            }
-            SysTtsConfig.isMultiVoiceEnabled = isMultiVoice
-            SysTtsConfig.isSplitEnabled = isSplitSentences
-            SysTtsConfig.requestTimeout = timeout
-
-            return CompatSysTtsConfig.deleteConfigFile()
-        }
-        return false
     }
 
     fun onCheckBoxChanged(list: List<SysTts>, position: Int, checked: Boolean): Boolean {

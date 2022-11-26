@@ -130,4 +130,7 @@
     <string name="off_multi_voice_use_global">请关闭多语音选项以使用单语音模式</string>
     <string name="follow">跟随</string>
     <string name="custom">自定义</string>
+    <string name="use_dns_lookup_ip">使用DNS解析接口IP</string>
+    <string name="pref_edge_dns_summary">而非内置北京微软云节点</string>
+    <string name="pref_title_global_edge">全局-Edge接口</string>
 </resources>

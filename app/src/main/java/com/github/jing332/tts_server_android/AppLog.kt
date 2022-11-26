@@ -1,13 +1,11 @@
 package com.github.jing332.tts_server_android
 
 import android.graphics.Color
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-class MyLog(var level: Int, var msg: String) : Serializable {
-    /*fun toText(): String {
-        return LogLevel.toString(level)
-    }*/
-
+@Parcelize
+class AppLog(var level: Int, var msg: String) : Parcelable {
     fun toColor(): Int {
         return when {
             level == LogLevel.WARN -> {

@@ -8,10 +8,14 @@ import android.os.Build
 import android.os.PowerManager
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.MyLog
+import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.help.AppConfig
+import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.ui.MainActivity
-import com.github.jing332.tts_server_android.util.toastOnUi
+import com.github.jing332.tts_server_android.util.ClipboardUtils
+import com.github.jing332.tts_server_android.util.toast
 import tts_server_lib.LogCallback
 import tts_server_lib.Tts_server_lib
 
@@ -41,21 +45,22 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
 
     var isRunning = false /* 服务是否在运行 */
         private set
-    lateinit var cfg: TtsServerConfig
+    lateinit var cfg: Config
         private set
 
     @Deprecated("Deprecated in Java")
     @SuppressLint("WakelockTimeout")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        toastOnUi(R.string.service_started)
+        toast(R.string.service_started)
         instance = this
         isRunning = true
-        cfg = TtsServerConfig(this)
+        cfg = Config()
+
         val localIp = Tts_server_lib.getOutboundIP()
         listenAddress = "${localIp}:${cfg.port}"
 
         initNotification()
-        if (cfg.isWakeLock) mWakeLock.acquire()
+        if (cfg.isWakeLockEnabled) mWakeLock.acquire()
 
         /* 注册广播 */
         IntentFilter(ACTION_NOTIFY_EXIT).apply {
@@ -68,10 +73,10 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     @Deprecated("Deprecated in Java")
     override fun onDestroy() {
         super.onDestroy()
-        if (cfg.isWakeLock) mWakeLock.release()
+        if (cfg.isWakeLockEnabled) mWakeLock.release()
         unregisterReceiver(mReceiver)
         stopForeground(true)
-        toastOnUi(R.string.service_closed)
+        toast(R.string.service_closed)
     }
 
     @Deprecated("Deprecated in Java")
@@ -79,11 +84,11 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         sendStartedMsg()
         /* 初始化Go: 设置日志转发，注册Http.Server */
         val cb = LogCallback { level, msg ->
-            if (App.isServerLogEnabled) sendLog(MyLog(level, msg))
+            if (App.isServerLogEnabled) sendLog(AppLog(level, msg))
         }
         Tts_server_lib.init(cb)
         /*启动Go服务并阻塞等待,直到关闭*/
-        Tts_server_lib.runServer(cfg.port.toLong(), cfg.token, cfg.isUseDnsEdge)
+        Tts_server_lib.runServer(cfg.port.toLong(), cfg.token, cfg.isEdgeDnsEnabled)
         isRunning = false
         sendClosedMsg()
     }
@@ -94,10 +99,9 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     }
 
     /* 广播日志消息 */
-    private fun sendLog(data: MyLog) {
-        val i = Intent(ACTION_ON_LOG)
-        i.putExtra("data", data)
-        App.localBroadcast.sendBroadcast(i)
+    private fun sendLog(log: AppLog) {
+        val intent = Intent(ACTION_ON_LOG).apply { putExtra(KeyConst.KEY_DATA, log) }
+        App.localBroadcast.sendBroadcast(intent)
     }
 
     /* 广播启动消息 */
@@ -133,7 +137,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                 Intent(ACTION_NOTIFY_EXIT),
                 pendingIntentFlags
             )
-        val copyAddrPendingIntent =
+        val copyAddressPendingIntent =
             PendingIntent.getBroadcast(
                 this,
                 0,
@@ -166,7 +170,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             .setSmallIcon(smallIconRes)
             .setContentIntent(pendingIntent)
             .addAction(0, getString(R.string.exit), closePendingIntent)
-            .addAction(0, getString(R.string.copy_address), copyAddrPendingIntent)
+            .addAction(0, getString(R.string.copy_address), copyAddressPendingIntent)
             .build()
         startForeground(1, notification) //启动前台服务
     }
@@ -179,10 +183,25 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                     closeServer()
                 }
                 ACTION_NOTIFY_COPY_ADDRESS -> {
-                    val cm = ctx?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-                    cm?.setPrimaryClip(ClipData.newPlainText("address", listenAddress))
-                    ctx?.toastOnUi(R.string.copied)
+                    ClipboardUtils.copyText(listenAddress)
+                    ctx?.toast(R.string.copied)
                 }
+            }
+        }
+    }
+
+    inner class Config() {
+        var port: Int = 1233
+        var token = ""
+        var isWakeLockEnabled = false
+        var isEdgeDnsEnabled = false
+
+        init {
+            isEdgeDnsEnabled = AppConfig.isEdgeDnsEnabled
+            ServerConfig.let {
+                token = it.token
+                port = it.port
+                isWakeLockEnabled = it.isWakeLockEnabled
             }
         }
     }

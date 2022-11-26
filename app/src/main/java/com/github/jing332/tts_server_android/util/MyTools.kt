@@ -38,19 +38,19 @@ object MyTools {
                     ""
                 )
                 if (data == null) {
-                    ctx.toastOnUi(R.string.check_update_failed)
+                    ctx.toast(R.string.check_update_failed)
                 } else {
                     try {
                         checkVersionFromJson(ctx, data.decodeToString())
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        ctx.toastOnUi(R.string.check_update_failed)
+                        ctx.toast(R.string.check_update_failed)
                     }
                 }
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                ctx.toastOnUi(R.string.check_update_failed)
+                ctx.toast(R.string.check_update_failed)
             }
         }
     }
@@ -91,7 +91,7 @@ object MyTools {
         if (removeVersion > appVersion) {/* 需要更新 */
             runOnUI { downLoadAndInstall(ctx, body, downloadUrl, tag) }
         } else
-            ctx.toastOnUi(R.string.current_is_last_version)
+            ctx.toast(R.string.current_is_last_version)
     }
 
     private fun downLoadAndInstall(

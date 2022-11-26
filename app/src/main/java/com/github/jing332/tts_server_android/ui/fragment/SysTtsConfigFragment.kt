@@ -35,13 +35,13 @@ import kotlinx.coroutines.launch
 
 
 @Suppress("DEPRECATION", "UNCHECKED_CAST")
-class TtsConfigFragment : Fragment() {
+class SysTtsConfigFragment : Fragment() {
     companion object {
         const val TAG = "TtsConfigFragment"
         const val ACTION_ON_CONFIG_CHANGED = "on_config_changed"
     }
 
-    private val viewModel: TtsConfigViewModel by activityViewModels()
+    private val viewModel: SysTtsConfigViewModel by activityViewModels()
     private val binding: FragmentTtsConfigBinding by lazy {
         FragmentTtsConfigBinding.inflate(
             layoutInflater
@@ -121,9 +121,6 @@ class TtsConfigFragment : Fragment() {
                 runOnUI { checkFormatAndShowDialog() }
             }
         }
-
-        // 兼容旧的Json数据
-        if (viewModel.compatOldConfig()) longToast("旧版配置迁移成功，原文件已删除")
     }
 
     /* 警告 格式不同 */
@@ -290,7 +287,7 @@ class TtsConfigFragment : Fragment() {
         AlertDialog.Builder(requireContext()).setTitle(R.string.export_config).setView(tv)
             .setPositiveButton(R.string.copy) { _, _ ->
                 ClipboardUtils.copyText(jsonStr)
-                toastOnUi(R.string.copied)
+                toast(R.string.copied)
             }.setNegativeButton("上传到URL") { _, _ ->
                 viewModel.viewModelScope.launch {
                     val result = viewModel.uploadConfigToUrl(jsonStr)

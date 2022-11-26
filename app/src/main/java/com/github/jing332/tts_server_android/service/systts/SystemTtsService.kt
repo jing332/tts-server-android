@@ -20,11 +20,11 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.service.systts.help.TtsManager
-import com.github.jing332.tts_server_android.ui.fragment.TtsConfigFragment
+import com.github.jing332.tts_server_android.ui.fragment.SysTtsConfigFragment
 import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
-import com.github.jing332.tts_server_android.util.longToastOnUi
+import com.github.jing332.tts_server_android.util.longToast
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
@@ -58,7 +58,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         /* 注册广播 */
         IntentFilter(ACTION_KILL_PROCESS).apply {
             addAction(ACTION_NOTIFY_CANCEL)
-            addAction(TtsConfigFragment.ACTION_ON_CONFIG_CHANGED)
+            addAction(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED)
             registerReceiver(mReceiver, this)
         }
 
@@ -66,7 +66,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         try {
             mTtsManager.loadConfig()
         } catch (e: ArrayIndexOutOfBoundsException) {
-            longToastOnUi("错误: 缺少朗读目标！")
+            longToast("错误: 缺少朗读目标！")
             Thread.sleep(1000 * 4)
         }
 
@@ -251,7 +251,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                TtsConfigFragment.ACTION_ON_CONFIG_CHANGED -> { /* 配置更改 */
+                SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED -> { /* 配置更改 */
                     mTtsManager.loadConfig()
                 }
                 ACTION_KILL_PROCESS -> { /* 通知按钮{结束进程} */

@@ -3,8 +3,10 @@ package com.github.jing332.tts_server_android
 import android.app.Application
 import android.content.Context
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.cioccarellia.ksprefs.KsPrefs
+import com.chibatching.kotpref.Kotpref
 import com.drake.brv.utils.BRV
+import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
+import com.github.jing332.tts_server_android.util.longToast
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlin.properties.Delegates
@@ -21,8 +23,6 @@ class App : Application() {
         var isSysTtsLogEnabled = false
         var isServerLogEnabled = false
 
-        val prefs by lazy { KsPrefs(instance) { xmlPrefix = "systts" } }
-
         @OptIn(ExperimentalSerializationApi::class)
         val jsonBuilder by lazy {
             Json {
@@ -38,6 +38,17 @@ class App : Application() {
         instance = this
         CrashHandler(this)
 
+        // SharedPreference
+        Kotpref.init(this)
+
+        // RecyclerView
         BRV.modelId = BR.m
+
+        compat()
+    }
+
+    /* 兼容操作 */
+    private fun compat() {
+        if (CompatSysTtsConfig.migrationConfig()) context.longToast("旧版配置迁移成功，原文件已删除")
     }
 }

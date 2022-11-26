@@ -24,7 +24,7 @@ import com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.github.jing332.tts_server_android.util.runOnUI
-import com.github.jing332.tts_server_android.util.toastOnUi
+import com.github.jing332.tts_server_android.util.toast
 
 class MsTtsEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
 
@@ -198,7 +198,7 @@ class MsTtsEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
                 isInit++
             }
             R.id.spinner_format -> {
-                if (model.formatSelected(position)) toastOnUi(R.string.raw_format_is_play_while_downloading)
+                if (model.formatSelected(position)) toast(R.string.raw_format_is_play_while_downloading)
             }
         }
     }

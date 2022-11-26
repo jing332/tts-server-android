@@ -1,6 +1,8 @@
 package com.github.jing332.tts_server_android.data
 
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.util.FileUtils
 import kotlinx.serialization.decodeFromString
 import java.io.File
@@ -31,9 +33,34 @@ data class CompatSysTtsConfig(
         }
 
         /**
+         * 迁移旧的配置结构
+         */
+        fun migrationConfig(): Boolean {
+            val compatConfig = read()
+            compatConfig?.apply {
+                list.forEach {
+                    appDb.sysTtsDao.insert(
+                        SysTts(
+                            readAloudTarget = it.readAloudTarget,
+                            tts = it.voiceProperty,
+                            displayName = it.uiData.displayName,
+                            isEnabled = it.isEnabled
+                        )
+                    )
+                }
+                SysTtsConfig.isMultiVoiceEnabled = isMultiVoice
+                SysTtsConfig.isSplitEnabled = isSplitSentences
+                SysTtsConfig.requestTimeout = timeout
+
+                return deleteConfigFile()
+            }
+            return false
+        }
+
+        /**
          * return 是否成功
          */
-        fun deleteConfigFile(): Boolean {
+        private fun deleteConfigFile(): Boolean {
             return try {
                 File(filepath).delete()
             } catch (e: Exception) {

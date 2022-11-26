@@ -7,13 +7,17 @@ import androidx.appcompat.app.AlertDialog
 import com.drake.net.Net
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.ui.custom.HttpTtsNumEditView
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import java.util.concurrent.TimeUnit
 
 @Parcelize
 @Serializable
@@ -80,14 +84,25 @@ data class HttpTTS(
             .show()
     }
 
+    @IgnoredOnParcel
+    @kotlinx.serialization.Transient
+    private lateinit var httpClient: OkHttpClient
+
+    override fun onLoad() {
+        httpClient = OkHttpClient.Builder()
+            .connectTimeout(SysTtsConfig.requestTimeout.toLong(), TimeUnit.MILLISECONDS).build()
+    }
+
     fun getAudioResponse(speakText: String): Response {
         val a =
             AnalyzeUrl(mUrl = url, speakText = speakText, speakSpeed = rate, speakVolume = volume)
         val urlOption = a.eval()
         urlOption?.let {
             return Net.post(a.baseUrl) {
+                if (!this@HttpTTS::httpClient.isInitialized) onLoad()
+                okHttpClient = this@HttpTTS.httpClient
                 body = it.body.toString().toRequestBody(null)
-            }.execute<Response>()
+            }.execute()
         }
         throw Throwable("url格式错误")
     }

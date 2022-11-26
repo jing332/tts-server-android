@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 
 private var toast: Toast? = null
 
-fun Context.toastOnUi(@StringRes message: Int) {
+fun Context.toast(@StringRes message: Int) {
     runOnUI {
         kotlin.runCatching {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -17,7 +17,7 @@ fun Context.toastOnUi(@StringRes message: Int) {
     }
 }
 
-fun Context.toastOnUi(message: CharSequence?) {
+fun Context.toast(message: CharSequence?) {
     runOnUI {
         kotlin.runCatching {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -25,7 +25,7 @@ fun Context.toastOnUi(message: CharSequence?) {
     }
 }
 
-fun Context.longToastOnUi(@StringRes message: Int) {
+fun Context.longToast(@StringRes message: Int) {
     runOnUI {
         kotlin.runCatching {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show()
@@ -33,7 +33,7 @@ fun Context.longToastOnUi(@StringRes message: Int) {
     }
 }
 
-fun Context.longToastOnUi(message: CharSequence?) {
+fun Context.longToast(message: CharSequence?) {
     runOnUI {
         kotlin.runCatching {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show()
@@ -42,10 +42,10 @@ fun Context.longToastOnUi(message: CharSequence?) {
 }
 
 
-fun Fragment.toastOnUi(@StringRes message: Int) = requireActivity().toastOnUi(message)
+fun Fragment.toast(@StringRes message: Int) = requireActivity().toast(message)
 
-fun Fragment.toastOnUi(message: CharSequence) = requireActivity().toastOnUi(message)
+fun Fragment.toast(message: CharSequence) = requireActivity().toast(message)
 
-fun Fragment.longToast(@StringRes message: Int) = requireContext().longToastOnUi(message)
+fun Fragment.longToast(@StringRes message: Int) = requireContext().longToast(message)
 
-fun Fragment.longToast(message: CharSequence) = requireContext().longToastOnUi(message)
+fun Fragment.longToast(message: CharSequence) = requireContext().longToast(message)

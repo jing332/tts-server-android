@@ -7,14 +7,13 @@ import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.util.Log
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.LogLevel
-import com.github.jing332.tts_server_android.MyLog
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.help.SysTtsConfig
-import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
@@ -75,37 +74,37 @@ class TtsManager(val context: Context) {
         }
 
         mSysTts.apply {
-            // MsTTS 设置
-            SysTtsLib.setUseDnsLookup(SharedPrefsUtils.getUseDnsEdge(context))
-            SysTtsLib.setTimeout(SysTtsConfig.requestTimeout)
-
             if (mIsReplaceEnabled) mReplacer.load()
 
             if (SysTtsConfig.isMultiVoiceEnabled) {
                 mAsideConfig = getByReadAloudTarget(ReadAloudTarget.ASIDE)
                 if (mAsideConfig == null) {
-                    context.toastOnUi("警告：缺少{旁白}，使用默认配置！")
+                    context.toast("警告：缺少{旁白}，使用默认配置！")
                     mAsideConfig = SysTts(
                         readAloudTarget = ReadAloudTarget.ASIDE,
                         tts = MsTTS()
                     )
                 }
+                mAsideConfig!!.tts!!.onLoad()
+
                 mDialogueConfig = getByReadAloudTarget(ReadAloudTarget.DIALOGUE)
                 if (mDialogueConfig == null) {
-                    context.toastOnUi("警告：缺少{对话}，使用默认配置！")
+                    context.toast("警告：缺少{对话}，使用默认配置！")
                     mDialogueConfig = SysTts(
                         readAloudTarget = ReadAloudTarget.ASIDE,
                         tts = MsTTS()
                     )
                 }
+                mDialogueConfig?.tts?.onLoad()
 
                 mAudioFormat = mAsideConfig?.tts?.audioFormat!!
             } else {
                 mDefaultConfig = mSysTts.getByReadAloudTarget()
                 if (mDefaultConfig == null) {
-                    context.toastOnUi("警告：缺少{全部}，使用默认！")
+                    context.toast("警告：缺少{全部}，使用默认！")
                     mDefaultConfig = SysTts(isEnabled = true, tts = MsTTS())
                 }
+                mDefaultConfig?.tts?.onLoad()
                 mAudioFormat = mDefaultConfig?.tts?.audioFormat!!
             }
         }
@@ -163,21 +162,13 @@ class TtsManager(val context: Context) {
         mProducer?.consumeEach { data ->
             val shortText = data.text?.limitLength(20)
             if (!isSynthesizing) {
-                shortText?.apply {
-                    if (App.isSysTtsLogEnabled) sendLog(
-                        LogLevel.WARN,
-                        "系统已取消播放：${shortText}"
-                    )
-                }
+                shortText?.apply { logWarn("系统已取消播放：${shortText}") }
                 return@consumeEach
             }
 
             if (data.audio == null) {
                 shortText?.apply {
-                    if (App.isSysTtsLogEnabled) sendLog(
-                        LogLevel.WARN,
-                        "音频为空：${shortText}"
-                    )
+                    logWarn("音频为空：${shortText}")
                 }
             } else {
                 if (data.isNeedDecode) {
@@ -186,9 +177,9 @@ class TtsManager(val context: Context) {
                         sampleRate = mAudioFormat.sampleRate,
                         onRead = { writeToCallBack(callback!!, it) },
                         error = {
-                            if (App.isSysTtsLogEnabled) sendLog(LogLevel.ERROR, "解码失败: $it")
+                            logErr("解码失败: $it")
                         })
-                    if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "播放完毕：${shortText}")
+                    logWarn("播放完毕：${shortText}")
                 } else {
                     writeToCallBack(callback!!, data.audio)
                 }
@@ -285,17 +276,13 @@ class TtsManager(val context: Context) {
         text: String,
         tts: BaseTTS
     ): ByteArray? {
-        if (App.isSysTtsLogEnabled) sendLog(
-            LogLevel.INFO,
-            "<br>请求音频：<b>${text}</b> <br><small><i>${tts}</small></i>"
-        )
+        logInfo("<br>请求音频：<b>${text}</b> <br><small><i>${tts}</small></i>")
 
         val startTime = System.currentTimeMillis()
         for (retryIndex in 1..100) {
             kotlin.runCatching { tts.getAudio(text) }.onSuccess {
                 it?.let {
-                    if (App.isSysTtsLogEnabled) sendLog(
-                        LogLevel.INFO,
+                    logInfo(
                         "获取音频成功, 大小: <b>${(it.size / 1024)}KB</b>, " +
                                 "耗时: <b>${System.currentTimeMillis() - startTime}ms</b>"
                     )
@@ -306,17 +293,13 @@ class TtsManager(val context: Context) {
                 if (!isSynthesizing) return null
 
                 val shortText = text.limitLength(20)
-                if (App.isSysTtsLogEnabled) sendLog(
-                    LogLevel.ERROR,
-                    "获取音频失败: <b>${shortText}</b> <br>${it.message}"
-                )
+                logErr("获取音频失败: <b>${shortText}</b> <br>${it.message}")
                 // 为close 1006则直接跳过等待
                 if (it.message?.startsWith(CLOSE_1006_PREFIX) == false)
                     if (retryIndex > 3) SystemClock.sleep(3000) else SystemClock.sleep(500)
 
-
                 "开始第${retryIndex}次重试...".let { s ->
-                    if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, s)
+                    logWarn(s)
                     callback?.onError("请求音频失败：$s", "${shortText}\n${it.message}")
                 }
 
@@ -338,10 +321,7 @@ class TtsManager(val context: Context) {
             if (!isSynthesizing) return
             if (App.isSysTtsLogEnabled) {
                 val s = if (tts is HttpTTS) "" else "(边下边播)"
-                sendLog(
-                    LogLevel.INFO,
-                    "<br>请求音频${s}：<b>${text}</b> <br><small><i>${tts}</small></i>"
-                )
+                logInfo("<br>请求音频${s}：<b>${text}</b> <br><small><i>${tts}</small></i>")
             }
 
             var breakPoint = false
@@ -359,23 +339,17 @@ class TtsManager(val context: Context) {
                     }
                 }
             }.onSuccess {
-                if (App.isSysTtsLogEnabled) sendLog(
-                    LogLevel.WARN,
-                    "下载完成，大小：${audioSize / 1024}KB"
-                )
+                logWarn("下载完成，大小：${audioSize / 1024}KB")
                 return
             }.onFailure {
-                if (App.isSysTtsLogEnabled) sendLog(
-                    LogLevel.ERROR,
-                    "请求失败：${text.limitLength(20)}\n${it.message}"
-                )
-                if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "开始第${retryIndex}次重试...")
-
+                logErr("请求失败：${text.limitLength(20)}\n${it.message}")
+                // 是否断点
                 lastFailLength = if (breakPoint) currentLength else -1
-
                 // 1006则跳过等待
                 if (it.message?.startsWith(CLOSE_1006_PREFIX) == false)
                     if (retryIndex > 3) SystemClock.sleep(3000) else SystemClock.sleep(500)
+
+                logWarn("开始第${retryIndex}次重试...")
             }
         }
     }
@@ -394,14 +368,14 @@ class TtsManager(val context: Context) {
                     mAudioFormat.sampleRate,
                     onRead = { writeToCallBack(callback, it) },
                     error = {
-                        if (App.isSysTtsLogEnabled) sendLog(LogLevel.ERROR, "解码失败: $it")
+                        logErr("解码失败: $it")
                     })
             } else {
                 writeToCallBack(callback, audio)
             }
-            if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "播放完毕：${text.limitLength(20)}")
+            logWarn("播放完毕：${text.limitLength(20)}")
         } else {
-            if (App.isSysTtsLogEnabled) sendLog(LogLevel.WARN, "音频内容为空或被终止请求")
+            logWarn("音频内容为空或被终止请求")
             callback.done()
         }
     }
@@ -421,11 +395,25 @@ class TtsManager(val context: Context) {
         }
     }
 
+    private fun logInfo(msg: String) {
+        sendLog(LogLevel.INFO, msg)
+    }
+
+    private fun logWarn(msg: String) {
+        sendLog(LogLevel.WARN, msg)
+    }
+
+    private fun logErr(msg: String) {
+        sendLog(LogLevel.ERROR, msg)
+    }
+
     private fun sendLog(level: Int, msg: String) {
-        Log.e(TAG, "$level, $msg")
-        val intent = Intent(SystemTtsService.ACTION_ON_LOG)
-        intent.putExtra(KEY_DATA, MyLog(level, msg))
-        App.localBroadcast.sendBroadcast(intent)
+        Log.d(TAG, "$level, $msg")
+        if (App.isSysTtsLogEnabled) {
+            val intent =
+                Intent(SystemTtsService.ACTION_ON_LOG).putExtra(KEY_DATA, AppLog(level, msg))
+            App.localBroadcast.sendBroadcast(intent)
+        }
     }
 
     /* 分句缓存Data */

@@ -132,12 +132,12 @@ class ReplaceManagerActivity : BackActivity() {
                     .setPositiveButton(R.string.import_from_clip) { _, _ ->
                         val err = vm.importConfig(ClipboardUtils.text.toString())
                         err?.let {
-                            longToastOnUi("导入失败：$it")
+                            longToast("导入失败：$it")
                         }
                     }.setNegativeButton(R.string.import_from_url) { _, _ ->
                         val err = vm.importConfigFromUrl(et.text.toString())
                         err?.let {
-                            longToastOnUi("导入失败：$it")
+                            longToast("导入失败：$it")
                         }
                     }.show()
             }
@@ -150,14 +150,14 @@ class ReplaceManagerActivity : BackActivity() {
                 AlertDialog.Builder(this).setTitle(R.string.export_config).setView(tv)
                     .setPositiveButton(R.string.copy) { _, _ ->
                         ClipboardUtils.copyText(jsonStr)
-                        toastOnUi(R.string.copied)
+                        toast(R.string.copied)
                     }.setNegativeButton("上传到URL") { _, _ ->
                         val ret = vm.uploadConfigToUrl(jsonStr)
                         if (ret.isSuccess) {
                             ClipboardUtils.copyText(ret.getOrNull())
-                            longToastOnUi("已复制URL：\n${ret.getOrNull()}")
+                            longToast("已复制URL：\n${ret.getOrNull()}")
                         } else {
-                            longToastOnUi("上传失败：${ret.exceptionOrNull()?.message}")
+                            longToast("上传失败：${ret.exceptionOrNull()?.message}")
                         }
                     }
                     .show()
