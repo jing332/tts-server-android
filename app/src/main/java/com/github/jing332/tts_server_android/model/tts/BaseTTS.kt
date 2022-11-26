@@ -69,6 +69,5 @@ sealed class BaseTTS : Parcelable {
         speakText: String,
         chunkSize: Int = 0,
         onData: (ByteArray?) -> Unit
-    ): Boolean
-
+    )
 }

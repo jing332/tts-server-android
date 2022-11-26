@@ -324,10 +324,10 @@ class TtsManager(val context: Context) {
                 logInfo("<br>请求音频${s}：<b>${text}</b> <br><small><i>${tts}</small></i>")
             }
 
-            var breakPoint = false
+            val breakPoint = tts is MsTTS
             var currentLength = 0
             kotlin.runCatching {
-                breakPoint = tts.getAudioStream(text, 8192) { data ->
+                tts.getAudioStream(text, 8192) { data ->
                     if (currentLength >= lastFailLength) {
                         onRead.invoke(data)
                         lastFailLength = -1

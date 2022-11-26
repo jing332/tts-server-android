@@ -11,6 +11,7 @@ import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.tts.BaseTTS.Companion.VALUE_FOLLOW_SYSTEM
 import com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -152,15 +153,15 @@ data class MsTTS(
         return SysTtsLib.getAudio(speakText, this, format)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun getAudioStream(
         speakText: String,
         chunkSize: Int,
         onData: (ByteArray?) -> Unit
-    ): Boolean {
-        SysTtsLib.getAudioStream(speakText, this) {
+    ) {
+        SysTtsLib.getAudioStream(speakText, this@MsTTS) {
             onData(it)
         }
-        return true
     }
 }
 

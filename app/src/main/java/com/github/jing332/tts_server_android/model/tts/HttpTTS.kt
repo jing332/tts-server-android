@@ -120,9 +120,8 @@ data class HttpTTS(
         speakText: String,
         chunkSize: Int,
         onData: (ByteArray?) -> Unit
-    ): Boolean {
+    ) {
         onData(getAudio(speakText))
-        return false
         /* getAudioResponse(speakText).body?.byteStream()?.let {
              val data = ByteArray(chunkSize)
              while (true) {
