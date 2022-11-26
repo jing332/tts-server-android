@@ -42,6 +42,10 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+## Rhino
+-keep class javax.script.** { *; }
+-keep class com.sun.script.javascript.** { *; }
+-keep class org.mozilla.javascript.** { *; }
 
 #-------------- 去掉所有打印 -------------
 

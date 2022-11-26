@@ -11,10 +11,12 @@
             <item
                 android:id="@+id/menu_addConfig"
                 android:title="@string/add_internal_tts"
+                android:icon="@drawable/ic_baseline_dashboard_customize_24"
                 tools:ignore="AlwaysShowAction" />
 
             <item
                 android:id="@+id/menu_addHttpTts"
+                android:icon="@drawable/ic_baseline_http_24"
                 android:title="@string/add_custom_tts" />
 
         </menu>
