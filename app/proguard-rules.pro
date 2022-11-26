@@ -46,6 +46,7 @@
 -keep class javax.script.** { *; }
 -keep class com.sun.script.javascript.** { *; }
 -keep class org.mozilla.javascript.** { *; }
+-keep class com.script.javascript.** { *; }
 
 #-------------- 去掉所有打印 -------------
 
