@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:title="@string/add_config"
         android:icon="@drawable/ic_baseline_white_add_24"
+        android:title="@string/add_config"
         app:showAsAction="ifRoom">
         <menu>
             <item
                 android:id="@+id/menu_addConfig"
-                android:title="@string/add_internal_tts"
                 android:icon="@drawable/ic_baseline_dashboard_customize_24"
+                android:title="@string/add_internal_tts"
                 tools:ignore="AlwaysShowAction" />
 
             <item
@@ -61,6 +61,11 @@
             android:id="@+id/menu_setMinDialogueLen"
             android:icon="@drawable/ic_baseline_textsms_24"
             android:title="@string/set_dialogue_min_match_word_count" />
+        <item
+            android:id="@+id/menu_isInAppPlayAudio"
+            android:checkable="true"
+            android:icon="@drawable/ic_baseline_smart_display_24"
+            android:title="@string/in_app_play_audio"/>
     </group>
 
     <item

@@ -2,6 +2,8 @@ package com.github.jing332.tts_server_android.service.systts.help
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
+import android.os.Build
 import android.os.SystemClock
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
@@ -25,6 +27,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.channels.produce
+import okio.ByteString.Companion.toByteString
 
 class TtsManager(val context: Context) {
     companion object {
@@ -54,6 +57,7 @@ class TtsManager(val context: Context) {
     private var mAsideConfig: SysTts? = null
     private var mDialogueConfig: SysTts? = null
 
+    private var mIsInAppPlayAudio = false
     private var mIsSplitEnabled = false
     private var mIsReplaceEnabled = false
     private var mIsMultiVoiceEnabled = false
@@ -67,6 +71,7 @@ class TtsManager(val context: Context) {
     /* 加载配置 */
     fun loadConfig() {
         SysTtsConfig.apply {
+            mIsInAppPlayAudio = isInAppPlayAudio
             mIsSplitEnabled = isSplitEnabled
             mIsMultiVoiceEnabled = isMultiVoiceEnabled
             mIsReplaceEnabled = isReplaceEnabled
@@ -171,17 +176,21 @@ class TtsManager(val context: Context) {
                     logWarn("音频为空：${shortText}")
                 }
             } else {
-                if (data.isNeedDecode) {
-                    mAudioDecoder.doDecode(
-                        srcData = data.audio,
-                        sampleRate = mAudioFormat.sampleRate,
-                        onRead = { writeToCallBack(callback!!, it) },
-                        error = {
-                            logErr("解码失败: $it")
-                        })
-                    logWarn("播放完毕：${shortText}")
+                if (mIsInAppPlayAudio) {
+                    playAudio(data.audio)
                 } else {
-                    writeToCallBack(callback!!, data.audio)
+                    if (data.isNeedDecode) {
+                        mAudioDecoder.doDecode(
+                            srcData = data.audio,
+                            sampleRate = mAudioFormat.sampleRate,
+                            onRead = { writeToCallBack(callback!!, it) },
+                            error = {
+                                logErr("解码失败: $it")
+                            })
+                        logWarn("播放完毕：${shortText}")
+                    } else {
+                        writeToCallBack(callback!!, data.audio)
+                    }
                 }
             }
         }
@@ -242,7 +251,14 @@ class TtsManager(val context: Context) {
         tts: BaseTTS,
     ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
         getAudioStreamHelper(text, tts) {
-            launch { send(ChannelData(audio = it, isNeedDecode = tts.audioFormat.isNeedDecode)) }
+            launch {
+                send(
+                    ChannelData(
+                        audio = it,
+                        isNeedDecode = tts.audioFormat.isNeedDecode
+                    )
+                )
+            }
         }
     }
 
@@ -354,6 +370,28 @@ class TtsManager(val context: Context) {
         }
     }
 
+    /* 在APP内直接播放 */
+    @Synchronized
+    fun playAudio(audio: ByteArray) {
+        val mp = MediaPlayer()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            mp.setDataSource(ByteArrayMediaDataSource(audio))
+        else
+            mp.setDataSource("data:;base64," + audio.toByteString().base64())
+
+        mp.prepare()
+        mp.start()
+
+        while (true) {
+            SystemClock.sleep(100)
+            if (!isSynthesizing) {
+                mp.stop()
+            } else if (!mp.isPlaying) {
+                break
+            }
+        }
+    }
+
     /* 获取音频并解码播放 */
     private fun getAudioAndDecodePlay(
         text: String,
@@ -362,16 +400,20 @@ class TtsManager(val context: Context) {
     ) {
         val audio = getAudioHelper(text, msTtsProperty)
         if (audio != null) {
-            if (msTtsProperty.audioFormat.isNeedDecode) {
-                mAudioDecoder.doDecode(
-                    audio,
-                    mAudioFormat.sampleRate,
-                    onRead = { writeToCallBack(callback, it) },
-                    error = {
-                        logErr("解码失败: $it")
-                    })
+            if (mIsInAppPlayAudio) {
+                runBlocking { playAudio(audio) }
             } else {
-                writeToCallBack(callback, audio)
+                if (msTtsProperty.audioFormat.isNeedDecode) {
+                    mAudioDecoder.doDecode(
+                        audio,
+                        mAudioFormat.sampleRate,
+                        onRead = { writeToCallBack(callback, it) },
+                        error = {
+                            logErr("解码失败: $it")
+                        })
+                } else {
+                    writeToCallBack(callback, audio)
+                }
             }
             logWarn("播放完毕：${text.limitLength(20)}")
         } else {

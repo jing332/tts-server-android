@@ -1,10 +1,13 @@
 package com.github.jing332.tts_server_android.ui.systts
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.Fragment
@@ -68,13 +71,17 @@ class TtsSettingsActivity : BackActivity() {
 
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.findItem(R.id.menu_isMultiVoice)?.isChecked = SysTtsConfig.isMultiVoiceEnabled
-        menu?.findItem(R.id.menu_doSplit)?.isChecked = SysTtsConfig.isSplitEnabled
-        menu?.findItem(R.id.menu_replace_manager)?.isChecked = SysTtsConfig.isReplaceEnabled
+        menu?.apply {
+            findItem(R.id.menu_isMultiVoice)?.isChecked = SysTtsConfig.isMultiVoiceEnabled
+            findItem(R.id.menu_doSplit)?.isChecked = SysTtsConfig.isSplitEnabled
+            findItem(R.id.menu_replace_manager)?.isChecked = SysTtsConfig.isReplaceEnabled
+            findItem(R.id.menu_isInAppPlayAudio)?.isChecked = SysTtsConfig.isInAppPlayAudio
+        }
 
         return super.onPrepareOptionsMenu(menu)
     }
 
+    @Suppress("DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_desktopShortcut -> {
@@ -90,7 +97,7 @@ class TtsSettingsActivity : BackActivity() {
             R.id.menu_addConfig -> {
                 configFragment.startEditActivity()
             }
-            R.id.menu_addHttpTts ->{
+            R.id.menu_addHttpTts -> {
                 configFragment.startHttpTtsEditActivity()
             }
 
@@ -116,6 +123,31 @@ class TtsSettingsActivity : BackActivity() {
                 SysTtsConfig.isMultiVoiceEnabled = item.isChecked
                 App.localBroadcast.sendBroadcast(Intent(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
             }
+            R.id.menu_isInAppPlayAudio -> {
+                if (!item.isChecked) {
+                    val tv = TextView(this)
+                    tv.setPadding(25, 25, 25, 25)
+                    tv.text = Html.fromHtml(
+                        "打开此选项后，将直接<b>在APP内播放音频</b>，而非转由系统TTS组件播放。" +
+                                "<br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。" +
+                                "<br><br>当然，直接播放也有兼容性问题：" +
+                                "<br>由于并未将原始音频发送到系统TTS组件，所以如果调用TTS者是先缓存后播放机制，即并非由系统播放时，这将会导致缓存时音频为空和意外播放。"
+                    )
+                    AlertDialog.Builder(this).setTitle(R.string.in_app_play_audio)
+                        .setView(tv)
+                        .setPositiveButton(getString(R.string.turn_on_switch)) { _, _ ->
+                            item.isChecked = !item.isChecked
+                            SysTtsConfig.isInAppPlayAudio = item.isChecked
+                            App.localBroadcast.sendBroadcast(Intent(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
+                        }
+                        .show()
+                }else{
+                    item.isChecked = !item.isChecked
+                    SysTtsConfig.isInAppPlayAudio = item.isChecked
+                    App.localBroadcast.sendBroadcast(Intent(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
+                }
+            }
+
             R.id.menu_setAudioRequestTimeout -> {
                 configFragment.setAudioRequestTimeout()
             }

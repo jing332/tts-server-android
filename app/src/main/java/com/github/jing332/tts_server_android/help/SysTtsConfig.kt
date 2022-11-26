@@ -7,6 +7,11 @@ object SysTtsConfig : KotprefModel() {
         get() = "systts"
 
     /**
+     * 是否 应用内播放音频
+     */
+    var isInAppPlayAudio by booleanPref()
+
+    /**
      * 多语音
      */
     var isMultiVoiceEnabled by booleanPref()

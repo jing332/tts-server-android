@@ -133,4 +133,6 @@
     <string name="use_dns_lookup_ip">使用DNS解析接口IP</string>
     <string name="pref_edge_dns_summary">而非内置北京微软云节点</string>
     <string name="pref_title_global_edge">全局-Edge接口</string>
+    <string name="in_app_play_audio">在APP内播放音频</string>
+    <string name="turn_on_switch">我要打开</string>
 </resources>
