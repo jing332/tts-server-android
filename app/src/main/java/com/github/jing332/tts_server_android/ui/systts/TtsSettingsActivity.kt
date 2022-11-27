@@ -127,13 +127,7 @@ class TtsSettingsActivity : BackActivity() {
                 if (!item.isChecked) {
                     val tv = TextView(this)
                     tv.setPadding(25, 25, 25, 25)
-                    tv.text = Html.fromHtml(
-                        "打开此选项后，将直接<b>在APP内播放音频</b>，而非转由系统TTS组件播放。" +
-                                "<br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。" +
-                                "<br><br>当然，直接播放也有兼容性问题：" +
-                                "<br> - 由于并未将原始音频发送到系统TTS组件，所以如果调用TTS者是先缓存后播放机制，即并非由系统播放时，这将会导致缓存时音频为空和意外播放。" +
-                                "<br> - raw边下边播暂不支持。"
-                    )
+                    tv.text = Html.fromHtml(getString(R.string.msg_in_app_info_html))
                     AlertDialog.Builder(this).setTitle(R.string.in_app_play_audio)
                         .setView(tv)
                         .setPositiveButton(getString(R.string.turn_on_switch)) { _, _ ->

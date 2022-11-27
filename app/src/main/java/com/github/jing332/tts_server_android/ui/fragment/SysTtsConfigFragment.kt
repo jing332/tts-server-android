@@ -17,10 +17,12 @@ import androidx.lifecycle.viewModelScope
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBinding
@@ -121,6 +123,8 @@ class SysTtsConfigFragment : Fragment() {
                 runOnUI { checkFormatAndShowDialog() }
             }
         }
+
+        if (CompatSysTtsConfig.migrationConfig()) App.context.longToast("旧版配置迁移成功，原文件已删除")
     }
 
     /* 警告 格式不同 */
@@ -139,11 +143,13 @@ class SysTtsConfigFragment : Fragment() {
             .setMessage(R.string.please_check_multi_voice_option).create()
     }
 
+    /* 检查格式 如不同则显示对话框 */
     private fun checkFormatAndShowDialog() {
-        val isMultiVoice = SysTtsConfig.isMultiVoiceEnabled
-        if (isMultiVoice && !viewModel.checkMultiVoiceFormat()) {
-            runOnUI {
-                formatWarnDialog.show()
+        SysTtsConfig.apply {
+            if (isMultiVoiceEnabled && !isInAppPlayAudio && !viewModel.checkMultiVoiceFormat()) {
+                runOnUI {
+                    formatWarnDialog.show()
+                }
             }
         }
     }
@@ -153,7 +159,7 @@ class SysTtsConfigFragment : Fragment() {
         // 检测是否开启多语音
         if (viewModel.onCheckBoxChanged(list, position, checkBox.isChecked))
             requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
-        else{
+        else {
             checkBox.isChecked = false
             checkMultiVoiceDialog.show()
         }
@@ -321,14 +327,6 @@ class SysTtsConfigFragment : Fragment() {
             }
             .show()
     }
-
-//    private val httpTtsEditForResult = registerForActivityResult(StartActivityForResult()) {
-//        val dataExtra = it.data?.getSerializableExtra(KEY_DATA)
-//        dataExtra.let {
-//            val data = dataExtra as HttpTtsProperty
-//
-//        }
-//    }
 
     fun startHttpTtsEditActivity() {
         startForResult.launch(Intent(requireContext(), HttpTtsEditActivity::class.java))

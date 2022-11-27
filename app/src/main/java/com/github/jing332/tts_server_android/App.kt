@@ -5,8 +5,6 @@ import android.content.Context
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.chibatching.kotpref.Kotpref
 import com.drake.brv.utils.BRV
-import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
-import com.github.jing332.tts_server_android.util.longToast
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlin.properties.Delegates
@@ -43,12 +41,5 @@ class App : Application() {
 
         // RecyclerView
         BRV.modelId = BR.m
-
-        compat()
-    }
-
-    /* 兼容操作 */
-    private fun compat() {
-        if (CompatSysTtsConfig.migrationConfig()) context.longToast("旧版配置迁移成功，原文件已删除")
     }
 }

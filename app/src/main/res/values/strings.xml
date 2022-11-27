@@ -75,7 +75,7 @@
     <string name="please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
     <string name="warning">警告</string>
     <string name="msg_aside_and_dialogue_format_different">检测到旁白与对话音频格式不相同，
-        两者采样率(khz)不同将会导致音调异常(声音粗重或尖细)，请手动换为相同格式！</string>
+        两者采样率(khz)不同将会导致音调异常(声音粗重或尖细)，请手动换为相同格式或在右上角将【APP内播放】选项打开。</string>
     <string name="list_sort">列表排序</string>
     <string name="sort_by_api">按接口</string>
     <string name="sort_by_read_aloud_target">按朗读目标</string>
@@ -135,4 +135,13 @@
     <string name="pref_title_global_edge">全局-Edge接口</string>
     <string name="in_app_play_audio">在APP内播放音频</string>
     <string name="turn_on_switch">我要打开</string>
+    <string name="msg_in_app_info_html"><DATA><![CDATA[
+        打开此选项后，将直接<b>在APP内播放音频</b>，而非转由系统TTS组件播放。
+        <br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。
+        <br><br>当然，直接播放也有兼容性问题：
+        <br> - 由于并未将原始音频发送到系统TTS组件，所以如果调用TTS者是先缓存后播放机制，即并非由系统播放时，这将会导致缓存时音频为空和意外播放。
+        <br> - raw格式依旧不支持，由系统TTS组件播放。
+        ]]>
+    </DATA>
+    </string>
 </resources>
