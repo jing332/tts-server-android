@@ -23,10 +23,7 @@ import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.channels.*
 import okio.ByteString.Companion.toByteString
 
 class TtsManager(val context: Context) {
@@ -66,6 +63,12 @@ class TtsManager(val context: Context) {
     fun stop() {
         isSynthesizing = false
         mAudioDecoder.stop()
+
+        mInAppPlayJob?.cancel()
+    }
+
+    fun destroy() {
+        mScope.cancel()
     }
 
     /* 加载配置 */
@@ -117,6 +120,9 @@ class TtsManager(val context: Context) {
 
     private var mProducer: ReceiveChannel<ChannelData>? = null
 
+    private val mScope = CoroutineScope(Job())
+    private var mInAppPlayJob: Job? = null
+
     /* 开始转语音 */
     suspend fun synthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         isSynthesizing = true
@@ -143,7 +149,11 @@ class TtsManager(val context: Context) {
             }
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
-            mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside!!, dialogue!!)
+            try {
+                mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside!!, dialogue!!)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         } else { //单语音
             val pro = mDefaultConfig?.tts.clone<BaseTTS>()?.also {
                 it.pitch = pitch
@@ -156,60 +166,69 @@ class TtsManager(val context: Context) {
                 mProducer = splitSentencesProducer(text, pro!!)
             } else {
                 if (mAudioFormat.isNeedDecode) {
-                    getAudioAndDecodePlay(text, pro!!, callback!!)
+                    getAudioAndDecodeWrite(text, pro!!, callback!!)
                 } else {
                     mProducer = audioStreamProducer(text, pro!!)
                 }
             }
         }
 
-        /* 阻塞，接收者 */
-        mProducer?.consumeEach { data ->
-            val shortText = data.text?.limitLength(20)
-            if (!isSynthesizing) {
-                shortText?.apply { logWarn("系统已取消播放：${shortText}") }
-                return@consumeEach
-            }
-
-            if (data.audio == null) {
-                shortText?.apply {
-                    logWarn("音频为空：${shortText}")
+        try {
+            /* 阻塞，接收者 */
+            mProducer?.consumeEach { data ->
+                val shortText = data.text?.limitLength(20)
+                if (!isSynthesizing) {
+                    shortText?.apply { logWarn("系统已取消播放：${shortText}") }
+                    return@consumeEach
                 }
-            } else {
-                if (mIsInAppPlayAudio) {
-                    playAudio(data.audio)
-                } else {
-                    if (data.isNeedDecode) {
-                        mAudioDecoder.doDecode(
-                            srcData = data.audio,
-                            sampleRate = mAudioFormat.sampleRate,
-                            onRead = { writeToCallBack(callback!!, it) },
-                            error = {
-                                logErr("解码失败: $it")
-                            })
-                        logWarn("播放完毕：${shortText}")
+                mScope.launch {
+                    if (data.audio == null) {
+                        shortText?.apply {
+                            logWarn("音频为空：${shortText}")
+                        }
                     } else {
-                        writeToCallBack(callback!!, data.audio)
+                        if (mIsInAppPlayAudio) {
+                            playAudio(data.audio)
+                        } else {
+                            if (data.isNeedDecode) {
+                                mAudioDecoder.doDecode(
+                                    srcData = data.audio,
+                                    sampleRate = mAudioFormat.sampleRate,
+                                    onRead = { writeToCallBack(callback!!, it) },
+                                    error = {
+                                        logErr("解码失败: $it")
+                                    })
+                                logWarn("播放完毕：${shortText}")
+                            } else {
+                                writeToCallBack(callback!!, data.audio)
+                            }
+                        }
                     }
-                }
-            }
-        }
+                }.join()
+            } // producer
 
-        stop()
+            stop()
+        } catch (e: CancellationException) {
+            Log.w(TAG, "producer job cancel: ${e.message}")
+        }
     }
 
     /* 分割长句生产者 */
-    @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun splitSentencesProducer(
         text: String,
         msTtsProperty: BaseTTS
-    ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
-        StringUtils.splitSentences(text).forEach { splitedText ->
-            if (!isSynthesizing) return@produce
-            if (!StringUtils.isSilent(splitedText)) {
-                getAudioAndSend(this, splitedText, msTtsProperty)
-                delay(requestInterval)
+    ): ReceiveChannel<ChannelData> = mScope.produce(Dispatchers.IO, capacity = 100) {
+        try {
+            StringUtils.splitSentences(text).forEach { splitedText ->
+                if (!isSynthesizing) return@produce
+                if (!StringUtils.isSilent(splitedText)) {
+                    getAudioAndSend(this, splitedText, msTtsProperty)
+                    delay(requestInterval)
+                }
             }
+        } catch (e: CancellationException) {
+            Log.w(TAG, "splitSentences producer job cancel: ${e.message}")
         }
     }
 
@@ -220,45 +239,53 @@ class TtsManager(val context: Context) {
         text: String,
         aside: BaseTTS,
         dialogue: BaseTTS
-    ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
-        /* 分割为多语音  */
-        val map =
-            VoiceTools.splitMultiVoice(text, aside, dialogue, mMinDialogueLen)
-        if (isSplit)
-            map.forEach {
-                StringUtils.splitSentences(it.speakText).forEach { splitedText ->
+    ): ReceiveChannel<ChannelData> = mScope.produce(Dispatchers.IO, capacity = 100) {
+        try {
+            /* 分割为多语音  */
+            val map =
+                VoiceTools.splitMultiVoice(text, aside, dialogue, mMinDialogueLen)
+            if (isSplit)
+                map.forEach {
+                    StringUtils.splitSentences(it.speakText).forEach { splitedText ->
+                        if (!isSynthesizing) return@produce
+                        if (!StringUtils.isSilent(splitedText)) {
+                            getAudioAndSend(this, splitedText, it.ttsProperty)
+                            delay(requestInterval)
+                        }
+                    }
+                }
+            else // 不分割
+                map.forEach {
                     if (!isSynthesizing) return@produce
-                    if (!StringUtils.isSilent(splitedText)) {
-                        getAudioAndSend(this, splitedText, it.ttsProperty)
+                    if (!StringUtils.isSilent(it.speakText)) {
+                        getAudioAndSend(this, it.speakText, it.ttsProperty)
                         delay(requestInterval)
                     }
                 }
-            }
-        else // 不分割
-            map.forEach {
-                if (!isSynthesizing) return@produce
-                if (!StringUtils.isSilent(it.speakText)) {
-                    getAudioAndSend(this, it.speakText, it.ttsProperty)
-                    delay(requestInterval)
-                }
-            }
+        } catch (e: CancellationException) {
+            Log.w(TAG, "multiVoice producer job cancel: ${e.message}")
+        }
     }
 
     /* 音频流边下边播生产者 */
-    @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun audioStreamProducer(
         text: String,
         tts: BaseTTS,
-    ): ReceiveChannel<ChannelData> = GlobalScope.produce(Dispatchers.IO, capacity = 100) {
-        getAudioStreamHelper(text, tts) {
-            launch {
-                send(
-                    ChannelData(
-                        audio = it,
-                        isNeedDecode = tts.audioFormat.isNeedDecode
+    ): ReceiveChannel<ChannelData> = mScope.produce(Dispatchers.IO, capacity = 100) {
+        try {
+            getAudioStreamHelper(text, tts) {
+                launch {
+                    send(
+                        ChannelData(
+                            audio = it,
+                            isNeedDecode = tts.audioFormat.isNeedDecode
+                        )
                     )
-                )
+                }
             }
+        } catch (e: CancellationException) {
+            Log.w(TAG, "audioStreamProducer job cancel: ${e.message}")
         }
     }
 
@@ -370,55 +397,78 @@ class TtsManager(val context: Context) {
         }
     }
 
-    /* 在APP内直接播放 */
-    @Synchronized
-    fun playAudio(audio: ByteArray) {
-        val mp = MediaPlayer()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            mp.setDataSource(ByteArrayMediaDataSource(audio))
-        else
-            mp.setDataSource("data:;base64," + audio.toByteString().base64())
-
-        mp.prepare()
-        mp.start()
-
-        while (true) {
-            SystemClock.sleep(100)
-            if (!isSynthesizing) {
-                mp.stop()
-            } else if (!mp.isPlaying) {
-                break
-            }
+    private val mediaPlayer by lazy {
+        MediaPlayer().apply {
+            isLooping = false
         }
     }
 
+    /* 在APP内直接播放 */
+    @OptIn(DelicateCoroutinesApi::class)
+    private suspend fun playAudio(audio: ByteArray) {
+        mInAppPlayJob = GlobalScope.launch {
+            try {
+                mediaPlayer.reset()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    mediaPlayer.setDataSource(ByteArrayMediaDataSource(audio))
+                else
+                    mediaPlayer.setDataSource("data:;base64," + audio.toByteString().base64())
+
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+                // 等待播放完毕
+                val duration = mediaPlayer.duration
+
+                delay(duration.toLong())
+            } catch (e: CancellationException) {
+                Log.w(TAG, "in-app play job cancel: ${e.message}")
+            } finally {
+                mediaPlayer.stop()
+            }
+        }
+        mInAppPlayJob?.join()
+        mInAppPlayJob = null
+
+/*        while (true) {
+            SystemClock.sleep(100)
+            if (!isSynthesizing) {
+                mediaPlayer.stop()
+            } else if (!mediaPlayer.isPlaying) {
+//                mediaPlayer.release()
+                break
+            }
+        }*/
+    }
+
     /* 获取音频并解码播放 */
-    private fun getAudioAndDecodePlay(
+    private suspend fun getAudioAndDecodeWrite(
         text: String,
         msTtsProperty: BaseTTS,
         callback: SynthesisCallback
     ) {
-        val audio = getAudioHelper(text, msTtsProperty)
-        if (audio != null) {
-            if (mIsInAppPlayAudio) {
-                runBlocking { playAudio(audio) }
-            } else {
-                if (msTtsProperty.audioFormat.isNeedDecode) {
-                    mAudioDecoder.doDecode(
-                        audio,
-                        mAudioFormat.sampleRate,
-                        onRead = { writeToCallBack(callback, it) },
-                        error = {
-                            logErr("解码失败: $it")
-                        })
+        runBlocking {
+            val audio = getAudioHelper(text, msTtsProperty)
+            if (audio != null) {
+                if (mIsInAppPlayAudio) {
+                    playAudio(audio)
                 } else {
-                    writeToCallBack(callback, audio)
+                    if (msTtsProperty.audioFormat.isNeedDecode) {
+                        mAudioDecoder.doDecode(
+                            audio,
+                            mAudioFormat.sampleRate,
+                            onRead = { writeToCallBack(callback, it) },
+                            error = {
+                                logErr("解码失败: $it")
+                            })
+                    } else {
+                        writeToCallBack(callback, audio)
+                    }
                 }
+                logWarn("播放完毕：${text.limitLength(20)}")
+            } else {
+                logWarn("音频内容为空或被终止请求")
+                callback.done()
             }
-            logWarn("播放完毕：${text.limitLength(20)}")
-        } else {
-            logWarn("音频内容为空或被终止请求")
-            callback.done()
         }
     }
 

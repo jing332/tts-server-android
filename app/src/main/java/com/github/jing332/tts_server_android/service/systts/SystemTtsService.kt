@@ -76,6 +76,8 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        mTtsManager.destroy()
         unregisterReceiver(mReceiver)
         mWakeLock.release()
         stopForeground(true)
@@ -109,6 +111,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         Log.d(TAG, "onStop")
         mTtsManager.stop()
     }
+
 
     lateinit var mCurrentText: String
 
