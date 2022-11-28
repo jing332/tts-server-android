@@ -22,8 +22,8 @@ import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 
 @Suppress("DEPRECATION")
 class HttpTtsEditActivity : BackActivity() {
-    private val viewModel: HttpTtsEditViewModel by viewModels()
-    private val binding by lazy { ActivityHttpTtsEditBinding.inflate(layoutInflater) }
+    private val vm: HttpTtsEditViewModel by viewModels()
+    private val vb by lazy { ActivityHttpTtsEditBinding.inflate(layoutInflater) }
 
     private var resultCode: Int = RESULT_EDIT
     private var data: SysTts? = null
@@ -31,9 +31,9 @@ class HttpTtsEditActivity : BackActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setContentView(vb.root)
 
-        binding.spinnerSampleRate.setSelection(1)
+        vb.spinnerSampleRate.setSelection(1)
 
         // 获取数据 为null表示Add
         data = intent.getParcelableExtra<SysTts>(KEY_DATA)
@@ -43,26 +43,31 @@ class HttpTtsEditActivity : BackActivity() {
         }
         data?.let {
             val tts = it.ttsAs<HttpTTS>()
-            binding.etName.setText(it.displayName)
-            binding.etUrl.setText(tts.url)
+            vb.apply {
+                etName.setText(it.displayName)
+                etUrl.setText(tts.url)
+                etHeaders.setText(tts.header)
 
-            binding.spinnerSampleRate.setSelection(
-                viewModel.toSampleRateIndex(
-                    tts.audioFormat.sampleRate,
-                    this
+                spinnerSampleRate.setSelection(
+                    vm.toSampleRateIndex(
+                        tts.audioFormat.sampleRate,
+                        this@HttpTtsEditActivity
+                    )
                 )
-            )
-            binding.checkBoxNeedDecode.isChecked = tts.audioFormat.isNeedDecode
+                checkBoxNeedDecode.isChecked = tts.audioFormat.isNeedDecode
+
+            }
         }
 
 //        binding.etUrl.setText("http://tsn.baidu.com/text2audio,{\"method\": \"POST\", \"body\": \"tex={{java.encodeURI(java.encodeURI(speakText))}}&spd={{(speakSpeed + 5) / 10 + 4}}&per=4114&cuid=baidu_speech_demo&idx=1&cod=2&lan=zh&ctp=1&pdt=220&vol=5&aue=6&pit=5&res_tag=audio\"}")
-        binding.btnTest.setOnClickListener {
+        vb.btnTest.setOnClickListener {
             val url =
-                binding.etUrl.text.toString()
+                vb.etUrl.text.toString()
             val waitDialog = WaitDialog(this).apply { show() }
-            viewModel.doTest(
+            vm.doTest(
                 url,
-                binding.etTestText.text.toString(),
+                vb.etTestText.text.toString(),
+                vb.etHeaders.text.toString(),
                 { size, sampleRate, mime, contentType ->
                     waitDialog.dismiss()
                     AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试成功")
@@ -79,7 +84,7 @@ class HttpTtsEditActivity : BackActivity() {
                 })
         }
 
-        binding.textInputLayoutUrl.setEndIconOnClickListener {
+        vb.textInputLayoutUrl.setEndIconOnClickListener {
             val htmlStr = "格式：与阅读APP网络TTS引擎相同： " +
                     "<br><i><u>http://请求地址, {\"method\":\"POST\", \"body\": \"POST原始请求体, 也可为GET的url参数。支持使用 {{js代码或变量}} \"}</i></u>" +
                     "<br><br>内置变量：" +
@@ -105,23 +110,24 @@ class HttpTtsEditActivity : BackActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_save -> {
-                if (binding.etName.text?.isBlank() == true) {
-                    binding.etName.error = getString(R.string.cannot_empty)
-                    binding.etName.requestFocus()
+                if (vb.etName.text?.isBlank() == true) {
+                    vb.etName.error = getString(R.string.cannot_empty)
+                    vb.etName.requestFocus()
                     return super.onOptionsItemSelected(item)
-                } else if (binding.etUrl.text?.isEmpty() == true) {
-                    binding.etUrl.error = getString(R.string.cannot_empty)
-                    binding.etUrl.requestFocus()
+                } else if (vb.etUrl.text?.isEmpty() == true) {
+                    vb.etUrl.error = getString(R.string.cannot_empty)
+                    vb.etUrl.requestFocus()
                     return super.onOptionsItemSelected(item)
                 }
 
                 data?.let {
-                    it.displayName = binding.etName.text.toString()
+                    it.displayName = vb.etName.text.toString()
                     it.ttsAs<HttpTTS>().apply {
-                        url = binding.etUrl.text.toString()
+                        url = vb.etUrl.text.toString()
+                        header = vb.etHeaders.text.toString()
                         audioFormat.sampleRate =
-                            binding.spinnerSampleRate.selectedItem.toString().toInt()
-                        audioFormat.isNeedDecode = binding.checkBoxNeedDecode.isChecked
+                            vb.spinnerSampleRate.selectedItem.toString().toInt()
+                        audioFormat.isNeedDecode = vb.checkBoxNeedDecode.isChecked
                     }
                 }
                 SoftKeyboardUtils.hideSoftKeyboard(this)

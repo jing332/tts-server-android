@@ -24,6 +24,7 @@ class App : Application() {
         @OptIn(ExperimentalSerializationApi::class)
         val jsonBuilder by lazy {
             Json {
+                allowStructuredMapKeys=true
                 ignoreUnknownKeys = true
                 prettyPrint = true
                 explicitNulls = false //忽略为null的字段

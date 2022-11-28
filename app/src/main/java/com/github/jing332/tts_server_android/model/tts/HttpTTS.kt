@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.drake.net.Net
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.help.SysTtsConfig
@@ -14,6 +15,8 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import okhttp3.Headers.Companion.toHeaders
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
@@ -91,6 +94,17 @@ data class HttpTTS(
     override fun onLoad() {
         httpClient = OkHttpClient.Builder()
             .connectTimeout(SysTtsConfig.requestTimeout.toLong(), TimeUnit.MILLISECONDS).build()
+
+        runCatching { parseHeaders() }.onFailure { throw Throwable("解析请求头失败：$it") }
+    }
+
+    @IgnoredOnParcel
+    private var httpHeaders: MutableMap<String, String> = mutableMapOf()
+
+    private fun parseHeaders() {
+        if (!header.isNullOrEmpty()) {
+            httpHeaders = App.jsonBuilder.decodeFromString(header.toString())
+        }
     }
 
     fun getAudioResponse(speakText: String): Response {
@@ -101,6 +115,7 @@ data class HttpTTS(
             return Net.post(a.baseUrl) {
                 if (!this@HttpTTS::httpClient.isInitialized) onLoad()
                 okHttpClient = this@HttpTTS.httpClient
+                setHeaders(httpHeaders.toHeaders())
                 body = it.body.toString().toRequestBody(null)
             }.execute()
         }

@@ -51,16 +51,15 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout_url">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_header"
+            android:id="@+id/et_headers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/http_request_header" />
+            android:hint="@string/request_header" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
