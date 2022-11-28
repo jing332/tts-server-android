@@ -47,7 +47,7 @@ data class MsTTS(
         const val RATE_FOLLOW_SYSTEM = -100
 
         const val DEFAULT_LOCALE = "zh-CN"
-        const val DEFAULT_VOICE = "zh-CN-XiaomiNeural"
+        const val DEFAULT_VOICE = "zh-CN-XiaoxiaoNeural"
 //        const val DEFAULT_VOICE_ID = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
     }
 

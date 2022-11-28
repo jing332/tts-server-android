@@ -136,7 +136,7 @@ class TtsSettingsActivity : BackActivity() {
                             App.localBroadcast.sendBroadcast(Intent(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
                         }
                         .show()
-                }else{
+                } else {
                     item.isChecked = !item.isChecked
                     SysTtsConfig.isInAppPlayAudio = item.isChecked
                     App.localBroadcast.sendBroadcast(Intent(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED))

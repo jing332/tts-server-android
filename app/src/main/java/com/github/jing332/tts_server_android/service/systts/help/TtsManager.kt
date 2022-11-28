@@ -1,13 +1,13 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
-import android.os.Build
 import android.os.SystemClock
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.util.Log
+import com.drake.net.utils.runMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.LogLevel
@@ -15,6 +15,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.help.ExoByteArrayMediaSource
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
@@ -22,9 +23,15 @@ import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.util.*
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.upstream.DataSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
-import okio.ByteString.Companion.toByteString
+
 
 class TtsManager(val context: Context) {
     companion object {
@@ -40,26 +47,49 @@ class TtsManager(val context: Context) {
         fun onRetrySuccess()
     }
 
+    // 协程作用域
+    private val mScope = CoroutineScope(Job() + Dispatchers.IO)
+
+    // 系统通知的回调
     var callback: Callback? = null
+
+    // 是否合成中
     var isSynthesizing = false
+
+    // 音频解码器
     private val mAudioDecoder by lazy { AudioDecoder() }
+
+    // 归一化，将某个范围值缩小到另一范围 (500-1 -> 200-0)
     private val mNorm by lazy { NormUtil(500F, 0F, 200F, 0F) }
 
+    // 替换
     private val mReplacer: ReplaceHelper by lazy { ReplaceHelper() }
+
+    // 音频格式 合成开始前和解码时使用
     private lateinit var mAudioFormat: BaseAudioFormat
 
+    // Room数据库
     private val mSysTts by lazy { appDb.sysTtsDao }
 
+    // 全局默认 TTS配置
     private var mDefaultConfig: SysTts? = null
+
+    // 旁白 TTS配置
     private var mAsideConfig: SysTts? = null
+
+    // 对话 TTS配置
     private var mDialogueConfig: SysTts? = null
 
+    // 一些开关偏好
     private var mIsInAppPlayAudio = false
     private var mIsSplitEnabled = false
     private var mIsReplaceEnabled = false
     private var mIsMultiVoiceEnabled = false
     private var mMinDialogueLen = 0
 
+    /**
+     * 停止合成及播放
+     */
     fun stop() {
         isSynthesizing = false
         mAudioDecoder.stop()
@@ -67,12 +97,17 @@ class TtsManager(val context: Context) {
         mInAppPlayJob?.cancel()
     }
 
+    /*
+    * 销毁时调用
+    * */
     fun destroy() {
         mScope.cancel()
-        mediaPlayer?.release()
+        if (isSynthesizing) stop()
     }
 
-    /* 加载配置 */
+    /**
+     * 加载配置
+     */
     fun loadConfig() {
         SysTtsConfig.apply {
             mIsInAppPlayAudio = isInAppPlayAudio
@@ -119,9 +154,11 @@ class TtsManager(val context: Context) {
         }
     }
 
+
+    // 音频生产者
     private var mProducer: ReceiveChannel<ChannelData>? = null
 
-    private val mScope = CoroutineScope(Job() + Dispatchers.Unconfined)
+    // APP内播放音频Job 用于 job.cancel() 取消播放
     private var mInAppPlayJob: Job? = null
 
     /* 开始转语音 */
@@ -150,11 +187,7 @@ class TtsManager(val context: Context) {
             }
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
-            try {
-                mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside!!, dialogue!!)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside!!, dialogue!!)
         } else { //单语音
             val pro = mDefaultConfig?.tts.clone<BaseTTS>()?.also {
                 it.pitch = pitch
@@ -188,23 +221,25 @@ class TtsManager(val context: Context) {
                     } else {
                         val format = data.tts.audioFormat
                         if (mIsInAppPlayAudio) { // APP内播放
-                            if (format.isNeedDecode)
-                                playAudio(data.audio)
-                            else {
+                            if (format.isNeedDecode) {
+                                playAudioInApp(data.audio)
+                                logWarn("播放完毕：${shortText}")
+                            } else {
                                 writeToCallBack(callback!!, data.audio)
                             }
                         } else {
-                            if (format.isNeedDecode) mAudioDecoder.doDecode(
-                                srcData = data.audio,
-                                sampleRate = mAudioFormat.sampleRate,
-                                onRead = { writeToCallBack(callback!!, it) },
-                                error = {
-                                    logErr("解码失败: $it")
-                                })
-                            else writeToCallBack(callback!!, data.audio)
+                            if (format.isNeedDecode) {
+                                mAudioDecoder.doDecode(
+                                    srcData = data.audio,
+                                    sampleRate = mAudioFormat.sampleRate,
+                                    onRead = { writeToCallBack(callback!!, it) },
+                                    error = {
+                                        logErr("解码失败: $it")
+                                    }
+                                )
+                                logWarn("播放完毕：${shortText}")
+                            } else writeToCallBack(callback!!, data.audio)
                         }
-
-                        logWarn("播放完毕：${shortText}")
                     }
                 }.join()
             } // producer
@@ -220,7 +255,7 @@ class TtsManager(val context: Context) {
     private fun splitSentencesProducer(
         text: String,
         tts: BaseTTS
-    ): ReceiveChannel<ChannelData> = mScope.produce(Dispatchers.IO, capacity = 1000) {
+    ): ReceiveChannel<ChannelData> = mScope.produce(capacity = 1000) {
         try {
             StringUtils.splitSentences(text).forEach { splitedText ->
                 if (!isSynthesizing) return@produce
@@ -241,7 +276,7 @@ class TtsManager(val context: Context) {
         text: String,
         aside: BaseTTS,
         dialogue: BaseTTS
-    ): ReceiveChannel<ChannelData> = mScope.produce(Dispatchers.IO, capacity = 1000) {
+    ): ReceiveChannel<ChannelData> = mScope.produce(capacity = 1000) {
         try {
             /* 分割为多语音  */
             val map =
@@ -274,7 +309,7 @@ class TtsManager(val context: Context) {
     private fun audioStreamProducer(
         text: String,
         tts: BaseTTS,
-    ): ReceiveChannel<ChannelData> = mScope.produce(Dispatchers.IO, capacity = 1000) {
+    ): ReceiveChannel<ChannelData> = mScope.produce(capacity = 1000) {
         try {
             getAudioStreamHelper(text, tts) {
                 launch {
@@ -291,7 +326,7 @@ class TtsManager(val context: Context) {
         }
     }
 
-    /* 获取音频并发送到Channel */
+    // 获取音频并发送到Channel
     private suspend fun getAudioAndSend(
         channel: SendChannel<ChannelData>,
         text: String,
@@ -308,7 +343,7 @@ class TtsManager(val context: Context) {
         }
     }
 
-    /* 完整下载 */
+    // 完整下载
     private fun getAudioHelper(
         text: String,
         tts: BaseTTS
@@ -345,7 +380,7 @@ class TtsManager(val context: Context) {
         return null
     }
 
-    /* 音频流 */
+    // 音频流
     private fun getAudioStreamHelper(
         text: String,
         tts: BaseTTS,
@@ -390,29 +425,44 @@ class TtsManager(val context: Context) {
         }
     }
 
-    private var mediaPlayer: MediaPlayer? = null
+    private fun createMediaSourceFromByteArray(data: ByteArray): MediaSource {
+        val factory = DataSource.Factory { ExoByteArrayMediaSource(data) }
+        return DefaultMediaSourceFactory(context).setDataSourceFactory(factory)
+            .createMediaSource(MediaItem.fromUri(""))
+    }
 
-    /* 在APP内直接播放 */
-    private suspend fun playAudio(audio: ByteArray) {
+    // APP内音频播放器 必须在主线程调用
+    private val exoPlayer by lazy {
+        ExoPlayer.Builder(context).build().apply {
+            playWhenReady = true
+            addListener(object : Player.Listener {
+                @SuppressLint("SwitchIntDef")
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    when (playbackState) {
+                        ExoPlayer.STATE_ENDED -> {
+                            mInAppPlayJob?.cancel()
+                        }
+                    }
+
+                    super.onPlaybackStateChanged(playbackState)
+                }
+            })
+        }
+    }
+
+    // 在APP内直接播放
+    private suspend fun playAudioInApp(audio: ByteArray) {
         mInAppPlayJob = mScope.launch {
             try {
-                mediaPlayer = mediaPlayer ?: MediaPlayer()
-                mediaPlayer?.let {
-                    it.reset()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                        it.setDataSource(ByteArrayMediaDataSource(audio))
-                    else it.setDataSource("data:;base64," + audio.toByteString().base64())
-
-                    it.prepare()
-                    it.start()
-                    // 等待播放完毕
-                    val duration = it.duration
-                    delay(duration.toLong())
-                }
+                mScope.launch(Dispatchers.Main) {
+                    exoPlayer.setMediaSource(createMediaSourceFromByteArray(audio))
+                    exoPlayer.prepare()
+                }.join()
+                // 一直等待 直到 job.cancel
+                awaitCancellation()
             } catch (e: CancellationException) {
                 Log.w(TAG, "in-app play job cancel: ${e.message}")
-            } finally {
-                mediaPlayer?.stop()
+                runMain { exoPlayer.stop() }
             }
         }
         mInAppPlayJob?.join()
@@ -429,7 +479,7 @@ class TtsManager(val context: Context) {
             val audio = getAudioHelper(text, msTtsProperty)
             if (audio != null) {
                 if (mIsInAppPlayAudio) {
-                    playAudio(audio)
+                    playAudioInApp(audio)
                 } else {
                     if (msTtsProperty.audioFormat.isNeedDecode) {
                         mAudioDecoder.doDecode(
