@@ -3,9 +3,21 @@ package com.github.jing332.tts_server_android.util
 import java.util.regex.Pattern
 
 object StringUtils {
-    private val silentPattern: Pattern = Pattern.compile("[\\s\\p{C}\\p{P}\\p{Z}\\p{S}]")
-    private val splitSentencesRegex = Pattern.compile("[。？?！!;；]")
+    private val silentPattern by lazy { Pattern.compile("[\\s\\p{C}\\p{P}\\p{Z}\\p{S}]") }
+    private val splitSentencesRegex by lazy { Pattern.compile("[。？?！!;；]") }
 
+    /**
+     * 打印链式错误消息
+     */
+     fun getExceptionMessageChain(throwable: Throwable?): MutableList<String?> {
+        var inner = throwable
+        val result: MutableList<String?> = ArrayList()
+        while (inner != null) {
+            result.add(inner.message)
+            inner = inner.cause
+        }
+        return result
+    }
 
     /**
      *  是否为不发音的字符串

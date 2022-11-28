@@ -14,35 +14,38 @@ class AnalyzeUrl(
     val speakVolume: Int? = null,
 ) {
     companion object {
-        val paramPattern by lazy { Pattern.compile("\\s*,\\s*(?=\\{)") }
-        val jsPattern by lazy { Pattern.compile("\\{\\{.*?\\}\\}") }
+        val jsPattern: Pattern by lazy { Pattern.compile("\\{\\{.*?\\}\\}") }
     }
 
     fun eval(): UrlOption? {
         // 把http url提取出
-        val urlMatcher = paramPattern.matcher(mUrl)
-        if (urlMatcher.find()) {
-            val start = urlMatcher.start()
-            baseUrl = mUrl.substring(0, start)
-            val jsonStr = mUrl.substring(start + 1, mUrl.length)
+        val splitIndex = mUrl.indexOf(",")
+        if (splitIndex == -1) {
+            throw Throwable("未找到\",\" 无法分割请求URL和请求参数。")
+        }
+        baseUrl = mUrl.substring(0, splitIndex - 1).trim()
+        val jsonStr = mUrl.substring(splitIndex + 1)
 
-            val urlOption = App.jsonBuilder.decodeFromString<UrlOption>(jsonStr)
-            // 提取js替换变量
-            val matcher = jsPattern.matcher(urlOption.body.toString())
-            val sb = StringBuffer()
-            while (matcher.find()) {
-                val jsCodeStr =
-                    matcher.group().replace("{{", "").replace("}}", "").replace("java.", "")
+        val urlOption = App.jsonBuilder.decodeFromString<UrlOption>(jsonStr)
+        // 提取js替换变量
+        val matcher = jsPattern.matcher(urlOption.body.toString())
+        val sb = StringBuffer()
+        while (matcher.find()) {
+            val jsCodeStr =
+                matcher.group().replace("{{", "").replace("}}", "").replace("java.", "")
 
+            kotlin.runCatching {
                 val result = evalJs(jsCodeStr)
                 matcher.appendReplacement(sb, result.toString())
-                matcher.end()
+            }.onFailure {
+                throw Exception("执行 $jsCodeStr 时出错", it)
             }
-            matcher.appendTail(sb)
-            urlOption.body = sb.toString()
-            return urlOption
+
+            matcher.end()
         }
-        return null
+        matcher.appendTail(sb)
+        urlOption.body = sb.toString()
+        return urlOption
     }
 
 

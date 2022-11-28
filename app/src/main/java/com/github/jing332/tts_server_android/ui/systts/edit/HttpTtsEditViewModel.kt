@@ -8,6 +8,7 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.service.systts.help.AudioDecoder
+import com.github.jing332.tts_server_android.util.StringUtils.getExceptionMessageChain
 import com.github.jing332.tts_server_android.util.runOnIO
 
 class HttpTtsEditViewModel : ViewModel() {
@@ -47,7 +48,7 @@ class HttpTtsEditViewModel : ViewModel() {
                     withMain { onSuccess(it.size, mSampleRate, mMime, contentType) }
                 }
             }.onFailure {
-                withMain { onFailure(it.cause.toString()) }
+                withMain { onFailure(getExceptionMessageChain(it).toString()) }
             }
         }
     }
