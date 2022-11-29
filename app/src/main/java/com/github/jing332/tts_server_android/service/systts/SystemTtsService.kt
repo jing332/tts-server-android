@@ -122,17 +122,15 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
             val text = request?.charSequenceText.toString().trim()
             mCurrentText = text
             updateNotification(getString(R.string.tts_state_playing), text)
+
             if (StringUtils.isSilent(text)) {
-                callback?.start(
-                    16000,
-                    AudioFormat.ENCODING_PCM_16BIT, 1
-                )
+                callback?.start(16000, AudioFormat.ENCODING_PCM_16BIT, 1)
                 callback?.done()
                 return
             }
-            runBlocking {
-                mTtsManager.synthesizeText(request, callback)
-            }
+            runBlocking { mTtsManager.synthesizeText(text, request, callback) }
+            callback?.done()
+
             updateNotification(
                 getString(R.string.tts_state_idle),
                 getString(R.string.auto_closed_later_notification)
