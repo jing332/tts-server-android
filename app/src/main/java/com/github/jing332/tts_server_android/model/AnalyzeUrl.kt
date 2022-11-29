@@ -17,13 +17,13 @@ class AnalyzeUrl(
         val jsPattern: Pattern by lazy { Pattern.compile("\\{\\{.*?\\}\\}") }
     }
 
-    fun eval(): UrlOption? {
+    fun eval(): UrlOption {
         // 把http url提取出
         val splitIndex = mUrl.indexOf(",")
         if (splitIndex == -1) {
-            throw Throwable("未找到\",\" 无法分割请求URL和请求参数。")
+            throw Exception("未找到\",\" 无法分割请求URL和请求参数。")
         }
-        baseUrl = mUrl.substring(0, splitIndex - 1).trim()
+        baseUrl = mUrl.substring(0, splitIndex).trim()
         val jsonStr = mUrl.substring(splitIndex + 1)
 
         val urlOption = App.jsonBuilder.decodeFromString<UrlOption>(jsonStr)

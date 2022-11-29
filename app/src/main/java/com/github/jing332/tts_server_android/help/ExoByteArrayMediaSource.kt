@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.upstream.DataSourceException
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.util.Assertions
 import java.io.IOException
+import kotlin.math.min
 
 /** ByteArray 数据源 用于音频播放  */
 class ExoByteArrayMediaSource(data: ByteArray) : BaseDataSource( /* isNetwork = */false) {
@@ -49,7 +50,7 @@ class ExoByteArrayMediaSource(data: ByteArray) : BaseDataSource( /* isNetwork = 
         readPosition = dataSpec.position.toInt()
         bytesRemaining = data.size - dataSpec.position.toInt()
         if (dataSpec.length != C.LENGTH_UNSET.toLong()) {
-            bytesRemaining = Math.min(bytesRemaining.toLong(), dataSpec.length).toInt()
+            bytesRemaining = min(bytesRemaining.toLong(), dataSpec.length).toInt()
         }
         opened = true
         transferStarted(dataSpec)
@@ -59,18 +60,19 @@ class ExoByteArrayMediaSource(data: ByteArray) : BaseDataSource( /* isNetwork = 
 
     @Suppress("NAME_SHADOWING")
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
-        var length = length
-        if (length == 0) {
+        var len = length
+        if (len == 0) {
             return 0
         } else if (bytesRemaining == 0) {
             return C.RESULT_END_OF_INPUT
         }
-        length = Math.min(length, bytesRemaining)
-        System.arraycopy(data, readPosition, buffer, offset, length)
-        readPosition += length
-        bytesRemaining -= length
-        bytesTransferred(length)
-        return length
+        len = min(len, bytesRemaining)
+        System.arraycopy(data, readPosition, buffer, offset, len)
+        readPosition += len
+        bytesRemaining -= len
+        bytesTransferred(len)
+
+        return len
     }
 
     override fun getUri(): Uri? {

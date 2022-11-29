@@ -14,9 +14,14 @@ data class ReplaceRule(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
 
-    var name: String, //显示名称
-    var isEnabled: Boolean = true, //是否启用
-    var isRegex: Boolean = false, //是否正则
-    var pattern: String, //匹配
-    var replacement: String //替换为
+    // 显示名称
+    var name: String,
+    // 是否启用
+    var isEnabled: Boolean = true,
+    // 是否正则
+    var isRegex: Boolean = false,
+    // 匹配
+    var pattern: String,
+    // 替换为
+    var replacement: String
 ) : Parcelable

@@ -71,7 +71,7 @@ data class HttpTTS(
                         speakSpeed = rate,
                         speakVolume = volume
                     ).eval()
-                    return result?.body ?: "解析url失败"
+                    return result.body ?: "解析url失败"
                 }.onFailure {
                     return "${it.message}"
                 }
@@ -111,7 +111,7 @@ data class HttpTTS(
         val a =
             AnalyzeUrl(mUrl = url, speakText = speakText, speakSpeed = rate, speakVolume = volume)
         val urlOption = a.eval()
-        urlOption?.let {
+        urlOption.let {
             return Net.post(a.baseUrl) {
                 if (!this@HttpTTS::httpClient.isInitialized) onLoad()
                 okHttpClient = this@HttpTTS.httpClient
@@ -119,7 +119,6 @@ data class HttpTTS(
                 body = it.body.toString().toRequestBody(null)
             }.execute()
         }
-        throw Throwable("url格式错误")
     }
 
     override fun getAudio(speakText: String): ByteArray? {
