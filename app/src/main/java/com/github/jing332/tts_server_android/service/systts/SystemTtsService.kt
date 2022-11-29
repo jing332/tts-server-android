@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.media.AudioFormat
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.PowerManager
 import android.speech.tts.SynthesisCallback
@@ -24,7 +25,6 @@ import com.github.jing332.tts_server_android.ui.fragment.SysTtsConfigFragment
 import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
-import com.github.jing332.tts_server_android.util.longToast
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
@@ -45,17 +45,24 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
 
     private val mTtsManager: TtsManager by lazy { TtsManager(this) }
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
+
+    // WIFI 锁
+    private val mWifiLock by lazy {
+        val wm = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+        wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "tts-server:wifi_lock")
+    }
+    // 唤醒锁
     private val mWakeLock by lazy {
         val powerManager = getSystemService(POWER_SERVICE) as PowerManager
-        return@lazy powerManager.newWakeLock(
+        powerManager.newWakeLock(
             PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE,
-            "tts-server:tts"
+            "tts-server:wake_lock"
         )
     }
 
     override fun onCreate() {
         super.onCreate()
-        /* 注册广播 */
+
         IntentFilter(ACTION_KILL_PROCESS).apply {
             addAction(ACTION_NOTIFY_CANCEL)
             addAction(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED)
@@ -63,15 +70,10 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         }
 
         mWakeLock.acquire(60 * 20 * 100)
-        try {
-            mTtsManager.loadConfig()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            longToast("错误: 缺少朗读目标！")
-            Thread.sleep(1000 * 4)
-        }
+        mWifiLock.acquire()
 
         mTtsManager.callback = this
-
+        mTtsManager.loadConfig()
     }
 
     override fun onDestroy() {
@@ -79,7 +81,10 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
 
         mTtsManager.destroy()
         unregisterReceiver(mReceiver)
+
         mWakeLock.release()
+        mWifiLock.release()
+
         stopForeground(true)
     }
 
