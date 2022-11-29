@@ -1,11 +1,14 @@
 package com.github.jing332.tts_server_android.data
 
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.util.FileUtils
 import kotlinx.serialization.decodeFromString
 import java.io.File
+import java.io.Serializable
 
 /* 旧配置 已弃用*/
 @kotlinx.serialization.Serializable
@@ -68,4 +71,18 @@ data class CompatSysTtsConfig(
             }
         }
     }
+}
+
+/* 旧配置 已弃用*/
+@kotlinx.serialization.Serializable
+data class CompatSysTtsConfigItem(
+    var uiData: UiData, /* UI显示数据 */
+    var isEnabled: Boolean = false,  /* 是否启用 */
+    @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.DEFAULT,
+    var voiceProperty: MsTTS, /* 朗读属性 */
+) : Serializable {
+    @kotlinx.serialization.Serializable
+    data class UiData(
+        var displayName: String,
+    ) : Serializable
 }

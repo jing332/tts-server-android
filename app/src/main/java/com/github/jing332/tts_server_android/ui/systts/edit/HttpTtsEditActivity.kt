@@ -18,6 +18,7 @@ import com.github.jing332.tts_server_android.databinding.ActivityHttpTtsEditBind
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
+import com.github.jing332.tts_server_android.util.FileUtils.readText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 
 @Suppress("DEPRECATION")
@@ -85,20 +86,11 @@ class HttpTtsEditActivity : BackActivity() {
         }
 
         vb.textInputLayoutUrl.setEndIconOnClickListener {
-            val htmlStr = "格式：与阅读APP网络TTS引擎相同： " +
-                    "<br><i><u>http://请求地址, {\"method\":\"POST\", \"body\": \"POST原始请求体, 也可为GET的url参数。支持使用 {{js代码或变量}} \"}</i></u>" +
-                    "<br><br>内置变量：" +
-                    "<br> - 文本：<b>{{speakText}}</b>" +
-                    "<br> - 语速：<b>{{speakSpeed}}</b>" +
-                    "<br> - 音量：<b>{{speakVolume}}</b>" +
-                    "<br><br> 示例：" +
-                    """<br><i> http://tsn.baidu.com/text2audio,{"method": "POST", "body": "tex={{encodeURI(speakText)}}&spd={{speakSpeed}}&per=4114&cuid=baidu_speech_demo&idx=1&cod=2&lan=zh&ctp=1&pdt=220&vol={{speakVolume}}&aue=6&pit=5&res_tag=audio"}  </i>"""
-
             val tv = TextView(this)
             tv.setTextIsSelectable(true)
-            tv.text = Html.fromHtml(htmlStr)
+            tv.text = Html.fromHtml(resources.openRawResource(R.raw.help_http_tts_url).readText())
             tv.setPadding(20, 20, 20, 20)
-            AlertDialog.Builder(this).setTitle("帮助").setView(tv).show()
+            AlertDialog.Builder(this).setTitle(R.string.help).setView(tv).show()
         }
     }
 

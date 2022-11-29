@@ -2,36 +2,21 @@ package com.github.jing332.tts_server_android.util
 
 import java.io.File
 import java.io.FileOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.InputStream
 
 object FileUtils {
-    fun saveObject(obj: Any, filePath: String) {
-        try {
-            val fos = File(filePath).outputStream()
-            val oos = ObjectOutputStream(fos)
-            oos.writeObject(obj)
-            oos.flush()
-            oos.close()
-            fos.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
+    /**
+     * 按行读取txt
+     */
+    fun InputStream.readText(): String {
+        val bufferedReader = this.bufferedReader()
+        val buffer = StringBuffer("")
+        var str: String?
+        while (bufferedReader.readLine().also { str = it } != null) {
+            buffer.append(str)
+            buffer.append("\n")
         }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun <T> readObject(filePath: String): T? {
-        try {
-            val fis = File(filePath).inputStream()
-            val ois = ObjectInputStream(fis)
-            val obj = ois.readObject() as T
-            ois.close()
-            fis.close()
-            return obj
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return null
+        return buffer.toString()
     }
 
     fun fileExists(file: File): Boolean {
