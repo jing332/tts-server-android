@@ -132,6 +132,7 @@ class SysTtsConfigFragment : Fragment() {
         AlertDialog.Builder(requireContext()).setTitle(getString(R.string.warning))
             .setMessage(getString(R.string.msg_aside_and_dialogue_format_different))
             .setPositiveButton(android.R.string.ok) { _, _ -> }.create()
+            .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
     }
 
     /* 警告 多语音选项未开启 */
@@ -141,6 +142,7 @@ class SysTtsConfigFragment : Fragment() {
             .setCancelable(false)
             .setPositiveButton(android.R.string.ok) { _, _ -> }
             .setMessage(R.string.please_check_multi_voice_option).create()
+            .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
     }
 
     /* 检查格式 如不同则显示对话框 */
@@ -199,7 +201,7 @@ class SysTtsConfigFragment : Fragment() {
                     )
                 )
             }
-            .show()
+            .setFadeAnim().show()
     }
 
     /* 列表item的长按菜单 */
@@ -261,6 +263,7 @@ class SysTtsConfigFragment : Fragment() {
             .setNegativeButton(R.string.reset) { _, _ ->
                 SysTtsConfig.requestTimeout = 5000
             }
+            .setFadeAnim()
             .show()
     }
 
@@ -280,8 +283,7 @@ class SysTtsConfigFragment : Fragment() {
                 err?.let {
                     longToast("导入配置失败：$err")
                 }
-            }
-            .show()
+            }.setFadeAnim().show()
     }
 
     fun showExportConfig() {
@@ -302,7 +304,7 @@ class SysTtsConfigFragment : Fragment() {
                         longToast("已复制URL：\n${result.getOrNull()}")
                     }
                 }
-            }.show()
+            }.setFadeAnim().show()
     }
 
     fun showSetMinDialogueLength() {
@@ -325,7 +327,7 @@ class SysTtsConfigFragment : Fragment() {
                 SysTtsConfig.minDialogueLength = 0
                 requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
             }
-            .show()
+            .setFadeAnim().show()
     }
 
     fun startHttpTtsEditActivity() {

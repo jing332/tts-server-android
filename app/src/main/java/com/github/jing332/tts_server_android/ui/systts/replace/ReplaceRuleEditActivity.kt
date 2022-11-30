@@ -48,7 +48,7 @@ class ReplaceRuleEditActivity : BackActivity() {
                         text.insert(selectionStart, pinyin)
                     }
                 }
-            }.show()
+            }.create().apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }.show()
         }
 
         binding.etPattern.addTextChangedListener {

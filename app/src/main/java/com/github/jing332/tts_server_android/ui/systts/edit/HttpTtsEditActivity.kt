@@ -18,7 +18,7 @@ import com.github.jing332.tts_server_android.databinding.ActivityHttpTtsEditBind
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
-import com.github.jing332.tts_server_android.util.FileUtils.readText
+import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 
 @Suppress("DEPRECATION")
@@ -88,7 +88,7 @@ class HttpTtsEditActivity : BackActivity() {
         vb.textInputLayoutUrl.setEndIconOnClickListener {
             val tv = TextView(this)
             tv.setTextIsSelectable(true)
-            tv.text = Html.fromHtml(resources.openRawResource(R.raw.help_http_tts_url).readText())
+            tv.text = Html.fromHtml(resources.openRawResource(R.raw.help_http_tts_url).readAllText())
             tv.setPadding(20, 20, 20, 20)
             AlertDialog.Builder(this).setTitle(R.string.help).setView(tv).show()
         }

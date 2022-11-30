@@ -11,6 +11,7 @@ import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.tts.BaseTTS.Companion.VALUE_FOLLOW_SYSTEM
 import com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
+import com.github.jing332.tts_server_android.util.setFadeAnim
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -104,22 +105,25 @@ data class MsTTS(
         done: (modifiedData: BaseTTS?) -> Unit
     ) {
         val editView = MsTtsNumEditView(context)
-        editView.setPadding(25, 25, 25, 50)
         editView.setRate(prosody.rate)
         editView.setVolume(prosody.volume)
         editView.setStyleDegree(expressAs?.styleDegree ?: 1F)
         editView.isStyleDegreeVisible = api != TtsApiType.EDGE
-
-        val dlg = AlertDialog.Builder(context)
-            .setTitle("数值调节").setView(editView)
+        editView.setPadding(0, 30, 0, 30)
+        AlertDialog.Builder(context)
+            .setView(editView)
             .setOnDismissListener {
-                prosody.rate = editView.rateValue
-                prosody.volume = editView.volumeValue
-                expressAs?.styleDegree = editView.styleDegreeValue
-                done(this)
-            }.create()
-        dlg.window?.setDimAmount(0.5F)
-        dlg.show()
+                prosody.apply {
+                    if (rate == editView.rateValue && volume == editView.volumeValue && expressAs?.styleDegree == editView.styleDegreeValue) {
+                        done(null)
+                    } else {
+                        prosody.rate = editView.rateValue
+                        prosody.volume = editView.volumeValue
+                        expressAs?.styleDegree = editView.styleDegreeValue
+                        done(this@MsTTS)
+                    }
+                }
+            }.setFadeAnim().show()
     }
 
 

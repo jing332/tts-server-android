@@ -25,4 +25,9 @@
     <style name="Theme.TtsServer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.TtsServer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="dialogFadeStyle" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
 </resources>

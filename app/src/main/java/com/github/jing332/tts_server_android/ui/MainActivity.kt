@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.text.Html
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.KeyEvent
@@ -35,8 +34,10 @@ import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.ui.fragment.ServerLogFragment
 import com.github.jing332.tts_server_android.ui.fragment.ServerWebFragment
 import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
+import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
+import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
 
 
@@ -156,23 +157,22 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_setToken -> {
                 val token = ServerConfig.token
-                val builder = AlertDialog.Builder(this).setTitle(getString(R.string.set_token))
+
                 val editText = EditText(this)
                 editText.setText(token)
-                builder.setView(editText)
-                builder.setPositiveButton(
-                    android.R.string.ok
-                ) { _, _ ->
-                    val text = editText.text.toString()
-                    if (text != token) {
-                        toast(getString(R.string.token_set_to) + text.ifEmpty { "空" })
-                        ServerConfig.token  =text
-                    }
-                }.setNegativeButton(R.string.reset) { _, _ ->
-                    ServerConfig.token = ""
-                    toast(getString(R.string.ok_reset))
-                }
-                builder.create().show()
+                AlertDialog.Builder(this).setTitle(getString(R.string.set_token)).setView(editText)
+                    .setPositiveButton(
+                        android.R.string.ok
+                    ) { _, _ ->
+                        val text = editText.text.toString()
+                        if (text != token) {
+                            toast(getString(R.string.token_set_to) + text.ifEmpty { "空" })
+                            ServerConfig.token = text
+                        }
+                    }.setNegativeButton(R.string.reset) { _, _ ->
+                        ServerConfig.token = ""
+                        toast(getString(R.string.ok_reset))
+                    }.setFadeAnim().show()
             }
             R.id.menu_wakeLock -> { /* 唤醒锁 */
                 item.isChecked = !item.isChecked /* 更新选中状态 */
@@ -193,31 +193,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Suppress("DEPRECATION")
-    private val aboutHtml: Spanned by lazy {
-        val htmlStr =
-            "APP开源地址: <a href = 'https://github.com/jing332/tts-server-android'>tts-server-android</a> <br/>" +
-                    "核心服务开源地址(全平台可用): <a href = 'https://github.com/jing332/tts-server-go'>tts-server-go</a> <br/>" +
-                    "特别感谢以下开源项目:  <br/>" +
-                    "&emsp;<a href= 'https://github.com/asters1/tts'>asters1/tts(Go实现)</a>" +
-                    "&emsp;<a href= 'https://github.com/litcc/tts-server'>litcc/tts-server(Rust实现)</a>" +
-                    "&emsp;<a href= 'https://github.com/wxxxcxx/ms-ra-forwarder'>ms-ra-forwarder</a>" +
-                    "&emsp;<a href='https://github.com/ag2s20150909/TTS'>TTS APP</a>" +
-                    "&emsp;<a href= 'https://github.com/gedoor/legado'>阅读APP</a>" +
-                    "&emsp;<a href= 'https://github.com/gedoor/legado'>V2RayNG</a>"
-        Html.fromHtml(htmlStr)
-    }
-
-    @Suppress("DEPRECATION")
     private fun showAboutDialog() {
-        val dlg = AlertDialog.Builder(this)
         val tv = TextView(this)
         tv.movementMethod = LinkMovementMethod()
-        tv.text = aboutHtml
+        tv.text = Html.fromHtml(resources.openRawResource(R.raw.abort_info).readAllText())
         tv.gravity = Gravity.CENTER /* 居中 */
-        dlg.setView(tv)
-        dlg.setTitle("关于")
+        tv.setPadding(25, 25, 25, 25)
+        AlertDialog.Builder(this).setTitle(R.string.about).setView(tv)
             .setMessage("本应用界面使用Kotlin开发，底层服务由Go开发.")
-            .create().show()
+            .setFadeAnim().show()
     }
 
     @SuppressLint("BatteryLife")

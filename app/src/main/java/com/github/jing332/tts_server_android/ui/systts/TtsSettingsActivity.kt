@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
@@ -9,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -24,6 +24,7 @@ import com.github.jing332.tts_server_android.ui.fragment.SysTtsConfigViewModel
 import com.github.jing332.tts_server_android.ui.fragment.SysTtsLogFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.MyTools
+import com.github.jing332.tts_server_android.util.setFadeAnim
 
 
 class TtsSettingsActivity : BackActivity() {
@@ -134,8 +135,7 @@ class TtsSettingsActivity : BackActivity() {
                             item.isChecked = !item.isChecked
                             SysTtsConfig.isInAppPlayAudio = item.isChecked
                             App.localBroadcast.sendBroadcast(Intent(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED))
-                        }
-                        .show()
+                        }.setFadeAnim().show()
                 } else {
                     item.isChecked = !item.isChecked
                     SysTtsConfig.isInAppPlayAudio = item.isChecked

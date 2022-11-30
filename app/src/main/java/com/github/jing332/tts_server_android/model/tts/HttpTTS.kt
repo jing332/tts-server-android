@@ -62,8 +62,6 @@ data class HttpTTS(
         editView.volume = volume
         editView.callBack = object : HttpTtsNumEditView.CallBack {
             override fun onValueChanged(rate: Int, volume: Int): String {
-                this@HttpTTS.rate = rate
-                this@HttpTTS.volume = volume
                 kotlin.runCatching {
                     val result = AnalyzeUrl(
                         mUrl = url,
@@ -80,11 +78,19 @@ data class HttpTTS(
             }
         }
 
-        AlertDialog.Builder(context).setTitle("数值调节").setView(editView)
+
+        val dialog = AlertDialog.Builder(context).setView(editView)
             .setOnDismissListener {
-                done(this)
-            }
-            .show()
+                if (editView.rate == rate && editView.volume == volume)
+                    done(null)
+                else {
+                    rate = editView.rate
+                    volume = editView.volume
+                    done(this)
+                }
+            }.create()
+        dialog.window?.setWindowAnimations(R.style.dialogFadeStyle)
+        dialog.show()
     }
 
     @IgnoredOnParcel

@@ -8,7 +8,7 @@ object FileUtils {
     /**
      * 按行读取txt
      */
-    fun InputStream.readText(): String {
+    fun InputStream.readAllText(): String {
         val bufferedReader = this.bufferedReader()
         val buffer = StringBuffer("")
         var str: String?

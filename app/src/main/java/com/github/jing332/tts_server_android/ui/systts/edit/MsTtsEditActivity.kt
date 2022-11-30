@@ -17,7 +17,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
 import com.github.jing332.tts_server_android.constant.TtsApiType
 import com.github.jing332.tts_server_android.data.entities.SysTts
-import com.github.jing332.tts_server_android.databinding.ActivityTtsConfigEditBinding
+import com.github.jing332.tts_server_android.databinding.ActivityMsTtsEditBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
@@ -29,12 +29,12 @@ import com.github.jing332.tts_server_android.util.toast
 class MsTtsEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
 
     companion object {
-        const val TAG = "TtsConfigEditActivity"
+        const val TAG = "MsTtsEditActivity"
 
     }
 
-    private val binding: ActivityTtsConfigEditBinding by lazy {
-        ActivityTtsConfigEditBinding.inflate(layoutInflater)
+    private val binding by lazy {
+        ActivityMsTtsEditBinding.inflate(layoutInflater)
     }
     private val model: MsTtsEditViewModel by viewModels()
 
