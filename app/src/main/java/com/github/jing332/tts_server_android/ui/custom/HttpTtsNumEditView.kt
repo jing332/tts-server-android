@@ -26,6 +26,10 @@ class HttpTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
     var callBack: CallBack? = null
 
     interface CallBack {
+        /*
+        * 当值变化时调用
+        * @return 解析后的url
+        * */
         fun onValueChanged(rate: Int, volume: Int): String
     }
 

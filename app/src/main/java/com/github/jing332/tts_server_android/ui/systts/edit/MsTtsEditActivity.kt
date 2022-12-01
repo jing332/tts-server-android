@@ -71,7 +71,7 @@ class MsTtsEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
         binding.spinnerVoiceRole.onItemSelectedListener = this
         binding.spinnerFormat.onItemSelectedListener = this
 
-        /* 显示名称*/
+        /* 显示名称 */
         model.displayNameLiveData.observe(this) { text ->
             binding.etDisplayName.setText(text)
         }

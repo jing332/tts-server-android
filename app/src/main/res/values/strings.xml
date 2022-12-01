@@ -145,4 +145,5 @@
     </DATA>
     </string>
     <string name="help">帮助</string>
+    <string name="sample_rate">采样率</string>
 </resources>
