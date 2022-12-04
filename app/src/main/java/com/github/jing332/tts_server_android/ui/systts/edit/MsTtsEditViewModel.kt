@@ -11,7 +11,7 @@ import com.github.jing332.tts_server_android.bean.AzureVoiceBean
 import com.github.jing332.tts_server_android.bean.CreationVoiceBean
 import com.github.jing332.tts_server_android.bean.EdgeVoiceBean
 import com.github.jing332.tts_server_android.constant.CnLocalMap
-import com.github.jing332.tts_server_android.constant.TtsApiType
+import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.model.tts.ExpressAs
 import com.github.jing332.tts_server_android.model.tts.MsTTS
@@ -43,7 +43,6 @@ class MsTtsEditViewModel : ViewModel() {
 
     val voiceStyleDegreeLiveData: MutableLiveData<Float> by lazy { MutableLiveData() }
 
-    //    private lateinit var mVoiceProperty: SysTtsConfigItem
     lateinit var mSysTts: SysTts
     private val mMsTtsProperty: MsTTS
         inline get() {
@@ -85,7 +84,7 @@ class MsTtsEditViewModel : ViewModel() {
         val readAloudTargetList = arrayListOf<SpinnerItemData>()
         context.apply {
             arrayOf(
-                getString(R.string.ra_global),
+                getString(R.string.ra_all),
                 getString(R.string.ra_aside),
                 getString(R.string.ra_dialogue)
             ).forEach {
@@ -118,9 +117,9 @@ class MsTtsEditViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             kotlin.runCatching {
                 when (position) {
-                    TtsApiType.EDGE -> useEdgeApi()
-                    TtsApiType.AZURE -> useAzureApi()
-                    TtsApiType.CREATION -> useCreationApi()
+                    MsTtsApiType.EDGE -> useEdgeApi()
+                    MsTtsApiType.AZURE -> useAzureApi()
+                    MsTtsApiType.CREATION -> useCreationApi()
                 }
             }.onFailure {
                 finally.invoke(it.message)
@@ -137,7 +136,7 @@ class MsTtsEditViewModel : ViewModel() {
         mMsTtsProperty.locale = languageLiveData.value!!.list[position].value
         val tmpVoiceList = arrayListOf<SpinnerItemData>()
         when (mMsTtsProperty.api) {
-            TtsApiType.EDGE -> {
+            MsTtsApiType.EDGE -> {
                 mEdgeVoices.forEach { item ->
                     if (item.locale == languageLiveData.value!!.list[position].value)
                         tmpVoiceList.add(
@@ -148,7 +147,7 @@ class MsTtsEditViewModel : ViewModel() {
                         )
                 }
             }
-            TtsApiType.AZURE -> {
+            MsTtsApiType.AZURE -> {
                 mAzureVoices.forEach {
                     if (it.locale == mMsTtsProperty.locale)
                         tmpVoiceList.add(
@@ -159,7 +158,7 @@ class MsTtsEditViewModel : ViewModel() {
                         )
                 }
             }
-            TtsApiType.CREATION -> {
+            MsTtsApiType.CREATION -> {
                 mCreationVoices.forEach {
                     if (it.locale == languageLiveData.value!!.list[position].value)
                         tmpVoiceList.add(
@@ -190,7 +189,7 @@ class MsTtsEditViewModel : ViewModel() {
         Log.d(TAG, "voiceSelected ${mMsTtsProperty.voiceName}")
 
         when (mMsTtsProperty.api) {
-            TtsApiType.AZURE -> {
+            MsTtsApiType.AZURE -> {
                 mAzureVoices.forEach { voiceItem ->
                     if (mMsTtsProperty.voiceName == voiceItem.shortName) {
                         /* 风格 */
@@ -234,10 +233,11 @@ class MsTtsEditViewModel : ViewModel() {
                     }
                 }
             }
-            TtsApiType.CREATION -> {
+            MsTtsApiType.CREATION -> {
                 mCreationVoices.forEach { voiceItem ->
                     if (mMsTtsProperty.voiceName == voiceItem.shortName) {
                         mMsTtsProperty.voiceId = voiceItem.id
+
                         /* 风格 */
                         val styleList =
                             arrayListOf(SpinnerItemData(App.instance.getString(R.string.none), ""))
@@ -291,7 +291,7 @@ class MsTtsEditViewModel : ViewModel() {
                     }
                 }
             }
-            TtsApiType.EDGE -> {}
+            MsTtsApiType.EDGE -> {}
         }
     }
 
@@ -312,7 +312,7 @@ class MsTtsEditViewModel : ViewModel() {
     }
 
     fun onStyleDegreeChanged(degree: Float) {
-        if (mMsTtsProperty.api == TtsApiType.EDGE) return
+        if (mMsTtsProperty.api == MsTtsApiType.EDGE) return
 
         if (mMsTtsProperty.expressAs == null) mMsTtsProperty.expressAs = ExpressAs()
         mMsTtsProperty.expressAs?.styleDegree = degree
@@ -417,10 +417,10 @@ class MsTtsEditViewModel : ViewModel() {
     /* 根据API更新音频格式 */
     private fun updateFormatLiveData() {
         val api = when (mMsTtsProperty.api) {
-            TtsApiType.EDGE -> {
+            MsTtsApiType.EDGE -> {
                 MsTtsAudioFormat.SupportedApi.EDGE
             }
-            TtsApiType.AZURE -> {
+            MsTtsApiType.AZURE -> {
                 MsTtsAudioFormat.SupportedApi.AZURE
             }
             else -> MsTtsAudioFormat.SupportedApi.CREATION //2
@@ -438,7 +438,7 @@ class MsTtsEditViewModel : ViewModel() {
     }
 
     fun voiceStyleSelected(position: Int) {
-        if (mMsTtsProperty.api == TtsApiType.EDGE) return
+        if (mMsTtsProperty.api == MsTtsApiType.EDGE) return
 
         voiceStyleLiveData.value?.position = position
         if (mMsTtsProperty.expressAs == null) mMsTtsProperty.expressAs = ExpressAs()
@@ -446,7 +446,7 @@ class MsTtsEditViewModel : ViewModel() {
     }
 
     fun voiceRoleSelected(position: Int) {
-        if (mMsTtsProperty.api == TtsApiType.EDGE) return
+        if (mMsTtsProperty.api == MsTtsApiType.EDGE) return
 
         voiceRoleLiveData.value?.position = position
         if (mMsTtsProperty.expressAs == null) mMsTtsProperty.expressAs = ExpressAs()

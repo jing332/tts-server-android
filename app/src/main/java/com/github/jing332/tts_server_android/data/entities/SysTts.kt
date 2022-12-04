@@ -29,7 +29,7 @@ data class SysTts(
     var displayName: String? = null,
 
     // 朗读目标
-    @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.DEFAULT,
+    @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.ALL,
 
     // TTS属性
     var tts: BaseTTS? = null,
@@ -44,6 +44,7 @@ data class SysTts(
         return tts as T
     }
 
+    // 转换器
     class Converters {
         companion object {
             @OptIn(ExperimentalSerializationApi::class)

@@ -5,7 +5,7 @@ import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.github.jing332.tts_server_android.constant.CnLocalMap
-import com.github.jing332.tts_server_android.constant.TtsApiType
+import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
@@ -22,9 +22,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("internal")
 data class MsTTS(
-    @TtsApiType var api: Int = TtsApiType.EDGE,
+    @MsTtsApiType var api: Int = MsTtsApiType.EDGE,
     var format: String = MsTtsAudioFormat.DEFAULT,
     var locale: String = DEFAULT_LOCALE,
+    // 二级语言（语言技能）仅限en-US-JennyMultilingualNeural
+    var secondaryLocale: String? = null,
     var voiceName: String,
     var voiceId: String? = null,
     var prosody: Prosody,
@@ -36,8 +38,9 @@ data class MsTTS(
     constructor() : this(DEFAULT_VOICE)
     constructor(voiceName: String) : this(voiceName, Prosody())
     constructor(voiceName: String, prosody: Prosody) : this(
-        TtsApiType.EDGE, MsTtsAudioFormat.DEFAULT,
+        MsTtsApiType.EDGE, MsTtsAudioFormat.DEFAULT,
         DEFAULT_LOCALE,
+        null,
         voiceName,
         null,
         prosody,
@@ -86,15 +89,17 @@ data class MsTTS(
     override fun getDescription(): String {
         val rateStr = if (prosody.isRateFollowSystem) "跟随" else prosody.rate
         val volume = prosody.volume
-        val style = if (expressAs?.style?.isEmpty() == false) {
-            CnLocalMap.getStyleAndRole(expressAs?.style ?: "")
-        } else "无"
+
+        var style = "无"
         val styleDegree = expressAs?.styleDegree ?: 1F
-        val role = if (expressAs?.role?.isEmpty() == false) {
-            CnLocalMap.getStyleAndRole(expressAs?.role ?: "")
-        } else "无"
+        var role = "无"
+        expressAs?.also { exp ->
+            exp.style?.let { style = CnLocalMap.getStyleAndRole(it) }
+            exp.role?.let { role = CnLocalMap.getStyleAndRole(it) }
+        }
+
         val expressAs =
-            if (api == TtsApiType.EDGE) ""
+            if (api == MsTtsApiType.EDGE) ""
             else "$style-$role | 强度: <b>${styleDegree}</b> | "
         return "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b>"
     }
@@ -108,7 +113,7 @@ data class MsTTS(
         editView.setRate(prosody.rate)
         editView.setVolume(prosody.volume)
         editView.setStyleDegree(expressAs?.styleDegree ?: 1F)
-        editView.isStyleDegreeVisible = api != TtsApiType.EDGE
+        editView.isStyleDegreeVisible = api != MsTtsApiType.EDGE
         editView.setPadding(0, 30, 0, 30)
         AlertDialog.Builder(context)
             .setView(editView)
@@ -141,16 +146,20 @@ data class MsTTS(
     }
 
     override fun getType(): String {
-        return TtsApiType.toString(api)
+        return MsTtsApiType.toString(api)
     }
 
     override fun getBottomContent(): String {
         return audioFormat.toString()
     }
 
-
     override fun toString(): String {
-        return "api=${TtsApiType.toString(api)}, format=${format}, voiceName=${voiceName}, prosody=${prosody}, expressAs=${expressAs}"
+        var s =
+            "api=${MsTtsApiType.toString(api)}, format=${format}, voiceName=${voiceName}, prosody=${prosody}, expressAs=${expressAs}"
+        secondaryLocale?.let {
+            s += ", secondaryLocale=$it"
+        }
+        return s
     }
 
     override fun getAudio(speakText: String): ByteArray? {

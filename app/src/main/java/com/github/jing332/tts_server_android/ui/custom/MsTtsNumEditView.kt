@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.databinding.ViewMsTtsNumEditBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
@@ -53,6 +54,22 @@ class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
         binding.seekbarStyleDegree.progress = (v * 100).toInt()
     }
 
+    private var mTts: MsTTS? = null
+
+    /**
+     * 设置TTS数据 会自动同步值
+     */
+    fun setData(tts: MsTTS) {
+        mTts = tts
+        isStyleDegreeVisible = tts.api != MsTtsApiType.EDGE
+
+        setVolume(tts.volume)
+        setRate(tts.rate)
+        tts.expressAs?.let {
+            setStyleDegree(it.styleDegree)
+        }
+    }
+
     init {
         binding.seekbarRate.onSeekBarChangeListener = this
         binding.seekbarVolume.onSeekBarChangeListener = this
@@ -88,12 +105,21 @@ class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
         when (seekBar.id) {
             R.id.seekbar_rate -> {
                 callback?.onRateChanged(rateValue)
+                mTts?.let {
+                    it.rate = rateValue
+                }
             }
             R.id.seekbar_volume -> {
                 callback?.onVolumeChanged(volumeValue)
+                mTts?.let {
+                    it.rate = volumeValue
+                }
             }
             R.id.seekbar_styleDegree -> {
                 callback?.onStyleDegreeChanged(styleDegreeValue)
+                mTts?.expressAs?.let {
+                    it.styleDegree = styleDegreeValue
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import androidx.annotation.IntDef
+import com.github.jing332.tts_server_android.constant.MsTtsApiType
 
 data class MsTtsAudioFormat(
     val name: String,
@@ -34,6 +35,14 @@ data class MsTtsAudioFormat(
             const val EDGE: Int = 1
             const val AZURE = 1 shl 1
             const val CREATION = 1 shl 2
+
+            fun fromApiType(@MsTtsApiType api: Int): Int {
+                return when (api) {
+                    MsTtsApiType.EDGE -> EDGE
+                    MsTtsApiType.AZURE -> AZURE
+                    else -> CREATION
+                }
+            }
         }
     }
 }

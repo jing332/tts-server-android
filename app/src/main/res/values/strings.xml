@@ -89,9 +89,9 @@
     <string name="raw_format_is_play_while_downloading">Raw格式为边下边播模式</string>
     <string name="is_confirm_delete">确认删除？</string>
     <string name="delete">删除</string>
-    <string name="ra_global">全部</string>
-    <string name="ra_aside">旁白(解说词)</string>
-    <string name="ra_dialogue">对白(人物对话)</string>
+    <string name="ra_all">朗读全部</string>
+    <string name="ra_aside">仅旁白</string>
+    <string name="ra_dialogue">仅对话</string>
     <string name="none">无</string>
     <string name="default_str">默认</string>
     <string name="set_audio_request_timeout">设置请求音频等待时间</string>
@@ -145,5 +145,9 @@
     </DATA>
     </string>
     <string name="help">帮助</string>
+    <string name="help_secondary_locale">选择二级语言，即在朗读时使用此语言，目前微软只支持 en-US-JennyMultilingualNeural。</string>
     <string name="sample_rate">采样率</string>
+    <string name="secondaryLocale">二级语言（语言技能）</string>
+    <string name="title_voice_data_failed">语音数据加载失败</string>
+    <string name="selected">已选中</string>
 </resources>

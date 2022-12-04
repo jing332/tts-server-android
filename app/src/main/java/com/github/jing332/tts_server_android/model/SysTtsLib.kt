@@ -1,6 +1,6 @@
 package com.github.jing332.tts_server_android.model
 
-import com.github.jing332.tts_server_android.constant.TtsApiType
+import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import tts_server_lib.*
 
@@ -71,7 +71,7 @@ object SysTtsLib {
     ): ByteArray? {
         val libPro = toLibProperty(pro)
         when (pro.api) {
-            TtsApiType.EDGE -> {
+            MsTtsApiType.EDGE -> {
                 return mEdgeApi.getEdgeAudio(
                     text,
                     format,
@@ -79,7 +79,7 @@ object SysTtsLib {
                     libPro.voiceProsody
                 )
             }
-            TtsApiType.AZURE -> {
+            MsTtsApiType.AZURE -> {
                 return mAzureApi.getAudio(
                     text,
                     format,
@@ -88,7 +88,7 @@ object SysTtsLib {
                     libPro.voiceExpressAs
                 )
             }
-            TtsApiType.CREATION -> {
+            MsTtsApiType.CREATION -> {
                 return mCreationApi.getCreationAudio(
                     text,
                     format,

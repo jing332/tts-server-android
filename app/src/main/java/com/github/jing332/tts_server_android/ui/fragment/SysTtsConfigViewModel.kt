@@ -19,7 +19,7 @@ class SysTtsConfigViewModel : ViewModel() {
         //检测多语音是否开启
         if (checked && !SysTtsConfig.isMultiVoiceEnabled) {
             val target =
-                list.getOrNull(position)?.readAloudTarget ?: ReadAloudTarget.DEFAULT
+                list.getOrNull(position)?.readAloudTarget ?: ReadAloudTarget.ALL
             if (target == ReadAloudTarget.ASIDE || target == ReadAloudTarget.DIALOGUE) {
                 return false
             }

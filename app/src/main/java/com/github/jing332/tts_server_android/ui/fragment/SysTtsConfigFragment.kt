@@ -30,10 +30,11 @@ import com.github.jing332.tts_server_android.databinding.ItemSysttsConfigBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity2
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
 
 
 @Suppress("DEPRECATION", "UNCHECKED_CAST")
@@ -64,10 +65,9 @@ class SysTtsConfigFragment : Fragment() {
 
     fun startEditActivity() {
         val intent =
-            Intent(requireContext(), MsTtsEditActivity::class.java)
+            Intent(requireContext(), MsTtsEditActivity2::class.java)
         startForResult.launch(intent)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,7 +88,7 @@ class SysTtsConfigFragment : Fragment() {
                     checkBoxSwitch.setOnClickListener { view ->
                         onSwitchClick(view, models as List<SysTts>, modelPosition)
                     }
-                    btnEdit.setOnClickListener { edit(getModel()) }
+                    btnEdit.setOnClickListener { println(measureTimeMillis { edit(getModel()) }) }
                     btnDelete.setOnClickListener { delete(getModel()) }
                 }
                 itemView.setOnClickListener { showNumEditDialog(getModel()) }
@@ -101,7 +101,7 @@ class SysTtsConfigFragment : Fragment() {
                 binding.apply {
                     tvDescription.text = Html.fromHtml(model.tts?.getDescription())
                     tvRaTarget.visibility =
-                        if (model.readAloudTarget == ReadAloudTarget.DEFAULT) View.INVISIBLE else View.VISIBLE
+                        if (model.readAloudTarget == ReadAloudTarget.ALL) View.INVISIBLE else View.VISIBLE
                 }
             }
 
@@ -185,7 +185,7 @@ class SysTtsConfigFragment : Fragment() {
 
     private fun edit(data: SysTts) {
         val cls = when (data.tts) {
-            is MsTTS -> MsTtsEditActivity::class.java
+            is MsTTS -> MsTtsEditActivity2::class.java
             else -> HttpTtsEditActivity::class.java
         }
         startForResult.launch(Intent(requireContext(), cls).apply { putExtra(KEY_DATA, data) })
@@ -212,12 +212,12 @@ class SysTtsConfigFragment : Fragment() {
             val target = when (item.itemId) {
                 R.id.menu_setAsDialogue -> ReadAloudTarget.DIALOGUE
                 R.id.menu_setAsAside -> ReadAloudTarget.ASIDE
-                else -> ReadAloudTarget.DEFAULT
+                else -> ReadAloudTarget.ALL
             }
 
             if (data.isEnabled) {
                 val isMultiVoice = SysTtsConfig.isMultiVoiceEnabled
-                if (target == ReadAloudTarget.DEFAULT) {
+                if (target == ReadAloudTarget.ALL) {
                     if (isMultiVoice) { // 开多语音 但想启用单语音
                         longToast(getString(R.string.off_multi_voice_use_global))
                         return@setOnMenuItemClickListener false
@@ -226,7 +226,7 @@ class SysTtsConfigFragment : Fragment() {
                     checkMultiVoiceDialog.show()
                     return@setOnMenuItemClickListener false
                 } else { // 已开启多语音并且target为旁白或对话
-                    if (target == ReadAloudTarget.DEFAULT) data.isEnabled = false
+                    if (target == ReadAloudTarget.ALL) data.isEnabled = false
                     appDb.sysTtsDao.update(data.copy(readAloudTarget = target))
                     requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
                     return@setOnMenuItemClickListener false

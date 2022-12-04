@@ -23,6 +23,8 @@ object FileUtils {
         runCatching {
             if (file.isFile)
                 return file.exists()
+        }.onFailure {
+            it.printStackTrace()
         }
         return false
     }
@@ -32,15 +34,17 @@ object FileUtils {
     }
 
     fun saveFile(path: String, data: ByteArray): Boolean {
+        return saveFile(File(path), data)
+    }
+
+    fun saveFile(file: File, data: ByteArray): Boolean {
         try {
-            val file = File(path)
             if (!fileExists(file)) {
                 if (file.parentFile?.exists() == false) /* 文件夹不存在则创建 */
                     file.parentFile?.mkdirs()
             }
             val fos = FileOutputStream(file)
             fos.write(data)
-            fos.flush()
             fos.close()
             return true
         } catch (e: Exception) {

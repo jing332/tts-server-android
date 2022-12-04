@@ -78,7 +78,7 @@ data class CompatSysTtsConfig(
 data class CompatSysTtsConfigItem(
     var uiData: UiData, /* UI显示数据 */
     var isEnabled: Boolean = false,  /* 是否启用 */
-    @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.DEFAULT,
+    @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.ALL,
     var voiceProperty: MsTTS, /* 朗读属性 */
 ) : Serializable {
     @kotlinx.serialization.Serializable

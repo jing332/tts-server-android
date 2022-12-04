@@ -27,7 +27,6 @@ class HttpTtsUrlTest {
         val a = AnalyzeUrl(url, speakText = "t\\\\est\\测\\\\试")
         Log.e("TAG", "baseUrl: " + a.eval().toString())
 
-        val ret = AppConst.SCRIPT_ENGINE.eval(""" String("Test\\\\测试") """)
-        println(ret)
+        println(AppConst.SCRIPT_ENGINE.eval(""" String("Test\\\\测试") """))
     }
 }

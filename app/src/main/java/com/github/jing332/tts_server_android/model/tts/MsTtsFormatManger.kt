@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.media.AudioFormat
+import com.github.jing332.tts_server_android.constant.MsTtsApiType
 
 object MsTtsFormatManger {
     private val formats = arrayListOf<MsTtsAudioFormat>(
@@ -134,5 +135,9 @@ object MsTtsFormatManger {
         }
 
         return list
+    }
+
+    fun getFormatsByApiType(@MsTtsApiType api: Int): List<String> {
+        return getFormatsBySupportedApi(MsTtsAudioFormat.SupportedApi.fromApiType(api))
     }
 }
