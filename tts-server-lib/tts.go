@@ -23,6 +23,7 @@ type VoiceProperty service.VoiceProperty
 type VoiceProsody service.Prosody
 type VoiceExpressAs service.ExpressAs
 
+// Proto 转成原类型
 func (v *VoiceProperty) Proto(prosody *VoiceProsody, exp *VoiceExpressAs) *service.VoiceProperty {
 	v.Prosody = (*service.Prosody)(prosody)
 	v.ExpressAs = (*service.ExpressAs)(exp)
@@ -72,7 +73,6 @@ func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
 	}
 }
 
-
 func GetEdgeVoices() ([]byte, error) {
 	resp, err := http.Get("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4")
 	if err != nil {
@@ -105,7 +105,7 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 
 	text = tts_server_go.SpecialCharReplace(text)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
-		proto.ElementStringHasLang(text) + `</speak > `
+		proto.ElementString(text) + `</speak > `
 
 	succeed := make(chan []byte)
 	failed := make(chan error)
@@ -141,7 +141,7 @@ func (a *AzureApi) GetAudioStream(text, format string, property *VoiceProperty,
 
 	text = tts_server_go.SpecialCharReplace(text)
 	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
-		proto.ElementStringHasLang(text) + `</speak > `
+		proto.ElementString(text) + `</speak > `
 
 	succeed := make(chan []byte)
 	failed := make(chan error)

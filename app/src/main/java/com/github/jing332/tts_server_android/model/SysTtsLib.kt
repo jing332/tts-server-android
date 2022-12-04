@@ -6,11 +6,12 @@ import tts_server_lib.*
 
 /* 系统TTS Go库的包装 */
 object SysTtsLib {
-    fun toLibProperty(pro: MsTTS): ResultProperty {
+    private fun toLibProperty(pro: MsTTS): ResultProperty {
         val libPro = VoiceProperty()
         libPro.api = pro.api.toLong()
         libPro.voiceName = pro.voiceName
         libPro.voiceId = pro.voiceId
+        libPro.secondaryLocale = pro.secondaryLocale
         val libProsody = VoiceProsody()
         libProsody.rate = pro.prosody.rate.toByte()
         libProsody.volume = pro.prosody.volume.toByte()

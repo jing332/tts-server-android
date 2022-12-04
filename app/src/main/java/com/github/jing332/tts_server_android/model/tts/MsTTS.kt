@@ -12,7 +12,6 @@ import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.tts.BaseTTS.Companion.VALUE_FOLLOW_SYSTEM
 import com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
 import com.github.jing332.tts_server_android.util.setFadeAnim
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -156,9 +155,7 @@ data class MsTTS(
     override fun toString(): String {
         var s =
             "api=${MsTtsApiType.toString(api)}, format=${format}, voiceName=${voiceName}, prosody=${prosody}, expressAs=${expressAs}"
-        secondaryLocale?.let {
-            s += ", secondaryLocale=$it"
-        }
+        secondaryLocale?.let { s += ", secondaryLocale=$it" }
         return s
     }
 
@@ -166,7 +163,6 @@ data class MsTTS(
         return SysTtsLib.getAudio(speakText, this, format)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun getAudioStream(
         speakText: String,
         chunkSize: Int,

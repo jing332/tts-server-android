@@ -95,6 +95,8 @@ github.com/jing332/tts-server-go v0.0.0-20221113075744-e143f4eb3912 h1:uRELmVhDM
 github.com/jing332/tts-server-go v0.0.0-20221113075744-e143f4eb3912/go.mod h1:B2ikO+JeOHCAaW0n7/PFYQVxmFvJ+T9LcCFjxU/xIAY=
 github.com/jing332/tts-server-go v0.0.0-20221116015816-7e41b7993bc9 h1:ZSVYHOD4Wzr65galIVaIVtHKcEUsJ/i31RxhCmYyJto=
 github.com/jing332/tts-server-go v0.0.0-20221116015816-7e41b7993bc9/go.mod h1:B2ikO+JeOHCAaW0n7/PFYQVxmFvJ+T9LcCFjxU/xIAY=
+github.com/jing332/tts-server-go v0.0.0-20221204093240-65ca3a8c701c h1:1Sa6ldDaXsM3TwFFMPG+vtkzdwFBWj+Nmw7AWbWkpa4=
+github.com/jing332/tts-server-go v0.0.0-20221204093240-65ca3a8c701c/go.mod h1:B2ikO+JeOHCAaW0n7/PFYQVxmFvJ+T9LcCFjxU/xIAY=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pretty v0.3.0 h1:WgNl7dwNpEZ6jJ9k1snq4pZsg7DOEN8hP9Xw0Tsjwk0=
 github.com/kr/pretty v0.3.0/go.mod h1:640gp4NfQd8pI5XOwp5fnNeVWj67G7CFk/SaSQn7NBk=
