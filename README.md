@@ -1,9 +1,11 @@
 ![MIT](https://img.shields.io/badge/license-MIT-green)
 [![CI](https://github.com/jing332/tts-server-android/actions/workflows/release.yml/badge.svg)](https://github.com/jing332/tts-server-android/actions/workflows/release.yml)
 [![CI](https://github.com/jing332/tts-server-android/actions/workflows/test.yml/badge.svg)](https://github.com/jing332/tts-server-android/actions/workflows/test.yml)
+
+![GitHub release](https://img.shields.io/github/downloads/jing332/tts-server-android/total)
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/jing332/tts-server-android/latest/total)
 
-# 介绍
+# 介绍 
 本APP起初为阅读APP的网络朗读所用，在原有基础上，现已支持系统TTS，并可以自定义HttpTTS。
 
 这是 [tts-server-go](https://github.com/jing332/tts-server-go) 的Android版本。使用Kotlin开发，通过 [Gomobile](https://pkg.go.dev/golang.org/x/mobile/cmd/gomobile) 将Go编译为Lib以供Android APP调用. 关于本项目的Go Lib,见 [tts-server-lib](./tts-server-lib).
