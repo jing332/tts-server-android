@@ -15,6 +15,7 @@ import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.model.tts.ExpressAs
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
+import com.github.jing332.tts_server_android.util.runOnIO
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -130,11 +131,6 @@ class MsTtsEditViewModel2 : ViewModel() {
 
             // 更新地区列表
             updateLocales(mAllVoiceList)
-            // 更新格式列表
-//            ui.formats.items = MsTtsFormatManger.getFormatsByApiType(spinner.position)
-//                .map { SpinnerItem(it, it) }
-//            val pos = ui.formats.items.indexOfFirst { it.value == mTts.format }
-//            ui.formats.position = max(pos, 0)
 
             mCallback?.onDone(Result.success(Unit))
         }
@@ -160,29 +156,26 @@ class MsTtsEditViewModel2 : ViewModel() {
         ui.locales.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
                 mTts.locale = (ui.locales.selectedItem?.value ?: "") as String
-                updateVoices(mAllVoiceList)
+                viewModelScope.runOnIO { updateVoices(mAllVoiceList) }
             }
         }
 
         // 语音
         ui.voices.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
-                mCurrentVoice = ui.voices.selectedItem?.value as GeneralVoiceData
-                mCurrentVoice?.let {
-                    mTts.voiceName = it.voiceName
-                    mTts.voiceId = it.voiceId
-                    updateStyles(it)
-                    updateRoles(it)
-                    updateSecondaryLocales(it)
+                viewModelScope.runOnIO {
+                    mCurrentVoice = ui.voices.selectedItem?.value as GeneralVoiceData
+                    mCurrentVoice?.let {
+                        mTts.voiceName = it.voiceName
+                        mTts.voiceId = it.voiceId
+                        updateStyles(it)
+                        updateRoles(it)
+                        updateSecondaryLocales(it)
+                    }
                 }
             }
         }
 
-//        // 格式
-//        ui.formats.addOnPropertyChangedCallback { _, propertyId ->
-//            if (propertyId == BR.position) mTts.format =
-//                ui.formats.selectedItem?.value?.toString() ?: MsTtsAudioFormat.DEFAULT
-//        }
 
         // 风格
         ui.styles.addOnPropertyChangedCallback { _, propertyId ->

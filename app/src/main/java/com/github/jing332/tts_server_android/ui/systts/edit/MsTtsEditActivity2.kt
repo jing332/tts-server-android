@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.ui.systts.edit
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.transition.Fade
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.RadioButton
@@ -41,6 +42,9 @@ class MsTtsEditActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        window.enterTransition = Fade()
+        window.exitTransition = Fade()
 
         binding.tilSecondaryLocale.setStartIconOnClickListener {
             AlertDialog.Builder(this).setTitle(R.string.secondaryLocale)

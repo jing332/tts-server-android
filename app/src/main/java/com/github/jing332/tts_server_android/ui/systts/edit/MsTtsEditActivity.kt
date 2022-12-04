@@ -142,6 +142,10 @@ class MsTtsEditActivity : BackActivity(), AdapterView.OnItemSelectedListener {
             override fun onStyleDegreeChanged(degree: Float) {
                 vm.onStyleDegreeChanged(degree)
             }
+
+            override fun onFormatChanged(format: String) {
+
+            }
         }
 
         /* 加载数据并更新列表 */

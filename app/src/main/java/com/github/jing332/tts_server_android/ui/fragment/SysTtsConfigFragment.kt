@@ -44,11 +44,9 @@ class SysTtsConfigFragment : Fragment() {
         const val ACTION_ON_CONFIG_CHANGED = "on_config_changed"
     }
 
-    private val viewModel: SysTtsConfigViewModel by activityViewModels()
+    private val vm: SysTtsConfigViewModel by activityViewModels()
     private val binding: FragmentTtsConfigBinding by lazy {
-        FragmentTtsConfigBinding.inflate(
-            layoutInflater
-        )
+        FragmentTtsConfigBinding.inflate(layoutInflater)
     }
 
     /* EditActivity的返回值 */
@@ -59,7 +57,7 @@ class SysTtsConfigFragment : Fragment() {
                 if (result.resultCode == RESULT_ADD) appDb.sysTtsDao.insert(data)
                 else appDb.sysTtsDao.update(data)
 
-                if (data.isEnabled) requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+                notifyTtsUpdate(data.isEnabled)
             }
         }
 
@@ -117,7 +115,7 @@ class SysTtsConfigFragment : Fragment() {
         }
 
         // 监听数据
-        viewModel.viewModelScope.runOnIO {
+        vm.viewModelScope.runOnIO {
             appDb.sysTtsDao.flowAll().conflate().collect {
                 if (brv.models == null) runOnUI { brv.models = it } else brv.setDifferModels(it)
                 runOnUI { checkFormatAndShowDialog() }
@@ -148,7 +146,7 @@ class SysTtsConfigFragment : Fragment() {
     /* 检查格式 如不同则显示对话框 */
     private fun checkFormatAndShowDialog() {
         SysTtsConfig.apply {
-            if (isMultiVoiceEnabled && !isInAppPlayAudio && !viewModel.checkMultiVoiceFormat()) {
+            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat()) {
                 runOnUI {
                     formatWarnDialog.show()
                 }
@@ -159,8 +157,8 @@ class SysTtsConfigFragment : Fragment() {
     private fun onSwitchClick(view: View?, list: List<SysTts>, position: Int) {
         val checkBox = view as CheckBox
         // 检测是否开启多语音
-        if (viewModel.onCheckBoxChanged(list, position, checkBox.isChecked))
-            requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+        if (vm.onCheckBoxChanged(list, position, checkBox.isChecked))
+            notifyTtsUpdate()
         else {
             checkBox.isChecked = false
             checkMultiVoiceDialog.show()
@@ -173,14 +171,14 @@ class SysTtsConfigFragment : Fragment() {
             clonedData.tts?.onDescriptionClick(requireContext(), view) {
                 it?.let {
                     appDb.sysTtsDao.update(clonedData)
-                    if (clonedData.isEnabled) requireContext().sendBroadcast(
-                        Intent(
-                            ACTION_ON_CONFIG_CHANGED
-                        )
-                    )
+                    notifyTtsUpdate(clonedData.isEnabled)
                 }
             }
         }
+    }
+
+    private fun notifyTtsUpdate(isUpdate: Boolean = true) {
+        if (isUpdate) requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
     }
 
     private fun edit(data: SysTts) {
@@ -188,18 +186,18 @@ class SysTtsConfigFragment : Fragment() {
             is MsTTS -> MsTtsEditActivity2::class.java
             else -> HttpTtsEditActivity::class.java
         }
-        startForResult.launch(Intent(requireContext(), cls).apply { putExtra(KEY_DATA, data) })
+        measureTimeMillis {
+            startForResult.launch(Intent(requireContext(), cls).apply { putExtra(KEY_DATA, data) })
+        }.let {
+            toast(it.toString())
+        }
     }
 
     private fun delete(data: SysTts) {
         AlertDialog.Builder(requireContext()).setTitle(R.string.is_confirm_delete)
             .setPositiveButton(R.string.delete) { _, _ ->
                 appDb.sysTtsDao.delete(data)
-                if (data.isEnabled) requireContext().sendBroadcast(
-                    Intent(
-                        ACTION_ON_CONFIG_CHANGED
-                    )
-                )
+                notifyTtsUpdate(data.isEnabled)
             }
             .setFadeAnim().show()
     }
@@ -228,7 +226,7 @@ class SysTtsConfigFragment : Fragment() {
                 } else { // 已开启多语音并且target为旁白或对话
                     if (target == ReadAloudTarget.ALL) data.isEnabled = false
                     appDb.sysTtsDao.update(data.copy(readAloudTarget = target))
-                    requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+                    notifyTtsUpdate()
                     return@setOnMenuItemClickListener false
                 }
             }
@@ -258,7 +256,7 @@ class SysTtsConfigFragment : Fragment() {
             .setView(numPicker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.requestTimeout = numPicker.value * 1000 //转为毫秒
-                requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+                notifyTtsUpdate()
             }
             .setNegativeButton(R.string.reset) { _, _ ->
                 SysTtsConfig.requestTimeout = 5000
@@ -272,14 +270,14 @@ class SysTtsConfigFragment : Fragment() {
         et.hint = getString(R.string.url_net)
         AlertDialog.Builder(requireContext()).setTitle(R.string.import_config).setView(et)
             .setPositiveButton(R.string.import_from_clip) { _, _ ->
-                viewModel.viewModelScope.launch {
-                    val err = viewModel.importConfig(ClipboardUtils.text.toString())
+                vm.viewModelScope.launch {
+                    val err = vm.importConfig(ClipboardUtils.text.toString())
                     err?.let {
                         longToast("导入配置失败：$err")
                     }
                 }
             }.setNegativeButton(getString(R.string.import_from_url)) { _, _ ->
-                val err = viewModel.importConfigByUrl(et.text.toString())
+                val err = vm.importConfigByUrl(et.text.toString())
                 err?.let {
                     longToast("导入配置失败：$err")
                 }
@@ -287,7 +285,7 @@ class SysTtsConfigFragment : Fragment() {
     }
 
     fun showExportConfig() {
-        val jsonStr = viewModel.exportConfig()
+        val jsonStr = vm.exportConfig()
         val tv = TextView(requireContext())
         tv.setTextIsSelectable(true)
         tv.setPadding(50, 50, 50, 0)
@@ -297,8 +295,8 @@ class SysTtsConfigFragment : Fragment() {
                 ClipboardUtils.copyText(jsonStr)
                 toast(R.string.copied)
             }.setNegativeButton("上传到URL") { _, _ ->
-                viewModel.viewModelScope.launch {
-                    val result = viewModel.uploadConfigToUrl(jsonStr)
+                vm.viewModelScope.launch {
+                    val result = vm.uploadConfigToUrl(jsonStr)
                     if (result.isSuccess) {
                         ClipboardUtils.copyText(result.getOrNull())
                         longToast("已复制URL：\n${result.getOrNull()}")
@@ -321,11 +319,11 @@ class SysTtsConfigFragment : Fragment() {
             .setView(picker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.minDialogueLength = picker.value
-                requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+                notifyTtsUpdate()
             }
             .setNegativeButton(R.string.reset) { _, _ ->
                 SysTtsConfig.minDialogueLength = 0
-                requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+                notifyTtsUpdate()
             }
             .setFadeAnim().show()
     }
