@@ -4,13 +4,21 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.databinding.ViewMsTtsNumEditBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
+import com.github.jing332.tts_server_android.model.tts.MsTtsFormatManger
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinnerAdapter
+import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
+import kotlin.math.max
 
 class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
@@ -21,6 +29,7 @@ class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
         fun onRateChanged(rate: Int)
         fun onVolumeChanged(volume: Int)
         fun onStyleDegreeChanged(degree: Float)
+        fun onFormatChanged(format: String)
     }
 
     var isStyleDegreeVisible: Boolean = true
@@ -31,7 +40,6 @@ class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
             binding.tvValueStyleDegree.isVisible = value
         }
 
-
     var callback: Callback? = null
 
     private val binding by lazy {
@@ -41,6 +49,7 @@ class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
     var rateValue: Int = 0
     var volumeValue: Int = 0
     var styleDegreeValue: Float = 1F
+    var formatValue: String = MsTtsAudioFormat.DEFAULT
 
     fun setRate(v: Int) {
         binding.seekbarRate.progress = v + 100
@@ -54,7 +63,18 @@ class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
         binding.seekbarStyleDegree.progress = (v * 100).toInt()
     }
 
+    fun setFormatByApi(@MsTtsApiType api: Int, currentFormat: String? = null) {
+        mFormatItems = MsTtsFormatManger.getFormatsByApiType(api).map { SpinnerItem(it, it) }
+        binding.spinnerFormat.setAdapter(MaterialSpinnerAdapter(context, mFormatItems))
+
+        val format = currentFormat ?: mTts?.format
+        binding.spinnerFormat.selectedPosition =
+            max(mFormatItems.indexOfFirst { it.value == format }, 0)
+    }
+
     private var mTts: MsTTS? = null
+
+    lateinit var mFormatItems: List<SpinnerItem>
 
     /**
      * 设置TTS数据 会自动同步值
@@ -68,12 +88,34 @@ class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
         tts.expressAs?.let {
             setStyleDegree(it.styleDegree)
         }
+
+        mFormatItems = MsTtsFormatManger.getFormatsByApiType(tts.api).map { SpinnerItem(it, it) }
+        binding.spinnerFormat.setAdapter(MaterialSpinnerAdapter(context, mFormatItems))
+        binding.spinnerFormat.selectedPosition =
+            max(mFormatItems.indexOfFirst { it.value == tts.format }, 0)
     }
 
     init {
         binding.seekbarRate.onSeekBarChangeListener = this
         binding.seekbarVolume.onSeekBarChangeListener = this
         binding.seekbarStyleDegree.onSeekBarChangeListener = this
+
+        binding.spinnerFormat.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                formatValue = mFormatItems[position].value.toString()
+                mTts?.format = formatValue
+                callback?.onFormatChanged(formatValue)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+        }
     }
 
     @SuppressLint("SetTextI18n")

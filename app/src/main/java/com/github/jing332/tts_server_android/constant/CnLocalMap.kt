@@ -3,7 +3,7 @@ package com.github.jing332.tts_server_android.constant
 object CnLocalMap {
 
     fun getLanguage(key: String): String {
-        return languageMapMap.getOrDefault(key, key)
+        return localeMap.getOrDefault(key, key)
     }
 
     fun getStyleAndRole(key: String): String {
@@ -14,7 +14,7 @@ object CnLocalMap {
         return edgeVoice.getOrDefault(key, key)
     }
 
-    private val languageMapMap = mapOf(
+    private val localeMap = mapOf(
         "af-ZA" to "南非荷兰语（南非）",
         "am-ET" to "阿姆哈拉语（埃塞俄比亚)",
         "ar-AE" to "阿拉伯语（阿拉伯联合酋长国）",

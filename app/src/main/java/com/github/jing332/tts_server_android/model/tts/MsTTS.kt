@@ -108,19 +108,25 @@ data class MsTTS(
         view: View?,
         done: (modifiedData: BaseTTS?) -> Unit
     ) {
-        val editView = MsTtsNumEditView(context)
-        editView.setRate(prosody.rate)
-        editView.setVolume(prosody.volume)
-        editView.setStyleDegree(expressAs?.styleDegree ?: 1F)
-        editView.isStyleDegreeVisible = api != MsTtsApiType.EDGE
-        editView.setPadding(0, 30, 0, 30)
+        val editView = MsTtsNumEditView(context).apply {
+            setFormatByApi(this@MsTTS.api, this@MsTTS.format)
+            setRate(prosody.rate)
+            setVolume(prosody.volume)
+            setStyleDegree(expressAs?.styleDegree ?: 1F)
+            isStyleDegreeVisible = api != MsTtsApiType.EDGE
+            setPadding(10, 30, 10, 30)
+        }
+
         AlertDialog.Builder(context)
             .setView(editView)
             .setOnDismissListener {
                 prosody.apply {
-                    if (rate == editView.rateValue && volume == editView.volumeValue && expressAs?.styleDegree == editView.styleDegreeValue) {
+                    if (rate == editView.rateValue && volume == editView.volumeValue && expressAs?.styleDegree == editView.styleDegreeValue
+                        && format == editView.formatValue
+                    ) {
                         done(null)
                     } else {
+                        format = editView.formatValue
                         prosody.rate = editView.rateValue
                         prosody.volume = editView.volumeValue
                         expressAs?.styleDegree = editView.styleDegreeValue

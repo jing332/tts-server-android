@@ -158,6 +158,7 @@
                 android:layout_marginTop="8dp"
                 android:enabled="@{!m.ui.styles.items.empty}"
                 android:hint="@string/label_voice_style"
+                android:layout_marginEnd="2dp"
                 app:layout_constraintEnd_toStartOf="@id/til_role"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/til_secondaryLocale">
@@ -180,7 +181,7 @@
                 android:layout_height="wrap_content"
                 android:enabled="@{!m.ui.roles.items.empty}"
                 android:hint="@string/label_voice_role"
-
+                android:layout_marginStart="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/til_style"
                 app:layout_constraintTop_toTopOf="@id/til_style">
@@ -195,28 +196,6 @@
                     tools:ignore="Deprecated" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_format"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="@string/label_audio_format"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_style"
-                app:startIconDrawable="@drawable/ic_baseline_audio_file_24">
-
-                <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
-                    android:id="@+id/spinner_format"
-                    items="@{m.ui.formats.items}"
-                    selectedPosition="@={m.ui.formats.position}"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:editable="false"
-                    tools:ignore="Deprecated" />
-            </com.google.android.material.textfield.TextInputLayout>
-
             <com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
                 android:id="@+id/numEditView"
                 android:layout_width="match_parent"
@@ -225,7 +204,7 @@
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_format" />
+                app:layout_constraintTop_toBottomOf="@id/til_style" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

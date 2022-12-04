@@ -14,6 +14,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
+import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.ActivityMsTtsEdit2Binding
@@ -68,8 +69,9 @@ class MsTtsEditActivity2 : AppCompatActivity() {
         val waitDialog = WaitDialog(this)
         // 接口加载回调
         vm.setCallback(object : MsTtsEditViewModel2.CallBack {
-            override fun onStart() {
+            override fun onStart(@MsTtsApiType api: Int) {
                 waitDialog.show()
+                binding.numEditView.setFormatByApi(api)
             }
 
             override fun onDone(ret: Result<Unit>) {

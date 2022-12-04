@@ -14,8 +14,6 @@ import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.model.tts.ExpressAs
 import com.github.jing332.tts_server_android.model.tts.MsTTS
-import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
-import com.github.jing332.tts_server_android.model.tts.MsTtsFormatManger
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -103,7 +101,7 @@ class MsTtsEditViewModel2 : ViewModel() {
     }
 
     interface CallBack {
-        fun onStart()
+        fun onStart(@MsTtsApiType api: Int)
         fun onDone(ret: Result<Unit>)
     }
 
@@ -117,10 +115,9 @@ class MsTtsEditViewModel2 : ViewModel() {
     * */
     fun reloadApiData() {
         viewModelScope.launch {
-            mCallback?.onStart()
-
             val spinner = ui.apis
             mTts.api = spinner.position
+            mCallback?.onStart(mTts.api)
 
             kotlin.runCatching {
                 // 开始获取 当前接口下的所有数据
@@ -134,10 +131,10 @@ class MsTtsEditViewModel2 : ViewModel() {
             // 更新地区列表
             updateLocales(mAllVoiceList)
             // 更新格式列表
-            ui.formats.items = MsTtsFormatManger.getFormatsByApiType(spinner.position)
-                .map { SpinnerItem(it, it) }
-            val pos = ui.formats.items.indexOfFirst { it.value == mTts.format }
-            ui.formats.position = max(pos, 0)
+//            ui.formats.items = MsTtsFormatManger.getFormatsByApiType(spinner.position)
+//                .map { SpinnerItem(it, it) }
+//            val pos = ui.formats.items.indexOfFirst { it.value == mTts.format }
+//            ui.formats.position = max(pos, 0)
 
             mCallback?.onDone(Result.success(Unit))
         }
@@ -181,11 +178,11 @@ class MsTtsEditViewModel2 : ViewModel() {
             }
         }
 
-        // 格式
-        ui.formats.addOnPropertyChangedCallback { _, propertyId ->
-            if (propertyId == BR.position) mTts.format =
-                ui.formats.selectedItem?.value?.toString() ?: MsTtsAudioFormat.DEFAULT
-        }
+//        // 格式
+//        ui.formats.addOnPropertyChangedCallback { _, propertyId ->
+//            if (propertyId == BR.position) mTts.format =
+//                ui.formats.selectedItem?.value?.toString() ?: MsTtsAudioFormat.DEFAULT
+//        }
 
         // 风格
         ui.styles.addOnPropertyChangedCallback { _, propertyId ->
@@ -318,7 +315,7 @@ data class UiData(
     val voices: SpinnerData = SpinnerData(),
     val styles: SpinnerData = SpinnerData(),
     val roles: SpinnerData = SpinnerData(),
-    val formats: SpinnerData = SpinnerData()
+//    val formats: SpinnerData = SpinnerData()
 )
 
 
