@@ -25,6 +25,9 @@ class MsTtsEditRepository(
         private val CREATION_CACHE_PATH by lazy { "${app.cacheDir.path}/creation/voices.json" }
     }
 
+    // 缓存
+    private val mDataCacheMap: MutableMap<String, List<GeneralVoiceData>> = mutableMapOf()
+
     /**
      * 根据api获取数据
      */
@@ -55,6 +58,8 @@ class MsTtsEditRepository(
     }
 
     private fun edgeVoices(): List<GeneralVoiceData> {
+        mDataCacheMap[EDGE_CACHE_PATH]?.let { return it }
+
         val list = getVoicesHelper<EdgeVoiceBean>(EDGE_CACHE_PATH) {
             Tts_server_lib.getEdgeVoices()
         }
@@ -65,10 +70,12 @@ class MsTtsEditRepository(
                 locale = it.locale,
                 voiceName = it.shortName
             )
-        }
+        }.apply { mDataCacheMap[EDGE_CACHE_PATH] = this }
     }
 
     private fun azureVoices(): List<GeneralVoiceData> {
+        mDataCacheMap[AZURE_CACHE_PATH]?.let { return it }
+
         val list = getVoicesHelper<AzureVoiceBean>(AZURE_CACHE_PATH) {
             Tts_server_lib.getAzureVoice()
         }
@@ -79,10 +86,12 @@ class MsTtsEditRepository(
                 _styles = it.styleList, _roles = it.rolePlayList,
                 _secondaryLocales = it.secondaryLocaleList
             )
-        }
+        }.also { mDataCacheMap[AZURE_CACHE_PATH] = it }
     }
 
     private fun creationVoices(): List<GeneralVoiceData> {
+        mDataCacheMap[CREATION_CACHE_PATH]?.let { return it }
+
         val list = getVoicesHelper<CreationVoiceBean>(CREATION_CACHE_PATH) {
             Tts_server_lib.getCreationVoices()
         }
@@ -97,12 +106,12 @@ class MsTtsEditRepository(
                 _roles = it.properties.voiceRoleNames,
                 _secondaryLocales = it.properties.SecondaryLocales
             )
-        }
+        }.also { mDataCacheMap[CREATION_CACHE_PATH] = it }
     }
 
 }
 
-
+// 通用数据
 data class GeneralVoiceData(
     /**
      * 性别 Male:男, Female:女
@@ -134,12 +143,6 @@ data class GeneralVoiceData(
     // 角色列表
     private val _roles: Any? = null,
 ) {
-    /*
-    * 是否为男发音
-    * */
-    val isMale: Boolean
-        get() = gender == "Male"
-
     /**
      * 汉化的地区名
      */

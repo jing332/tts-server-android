@@ -30,7 +30,7 @@ import com.github.jing332.tts_server_android.databinding.ItemSysttsConfigBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity2
+import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -63,7 +63,7 @@ class SysTtsConfigFragment : Fragment() {
 
     fun startEditActivity() {
         val intent =
-            Intent(requireContext(), MsTtsEditActivity2::class.java)
+            Intent(requireContext(), MsTtsEditActivity::class.java)
         startForResult.launch(intent)
     }
 
@@ -183,7 +183,7 @@ class SysTtsConfigFragment : Fragment() {
 
     private fun edit(data: SysTts) {
         val cls = when (data.tts) {
-            is MsTTS -> MsTtsEditActivity2::class.java
+            is MsTTS -> MsTtsEditActivity::class.java
             else -> HttpTtsEditActivity::class.java
         }
         startForResult.launch(Intent(requireContext(), cls).apply { putExtra(KEY_DATA, data) })

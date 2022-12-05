@@ -21,7 +21,7 @@
         tools:ignore="UnusedAttribute">
         <activity
             android:label="@string/title_activity_tts_config_edit"
-            android:name=".ui.systts.edit.MsTtsEditActivity2">
+            android:name=".ui.systts.edit.MsTtsEditActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
