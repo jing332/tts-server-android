@@ -109,30 +109,14 @@ data class MsTTS(
         done: (modifiedData: BaseTTS?) -> Unit
     ) {
         val editView = MsTttQuickEditView(context).apply {
-            setFormatByApi(this@MsTTS.api, this@MsTTS.format)
-            setRate(prosody.rate)
-            setVolume(prosody.volume)
-            setStyleDegree(expressAs?.styleDegree ?: 1F)
-            isStyleDegreeVisible = api != MsTtsApiType.EDGE
+            setData(this@MsTTS)
             setPadding(10, 30, 10, 30)
         }
 
         AlertDialog.Builder(context)
             .setView(editView)
             .setOnDismissListener {
-                prosody.apply {
-                    if (rate == editView.rateValue && volume == editView.volumeValue && expressAs?.styleDegree == editView.styleDegreeValue
-                        && format == editView.formatValue
-                    ) {
-                        done(null)
-                    } else {
-                        format = editView.formatValue
-                        prosody.rate = editView.rateValue
-                        prosody.volume = editView.volumeValue
-                        expressAs?.styleDegree = editView.styleDegreeValue
-                        done(this@MsTTS)
-                    }
-                }
+                done(this@MsTTS)
             }.setFadeAnim().show()
     }
 

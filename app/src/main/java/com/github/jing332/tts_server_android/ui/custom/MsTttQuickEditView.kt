@@ -147,21 +147,15 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         when (seekBar.id) {
             R.id.seekbar_rate -> {
                 callback?.onRateChanged(rateValue)
-                mTts?.let {
-                    it.rate = rateValue
-                }
+                mTts?.let { it.rate = rateValue }
             }
             R.id.seekbar_volume -> {
                 callback?.onVolumeChanged(volumeValue)
-                mTts?.let {
-                    it.rate = volumeValue
-                }
+                mTts?.let { it.volume = volumeValue }
             }
             R.id.seekbar_styleDegree -> {
                 callback?.onStyleDegreeChanged(styleDegreeValue)
-                mTts?.expressAs?.let {
-                    it.styleDegree = styleDegreeValue
-                }
+                mTts?.expressAs?.let { it.styleDegree = styleDegreeValue }
             }
         }
     }
