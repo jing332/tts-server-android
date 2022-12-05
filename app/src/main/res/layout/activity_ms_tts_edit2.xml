@@ -196,7 +196,7 @@
                     tools:ignore="Deprecated" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
+            <com.github.jing332.tts_server_android.ui.custom.MsTttQuickEditView
                 android:id="@+id/numEditView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

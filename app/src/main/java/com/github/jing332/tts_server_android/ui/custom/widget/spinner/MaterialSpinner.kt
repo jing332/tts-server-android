@@ -1,11 +1,10 @@
 package com.github.jing332.tts_server_android.ui.custom.widget.spinner
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
-import android.widget.AdapterView
-import android.widget.Filterable
-import android.widget.ListAdapter
+import android.widget.*
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 
 
@@ -26,7 +25,7 @@ class MaterialSpinner :
 
     init {
         super.setOnItemClickListener { parent, view, position, id ->
-            _selectedPosition = position
+            mSelectedPosition = position
             wrappedItemClickListener?.onItemClick(parent, view, position, id)
             super.getOnItemSelectedListener()?.onItemSelected(parent, view, position, id)
         }
@@ -40,7 +39,7 @@ class MaterialSpinner :
 
     private var wrappedItemClickListener: AdapterView.OnItemClickListener? = null
 
-    private var _selectedPosition: Int = 0
+    private var mSelectedPosition: Int = 0
         set(value) {
             field = value
             adapter?.selectedItemPosition = value
@@ -50,15 +49,25 @@ class MaterialSpinner :
         * 当前选中
         * */
     var selectedPosition: Int
-        get() = _selectedPosition
+        get() = mSelectedPosition
         set(value) {
-            _selectedPosition = value
+            mSelectedPosition = value
             updateCurrentPositionText()
 
             selectedPositionListeners.forEach {
                 it.invoke(selectedPosition)
             }
         }
+
+    @SuppressLint("DiscouragedPrivateApi")
+    override fun showDropDown() {
+        super.showDropDown()
+        val mPopupField = AutoCompleteTextView::class.java.getDeclaredField("mPopup")
+        mPopupField.isAccessible = true
+
+        val listPopup = mPopupField.get(this) as ListPopupWindow
+        listPopup.setSelection(selectedPosition)
+    }
 
     override fun getAdapter(): BaseMaterialSpinnerAdapter<*>? {
         super.getAdapter()?.let {

@@ -119,6 +119,7 @@
     <string name="test">测试</string>
     <string name="test_text">测试文本</string>
     <string name="set_dialogue_min_match_word_count">设置对话最小匹配汉字数</string>
+    <string name="set_dialogue_min_match_count_msg">人物对话的汉字数（包括中文符号），即只有在大于等于此值时才作为对话朗读，反之使用旁白。</string>
     <string name="cannot_empty">不可为空！</string>
     <string name="title_activity_http_tts">编辑自定义TTS</string>
     <string name="request_header">请求头</string>

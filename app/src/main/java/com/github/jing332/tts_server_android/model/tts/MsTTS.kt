@@ -10,7 +10,7 @@ import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.tts.BaseTTS.Companion.VALUE_FOLLOW_SYSTEM
-import com.github.jing332.tts_server_android.ui.custom.MsTtsNumEditView
+import com.github.jing332.tts_server_android.ui.custom.MsTttQuickEditView
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -108,7 +108,7 @@ data class MsTTS(
         view: View?,
         done: (modifiedData: BaseTTS?) -> Unit
     ) {
-        val editView = MsTtsNumEditView(context).apply {
+        val editView = MsTttQuickEditView(context).apply {
             setFormatByApi(this@MsTTS.api, this@MsTTS.format)
             setRate(prosody.rate)
             setVolume(prosody.volume)

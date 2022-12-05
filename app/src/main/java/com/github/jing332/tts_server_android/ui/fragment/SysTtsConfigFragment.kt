@@ -86,7 +86,7 @@ class SysTtsConfigFragment : Fragment() {
                     checkBoxSwitch.setOnClickListener { view ->
                         onSwitchClick(view, models as List<SysTts>, modelPosition)
                     }
-                    btnEdit.setOnClickListener { println(measureTimeMillis { edit(getModel()) }) }
+                    btnEdit.setOnClickListener { measureTimeMillis { edit(getModel()) } }
                     btnDelete.setOnClickListener { delete(getModel()) }
                 }
                 itemView.setOnClickListener { showNumEditDialog(getModel()) }
@@ -186,11 +186,7 @@ class SysTtsConfigFragment : Fragment() {
             is MsTTS -> MsTtsEditActivity2::class.java
             else -> HttpTtsEditActivity::class.java
         }
-        measureTimeMillis {
-            startForResult.launch(Intent(requireContext(), cls).apply { putExtra(KEY_DATA, data) })
-        }.let {
-            toast(it.toString())
-        }
+        startForResult.launch(Intent(requireContext(), cls).apply { putExtra(KEY_DATA, data) })
     }
 
     private fun delete(data: SysTts) {
@@ -315,7 +311,8 @@ class SysTtsConfigFragment : Fragment() {
             displayedValues = numList.toTypedArray()
             value = SysTtsConfig.minDialogueLength
         }
-        AlertDialog.Builder(requireContext()).setTitle("对话文本最小匹配汉字数").setMessage("(包括中文符号)")
+        AlertDialog.Builder(requireContext()).setTitle("对话文本最小匹配汉字数")
+            .setMessage(R.string.set_dialogue_min_match_count_msg)
             .setView(picker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.minDialogueLength = picker.value

@@ -19,7 +19,7 @@ import com.github.jing332.tts_server_android.databinding.ActivityHttpTtsEditBind
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
-import com.github.jing332.tts_server_android.ui.custom.HttpTtsNumEditView
+import com.github.jing332.tts_server_android.ui.custom.HttpTtsQuickEditView
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
@@ -95,7 +95,7 @@ class HttpTtsEditActivity : BackActivity() {
             AlertDialog.Builder(this).setTitle(R.string.help).setView(tv).setFadeAnim().show()
         }
 
-        binding.numEdit.callBack = object : HttpTtsNumEditView.CallBack {
+        binding.numEdit.callBack = object : HttpTtsQuickEditView.CallBack {
             override fun onValueChanged(rate: Int, volume: Int): String {
                 data?.tts?.let {
                     val tts = it as HttpTTS

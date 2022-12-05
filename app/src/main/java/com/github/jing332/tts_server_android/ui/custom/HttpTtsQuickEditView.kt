@@ -5,17 +5,17 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.ViewHttpTtsNumEditBinding
+import com.github.jing332.tts_server_android.databinding.ViewHttpTtsQuickEditBinding
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 
-class HttpTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
 
     private val vb by lazy {
-        ViewHttpTtsNumEditBinding.inflate(LayoutInflater.from(context), this, true)
+        ViewHttpTtsQuickEditBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     init {

@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.databinding.ViewMsTtsNumEditBinding
+import com.github.jing332.tts_server_android.databinding.ViewMsTtsQuickEditBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
 import com.github.jing332.tts_server_android.model.tts.MsTtsFormatManger
@@ -20,7 +20,7 @@ import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSp
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import kotlin.math.max
 
-class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
@@ -43,7 +43,7 @@ class MsTtsNumEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
     var callback: Callback? = null
 
     private val binding by lazy {
-        ViewMsTtsNumEditBinding.inflate(LayoutInflater.from(context), this, true)
+        ViewMsTtsQuickEditBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     var rateValue: Int = 0

@@ -10,7 +10,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
-import com.github.jing332.tts_server_android.ui.custom.HttpTtsNumEditView
+import com.github.jing332.tts_server_android.ui.custom.HttpTtsQuickEditView
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -57,10 +57,10 @@ data class HttpTTS(
         view: View?,
         done: (modifiedData: BaseTTS?) -> Unit
     ) {
-        val editView = HttpTtsNumEditView(context)
+        val editView = HttpTtsQuickEditView(context)
         editView.rate = rate
         editView.volume = volume
-        editView.callBack = object : HttpTtsNumEditView.CallBack {
+        editView.callBack = object : HttpTtsQuickEditView.CallBack {
             override fun onValueChanged(rate: Int, volume: Int): String {
                 kotlin.runCatching {
                     val result = AnalyzeUrl(

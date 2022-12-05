@@ -120,7 +120,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textInputLayout" />
 
-        <com.github.jing332.tts_server_android.ui.custom.HttpTtsNumEditView
+        <com.github.jing332.tts_server_android.ui.custom.HttpTtsQuickEditView
             android:id="@+id/numEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.BR
-import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.model.tts.ExpressAs
@@ -23,12 +22,6 @@ class MsTtsEditViewModel2 : ViewModel() {
     companion object {
         const val TAG = "MsTtsEditViewModel2"
         private val repo: MsTtsEditRepository by lazy { MsTtsEditRepository() }
-
-        // 男
-        private const val MALE_IMAGE_RES_ID = R.drawable.ic_baseline_male_24
-
-        // 女
-        private const val FEMALE_IMAGE_RES_ID = R.drawable.ic_baseline_female_24
 
         // 风格和角色中忽略此字符串
         private const val IGNORE_VALUE_DEFAULT = "Default"
@@ -165,7 +158,7 @@ class MsTtsEditViewModel2 : ViewModel() {
             if (propertyId == BR.position) {
                 viewModelScope.runOnIO {
                     mCurrentVoice = ui.voices.selectedItem?.value as GeneralVoiceData
-                    mCurrentVoice?.let {
+                    mCurrentVoice!!.let {
                         mTts.voiceName = it.voiceName
                         mTts.voiceId = it.voiceId
                         updateStyles(it)
@@ -230,13 +223,10 @@ class MsTtsEditViewModel2 : ViewModel() {
         ui.voices.apply {
             // 筛选出当前地区的Voice
             mCurrentVoiceList = data.filter { it.locale == ui.locales.selectedItem?.value }
+                .sortedBy { it.voiceName }
 
             items = mCurrentVoiceList.map {
-                val imgResId = if (it.isMale) MALE_IMAGE_RES_ID else FEMALE_IMAGE_RES_ID
-                SpinnerItem(
-                    displayText = "${it.localVoiceName} (${it.voiceName})", value = it,
-                    imageResId = imgResId
-                )
+                SpinnerItem(displayText = "${it.localVoiceName} (${it.voiceName})", value = it)
             }
             val pos = mCurrentVoiceList.indexOfFirst { it.voiceName == mTts.voiceName }
             position = max(pos, 0)
