@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.widget.RadioButton
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
@@ -20,10 +19,11 @@ import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.ActivityMsTtsEdit2Binding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.setFadeAnim
 
-class MsTtsEditActivity2 : AppCompatActivity() {
+class MsTtsEditActivity2 : BackActivity() {
     companion object {
         const val TAG = "MsTtsEditActivity2"
     }

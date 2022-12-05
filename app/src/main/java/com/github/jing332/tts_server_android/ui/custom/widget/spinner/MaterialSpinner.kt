@@ -30,6 +30,7 @@ class MaterialSpinner :
             super.getOnItemSelectedListener()?.onItemSelected(parent, view, position, id)
         }
         inputType = InputType.TYPE_NULL
+        setOnKeyListener(null)
     }
 
     companion object {

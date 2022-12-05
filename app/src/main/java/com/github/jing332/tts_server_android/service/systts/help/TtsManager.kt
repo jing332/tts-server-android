@@ -59,7 +59,7 @@ class TtsManager(val context: Context) {
     // 音频解码器
     private val mAudioDecoder by lazy { AudioDecoder() }
 
-    // 归一化，将某个范围值缩小到另一范围 (500-1 -> 200-0)
+    // 归一化，将某个范围值缩小到另一范围 (500-0 -> 200-0)
     private val mNorm by lazy { NormUtil(500F, 0F, 200F, 0F) }
 
     // 替换
@@ -223,7 +223,6 @@ class TtsManager(val context: Context) {
                             writeToCallBack(callback, data.audio)
                             return@launch
                         }
-
 
                         if (mIsInAppPlayAudio) {
                             // APP内播放

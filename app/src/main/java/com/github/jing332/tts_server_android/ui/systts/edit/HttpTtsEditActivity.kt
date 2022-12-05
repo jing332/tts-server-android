@@ -85,7 +85,7 @@ class HttpTtsEditActivity : BackActivity() {
                 })
         }
 
-        // 帮助按钮
+        // url 帮助按钮
         binding.textInputLayoutUrl.setEndIconOnClickListener {
             val tv = TextView(this)
             tv.setTextIsSelectable(true)
@@ -93,6 +93,12 @@ class HttpTtsEditActivity : BackActivity() {
                 Html.fromHtml(resources.openRawResource(R.raw.help_http_tts_url).readAllText())
             tv.setPadding(20, 20, 20, 20)
             AlertDialog.Builder(this).setTitle(R.string.help).setView(tv).setFadeAnim().show()
+        }
+
+        // 采样率帮助按钮
+        binding.textInputLayoutSampleRate.setStartIconOnClickListener {
+            AlertDialog.Builder(this).setTitle(R.string.help)
+                .setMessage(R.string.help_msg_sample_rate).setFadeAnim().show()
         }
 
         binding.numEdit.callBack = object : HttpTtsQuickEditView.CallBack {

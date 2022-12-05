@@ -20,15 +20,14 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
-            android:name=".ui.systts.edit.MsTtsEditActivity2"
-            android:exported="true">
+            android:label="@string/title_activity_tts_config_edit"
+            android:name=".ui.systts.edit.MsTtsEditActivity2">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".ui.SettingsActivity"
-            android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".ui.MainActivity"
@@ -46,27 +45,22 @@
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
-        </activity> <!-- 系统TTS配置 -->
+        </activity>
+        <!-- 系统TTS配置 -->
         <activity
             android:name=".ui.systts.TtsSettingsActivity"
-            android:exported="true"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.speech.tts.engine.CONFIGURE_ENGINE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.systts.edit.MsTtsEditActivity"
-            android:exported="true"
-            android:label="@string/title_activity_tts_config_edit"
-            android:launchMode="singleTask" />
-        <activity
             android:name=".ui.systts.edit.HttpTtsEditActivity"
-            android:exported="true"
             android:label="@string/title_activity_http_tts"
-            android:launchMode="singleTask" /> <!-- 替换规则 -->
+            android:launchMode="singleTask" />
+        <!-- 替换规则 -->
         <activity
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:exported="true"
@@ -74,8 +68,8 @@
             android:launchMode="singleTask" />
         <activity
             android:name=".ui.systts.replace.ReplaceRuleEditActivity"
-            android:exported="true"
-            android:label="@string/title_activity_replace_edit" /> <!-- Server开关 -->
+            android:label="@string/title_activity_replace_edit" />
+        <!-- Server开关 -->
         <activity
             android:name=".ui.ScSwitchActivity"
             android:theme="@android:style/Theme.NoDisplay" />
