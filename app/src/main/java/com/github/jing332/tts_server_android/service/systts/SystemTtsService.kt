@@ -51,6 +51,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         val wm = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
         wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "tts-server:wifi_lock")
     }
+
     // 唤醒锁
     private val mWakeLock by lazy {
         val powerManager = getSystemService(POWER_SERVICE) as PowerManager
@@ -135,11 +136,6 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
             }
             runBlocking { mTtsManager.synthesizeText(text, request, callback) }
             callback?.done()
-
-            updateNotification(
-                getString(R.string.tts_state_idle),
-                getString(R.string.auto_closed_later_notification)
-            )
         }
     }
 

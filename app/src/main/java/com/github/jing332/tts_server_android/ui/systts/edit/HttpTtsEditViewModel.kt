@@ -32,8 +32,7 @@ class HttpTtsEditViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        if (exoPlayer.isInitialized())
-            exoPlayer.value.release()
+        if (exoPlayer.isInitialized()) exoPlayer.value.release()
     }
 
     fun doTest(

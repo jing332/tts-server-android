@@ -7,13 +7,16 @@ import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.children
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
+import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.ActivityHttpTtsEditBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
@@ -38,6 +41,17 @@ class HttpTtsEditActivity : BackActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        // 朗读目标切换
+        binding.radioRaTarget.radioGroup.setOnCheckedChangeListener { _, id ->
+            val pos = when (id) {
+                R.id.radioBtn_ra_all -> ReadAloudTarget.ALL
+                R.id.radioBtn_only_ra_aside -> ReadAloudTarget.ASIDE
+                R.id.radioBtn_only_ra_dialogue -> ReadAloudTarget.DIALOGUE
+                else -> return@setOnCheckedChangeListener
+            }
+            data?.apply { this.readAloudTarget = pos }
+        }
+
         // 获取数据 为null表示Add
         data = intent.getParcelableExtra(KEY_DATA)
         if (data == null) {
@@ -47,6 +61,12 @@ class HttpTtsEditActivity : BackActivity() {
         data?.let {
             val tts = it.ttsAs<HttpTTS>()
             binding.apply {
+                // 设置朗读目标
+                binding.radioRaTarget.radioGroup.apply {
+                    children.forEach { btn -> (btn as RadioButton).isChecked = false }
+                    (getChildAt(it.readAloudTarget) as RadioButton).isChecked = true
+                }
+
                 etName.setText(it.displayName)
                 etUrl.setText(tts.url)
                 etHeaders.setText(tts.header)

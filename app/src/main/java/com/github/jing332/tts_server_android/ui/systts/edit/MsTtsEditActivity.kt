@@ -47,7 +47,7 @@ class MsTtsEditActivity : BackActivity() {
         }
 
         // 朗读目标切换
-        binding.radioGroupRaTarget.setOnCheckedChangeListener { _, id ->
+        binding.radioRaTarget.radioGroup.setOnCheckedChangeListener { _, id ->
             val pos = when (id) {
                 R.id.radioBtn_ra_all -> ReadAloudTarget.ALL
                 R.id.radioBtn_only_ra_aside -> ReadAloudTarget.ASIDE
@@ -59,7 +59,7 @@ class MsTtsEditActivity : BackActivity() {
 
         // 监听朗读目标
         vm.raTargetLiveData.observe(this) {
-            binding.radioGroupRaTarget.apply {
+            binding.radioRaTarget.radioGroup.apply {
                 children.forEach { (it as RadioButton).isChecked = false }
                 (getChildAt(it) as RadioButton).isChecked = true
             }
