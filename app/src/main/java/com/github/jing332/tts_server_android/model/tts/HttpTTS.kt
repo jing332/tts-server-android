@@ -38,6 +38,10 @@ data class HttpTTS(
         return VALUE_FOLLOW_SYSTEM == rate
     }
 
+    override fun isPitchFollowSystem(): Boolean {
+        return false
+    }
+
     override fun getType(): String {
         return app.getString(R.string.custom)
     }

@@ -9,7 +9,6 @@ import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
-import com.github.jing332.tts_server_android.model.tts.BaseTTS.Companion.VALUE_FOLLOW_SYSTEM
 import com.github.jing332.tts_server_android.ui.custom.MsTttQuickEditView
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import kotlinx.parcelize.IgnoredOnParcel
@@ -48,6 +47,7 @@ data class MsTTS(
 
     companion object {
         const val RATE_FOLLOW_SYSTEM = -100
+        const val PITCH_FOLLOW_SYSTEM = -50
 
         const val DEFAULT_LOCALE = "zh-CN"
         const val DEFAULT_VOICE = "zh-CN-XiaoxiaoNeural"
@@ -85,10 +85,13 @@ data class MsTTS(
         return RATE_FOLLOW_SYSTEM == rate
     }
 
-    override fun getDescription(): String {
-        val rateStr = if (prosody.isRateFollowSystem) "跟随" else prosody.rate
-        val volume = prosody.volume
+    override fun isPitchFollowSystem(): Boolean {
+        return PITCH_FOLLOW_SYSTEM == pitch
+    }
 
+    override fun getDescription(): String {
+        val rateStr = if (isRateFollowSystem()) "跟随" else rate
+        val pitchStr = if (isPitchFollowSystem()) "跟随" else pitch
         var style = "无"
         val styleDegree = expressAs?.styleDegree ?: 1F
         var role = "无"
@@ -100,7 +103,7 @@ data class MsTTS(
         val expressAs =
             if (api == MsTtsApiType.EDGE) ""
             else "$style-$role | 强度: <b>${styleDegree}</b> | "
-        return "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b>"
+        return "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b> | 音高:<b>$pitchStr</b>"
     }
 
     override fun onDescriptionClick(
@@ -178,9 +181,9 @@ data class ExpressAs(
 @Serializable
 @Parcelize
 data class Prosody(
-    var rate: Int = VALUE_FOLLOW_SYSTEM,
+    var rate: Int = MsTTS.RATE_FOLLOW_SYSTEM,
     var volume: Int = 0,
-    var pitch: Int = 0
+    var pitch: Int = MsTTS.PITCH_FOLLOW_SYSTEM
 ) : Parcelable {
     val isRateFollowSystem: Boolean
         get() {

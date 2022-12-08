@@ -26,10 +26,11 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
     constructor(context: Context) : this(context, null, 0)
 
     interface Callback {
-        fun onRateChanged(rate: Int)
-        fun onVolumeChanged(volume: Int)
-        fun onStyleDegreeChanged(degree: Float)
-        fun onFormatChanged(format: String)
+        fun onRateChanged(rate: Int) {}
+        fun onVolumeChanged(volume: Int) {}
+        fun onPitchChanged(pitch: Int) {}
+        fun onStyleDegreeChanged(degree: Float) {}
+        fun onFormatChanged(format: String) {}
     }
 
     var isStyleDegreeVisible: Boolean = true
@@ -48,18 +49,23 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
 
     var rateValue: Int = 0
     var volumeValue: Int = 0
+    var pitchValue: Int = 0
     var styleDegreeValue: Float = 1F
     var formatValue: String = MsTtsAudioFormat.DEFAULT
 
-    fun setRate(v: Int) {
+    private fun setRate(v: Int) {
         binding.seekbarRate.progress = v + 100
     }
 
-    fun setVolume(v: Int) {
+    private fun setVolume(v: Int) {
         binding.seekbarVolume.progress = v + 50
     }
 
-    fun setStyleDegree(v: Float) {
+    private fun setPitch(v: Int) {
+        binding.seekbarPitch.progress = v + 50
+    }
+
+    private fun setStyleDegree(v: Float) {
         binding.seekbarStyleDegree.progress = (v * 100).toInt()
     }
 
@@ -83,8 +89,9 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         mTts = tts
         isStyleDegreeVisible = tts.api != MsTtsApiType.EDGE
 
-        setVolume(tts.volume)
         setRate(tts.rate)
+        setVolume(tts.volume)
+        setPitch(tts.pitch)
         tts.expressAs?.let {
             setStyleDegree(it.styleDegree)
         }
@@ -98,6 +105,7 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
     init {
         binding.seekbarRate.onSeekBarChangeListener = this
         binding.seekbarVolume.onSeekBarChangeListener = this
+        binding.seekbarPitch.onSeekBarChangeListener = this
         binding.seekbarStyleDegree.onSeekBarChangeListener = this
 
         binding.spinnerFormat.onItemSelectedListener = object : OnItemSelectedListener {
@@ -122,17 +130,26 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
     override fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {
         when (seekBar.id) {
             R.id.seekbar_rate -> {
-                rateValue = progress - 100
                 if (progress == 0) {
                     rateValue = MsTTS.RATE_FOLLOW_SYSTEM
                     binding.tvValueRate.setText(R.string.follow_system_or_read_aloud_app)
                 } else {
+                    rateValue = progress - 100
                     binding.tvValueRate.text = "${rateValue}%"
                 }
             }
             R.id.seekbar_volume -> {
                 volumeValue = progress - 50
                 binding.tvValueVolume.text = "${volumeValue}%"
+            }
+            R.id.seekbar_pitch -> {
+                if (progress == 0) {
+                    pitchValue = MsTTS.PITCH_FOLLOW_SYSTEM
+                    binding.tvPitchValue.setText(R.string.follow_system_or_read_aloud_app)
+                } else {
+                    pitchValue = progress - 50
+                    binding.tvPitchValue.text = "${pitchValue}%"
+                }
             }
             R.id.seekbar_styleDegree -> {
                 styleDegreeValue = (progress * 0.01).toFloat()
@@ -152,6 +169,10 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
             R.id.seekbar_volume -> {
                 callback?.onVolumeChanged(volumeValue)
                 mTts?.let { it.volume = volumeValue }
+            }
+            R.id.seekbar_pitch -> {
+                callback?.onPitchChanged(pitchValue)
+                mTts?.prosody?.let { it.pitch = pitchValue }
             }
             R.id.seekbar_styleDegree -> {
                 callback?.onStyleDegreeChanged(styleDegreeValue)

@@ -65,13 +65,43 @@
         app:progress="50" />
 
     <TextView
+        android:id="@+id/label_pitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/label_pitch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seekbar_volume" />
+
+    <TextView
+        android:id="@+id/tv_pitchValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0%"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/label_pitch"
+        app:layout_constraintStart_toEndOf="@id/label_pitch"
+        app:layout_constraintTop_toTopOf="@id/label_pitch"
+        tools:ignore="HardcodedText" />
+
+    <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+        android:id="@+id/seekbar_pitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:max="100"
+        app:progress="50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_pitch" />
+
+    <TextView
         android:id="@+id/tv_styleDegree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/label_styleDegree"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekbar_volume" />
+        app:layout_constraintTop_toBottomOf="@+id/seekbar_pitch" />
 
     <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
         android:id="@+id/seekbar_styleDegree"

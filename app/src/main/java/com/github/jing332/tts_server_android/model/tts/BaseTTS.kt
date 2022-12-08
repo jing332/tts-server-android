@@ -28,6 +28,11 @@ sealed class BaseTTS : Parcelable {
     abstract fun isRateFollowSystem(): Boolean
 
     /**
+     * 音高是否跟随系统
+     */
+    abstract fun isPitchFollowSystem(): Boolean
+
+    /**
      * UI 右下角类型
      */
     abstract fun getType(): String

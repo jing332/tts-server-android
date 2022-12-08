@@ -156,5 +156,6 @@
     <string name="set_max_audio_cache_num">设置最大音频缓存数</string>
     <string name="label_play_speed">播放速度：</string>
     <string name="label_play_pitch">播放音调：</string>
+    <string name="label_pitch">音高：</string>
 
 </resources>

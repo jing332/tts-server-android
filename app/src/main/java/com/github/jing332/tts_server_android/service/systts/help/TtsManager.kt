@@ -182,21 +182,21 @@ class TtsManager(val context: Context) {
             Log.d(TAG, "multiVoiceProducer...")
 
             val aside = mAsideConfig?.tts?.clone<BaseTTS>()?.also {
-                it.pitch = pitch
                 if (it.isRateFollowSystem()) it.rate = sysRate
+                if (it.isPitchFollowSystem()) it.pitch = pitch
             }
 
             val dialogue = mDialogueConfig?.tts?.clone<BaseTTS>()?.also {
-                it.pitch = pitch
                 if (it.isRateFollowSystem()) it.rate = sysRate
+                if (it.isPitchFollowSystem()) it.pitch = pitch
             }
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
             mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside!!, dialogue!!)
         } else { //单语音
             val pro = mDefaultConfig?.tts.clone<BaseTTS>()?.also {
-                it.pitch = pitch
                 if (it.isRateFollowSystem()) it.rate = sysRate
+                if (it.isPitchFollowSystem()) it.pitch = pitch
             }!!
 
             Log.d(TAG, "单语音：${pro}")
