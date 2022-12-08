@@ -14,7 +14,12 @@ object SysTtsConfig : KotprefModel() {
     /**
      * APP内播放语速
      */
-    var inAppPlayRate by floatPref(1F)
+    var inAppPlaySpeed by floatPref(1F)
+
+    /**
+     * APP内播放音调
+     */
+    var inAppPlayPitch by floatPref(1F)
 
     /**
      * 多语音

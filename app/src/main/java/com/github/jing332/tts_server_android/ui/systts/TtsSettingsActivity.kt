@@ -138,7 +138,7 @@ class TtsSettingsActivity : BackActivity() {
                 layoutNumEdit.isGone = !isChecked
                 tvTip.isGone = isChecked
             }
-            seekbarRate.onSeekBarChangeListener =
+            seekbarSpeed.onSeekBarChangeListener =
                 object : ConvenientSeekbar.OnSeekBarChangeListener {
                     override fun onProgressChanged(
                         seekBar: ConvenientSeekbar,
@@ -149,7 +149,21 @@ class TtsSettingsActivity : BackActivity() {
                         tvRateValue.text = "${(seekBar.progress * 0.1).toFloat()}"
                     }
                 }
-            seekbarRate.progress = (SysTtsConfig.inAppPlayRate * 10).toInt()
+            seekbarSpeed.progress = (SysTtsConfig.inAppPlaySpeed * 10).toInt()
+
+            seekbarPitch.onSeekBarChangeListener =
+                object : ConvenientSeekbar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(
+                        seekBar: ConvenientSeekbar,
+                        progress: Int,
+                        fromUser: Boolean
+                    ) {
+                        if (progress <= 0) seekBar.progress = 1
+                        tvPitchValue.text = "${(seekBar.progress * 0.1).toFloat()}"
+                    }
+                }
+            seekbarPitch.progress = (SysTtsConfig.inAppPlayPitch * 10).toInt()
+
 
             SysTtsConfig.isInAppPlayAudio.let {
                 switchOnOff.isChecked = it
@@ -161,7 +175,8 @@ class TtsSettingsActivity : BackActivity() {
         AlertDialog.Builder(this)
             .setView(view).setOnDismissListener {
                 SysTtsConfig.isInAppPlayAudio = inAppBinding.switchOnOff.isChecked
-                SysTtsConfig.inAppPlayRate = (inAppBinding.seekbarRate.progress * 0.1).toFloat()
+                SysTtsConfig.inAppPlaySpeed = (inAppBinding.seekbarSpeed.progress * 0.1).toFloat()
+                SysTtsConfig.inAppPlayPitch = (inAppBinding.seekbarPitch.progress * 0.1).toFloat()
                 SystemTtsService.notifyUpdateConfig()
             }.setFadeAnim().show()
     }

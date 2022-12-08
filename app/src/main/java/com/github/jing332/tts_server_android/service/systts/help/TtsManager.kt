@@ -25,6 +25,7 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
@@ -82,7 +83,8 @@ class TtsManager(val context: Context) {
 
     // 一些开关偏好
     private var mIsInAppPlayAudio = false
-    private var mInAppPlayRate = 1F
+    private var mInAppPlaySpeed = 1F
+    private var mInAppPlayPitch = 1F
     private var mIsSplitEnabled = false
     private var mIsReplaceEnabled = false
     private var mIsMultiVoiceEnabled = false
@@ -112,7 +114,9 @@ class TtsManager(val context: Context) {
     fun loadConfig() {
         SysTtsConfig.apply {
             mIsInAppPlayAudio = isInAppPlayAudio
-            mInAppPlayRate = inAppPlayRate
+            mInAppPlaySpeed = inAppPlaySpeed
+            mInAppPlayPitch = inAppPlayPitch
+
             mIsSplitEnabled = isSplitEnabled
             mIsMultiVoiceEnabled = isMultiVoiceEnabled
             mIsReplaceEnabled = isReplaceEnabled
@@ -202,7 +206,6 @@ class TtsManager(val context: Context) {
             } else {
                 if (mAudioFormat.isNeedDecode) getAudioAndDecodeWrite(text, pro, callback)
                 else mProducer = audioStreamProducer(text, pro)
-
             }
         }
 
@@ -438,7 +441,8 @@ class TtsManager(val context: Context) {
             try {
                 mScope.launch(Dispatchers.Main) {
                     exoPlayer.setMediaSource(createMediaSourceFromByteArray(audio))
-                    exoPlayer.setPlaybackSpeed(mInAppPlayRate)
+                    exoPlayer.playbackParameters =
+                        PlaybackParameters(mInAppPlaySpeed, mInAppPlayPitch)
                     exoPlayer.prepare()
                 }.join()
                 // 一直等待 直到 job.cancel
