@@ -147,6 +147,7 @@
     </string>
     <string name="help">帮助</string>
     <string name="help_secondary_locale">选择二级语言，即在朗读时使用此语言，目前微软只支持 en-US-JennyMultilingualNeural。</string>
+    <string name="help_request_header">示例：\n{\&quot;Host&quot;: \&quot;example.com&quot;, \&quot;User-Agent&quot;: \&quot;Android TTS-Server\&quot;}</string>
     <string name="sample_rate">采样率（hz）</string>
     <string name="secondaryLocale">二级语言（语言技能）</string>
     <string name="title_voice_data_failed">语音数据加载失败</string>

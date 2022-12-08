@@ -115,9 +115,15 @@ class HttpTtsEditActivity : BackActivity() {
             AlertDialog.Builder(this).setTitle(R.string.help).setView(tv).setFadeAnim().show()
         }
 
+        // 请求头 帮助按钮
+        binding.tilHeader.setEndIconOnClickListener {
+            AlertDialog.Builder(this).setTitle(R.string.request_header)
+                .setMessage(R.string.help_request_header).setFadeAnim().show()
+        }
+
         // 采样率帮助按钮
         binding.textInputLayoutSampleRate.setStartIconOnClickListener {
-            AlertDialog.Builder(this).setTitle(R.string.help)
+            AlertDialog.Builder(this).setTitle(R.string.sample_rate)
                 .setMessage(R.string.help_msg_sample_rate).setFadeAnim().show()
         }
 
