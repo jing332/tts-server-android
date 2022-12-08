@@ -1,13 +1,16 @@
 package com.github.jing332.tts_server_android.ui.fragment
 
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
@@ -29,10 +32,11 @@ import com.github.jing332.tts_server_android.databinding.FragmentTtsConfigBindin
 import com.github.jing332.tts_server_android.databinding.ItemSysttsConfigBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.util.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 import kotlin.system.measureTimeMillis
 
@@ -41,7 +45,6 @@ import kotlin.system.measureTimeMillis
 class SysTtsConfigFragment : Fragment() {
     companion object {
         const val TAG = "TtsConfigFragment"
-        const val ACTION_ON_CONFIG_CHANGED = "on_config_changed"
     }
 
     private val vm: SysTtsConfigViewModel by activityViewModels()
@@ -61,7 +64,7 @@ class SysTtsConfigFragment : Fragment() {
             }
         }
 
-    fun startEditActivity() {
+    fun startMsTtsEditActivity() {
         val intent =
             Intent(requireContext(), MsTtsEditActivity::class.java)
         startForResult.launch(intent)
@@ -178,7 +181,7 @@ class SysTtsConfigFragment : Fragment() {
     }
 
     private fun notifyTtsUpdate(isUpdate: Boolean = true) {
-        if (isUpdate) requireContext().sendBroadcast(Intent(ACTION_ON_CONFIG_CHANGED))
+        if (isUpdate) SystemTtsService.notifyUpdateConfig()
     }
 
     private fun edit(data: SysTts) {
@@ -235,32 +238,6 @@ class SysTtsConfigFragment : Fragment() {
         return true
     }
 
-    @SuppressLint("SetTextI18n")
-    fun setAudioRequestTimeout() {
-        val numPicker = NumberPicker(requireContext())
-        numPicker.maxValue = 30
-        numPicker.minValue = 2
-        numPicker.value = 5
-        val displayList = ArrayList<String>()
-        for (i in 2..30) {
-            displayList.add("${i}秒")
-        }
-        numPicker.displayedValues = displayList.toList().toTypedArray()
-
-        numPicker.value = SysTtsConfig.requestTimeout / 1000 //转为秒
-        AlertDialog.Builder(requireContext()).setTitle(R.string.set_audio_request_timeout)
-            .setView(numPicker)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                SysTtsConfig.requestTimeout = numPicker.value * 1000 //转为毫秒
-                notifyTtsUpdate()
-            }
-            .setNegativeButton(R.string.reset) { _, _ ->
-                SysTtsConfig.requestTimeout = 5000
-            }
-            .setFadeAnim()
-            .show()
-    }
-
     fun showImportConfig() {
         val et = EditText(requireContext())
         et.hint = getString(R.string.url_net)
@@ -299,30 +276,6 @@ class SysTtsConfigFragment : Fragment() {
                     }
                 }
             }.setFadeAnim().show()
-    }
-
-    fun showSetMinDialogueLength() {
-        val numList = arrayListOf("不限制")
-        for (i in 1..10)
-            numList.add("对话字数 ≥ $i")
-
-        val picker = NumberPicker(requireContext()).apply {
-            maxValue = numList.size - 1
-            displayedValues = numList.toTypedArray()
-            value = SysTtsConfig.minDialogueLength
-        }
-        AlertDialog.Builder(requireContext()).setTitle("对话文本最小匹配汉字数")
-            .setMessage(R.string.set_dialogue_min_match_count_msg)
-            .setView(picker)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                SysTtsConfig.minDialogueLength = picker.value
-                notifyTtsUpdate()
-            }
-            .setNegativeButton(R.string.reset) { _, _ ->
-                SysTtsConfig.minDialogueLength = 0
-                notifyTtsUpdate()
-            }
-            .setFadeAnim().show()
     }
 
     fun startHttpTtsEditActivity() {

@@ -12,6 +12,11 @@ object SysTtsConfig : KotprefModel() {
     var isInAppPlayAudio by booleanPref()
 
     /**
+     * APP内播放语速
+     */
+    var inAppPlayRate by floatPref(1F)
+
+    /**
      * 多语音
      */
     var isMultiVoiceEnabled by booleanPref()

@@ -20,9 +20,9 @@ import android.speech.tts.TextToSpeechService
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.service.systts.help.TtsManager
-import com.github.jing332.tts_server_android.ui.fragment.SysTtsConfigFragment
-import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
+import com.github.jing332.tts_server_android.ui.systts.SystemTtsActivity
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
 import kotlinx.coroutines.*
@@ -35,10 +35,18 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
     companion object {
         const val TAG = "SysTtsService"
         const val ACTION_ON_LOG = "SYS_TTS_ON_LOG"
+        const val ACTION_REQUEST_UPDATE_CONFIG = "on_config_changed"
         const val ACTION_NOTIFY_CANCEL = "SYS_TTS_NOTIFY_CANCEL"
         const val ACTION_KILL_PROCESS = "SYS_TTS_NOTIFY_EXIT_0"
         const val NOTIFICATION_CHAN_ID = "system_tts_service"
         const val NOTIFICATION_ID = 2
+
+        /**
+         * 更新配置
+         */
+        fun notifyUpdateConfig() {
+            app.sendBroadcast(Intent(ACTION_REQUEST_UPDATE_CONFIG))
+        }
     }
 
     private val mCurrentLanguage: MutableList<String> = mutableListOf("zho", "CHN", "")
@@ -66,7 +74,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
 
         IntentFilter(ACTION_KILL_PROCESS).apply {
             addAction(ACTION_NOTIFY_CANCEL)
-            addAction(SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED)
+            addAction(ACTION_REQUEST_UPDATE_CONFIG)
             registerReceiver(mReceiver, this)
         }
 
@@ -222,7 +230,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
             PendingIntent.getActivity(
                 this, 0, Intent(
                     this,
-                    TtsSettingsActivity::class.java
+                    SystemTtsActivity::class.java
                 ), pendingIntentFlags
             )
 
@@ -253,7 +261,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                SysTtsConfigFragment.ACTION_ON_CONFIG_CHANGED -> { /* 配置更改 */
+                ACTION_REQUEST_UPDATE_CONFIG -> { /* 配置更改 */
                     mTtsManager.loadConfig()
                 }
                 ACTION_KILL_PROCESS -> { /* 通知按钮{结束进程} */

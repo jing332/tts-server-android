@@ -152,4 +152,6 @@
     <string name="title_voice_data_failed">语音数据加载失败</string>
     <string name="help_msg_sample_rate">系统TTS在开始播放时需指定采样率，如已打开【APP内播放】则可忽略此选项。</string>
     <string name="selected">已选择</string>
+    <string name="set_max_audio_cache_num">设置最大音频缓存数</string>
+    <string name="label_player_rate">播放器语速：</string>
 </resources>

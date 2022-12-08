@@ -83,9 +83,9 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
     var onSeekBarChangeListener: OnSeekBarChangeListener? = null
 
     interface OnSeekBarChangeListener {
-        fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean)
-        fun onStartTrackingTouch(seekBar: ConvenientSeekbar)
-        fun onStopTrackingTouch(seekBar: ConvenientSeekbar)
+        fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean){}
+        fun onStartTrackingTouch(seekBar: ConvenientSeekbar){}
+        fun onStopTrackingTouch(seekBar: ConvenientSeekbar){}
     }
 
 }

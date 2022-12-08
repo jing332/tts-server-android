@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/menu_addConfig"
+                android:id="@+id/menu_addMsTts"
                 android:icon="@drawable/ic_baseline_dashboard_customize_24"
                 android:title="@string/add_internal_tts"
                 tools:ignore="AlwaysShowAction" />
@@ -22,26 +22,7 @@
         </menu>
     </item>
 
-    <item
-        android:icon="@drawable/ic_baseline_sort_24"
-        android:title="@string/list_sort"
-        android:visible="false"
-        app:showAsAction="always">
-        <menu>
-            <item
-                android:id="@+id/menu_sortByDisplayName"
-                android:icon="@drawable/ic_baseline_text_fields_24"
-                android:title="@string/sort_by_display_name" />
-            <item
-                android:id="@+id/menu_sortByRaTarget"
-                android:icon="@drawable/ic_baseline_menu_book_24"
-                android:title="@string/sort_by_read_aloud_target" />
-            <item
-                android:id="@+id/menu_sortByApi"
-                android:icon="@drawable/ic_baseline_api_24"
-                android:title="@string/sort_by_api" />
-        </menu>
-    </item>
+
     <item
         android:id="@+id/menu_desktopShortcut"
         android:icon="@drawable/ic_baseline_add_business_24"
@@ -58,14 +39,15 @@
             android:icon="@drawable/ic_baseline_supervisor_account_24"
             android:title="@string/multi_voice" />
         <item
-            android:id="@+id/menu_setMinDialogueLen"
-            android:icon="@drawable/ic_baseline_textsms_24"
-            android:title="@string/set_dialogue_min_match_word_count" />
-        <item
             android:id="@+id/menu_isInAppPlayAudio"
             android:checkable="true"
             android:icon="@drawable/ic_baseline_smart_display_24"
-            android:title="@string/in_app_play_audio"/>
+            android:title="@string/in_app_play_audio" />
+        <item
+            android:id="@+id/menu_setMinDialogueLen"
+            android:icon="@drawable/ic_baseline_textsms_24"
+            android:title="@string/set_dialogue_min_match_word_count" />
+
     </group>
 
     <item

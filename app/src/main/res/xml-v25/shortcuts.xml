@@ -22,7 +22,7 @@
         android:shortcutShortLabel="@string/tts_config">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity"
+            android:targetClass="com.github.jing332.tts_server_android.ui.systts.SystemTtsActivity"
             android:targetPackage="com.github.jing332.tts_server_android" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>

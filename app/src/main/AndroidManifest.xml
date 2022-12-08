@@ -48,7 +48,7 @@
         </activity>
         <!-- 系统TTS配置 -->
         <activity
-            android:name=".ui.systts.TtsSettingsActivity"
+            android:name=".ui.systts.SystemTtsActivity"
             android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>

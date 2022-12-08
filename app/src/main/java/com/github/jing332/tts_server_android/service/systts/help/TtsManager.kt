@@ -82,6 +82,7 @@ class TtsManager(val context: Context) {
 
     // 一些开关偏好
     private var mIsInAppPlayAudio = false
+    private var mInAppPlayRate = 1F
     private var mIsSplitEnabled = false
     private var mIsReplaceEnabled = false
     private var mIsMultiVoiceEnabled = false
@@ -111,6 +112,7 @@ class TtsManager(val context: Context) {
     fun loadConfig() {
         SysTtsConfig.apply {
             mIsInAppPlayAudio = isInAppPlayAudio
+            mInAppPlayRate = inAppPlayRate
             mIsSplitEnabled = isSplitEnabled
             mIsMultiVoiceEnabled = isMultiVoiceEnabled
             mIsReplaceEnabled = isReplaceEnabled
@@ -436,6 +438,7 @@ class TtsManager(val context: Context) {
             try {
                 mScope.launch(Dispatchers.Main) {
                     exoPlayer.setMediaSource(createMediaSourceFromByteArray(audio))
+                    exoPlayer.setPlaybackSpeed(mInAppPlayRate)
                     exoPlayer.prepare()
                 }.join()
                 // 一直等待 直到 job.cancel
