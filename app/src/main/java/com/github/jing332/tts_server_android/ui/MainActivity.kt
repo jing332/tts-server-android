@@ -33,7 +33,7 @@ import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.ui.fragment.ServerLogFragment
 import com.github.jing332.tts_server_android.ui.fragment.ServerWebFragment
-import com.github.jing332.tts_server_android.ui.systts.SystemTtsActivity
+import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         binding.nav.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_systts_settings ->
-                    startActivity(Intent(this, SystemTtsActivity::class.java))
+                    startActivity(Intent(this, TtsSettingsActivity::class.java))
                 R.id.nav_settings ->
                     startActivity(Intent(this, SettingsActivity::class.java))
                 R.id.nav_killBattery ->

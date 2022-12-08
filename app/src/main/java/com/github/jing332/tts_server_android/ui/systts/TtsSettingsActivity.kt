@@ -31,7 +31,7 @@ import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.setFadeAnim
 
 
-class SystemTtsActivity : BackActivity() {
+class TtsSettingsActivity : BackActivity() {
     companion object {
         const val TAG = "TtsSettingsActivity"
     }
@@ -95,7 +95,7 @@ class SystemTtsActivity : BackActivity() {
                     getString(R.string.tts_config),
                     "tts_config",
                     R.mipmap.ic_launcher_round,
-                    Intent(this, SystemTtsActivity::class.java)
+                    Intent(this, TtsSettingsActivity::class.java)
                 )
             }
             /* 添加配置 */
