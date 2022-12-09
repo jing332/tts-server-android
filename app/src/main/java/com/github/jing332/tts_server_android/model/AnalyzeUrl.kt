@@ -17,18 +17,9 @@ class AnalyzeUrl(
         val jsPattern: Pattern by lazy { Pattern.compile("\\{\\{.*?\\}\\}") }
     }
 
-    fun eval(): UrlOption {
-        // 把http url提取出
-        val splitIndex = mUrl.indexOf(",")
-        if (splitIndex == -1) {
-            throw Exception("未找到\",\" 无法分割请求URL和请求参数。")
-        }
-        baseUrl = mUrl.substring(0, splitIndex).trim()
-        val jsonStr = mUrl.substring(splitIndex + 1)
-
-        val urlOption = App.jsonBuilder.decodeFromString<UrlOption>(jsonStr)
+    fun eval(): UrlOption? {
         // 提取js替换变量
-        val matcher = jsPattern.matcher(urlOption.body.toString())
+        val matcher = jsPattern.matcher(mUrl)
         val sb = StringBuffer()
         while (matcher.find()) {
             val jsCodeStr =
@@ -44,8 +35,18 @@ class AnalyzeUrl(
             matcher.end()
         }
         matcher.appendTail(sb)
-        urlOption.body = sb.toString()
-        return urlOption
+
+        val str = sb.toString()
+        val splitIndex = str.indexOf(",")
+        if (splitIndex < 0) { // GET
+            baseUrl = str
+            return null
+        }
+
+        // POST
+        baseUrl = str.substring(0, splitIndex).trim()
+        val jsonStr = str.substring(splitIndex + 1)
+        return App.jsonBuilder.decodeFromString(jsonStr)
     }
 
 

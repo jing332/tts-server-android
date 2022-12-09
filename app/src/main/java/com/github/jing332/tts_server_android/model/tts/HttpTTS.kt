@@ -73,7 +73,7 @@ data class HttpTTS(
                         speakSpeed = rate,
                         speakVolume = volume
                     ).eval()
-                    return result.body ?: "解析url失败"
+                    return result?.body ?: "解析url失败"
                 }.onFailure {
                     return "${it.message}"
                 }
@@ -121,12 +121,18 @@ data class HttpTTS(
         val a =
             AnalyzeUrl(mUrl = url, speakText = speakText, speakSpeed = rate, speakVolume = volume)
         val urlOption = a.eval()
-        urlOption.let {
-            return Net.post(a.baseUrl) {
+        return if (urlOption == null) { //GET
+            Net.get(a.baseUrl){
                 if (!this@HttpTTS::httpClient.isInitialized) onLoad()
                 okHttpClient = this@HttpTTS.httpClient
                 setHeaders(httpHeaders.toHeaders())
-                body = it.body.toString().toRequestBody(null)
+            }.execute()
+        } else {
+            Net.post(a.baseUrl) {
+                if (!this@HttpTTS::httpClient.isInitialized) onLoad()
+                okHttpClient = this@HttpTTS.httpClient
+                setHeaders(httpHeaders.toHeaders())
+                body = urlOption.body.toString().toRequestBody(null)
             }.execute()
         }
     }

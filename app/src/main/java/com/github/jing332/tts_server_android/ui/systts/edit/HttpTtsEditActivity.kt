@@ -140,7 +140,7 @@ class HttpTtsEditActivity : BackActivity() {
                         speakSpeed = rate,
                         speakVolume = volume
                     ).eval()
-                    return result.body ?: "解析url失败"
+                    return result?.body ?: "解析url失败"
                 }
                 return ""
             }
