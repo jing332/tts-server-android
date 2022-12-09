@@ -9,6 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.FragmentMainSysttsBinding
+import com.github.jing332.tts_server_android.util.reduceDragSensitivity
 
 
 class MainSysTtsFragment : Fragment() {
@@ -20,6 +21,7 @@ class MainSysTtsFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         binding.viewPager.isSaveEnabled = false
+        binding.viewPager.reduceDragSensitivity(8)
         binding.viewPager.adapter = FragmentAdapter(this)
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {

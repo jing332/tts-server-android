@@ -22,7 +22,8 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.TtsServer.NoActionBar">
+            android:theme="@style/Theme.TtsServer.NoActionBar"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,21 +37,9 @@
         <activity
             android:name=".ui.systts.edit.MsTtsEditActivity"
             android:label="@string/title_activity_tts_config_edit">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <!-- 系统TTS配置 -->
-        <activity
-            android:name=".ui.systts.TtsSettingsActivity"
-            android:exported="true"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.speech.tts.engine.CONFIGURE_ENGINE" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.systts.edit.HttpTtsEditActivity"
             android:label="@string/title_activity_http_tts"
@@ -84,7 +73,6 @@
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.intent.action.TTS_SERVICE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 

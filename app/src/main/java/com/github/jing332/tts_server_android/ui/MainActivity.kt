@@ -26,6 +26,7 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
+import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
@@ -73,6 +74,11 @@ class MainActivity : AppCompatActivity() {
             val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
             if (handled) {
                 invalidateOptionsMenu()
+                AppConfig.fragmentIndex = when (menuItem.itemId) {
+                    R.id.nav_systts -> 0
+                    R.id.nav_server -> 1
+                    else -> 0
+                }
             } else {
                 when (menuItem.itemId) {
                     R.id.nav_killBattery -> killBattery()
@@ -90,6 +96,16 @@ class MainActivity : AppCompatActivity() {
         val tvVersion =
             binding.navView.getHeaderView(0).findViewById<TextView>(R.id.nav_header_subtitle)
         tvVersion.text = BuildConfig.VERSION_NAME
+
+        val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
+        navGraph.setStartDestination(
+            if (AppConfig.fragmentIndex == 1) {
+                R.id.nav_server
+            } else {
+                R.id.nav_systts
+            }
+        )
+        navController.graph = navGraph
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
