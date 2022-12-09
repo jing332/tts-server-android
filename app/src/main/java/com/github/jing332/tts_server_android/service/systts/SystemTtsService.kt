@@ -22,7 +22,7 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.service.systts.help.TtsManager
-import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
+import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
 import kotlinx.coroutines.*
@@ -230,7 +230,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
             PendingIntent.getActivity(
                 this, 0, Intent(
                     this,
-                    TtsSettingsActivity::class.java
+                    MainActivity::class.java
                 ), pendingIntentFlags
             )
 

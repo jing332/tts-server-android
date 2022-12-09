@@ -21,12 +21,7 @@
 
         </menu>
     </item>
-
-
-    <item
-        android:id="@+id/menu_desktopShortcut"
-        android:icon="@drawable/ic_baseline_add_business_24"
-        android:title="@string/desktop_shortcut" />
+    
     <group>
         <item
             android:id="@+id/menu_doSplit"

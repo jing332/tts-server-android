@@ -1,7 +1,7 @@
 package com.github.jing332.tts_server_android.ui
 
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,184 +13,148 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.CookieManager
-import android.webkit.WebStorage
-import android.webkit.WebView
-import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
-import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
-import com.github.jing332.tts_server_android.*
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.*
+import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.BuildConfig
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.help.ServerConfig
-import com.github.jing332.tts_server_android.service.TtsIntentService
-import com.github.jing332.tts_server_android.ui.fragment.ServerLogFragment
-import com.github.jing332.tts_server_android.ui.fragment.ServerWebFragment
-import com.github.jing332.tts_server_android.ui.systts.TtsSettingsActivity
+import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.MyTools
-import com.github.jing332.tts_server_android.util.reduceDragSensitivity
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
+import com.google.android.material.navigation.NavigationView
 
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        const val TAG = "MainActivity"
+        const val ACTION_OPTION_ITEM_SELECTED_ID = "ACTION_OPTION_ITEM_SELECTED_ID"
+        const val KEY_MENU_ITEM_ID = "KEY_MENU_ITEM_ID"
+
+        const val ACTION_BACK_KEY_DOWN = "ACTION_BACK_KEY_DOWN"
     }
 
-    private val binding: ActivityMainBinding by lazy {
-        ActivityMainBinding.inflate(
-            layoutInflater
-        )
-    }
+    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-    @SuppressLint("BatteryLife")
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(binding.appBarMain.toolbar)
 
-        /* 左上角抽屉按钮 */
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, 0, 0)
-        toggle.syncState()
-        binding.drawerLayout.addDrawerListener(toggle)
-        /* 版本名 */
-        val tv = binding.nav.getHeaderView(0).findViewById<TextView>(R.id.nav_header_subtitle)
-        tv.text = BuildConfig.VERSION_NAME
+        val drawerLayout: DrawerLayout = binding.drawerLayout
+        val navView: NavigationView = binding.navView
 
-        binding.nav.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_systts_settings ->
-                    startActivity(Intent(this, TtsSettingsActivity::class.java))
-                R.id.nav_settings ->
-                    startActivity(Intent(this, SettingsActivity::class.java))
-                R.id.nav_killBattery ->
-                    killBattery()
-                R.id.nav_checkUpdate ->
-                    MyTools.checkUpdate(this)
-                R.id.nav_about ->
-                    showAboutDialog()
+        // Fragment 容器
+        val hostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+        navController = hostFragment.navController
 
-            }
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-            true
-        }
+        // 关联抽屉菜单和Fragment
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.nav_systts, R.id.nav_server, R.id.nav_settings), drawerLayout
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
-        binding.viewPager.reduceDragSensitivity(8)
-        binding.viewPager.adapter = FragmentAdapter(this)
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                binding.bottomNavigationView.menu.getItem(position).isChecked = true
-            }
-        })
-        binding.bottomNavigationView.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.menu_serverLog -> binding.viewPager.setCurrentItem(0, true)
-                R.id.menu_serverWeb -> {
-                    binding.viewPager.setCurrentItem(1, true)
+        // 其他抽屉菜单监听
+        navView.setNavigationItemSelectedListener { menuItem ->
+            val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
+            if (handled) {
+                invalidateOptionsMenu()
+            } else {
+                when (menuItem.itemId) {
+                    R.id.nav_killBattery -> killBattery()
+                    R.id.nav_checkUpdate -> MyTools.checkUpdate(this)
+                    R.id.nav_about -> showAboutDialog()
                 }
             }
-            true
+
+            navView.parent.let { if (it is DrawerLayout) it.closeDrawer(navView) }
+
+            handled
         }
 
-        MyTools.checkUpdate(this)
+        /* 版本名 */
+        val tvVersion =
+            binding.navView.getHeaderView(0).findViewById<TextView>(R.id.nav_header_subtitle)
+        tvVersion.text = BuildConfig.VERSION_NAME
     }
 
-
-    /*右上角更多菜单*/
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menu.clear()
+        val id = when (navController.currentDestination?.id) {
+            R.id.nav_systts -> R.menu.menu_systts
+            R.id.nav_server -> R.menu.menu_server
+            else -> return false
+        }
+        menuInflater.inflate(id, menu)
         return true
     }
 
-    /* 准备菜单 */
     @SuppressLint("RestrictedApi")
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         if (menu is MenuBuilder) {
             menu.setOptionalIconsVisible(true)
         }
-
-        /* 从配置文件读取并更新isWakeLock */
-        val item = menu?.findItem(R.id.menu_wakeLock)
-        item?.isChecked = ServerConfig.isWakeLockEnabled
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    /*菜单点击事件*/
-    @Suppress("DEPRECATION")
-    @SuppressLint("BatteryLife")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_openWeb -> { /* {打开网页版} 按钮 */
-                if (TtsIntentService.instance?.isRunning == true) {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data =
-                        Uri.parse("http://localhost:${TtsIntentService.instance?.cfg?.port}")
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                } else {
-                    toast(R.string.please_start_service)
+        menu?.apply {
+            when (navController.currentDestination?.id) {
+                R.id.nav_systts -> {
+                    findItem(R.id.menu_isMultiVoice)?.isChecked = SysTtsConfig.isMultiVoiceEnabled
+                    findItem(R.id.menu_doSplit)?.isChecked = SysTtsConfig.isSplitEnabled
+                    findItem(R.id.menu_replace_manager)?.isChecked = SysTtsConfig.isReplaceEnabled
+                    findItem(R.id.menu_isInAppPlayAudio)?.isChecked = SysTtsConfig.isInAppPlayAudio
                 }
-            }
-            R.id.menu_clearWebData -> {
-                WebView(applicationContext).apply {
-                    clearCache(true)
-                    clearFormData()
-                    clearSslPreferences()
+                R.id.nav_server -> {
+                    findItem(R.id.menu_wakeLock)?.isChecked = ServerConfig.isWakeLockEnabled
                 }
-                CookieManager.getInstance().apply {
-                    removeAllCookies(null)
-                    flush()
-                }
-                WebStorage.getInstance().deleteAllData()
-                toast(R.string.cleared)
-            }
-            R.id.menu_setToken -> {
-                val token = ServerConfig.token
-
-                val editText = EditText(this)
-                editText.setText(token)
-                AlertDialog.Builder(this).setTitle(getString(R.string.set_token)).setView(editText)
-                    .setPositiveButton(
-                        android.R.string.ok
-                    ) { _, _ ->
-                        val text = editText.text.toString()
-                        if (text != token) {
-                            toast(getString(R.string.token_set_to) + text.ifEmpty { "空" })
-                            ServerConfig.token = text
-                        }
-                    }.setNegativeButton(R.string.reset) { _, _ ->
-                        ServerConfig.token = ""
-                        toast(getString(R.string.ok_reset))
-                    }.setFadeAnim().show()
-            }
-            R.id.menu_wakeLock -> { /* 唤醒锁 */
-                item.isChecked = !item.isChecked /* 更新选中状态 */
-                ServerConfig.isWakeLockEnabled = item.isChecked
-                toast(R.string.restart_service_to_update)
-            }
-            R.id.menu_shortcut -> {
-                MyTools.addShortcut(
-                    this,
-                    getString(R.string.app_switch),
-                    "server_switch",
-                    R.drawable.ic_switch,
-                    Intent(this, ScSwitchActivity::class.java)
-                )
             }
         }
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        App.localBroadcast.sendBroadcast(Intent(ACTION_OPTION_ITEM_SELECTED_ID).apply {
+            putExtra(KEY_MENU_ITEM_ID, item.itemId)
+        })
+        return super.onOptionsItemSelected(item)
+    }
+
+    var lastBackDownTime = 0L
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        System.currentTimeMillis().let {
+            if (it - lastBackDownTime <= 1500) {
+                finish()
+            } else {
+                toast("再按一次退出APP")
+                lastBackDownTime = it
+            }
+        }
+
+//        if (keyCode == KeyEvent.KEYCODE_BACK) App.localBroadcast.sendBroadcast(
+//            Intent(ACTION_BACK_KEY_DOWN)
+//        )
+
         return true
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
 
     @Suppress("DEPRECATION")
     private fun showAboutDialog() {
@@ -223,31 +187,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && binding.viewPager.currentItem == 1) {
-            if (!webFragment.onBackKeyDown())
-                binding.viewPager.setCurrentItem(0, true)
-
-            return true
-        }
-
-        return super.onKeyDown(keyCode, event)
-    }
-
-    val logFragment = ServerLogFragment()
-    val webFragment = ServerWebFragment()
-
-    inner class FragmentAdapter(fragmentActivity: FragmentActivity) :
-        FragmentStateAdapter(fragmentActivity) {
-        private val fragmentList = arrayListOf(logFragment, webFragment)
-        override fun getItemCount(): Int {
-            return fragmentList.size
-        }
-
-        override fun createFragment(position: Int): Fragment {
-            return fragmentList[position]
-        }
-    }
 }
-

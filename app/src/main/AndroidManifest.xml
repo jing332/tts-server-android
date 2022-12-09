@@ -20,25 +20,12 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
-            android:label="@string/title_activity_tts_config_edit"
-            android:name=".ui.systts.edit.MsTtsEditActivity">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".ui.SettingsActivity"
-            android:label="@string/title_activity_settings" />
-        <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:launchMode="singleTask"
             android:theme="@style/Theme.TtsServer.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
 
@@ -46,13 +33,21 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+        <activity
+            android:name=".ui.systts.edit.MsTtsEditActivity"
+            android:label="@string/title_activity_tts_config_edit">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <!-- 系统TTS配置 -->
         <activity
             android:name=".ui.systts.TtsSettingsActivity"
-            android:launchMode="singleTask"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.speech.tts.engine.CONFIGURE_ENGINE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -60,19 +55,17 @@
             android:name=".ui.systts.edit.HttpTtsEditActivity"
             android:label="@string/title_activity_http_tts"
             android:launchMode="singleTask" />
-        <!-- 替换规则 -->
         <activity
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:exported="true"
             android:label="@string/title_activity_replace_manager"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask" /> <!-- 替换规则 -->
         <activity
             android:name=".ui.systts.replace.ReplaceRuleEditActivity"
             android:label="@string/title_activity_replace_edit" />
-        <!-- Server开关 -->
         <activity
             android:name=".ui.ScSwitchActivity"
-            android:theme="@android:style/Theme.NoDisplay" />
+            android:theme="@android:style/Theme.NoDisplay" /><!-- Server开关 -->
         <activity
             android:name=".service.systts.CheckVoiceData"
             android:exported="true"

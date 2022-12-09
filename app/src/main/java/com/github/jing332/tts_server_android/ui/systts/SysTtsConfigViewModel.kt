@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.fragment
+package com.github.jing332.tts_server_android.ui.systts
 
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.App

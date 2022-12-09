@@ -5,9 +5,14 @@
 
     <group android:id="@+id/group1">
         <item
-            android:id="@+id/nav_systts_settings"
+            android:id="@+id/nav_systts"
             android:icon="@drawable/ic_tts"
             android:title="@string/menu_sys_tts_settings" />
+        <item
+            android:id="@+id/nav_server"
+            android:icon="@drawable/ic_baseline_menu_book_24"
+            android:title="Server"
+            tools:ignore="HardcodedText" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_baseline_settings_24"

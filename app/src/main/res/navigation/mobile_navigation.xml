@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_systts">
+
+    <fragment
+        android:id="@+id/nav_systts"
+        android:name="com.github.jing332.tts_server_android.ui.systts.MainSysTtsFragment"
+        android:label="@string/menu_sys_tts_settings"
+        tools:layout="@layout/fragment_main_systts" />
+
+    <fragment
+        android:id="@+id/nav_server"
+        android:name="com.github.jing332.tts_server_android.ui.server.MainServerFragment"
+        android:label="Server"
+        tools:layout="@layout/fragment_main_server" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:label="@string/menu_settings"
+        android:name="com.github.jing332.tts_server_android.ui.SettingsFragment"/>
+</navigation>
