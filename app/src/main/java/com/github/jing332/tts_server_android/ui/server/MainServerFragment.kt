@@ -40,6 +40,8 @@ class MainServerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) return
+
         App.localBroadcast.registerReceiver(
             mReceiver,
             IntentFilter(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID).apply {

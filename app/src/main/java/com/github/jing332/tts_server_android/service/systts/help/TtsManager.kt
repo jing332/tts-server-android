@@ -165,6 +165,8 @@ class TtsManager(val context: Context) {
     // APP内播放音频Job 用于 job.cancel() 取消播放
     private var mInAppPlayJob: Job? = null
 
+    private var mCurrentFullText = ""
+
     /* 开始转语音 */
     suspend fun synthesizeText(
         aText: String, request: SynthesisRequest?, callback: SynthesisCallback?
@@ -236,7 +238,9 @@ class TtsManager(val context: Context) {
                         } else {
                             mAudioDecoder.doDecode(srcData = data.audio,
                                 sampleRate = mAudioFormat.sampleRate,
-                                onRead = { writeToCallBack(callback, it) },
+                                onRead = {
+                                    writeToCallBack(callback, it)
+                                },
                                 error = { logErr("解码失败: $it") })
                             logWarn("播放完毕：${shortText}")
                         }

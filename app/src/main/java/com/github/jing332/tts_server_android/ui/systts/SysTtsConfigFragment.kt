@@ -88,6 +88,8 @@ class SysTtsConfigFragment : Fragment() {
     @SuppressLint("RestrictedApi", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) return
+
         App.localBroadcast.registerReceiver(
             mReceiver,
             IntentFilter().apply { addAction(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID) }
@@ -132,7 +134,10 @@ class SysTtsConfigFragment : Fragment() {
         vm.viewModelScope.runOnIO {
             appDb.sysTtsDao.flowAll().conflate().collect {
                 if (brv.models == null) runOnUI { brv.models = it } else brv.setDifferModels(it)
-                runOnUI { checkFormatAndShowDialog() }
+                runOnUI {
+                    println("checkFormatAndShowDialog")
+                    checkFormatAndShowDialog()
+                }
             }
         }
 

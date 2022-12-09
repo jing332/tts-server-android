@@ -53,6 +53,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
 
     private val mTtsManager: TtsManager by lazy { TtsManager(this) }
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
+    private val mScope = CoroutineScope(Job())
 
     // WIFI 锁
     private val mWifiLock by lazy {
@@ -127,24 +128,23 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
     }
 
 
-    lateinit var mCurrentText: String
+    private lateinit var mCurrentText: String
 
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
-        synchronized(this) {
-            reNewWakeLock()
-            startForegroundService()
-            val text = request?.charSequenceText.toString().trim()
-            mCurrentText = text
-            updateNotification(getString(R.string.tts_state_playing), text)
+        reNewWakeLock()
+        startForegroundService()
+        val text = request?.charSequenceText.toString().trim()
+        mCurrentText = text
+        updateNotification(getString(R.string.tts_state_playing), text)
 
-            if (StringUtils.isSilent(text)) {
-                callback?.start(16000, AudioFormat.ENCODING_PCM_16BIT, 1)
-                callback?.done()
-                return
-            }
-            runBlocking { mTtsManager.synthesizeText(text, request, callback) }
+        if (StringUtils.isSilent(text)) {
+            callback?.start(16000, AudioFormat.ENCODING_PCM_16BIT, 1)
             callback?.done()
+            return
         }
+        runBlocking { mTtsManager.synthesizeText(text, request, callback) }
+        callback?.done()
+        updateNotification(getString(R.string.tts_state_idle), "")
     }
 
     override fun onError(title: String, content: String) {
@@ -165,15 +165,13 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
 
     private lateinit var mNotificationBuilder: Notification.Builder
     private lateinit var mNotificationManager: NotificationManager
-    private var isNotificationDisplayed = false
 
-    private val scope = object : CoroutineScope {
-        override val coroutineContext = Job()
-    }
+    // 通知是否显示中
+    private var mNotificationDisplayed = false
 
     /* 启动前台服务通知 */
     private fun startForegroundService() {
-        if (!isNotificationDisplayed) {
+        if (!mNotificationDisplayed) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val chan = NotificationChannel(
                     NOTIFICATION_CHAN_ID,
@@ -187,14 +185,14 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
                 mNotificationManager.createNotificationChannel(chan)
             }
             startForeground(NOTIFICATION_ID, getNotification())
-            isNotificationDisplayed = true
+            mNotificationDisplayed = true
 
-            scope.launch {
+            mScope.launch {
                 while (true) {
                     delay(5000)
                     if (!mTtsManager.isSynthesizing) {
                         stopForeground(true)
-                        isNotificationDisplayed = false
+                        mNotificationDisplayed = false
                         return@launch
                     }
                 }
@@ -273,7 +271,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
                         onStop() /* 取消当前播放 */
                     else /* 无播放，关闭通知 */ {
                         stopForeground(true)
-                        isNotificationDisplayed = false
+                        mNotificationDisplayed = false
                     }
                 }
             }
