@@ -96,9 +96,9 @@ class SysTtsListFragment : Fragment() {
         binding.viewPager.adapter = vpAdapter
 
         val tabTitles = listOf(
-            getString(R.string.ra_all),
-            getString(R.string.ra_aside),
-            getString(R.string.ra_dialogue)
+            getString(R.string.all),
+            getString(R.string.aside),
+            getString(R.string.dialogue)
         )
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
             tab.text = tabTitles[pos]
@@ -273,7 +273,8 @@ class SysTtsListFragment : Fragment() {
             displayedValues = numList.toTypedArray()
             value = SysTtsConfig.minDialogueLength
         }
-        AlertDialog.Builder(requireContext()).setTitle("对话文本最小匹配汉字数")
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.systts_set_dialogue_min_match_word_count)
             .setMessage(R.string.systts_set_dialogue_min_info).setView(picker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.minDialogueLength = picker.value
@@ -305,6 +306,8 @@ class SysTtsListFragment : Fragment() {
             R.id.menu_isVoiceMultiple -> {
                 SysTtsConfig.isVoiceMultipleEnabled = !SysTtsConfig.isVoiceMultipleEnabled
                 SystemTtsService.notifyUpdateConfig()
+                if (SysTtsConfig.isVoiceMultipleEnabled)
+                    longToast(getString(R.string.systts_voice_multiple_hint))
             }
 
             R.id.menu_replace_manager -> startActivity(

@@ -109,6 +109,10 @@
     <string name="ra_all">朗读全部</string>
     <string name="ra_aside">仅旁白</string>
     <string name="ra_dialogue">仅对话</string>
+
+    <string name="all">全部</string>
+    <string name="aside">旁白</string>
+    <string name="dialogue">对话</string>
     <string name="none">无</string>
     <string name="default_str">默认</string>
     <string name="set_audio_request_timeout">设置请求音频等待时间</string>
@@ -168,6 +172,9 @@
     <string name="systts_help_sample_rate">系统TTS在开始播放时需指定采样率，如已打开【APP内播放】则可忽略此选项。</string>
     <string name="systts_set_max_audio_cache_num">设置最大音频缓存数</string>
     <string name="systts_voice_multiple_option">语音可多选(随机播放)</string>
-
+    <string name="systts_voice_multiple_hint">相同朗读目标将不再排斥，并使用随机轮播。</string>
+    <string name="systts_warn_no_ra_dialogue">警告：缺少{对话}，使用默认配置！</string>
+    <string name="systts_warn_no_ra_all">警告：缺少{全部}，使用默认！</string>
+    <string name="systts_warn_no_ra_aside">警告：缺少{旁白}，使用默认配置！</string>
 
 </resources>

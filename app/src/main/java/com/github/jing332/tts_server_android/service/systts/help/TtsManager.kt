@@ -11,6 +11,7 @@ import com.drake.net.utils.runMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.LogLevel
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
@@ -30,7 +31,6 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.upstream.DataSource
-import com.google.common.util.concurrent.ListenableFutureTask
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
@@ -133,8 +133,8 @@ class TtsManager(val context: Context) {
             if (SysTtsConfig.isMultiVoiceEnabled) {
                 // 旁白
                 getAllByReadAloudTarget(ReadAloudTarget.ASIDE).let { list ->
-                    mAsideConfig = if (list == null) {
-                        context.toast("警告：缺少{旁白}，使用默认配置！")
+                    mAsideConfig = if (list == null || list.isEmpty()) {
+                        context.toast(context.getString(R.string.systts_warn_no_ra_aside))
                         listOf(SysTts(readAloudTarget = ReadAloudTarget.ASIDE, tts = MsTTS()))
                     } else list
                 }
@@ -142,8 +142,8 @@ class TtsManager(val context: Context) {
 
                 // 对话
                 getAllByReadAloudTarget(ReadAloudTarget.DIALOGUE).let { list ->
-                    mDialogueConfig = if (list == null) {
-                        context.toast("警告：缺少{对话}，使用默认配置！")
+                    mDialogueConfig = if (list == null || list.isEmpty()) {
+                        context.toast(R.string.systts_warn_no_ra_dialogue)
                         listOf(SysTts(readAloudTarget = ReadAloudTarget.DIALOGUE, tts = MsTTS()))
                     } else list
                 }
@@ -152,8 +152,8 @@ class TtsManager(val context: Context) {
                 mAudioFormat = mDialogueConfig[0].tts?.audioFormat!!
             } else {
                 mSysTts.getAllByReadAloudTarget().let { list ->
-                    mDefaultConfig = if (list == null) {
-                        context.toast("警告：缺少{全部}，使用默认！")
+                    mDefaultConfig = if (list == null || list.isEmpty()) {
+                        context.toast(context.getString(R.string.systts_warn_no_ra_all))
                         listOf(SysTts(isEnabled = true, tts = MsTTS()))
                     } else list
 
@@ -163,7 +163,6 @@ class TtsManager(val context: Context) {
             }
         }
     }
-
 
     // 音频生产者
     private var mProducer: ReceiveChannel<ChannelData>? = null

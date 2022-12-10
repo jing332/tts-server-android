@@ -131,6 +131,8 @@ class MainActivity : AppCompatActivity() {
                     findItem(R.id.menu_doSplit)?.isChecked = SysTtsConfig.isSplitEnabled
                     findItem(R.id.menu_replace_manager)?.isChecked = SysTtsConfig.isReplaceEnabled
                     findItem(R.id.menu_isInAppPlayAudio)?.isChecked = SysTtsConfig.isInAppPlayAudio
+                    findItem(R.id.menu_isVoiceMultiple)?.isChecked =
+                        SysTtsConfig.isVoiceMultipleEnabled
                 }
                 R.id.nav_server -> {
                     findItem(R.id.menu_wakeLock)?.isChecked = ServerConfig.isWakeLockEnabled

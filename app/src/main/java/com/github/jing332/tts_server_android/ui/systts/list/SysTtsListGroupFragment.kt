@@ -72,7 +72,6 @@ class SysTtsListGroupFragment : Fragment() {
         return binding.root
     }
 
-
     @Suppress("UNCHECKED_CAST")
     @SuppressLint("RestrictedApi", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
