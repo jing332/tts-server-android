@@ -30,6 +30,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.common.util.concurrent.ListenableFutureTask
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
@@ -74,21 +75,22 @@ class TtsManager(val context: Context) {
     private val mSysTts by lazy { appDb.sysTtsDao }
 
     // 全局默认 TTS配置
-    private var mDefaultConfig: SysTts? = null
+    private lateinit var mDefaultConfig: List<SysTts>
 
     // 旁白 TTS配置
-    private var mAsideConfig: SysTts? = null
+    private lateinit var mAsideConfig: List<SysTts>
 
     // 对话 TTS配置
-    private var mDialogueConfig: SysTts? = null
+    private lateinit var mDialogueConfig: List<SysTts>
 
     // 一些开关偏好
-    private var mIsInAppPlayAudio = false
+    private var mInAppPlayAudio = false
     private var mInAppPlaySpeed = 1F
     private var mInAppPlayPitch = 1F
-    private var mIsSplitEnabled = false
-    private var mIsReplaceEnabled = false
-    private var mIsMultiVoiceEnabled = false
+    private var mSplitEnabled = false
+    private var mReplaceEnabled = false
+    private var mMultiVoiceEnabled = false
+    private var mVoiceMultipleEnabled = false
     private var mMinDialogueLen = 0
 
     /**
@@ -114,47 +116,50 @@ class TtsManager(val context: Context) {
      */
     fun loadConfig() {
         SysTtsConfig.apply {
-            mIsInAppPlayAudio = isInAppPlayAudio
+            mInAppPlayAudio = isInAppPlayAudio
             mInAppPlaySpeed = inAppPlaySpeed
             mInAppPlayPitch = inAppPlayPitch
 
-            mIsSplitEnabled = isSplitEnabled
-            mIsMultiVoiceEnabled = isMultiVoiceEnabled
-            mIsReplaceEnabled = isReplaceEnabled
+            mVoiceMultipleEnabled = isVoiceMultipleEnabled
+            mSplitEnabled = isSplitEnabled
+            mMultiVoiceEnabled = isMultiVoiceEnabled
+            mReplaceEnabled = isReplaceEnabled
             mMinDialogueLen = minDialogueLength
         }
 
         mSysTts.apply {
-            if (mIsReplaceEnabled) mReplacer.load()
+            if (mReplaceEnabled) mReplacer.load()
 
             if (SysTtsConfig.isMultiVoiceEnabled) {
-                mAsideConfig = getByReadAloudTarget(ReadAloudTarget.ASIDE)
-                if (mAsideConfig == null) {
-                    context.toast("警告：缺少{旁白}，使用默认配置！")
-                    mAsideConfig = SysTts(
-                        readAloudTarget = ReadAloudTarget.ASIDE, tts = MsTTS()
-                    )
+                // 旁白
+                getAllByReadAloudTarget(ReadAloudTarget.ASIDE).let { list ->
+                    mAsideConfig = if (list == null) {
+                        context.toast("警告：缺少{旁白}，使用默认配置！")
+                        listOf(SysTts(readAloudTarget = ReadAloudTarget.ASIDE, tts = MsTTS()))
+                    } else list
                 }
-                mAsideConfig!!.tts!!.onLoad()
+                mAsideConfig.forEach { it.tts?.onLoad() }
 
-                mDialogueConfig = getByReadAloudTarget(ReadAloudTarget.DIALOGUE)
-                if (mDialogueConfig == null) {
-                    context.toast("警告：缺少{对话}，使用默认配置！")
-                    mDialogueConfig = SysTts(
-                        readAloudTarget = ReadAloudTarget.ASIDE, tts = MsTTS()
-                    )
+                // 对话
+                getAllByReadAloudTarget(ReadAloudTarget.DIALOGUE).let { list ->
+                    mDialogueConfig = if (list == null) {
+                        context.toast("警告：缺少{对话}，使用默认配置！")
+                        listOf(SysTts(readAloudTarget = ReadAloudTarget.DIALOGUE, tts = MsTTS()))
+                    } else list
                 }
-                mDialogueConfig?.tts?.onLoad()
 
-                mAudioFormat = mAsideConfig?.tts?.audioFormat!!
+                mDialogueConfig.forEach { it.tts?.onLoad() }
+                mAudioFormat = mDialogueConfig[0].tts?.audioFormat!!
             } else {
-                mDefaultConfig = mSysTts.getByReadAloudTarget()
-                if (mDefaultConfig == null) {
-                    context.toast("警告：缺少{全部}，使用默认！")
-                    mDefaultConfig = SysTts(isEnabled = true, tts = MsTTS())
+                mSysTts.getAllByReadAloudTarget().let { list ->
+                    mDefaultConfig = if (list == null) {
+                        context.toast("警告：缺少{全部}，使用默认！")
+                        listOf(SysTts(isEnabled = true, tts = MsTTS()))
+                    } else list
+
+                    mDefaultConfig.forEach { it.tts?.onLoad() }
+                    mAudioFormat = mDefaultConfig[0].tts?.audioFormat!!
                 }
-                mDefaultConfig?.tts?.onLoad()
-                mAudioFormat = mDefaultConfig?.tts?.audioFormat!!
             }
         }
     }
@@ -168,6 +173,12 @@ class TtsManager(val context: Context) {
 
     private var mCurrentFullText = ""
 
+    private fun handleTTS(list: List<SysTts>, rate: Int, pitch: Int): List<BaseTTS> {
+        val handledList = list.map { it.tts.clone<BaseTTS>()!! }
+        handledList.forEach { it.setPlayBackParameters(rate, pitch) }
+        return handledList
+    }
+
     /* 开始转语音 */
     suspend fun synthesizeText(
         aText: String, request: SynthesisRequest?, callback: SynthesisCallback?
@@ -175,29 +186,25 @@ class TtsManager(val context: Context) {
         isSynthesizing = true
         callback!!.start(mAudioFormat.sampleRate, mAudioFormat.bitRate, 1)
 
-        val text = if (mIsReplaceEnabled) mReplacer.doReplace(aText) else aText
+        val text = if (mReplaceEnabled) mReplacer.doReplace(aText) else aText
 
         val sysPitch = request!!.pitch - 100
         val sysRate = (mNorm.normalize(request.speechRate.toFloat()) - 100).toInt()
 
         mProducer = null
-        if (mIsMultiVoiceEnabled) { //多语音
+        if (mMultiVoiceEnabled) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
 
-            val aside =
-                mAsideConfig?.tts?.clone<BaseTTS>()?.setPlayBackParameters(sysRate, sysPitch)
-
-            val dialogue =
-                mDialogueConfig?.tts?.clone<BaseTTS>()?.setPlayBackParameters(sysRate, sysPitch)
+            val aside = handleTTS(mAsideConfig, sysRate, sysPitch)
+            val dialogue = handleTTS(mDialogueConfig, sysRate, sysPitch)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
-            mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside!!, dialogue!!)
+            mProducer = multiVoiceProducer(mSplitEnabled, text, aside, dialogue)
         } else { //单语音
-            val pro =
-                mDefaultConfig?.tts.clone<BaseTTS>()?.setPlayBackParameters(sysRate, sysPitch)!!
+            val pro = handleTTS(mDefaultConfig, sysRate, sysPitch)[0]
 
             Log.d(TAG, "单语音：${pro}")
-            if (mIsSplitEnabled) {
+            if (mSplitEnabled) {
                 Log.d(TAG, "splitSentences...")
                 mProducer = splitSentencesProducer(text, pro)
             } else {
@@ -226,7 +233,7 @@ class TtsManager(val context: Context) {
                             return@launch
                         }
 
-                        if (mIsInAppPlayAudio) {
+                        if (mInAppPlayAudio) {
                             // APP内播放
                             playAudioInApp(data.audio)
                             logWarn("播放完毕：${shortText}")
@@ -270,7 +277,7 @@ class TtsManager(val context: Context) {
     /* 多语音生产者 */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun multiVoiceProducer(
-        isSplit: Boolean, text: String, aside: BaseTTS, dialogue: BaseTTS
+        isSplit: Boolean, text: String, aside: List<BaseTTS>, dialogue: List<BaseTTS>
     ): ReceiveChannel<ChannelData> = mScope.produce(capacity = 1000) {
         try {
             /* 分割为多语音  */
@@ -462,7 +469,7 @@ class TtsManager(val context: Context) {
         runBlocking {
             val audio = getAudioHelper(text, msTtsProperty)
             if (audio != null) {
-                if (mIsInAppPlayAudio) {
+                if (mInAppPlayAudio) {
                     playAudioInApp(audio)
                 } else {
                     if (msTtsProperty.audioFormat.isNeedDecode) {

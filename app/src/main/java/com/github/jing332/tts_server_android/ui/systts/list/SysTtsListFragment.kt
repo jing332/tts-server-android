@@ -84,6 +84,7 @@ class SysTtsListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) return
 
         val fragmentList = listOf(
             SysTtsListGroupFragment.newInstance(),
@@ -94,7 +95,11 @@ class SysTtsListFragment : Fragment() {
         binding.viewPager.isSaveEnabled = false
         binding.viewPager.adapter = vpAdapter
 
-        val tabTitles = listOf("全部", "旁白", "对话")
+        val tabTitles = listOf(
+            getString(R.string.ra_all),
+            getString(R.string.ra_aside),
+            getString(R.string.ra_dialogue)
+        )
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
             tab.text = tabTitles[pos]
         }.attach()
@@ -105,6 +110,8 @@ class SysTtsListFragment : Fragment() {
             }
         }
 
+        val lis = appDb.sysTtsDao.getAllByReadAloudTarget(ReadAloudTarget.ASIDE)
+        println(lis)
     }
 
     @SuppressLint("RestrictedApi", "SetTextI18n")
@@ -293,6 +300,10 @@ class SysTtsListFragment : Fragment() {
             }
             R.id.menu_isMultiVoice -> {
                 SysTtsConfig.isMultiVoiceEnabled = !SysTtsConfig.isMultiVoiceEnabled
+                SystemTtsService.notifyUpdateConfig()
+            }
+            R.id.menu_isVoiceMultiple -> {
+                SysTtsConfig.isVoiceMultipleEnabled = !SysTtsConfig.isVoiceMultipleEnabled
                 SystemTtsService.notifyUpdateConfig()
             }
 

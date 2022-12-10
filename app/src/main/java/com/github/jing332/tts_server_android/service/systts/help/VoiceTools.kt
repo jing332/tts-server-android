@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.service.systts.help
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.lengthOfChinese
+import kotlin.random.Random
 
 object VoiceTools {
     /* 分割旁白和对白 */
@@ -32,24 +33,30 @@ object VoiceTools {
     }
 
     /**
-     * 分割为旁白与对话。
+     * 分割为旁白与对话。为list则自动随机
      * @param text 需分割的文本
      * @param asideProperty 旁白的朗读属性
      * @param dialogueProperty 对话的朗读属性
      */
     fun splitMultiVoice(
         text: String,
-        asideProperty: BaseTTS,
-        dialogueProperty: BaseTTS,
+        asideProperty: List<BaseTTS>,
+        dialogueProperty: List<BaseTTS>,
         minDialogueLen: Int
     ): List<ResultMultiVoiceData> {
+        val random = Random(System.currentTimeMillis())
+        val asideSize = asideProperty.size
+        val dialogSize = dialogueProperty.size
+
         val multiVoice = splitMultiVoice(text)
         val list = arrayListOf<ResultMultiVoiceData>()
         multiVoice.forEach {
             if (!StringUtils.isSilent(it.text)) {
                 val pro =
-                    if (it.isDialogue && it.text.lengthOfChinese() >= minDialogueLen) dialogueProperty
-                    else asideProperty
+                    if (it.isDialogue && it.text.lengthOfChinese() >= minDialogueLen)
+                        dialogueProperty[random.nextInt(dialogSize)]
+                    else asideProperty[random.nextInt(asideSize)]
+
                 list.add(ResultMultiVoiceData(pro, it.text))
             }
         }

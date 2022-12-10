@@ -27,6 +27,11 @@ object SysTtsConfig : KotprefModel() {
     var isMultiVoiceEnabled by booleanPref()
 
     /**
+     * 相同朗读目标可多选
+     */
+    var isVoiceMultipleEnabled by booleanPref()
+
+    /**
      * 替换
      */
     var isReplaceEnabled by booleanPref()

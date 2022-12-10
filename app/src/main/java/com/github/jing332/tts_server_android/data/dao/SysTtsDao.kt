@@ -22,6 +22,9 @@ interface SysTtsDao {
     @Query("select * from SysTts where readAloudTarget = :target and isEnabled = '1'")
     fun getByReadAloudTarget(target: Int = ReadAloudTarget.ALL): SysTts?
 
+    @Query("select * from sysTts where readAloudTarget = :target and isEnabled = '1'")
+    fun getAllByReadAloudTarget(target: Int = ReadAloudTarget.ALL): List<SysTts>?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg httpTTS: SysTts)
 

@@ -30,7 +30,7 @@ import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
 
 
-class MainServerFragment : Fragment() {
+class ServerFragment : Fragment() {
 
     private val binding: ServerFragmentBinding by lazy {
         ServerFragmentBinding.inflate(layoutInflater)

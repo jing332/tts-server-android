@@ -34,6 +34,11 @@
             android:icon="@drawable/ic_baseline_supervisor_account_24"
             android:title="@string/multi_voice" />
         <item
+            android:id="@+id/menu_isVoiceMultiple"
+            android:icon="@drawable/ic_baseline_select_all_24"
+            android:title="@string/systts_voice_multiple_option"
+            android:checkable="true"/>
+        <item
             android:id="@+id/menu_isInAppPlayAudio"
             android:checkable="true"
             android:icon="@drawable/ic_baseline_smart_display_24"

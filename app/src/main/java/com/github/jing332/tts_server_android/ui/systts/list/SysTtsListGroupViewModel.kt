@@ -18,7 +18,7 @@ class SysTtsListGroupViewModel : ViewModel() {
         }
 
         list[position].let { data ->
-            if (checked) { // 确保同类型只可单选
+            if (checked && !SysTtsConfig.isVoiceMultipleEnabled) { // 多选关闭下 确保同类型只可单选
                 list.forEach {
                     if (it.readAloudTarget == data.readAloudTarget) {
                         appDb.sysTtsDao.update(it.copy(isEnabled = false))
