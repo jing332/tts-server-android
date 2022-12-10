@@ -9,13 +9,13 @@
         android:id="@+id/nav_systts"
         android:name="com.github.jing332.tts_server_android.ui.systts.MainSysTtsFragment"
         android:label="@string/menu_sys_tts_settings"
-        tools:layout="@layout/fragment_main_systts" />
+        tools:layout="@layout/systts_fragment" />
 
     <fragment
         android:id="@+id/nav_server"
         android:name="com.github.jing332.tts_server_android.ui.server.MainServerFragment"
         android:label="Server"
-        tools:layout="@layout/fragment_main_server" />
+        tools:layout="@layout/server_fragment" />
 
     <fragment
         android:id="@+id/nav_settings"

@@ -170,5 +170,6 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="app_down_agine_to_exit">再按一次退出APP</string>
 
 </resources>

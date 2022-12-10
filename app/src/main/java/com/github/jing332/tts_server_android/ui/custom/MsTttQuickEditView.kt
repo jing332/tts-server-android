@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.databinding.ViewMsTtsQuickEditBinding
+import com.github.jing332.tts_server_android.databinding.SysttsMsQuickEditViewBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
 import com.github.jing332.tts_server_android.model.tts.MsTtsFormatManger
@@ -43,8 +43,8 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
 
     var callback: Callback? = null
 
-    private val binding by lazy {
-        ViewMsTtsQuickEditBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding: SysttsMsQuickEditViewBinding by lazy {
+        SysttsMsQuickEditViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     var rateValue: Int = 0

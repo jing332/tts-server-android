@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.ViewHttpTtsQuickEditBinding
+import com.github.jing332.tts_server_android.databinding.SysttsHttpQuickEditViewBinding
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 
@@ -14,13 +14,13 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
 
-    private val vb by lazy {
-        ViewHttpTtsQuickEditBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding: SysttsHttpQuickEditViewBinding by lazy {
+        SysttsHttpQuickEditViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     init {
-        vb.seekBarRate.onSeekBarChangeListener = this
-        vb.seekBarVolume.onSeekBarChangeListener = this
+        binding.seekBarRate.onSeekBarChangeListener = this
+        binding.seekBarVolume.onSeekBarChangeListener = this
     }
 
     var callBack: CallBack? = null
@@ -35,28 +35,28 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
 
     var rate: Int
         get() {
-            return vb.seekBarRate.progress
+            return binding.seekBarRate.progress
         }
         set(value) {
-            vb.seekBarRate.progress = value
+            binding.seekBarRate.progress = value
         }
 
     var volume: Int
         get() {
-            return vb.seekBarVolume.progress
+            return binding.seekBarVolume.progress
         }
         set(value) {
-            vb.seekBarVolume.progress = value
+            binding.seekBarVolume.progress = value
         }
 
     override fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {
         when (seekBar) {
-            vb.seekBarRate -> {
-                vb.tvValRate.text =
+            binding.seekBarRate -> {
+                binding.tvValRate.text =
                     if (progress <= BaseTTS.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app) else progress.toString()
             }
-            vb.seekBarVolume -> {
-                vb.tvValVolume.text = "${vb.seekBarVolume.progress}"
+            binding.seekBarVolume -> {
+                binding.tvValVolume.text = "${binding.seekBarVolume.progress}"
             }
         }
     }
@@ -66,7 +66,7 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
 
     override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
         callBack?.onValueChanged(rate, volume)?.let {
-            vb.tvPreviewUrl.text = it
+            binding.tvPreviewUrl.text = it
         }
     }
 }

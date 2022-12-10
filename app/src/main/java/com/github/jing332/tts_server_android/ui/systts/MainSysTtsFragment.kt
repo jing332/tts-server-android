@@ -8,13 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.FragmentMainSysttsBinding
+import com.github.jing332.tts_server_android.databinding.SysttsFragmentBinding
+import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListFragment
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
 
 
 class MainSysTtsFragment : Fragment() {
-    private val binding: FragmentMainSysttsBinding by lazy {
-        FragmentMainSysttsBinding.inflate(layoutInflater)
+    private val binding: SysttsFragmentBinding by lazy {
+        SysttsFragmentBinding.inflate(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +48,7 @@ class MainSysTtsFragment : Fragment() {
     }
 
 
-    val configFragment = SysTtsConfigFragment()
+    val configFragment = SysTtsListFragment()
     val logFragment = SysTtsLogFragment()
 
     inner class FragmentAdapter(fragment: Fragment) :

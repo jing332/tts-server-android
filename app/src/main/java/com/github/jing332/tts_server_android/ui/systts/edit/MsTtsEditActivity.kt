@@ -16,7 +16,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.SysTts
-import com.github.jing332.tts_server_android.databinding.ActivityMsTtsEditBinding
+import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
@@ -27,8 +27,8 @@ class MsTtsEditActivity : BackActivity() {
         const val TAG = "MsTtsEditActivity"
     }
 
-    private val binding: ActivityMsTtsEditBinding by lazy {
-        ActivityMsTtsEditBinding.inflate(layoutInflater).apply { m = vm }
+    private val binding: SysttsMsEditActivityBinding by lazy {
+        SysttsMsEditActivityBinding.inflate(layoutInflater).apply { m = vm }
     }
     private val vm: MsTtsEditViewModel2 by viewModels()
 

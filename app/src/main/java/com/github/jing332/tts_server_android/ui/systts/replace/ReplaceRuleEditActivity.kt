@@ -12,12 +12,14 @@ import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
 import com.github.jing332.tts_server_android.data.entities.ReplaceRule
-import com.github.jing332.tts_server_android.databinding.ActivityReplaceRuleEditBinding
+import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 
 @Suppress("DEPRECATION")
 class ReplaceRuleEditActivity : BackActivity() {
-    val binding by lazy { ActivityReplaceRuleEditBinding.inflate(layoutInflater) }
+    val binding: SysttsReplaceEditActivityBinding by lazy {
+        SysttsReplaceEditActivityBinding.inflate(layoutInflater)
+    }
     val viewModel: ReplaceRuleEditViewModel by viewModels()
 
     private val pinyinList by lazy {

@@ -24,7 +24,7 @@
 
             <include
                 android:id="@+id/radio_raTarget"
-                layout="@layout/view_ra_target_radio"
+                layout="@layout/systts_ra_target_radio_view"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="0dp" />

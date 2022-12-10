@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts
+package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -18,9 +18,8 @@ import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
-import com.drake.brv.listener.ItemDifferCallback
-import com.drake.brv.utils.linear
-import com.drake.brv.utils.setup
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
@@ -30,10 +29,8 @@ import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.DialogInAppPlaySettingsBinding
-import com.github.jing332.tts_server_android.databinding.FragmentSysttsConfigBinding
-import com.github.jing332.tts_server_android.databinding.ItemSysttsConfigBinding
+import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
-import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
@@ -41,21 +38,24 @@ import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.*
+import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
 
 
 @Suppress("DEPRECATION", "UNCHECKED_CAST")
-class SysTtsConfigFragment : Fragment() {
+class SysTtsListFragment : Fragment() {
     companion object {
         const val TAG = "TtsConfigFragment"
     }
 
-    private val vm: SysTtsConfigViewModel by activityViewModels()
-    private val binding: FragmentSysttsConfigBinding by lazy {
-        FragmentSysttsConfigBinding.inflate(layoutInflater)
+    private val vm: SysTtsListViewModel by activityViewModels()
+    private val binding: SysttsListFragmentBinding by lazy {
+        SysttsListFragmentBinding.inflate(layoutInflater)
     }
+
+    private lateinit var vpAdapter: GroupPageAdapter
 
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
 
@@ -71,18 +71,40 @@ class SysTtsConfigFragment : Fragment() {
             }
         }
 
-    fun startMsTtsEditActivity() {
-        val intent =
-            Intent(requireContext(), MsTtsEditActivity::class.java)
+    private fun startMsTtsEditActivity() {
+        val intent = Intent(requireContext(), MsTtsEditActivity::class.java)
         startForResult.launch(intent)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val fragmentList = listOf(
+            SysTtsListGroupFragment.newInstance(),
+            SysTtsListGroupFragment.newInstance(ReadAloudTarget.ASIDE),
+            SysTtsListGroupFragment.newInstance(ReadAloudTarget.DIALOGUE),
+        )
+        vpAdapter = GroupPageAdapter(this, fragmentList)
+        binding.viewPager.isSaveEnabled = false
+        binding.viewPager.adapter = vpAdapter
+
+        val tabTitles = listOf("全部", "旁白", "对话")
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
+            tab.text = tabTitles[pos]
+        }.attach()
+
+        vm.viewModelScope.launch(Dispatchers.IO) {
+            appDb.sysTtsDao.flowAll().conflate().collect {
+                withMain { checkFormatAndShowDialog() }
+            }
+        }
+
     }
 
     @SuppressLint("RestrictedApi", "SetTextI18n")
@@ -90,58 +112,10 @@ class SysTtsConfigFragment : Fragment() {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) return
 
-        App.localBroadcast.registerReceiver(
-            mReceiver,
-            IntentFilter().apply { addAction(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID) }
-        )
+        App.localBroadcast.registerReceiver(mReceiver,
+            IntentFilter().apply { addAction(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID) })
 
-        val brv = binding.recyclerView.linear().setup {
-            addType<SysTts>(R.layout.item_systts_config)
-            onCreate {
-                getBinding<ItemSysttsConfigBinding>().apply {
-                    checkBoxSwitch.setOnClickListener { view ->
-                        onSwitchClick(view, models as List<SysTts>, modelPosition)
-                    }
-                    btnEdit.setOnClickListener { measureTimeMillis { edit(getModel()) } }
-                    btnDelete.setOnClickListener { delete(getModel()) }
-                }
-                itemView.setOnClickListener { showNumEditDialog(getModel()) }
-                itemView.setOnLongClickListener { showItemPopupMenu(itemView, getModel()) }
-            }
-
-            onBind {
-                val model = getModel<SysTts>()
-                val binding = getBinding<ItemSysttsConfigBinding>()
-                binding.apply {
-                    tvDescription.text = Html.fromHtml(model.tts?.getDescription())
-                    tvRaTarget.visibility =
-                        if (model.readAloudTarget == ReadAloudTarget.ALL) View.INVISIBLE else View.VISIBLE
-                }
-            }
-
-            itemDifferCallback = object : ItemDifferCallback {
-                override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return (oldItem as SysTts).id == (newItem as SysTts).id
-                }
-
-                override fun getChangePayload(oldItem: Any, newItem: Any): Any {
-                    return true
-                }
-            }
-        }
-
-        // 监听数据
-        vm.viewModelScope.runOnIO {
-            appDb.sysTtsDao.flowAll().conflate().collect {
-                if (brv.models == null) runOnUI { brv.models = it } else brv.setDifferModels(it)
-                runOnUI {
-                    println("checkFormatAndShowDialog")
-                    checkFormatAndShowDialog()
-                }
-            }
-        }
-
-        if (CompatSysTtsConfig.migrationConfig()) App.context.longToast("旧版配置迁移成功，原文件已删除")
+        if (CompatSysTtsConfig.migrationConfig()) requireContext().longToast("旧版配置迁移成功，原文件已删除")
     }
 
     override fun onDestroy() {
@@ -157,47 +131,11 @@ class SysTtsConfigFragment : Fragment() {
             .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
     }
 
-    /* 警告 多语音选项未开启 */
-    private val checkMultiVoiceDialog by lazy {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.warning)
-            .setCancelable(false)
-            .setPositiveButton(android.R.string.ok) { _, _ -> }
-            .setMessage(R.string.please_check_multi_voice_option).create()
-            .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
-    }
-
     /* 检查格式 如不同则显示对话框 */
     private fun checkFormatAndShowDialog() {
         SysTtsConfig.apply {
-            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat()) {
-                runOnUI {
-                    formatWarnDialog.show()
-                }
-            }
-        }
-    }
-
-    private fun onSwitchClick(view: View?, list: List<SysTts>, position: Int) {
-        val checkBox = view as CheckBox
-        // 检测是否开启多语音
-        if (vm.onCheckBoxChanged(list, position, checkBox.isChecked))
-            notifyTtsUpdate()
-        else {
-            checkBox.isChecked = false
-            checkMultiVoiceDialog.show()
-        }
-    }
-
-    private fun showNumEditDialog(data: SysTts) {
-        // 修改数据要clone，不然对比时数据相同导致UI不更新
-        data.clone<SysTts>()?.let { clonedData ->
-            clonedData.tts?.onDescriptionClick(requireContext(), view) {
-                it?.let {
-                    appDb.sysTtsDao.update(clonedData)
-                    notifyTtsUpdate(clonedData.isEnabled)
-                }
-            }
+            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat())
+                formatWarnDialog.show()
         }
     }
 
@@ -205,61 +143,7 @@ class SysTtsConfigFragment : Fragment() {
         if (isUpdate) SystemTtsService.notifyUpdateConfig()
     }
 
-    private fun edit(data: SysTts) {
-        val cls = when (data.tts) {
-            is MsTTS -> MsTtsEditActivity::class.java
-            else -> HttpTtsEditActivity::class.java
-        }
-        startForResult.launch(Intent(requireContext(), cls).apply { putExtra(KEY_DATA, data) })
-    }
-
-    private fun delete(data: SysTts) {
-        AlertDialog.Builder(requireContext()).setTitle(R.string.is_confirm_delete)
-            .setPositiveButton(R.string.delete) { _, _ ->
-                appDb.sysTtsDao.delete(data)
-                notifyTtsUpdate(data.isEnabled)
-            }
-            .setFadeAnim().show()
-    }
-
-    /* 列表item的长按菜单 */
-    private fun showItemPopupMenu(view: View, data: SysTts): Boolean {
-        val popupMenu = PopupMenu(requireContext(), view)
-        popupMenu.menuInflater.inflate(R.menu.menu_systts_list_item, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener { item ->
-            val target = when (item.itemId) {
-                R.id.menu_setAsDialogue -> ReadAloudTarget.DIALOGUE
-                R.id.menu_setAsAside -> ReadAloudTarget.ASIDE
-                else -> ReadAloudTarget.ALL
-            }
-
-            if (data.isEnabled) {
-                val isMultiVoice = SysTtsConfig.isMultiVoiceEnabled
-                if (target == ReadAloudTarget.ALL) {
-                    if (isMultiVoice) { // 开多语音 但想启用单语音
-                        longToast(getString(R.string.off_multi_voice_use_global))
-                        return@setOnMenuItemClickListener false
-                    }
-                } else if (!isMultiVoice) { // 未开启多语音
-                    checkMultiVoiceDialog.show()
-                    return@setOnMenuItemClickListener false
-                } else { // 已开启多语音并且target为旁白或对话
-                    if (target == ReadAloudTarget.ALL) data.isEnabled = false
-                    appDb.sysTtsDao.update(data.copy(readAloudTarget = target))
-                    notifyTtsUpdate()
-                    return@setOnMenuItemClickListener false
-                }
-            }
-            appDb.sysTtsDao.update(data.copy(readAloudTarget = target))
-
-            false
-        }
-        popupMenu.show()
-
-        return true
-    }
-
-    fun showImportConfig() {
+    private fun showImportConfig() {
         val et = EditText(requireContext())
         et.hint = getString(R.string.url_net)
         AlertDialog.Builder(requireContext()).setTitle(R.string.import_config).setView(et)
@@ -278,7 +162,7 @@ class SysTtsConfigFragment : Fragment() {
             }.setFadeAnim().show()
     }
 
-    fun showExportConfig() {
+    private fun showExportConfig() {
         val jsonStr = vm.exportConfig()
         val tv = TextView(requireContext())
         tv.setTextIsSelectable(true)
@@ -299,7 +183,7 @@ class SysTtsConfigFragment : Fragment() {
             }.setFadeAnim().show()
     }
 
-    fun startHttpTtsEditActivity() {
+    private fun startHttpTtsEditActivity() {
         startForResult.launch(Intent(requireContext(), HttpTtsEditActivity::class.java))
     }
 
@@ -316,9 +200,7 @@ class SysTtsConfigFragment : Fragment() {
             seekbarSpeed.onSeekBarChangeListener =
                 object : ConvenientSeekbar.OnSeekBarChangeListener {
                     override fun onProgressChanged(
-                        seekBar: ConvenientSeekbar,
-                        progress: Int,
-                        fromUser: Boolean
+                        seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean
                     ) {
                         if (progress <= 0) seekBar.progress = 1
                         tvRateValue.text = "${(seekBar.progress * 0.1).toFloat()}"
@@ -329,9 +211,7 @@ class SysTtsConfigFragment : Fragment() {
             seekbarPitch.onSeekBarChangeListener =
                 object : ConvenientSeekbar.OnSeekBarChangeListener {
                     override fun onProgressChanged(
-                        seekBar: ConvenientSeekbar,
-                        progress: Int,
-                        fromUser: Boolean
+                        seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean
                     ) {
                         if (progress <= 0) seekBar.progress = 1
                         tvPitchValue.text = "${(seekBar.progress * 0.1).toFloat()}"
@@ -347,13 +227,12 @@ class SysTtsConfigFragment : Fragment() {
             }
         }
 
-        AlertDialog.Builder(requireContext())
-            .setView(view).setOnDismissListener {
-                SysTtsConfig.isInAppPlayAudio = inAppBinding.switchOnOff.isChecked
-                SysTtsConfig.inAppPlaySpeed = (inAppBinding.seekbarSpeed.progress * 0.1).toFloat()
-                SysTtsConfig.inAppPlayPitch = (inAppBinding.seekbarPitch.progress * 0.1).toFloat()
-                SystemTtsService.notifyUpdateConfig()
-            }.setFadeAnim().show()
+        AlertDialog.Builder(requireContext()).setView(view).setOnDismissListener {
+            SysTtsConfig.isInAppPlayAudio = inAppBinding.switchOnOff.isChecked
+            SysTtsConfig.inAppPlaySpeed = (inAppBinding.seekbarSpeed.progress * 0.1).toFloat()
+            SysTtsConfig.inAppPlayPitch = (inAppBinding.seekbarPitch.progress * 0.1).toFloat()
+            SystemTtsService.notifyUpdateConfig()
+        }.setFadeAnim().show()
     }
 
     @SuppressLint("SetTextI18n")
@@ -370,22 +249,17 @@ class SysTtsConfigFragment : Fragment() {
 
         numPicker.value = SysTtsConfig.requestTimeout / 1000 //转为秒
         AlertDialog.Builder(requireContext()).setTitle(R.string.set_audio_request_timeout)
-            .setView(numPicker)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
+            .setView(numPicker).setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.requestTimeout = numPicker.value * 1000 //转为毫秒
                 SystemTtsService.notifyUpdateConfig()
-            }
-            .setNegativeButton(R.string.reset) { _, _ ->
+            }.setNegativeButton(R.string.reset) { _, _ ->
                 SysTtsConfig.requestTimeout = 5000
-            }
-            .setFadeAnim()
-            .show()
+            }.setFadeAnim().show()
     }
 
     private fun showSetMinDialogueLengthDialog() {
         val numList = arrayListOf("不限制")
-        for (i in 1..10)
-            numList.add("对话字数 ≥ $i")
+        for (i in 1..10) numList.add("对话字数 ≥ $i")
 
         val picker = NumberPicker(requireContext()).apply {
             maxValue = numList.size - 1
@@ -393,30 +267,18 @@ class SysTtsConfigFragment : Fragment() {
             value = SysTtsConfig.minDialogueLength
         }
         AlertDialog.Builder(requireContext()).setTitle("对话文本最小匹配汉字数")
-            .setMessage(R.string.set_dialogue_min_match_count_msg)
-            .setView(picker)
+            .setMessage(R.string.set_dialogue_min_match_count_msg).setView(picker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.minDialogueLength = picker.value
                 SystemTtsService.notifyUpdateConfig()
-            }
-            .setNegativeButton(R.string.reset) { _, _ ->
+            }.setNegativeButton(R.string.reset) { _, _ ->
                 SysTtsConfig.minDialogueLength = 0
                 SystemTtsService.notifyUpdateConfig()
-            }
-            .setFadeAnim().show()
+            }.setFadeAnim().show()
     }
 
     private fun onOptionsItemSelected(itemId: Int) {
         when (itemId) {
-            /*R.id.menu_desktopShortcut -> {
-                MyTools.addShortcut(
-                    requireContext(),
-                    getString(R.string.tts_config),
-                    "tts_config",
-                    R.mipmap.ic_launcher_round,
-                    Intent(requireContext(), TtsSettingsActivity::class.java)
-                )
-            }*/
             /* 添加配置 */
             R.id.menu_addMsTts -> startMsTtsEditActivity()
             R.id.menu_addHttpTts -> startHttpTtsEditActivity()
@@ -452,6 +314,16 @@ class SysTtsConfigFragment : Fragment() {
                 val itemId = intent.getIntExtra(MainActivity.KEY_MENU_ITEM_ID, -1)
                 onOptionsItemSelected(itemId)
             }
+        }
+    }
+
+
+    class GroupPageAdapter(parent: Fragment, val list: List<Fragment>) :
+        FragmentStateAdapter(parent) {
+        override fun getItemCount() = list.size
+
+        override fun createFragment(position: Int): Fragment {
+            return list[position]
         }
     }
 

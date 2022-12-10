@@ -14,7 +14,7 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
-import com.github.jing332.tts_server_android.databinding.FragmentSysttsLogBinding
+import com.github.jing332.tts_server_android.databinding.SysttsLogFragmentBinding
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService.Companion.ACTION_ON_LOG
 import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
 
@@ -23,8 +23,8 @@ class SysTtsLogFragment : Fragment() {
         const val TAG = "TtsLogFragment"
     }
 
-    private val binding: FragmentSysttsLogBinding by lazy {
-        FragmentSysttsLogBinding.inflate(layoutInflater)
+    private val binding: SysttsLogFragmentBinding by lazy {
+        SysttsLogFragmentBinding.inflate(layoutInflater)
     }
     private val logAdapter: LogListItemAdapter by lazy {
         LogListItemAdapter(

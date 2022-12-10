@@ -11,7 +11,7 @@
 
         <include
             android:id="@+id/radio_raTarget"
-            layout="@layout/view_ra_target_radio" />
+            layout="@layout/systts_ra_target_radio_view" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout2"

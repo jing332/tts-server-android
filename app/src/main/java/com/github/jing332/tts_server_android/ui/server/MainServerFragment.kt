@@ -19,7 +19,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.FragmentMainServerBinding
+import com.github.jing332.tts_server_android.databinding.ServerFragmentBinding
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.ui.MainActivity
@@ -32,8 +32,8 @@ import com.github.jing332.tts_server_android.util.toast
 
 class MainServerFragment : Fragment() {
 
-    private val binding: FragmentMainServerBinding by lazy {
-        FragmentMainServerBinding.inflate(layoutInflater)
+    private val binding: ServerFragmentBinding by lazy {
+        ServerFragmentBinding.inflate(layoutInflater)
     }
 
     private val mReceiver: MyReceiver by lazy { MyReceiver() }

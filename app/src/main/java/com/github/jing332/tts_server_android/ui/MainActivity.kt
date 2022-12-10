@@ -150,18 +150,15 @@ class MainActivity : AppCompatActivity() {
 
     var lastBackDownTime = 0L
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        System.currentTimeMillis().let {
-            if (it - lastBackDownTime <= 1500) {
-                finish()
-            } else {
-                toast("再按一次退出APP")
-                lastBackDownTime = it
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+            System.currentTimeMillis().let {
+                if (it - lastBackDownTime <= 1500) {
+                    finish()
+                } else {
+                    toast(getString(R.string.app_down_agine_to_exit))
+                    lastBackDownTime = it
+                }
             }
-        }
-
-//        if (keyCode == KeyEvent.KEYCODE_BACK) App.localBroadcast.sendBroadcast(
-//            Intent(ACTION_BACK_KEY_DOWN)
-//        )
 
         return true
     }

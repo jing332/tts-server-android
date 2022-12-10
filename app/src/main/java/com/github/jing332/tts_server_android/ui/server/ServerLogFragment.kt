@@ -13,14 +13,16 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.constant.KeyConst
-import com.github.jing332.tts_server_android.databinding.FragmentServerLogBinding
+import com.github.jing332.tts_server_android.databinding.ServerLogFragmentBinding
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
 import tts_server_lib.Tts_server_lib
 
 class ServerLogFragment : Fragment() {
-    private val vb by lazy { FragmentServerLogBinding.inflate(layoutInflater) }
+    private val binding: ServerLogFragmentBinding by lazy {
+        ServerLogFragmentBinding.inflate(layoutInflater)
+    }
     private val vm: ServerLogViewModel by viewModels()
 
     private val mReceiver by lazy { MyReceiver() }
@@ -31,31 +33,31 @@ class ServerLogFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return vb.root
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        vb.rvLog.adapter = logAdapter
+        binding.rvLog.adapter = logAdapter
         val layoutManager = LinearLayoutManager(requireContext())
         layoutManager.stackFromEnd = true
-        vb.rvLog.layoutManager = layoutManager
+        binding.rvLog.layoutManager = layoutManager
 
         /*启动按钮*/
-        vb.btnStart.setOnClickListener {
-            ServerConfig.port = vb.etPort.text.toString().toInt()
+        binding.btnStart.setOnClickListener {
+            ServerConfig.port = binding.etPort.text.toString().toInt()
             val i = Intent(App.context, TtsIntentService::class.java)
             requireContext().startService(i)
         }
         /* 关闭按钮 */
-        vb.btnClose.setOnClickListener {
+        binding.btnClose.setOnClickListener {
             if (TtsIntentService.instance?.isRunning == true) { /*服务运行中*/
                 TtsIntentService.instance?.closeServer() /*关闭服务 然后将通过广播通知MainActivity*/
             }
         }
-        
+
         val port = ServerConfig.port
-        vb.etPort.setText(port.toString())
+        binding.etPort.setText(port.toString())
         if (TtsIntentService.instance?.isRunning == true) {
             setControlStatus(false)
             val localIp = Tts_server_lib.getOutboundIP()
@@ -87,13 +89,13 @@ class ServerLogFragment : Fragment() {
     /* 设置底部按钮、端口 是否可点击 */
     fun setControlStatus(enable: Boolean) {
         if (enable) { //可点击{运行}按钮，编辑
-            vb.etPort.isEnabled = true
-            vb.btnStart.isEnabled = true
-            vb.btnClose.isEnabled = false
+            binding.etPort.isEnabled = true
+            binding.btnStart.isEnabled = true
+            binding.btnClose.isEnabled = false
         } else { //禁用按钮，编辑
-            vb.etPort.isEnabled = false
-            vb.btnStart.isEnabled = false
-            vb.btnClose.isEnabled = true
+            binding.etPort.isEnabled = false
+            binding.btnStart.isEnabled = false
+            binding.btnClose.isEnabled = true
         }
     }
 
@@ -104,12 +106,12 @@ class ServerLogFragment : Fragment() {
             when (intent?.action) {
                 TtsIntentService.ACTION_ON_LOG -> {
                     val log = intent.getParcelableExtra<AppLog>(KeyConst.KEY_DATA) as AppLog
-                    val layout = vb.rvLog.layoutManager as LinearLayoutManager
+                    val layout = binding.rvLog.layoutManager as LinearLayoutManager
                     val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
                     logAdapter.append(log)
                     /* 判断是否在最底部 */
                     if (isBottom)
-                        vb.rvLog.scrollToPosition(logAdapter.itemCount - 1)
+                        binding.rvLog.scrollToPosition(logAdapter.itemCount - 1)
                 }
                 TtsIntentService.ACTION_ON_STARTED -> {
                     logAdapter.removeAll() /* 清空日志 */

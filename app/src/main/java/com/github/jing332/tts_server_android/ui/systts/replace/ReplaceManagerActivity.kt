@@ -21,8 +21,8 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.ReplaceRule
-import com.github.jing332.tts_server_android.databinding.ActivityReplaceRuleBinding
-import com.github.jing332.tts_server_android.databinding.ItemReplaceRuleBinding
+import com.github.jing332.tts_server_android.databinding.SysttsReplaceActivityBinding
+import com.github.jing332.tts_server_android.databinding.SysttsReplaceRuleItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.util.*
@@ -35,17 +35,19 @@ class ReplaceManagerActivity : BackActivity() {
     }
 
     private val vm: ReplaceManagerViewModel by viewModels()
-    private val vb by lazy { ActivityReplaceRuleBinding.inflate(layoutInflater) }
+    private val binding: SysttsReplaceActivityBinding by lazy {
+        SysttsReplaceActivityBinding.inflate(layoutInflater)
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(vb.root)
+        setContentView(binding.root)
 
-        val brv = vb.recyclerView.linear().setup {
-            addType<ReplaceRule>(R.layout.item_replace_rule)
+        val brv = binding.recyclerView.linear().setup {
+            addType<ReplaceRule>(R.layout.systts_replace_rule_item)
             onCreate {
-                val binding = getBinding<ItemReplaceRuleBinding>()
+                val binding = getBinding<SysttsReplaceRuleItemBinding>()
                 binding.btnEdit.setOnClickListener { edit(getModel()) }
                 binding.btnDelete.setOnClickListener { delete(getModel()) }
                 binding.checkBox.setOnClickListener {

@@ -18,7 +18,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.SysTts
-import com.github.jing332.tts_server_android.databinding.ActivityHttpTtsEditBinding
+import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
@@ -31,7 +31,9 @@ import com.github.jing332.tts_server_android.util.setFadeAnim
 @Suppress("DEPRECATION")
 class HttpTtsEditActivity : BackActivity() {
     private val vm: HttpTtsEditViewModel by viewModels()
-    private val binding by lazy { ActivityHttpTtsEditBinding.inflate(layoutInflater) }
+    private val binding: SysttsHttpEditActivityBinding by lazy {
+        SysttsHttpEditActivityBinding.inflate(layoutInflater)
+    }
 
     private var resultCode: Int = RESULT_EDIT
     private var data: SysTts? = null

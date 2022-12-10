@@ -15,13 +15,15 @@ import android.webkit.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.databinding.FragmentServerWebBinding
+import com.github.jing332.tts_server_android.databinding.ServerWebFragmentBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.util.toast
 
 
 class ServerWebFragment : Fragment() {
-    private val binding by lazy { FragmentServerWebBinding.inflate(layoutInflater) }
+    private val binding: ServerWebFragmentBinding by lazy {
+        ServerWebFragmentBinding.inflate(layoutInflater)
+    }
     private val viewModel: ServerWebViewModel by viewModels()
 
     private val mReceiver by lazy { MyReceiver() }
