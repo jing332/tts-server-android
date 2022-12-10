@@ -12,7 +12,7 @@
     <item
         android:id="@+id/menu_add"
         android:icon="@drawable/ic_baseline_white_add_24"
-        android:title="@string/add_replace_rule"
+        android:title="@string/systts_add_replace_rule"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
     <item

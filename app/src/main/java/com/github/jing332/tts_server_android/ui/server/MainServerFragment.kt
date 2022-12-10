@@ -92,7 +92,7 @@ class MainServerFragment : Fragment() {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                 } else {
-                    toast(R.string.please_start_service)
+                    toast(R.string.server_please_start_service)
                 }
             }
             R.id.menu_clearWebData -> {
@@ -113,14 +113,14 @@ class MainServerFragment : Fragment() {
 
                 val editText = EditText(requireContext())
                 editText.setText(token)
-                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.set_token))
+                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.server_set_token))
                     .setView(editText)
                     .setPositiveButton(
                         android.R.string.ok
                     ) { _, _ ->
                         val text = editText.text.toString()
                         if (text != token) {
-                            toast(getString(R.string.token_set_to) + text.ifEmpty { "空" })
+                            toast(getString(R.string.server_token_set_to) + text.ifEmpty { "空" })
                             ServerConfig.token = text
                         }
                     }.setNegativeButton(R.string.reset) { _, _ ->
@@ -130,7 +130,7 @@ class MainServerFragment : Fragment() {
             }
             R.id.menu_wakeLock -> { /* 唤醒锁 */
                 ServerConfig.isWakeLockEnabled = !ServerConfig.isWakeLockEnabled
-                toast(R.string.restart_service_to_update)
+                toast(R.string.server_restart_service_to_update)
             }
             R.id.menu_shortcut -> {
                 MyTools.addShortcut(

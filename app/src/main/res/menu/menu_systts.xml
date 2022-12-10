@@ -11,13 +11,13 @@
             <item
                 android:id="@+id/menu_addMsTts"
                 android:icon="@drawable/ic_baseline_dashboard_customize_24"
-                android:title="@string/add_internal_tts"
+                android:title="@string/systts_add_internal_tts"
                 tools:ignore="AlwaysShowAction" />
 
             <item
                 android:id="@+id/menu_addHttpTts"
                 android:icon="@drawable/ic_baseline_http_24"
-                android:title="@string/add_custom_tts" />
+                android:title="@string/systts_add_custom_tts" />
 
         </menu>
     </item>
@@ -27,7 +27,7 @@
             android:id="@+id/menu_doSplit"
             android:checkable="true"
             android:icon="@drawable/ic_baseline_content_cut_24"
-            android:title="@string/split_long_sentences" />
+            android:title="@string/systts_split_long_sentences" />
         <item
             android:id="@+id/menu_isMultiVoice"
             android:checkable="true"
@@ -37,11 +37,11 @@
             android:id="@+id/menu_isInAppPlayAudio"
             android:checkable="true"
             android:icon="@drawable/ic_baseline_smart_display_24"
-            android:title="@string/in_app_play_audio" />
+            android:title="@string/systts_in_app_play_audio" />
         <item
             android:id="@+id/menu_setMinDialogueLen"
             android:icon="@drawable/ic_baseline_textsms_24"
-            android:title="@string/set_dialogue_min_match_word_count" />
+            android:title="@string/systts_set_dialogue_min_match_word_count" />
 
     </group>
 
@@ -54,7 +54,7 @@
         android:id="@+id/menu_replace_manager"
         android:checkable="true"
         android:icon="@drawable/ic_baseline_find_replace_24"
-        android:title="@string/replace_rule_manager" />
+        android:title="@string/systts_replace_rule_manager" />
 
     <item
         android:icon="@drawable/ic_baseline_import_export_24"

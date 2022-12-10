@@ -42,8 +42,8 @@ class MsTtsEditActivity : BackActivity() {
 
         // 帮助 二级语言
         binding.tilSecondaryLocale.setStartIconOnClickListener {
-            AlertDialog.Builder(this).setTitle(R.string.secondaryLocale)
-                .setMessage(R.string.help_secondary_locale).setFadeAnim().show()
+            AlertDialog.Builder(this).setTitle(R.string.systts_secondaryLocale)
+                .setMessage(R.string.systts_help_secondary_locale).setFadeAnim().show()
         }
 
         // 朗读目标切换
@@ -77,7 +77,7 @@ class MsTtsEditActivity : BackActivity() {
                 waitDialog.dismiss()
                 ret.onFailure { e ->
                     AlertDialog.Builder(this@MsTtsEditActivity)
-                        .setTitle(R.string.title_voice_data_failed)
+                        .setTitle(R.string.systts_voice_data_load_failed)
                         .setMessage(e.toString())
                         .setPositiveButton(R.string.retry) { _, _ -> vm.reloadApiData() }
                         .setNegativeButton(R.string.exit) { _, _ -> finish() }
@@ -91,9 +91,9 @@ class MsTtsEditActivity : BackActivity() {
         // 初始化 注册监听
         vm.init(
             listOf(
-                Pair(getString(R.string.api_edge), R.drawable.ms_edge),
-                Pair(getString(R.string.api_azure), R.drawable.ms_azure),
-                Pair(getString(R.string.api_creation), R.drawable.ic_ms_speech_studio)
+                Pair(getString(R.string.systts_api_edge), R.drawable.ms_edge),
+                Pair(getString(R.string.systts_api_azure), R.drawable.ms_azure),
+                Pair(getString(R.string.systts_api_creation), R.drawable.ic_ms_speech_studio)
             )
         )
 

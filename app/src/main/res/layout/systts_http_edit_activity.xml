@@ -70,7 +70,7 @@
                 android:id="@+id/et_headers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/request_header" />
+                android:hint="@string/systts_http_request_header" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <View
@@ -113,7 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/test_text"
-                android:text="@string/http_tts_sample_test_text" />
+                android:text="@string/systts_http_sample_test_text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="@string/decode_audio"
+            android:text="@string/systts_decode_audio"
             app:layout_constraintBottom_toBottomOf="@+id/textInputLayout_sampleRate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textInputLayout_sampleRate" />
@@ -144,7 +144,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:hint="@string/sample_rate"
+            android:hint="@string/systts_sample_rate"
             app:layout_constraintEnd_toStartOf="@+id/checkBox_needDecode"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view"

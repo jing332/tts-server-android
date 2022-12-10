@@ -119,14 +119,14 @@ class HttpTtsEditActivity : BackActivity() {
 
         // 请求头 帮助按钮
         binding.tilHeader.setEndIconOnClickListener {
-            AlertDialog.Builder(this).setTitle(R.string.request_header)
-                .setMessage(R.string.help_request_header).setFadeAnim().show()
+            AlertDialog.Builder(this).setTitle(R.string.systts_http_request_header)
+                .setMessage(R.string.systts_help_request_header).setFadeAnim().show()
         }
 
         // 采样率帮助按钮
         binding.textInputLayoutSampleRate.setStartIconOnClickListener {
-            AlertDialog.Builder(this).setTitle(R.string.sample_rate)
-                .setMessage(R.string.help_msg_sample_rate).setFadeAnim().show()
+            AlertDialog.Builder(this).setTitle(R.string.systts_sample_rate)
+                .setMessage(R.string.systts_help_sample_rate).setFadeAnim().show()
         }
 
         binding.numEdit.callBack = object : HttpTtsQuickEditView.CallBack {

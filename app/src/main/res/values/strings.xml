@@ -2,63 +2,82 @@
     <string name="app_name">TTS Server</string>
     <string name="app_name_debug">Debug-TTS Server </string>
     <string name="app_switch">开关</string>
+
+    <string name="help">帮助</string>
+    <string name="selected">已选择</string>
+
+    <string name="warning">警告</string>
+    <string name="reset">重置</string>
+    <string name="exit">退出</string>
+    <string name="copied">已复制</string>
+    <string name="ok_reset">已重置</string>
+    <string name="loading">加载中</string>
+
+    <string name="close">关闭</string>
+    <string name="start">启动</string>
+    <string name="follow">跟随</string>
+    <string name="custom">自定义</string>
+    <string name="app_down_again_to_exit">再按一次退出APP</string>
+    <string name="cannot_empty">不可为空！</string>
+
+    <string name="open_web">打开网页版</string>
+    <string name="check_update">检查更新</string>
+    <string name="wake_lock">唤醒锁</string>
+    <string name="about">关于</string>
+    <string name="config">配置</string>
+    <string name="log">日志</string>
+    <string name="background_whitelist">电池优化白名单</string>
+    <string name="desktop_shortcut">桌面快捷方式</string>
+    <string name="added_background_whitelist">已加入后台白名单</string>
+
+    <string name="kill_process">结束进程</string>
+    <string name="cancel">取消</string>
+
+    <string name="label_read_aloud_target">朗读目标：</string>
     <string name="label_api">接口：</string>
     <string name="label_language">语言：</string>
     <string name="label_voice">声音：</string>
     <string name="label_voice_role">角色：</string>
     <string name="label_voice_style">风格：</string>
+    <string name="label_styleDegree">风格强度：</string>
     <string name="label_audio_format">音频格式：</string>
     <string name="label_volume">音量：</string>
     <string name="label_rate">语速：</string>
-    <string name="split_long_sentences">分割长句</string>
-    <string name="btn_apply_changes">应用更改</string>
-    <string name="btn_open_tts_settings">打开TTS设置</string>
-    <string name="loading">加载中</string>
-    <string name="voice_id_not_found">声音ID: %s未找到 请尝试清空缓存</string>
-    <string name="api_edge">微软Edge-大声朗读接口</string>
-    <string name="api_azure">微软Azure-网页演示接口</string>
-    <string name="api_creation">微软Creation-网页演示接口</string>
-    <string name="tts_config">TTS配置</string>
-    <string name="open_web">打开网页版</string>
-    <string name="check_update">检查更新</string>
-    <string name="wake_lock">唤醒锁</string>
-    <string name="background_whitelist">电池优化白名单</string>
-    <string name="desktop_shortcut">桌面快捷方式</string>
-    <string name="about">关于</string>
-    <string name="added_background_whitelist">已加入后台白名单</string>
-    <string name="please_start_service">请先启动服务</string>
-    <string name="restart_service_to_update">重启服务以生效</string>
-    <string name="config">配置</string>
-    <string name="log">日志</string>
-    <string name="set_token">设置Token</string>
-    <string name="with_system_or_app">跟随系统或朗读APP</string>
-    <string name="speak_test">朗读测试</string>
-    <string name="kill_process">结束进程</string>
-    <string name="cancel">取消</string>
-    <string name="tts_state_idle">TTS空闲中</string>
-    <string name="tts_state_playing">TTS播放中：</string>
-    <string name="system_tts_service">系统TTS服务</string>
-    <string name="token_set_to">Token已设为：</string>
+    <string name="label_pitch">音高：</string>
+    <string name="label_play_speed">播放速度：</string>
+    <string name="label_play_pitch">播放音调：</string>
+    <string name="label_result">结果：</string>
+    <string name="label_port">端口:</string>
+
+    <string name="systts_api_edge">微软Edge-大声朗读接口</string>
+    <string name="systts_api_azure">微软Azure-网页演示接口</string>
+    <string name="systts_api_creation">微软Creation-网页演示接口</string>
+
+    <string name="systts_state_idle">TTS空闲中</string>
+    <string name="systts_state_playing">TTS播放中：</string>
+    <string name="systts_service">系统TTS服务</string>
+    <string name="systts_follow_system_or_app">跟随系统或朗读APP</string>
+
+    <string name="systts_split_long_sentences">分割长句</string>
     <string name="system_not_support_please_manual_set">系统不支持，请手动操作</string>
     <string name="service_started">服务已启动</string>
     <string name="service_closed">服务已关闭</string>
-    <string name="tts_server_status">TTS服务器状态</string>
-    <string name="reset">重置</string>
-    <string name="exit">退出</string>
-    <string name="copied">已复制</string>
-    <string name="ok_reset">已重置</string>
-    <string name="tts_server_running">TTS Server正在运行中</string>
-    <string name="listen_address_local">监听地址：%s</string>
-    <string name="auto_closed_later_notification">稍后将会自动关闭本通知</string>
 
-    <string name="menu_sys_tts_settings">系统TTS配置</string>
-    <string name="menu_settings">设置</string>
-    <string name="title_activity_settings">全局设置</string>
+    <string name="server_tts_status">TTS服务器状态</string>
+    <string name="server_tts_running">TTS Server正在运行中</string>
+    <string name="server_listen_address_local">监听地址：%s</string>
+    <string name="server_please_start_service">请先启动服务</string>
+    <string name="server_restart_service_to_update">重启服务以生效</string>
+    <string name="server_set_token">设置Token</string>
+    <string name="server_token_set_to">Token已设为：</string>
+
+    <string name="systts_settings">系统TTS配置</string>
+    <string name="settings">设置</string>
+    <string name="global_settings">全局设置</string>
     <string name="copy_address">复制地址</string>
     <string name="check_update_failed">检查更新失败</string>
     <string name="current_is_last_version">当前已是最新版</string>
-    <string name="label_read_aloud_target">朗读目标：</string>
-    <string name="enable_aside_and_dialogue">区分旁白和对白</string>
+
     <string name="title_activity_tts_config_edit">编辑内置TTS</string>
     <string name="title_activity_replace_edit">编辑替换规则</string>
     <string name="title_activity_replace_manager">替换规则管理</string>
@@ -72,14 +91,12 @@
     <string name="desc_delete_item">删除本条目</string>
     <string name="desc_seekbar_add">滑动条-增加按钮</string>
     <string name="desc_seekbar_remove">滑动条-减少按钮</string>
-    <string name="please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
-    <string name="warning">警告</string>
-    <string name="msg_aside_and_dialogue_format_different">检测到旁白与对话音频格式不相同，
+
+    <string name="systts_please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
+
+    <string name="systts_msg_aside_and_dialogue_format_different">检测到旁白与对话音频格式不相同，
         两者采样率(khz)不同将会导致音调异常(声音粗重或尖细)，请手动换为相同格式或在右上角将【APP内播放】选项打开。</string>
-    <string name="list_sort">列表排序</string>
-    <string name="sort_by_api">按接口</string>
-    <string name="sort_by_read_aloud_target">按朗读目标</string>
-    <string name="sort_by_display_name">按显示名称</string>
+
     <string name="add_config">添加配置</string>
     <string name="config_import_export">配置导入/导出</string>
     <string name="import_config">导入配置</string>
@@ -98,45 +115,43 @@
     <string name="setAsDefault">设为默认</string>
     <string name="setAsDialogue">设为对话</string>
     <string name="setAsAside">设为旁白</string>
-    <string name="label_styleDegree">风格强度：</string>
+
     <string name="web">网页</string>
     <string name="clear_web_data">清空网页数据</string>
     <string name="cleared">已清空</string>
-    <string name="label_port">端口:</string>
-    <string name="close">关闭</string>
-    <string name="start">启动</string>
-    <string name="replace_rule_manager">替换规则管理</string>
-    <string name="add_replace_rule">添加替换规则</string>
-    <string name="replace_rule">替换规则</string>
-    <string name="replace_as">替换为</string>
-    <string name="insert_pinyin">插入拼音声调</string>
-    <string name="use_regex">使用正则</string>
+
+    <string name="systts_replace_rule_manager">替换规则管理</string>
+    <string name="systts_add_replace_rule">添加替换规则</string>
+    <string name="systts_replace_rule">替换规则</string>
+    <string name="systts_replace_as">替换为</string>
+    <string name="systts_replace_insert_pinyin">插入拼音声调</string>
+    <string name="systts_replace_use_regex">使用正则</string>
     <string name="import_from_clip">从剪贴板导入</string>
     <string name="url_net">URL网络链接</string>
     <string name="import_from_url">从上方URL导入</string>
     <string name="retry">重试</string>
-    <string name="label_result">结果：</string>
     <string name="test">测试</string>
     <string name="test_text">测试文本</string>
-    <string name="set_dialogue_min_match_word_count">设置对话最小匹配汉字数</string>
-    <string name="set_dialogue_min_match_count_msg">人物对话的汉字数（包括中文符号），即只有在大于等于此值时才作为对话朗读，反之使用旁白。</string>
-    <string name="cannot_empty">不可为空！</string>
-    <string name="title_activity_http_tts">编辑自定义TTS</string>
-    <string name="request_header">请求头</string>
-    <string name="http_tts_sample_test_text">自定义TTS测试文本</string>
-    <string name="decode_audio">解码音频</string>
-    <string name="add_internal_tts">添加内置TTS</string>
-    <string name="add_custom_tts">添加自定义TTS</string>
+
+    <string name="systts_set_dialogue_min_match_word_count">设置对话最小匹配汉字数</string>
+    <string name="systts_set_dialogue_min_info">人物对话的汉字数（包括中文符号），即只有在大于等于此值时才作为对话朗读，反之使用旁白。</string>
+
+    <string name="systts_http_edit_title">编辑自定义TTS</string>
+    <string name="systts_http_request_header">请求头</string>
+    <string name="systts_http_sample_test_text">自定义TTS测试文本</string>
+
+    <string name="systts_decode_audio">解码音频</string>
+    <string name="systts_add_internal_tts">添加内置TTS</string>
+    <string name="systts_add_custom_tts">添加自定义TTS</string>
     <string name="label_audio_sample_rate">音频采样率(hz)：</string>
     <string name="off_multi_voice_use_global">请关闭多语音选项以使用单语音模式</string>
-    <string name="follow">跟随</string>
-    <string name="custom">自定义</string>
+
     <string name="use_dns_lookup_ip">使用DNS解析接口IP</string>
     <string name="pref_edge_dns_summary">而非内置北京微软云节点</string>
     <string name="pref_title_global_edge">全局-Edge接口</string>
-    <string name="in_app_play_audio">在APP内播放音频</string>
-    <string name="turn_on_switch">我要打开</string>
-    <string name="msg_in_app_info_html"><DATA><![CDATA[
+
+    <string name="systts_in_app_play_audio">在APP内播放音频</string>
+    <string name="systts_in_app_play_info_html"><DATA><![CDATA[
         打开此选项后，将直接<b>在APP内播放音频</b>，而非转由系统TTS组件播放。
         <br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。
         <br><br>当然，直接播放也有兼容性问题：
@@ -145,31 +160,13 @@
         ]]>
     </DATA>
     </string>
-    <string name="help">帮助</string>
-    <string name="help_secondary_locale">选择二级语言，即在朗读时使用此语言，目前微软只支持 en-US-JennyMultilingualNeural。</string>
-    <string name="help_request_header">示例：\n{\&quot;Host&quot;: \&quot;example.com&quot;, \&quot;User-Agent&quot;: \&quot;Android TTS-Server\&quot;}</string>
-    <string name="sample_rate">采样率（hz）</string>
-    <string name="secondaryLocale">二级语言（语言技能）</string>
-    <string name="title_voice_data_failed">语音数据加载失败</string>
-    <string name="help_msg_sample_rate">系统TTS在开始播放时需指定采样率，如已打开【APP内播放】则可忽略此选项。</string>
-    <string name="selected">已选择</string>
-    <string name="set_max_audio_cache_num">设置最大音频缓存数</string>
-    <string name="label_play_speed">播放速度：</string>
-    <string name="label_play_pitch">播放音调：</string>
-    <string name="label_pitch">音高：</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_main2">MainActivity2</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="systts_help_secondary_locale">选择二级语言，即在朗读时使用此语言，目前微软只支持 en-US-JennyMultilingualNeural。</string>
+    <string name="systts_help_request_header">示例：\n{\&quot;Host&quot;: \&quot;example.com&quot;, \&quot;User-Agent&quot;: \&quot;Android TTS-Server\&quot;}</string>
+    <string name="systts_sample_rate">采样率（hz）</string>
+    <string name="systts_secondaryLocale">二级语言（语言技能）</string>
+    <string name="systts_voice_data_load_failed">语音数据加载失败</string>
+    <string name="systts_help_sample_rate">系统TTS在开始播放时需指定采样率，如已打开【APP内播放】则可忽略此选项。</string>
+    <string name="systts_set_max_audio_cache_num">设置最大音频缓存数</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="app_down_agine_to_exit">再按一次退出APP</string>
 
 </resources>

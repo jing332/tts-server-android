@@ -126,7 +126,7 @@ class SysTtsListFragment : Fragment() {
     /* 警告 格式不同 */
     private val formatWarnDialog by lazy {
         AlertDialog.Builder(requireContext()).setTitle(getString(R.string.warning))
-            .setMessage(getString(R.string.msg_aside_and_dialogue_format_different))
+            .setMessage(getString(R.string.systts_msg_aside_and_dialogue_format_different))
             .setPositiveButton(android.R.string.ok) { _, _ -> }.create()
             .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
     }
@@ -192,7 +192,7 @@ class SysTtsListFragment : Fragment() {
         val view = FrameLayout(requireContext())
         val inAppBinding = DialogInAppPlaySettingsBinding.inflate(layoutInflater, view, true)
         inAppBinding.apply {
-            tvTip.text = Html.fromHtml(getString(R.string.msg_in_app_info_html))
+            tvTip.text = Html.fromHtml(getString(R.string.systts_in_app_play_info_html))
             switchOnOff.setOnCheckedChangeListener { _, isChecked ->
                 layoutNumEdit.isGone = !isChecked
                 tvTip.isGone = isChecked
@@ -267,7 +267,7 @@ class SysTtsListFragment : Fragment() {
             value = SysTtsConfig.minDialogueLength
         }
         AlertDialog.Builder(requireContext()).setTitle("对话文本最小匹配汉字数")
-            .setMessage(R.string.set_dialogue_min_match_count_msg).setView(picker)
+            .setMessage(R.string.systts_set_dialogue_min_info).setView(picker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.minDialogueLength = picker.value
                 SystemTtsService.notifyUpdateConfig()

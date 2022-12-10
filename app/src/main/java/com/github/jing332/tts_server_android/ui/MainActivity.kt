@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                 if (it - lastBackDownTime <= 1500) {
                     finish()
                 } else {
-                    toast(getString(R.string.app_down_agine_to_exit))
+                    toast(getString(R.string.app_down_again_to_exit))
                     lastBackDownTime = it
                 }
             }
@@ -167,7 +167,6 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
 
     @Suppress("DEPRECATION")
     private fun showAboutDialog() {

@@ -133,7 +133,7 @@ class SysTtsListGroupFragment : Fragment() {
             .setTitle(R.string.warning)
             .setCancelable(false)
             .setPositiveButton(android.R.string.ok) { _, _ -> }
-            .setMessage(R.string.please_check_multi_voice_option).create()
+            .setMessage(R.string.systts_please_check_multi_voice_option).create()
             .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
     }
 

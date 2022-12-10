@@ -118,7 +118,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/secondaryLocale"
+                android:hint="@string/systts_secondaryLocale"
                 android:visibility="@{m.ui.secondaryLocales.items.empty ? View.GONE : View.VISIBLE}"
                 app:layout_constraintTop_toBottomOf="@id/til_voice"
                 app:startIconDrawable="@drawable/ic_baseline_help_outline_24">

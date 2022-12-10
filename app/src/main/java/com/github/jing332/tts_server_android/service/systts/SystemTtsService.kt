@@ -135,7 +135,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         startForegroundService()
         val text = request?.charSequenceText.toString().trim()
         mCurrentText = text
-        updateNotification(getString(R.string.tts_state_playing), text)
+        updateNotification(getString(R.string.systts_state_playing), text)
 
         if (StringUtils.isSilent(text)) {
             callback?.start(16000, AudioFormat.ENCODING_PCM_16BIT, 1)
@@ -144,7 +144,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         }
         runBlocking { mTtsManager.synthesizeText(text, request, callback) }
         callback?.done()
-        updateNotification(getString(R.string.tts_state_idle), "")
+        updateNotification(getString(R.string.systts_state_idle), "")
     }
 
     override fun onError(title: String, content: String) {
@@ -152,7 +152,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
     }
 
     override fun onRetrySuccess() {
-        updateNotification(getString(R.string.tts_state_playing), mCurrentText)
+        updateNotification(getString(R.string.systts_state_playing), mCurrentText)
     }
 
     private fun reNewWakeLock() {
@@ -175,7 +175,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val chan = NotificationChannel(
                     NOTIFICATION_CHAN_ID,
-                    getString(R.string.system_tts_service),
+                    getString(R.string.systts_service),
                     NotificationManager.IMPORTANCE_NONE
                 )
                 chan.lightColor = Color.CYAN

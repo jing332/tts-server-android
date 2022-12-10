@@ -42,7 +42,7 @@
 
         <activity
             android:name=".ui.systts.edit.HttpTtsEditActivity"
-            android:label="@string/title_activity_http_tts"
+            android:label="@string/systts_http_edit_title"
             android:launchMode="singleTask" />
         <activity
             android:name=".ui.systts.replace.ReplaceManagerActivity"
