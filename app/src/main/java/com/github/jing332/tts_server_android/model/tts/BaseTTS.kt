@@ -17,6 +17,15 @@ sealed class BaseTTS : Parcelable {
         const val VALUE_FOLLOW_SYSTEM = 0
     }
 
+    /**
+     * 设置语速和音调 自动判断是否跟随系统
+     */
+    fun setPlayBackParameters(rate: Int, pitch: Int): BaseTTS {
+        if (isRateFollowSystem()) this.rate = rate
+        if (isPitchFollowSystem()) this.pitch = pitch
+        return this
+    }
+
     abstract var audioFormat: BaseAudioFormat
     abstract var pitch: Int
     abstract var volume: Int

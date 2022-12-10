@@ -48,6 +48,7 @@ class TtsManager(val context: Context) {
         fun onRetrySuccess()
     }
 
+
     // 协程作用域
     private val mScope = CoroutineScope(Job() + Dispatchers.IO)
 
@@ -176,30 +177,24 @@ class TtsManager(val context: Context) {
 
         val text = if (mIsReplaceEnabled) mReplacer.doReplace(aText) else aText
 
-        val pitch = request!!.pitch - 100
+        val sysPitch = request!!.pitch - 100
         val sysRate = (mNorm.normalize(request.speechRate.toFloat()) - 100).toInt()
 
         mProducer = null
         if (mIsMultiVoiceEnabled) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
 
-            val aside = mAsideConfig?.tts?.clone<BaseTTS>()?.also {
-                if (it.isRateFollowSystem()) it.rate = sysRate
-                if (it.isPitchFollowSystem()) it.pitch = pitch
-            }
+            val aside =
+                mAsideConfig?.tts?.clone<BaseTTS>()?.setPlayBackParameters(sysRate, sysPitch)
 
-            val dialogue = mDialogueConfig?.tts?.clone<BaseTTS>()?.also {
-                if (it.isRateFollowSystem()) it.rate = sysRate
-                if (it.isPitchFollowSystem()) it.pitch = pitch
-            }
+            val dialogue =
+                mDialogueConfig?.tts?.clone<BaseTTS>()?.setPlayBackParameters(sysRate, sysPitch)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
             mProducer = multiVoiceProducer(mIsSplitEnabled, text, aside!!, dialogue!!)
         } else { //单语音
-            val pro = mDefaultConfig?.tts.clone<BaseTTS>()?.also {
-                if (it.isRateFollowSystem()) it.rate = sysRate
-                if (it.isPitchFollowSystem()) it.pitch = pitch
-            }!!
+            val pro =
+                mDefaultConfig?.tts.clone<BaseTTS>()?.setPlayBackParameters(sysRate, sysPitch)!!
 
             Log.d(TAG, "单语音：${pro}")
             if (mIsSplitEnabled) {
