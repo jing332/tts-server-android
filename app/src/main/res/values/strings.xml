@@ -60,9 +60,9 @@
 
     <string name="systts_split_long_sentences">分割长句</string>
     <string name="system_not_support_please_manual_set">系统不支持，请手动操作</string>
+
     <string name="service_started">服务已启动</string>
     <string name="service_closed">服务已关闭</string>
-
     <string name="server_tts_status">TTS服务器状态</string>
     <string name="server_tts_running">TTS Server正在运行中</string>
     <string name="server_listen_address_local">监听地址：%s</string>
@@ -81,9 +81,8 @@
     <string name="title_activity_tts_config_edit">编辑内置TTS</string>
     <string name="title_activity_replace_edit">编辑替换规则</string>
     <string name="title_activity_replace_manager">替换规则管理</string>
-    <string name="display_name">显示名称</string>
 
-    <string name="multi_voice">多语音(旁白/对白)</string>
+    <string name="display_name">显示名称</string>
     <string name="save">保存</string>
     <string name="desc_switch_item">启用或关闭本条目</string>
     <string name="desc_add_config">添加配置</string>
@@ -124,12 +123,6 @@
     <string name="clear_web_data">清空网页数据</string>
     <string name="cleared">已清空</string>
 
-    <string name="systts_replace_rule_manager">替换规则管理</string>
-    <string name="systts_add_replace_rule">添加替换规则</string>
-    <string name="systts_replace_rule">替换规则</string>
-    <string name="systts_replace_as">替换为</string>
-    <string name="systts_replace_insert_pinyin">插入拼音声调</string>
-    <string name="systts_replace_use_regex">使用正则</string>
     <string name="import_from_clip">从剪贴板导入</string>
     <string name="url_net">URL网络链接</string>
     <string name="import_from_url">从上方URL导入</string>
@@ -137,8 +130,19 @@
     <string name="test">测试</string>
     <string name="test_text">测试文本</string>
 
+    <!-- 替换管理 -->
+    <string name="systts_replace_rule_manager">替换规则管理</string>
+    <string name="systts_replace_add_rule">添加替换规则</string>
+    <string name="systts_replace_rule">替换规则</string>
+    <string name="systts_replace_as">替换为</string>
+    <string name="systts_replace_insert_pinyin">插入拼音声调</string>
+    <string name="systts_replace_use_regex">使用正则</string>
+
+    <!-- 系统TTS 设置 -->
     <string name="systts_set_dialogue_min_match_word_count">设置对话最小匹配汉字数</string>
     <string name="systts_set_dialogue_min_info">人物对话的汉字数（包括中文符号），即只有在大于等于此值时才作为对话朗读，反之使用旁白。</string>
+    <string name="systts_set_request_timeout">设置请求超时</string>
+    <string name="systts_set_request_timeout_msg">请求音频的等待时间超过设定值后，将取消请求并自动重试。</string>
 
     <string name="systts_http_edit_title">编辑自定义TTS</string>
     <string name="systts_http_request_header">请求头</string>
@@ -154,6 +158,7 @@
     <string name="pref_edge_dns_summary">而非内置北京微软云节点</string>
     <string name="pref_title_global_edge">全局-Edge接口</string>
 
+    <string name="systts_multi_voice_option">多语音(旁白/对白)</string>
     <string name="systts_in_app_play_audio">在APP内播放音频</string>
     <string name="systts_in_app_play_info_html"><DATA><![CDATA[
         打开此选项后，将直接<b>在APP内播放音频</b>，而非转由系统TTS组件播放。
@@ -165,16 +170,15 @@
     </DATA>
     </string>
     <string name="systts_help_secondary_locale">选择二级语言，即在朗读时使用此语言，目前微软只支持 en-US-JennyMultilingualNeural。</string>
-    <string name="systts_help_request_header">示例：\n{\&quot;Host&quot;: \&quot;example.com&quot;, \&quot;User-Agent&quot;: \&quot;Android TTS-Server\&quot;}</string>
     <string name="systts_sample_rate">采样率（hz）</string>
     <string name="systts_secondaryLocale">二级语言（语言技能）</string>
     <string name="systts_voice_data_load_failed">语音数据加载失败</string>
     <string name="systts_help_sample_rate">系统TTS在开始播放时需指定采样率，如已打开【APP内播放】则可忽略此选项。</string>
-    <string name="systts_set_max_audio_cache_num">设置最大音频缓存数</string>
-    <string name="systts_voice_multiple_option">语音可多选(随机播放)</string>
-    <string name="systts_voice_multiple_hint">相同朗读目标将不再排斥，并使用随机轮播。</string>
+    <string name="systts_voice_multiple_option">相同朗读目标可多选</string>
+    <string name="systts_voice_multiple_hint">相同朗读目标将不再排斥，并使用随机轮播。(单语音不支持此功能)</string>
     <string name="systts_warn_no_ra_dialogue">警告：缺少{对话}，使用默认配置！</string>
     <string name="systts_warn_no_ra_all">警告：缺少{全部}，使用默认！</string>
     <string name="systts_warn_no_ra_aside">警告：缺少{旁白}，使用默认配置！</string>
+
 
 </resources>

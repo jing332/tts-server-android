@@ -255,12 +255,15 @@ class SysTtsListFragment : Fragment() {
         numPicker.displayedValues = displayList.toList().toTypedArray()
 
         numPicker.value = SysTtsConfig.requestTimeout / 1000 //转为秒
-        AlertDialog.Builder(requireContext()).setTitle(R.string.set_audio_request_timeout)
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.systts_set_request_timeout)
+            .setMessage(R.string.systts_set_request_timeout_msg)
             .setView(numPicker).setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.requestTimeout = numPicker.value * 1000 //转为毫秒
                 SystemTtsService.notifyUpdateConfig()
             }.setNegativeButton(R.string.reset) { _, _ ->
                 SysTtsConfig.requestTimeout = 5000
+                SystemTtsService.notifyUpdateConfig()
             }.setFadeAnim().show()
     }
 

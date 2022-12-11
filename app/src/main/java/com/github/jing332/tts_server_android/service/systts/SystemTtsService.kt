@@ -19,19 +19,22 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeechService
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.*
+import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.service.systts.help.TtsManager
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
+import com.github.jing332.tts_server_android.util.limitLength
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
 
 
 @Suppress("DEPRECATION")
-class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
+class SystemTtsService : TextToSpeechService(),
+    TtsManager.EventListener {
     companion object {
         const val TAG = "SysTtsService"
         const val ACTION_ON_LOG = "SYS_TTS_ON_LOG"
@@ -82,7 +85,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         mWakeLock.acquire(60 * 20 * 100)
         mWifiLock.acquire()
 
-        mTtsManager.callback = this
+        mTtsManager.event = this
         mTtsManager.loadConfig()
     }
 
@@ -95,7 +98,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         mWakeLock.release()
         mWifiLock.release()
 
-        stopForeground(true)
+        stopForeground(/* removeNotification = */ true)
     }
 
     override fun onIsLanguageAvailable(lang: String?, country: String?, variant: String?): Int {
@@ -125,6 +128,7 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
     override fun onStop() {
         Log.d(TAG, "onStop")
         mTtsManager.stop()
+        updateNotification(getString(R.string.systts_state_idle), "")
     }
 
 
@@ -143,16 +147,8 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
             return
         }
         runBlocking { mTtsManager.synthesizeText(text, request, callback) }
+
         callback?.done()
-        updateNotification(getString(R.string.systts_state_idle), "")
-    }
-
-    override fun onError(title: String, content: String) {
-        updateNotification(title, content)
-    }
-
-    override fun onRetrySuccess() {
-        updateNotification(getString(R.string.systts_state_playing), mCurrentText)
     }
 
     private fun reNewWakeLock() {
@@ -259,14 +255,12 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_REQUEST_UPDATE_CONFIG -> { /* 配置更改 */
-                    mTtsManager.loadConfig()
-                }
-                ACTION_KILL_PROCESS -> { /* 通知按钮{结束进程} */
+                ACTION_REQUEST_UPDATE_CONFIG -> mTtsManager.loadConfig()
+                ACTION_KILL_PROCESS -> { // 通知按钮{结束进程}
                     stopForeground(true)
                     exitProcess(0)
                 }
-                ACTION_NOTIFY_CANCEL -> { /* 通知按钮{取消}*/
+                ACTION_NOTIFY_CANCEL -> { // 通知按钮{取消}
                     if (mTtsManager.isSynthesizing)
                         onStop() /* 取消当前播放 */
                     else /* 无播放，关闭通知 */ {
@@ -278,5 +272,54 @@ class SystemTtsService : TextToSpeechService(), TtsManager.Callback {
         }
     }
 
+    override fun onStartRequest(text: String, tts: BaseTTS) {
+        sendLog(LogLevel.INFO, "<br>请求音频：<b>${text}</b> <br><small><i>${tts}</small></i>")
+    }
+
+    override fun onRequestSuccess(text: String, size: Int, costTime: Int, retryNum: Int) {
+        sendLog(
+            LogLevel.INFO,
+            "获取成功, 大小: <b>${(size / 1024)}kb</b>, 耗时: <b>${costTime}ms</b>"
+        )
+        // 重试成功
+        if (retryNum > 1) updateNotification(getString(R.string.systts_state_playing), mCurrentText)
+    }
+
+    override fun onError(errCode: Int, speakText: String?, reason: String?) {
+        val msg = when (errCode) {
+            TtsManager.ERROR_GET_FAILED -> "获取失败: <b>${speakText}</b> <br>${reason}"
+            TtsManager.ERROR_AUDIO_NULL -> "音频为空：${speakText}"
+            TtsManager.ERROR_DECODE_FAILED -> "解码失败：${speakText} <br>${reason}"
+            else -> ""
+        }
+        sendLog(LogLevel.ERROR, msg)
+    }
+
+    override fun onStartRetry(retryNum: Int, message: String?) {
+        "开始第${retryNum}次重试...".let {
+            sendLog(LogLevel.WARN, it)
+            updateNotification("请求失败：$it", message)
+        }
+    }
+
+    override fun onPlayDone(text: String?) {
+        sendLog(LogLevel.INFO, "播放完毕：<b>${text?.limitLength()}</b>")
+    }
+
+    override fun onPlayCanceled(text: String?) {
+        sendLog(LogLevel.WARN, "已取消：<b>${text?.limitLength()}</b>")
+    }
+
+    private fun sendLog(level: Int, msg: String) {
+        Log.d(TAG, "$level, $msg")
+        if (App.isSysTtsLogEnabled) {
+            val intent =
+                Intent(ACTION_ON_LOG).putExtra(
+                    KeyConst.KEY_DATA,
+                    AppLog(level, msg)
+                )
+            App.localBroadcast.sendBroadcast(intent)
+        }
+    }
 
 }

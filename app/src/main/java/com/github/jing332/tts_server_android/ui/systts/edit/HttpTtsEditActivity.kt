@@ -120,7 +120,10 @@ class HttpTtsEditActivity : BackActivity() {
         // 请求头 帮助按钮
         binding.tilHeader.setEndIconOnClickListener {
             AlertDialog.Builder(this).setTitle(R.string.systts_http_request_header)
-                .setMessage(R.string.systts_help_request_header).setFadeAnim().show()
+                .setMessage(
+                    resources.openRawResource(R.raw.help_http_tts_request_header).readAllText()
+                )
+                .setFadeAnim().show()
         }
 
         // 采样率帮助按钮

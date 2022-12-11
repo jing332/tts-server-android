@@ -32,7 +32,7 @@
             android:id="@+id/menu_isMultiVoice"
             android:checkable="true"
             android:icon="@drawable/ic_baseline_supervisor_account_24"
-            android:title="@string/multi_voice" />
+            android:title="@string/systts_multi_voice_option" />
         <item
             android:id="@+id/menu_isVoiceMultiple"
             android:icon="@drawable/ic_baseline_select_all_24"
@@ -53,7 +53,7 @@
     <item
         android:id="@+id/menu_setAudioRequestTimeout"
         android:icon="@drawable/ic_baseline_access_time_24"
-        android:title="@string/set_audio_request_timeout" />
+        android:title="@string/systts_set_request_timeout" />
 
     <item
         android:id="@+id/menu_replace_manager"

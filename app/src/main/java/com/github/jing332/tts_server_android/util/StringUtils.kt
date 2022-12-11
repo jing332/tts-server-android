@@ -60,7 +60,7 @@ object StringUtils {
 /**
  * 限制字符串长度，过长自动加 "···"
  */
-fun String.limitLength(maxLength: Int): String {
+fun String.limitLength(maxLength: Int = 20): String {
     return StringUtils.limitLength(this, maxLength)
 }
 

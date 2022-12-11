@@ -2,17 +2,12 @@ package com.github.jing332.tts_server_android.service.systts.help
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.SystemClock
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.util.Log
 import com.drake.net.utils.runMain
-import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.AppLog
-import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SysTts
@@ -20,9 +15,7 @@ import com.github.jing332.tts_server_android.help.ExoByteArrayMediaSource
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
-import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
-import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -37,24 +30,47 @@ import kotlinx.coroutines.channels.*
 
 class TtsManager(val context: Context) {
     companion object {
-        const val TAG = "TtsManager"
+        private const val TAG = "TtsManager"
         private const val CLOSE_1006_PREFIX = "websocket: close 1006"
 
+        const val ERROR_DECODE_FAILED = 0
+        const val ERROR_GET_FAILED = 1
+        const val ERROR_AUDIO_NULL = 2
+
         // 音频请求间隔
-        const val requestInterval = 100L
+        private const val requestInterval = 100L
     }
 
-    interface Callback {
-        fun onError(title: String, content: String)
-        fun onRetrySuccess()
+//    interface Callback {
+//        fun onError(title: String, content: String)
+//        fun onRetrySuccess()
+//    }
+
+    interface EventListener {
+        // 开始请求
+        fun onStartRequest(text: String, tts: BaseTTS)
+
+        // 请求成功
+        fun onRequestSuccess(text: String, size: Int, costTime: Int = 0, retryNum: Int = 1)
+
+        // 错误
+        fun onError(errCode: Int, speakText: String? = null, reason: String? = null)
+
+        // 开始重试
+        fun onStartRetry(retryNum: Int, message: String?)
+
+        // 播放完毕
+        fun onPlayDone(text: String? = null)
+
+        // 取消播放
+        fun onPlayCanceled(text: String? = null)
     }
 
+    // 事件监听
+    var event: EventListener? = null
 
     // 协程作用域
     private val mScope = CoroutineScope(Job() + Dispatchers.IO)
-
-    // 系统通知的回调
-    var callback: Callback? = null
 
     // 是否合成中
     var isSynthesizing = false
@@ -170,8 +186,6 @@ class TtsManager(val context: Context) {
     // APP内播放音频Job 用于 job.cancel() 取消播放
     private var mInAppPlayJob: Job? = null
 
-    private var mCurrentFullText = ""
-
     private fun handleTTS(list: List<SysTts>, rate: Int, pitch: Int): List<BaseTTS> {
         val handledList = list.map { it.tts.clone<BaseTTS>()!! }
         handledList.forEach { it.setPlayBackParameters(rate, pitch) }
@@ -215,36 +229,18 @@ class TtsManager(val context: Context) {
         try {
             /* 阻塞 消费者 */
             mProducer?.consumeEach { data ->
-                val shortText = data.text?.limitLength(20)
+                val shortText = data.text?.limitLength()
                 if (!isSynthesizing) {
-                    shortText?.apply { logWarn("已取消播放：${shortText}") }
+                    shortText?.let { event?.onPlayCanceled(it) }
                     return@consumeEach
                 }
 
                 mScope.launch {
                     if (data.audio == null) {
-                        shortText?.apply { logWarn("音频为空：${shortText}") }
+                        event?.onError(ERROR_AUDIO_NULL, shortText)
                     } else {
-                        val format = data.tts.audioFormat
-                        // raw 无需解码
-                        if (!format.isNeedDecode) {
-                            writeToCallBack(callback, data.audio)
-                            return@launch
-                        }
-
-                        if (mInAppPlayAudio) {
-                            // APP内播放
-                            playAudioInApp(data.audio)
-                            logWarn("播放完毕：${shortText}")
-                        } else {
-                            mAudioDecoder.doDecode(srcData = data.audio,
-                                sampleRate = mAudioFormat.sampleRate,
-                                onRead = {
-                                    writeToCallBack(callback, it)
-                                },
-                                error = { logErr("解码失败: $it") })
-                            logWarn("播放完毕：${shortText}")
-                        }
+                        playAudioHelper(data.audio, data.tts.audioFormat, callback)
+                        shortText?.let { event?.onPlayDone(it) }
                     }
                 }.join()
             } // producer
@@ -337,33 +333,31 @@ class TtsManager(val context: Context) {
     private suspend fun getAudioHelper(
         text: String, tts: BaseTTS
     ): ByteArray? {
-        logInfo("<br>请求音频：<b>${text}</b> <br><small><i>${tts}</small></i>")
+        event?.onStartRequest(text, tts)
 
         val startTime = System.currentTimeMillis()
         for (retryIndex in 1..100) {
             kotlin.runCatching { tts.getAudio(text) }.onSuccess {
                 it?.let {
-                    logInfo(
-                        "获取音频成功, 大小: <b>${(it.size / 1024)}KB</b>, " + "耗时: <b>${System.currentTimeMillis() - startTime}ms</b>"
+                    event?.onRequestSuccess(
+                        text, it.size,
+                        (System.currentTimeMillis() - startTime).toInt(), retryIndex
                     )
-                    callback?.onRetrySuccess()
                 }
                 return it
             }.onFailure {
                 if (!isSynthesizing) return null
 
                 val shortText = text.limitLength(20)
-                logErr("获取音频失败: <b>${shortText}</b> <br>${it.message}")
+//                logErr("获取音频失败: <b>${shortText}</b> <br>${it.message}")
+                event?.onError(ERROR_GET_FAILED, shortText, it.message)
 
                 // 为close 1006则直接跳过等待
                 if (it.message?.startsWith(CLOSE_1006_PREFIX) == false)
                     if (retryIndex > 3) delay(3000)
                     else delay(requestInterval)
 
-                "开始第${retryIndex}次重试...".let { s ->
-                    logWarn(s)
-                    callback?.onError("请求音频失败：$s", "${shortText}\n${it.message}")
-                }
+                event?.onStartRetry(retryIndex, it.message)
             }
         }
 
@@ -378,10 +372,8 @@ class TtsManager(val context: Context) {
         var audioSize = 0
         for (retryIndex in 1..100) {
             if (!isSynthesizing) return
-            if (App.isSysTtsLogEnabled) {
-                val s = if (tts is HttpTTS) "" else "(边下边播)"
-                logInfo("<br>请求音频${s}：<b>${text}</b> <br><small><i>${tts}</small></i>")
-            }
+
+            event?.onStartRequest(text, tts)
 
             val breakPoint = tts is MsTTS // 是否续播
             var currentLength = 0
@@ -398,10 +390,10 @@ class TtsManager(val context: Context) {
                     }
                 }
             }.onSuccess {
-                logWarn("下载完成，大小：${audioSize / 1024}KB")
+                event?.onRequestSuccess(text, audioSize, -1)
                 return
             }.onFailure {
-                logErr("请求失败：${text.limitLength(20)}\n${it.message}")
+                event?.onError(ERROR_GET_FAILED, text, it.message)
                 // 是否断点
                 lastFailLength = if (breakPoint) currentLength else -1
                 // 1006则跳过等待
@@ -409,7 +401,7 @@ class TtsManager(val context: Context) {
                     3000
                 ) else SystemClock.sleep(500)
 
-                logWarn("开始第${retryIndex}次重试...")
+                event?.onStartRetry(retryIndex, it.message)
             }
         }
     }
@@ -461,29 +453,40 @@ class TtsManager(val context: Context) {
         mInAppPlayJob = null
     }
 
-    /* 获取音频并解码播放 */
+    /* 获取音频并直接解码播放 */
     private suspend fun getAudioAndDecodeWrite(
-        text: String, msTtsProperty: BaseTTS, callback: SynthesisCallback
+        text: String, tts: BaseTTS, callback: SynthesisCallback
     ) {
         runBlocking {
-            val audio = getAudioHelper(text, msTtsProperty)
+            val audio = getAudioHelper(text, tts)
             if (audio != null) {
-                if (mInAppPlayAudio) {
-                    playAudioInApp(audio)
-                } else {
-                    if (msTtsProperty.audioFormat.isNeedDecode) {
-                        mAudioDecoder.doDecode(audio,
-                            mAudioFormat.sampleRate,
-                            onRead = { writeToCallBack(callback, it) },
-                            error = { logErr("解码失败: $it") })
-                    } else {
-                        writeToCallBack(callback, audio)
-                    }
-                }
-                logWarn("播放完毕：${text.limitLength(20)}")
-            } else logWarn("音频内容为空或被终止请求")
+                playAudioHelper(audio, tts.audioFormat, callback)
+                event?.onPlayDone(text)
+            } else event?.onError(ERROR_AUDIO_NULL, text)
 
         }
+    }
+
+    // 播放音频
+    private suspend fun playAudioHelper(
+        audio: ByteArray,
+        format: BaseAudioFormat,
+        callback: SynthesisCallback
+    ) {
+        if (!format.isNeedDecode) {
+            writeToCallBack(callback, audio)
+            return
+        }
+
+        if (mInAppPlayAudio) {
+            playAudioInApp(audio)
+        } else {
+            mAudioDecoder.doDecode(audio,
+                mAudioFormat.sampleRate,
+                onRead = { writeToCallBack(callback, it) },
+                error = { event?.onError(ERROR_DECODE_FAILED, it) })
+        }
+
     }
 
     /* 写入PCM音频到系统组件 */
@@ -501,28 +504,7 @@ class TtsManager(val context: Context) {
         }
     }
 
-    private fun logInfo(msg: String) {
-        sendLog(LogLevel.INFO, msg)
-    }
-
-    private fun logWarn(msg: String) {
-        sendLog(LogLevel.WARN, msg)
-    }
-
-    private fun logErr(msg: String) {
-        sendLog(LogLevel.ERROR, msg)
-    }
-
-    private fun sendLog(level: Int, msg: String) {
-        Log.d(TAG, "$level, $msg")
-        if (App.isSysTtsLogEnabled) {
-            val intent =
-                Intent(SystemTtsService.ACTION_ON_LOG).putExtra(KEY_DATA, AppLog(level, msg))
-            App.localBroadcast.sendBroadcast(intent)
-        }
-    }
-
-    /* 分句缓存Data */
+    /* 生产的数据 */
     class ChannelData(
         val text: String? = null, val audio: ByteArray?, val tts: BaseTTS
     )
