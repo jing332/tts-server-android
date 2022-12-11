@@ -30,9 +30,7 @@ class MsTtsEditActivity : BackActivity() {
     private val binding: SysttsMsEditActivityBinding by lazy {
         SysttsMsEditActivityBinding.inflate(layoutInflater).apply { m = vm }
     }
-    private val vm: MsTtsEditViewModel2 by viewModels()
-
-    private var resultCode = RESULT_EDIT
+    private val vm: MsTtsEditViewModel by viewModels()
 
     @SuppressLint("ClickableViewAccessibility")
     @Suppress("DEPRECATION")
@@ -67,7 +65,7 @@ class MsTtsEditActivity : BackActivity() {
 
         val waitDialog = WaitDialog(this)
         // 接口加载回调
-        vm.setCallback(object : MsTtsEditViewModel2.CallBack {
+        vm.setCallback(object : MsTtsEditViewModel.CallBack {
             override fun onStart(@MsTtsApiType api: Int) {
                 waitDialog.show()
                 binding.numEditView.setFormatByApi(api)
@@ -98,10 +96,7 @@ class MsTtsEditActivity : BackActivity() {
         )
 
         var data: SysTts? = intent.getParcelableExtra(KEY_DATA)
-        if (data == null) {
-            resultCode = RESULT_ADD
-            data = SysTts(tts = MsTTS())
-        }
+        if (data == null) data = SysTts(tts = MsTTS())
 
         vm.initUserData(data)
 
@@ -119,7 +114,7 @@ class MsTtsEditActivity : BackActivity() {
         when (item.itemId) {
             R.id.systts_config_edit_save -> {
                 val data = vm.getData(binding.etName.text.toString())
-                setResult(resultCode, Intent().apply { putExtra(KEY_DATA, data) })
+                setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, data) })
                 finish()
             }
         }

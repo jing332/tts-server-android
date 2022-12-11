@@ -180,5 +180,8 @@
     <string name="systts_warn_no_ra_all">警告：缺少{全部}，使用默认！</string>
     <string name="systts_warn_no_ra_aside">警告：缺少{旁白}，使用默认配置！</string>
 
+    <string name="systts_http_test_success">测试成功</string>
+    <string name="systts_http_test_msg">音频大小：%1$d kb \n格式：%2$s \n采样率：%3$d hz \nContent-Type：%4$s</string>
+
 
 </resources>

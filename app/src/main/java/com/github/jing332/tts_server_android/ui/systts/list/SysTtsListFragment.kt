@@ -23,7 +23,6 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
-import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
@@ -31,6 +30,8 @@ import com.github.jing332.tts_server_android.data.entities.SysTts
 import com.github.jing332.tts_server_android.databinding.DialogInAppPlaySettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.model.tts.HttpTTS
+import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
@@ -64,17 +65,13 @@ class SysTtsListFragment : Fragment() {
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             val data = result.data?.getParcelableExtra<SysTts>(KEY_DATA)
             data?.let {
-                if (result.resultCode == RESULT_ADD) appDb.sysTtsDao.insert(data)
+                if (it.id == 0L) appDb.sysTtsDao.insert(data)
                 else appDb.sysTtsDao.update(data)
 
                 notifyTtsUpdate(data.isEnabled)
             }
         }
 
-    private fun startMsTtsEditActivity() {
-        val intent = Intent(requireContext(), MsTtsEditActivity::class.java)
-        startForResult.launch(intent)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -190,10 +187,6 @@ class SysTtsListFragment : Fragment() {
             }.setFadeAnim().show()
     }
 
-    private fun startHttpTtsEditActivity() {
-        startForResult.launch(Intent(requireContext(), HttpTtsEditActivity::class.java))
-    }
-
     @Suppress("DEPRECATION")
     private fun showInAppSettingsDialog() {
         val view = FrameLayout(requireContext())
@@ -288,11 +281,28 @@ class SysTtsListFragment : Fragment() {
             }.setFadeAnim().show()
     }
 
+    private fun addHttpTTS(@ReadAloudTarget raTarget: Int = ReadAloudTarget.ALL) {
+        startForResult.launch(
+            Intent(
+                requireContext(),
+                HttpTtsEditActivity::class.java
+            ).apply { putExtra(KEY_DATA, SysTts(readAloudTarget = raTarget, tts = HttpTTS())) })
+    }
+
+    private fun addMsTTS(@ReadAloudTarget raTarget: Int = ReadAloudTarget.ALL) {
+        val intent = Intent(requireContext(), MsTtsEditActivity::class.java).apply {
+            putExtra(
+                KEY_DATA, SysTts(readAloudTarget = raTarget, tts = MsTTS())
+            )
+        }
+        startForResult.launch(intent)
+    }
+
     private fun onOptionsItemSelected(itemId: Int) {
         when (itemId) {
             /* 添加配置 */
-            R.id.menu_addMsTts -> startMsTtsEditActivity()
-            R.id.menu_addHttpTts -> startHttpTtsEditActivity()
+            R.id.menu_addMsTts -> addMsTTS(binding.viewPager.currentItem)
+            R.id.menu_addHttpTts -> addHttpTTS(binding.viewPager.currentItem)
 
             R.id.menu_isInAppPlayAudio -> showInAppSettingsDialog()
             R.id.menu_setAudioRequestTimeout -> showSetAudioRequestTimeoutDialog()

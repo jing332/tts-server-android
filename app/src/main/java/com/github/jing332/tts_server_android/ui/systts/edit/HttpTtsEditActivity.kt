@@ -27,6 +27,7 @@ import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.github.jing332.tts_server_android.util.setFadeAnim
+import kotlin.math.min
 
 @Suppress("DEPRECATION")
 class HttpTtsEditActivity : BackActivity() {
@@ -35,7 +36,6 @@ class HttpTtsEditActivity : BackActivity() {
         SysttsHttpEditActivityBinding.inflate(layoutInflater)
     }
 
-    private var resultCode: Int = RESULT_EDIT
     private var data: SysTts? = null
 
     @SuppressLint("SetTextI18n")
@@ -56,10 +56,7 @@ class HttpTtsEditActivity : BackActivity() {
 
         // 获取数据 为null表示Add
         data = intent.getParcelableExtra(KEY_DATA)
-        if (data == null) {
-            data = SysTts(tts = HttpTTS())
-            resultCode = RESULT_ADD
-        }
+        if (data == null) data = SysTts(tts = HttpTTS())
         data?.let {
             val tts = it.ttsAs<HttpTTS>()
             binding.apply {
@@ -88,10 +85,16 @@ class HttpTtsEditActivity : BackActivity() {
                 binding.etTestText.text.toString(),
                 { size, sampleRate, mime, contentType ->
                     waitDialog.dismiss()
-                    AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试成功")
+                    AlertDialog.Builder(this@HttpTtsEditActivity)
+                        .setTitle(R.string.systts_http_test_success)
                         .setMessage(
-                            "音频大小：${size / 1024}KB \n格式：$mime " +
-                                    "\n采样率：${sampleRate}hz \nContent-Type：$contentType"
+                            getString(
+                                R.string.systts_http_test_msg,
+                                size / 1024,
+                                mime,
+                                sampleRate,
+                                contentType
+                            )
                         ).setOnDismissListener {
                             vm.stopPlay()
                         }
@@ -181,7 +184,7 @@ class HttpTtsEditActivity : BackActivity() {
                 SoftKeyboardUtils.hideSoftKeyboard(this)
                 val intent = Intent()
                 intent.putExtra(KEY_DATA, data)
-                setResult(resultCode, intent)
+                setResult(RESULT_OK, intent)
                 finish()
             }
         }

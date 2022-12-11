@@ -9,7 +9,7 @@
 
         <variable
             name="m"
-            type="com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditViewModel2" />
+            type="com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView

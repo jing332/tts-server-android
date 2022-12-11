@@ -18,7 +18,7 @@ import com.github.jing332.tts_server_android.util.runOnIO
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
-class MsTtsEditViewModel2 : ViewModel() {
+class MsTtsEditViewModel : ViewModel() {
     companion object {
         const val TAG = "MsTtsEditViewModel2"
         private val repo: MsTtsEditRepository by lazy { MsTtsEditRepository() }
