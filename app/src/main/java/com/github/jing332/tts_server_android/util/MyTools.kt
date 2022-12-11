@@ -13,6 +13,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.GithubReleaseApiBean
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -26,7 +27,7 @@ import java.math.BigDecimal
 
 object MyTools {
     const val TAG = "MyTools"
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json by lazy { App.jsonBuilder }
 
     /*从Github检查更新*/
     @OptIn(DelicateCoroutinesApi::class)
@@ -90,8 +91,8 @@ object MyTools {
         Log.d(TAG, "appVersionName: $appVersion, versionName: $removeVersion")
         if (removeVersion > appVersion) {/* 需要更新 */
             runOnUI { downLoadAndInstall(ctx, body, downloadUrl, tag) }
-        } else
-            ctx.toast(R.string.current_is_last_version)
+        }
+//            ctx.toast(R.string.current_is_last_version)
     }
 
     private fun downLoadAndInstall(
@@ -100,13 +101,12 @@ object MyTools {
         downloadUrl: String,
         tag: String
     ) {
-
         AlertDialog.Builder(ctx)
             .setTitle("有新版本")
             .setMessage("版本号: $tag\n\n$body")
             .setPositiveButton(
                 "Github下载"
-            ) { _: DialogInterface?, _: Int ->
+            ) { _, _ ->
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse(downloadUrl)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -114,13 +114,13 @@ object MyTools {
             }
             .setNegativeButton(
                 "Github加速"
-            ) { _: DialogInterface?, _: Int ->
+            ) { _, _ ->
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse("https://ghproxy.com/$downloadUrl")
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 ctx.startActivity(intent)
             }
-            .create().show()
+            .setFadeAnim().show()
     }
 
     /* 添加快捷方式 */
