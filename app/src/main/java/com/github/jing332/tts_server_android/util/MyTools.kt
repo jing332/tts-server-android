@@ -3,7 +3,6 @@ package com.github.jing332.tts_server_android.util
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
@@ -13,42 +12,33 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.GithubReleaseApiBean
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import tts_server_lib.Tts_server_lib
+import okhttp3.Response
 import java.math.BigDecimal
 
 
 object MyTools {
     const val TAG = "MyTools"
+    private const val GITHUB_RELEASES_LATEST_URL =
+        "https://api.github.com/repos/jing332/tts-server-android/releases/latest"
     private val json by lazy { App.jsonBuilder }
 
     /*从Github检查更新*/
     @OptIn(DelicateCoroutinesApi::class)
     fun checkUpdate(ctx: Context) {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             try {
-                val data = Tts_server_lib.httpGet(
-                    "https://api.github.com/repos/jing332/tts-server-android/releases/latest",
-                    ""
-                )
-                if (data == null) {
-                    ctx.toast(R.string.check_update_failed)
-                } else {
-                    try {
-                        checkVersionFromJson(ctx, data.decodeToString())
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        ctx.toast(R.string.check_update_failed)
-                    }
-                }
-
+                val resp: Response = Net.get(GITHUB_RELEASES_LATEST_URL).execute()
+                val jsonStr = resp.body?.string()
+                checkVersionFromJson(ctx, jsonStr!!)
             } catch (e: Exception) {
                 e.printStackTrace()
                 ctx.toast(R.string.check_update_failed)

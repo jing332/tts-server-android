@@ -106,6 +106,8 @@ class MainActivity : AppCompatActivity() {
             }
         )
         navController.graph = navGraph
+
+        MyTools.checkUpdate(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
