@@ -131,7 +131,6 @@ class SystemTtsService : TextToSpeechService(),
         updateNotification(getString(R.string.systts_state_idle), "")
     }
 
-
     private lateinit var mCurrentText: String
 
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
@@ -273,19 +272,22 @@ class SystemTtsService : TextToSpeechService(),
     }
 
     override fun onStartRequest(text: String, tts: BaseTTS) {
-        sendLog(LogLevel.INFO, "<br>请求音频：<b>${text}</b> <br><small><i>${tts}</small></i>")
+        if (App.isSysTtsLogEnabled)
+            sendLog(LogLevel.INFO, "<br>请求音频：<b>${text}</b> <br><small><i>${tts}</small></i>")
     }
 
     override fun onRequestSuccess(text: String, size: Int, costTime: Int, retryNum: Int) {
-        sendLog(
-            LogLevel.INFO,
-            "获取成功, 大小: <b>${(size / 1024)}kb</b>, 耗时: <b>${costTime}ms</b>"
-        )
+        if (App.isSysTtsLogEnabled)
+            sendLog(
+                LogLevel.INFO,
+                "获取成功, 大小: <b>${(size / 1024)}kb</b>, 耗时: <b>${costTime}ms</b>"
+            )
         // 重试成功
         if (retryNum > 1) updateNotification(getString(R.string.systts_state_playing), mCurrentText)
     }
 
     override fun onError(errCode: Int, speakText: String?, reason: String?) {
+        if (!App.isSysTtsLogEnabled) return
         val msg = when (errCode) {
             TtsManager.ERROR_GET_FAILED -> "获取失败: <b>${speakText}</b> <br>${reason}"
             TtsManager.ERROR_AUDIO_NULL -> "音频为空：${speakText}"
@@ -295,31 +297,31 @@ class SystemTtsService : TextToSpeechService(),
         sendLog(LogLevel.ERROR, msg)
     }
 
-    override fun onStartRetry(retryNum: Int, message: String?) {
+    override fun onStartRetry(retryNum: Int, err: Throwable) {
         "开始第${retryNum}次重试...".let {
             sendLog(LogLevel.WARN, it)
-            updateNotification("请求失败：$it", message)
+            updateNotification("请求失败：$it", err.message)
         }
     }
 
     override fun onPlayDone(text: String?) {
-        sendLog(LogLevel.INFO, "播放完毕：<b>${text?.limitLength()}</b>")
+        if (App.isSysTtsLogEnabled)
+            sendLog(LogLevel.INFO, "播放完毕：<b>${text?.limitLength()}</b>")
     }
 
     override fun onPlayCanceled(text: String?) {
-        sendLog(LogLevel.WARN, "已取消：<b>${text?.limitLength()}</b>")
+        if (App.isSysTtsLogEnabled)
+            sendLog(LogLevel.WARN, "已取消：<b>${text?.limitLength()}</b>")
     }
 
     private fun sendLog(level: Int, msg: String) {
         Log.d(TAG, "$level, $msg")
-        if (App.isSysTtsLogEnabled) {
-            val intent =
-                Intent(ACTION_ON_LOG).putExtra(
-                    KeyConst.KEY_DATA,
-                    AppLog(level, msg)
-                )
-            App.localBroadcast.sendBroadcast(intent)
-        }
+        val intent =
+            Intent(ACTION_ON_LOG).putExtra(
+                KeyConst.KEY_DATA,
+                AppLog(level, msg)
+            )
+        App.localBroadcast.sendBroadcast(intent)
     }
 
 }

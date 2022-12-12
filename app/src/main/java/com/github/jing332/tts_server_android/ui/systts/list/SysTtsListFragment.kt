@@ -106,9 +106,6 @@ class SysTtsListFragment : Fragment() {
                 withMain { checkFormatAndShowDialog() }
             }
         }
-
-        val lis = appDb.sysTtsDao.getAllByReadAloudTarget(ReadAloudTarget.ASIDE)
-        println(lis)
     }
 
     @SuppressLint("RestrictedApi", "SetTextI18n")

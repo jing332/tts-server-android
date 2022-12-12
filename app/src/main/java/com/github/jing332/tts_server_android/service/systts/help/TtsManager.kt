@@ -41,11 +41,6 @@ class TtsManager(val context: Context) {
         private const val requestInterval = 100L
     }
 
-//    interface Callback {
-//        fun onError(title: String, content: String)
-//        fun onRetrySuccess()
-//    }
-
     interface EventListener {
         // 开始请求
         fun onStartRequest(text: String, tts: BaseTTS)
@@ -57,7 +52,7 @@ class TtsManager(val context: Context) {
         fun onError(errCode: Int, speakText: String? = null, reason: String? = null)
 
         // 开始重试
-        fun onStartRetry(retryNum: Int, message: String?)
+        fun onStartRetry(retryNum: Int, message: Throwable)
 
         // 播放完毕
         fun onPlayDone(text: String? = null)
@@ -337,28 +332,28 @@ class TtsManager(val context: Context) {
 
         val startTime = System.currentTimeMillis()
         for (retryIndex in 1..100) {
-            kotlin.runCatching { tts.getAudio(text) }.onSuccess {
-                it?.let {
-                    event?.onRequestSuccess(
-                        text, it.size,
-                        (System.currentTimeMillis() - startTime).toInt(), retryIndex
-                    )
+            kotlin.runCatching { tts.getAudio(text) }
+                .onSuccess {
+                    it?.let {
+                        event?.onRequestSuccess(
+                            text, it.size,
+                            (System.currentTimeMillis() - startTime).toInt(), retryIndex
+                        )
+                    }
+                    return it
+                }.onFailure {
+                    if (!isSynthesizing) return null
+
+                    val shortText = text.limitLength(20)
+                    event?.onError(ERROR_GET_FAILED, shortText, it.message)
+
+                    // 为close 1006则直接跳过等待
+                    if (!it.message.toString().startsWith(CLOSE_1006_PREFIX))
+                        if (retryIndex > 3) delay(3000)
+                        else delay(requestInterval)
+
+                    event?.onStartRetry(retryIndex, it)
                 }
-                return it
-            }.onFailure {
-                if (!isSynthesizing) return null
-
-                val shortText = text.limitLength(20)
-//                logErr("获取音频失败: <b>${shortText}</b> <br>${it.message}")
-                event?.onError(ERROR_GET_FAILED, shortText, it.message)
-
-                // 为close 1006则直接跳过等待
-                if (it.message?.startsWith(CLOSE_1006_PREFIX) == false)
-                    if (retryIndex > 3) delay(3000)
-                    else delay(requestInterval)
-
-                event?.onStartRetry(retryIndex, it.message)
-            }
         }
 
         return null
@@ -397,11 +392,13 @@ class TtsManager(val context: Context) {
                 // 是否断点
                 lastFailLength = if (breakPoint) currentLength else -1
                 // 1006则跳过等待
-                if (it.message?.startsWith(CLOSE_1006_PREFIX) == false) if (retryIndex > 3) SystemClock.sleep(
+                if (!it.message.toString()
+                        .startsWith(CLOSE_1006_PREFIX)
+                ) if (retryIndex > 3) SystemClock.sleep(
                     3000
                 ) else SystemClock.sleep(500)
 
-                event?.onStartRetry(retryIndex, it.message)
+                event?.onStartRetry(retryIndex, it)
             }
         }
     }
