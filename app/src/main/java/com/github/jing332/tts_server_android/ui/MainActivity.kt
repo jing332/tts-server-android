@@ -162,9 +162,10 @@ class MainActivity : AppCompatActivity() {
                     toast(getString(R.string.app_down_again_to_exit))
                     lastBackDownTime = it
                 }
+                return true
             }
 
-        return true
+        return false
     }
 
     override fun onSupportNavigateUp(): Boolean {
