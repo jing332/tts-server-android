@@ -95,7 +95,10 @@ class MsTtsEditViewModel : ViewModel() {
     }
 
     interface CallBack {
+        // 每次加载语音数据时
         fun onStart(@MsTtsApiType api: Int)
+
+        // 加载完毕
         fun onDone(ret: Result<Unit>)
     }
 
@@ -249,9 +252,12 @@ class MsTtsEditViewModel : ViewModel() {
                     val pos = items.indexOfFirst { it.value == expressAs.style }
                     position = max(pos, 0)
                 }
-                return
+                return@apply
             }
         }
+        // 列表为空
+        mTts.expressAs?.style = null
+        mTts.expressAs?.styleDegree = 1F
     }
 
     // 更新角色列表
@@ -269,7 +275,11 @@ class MsTtsEditViewModel : ViewModel() {
                     val pos = items.indexOfFirst { it.value == exp.role }
                     position = max(pos, 0)
                 }
+                return@apply
             }
+
+            // 列表为空
+            mTts.expressAs?.role = null
         }
     }
 
@@ -303,7 +313,6 @@ data class UiData(
 
 
 class SpinnerData() : BaseObservable() {
-
     // 包装成lambda
     fun addOnPropertyChangedCallback(callback: (sender: Observable?, propertyId: Int) -> Unit) {
         super.addOnPropertyChangedCallback(object : OnPropertyChangedCallback() {
