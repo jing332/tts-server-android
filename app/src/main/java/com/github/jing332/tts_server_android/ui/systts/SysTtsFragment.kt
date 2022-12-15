@@ -11,10 +11,9 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsFragmentBinding
 import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListFragment
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
-import com.google.android.material.tabs.TabLayout
 
 
-class MainSysTtsFragment : Fragment() {
+class SysTtsFragment : Fragment() {
     private val binding: SysttsFragmentBinding by lazy {
         SysttsFragmentBinding.inflate(layoutInflater)
     }

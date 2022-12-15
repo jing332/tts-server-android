@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_systts"
-        android:name="com.github.jing332.tts_server_android.ui.systts.MainSysTtsFragment"
+        android:name="com.github.jing332.tts_server_android.ui.systts.SysTtsFragment"
         android:label="@string/systts_settings"
         tools:layout="@layout/systts_fragment" />
 

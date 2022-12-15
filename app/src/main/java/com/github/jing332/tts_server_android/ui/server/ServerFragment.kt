@@ -38,10 +38,8 @@ class ServerFragment : Fragment() {
 
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState != null) return
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         App.localBroadcast.registerReceiver(
             mReceiver,
             IntentFilter(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID).apply {
@@ -67,6 +65,13 @@ class ServerFragment : Fragment() {
             }
             true
         }
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) return
+
 
     }
 

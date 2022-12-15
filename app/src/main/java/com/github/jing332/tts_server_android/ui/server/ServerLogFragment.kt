@@ -36,8 +36,8 @@ class ServerLogFragment : Fragment() {
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.rvLog.adapter = logAdapter
         val layoutManager = LinearLayoutManager(requireContext())
         layoutManager.stackFromEnd = true
@@ -64,13 +64,13 @@ class ServerLogFragment : Fragment() {
             val msg = "服务已在运行, 监听地址: ${localIp}:${port}"
             logList.add(AppLog(LogLevel.WARN, msg))
         } else {
-            val msg = "请点击启动按钮\n然后右上角菜单打开网页版↗️" +
-                    "\n随后生成链接导入阅读APP即可使用" +
-                    "\n\n关闭请点关闭按钮, 并等待响应。" +
-                    "\n⚠️注意: 本APP需常驻后台运行！⚠️"
+            val msg = "请点击启动按钮\n然后打开网页\n随后按需配置导入阅读APP即可朗读\n⚠️注意: 朗读时本APP需常驻后台运行！⚠️"
             logList.add(AppLog(LogLevel.INFO, msg))
         }
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         /*注册广播*/
         IntentFilter(TtsIntentService.ACTION_ON_LOG).apply {
             addAction(TtsIntentService.ACTION_ON_STARTED)

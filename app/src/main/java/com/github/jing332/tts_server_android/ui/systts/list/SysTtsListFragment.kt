@@ -80,6 +80,7 @@ class SysTtsListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        tabLayout = requireActivity().findViewById(R.id.tabLayout)
         return binding.root
     }
 
@@ -102,7 +103,6 @@ class SysTtsListFragment : Fragment() {
             getString(R.string.dialogue)
         )
 
-        tabLayout = requireActivity().findViewById(R.id.tabLayout)
         TabLayoutMediator(tabLayout, binding.viewPager) { tab, pos ->
             tab.text = tabTitles[pos]
         }.attach()

@@ -21,8 +21,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
+                app:tabGravity="fill"
                 app:tabIndicatorAnimationMode="elastic"
                 app:tabIndicatorColor="@color/teal_200"
+                app:tabIndicatorFullWidth="false"
+                app:tabMinWidth="4dp"
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/white"
                 app:tabTextColor="@android:color/darker_gray" />
