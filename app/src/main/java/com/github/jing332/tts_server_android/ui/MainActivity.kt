@@ -36,7 +36,7 @@ import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object {
         const val ACTION_OPTION_ITEM_SELECTED_ID = "ACTION_OPTION_ITEM_SELECTED_ID"
         const val KEY_MENU_ITEM_ID = "KEY_MENU_ITEM_ID"
@@ -69,28 +69,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // 其他抽屉菜单监听
-        navView.setNavigationItemSelectedListener { menuItem ->
-            val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
-            if (handled) {
-                invalidateOptionsMenu()
-                AppConfig.fragmentIndex = when (menuItem.itemId) {
-                    R.id.nav_systts -> 0
-                    R.id.nav_server -> 1
-                    else -> 0
-                }
-            } else {
-                when (menuItem.itemId) {
-                    R.id.nav_killBattery -> killBattery()
-                    R.id.nav_checkUpdate -> MyTools.checkUpdate(this)
-                    R.id.nav_about -> showAboutDialog()
-                }
-            }
-
-            navView.parent.let { if (it is DrawerLayout) it.closeDrawer(navView) }
-
-            handled
-        }
+        navView.setNavigationItemSelectedListener(this)
 
         /* 版本名 */
         val tvVersion =
@@ -108,6 +87,28 @@ class MainActivity : AppCompatActivity() {
         navController.graph = navGraph
 
         MyTools.checkUpdate(this)
+    }
+
+    override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+        val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
+        if (handled) {
+            invalidateOptionsMenu()
+            AppConfig.fragmentIndex = when (menuItem.itemId) {
+                R.id.nav_systts -> 0
+                R.id.nav_server -> 1
+                else -> 0
+            }
+        } else {
+            when (menuItem.itemId) {
+                R.id.nav_killBattery -> killBattery()
+                R.id.nav_checkUpdate -> MyTools.checkUpdate(this)
+                R.id.nav_about -> showAboutDialog()
+            }
+        }
+
+        binding.navView.parent.let { if (it is DrawerLayout) it.closeDrawer(binding.navView) }
+
+        return handled
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

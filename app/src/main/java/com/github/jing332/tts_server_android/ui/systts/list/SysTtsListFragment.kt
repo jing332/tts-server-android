@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -39,6 +40,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.*
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
@@ -51,12 +53,14 @@ class SysTtsListFragment : Fragment() {
         const val TAG = "TtsConfigFragment"
     }
 
+
     private val vm: SysTtsListViewModel by activityViewModels()
     private val binding: SysttsListFragmentBinding by lazy {
         SysttsListFragmentBinding.inflate(layoutInflater)
     }
 
     private lateinit var vpAdapter: GroupPageAdapter
+    private lateinit var tabLayout: TabLayout
 
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
 
@@ -97,7 +101,9 @@ class SysTtsListFragment : Fragment() {
             getString(R.string.aside),
             getString(R.string.dialogue)
         )
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
+
+        tabLayout = requireActivity().findViewById(R.id.tabLayout)
+        TabLayoutMediator(tabLayout, binding.viewPager) { tab, pos ->
             tab.text = tabTitles[pos]
         }.attach()
 
@@ -106,6 +112,17 @@ class SysTtsListFragment : Fragment() {
                 withMain { checkFormatAndShowDialog() }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).title = ""
+        tabLayout.isGone = false
+    }
+
+    override fun onPause() {
+        super.onPause()
+        tabLayout.isGone = true
     }
 
     @SuppressLint("RestrictedApi", "SetTextI18n")

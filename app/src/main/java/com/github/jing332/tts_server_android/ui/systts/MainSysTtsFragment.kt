@@ -11,6 +11,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsFragmentBinding
 import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListFragment
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
+import com.google.android.material.tabs.TabLayout
 
 
 class MainSysTtsFragment : Fragment() {
@@ -47,13 +48,11 @@ class MainSysTtsFragment : Fragment() {
         return binding.root
     }
 
-
-    val configFragment = SysTtsListFragment()
+    val listFragment = SysTtsListFragment()
     val logFragment = SysTtsLogFragment()
 
-    inner class FragmentAdapter(fragment: Fragment) :
-        FragmentStateAdapter(fragment) {
-        private val fragmentList = listOf(configFragment, logFragment)
+    inner class FragmentAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+        private val fragmentList = listOf(listFragment, logFragment)
         override fun getItemCount(): Int {
             return fragmentList.size
         }
