@@ -22,10 +22,10 @@
             <item
                 android:id="@+id/menu_addGroup"
                 android:icon="@drawable/ic_baseline_groups_24"
-                android:title="@string/add_group"/>
+                android:title="@string/add_group" />
         </menu>
     </item>
-    
+
     <group>
         <item
             android:id="@+id/menu_doSplit"
@@ -38,10 +38,15 @@
             android:icon="@drawable/ic_baseline_supervisor_account_24"
             android:title="@string/systts_multi_voice_option" />
         <item
-            android:id="@+id/menu_isVoiceMultiple"
+            android:id="@+id/menu_voiceMultiple"
+            android:checkable="true"
             android:icon="@drawable/ic_baseline_select_all_24"
-            android:title="@string/systts_voice_multiple_option"
-            android:checkable="true"/>
+            android:title="@string/systts_voice_multiple_option" />
+        <item
+            android:id="@+id/menu_groupMultiple"
+            android:checkable="true"
+            android:title="@string/systts_groups_multiple"
+            android:icon="@drawable/ic_baseline_groups_24"/>
         <item
             android:id="@+id/menu_isInAppPlayAudio"
             android:checkable="true"

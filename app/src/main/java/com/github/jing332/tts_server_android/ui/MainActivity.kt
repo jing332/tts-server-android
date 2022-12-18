@@ -25,13 +25,10 @@ import androidx.navigation.ui.*
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
-import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.setFadeAnim
@@ -90,13 +87,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navController.graph = navGraph
 
         MyTools.checkUpdate(this)
-
-//        appDb.systemTtsDao.let {
-//            it.insertTts(SystemTts(name = "xiaoxiaoqwq", tts = MsTTS()))
-//        }
-//        appDb.systemTtsDao.getSysTtsWithGroups().forEach {
-//            println(it)
-//        }
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
@@ -138,17 +128,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menu.setOptionalIconsVisible(true)
         }
         menu?.apply {
-            when (navController.currentDestination?.id) {
-                R.id.nav_systts -> {
-                    findItem(R.id.menu_isMultiVoice)?.isChecked = SysTtsConfig.isMultiVoiceEnabled
-                    findItem(R.id.menu_doSplit)?.isChecked = SysTtsConfig.isSplitEnabled
-                    findItem(R.id.menu_replace_manager)?.isChecked = SysTtsConfig.isReplaceEnabled
-                    findItem(R.id.menu_isInAppPlayAudio)?.isChecked = SysTtsConfig.isInAppPlayAudio
-                    findItem(R.id.menu_isVoiceMultiple)?.isChecked =
-                        SysTtsConfig.isVoiceMultipleEnabled
-                }
-                R.id.nav_server -> {
-                    findItem(R.id.menu_wakeLock)?.isChecked = ServerConfig.isWakeLockEnabled
+            SysTtsConfig.apply {
+                when (navController.currentDestination?.id) {
+                    R.id.nav_systts -> {
+                        findItem(R.id.menu_isMultiVoice)?.isChecked = isMultiVoiceEnabled
+                        findItem(R.id.menu_doSplit)?.isChecked = isSplitEnabled
+                        findItem(R.id.menu_replace_manager)?.isChecked = isReplaceEnabled
+                        findItem(R.id.menu_isInAppPlayAudio)?.isChecked = isInAppPlayAudio
+                        findItem(R.id.menu_voiceMultiple)?.isChecked = isVoiceMultipleEnabled
+                        findItem(R.id.menu_groupMultiple)?.isChecked = isGroupMultipleEnabled
+                    }
+                    R.id.nav_server -> {
+                        findItem(R.id.menu_wakeLock)?.isChecked = ServerConfig.isWakeLockEnabled
+                    }
                 }
             }
         }

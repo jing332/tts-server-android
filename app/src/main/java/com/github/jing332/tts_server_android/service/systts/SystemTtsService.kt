@@ -48,7 +48,7 @@ class SystemTtsService : TextToSpeechService(),
          * 更新配置
          */
         fun notifyUpdateConfig() {
-            app.sendBroadcast(Intent(ACTION_REQUEST_UPDATE_CONFIG))
+            App.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_UPDATE_CONFIG))
         }
     }
 
@@ -56,6 +56,8 @@ class SystemTtsService : TextToSpeechService(),
 
     private val mTtsManager: TtsManager by lazy { TtsManager(this) }
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
+    private val mLocalReceiver: LocalReceiver by lazy { LocalReceiver() }
+
     private val mScope = CoroutineScope(Job())
 
     // WIFI 锁
@@ -78,9 +80,13 @@ class SystemTtsService : TextToSpeechService(),
 
         IntentFilter(ACTION_KILL_PROCESS).apply {
             addAction(ACTION_NOTIFY_CANCEL)
-            addAction(ACTION_REQUEST_UPDATE_CONFIG)
             registerReceiver(mReceiver, this)
         }
+
+        App.localBroadcast.registerReceiver(
+            mLocalReceiver,
+            IntentFilter(ACTION_REQUEST_UPDATE_CONFIG)
+        )
 
         mWakeLock.acquire(60 * 20 * 100)
         mWifiLock.acquire()
@@ -94,6 +100,7 @@ class SystemTtsService : TextToSpeechService(),
 
         mTtsManager.destroy()
         unregisterReceiver(mReceiver)
+        App.localBroadcast.unregisterReceiver(mLocalReceiver)
 
         mWakeLock.release()
         mWifiLock.release()
@@ -254,7 +261,6 @@ class SystemTtsService : TextToSpeechService(),
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_REQUEST_UPDATE_CONFIG -> mTtsManager.loadConfig()
                 ACTION_KILL_PROCESS -> { // 通知按钮{结束进程}
                     stopForeground(true)
                     exitProcess(0)
@@ -267,6 +273,14 @@ class SystemTtsService : TextToSpeechService(),
                         mNotificationDisplayed = false
                     }
                 }
+            }
+        }
+    }
+
+    inner class LocalReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                ACTION_REQUEST_UPDATE_CONFIG -> mTtsManager.loadConfig()
             }
         }
     }

@@ -143,6 +143,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
 
     fun delete(data: SystemTts) {
         AlertDialog.Builder(context).setTitle(R.string.is_confirm_delete)
+            .setMessage(data.displayName)
             .setPositiveButton(R.string.delete) { _, _ ->
                 appDb.systemTtsDao.deleteTts(data)
                 notifyTtsUpdate(data.isEnabled)

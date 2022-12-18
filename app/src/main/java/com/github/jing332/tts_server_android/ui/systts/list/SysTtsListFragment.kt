@@ -142,7 +142,9 @@ class SysTtsListFragment : Fragment() {
 
         App.localBroadcast.registerReceiver(
             mReceiver,
-            IntentFilter(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID)
+            IntentFilter(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID).apply {
+                addAction(SystemTtsService.ACTION_REQUEST_UPDATE_CONFIG)
+            }
         )
 
         if (CompatSysTtsConfig.migrationConfig()) requireContext().longToast("旧版配置迁移成功，原文件已删除")
@@ -363,11 +365,16 @@ class SysTtsListFragment : Fragment() {
                 SysTtsConfig.isMultiVoiceEnabled = !SysTtsConfig.isMultiVoiceEnabled
                 SystemTtsService.notifyUpdateConfig()
             }
-            R.id.menu_isVoiceMultiple -> {
+            R.id.menu_voiceMultiple -> {
                 SysTtsConfig.isVoiceMultipleEnabled = !SysTtsConfig.isVoiceMultipleEnabled
                 SystemTtsService.notifyUpdateConfig()
                 if (SysTtsConfig.isVoiceMultipleEnabled)
-                    longToast(getString(R.string.systts_voice_multiple_hint))
+                    longToast(R.string.systts_voice_multiple_hint)
+            }
+            R.id.menu_groupMultiple -> {
+                SysTtsConfig.isGroupMultipleEnabled = !SysTtsConfig.isGroupMultipleEnabled
+                if (SysTtsConfig.isGroupMultipleEnabled)
+                    longToast(getString(R.string.systts_groups_multiple_hint))
             }
 
             R.id.menu_replace_manager -> startActivity(
@@ -387,6 +394,9 @@ class SysTtsListFragment : Fragment() {
                 MainActivity.ACTION_OPTION_ITEM_SELECTED_ID -> {
                     val itemId = intent.getIntExtra(MainActivity.KEY_MENU_ITEM_ID, -1)
                     onOptionsItemSelected(itemId)
+                }
+                SystemTtsService.ACTION_REQUEST_UPDATE_CONFIG -> {
+                    Toast.makeText(requireContext(), "已更新配置", Toast.LENGTH_SHORT).show()
                 }
             }
         }

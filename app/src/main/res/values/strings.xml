@@ -175,10 +175,13 @@
     <string name="systts_voice_data_load_failed">语音数据加载失败</string>
     <string name="systts_help_sample_rate">系统TTS在开始播放时需指定采样率，如已打开【APP内播放】则可忽略此选项。</string>
     <string name="systts_voice_multiple_option">相同朗读目标可多选</string>
-    <string name="systts_voice_multiple_hint">相同朗读目标将不再排斥，并使用随机轮播。(单语音不支持此功能)</string>
-    <string name="systts_warn_no_ra_dialogue">警告：缺少{对话}，使用默认配置！</string>
-    <string name="systts_warn_no_ra_all">警告：缺少{全部}，使用默认！</string>
-    <string name="systts_warn_no_ra_aside">警告：缺少{旁白}，使用默认配置！</string>
+    <string name="systts_voice_multiple_hint">⚠️相同朗读目标将不再排斥，并使用随机轮播。(单语音不支持此功能)</string>
+    <string name="systts_groups_multiple">分组可多选</string>
+    <string name="systts_groups_multiple_hint">⚠️分组可多选，将不再互相排斥。</string>
+
+    <string name="systts_warn_no_ra_dialogue">⚠️缺少{对话}，使用默认配置！</string>
+    <string name="systts_warn_no_ra_all">⚠️缺少{全部}，使用默认！</string>
+    <string name="systts_warn_no_ra_aside">⚠️缺少{旁白}，使用默认配置！</string>
 
     <string name="systts_http_test_success">测试成功</string>
     <string name="systts_http_test_msg">音频大小：%1$d kb \n格式：%2$s \n采样率：%3$d hz \nContent-Type：%4$s</string>

@@ -18,6 +18,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsListMyGroupFragmentBinding
 import com.github.jing332.tts_server_android.databinding.SysttsListMyGroupItemBinding
+import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListItemHelper
@@ -63,6 +64,11 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                     }
                     checkBox.setOnClickListener { _ ->
                         getModel<RvGroupModel>().itemSublist?.let { list ->
+                            if (!SysTtsConfig.isGroupMultipleEnabled)
+                                appDb.systemTtsDao.allTts.forEach {
+                                    if (it.isEnabled) appDb.systemTtsDao.updateTts(it.copy(isEnabled = false))
+                                }
+
                             list.forEach {
                                 if (it is SystemTts && it.isEnabled != checkBox.isChecked)
                                     appDb.systemTtsDao.updateTts(it.copy(isEnabled = checkBox.isChecked))
@@ -92,7 +98,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launch() {
+        lifecycleScope.launch {
             appDb.systemTtsDao.flowAllGroupWithTts.conflate().collect { list ->
                 val models = withDefault {
                     list.mapIndexed { i, v ->

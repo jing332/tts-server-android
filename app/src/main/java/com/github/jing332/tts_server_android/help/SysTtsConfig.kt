@@ -32,6 +32,11 @@ object SysTtsConfig : KotprefModel() {
     var isVoiceMultipleEnabled by booleanPref()
 
     /**
+     * 分组可多选
+     */
+    var isGroupMultipleEnabled by booleanPref()
+
+    /**
      * 替换
      */
     var isReplaceEnabled by booleanPref()
