@@ -1,12 +1,10 @@
 package com.github.jing332.tts_server_android.data
 
 import android.content.Context
-import android.view.autofill.AutofillManager
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.AutoMigrationSpec
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.data.dao.ReplaceRuleDao
 import com.github.jing332.tts_server_android.data.dao.SystemTtsDao
@@ -14,12 +12,10 @@ import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 
-val appDb by lazy {
-    AppDatabase.createDatabase(App.context)
-}
+val appDb by lazy { AppDatabase.createDatabase(App.context) }
 
 @Database(
-    version = 4,
+    version = 5,
     entities = [
         SystemTts::class, SystemTtsGroup::class,
         ReplaceRule::class
@@ -27,10 +23,10 @@ val appDb by lazy {
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 3, to = 4),
+        AutoMigration(from = 4, to = 5),
     ]
 )
 abstract class AppDatabase : RoomDatabase() {
-    //    abstract val sysTtsDao: SysTtsDao
     abstract val replaceRuleDao: ReplaceRuleDao
     abstract val systemTtsDao: SystemTtsDao
 

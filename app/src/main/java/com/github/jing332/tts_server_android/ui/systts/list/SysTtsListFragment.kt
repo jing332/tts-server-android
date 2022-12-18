@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.drake.net.utils.withMain
@@ -39,7 +40,7 @@ import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.list.my_group.SysTtsListMyGroupFragment
+import com.github.jing332.tts_server_android.ui.systts.list.my_group.SysTtsListMyGroupPageFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.tabs.TabLayout
@@ -90,8 +91,8 @@ class SysTtsListFragment : Fragment() {
         if (savedInstanceState != null) return
 
         val fragmentList = listOf(
-            SysTtsListMyGroupFragment(),
-            SysTtsListGroupFragment.newInstance()
+            SysTtsListMyGroupPageFragment(),
+            SysTtsListGroupPageFragment.newInstance()
         )
         vpAdapter = GroupPageAdapter(this, fragmentList)
         binding.viewPager.isSaveEnabled = false
@@ -106,7 +107,7 @@ class SysTtsListFragment : Fragment() {
             tab.text = tabTitles[pos]
         }.attach()
 
-        vm.viewModelScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.IO) {
             appDb.systemTtsDao.flowAllTts.conflate().collect {
                 withMain { checkFormatAndShowDialog(it) }
             }
@@ -115,7 +116,10 @@ class SysTtsListFragment : Fragment() {
         // 插入默认分组
         if (appDb.systemTtsDao.getGroupById(SystemTtsGroup.DEFAULT_GROUP_ID) == null) {
             appDb.systemTtsDao.insertGroup(
-                SystemTtsGroup(id = SystemTtsGroup.DEFAULT_GROUP_ID, name = getString(R.string.default_group))
+                SystemTtsGroup(
+                    id = SystemTtsGroup.DEFAULT_GROUP_ID,
+                    name = getString(R.string.default_group)
+                )
             )
         }
     }

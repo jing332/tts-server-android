@@ -1,17 +1,11 @@
 package com.github.jing332.tts_server_android.data.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
+import androidx.room.*
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup.Companion.DEFAULT_GROUP_ID
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -35,7 +29,7 @@ interface SystemTtsDao {
     @Query("SELECT * FROM SystemTtsGroup WHERE groupId = :id")
     fun getGroupById(id: Long = DEFAULT_GROUP_ID): SystemTtsGroup?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTts(vararg items: SystemTts)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -44,8 +38,8 @@ interface SystemTtsDao {
     @Delete
     fun deleteTts(vararg items: SystemTts)
 
-    @Insert
-    fun insertGroup(group: SystemTtsGroup)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertGroup(vararg group: SystemTtsGroup)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateGroup(group: SystemTtsGroup)

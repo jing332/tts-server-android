@@ -58,7 +58,6 @@ android {
         }
 
     }
-//    sourceSets { main { jniLibs.srcDirs = ['libs'] } }
 
     splits {
         abi {

@@ -11,23 +11,24 @@ import androidx.lifecycle.lifecycleScope
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
-import com.drake.net.utils.withMain
+import com.drake.net.utils.withDefault
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsListMyGroupFragmentBinding
 import com.github.jing332.tts_server_android.databinding.SysttsListMyGroupItemBinding
+import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListItemHelper
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
-class SysTtsListMyGroupFragment : Fragment() {
+@Suppress("CAST_NEVER_SUCCEEDS")
+class SysTtsListMyGroupPageFragment : Fragment() {
     val binding: SysttsListMyGroupFragmentBinding by lazy {
         SysttsListMyGroupFragmentBinding.inflate(layoutInflater)
     }
@@ -44,7 +45,7 @@ class SysTtsListMyGroupFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val brv = binding.recyclerView.linear().setup {
             addType<RvGroupModel>(R.layout.systts_list_my_group_item)
-            addType<SystemTts>(R.layout.systts_list_item2)
+            addType<SystemTts>(R.layout.systts_list_item)
 
             onCreate {
                 // 分组Item
@@ -61,17 +62,16 @@ class SysTtsListMyGroupFragment : Fragment() {
                         }
                     }
                     checkBox.setOnClickListener { _ ->
-                        (getModel<RvGroupModel>().itemSublist as List<SystemTts>).let { list ->
-                            list.forEach {
-                                if (it.isEnabled != checkBox.isChecked) {
-                                    it.isEnabled = checkBox.isChecked
-                                    appDb.systemTtsDao.updateTts(it)
-                                }
+                        (getModel<RvGroupModel>().itemSublist is List<*>).let { list ->
+                            (list as List<SystemTts>).forEach {
+                                if (it.isEnabled != checkBox.isChecked)
+                                    appDb.systemTtsDao.updateTts(it.copy(isEnabled = checkBox.isChecked))
                             }
+                            SystemTtsService.notifyUpdateConfig()
                         }
                     }
 
-                    ivMore.setOnClickListener { displayMoreMenu(it, getModel<RvGroupModel>()) }
+                    ivMore.setOnClickListener { displayMoreMenu(it, getModel()) }
                 }
 
                 // TTS Item
@@ -92,10 +92,10 @@ class SysTtsListMyGroupFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch() {
             appDb.systemTtsDao.flowAllGroupWithTts.conflate().collect { list ->
-                withMain {
-                    brv.models = list.mapIndexed { i, v ->
+                val models = withDefault {
+                    list.mapIndexed { i, v ->
                         val isEnabled = v.list.any { it.isEnabled }
                         RvGroupModel(
                             data = v.group,
@@ -106,6 +106,11 @@ class SysTtsListMyGroupFragment : Fragment() {
                         )
                     }
                 }
+
+                if (brv.modelCount > 0)
+                    withDefault { brv.setDifferModels(models) }
+                else
+                    brv.models = models
             }
 
         }
@@ -129,11 +134,15 @@ class SysTtsListMyGroupFragment : Fragment() {
 
     private fun editGroupName(data: SystemTtsGroup) {
         val et = MaterialTextInput(requireContext())
-        et.editView.setText(data.name)
-        AlertDialog.Builder(requireContext()).setTitle("编辑分组名称")
+        et.inputEdit.setText(data.name)
+        et.inputLayout.setHint(R.string.name)
+        AlertDialog.Builder(requireContext()).setTitle(R.string.edit_group_name)
             .setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                appDb.systemTtsDao.updateGroup(data.copy(name = et.editView.text.toString()))
+                appDb.systemTtsDao.updateGroup(
+                    data.copy(
+                        name = et.inputEdit.text.toString().ifEmpty { getString(R.string.unnamed) })
+                )
             }
             .setFadeAnim()
             .show()
@@ -145,6 +154,7 @@ class SysTtsListMyGroupFragment : Fragment() {
 
     private fun deleteGroup(data: SystemTtsGroup) {
         AlertDialog.Builder(requireContext()).setTitle(R.string.is_confirm_delete)
+            .setMessage(data.name)
             .setPositiveButton(R.string.delete) { _, _ ->
                 appDb.systemTtsDao.deleteGroup(data)
             }

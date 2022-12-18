@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.data.entities.systts
 import androidx.room.Embedded
 import androidx.room.Relation
 
+@kotlinx.serialization.Serializable
 data class GroupWithTtsItem(
     @Embedded
     val group: SystemTtsGroup,

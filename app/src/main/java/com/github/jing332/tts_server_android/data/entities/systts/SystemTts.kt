@@ -9,12 +9,13 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+@kotlinx.serialization.Serializable
 @kotlinx.parcelize.Parcelize
 @TypeConverters(SystemTts.Converters::class)
 @Entity(tableName = "sysTts")
 data class SystemTts(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    val id: Long = System.currentTimeMillis(),
 
     // 所属组的ID
     @ColumnInfo(defaultValue = SystemTtsGroup.DEFAULT_GROUP_ID.toString())

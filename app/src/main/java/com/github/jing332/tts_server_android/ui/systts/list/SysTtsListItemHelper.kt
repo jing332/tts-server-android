@@ -15,7 +15,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.databinding.SysttsListItem2Binding
+import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
@@ -26,14 +26,14 @@ import com.github.jing332.tts_server_android.util.clone
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.setFadeAnim
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "DEPRECATION")
 class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = false) {
     val context: Context by lazy { fragment.requireContext() }
 
     fun init(adapter: BindingAdapter, holder: BindingAdapter.BindingViewHolder) {
         adapter.apply {
             holder.apply {
-                getBindingOrNull<SysttsListItem2Binding>()?.apply {
+                getBindingOrNull<SysttsListItemBinding>()?.apply {
                     checkBoxSwitch.setOnClickListener { view ->
                         if (isGroupList) {
                             getModelOrNull<RvGroupModel>(findParentPosition())?.let { group ->
