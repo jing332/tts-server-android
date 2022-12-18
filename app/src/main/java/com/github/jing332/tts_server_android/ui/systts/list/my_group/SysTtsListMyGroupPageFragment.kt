@@ -62,9 +62,9 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                         }
                     }
                     checkBox.setOnClickListener { _ ->
-                        (getModel<RvGroupModel>().itemSublist is List<*>).let { list ->
-                            (list as List<SystemTts>).forEach {
-                                if (it.isEnabled != checkBox.isChecked)
+                        getModel<RvGroupModel>().itemSublist?.let { list ->
+                            list.forEach {
+                                if (it is SystemTts && it.isEnabled != checkBox.isChecked)
                                     appDb.systemTtsDao.updateTts(it.copy(isEnabled = checkBox.isChecked))
                             }
                             SystemTtsService.notifyUpdateConfig()
