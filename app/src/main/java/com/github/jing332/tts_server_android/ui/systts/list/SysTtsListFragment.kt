@@ -27,7 +27,8 @@ import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.DialogInAppPlaySettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
@@ -38,6 +39,7 @@ import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.list.my_group.SysTtsListMyGroupFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.tabs.TabLayout
@@ -51,6 +53,7 @@ import kotlinx.coroutines.launch
 class SysTtsListFragment : Fragment() {
     companion object {
         const val TAG = "TtsConfigFragment"
+
     }
 
 
@@ -67,15 +70,13 @@ class SysTtsListFragment : Fragment() {
     /* EditActivity的返回值 */
     private val startForResult =
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
-            val data = result.data?.getParcelableExtra<SysTts>(KEY_DATA)
-            data?.let {
-                if (it.id == 0L) appDb.sysTtsDao.insert(data)
-                else appDb.sysTtsDao.update(data)
+            result.data?.getParcelableExtra<SystemTts>(KEY_DATA)?.let {
+                if (it.id == 0L) appDb.systemTtsDao.insertTts(it)
+                else appDb.systemTtsDao.updateTts(it)
 
-                notifyTtsUpdate(data.isEnabled)
+                notifyTtsUpdate(it.isEnabled)
             }
         }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -89,18 +90,16 @@ class SysTtsListFragment : Fragment() {
         if (savedInstanceState != null) return
 
         val fragmentList = listOf(
-            SysTtsListGroupFragment.newInstance(),
-            SysTtsListGroupFragment.newInstance(ReadAloudTarget.ASIDE),
-            SysTtsListGroupFragment.newInstance(ReadAloudTarget.DIALOGUE),
+            SysTtsListMyGroupFragment(),
+            SysTtsListGroupFragment.newInstance()
         )
         vpAdapter = GroupPageAdapter(this, fragmentList)
         binding.viewPager.isSaveEnabled = false
         binding.viewPager.adapter = vpAdapter
 
         val tabTitles = listOf(
+            getString(R.string.group),
             getString(R.string.all),
-            getString(R.string.aside),
-            getString(R.string.dialogue)
         )
 
         TabLayoutMediator(tabLayout, binding.viewPager) { tab, pos ->
@@ -108,9 +107,16 @@ class SysTtsListFragment : Fragment() {
         }.attach()
 
         vm.viewModelScope.launch(Dispatchers.IO) {
-            appDb.sysTtsDao.flowAll().conflate().collect {
-                withMain { checkFormatAndShowDialog() }
+            appDb.systemTtsDao.flowAllTts.conflate().collect {
+                withMain { checkFormatAndShowDialog(it) }
             }
+        }
+
+        // 插入默认分组
+        if (appDb.systemTtsDao.getGroupById(SystemTtsGroup.DEFAULT_GROUP_ID) == null) {
+            appDb.systemTtsDao.insertGroup(
+                SystemTtsGroup(id = SystemTtsGroup.DEFAULT_GROUP_ID, name = getString(R.string.default_group))
+            )
         }
     }
 
@@ -130,8 +136,10 @@ class SysTtsListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) return
 
-        App.localBroadcast.registerReceiver(mReceiver,
-            IntentFilter().apply { addAction(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID) })
+        App.localBroadcast.registerReceiver(
+            mReceiver,
+            IntentFilter(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID)
+        )
 
         if (CompatSysTtsConfig.migrationConfig()) requireContext().longToast("旧版配置迁移成功，原文件已删除")
     }
@@ -150,9 +158,9 @@ class SysTtsListFragment : Fragment() {
     }
 
     /* 检查格式 如不同则显示对话框 */
-    private fun checkFormatAndShowDialog() {
+    private fun checkFormatAndShowDialog(list: List<SystemTts>) {
         SysTtsConfig.apply {
-            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat())
+            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat(list))
                 formatWarnDialog.show()
         }
     }
@@ -295,21 +303,41 @@ class SysTtsListFragment : Fragment() {
             }.setFadeAnim().show()
     }
 
-    private fun addHttpTTS(@ReadAloudTarget raTarget: Int = ReadAloudTarget.ALL) {
+    private fun addHttpTTS(
+        @ReadAloudTarget raTarget: Int = ReadAloudTarget.ALL,
+        groupId: Long = SystemTtsGroup.DEFAULT_GROUP_ID
+    ) {
         startForResult.launch(
             Intent(
                 requireContext(),
                 HttpTtsEditActivity::class.java
-            ).apply { putExtra(KEY_DATA, SysTts(readAloudTarget = raTarget, tts = HttpTTS())) })
+            ).apply {
+                putExtra(
+                    KEY_DATA,
+                    SystemTts(readAloudTarget = raTarget, tts = HttpTTS(), groupId = groupId)
+                )
+            })
     }
 
-    private fun addMsTTS(@ReadAloudTarget raTarget: Int = ReadAloudTarget.ALL) {
+    private fun addMsTTS(
+        @ReadAloudTarget raTarget: Int = ReadAloudTarget.ALL,
+        groupId: Long = SystemTtsGroup.DEFAULT_GROUP_ID
+    ) {
         val intent = Intent(requireContext(), MsTtsEditActivity::class.java).apply {
             putExtra(
-                KEY_DATA, SysTts(readAloudTarget = raTarget, tts = MsTTS())
+                KEY_DATA, SystemTts(readAloudTarget = raTarget, tts = MsTTS(), groupId = groupId)
             )
         }
         startForResult.launch(intent)
+    }
+
+    private fun addGroup() {
+        val et = EditText(requireContext())
+        AlertDialog.Builder(requireContext()).setMessage(R.string.add_group).setView(et)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                appDb.systemTtsDao.insertGroup(SystemTtsGroup(name = et.text.toString()))
+            }
+            .setFadeAnim().show()
     }
 
     private fun onOptionsItemSelected(itemId: Int) {
@@ -317,6 +345,7 @@ class SysTtsListFragment : Fragment() {
             /* 添加配置 */
             R.id.menu_addMsTts -> addMsTTS(binding.viewPager.currentItem)
             R.id.menu_addHttpTts -> addHttpTTS(binding.viewPager.currentItem)
+            R.id.menu_addGroup -> addGroup()
 
             R.id.menu_isInAppPlayAudio -> showInAppSettingsDialog()
             R.id.menu_setAudioRequestTimeout -> showSetAudioRequestTimeoutDialog()
@@ -347,13 +376,14 @@ class SysTtsListFragment : Fragment() {
         }
     }
 
-
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            // MainActivity 的点击右上角菜单的ID
-            if (intent?.action == MainActivity.ACTION_OPTION_ITEM_SELECTED_ID) {
-                val itemId = intent.getIntExtra(MainActivity.KEY_MENU_ITEM_ID, -1)
-                onOptionsItemSelected(itemId)
+            when (intent?.action) {
+                // MainActivity 的点击右上角菜单的ID
+                MainActivity.ACTION_OPTION_ITEM_SELECTED_ID -> {
+                    val itemId = intent.getIntExtra(MainActivity.KEY_MENU_ITEM_ID, -1)
+                    onOptionsItemSelected(itemId)
+                }
             }
         }
     }

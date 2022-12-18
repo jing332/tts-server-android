@@ -297,10 +297,10 @@ class SystemTtsService : TextToSpeechService(),
         sendLog(LogLevel.ERROR, msg)
     }
 
-    override fun onStartRetry(retryNum: Int, err: Throwable) {
+    override fun onStartRetry(retryNum: Int, message: Throwable) {
         "开始第${retryNum}次重试...".let {
             sendLog(LogLevel.WARN, it)
-            updateNotification("请求失败：$it", err.message)
+            updateNotification("请求失败：$it", message.message)
         }
     }
 

@@ -5,15 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.RadioButton
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.children
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
@@ -40,25 +38,6 @@ class MsTtsEditActivity : BackActivity() {
         binding.tilSecondaryLocale.setStartIconOnClickListener {
             AlertDialog.Builder(this).setTitle(R.string.systts_secondaryLocale)
                 .setMessage(R.string.systts_help_secondary_locale).setFadeAnim().show()
-        }
-
-        // 朗读目标切换
-        binding.radioRaTarget.radioGroup.setOnCheckedChangeListener { _, id ->
-            val pos = when (id) {
-                R.id.radioBtn_ra_all -> ReadAloudTarget.ALL
-                R.id.radioBtn_only_ra_aside -> ReadAloudTarget.ASIDE
-                R.id.radioBtn_only_ra_dialogue -> ReadAloudTarget.DIALOGUE
-                else -> return@setOnCheckedChangeListener
-            }
-            vm.raTargetChanged(pos)
-        }
-
-        // 监听朗读目标
-        vm.raTargetLiveData.observe(this) {
-            binding.radioRaTarget.radioGroup.apply {
-                children.forEach { (it as RadioButton).isChecked = false }
-                (getChildAt(it) as RadioButton).isChecked = true
-            }
         }
 
         val waitDialog = WaitDialog(this)
@@ -93,15 +72,19 @@ class MsTtsEditActivity : BackActivity() {
             )
         )
 
-        var data: SysTts? = intent.getParcelableExtra(KEY_DATA)
-        if (data == null) data = SysTts(tts = MsTTS())
+        var data: SystemTts? = intent.getParcelableExtra(KEY_DATA)
+        if (data == null) data = SystemTts(tts = MsTTS())
 
         vm.initUserData(data)
+
+        // 组
+        appDb.systemTtsDao.allGroup.let { list ->
+            binding.baseInfoEditView.setData(data, list)
+        }
 
         // 自动同步数据
         binding.numEditView.setData(data.tts as MsTTS)
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_systts_config_edit, menu)
@@ -111,8 +94,7 @@ class MsTtsEditActivity : BackActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.systts_config_edit_save -> {
-                val data = vm.getData(binding.etName.text.toString())
-                setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, data) })
+                setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, vm.getData()) })
                 finish()
             }
         }

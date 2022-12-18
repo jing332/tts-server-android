@@ -1,23 +1,38 @@
 package com.github.jing332.tts_server_android.data
 
 import android.content.Context
+import android.view.autofill.AutofillManager
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.AutoMigrationSpec
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.data.dao.ReplaceRuleDao
-import com.github.jing332.tts_server_android.data.dao.SysTtsDao
+import com.github.jing332.tts_server_android.data.dao.SystemTtsDao
 import com.github.jing332.tts_server_android.data.entities.ReplaceRule
-import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 
 val appDb by lazy {
     AppDatabase.createDatabase(App.context)
 }
 
-@Database(version = 3, entities = [SysTts::class, ReplaceRule::class])
+@Database(
+    version = 4,
+    entities = [
+        SystemTts::class, SystemTtsGroup::class,
+        ReplaceRule::class
+    ],
+    autoMigrations = [
+        AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4),
+    ]
+)
 abstract class AppDatabase : RoomDatabase() {
-    abstract val sysTtsDao: SysTtsDao
+    //    abstract val sysTtsDao: SysTtsDao
     abstract val replaceRuleDao: ReplaceRuleDao
+    abstract val systemTtsDao: SystemTtsDao
 
     companion object {
         private const val DATABASE_NAME = "systts.db"

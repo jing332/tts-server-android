@@ -2,7 +2,7 @@ package com.github.jing332.tts_server_android.data
 
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.util.FileUtils
@@ -42,8 +42,8 @@ data class CompatSysTtsConfig(
             val compatConfig = read()
             compatConfig?.apply {
                 list.forEach {
-                    appDb.sysTtsDao.insert(
-                        SysTts(
+                    appDb.systemTtsDao.insertTtsIfDefault(
+                        SystemTts(
                             readAloudTarget = it.readAloudTarget,
                             tts = it.voiceProperty,
                             displayName = it.uiData.displayName,

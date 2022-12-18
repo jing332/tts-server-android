@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.SysTts
-import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import tts_server_lib.Tts_server_lib
@@ -17,19 +17,20 @@ class SysTtsListViewModel : ViewModel() {
 
     /**
      * 检查多语音音频格式是否一致
-     * @return 是否相等
+     * @return 采样率是否相等
      */
-    fun checkMultiVoiceFormat(): Boolean {
-        val aside = appDb.sysTtsDao.getByReadAloudTarget(ReadAloudTarget.ASIDE)
-        val dialogue = appDb.sysTtsDao.getByReadAloudTarget(ReadAloudTarget.DIALOGUE)
-        if (aside == null || dialogue == null) {
+    fun checkMultiVoiceFormat(list: List<SystemTts>): Boolean {
+        val aside =
+            list.filter { it.isEnabled && it.readAloudTarget == ReadAloudTarget.ASIDE }.getOrNull(0)
+        val dialogue =
+            list.filter { it.isEnabled && it.readAloudTarget == ReadAloudTarget.DIALOGUE }
+                .getOrNull(0)
+
+        if (aside == null || dialogue == null)
             return true
-        } else if (aside.isEnabled && dialogue.isEnabled) {
-            return aside.tts?.audioFormat?.sampleRate == dialogue.tts?.audioFormat?.sampleRate
-//            return MsTtsFormatManger.isFormatSampleEqual(
-//                aside.format, dialogue.format
-//            )
-        }
+        else if (aside.isEnabled && dialogue.isEnabled)
+            return aside.tts.audioFormat.sampleRate == dialogue.tts.audioFormat.sampleRate
+
         return true
     }
 
@@ -60,7 +61,7 @@ class SysTtsListViewModel : ViewModel() {
     /* 导出配置 */
     fun exportConfig(): String {
         return try {
-            App.jsonBuilder.encodeToString(appDb.sysTtsDao.all)
+            App.jsonBuilder.encodeToString(appDb.systemTtsDao.getSysTtsWithGroups())
         } catch (e: Exception) {
             "导出失败：${e.message}"
         }
@@ -79,9 +80,9 @@ class SysTtsListViewModel : ViewModel() {
     /* 从json导入配置 */
     fun importConfig(json: String): String? {
         try {
-            val list = App.jsonBuilder.decodeFromString<List<SysTts>>(json)
+            val list = App.jsonBuilder.decodeFromString<List<GroupWithTtsItem>>(json)
             list.forEach {
-                appDb.sysTtsDao.insert(it)
+//                appDb.systemTtsDao.insert(it)
             }
         } catch (e: Exception) {
             return e.message

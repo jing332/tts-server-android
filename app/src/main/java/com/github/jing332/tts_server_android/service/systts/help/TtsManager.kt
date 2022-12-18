@@ -10,7 +10,7 @@ import com.drake.net.utils.runMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.ExoByteArrayMediaSource
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
@@ -26,7 +26,6 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
-
 
 class TtsManager(val context: Context) {
     companion object {
@@ -83,16 +82,16 @@ class TtsManager(val context: Context) {
     private lateinit var mAudioFormat: BaseAudioFormat
 
     // Room数据库
-    private val mSysTts by lazy { appDb.sysTtsDao }
+    private val mSysTts by lazy { appDb.systemTtsDao }
 
     // 全局默认 TTS配置
-    private lateinit var mDefaultConfig: List<SysTts>
+    private lateinit var mDefaultConfig: List<SystemTts>
 
     // 旁白 TTS配置
-    private lateinit var mAsideConfig: List<SysTts>
+    private lateinit var mAsideConfig: List<SystemTts>
 
     // 对话 TTS配置
-    private lateinit var mDialogueConfig: List<SysTts>
+    private lateinit var mDialogueConfig: List<SystemTts>
 
     // 一些开关偏好
     private var mInAppPlayAudio = false
@@ -146,30 +145,40 @@ class TtsManager(val context: Context) {
                 getAllByReadAloudTarget(ReadAloudTarget.ASIDE).let { list ->
                     mAsideConfig = if (list == null || list.isEmpty()) {
                         context.toast(context.getString(R.string.systts_warn_no_ra_aside))
-                        listOf(SysTts(readAloudTarget = ReadAloudTarget.ASIDE, tts = MsTTS()))
+                        listOf(
+                            SystemTts(
+                                readAloudTarget = ReadAloudTarget.ASIDE,
+                                tts = MsTTS()
+                            )
+                        )
                     } else list
                 }
-                mAsideConfig.forEach { it.tts?.onLoad() }
+                mAsideConfig.forEach { it.tts.onLoad() }
 
                 // 对话
                 getAllByReadAloudTarget(ReadAloudTarget.DIALOGUE).let { list ->
                     mDialogueConfig = if (list == null || list.isEmpty()) {
                         context.toast(R.string.systts_warn_no_ra_dialogue)
-                        listOf(SysTts(readAloudTarget = ReadAloudTarget.DIALOGUE, tts = MsTTS()))
+                        listOf(
+                            SystemTts(
+                                readAloudTarget = ReadAloudTarget.DIALOGUE,
+                                tts = MsTTS()
+                            )
+                        )
                     } else list
                 }
 
-                mDialogueConfig.forEach { it.tts?.onLoad() }
-                mAudioFormat = mDialogueConfig[0].tts?.audioFormat!!
+                mDialogueConfig.forEach { it.tts.onLoad() }
+                mAudioFormat = mDialogueConfig[0].tts.audioFormat
             } else {
                 mSysTts.getAllByReadAloudTarget().let { list ->
                     mDefaultConfig = if (list == null || list.isEmpty()) {
                         context.toast(context.getString(R.string.systts_warn_no_ra_all))
-                        listOf(SysTts(isEnabled = true, tts = MsTTS()))
+                        listOf(SystemTts(isEnabled = true, tts = MsTTS()))
                     } else list
 
-                    mDefaultConfig.forEach { it.tts?.onLoad() }
-                    mAudioFormat = mDefaultConfig[0].tts?.audioFormat!!
+                    mDefaultConfig.forEach { it.tts.onLoad() }
+                    mAudioFormat = mDefaultConfig[0].tts.audioFormat
                 }
             }
         }
@@ -181,7 +190,7 @@ class TtsManager(val context: Context) {
     // APP内播放音频Job 用于 job.cancel() 取消播放
     private var mInAppPlayJob: Job? = null
 
-    private fun handleTTS(list: List<SysTts>, rate: Int, pitch: Int): List<BaseTTS> {
+    private fun handleTTS(list: List<SystemTts>, rate: Int, pitch: Int): List<BaseTTS> {
         val handledList = list.map { it.tts.clone<BaseTTS>()!! }
         handledList.forEach { it.setPlayBackParameters(rate, pitch) }
         return handledList

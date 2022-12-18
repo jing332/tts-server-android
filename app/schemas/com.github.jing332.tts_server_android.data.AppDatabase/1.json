@@ -1,0 +1,64 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "17b1a49245c8b41c456e06bbb7554b4c",
+    "entities": [
+      {
+        "tableName": "sysTts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uiData` TEXT NOT NULL, `isEnabled` INTEGER NOT NULL, `readAloudTarget` INTEGER NOT NULL, `msTtsProperty` TEXT, `httpTts` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uiData",
+            "columnName": "uiData",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isEnabled",
+            "columnName": "isEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "readAloudTarget",
+            "columnName": "readAloudTarget",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "msTtsProperty",
+            "columnName": "msTtsProperty",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "httpTts",
+            "columnName": "httpTts",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '17b1a49245c8b41c456e06bbb7554b4c')"
+    ]
+  }
+}

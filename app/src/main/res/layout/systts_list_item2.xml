@@ -5,9 +5,13 @@
 
     <data>
 
+        <import type="android.text.Html" />
+
+        <import type="android.view.View" />
+
         <variable
             name="m"
-            type="com.github.jing332.tts_server_android.data.entities.SysTts" />
+            type="com.github.jing332.tts_server_android.data.entities.systts.SystemTts" />
     </data>
 
     <LinearLayout
@@ -52,10 +56,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/tv_apiType"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_raTarget"
-                    app:tint="?editTextColor">
-
-
-                </ImageView>
+                    app:tint="?editTextColor" />
 
                 <TextView
                     android:id="@+id/tv_name"
@@ -78,8 +79,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:textSize="11sp"
                     android:text="@{m.tts.bottomContent}"
+                    android:textSize="11sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_name"
                     tools:text="audio-16khz-32kbitrate-mono-mp3" />
@@ -90,9 +91,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:layout_marginBottom="4dp"
+                    android:text="@{m.tts.type}"
                     android:textColor="@android:color/holo_orange_dark"
                     android:textStyle="italic"
-                    android:text="@{m.tts.type}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     tools:text="Edge" />
@@ -104,9 +105,10 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="4dp"
                     android:background="@drawable/textview_border"
-                    android:text="@{m.readAloudTargetString}"
+                    android:text="@{m.raTargetString}"
                     android:textColor="@color/teal_700"
                     android:textStyle="bold"
+                    android:visibility="@{m.raTargetString.empty ? View.INVISIBLE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="旁白" />
@@ -119,6 +121,7 @@
                     android:elegantTextHeight="false"
                     android:freezesText="true"
                     android:lineSpacingMultiplier="0.8"
+                    android:text="@{Html.fromHtml(m.tts.description)}"
                     android:textSize="14sp"
                     app:autoSizeMaxTextSize="14sp"
                     app:autoSizeTextType="uniform"

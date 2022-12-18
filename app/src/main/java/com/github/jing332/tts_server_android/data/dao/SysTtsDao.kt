@@ -1,3 +1,4 @@
+/*
 package com.github.jing332.tts_server_android.data.dao
 
 import androidx.room.*
@@ -26,14 +27,14 @@ interface SysTtsDao {
     fun getAllByReadAloudTarget(target: Int = ReadAloudTarget.ALL): List<SysTts>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg httpTTS: SysTts)
+    fun insert(vararg tts: SysTts)
 
     @Delete
-    fun delete(vararg httpTTS: SysTts)
+    fun delete(vararg tts: SysTts)
 
     @Update
-    fun update(vararg httpTTS: SysTts)
+    fun update(vararg tts: SysTts)
 
     @Query("delete from SysTts where id < 0")
     fun deleteDefault()
-}
+}*/

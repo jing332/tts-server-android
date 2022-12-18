@@ -1,49 +1,38 @@
-/*
-package com.github.jing332.tts_server_android.data.entities
+package com.github.jing332.tts_server_android.data.entities.systts
 
 import android.os.Parcelable
 import androidx.room.*
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
-import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-
-@Parcelize
-@Serializable
-@TypeConverters(SysTts.Converters::class)
+@kotlinx.parcelize.Parcelize
+@TypeConverters(SystemTts.Converters::class)
 @Entity(tableName = "sysTts")
-data class SysTts(
-    @kotlinx.serialization.Transient
+data class SystemTts(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
-    // 是否启用
-    @kotlinx.serialization.Transient
-    var isEnabled: Boolean = false,
-
-    // UI显示名称
+    // 所属组的ID
+    @ColumnInfo(defaultValue = SystemTtsGroup.DEFAULT_GROUP_ID.toString())
+    var groupId: Long = SystemTtsGroup.DEFAULT_GROUP_ID,
+    // 名称
     var displayName: String? = null,
 
-    // 朗读目标
-    @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.ALL,
+    // 是否启用
+    var isEnabled: Boolean = false,
 
-    // TTS属性
-    var tts: BaseTTS? = null,
-    ) : Parcelable {
-    val readAloudTargetString: String
-        inline get() {
-            return ReadAloudTarget.toText(readAloudTarget)
-        }
+    //朗读目标
+    @ReadAloudTarget
+    var readAloudTarget: Int = ReadAloudTarget.ALL,
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T> ttsAs(): T {
-        return tts as T
-    }
+    var tts: BaseTTS
+) : Parcelable {
+    val raTargetString: String
+        get() = ReadAloudTarget.toText(readAloudTarget)
 
     // 转换器
     class Converters {
@@ -68,14 +57,13 @@ data class SysTts(
         }
 
         @TypeConverter
-        fun ttsPropertyToString(pro: BaseTTS): String {
-            return json.encodeToString(pro)
+        fun ttsToString(tts: BaseTTS): String {
+            return json.encodeToString(tts)
         }
 
         @TypeConverter
-        fun stringToTtsProperty(json: String?): BaseTTS? {
+        fun stringToTts(json: String?): BaseTTS? {
             return decodeFromString(json)
         }
     }
 }
-*/

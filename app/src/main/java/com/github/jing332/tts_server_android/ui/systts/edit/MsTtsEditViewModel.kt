@@ -4,13 +4,11 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.Observable.OnPropertyChangedCallback
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.tts.ExpressAs
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
@@ -31,7 +29,7 @@ class MsTtsEditViewModel : ViewModel() {
     }
 
     lateinit var mTts: MsTTS
-    lateinit var mData: SysTts
+    lateinit var mData: SystemTts
 
     // 全部的list
     private lateinit var mAllVoiceList: List<GeneralVoiceData>
@@ -43,12 +41,11 @@ class MsTtsEditViewModel : ViewModel() {
     private var mCurrentVoice: GeneralVoiceData? = null
 
     // UI数据
-    var ui: UiData = UiData(
-        ""
-    )
+    var ui: UiData = UiData()
 
-    fun getData(displayName: String): SysTts {
-        if (displayName.isEmpty() || isAutoGenDisplayName(displayName)) { // 为自动生成的
+    fun getData(): SystemTts {
+        val displayName = mData.displayName
+        if (displayName.isNullOrEmpty() || isAutoGenDisplayName(displayName)) { // 为自动生成的
             mData.displayName = getDisplayName()
         } else { // 为用户自定义
             mData.displayName = displayName
@@ -71,28 +68,22 @@ class MsTtsEditViewModel : ViewModel() {
         return ""
     }
 
-    fun initUserData(data: SysTts) {
+    fun initUserData(data: SystemTts) {
         mData = data
         mTts = data.tts as MsTTS
-
-        mRaTargetLiveData.value = mData.readAloudTarget
-
-        mData.displayName?.let {
-            ui.displayName = if (isAutoGenDisplayName(it)) "" else it
-        }
+//        mRaTargetLiveData.value = mData.readAloudTarget
 
         ui.apis.position = mTts.api
     }
 
-
     // 朗读目标的位置
-    private val mRaTargetLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
-    val raTargetLiveData: LiveData<Int> by lazy { mRaTargetLiveData }
+//    private val mRaTargetLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
+//    val raTargetLiveData: LiveData<Int> by lazy { mRaTargetLiveData }
 
-    fun raTargetChanged(position: Int) {
-        if (mRaTargetLiveData.value != position) mRaTargetLiveData.value = position
-        mData.readAloudTarget = position
-    }
+//    fun raTargetChanged(position: Int) {
+//        if (mRaTargetLiveData.value != position) mRaTargetLiveData.value = position
+//        mData.readAloudTarget = position
+//    }
 
     interface CallBack {
         // 每次加载语音数据时
@@ -300,8 +291,6 @@ class MsTtsEditViewModel : ViewModel() {
 }
 
 data class UiData(
-    var displayName: String = "",
-    val raTarget: SpinnerData = SpinnerData(),
     val apis: SpinnerData = SpinnerData(),
     val locales: SpinnerData = SpinnerData(),
     var secondaryLocales: SpinnerData = SpinnerData(),

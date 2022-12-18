@@ -25,10 +25,13 @@ import androidx.navigation.ui.*
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.setFadeAnim
@@ -87,6 +90,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navController.graph = navGraph
 
         MyTools.checkUpdate(this)
+
+//        appDb.systemTtsDao.let {
+//            it.insertTts(SystemTts(name = "xiaoxiaoqwq", tts = MsTTS()))
+//        }
+//        appDb.systemTtsDao.getSysTtsWithGroups().forEach {
+//            println(it)
+//        }
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {

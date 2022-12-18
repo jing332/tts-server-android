@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_add_config_from_existing"
+        android:title="添加配置(从已有)" />
+    <item
+        android:id="@+id/menu_edit_group_name"
+        android:title="编辑名称"/>
+    <item
+        android:id="@+id/menu_delete_group"
+        android:title="删除分组" />
+
+</menu>

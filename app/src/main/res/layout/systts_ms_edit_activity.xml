@@ -22,29 +22,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include
-                android:id="@+id/radio_raTarget"
-                layout="@layout/systts_ra_target_radio_view"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="0dp" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_name"
+            <com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
+                android:id="@+id/baseInfoEditView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/display_name"
+                android:layout_marginBottom="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/radio_raTarget"
-                app:startIconDrawable="@drawable/ic_baseline_text_fields_24">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@{m.ui.displayName}" />
-            </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_api"
@@ -55,7 +40,7 @@
                 android:hint="@string/label_api"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_name"
+                app:layout_constraintTop_toBottomOf="@id/baseInfoEditView"
                 app:startIconDrawable="@drawable/ic_baseline_api_24">
 
                 <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner

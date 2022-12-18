@@ -10,7 +10,12 @@
         android:layout_height="wrap_content">
 
         <include
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:id="@+id/radio_raTarget"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="8dp"
             layout="@layout/systts_ra_target_radio_view" />
 
         <com.google.android.material.textfield.TextInputLayout

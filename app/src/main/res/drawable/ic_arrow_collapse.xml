@@ -1,0 +1,28 @@
+<!--
+  ~ Copyright (C) 2018 Drake, Inc.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="170"
+    android:viewportHeight="170">
+    <path
+        android:pathData="M6.13,85.297C6.13,129.019 41.574,164.464 85.297,164.464C129.019,164.464 164.464,129.019 164.464,85.297C164.464,41.574 129.019,6.13 85.297,6.13C41.574,6.13 6.13,41.574 6.13,85.297ZM76.089,52.38L109.422,81.547C110.507,82.491 111.13,83.859 111.13,85.297C111.13,86.735 110.507,88.103 109.422,89.047L76.089,118.214C74.757,119.449 72.86,119.864 71.134,119.297C69.409,118.73 68.127,117.27 67.789,115.486C67.45,113.701 68.107,111.873 69.505,110.714L98.547,85.297L69.505,59.88C68.107,58.72 67.45,56.893 67.789,55.108C68.127,53.324 69.409,51.864 71.134,51.297C72.86,50.73 74.757,51.145 76.089,52.38L76.089,52.38Z"
+        android:strokeWidth="1"
+        android:fillColor="#646464"
+        android:fillType="nonZero"
+        android:strokeColor="#00000000" />
+</vector>

@@ -12,19 +12,24 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
+import com.drake.net.utils.scope
+import com.drake.net.utils.scopeLife
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.entities.SysTts
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.HttpTtsQuickEditView
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
+import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.github.jing332.tts_server_android.util.setFadeAnim
+import kotlinx.coroutines.Dispatchers
 
 @Suppress("DEPRECATION")
 class HttpTtsEditActivity : BackActivity() {
@@ -33,7 +38,7 @@ class HttpTtsEditActivity : BackActivity() {
         SysttsHttpEditActivityBinding.inflate(layoutInflater)
     }
 
-    private var data: SysTts? = null
+    private lateinit var data: SystemTts
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,37 +53,44 @@ class HttpTtsEditActivity : BackActivity() {
                 R.id.radioBtn_only_ra_dialogue -> ReadAloudTarget.DIALOGUE
                 else -> return@setOnCheckedChangeListener
             }
-            data?.apply { this.readAloudTarget = pos }
+            data.apply { this.readAloudTarget = pos }
         }
 
         // 获取数据 为null表示Add
-        data = intent.getParcelableExtra(KEY_DATA)
-        if (data == null) data = SysTts(tts = HttpTTS())
-        data?.let {
-            val tts = it.ttsAs<HttpTTS>()
-            binding.apply {
-                // 设置朗读目标
-                binding.radioRaTarget.radioGroup.apply {
-                    children.forEach { btn -> (btn as RadioButton).isChecked = false }
-                    (getChildAt(it.readAloudTarget) as RadioButton).isChecked = true
-                }
+        data = intent.getParcelableExtra(KEY_DATA) ?: SystemTts(tts = HttpTTS())
 
-                etName.setText(it.displayName)
-                etUrl.setText(tts.url)
-                etHeaders.setText(tts.header)
-                binding.numEdit.rate = tts.rate
-                binding.numEdit.volume = tts.volume
-
-                tvSampleRate.setText(tts.audioFormat.sampleRate.toString())
-                checkBoxNeedDecode.isChecked = tts.audioFormat.isNeedDecode
+        // 分组初始化
+        scopeLife(dispatcher = Dispatchers.IO) {
+            appDb.systemTtsDao.allGroup.let { list ->
+                binding.radioRaTarget.groupItems = list.map { SpinnerItem(it.name, it.id) }
+                val selectedPos = list.indexOfLast { data.groupId == it.id }
+                binding.radioRaTarget.groupCurrentPosition = selectedPos
             }
+        }
+
+        val tts = data.tts as HttpTTS
+        binding.apply {
+            // 设置朗读目标
+            binding.radioRaTarget.radioGroup.apply {
+                children.forEach { btn -> (btn as RadioButton).isChecked = false }
+                (getChildAt(data.readAloudTarget) as RadioButton).isChecked = true
+            }
+
+            etName.setText(data.displayName)
+            etUrl.setText(tts.url)
+            etHeaders.setText(tts.header)
+            binding.numEdit.rate = tts.rate
+            binding.numEdit.volume = tts.volume
+
+            tvSampleRate.setText(tts.audioFormat.sampleRate.toString())
+            checkBoxNeedDecode.isChecked = tts.audioFormat.isNeedDecode
         }
 
         binding.btnTest.setOnClickListener {
             updateValueToTts()
             val waitDialog = WaitDialog(this).apply { show() }
             vm.doTest(
-                data!!.tts as HttpTTS,
+                data.tts as HttpTTS,
                 binding.etTestText.text.toString(),
                 { size, sampleRate, mime, contentType ->
                     waitDialog.dismiss()
@@ -134,7 +146,7 @@ class HttpTtsEditActivity : BackActivity() {
 
         binding.numEdit.callBack = object : HttpTtsQuickEditView.CallBack {
             override fun onValueChanged(rate: Int, volume: Int): String {
-                data?.tts?.let {
+                data.tts.let {
                     val tts = it as HttpTTS
                     it.rate = rate
                     it.volume = volume
@@ -179,6 +191,10 @@ class HttpTtsEditActivity : BackActivity() {
 
                 updateValueToTts()
                 SoftKeyboardUtils.hideSoftKeyboard(this)
+
+                binding.radioRaTarget.let {
+                    data.groupId = it.groupItems?.getOrNull(it.groupCurrentPosition)?.value as Long
+                }
                 val intent = Intent()
                 intent.putExtra(KEY_DATA, data)
                 setResult(RESULT_OK, intent)
@@ -190,9 +206,9 @@ class HttpTtsEditActivity : BackActivity() {
     }
 
     private fun updateValueToTts() {
-        data?.let {
+        data.let {
             it.displayName = binding.etName.text.toString()
-            it.ttsAs<HttpTTS>().apply {
+            (it.tts as HttpTTS).apply {
                 url = binding.etUrl.text.toString()
                 header = binding.etHeaders.text.toString()
                 audioFormat.sampleRate = binding.tvSampleRate.text.toString().toInt()

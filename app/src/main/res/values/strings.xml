@@ -182,6 +182,16 @@
 
     <string name="systts_http_test_success">测试成功</string>
     <string name="systts_http_test_msg">音频大小：%1$d kb \n格式：%2$s \n采样率：%3$d hz \nContent-Type：%4$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="expanded_state">展开状态</string>
+    <string name="add_group">添加分组</string>
+    <string name="more_options">更多选项</string>
+    <string name="desc_group_checkbox">分组是否勾选</string>
+    <string name="group">分组</string>
+    <string name="belonging_group">所属分组</string>
+    <string name="msg_group_is_empty">分组为空，请添加配置</string>
+    <string name="default_group">默认分组</string>
 
 
 </resources>
