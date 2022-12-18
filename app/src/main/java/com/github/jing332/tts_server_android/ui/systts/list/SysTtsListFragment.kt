@@ -72,9 +72,7 @@ class SysTtsListFragment : Fragment() {
     private val startForResult =
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             result.data?.getParcelableExtra<SystemTts>(KEY_DATA)?.let {
-                if (it.id == 0L) appDb.systemTtsDao.insertTts(it)
-                else appDb.systemTtsDao.updateTts(it)
-
+                appDb.systemTtsDao.insertTts(it)
                 notifyTtsUpdate(it.isEnabled)
             }
         }
