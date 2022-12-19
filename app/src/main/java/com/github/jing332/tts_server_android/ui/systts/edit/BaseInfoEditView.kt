@@ -34,6 +34,7 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
             field = value
             binding.radioGroup.children.forEach { (it as RadioButton).isChecked = false }
             (binding.radioGroup.getChildAt(field) as RadioButton).isChecked = true
+            mData?.apply { readAloudTarget = field }
         }
 
     var displayName: String
@@ -55,12 +56,9 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
         binding.groupCurrentPosition = groupList.indexOfFirst { it.id == data.groupId }
     }
 
-
     init {
         binding.etName.addTextChangedListener {
-            mData?.apply {
-                displayName = this@BaseInfoEditView.displayName
-            }
+            mData?.apply { displayName = this@BaseInfoEditView.displayName }
         }
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val raTarget = when (checkedId) {

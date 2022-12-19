@@ -12,7 +12,6 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.tts.ExpressAs
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
-import com.github.jing332.tts_server_android.util.runOnIO
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -71,19 +70,9 @@ class MsTtsEditViewModel : ViewModel() {
     fun initUserData(data: SystemTts) {
         mData = data
         mTts = data.tts as MsTTS
-//        mRaTargetLiveData.value = mData.readAloudTarget
 
         ui.apis.position = mTts.api
     }
-
-    // 朗读目标的位置
-//    private val mRaTargetLiveData: MutableLiveData<Int> by lazy { MutableLiveData() }
-//    val raTargetLiveData: LiveData<Int> by lazy { mRaTargetLiveData }
-
-//    fun raTargetChanged(position: Int) {
-//        if (mRaTargetLiveData.value != position) mRaTargetLiveData.value = position
-//        mData.readAloudTarget = position
-//    }
 
     interface CallBack {
         // 每次加载语音数据时
@@ -143,14 +132,14 @@ class MsTtsEditViewModel : ViewModel() {
         ui.locales.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
                 mTts.locale = (ui.locales.selectedItem?.value ?: "") as String
-                viewModelScope.runOnIO { updateVoices(mAllVoiceList) }
+                viewModelScope.launch { updateVoices(mAllVoiceList) }
             }
         }
 
         // 语音
         ui.voices.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
-                viewModelScope.runOnIO {
+                viewModelScope.launch {
                     mCurrentVoice = ui.voices.selectedItem?.value as GeneralVoiceData
                     mCurrentVoice!!.let {
                         mTts.voiceName = it.voiceName
