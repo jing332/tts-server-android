@@ -37,6 +37,7 @@ import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.MainActivity
+import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
@@ -56,7 +57,6 @@ class SysTtsListFragment : Fragment() {
         const val TAG = "TtsConfigFragment"
 
     }
-
 
     private val vm: SysTtsListViewModel by activityViewModels()
     private val binding: SysttsListFragmentBinding by lazy {
@@ -336,10 +336,14 @@ class SysTtsListFragment : Fragment() {
     }
 
     private fun addGroup() {
-        val et = EditText(requireContext())
+        val et = MaterialTextInput(requireContext())
+        et.inputLayout.setHint(R.string.name)
         AlertDialog.Builder(requireContext()).setMessage(R.string.add_group).setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                appDb.systemTtsDao.insertGroup(SystemTtsGroup(name = et.text.toString()))
+                appDb.systemTtsDao.insertGroup(
+                    SystemTtsGroup(
+                        name = et.inputEdit.text.toString().ifEmpty { getString(R.string.unnamed) })
+                )
             }
             .setFadeAnim().show()
     }
@@ -385,6 +389,10 @@ class SysTtsListFragment : Fragment() {
         }
     }
 
+    private val mToast: Toast by lazy {
+        Toast.makeText(requireContext(), R.string.config_updated, Toast.LENGTH_SHORT)
+    }
+
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
@@ -393,9 +401,7 @@ class SysTtsListFragment : Fragment() {
                     val itemId = intent.getIntExtra(MainActivity.KEY_MENU_ITEM_ID, -1)
                     onOptionsItemSelected(itemId)
                 }
-                SystemTtsService.ACTION_REQUEST_UPDATE_CONFIG -> {
-                    Toast.makeText(requireContext(), "已更新配置", Toast.LENGTH_SHORT).show()
-                }
+                SystemTtsService.ACTION_REQUEST_UPDATE_CONFIG -> mToast.show()
             }
         }
     }

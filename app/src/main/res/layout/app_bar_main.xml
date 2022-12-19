@@ -13,6 +13,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            tools:title="ToolBar Title"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary">
 
@@ -21,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                app:tabGravity="fill"
+                app:tabGravity="center"
                 app:tabIndicatorAnimationMode="elastic"
                 app:tabIndicatorColor="@color/teal_200"
                 app:tabIndicatorFullWidth="false"

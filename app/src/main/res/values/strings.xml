@@ -91,11 +91,6 @@
     <string name="desc_seekbar_add">滑动条-增加按钮</string>
     <string name="desc_seekbar_remove">滑动条-减少按钮</string>
 
-    <string name="systts_please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
-
-    <string name="systts_msg_aside_and_dialogue_format_different">检测到旁白与对话音频格式不相同，
-        两者采样率(khz)不同将会导致音调异常(声音粗重或尖细)，请手动换为相同格式或在右上角将【APP内播放】选项打开。</string>
-
     <string name="add_config">添加配置</string>
     <string name="config_import_export">配置导入/导出</string>
     <string name="import_config">导入配置</string>
@@ -185,8 +180,11 @@
 
     <string name="systts_http_test_success">测试成功</string>
     <string name="systts_http_test_msg">音频大小：%1$d kb \n格式：%2$s \n采样率：%3$d hz \nContent-Type：%4$s</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="systts_please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
+    <string name="systts_msg_aside_and_dialogue_format_different">检测到旁白与对话音频格式不相同，
+        两者采样率(khz)不同将会导致音调异常(声音粗重或尖细)，请手动换为相同格式或在右上角将【APP内播放】选项打开。</string>
+
     <string name="expanded_state">展开状态</string>
     <string name="add_group">添加分组</string>
     <string name="more_options">更多选项</string>
@@ -199,6 +197,8 @@
     <string name="name">名称</string>
     <string name="edit_group_name">编辑分组名称</string>
     <string name="unnamed">未命名</string>
+    <string name="config_updated">已更新配置</string>
+    <string name="rename">重命名</string>
 
 
 </resources>

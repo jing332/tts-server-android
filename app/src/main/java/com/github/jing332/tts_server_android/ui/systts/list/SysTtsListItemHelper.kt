@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.CheckBox
-import android.widget.PopupMenu
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -19,11 +18,11 @@ import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.my_group.RvGroupModel
 import com.github.jing332.tts_server_android.util.clone
-import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.setFadeAnim
 
 @Suppress("UNCHECKED_CAST", "DEPRECATION")
@@ -47,7 +46,10 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                     }
                     btnEdit.setOnClickListener { edit(getModel()) }
                     btnDelete.setOnClickListener { delete(getModel()) }
-                    itemView.setOnLongClickListener { displayItemPopupMenu(it, getModel()) }
+                    itemView.setOnLongClickListener {
+                        displayBaseEditDialog(getModel())
+                        true
+                    }
                     itemView.setOnClickListener { displayQuickEditDialog(it, getModel()) }
                 }
             }
@@ -111,15 +113,29 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
         }
     }
 
+    private fun displayBaseEditDialog(data: SystemTts) {
+        data.copy().let { copiedData ->
+            val editView = BaseInfoEditView(context).apply {
+                setData(copiedData, appDb.systemTtsDao.allGroup)
+            }
+            editView.setPadding(16, 8, 16, 24)
+            AlertDialog.Builder(context)
+                .setView(editView)
+                .setOnDismissListener {
+                    appDb.systemTtsDao.updateTts(copiedData)
+                    notifyTtsUpdate(copiedData.isEnabled)
+                }
+                .setFadeAnim()
+                .show()
+        }
+    }
+
     // EditActivity的返回值
     private val startForResult =
         fragment.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             val data = result.data?.getParcelableExtra<SystemTts>(KeyConst.KEY_DATA)
             data?.let {
-                if (result.resultCode == KeyConst.RESULT_ADD)
-                    appDb.systemTtsDao.insertTtsIfDefault(data)
-                else appDb.systemTtsDao.updateTts(data)
-
+                appDb.systemTtsDao.insertTts(data)
                 notifyTtsUpdate(data.isEnabled)
             }
         }
@@ -149,41 +165,5 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                 notifyTtsUpdate(data.isEnabled)
             }
             .setFadeAnim().show()
-    }
-
-    private fun displayItemPopupMenu(view: View, data: SystemTts): Boolean {
-        val popupMenu = PopupMenu(context, view)
-        popupMenu.menuInflater.inflate(R.menu.menu_systts_list_item, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener { item ->
-            val target = when (item.itemId) {
-                R.id.menu_setAsDialogue -> ReadAloudTarget.DIALOGUE
-                R.id.menu_setAsAside -> ReadAloudTarget.ASIDE
-                else -> ReadAloudTarget.ALL
-            }
-
-            if (data.isEnabled) {
-                val isMultiVoice = SysTtsConfig.isMultiVoiceEnabled
-                if (target == ReadAloudTarget.ALL) {
-                    if (isMultiVoice) { // 开多语音 但想启用单语音
-                        context.longToast(R.string.off_multi_voice_use_global)
-                        return@setOnMenuItemClickListener false
-                    }
-                } else if (!isMultiVoice) { // 未开启多语音
-                    checkMultiVoiceDialog.show()
-                    return@setOnMenuItemClickListener false
-                } else { // 已开启多语音并且target为旁白或对话
-                    if (target == ReadAloudTarget.ALL) data.isEnabled = false
-                    appDb.systemTtsDao.updateTts(data.copy(readAloudTarget = target))
-                    notifyTtsUpdate()
-                    return@setOnMenuItemClickListener false
-                }
-            }
-            appDb.systemTtsDao.updateTts(data.copy(readAloudTarget = target))
-
-            false
-        }
-        popupMenu.show()
-
-        return true
     }
 }

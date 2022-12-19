@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.list.my_group
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -123,8 +124,11 @@ class SysTtsListMyGroupPageFragment : Fragment() {
 
     }
 
+    @SuppressLint("RestrictedApi")
     private fun displayMoreMenu(v: View, model: RvGroupModel) {
         PopupMenu(requireContext(), v).apply {
+            this.setForceShowIcon(true)
+
             menuInflater.inflate(R.menu.menu_systts_list_group_more, menu)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
