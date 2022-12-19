@@ -12,10 +12,6 @@ class WaitDialog(context: Context) : Dialog(context) {
         setCanceledOnTouchOutside(false)
         setContentView(binding.root)
 
-        window?.let {
-            it.setWindowAnimations(R.style.dialogFadeStyle)
-            it.attributes.alpha = 0.5F
-        }
-
+        window?.setWindowAnimations(R.style.dialogFadeStyle)
     }
 }

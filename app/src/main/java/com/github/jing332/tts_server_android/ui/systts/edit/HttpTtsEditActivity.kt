@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
-import com.drake.net.utils.scope
 import com.drake.net.utils.scopeLife
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
@@ -23,7 +22,6 @@ import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityB
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
-import com.github.jing332.tts_server_android.ui.custom.HttpTtsQuickEditView
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
@@ -95,7 +93,7 @@ class HttpTtsEditActivity : BackActivity() {
                 { size, sampleRate, mime, contentType ->
                     waitDialog.dismiss()
                     AlertDialog.Builder(this@HttpTtsEditActivity)
-                        .setTitle(R.string.systts_http_test_success)
+                        .setTitle(R.string.systts_test_success)
                         .setMessage(
                             getString(
                                 R.string.systts_http_test_msg,
@@ -146,10 +144,9 @@ class HttpTtsEditActivity : BackActivity() {
 
         binding.numEdit.callBack = object : HttpTtsQuickEditView.CallBack {
             override fun onValueChanged(rate: Int, volume: Int): String {
-                data.tts.let {
-                    val tts = it as HttpTTS
-                    it.rate = rate
-                    it.volume = volume
+                if (data.tts is HttpTTS) {
+                    data.tts.rate = rate
+                    data.tts.volume = volume
 
                     val result = AnalyzeUrl(
                         mUrl = tts.url,
@@ -162,7 +159,6 @@ class HttpTtsEditActivity : BackActivity() {
                 return ""
             }
         }
-
         // 采样率
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item)
         adapter.addAll(resources.getStringArray(R.array.sample_rate_list).toList())
@@ -193,7 +189,8 @@ class HttpTtsEditActivity : BackActivity() {
                 SoftKeyboardUtils.hideSoftKeyboard(this)
 
                 binding.radioRaTarget.let {
-                    data.groupId = it.groupItems?.getOrNull(it.groupCurrentPosition)?.value as Long
+                    data.groupId =
+                        it.groupItems?.getOrNull(it.groupCurrentPosition)?.value as Long
                 }
                 val intent = Intent()
                 intent.putExtra(KEY_DATA, data)

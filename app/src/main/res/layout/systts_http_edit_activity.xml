@@ -132,7 +132,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textInputLayout_sampleRate" />
 
-        <com.github.jing332.tts_server_android.ui.custom.HttpTtsQuickEditView
+        <com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsQuickEditView
             android:id="@+id/numEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

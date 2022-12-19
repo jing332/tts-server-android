@@ -131,7 +131,7 @@
     <string name="systts_replace_rule">替换规则</string>
     <string name="systts_replace_as">替换为</string>
     <string name="systts_replace_insert_pinyin">插入拼音声调</string>
-    <string name="systts_replace_use_regex">使用正则</string>
+    <string name="systts_replace_use_regex">使用正则表达式</string>
 
     <!-- 系统TTS 设置 -->
     <string name="systts_set_dialogue_min_match_word_count">设置对话最小匹配汉字数</string>
@@ -178,7 +178,7 @@
     <string name="systts_warn_no_ra_all">⚠️缺少{全部}，使用默认！</string>
     <string name="systts_warn_no_ra_aside">⚠️缺少{旁白}，使用默认配置！</string>
 
-    <string name="systts_http_test_success">测试成功</string>
+    <string name="systts_test_success">测试成功</string>
     <string name="systts_http_test_msg">音频大小：%1$d kb \n格式：%2$s \n采样率：%3$d hz \nContent-Type：%4$s</string>
 
     <string name="systts_please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
@@ -199,6 +199,8 @@
     <string name="unnamed">未命名</string>
     <string name="config_updated">已更新配置</string>
     <string name="rename">重命名</string>
+    <string name="test_failed">测试失败</string>
+    <string name="systts_ms_test_text">内置微软TTS测试文本</string>
 
 
 </resources>

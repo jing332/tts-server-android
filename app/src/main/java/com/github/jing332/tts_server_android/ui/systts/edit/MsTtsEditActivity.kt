@@ -30,6 +30,8 @@ class MsTtsEditActivity : BackActivity() {
     }
     private val vm: MsTtsEditViewModel by viewModels()
 
+    private val waitDialog by lazy { WaitDialog(this) }
+
     @SuppressLint("ClickableViewAccessibility")
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +89,29 @@ class MsTtsEditActivity : BackActivity() {
 
             // 自动同步数据
             binding.numEditView.setData(data.tts as MsTTS)
+        }
+
+
+        binding.tilTest.setEndIconOnClickListener {
+            waitDialog.show()
+            val text = binding.etTestText.text.toString()
+            vm.doTest(text, { kb ->
+                waitDialog.dismiss()
+                AlertDialog.Builder(this)
+                    .setTitle(R.string.systts_test_success)
+                    .setMessage("大小: ${kb}KiB")
+                    .setOnDismissListener { vm.stopPlay() }
+                    .setFadeAnim()
+                    .show()
+            }, { err ->
+                waitDialog.dismiss()
+                AlertDialog.Builder(this)
+                    .setTitle(R.string.test_failed)
+                    .setMessage(err.message)
+                    .setFadeAnim()
+                    .show()
+            })
+
         }
     }
 

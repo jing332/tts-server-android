@@ -1,11 +1,11 @@
 package com.github.jing332.tts_server_android.ui.systts.replace
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
@@ -14,13 +14,14 @@ import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
 import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.util.setFadeAnim
 
 @Suppress("DEPRECATION")
 class ReplaceRuleEditActivity : BackActivity() {
     val binding: SysttsReplaceEditActivityBinding by lazy {
         SysttsReplaceEditActivityBinding.inflate(layoutInflater)
     }
-    val viewModel: ReplaceRuleEditViewModel by viewModels()
+    private val vm: ReplaceRuleEditViewModel by viewModels()
 
     private val pinyinList by lazy {
         "ā á ǎ à ê ē é ě è ī í ǐ ì ō ó ǒ ò ū ú ǔ ù ǖ ǘ ǚ ǜ".split(" ").toTypedArray()
@@ -32,26 +33,8 @@ class ReplaceRuleEditActivity : BackActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.btnPinyinList.setOnClickListener {
-            AlertDialog.Builder(this).setItems(
-                pinyinList
-            ) { _, which ->
-                val pinyin = pinyinList[which]
-                if (binding.etPattern.hasFocus()) {
-                    binding.etPattern.apply {
-                        text.insert(selectionStart, pinyin)
-                    }
-                } else if (binding.etReplacement.hasFocus()) {
-                    binding.etReplacement.apply {
-                        text.insert(selectionStart, pinyin)
-                    }
-                } else if (binding.etName.hasFocus()) {
-                    binding.etName.apply {
-                        text.insert(selectionStart, pinyin)
-                    }
-                }
-            }.create().apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }.show()
-        }
+        binding.tilPattern.setEndIconOnClickListener { displayPinyinList() }
+        binding.tilReplacement.setEndIconOnClickListener { displayPinyinList() }
 
         binding.etPattern.addTextChangedListener {
             if (binding.etTestText.text.isEmpty()) {
@@ -67,11 +50,7 @@ class ReplaceRuleEditActivity : BackActivity() {
             doTest()
         }
 
-        binding.btnTest.setOnClickListener {
-            doTest()
-        }
-
-        viewModel.liveData.observe(this) {
+        vm.liveData.observe(this) {
             binding.apply {
                 etName.setText(it.name)
                 etPattern.setText(it.pattern)
@@ -82,8 +61,31 @@ class ReplaceRuleEditActivity : BackActivity() {
 
         intent.getParcelableExtra<ReplaceRule>(KeyConst.KEY_DATA).let {
             if (it == null) resultCode = RESULT_ADD
-            viewModel.load(it)
+            vm.load(it)
         }
+    }
+
+    private fun displayPinyinList() {
+        AlertDialog.Builder(this).setItems(
+            pinyinList
+        ) { _, which ->
+            val pinyin = pinyinList[which]
+            if (binding.etPattern.hasFocus()) {
+                binding.etPattern.apply {
+                    text.insert(selectionStart, pinyin)
+                }
+            } else if (binding.etReplacement.hasFocus()) {
+                binding.etReplacement.apply {
+                    text.insert(selectionStart, pinyin)
+                }
+            } else if (binding.etName.hasFocus()) {
+                binding.etName.apply {
+                    text.insert(selectionStart, pinyin)
+                }
+            }
+        }
+            .setFadeAnim()
+            .show()
     }
 
     private fun doTest() {
@@ -93,7 +95,7 @@ class ReplaceRuleEditActivity : BackActivity() {
         val isRegex = binding.switchIsRegex.isChecked
 
         val result =
-            viewModel.test(text, pattern, replacement, isRegex).ifEmpty { getString(R.string.none) }
+            vm.test(text, pattern, replacement, isRegex).ifEmpty { getString(R.string.none) }
         binding.tvResult.text = result
     }
 
@@ -105,7 +107,7 @@ class ReplaceRuleEditActivity : BackActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_save -> {
-                viewModel.liveData.value?.apply {
+                vm.liveData.value?.apply {
                     pattern = binding.etPattern.text.toString()
                     if (pattern.isEmpty()) {
                         binding.etPattern.error = getString(R.string.cannot_empty)
@@ -118,7 +120,7 @@ class ReplaceRuleEditActivity : BackActivity() {
                     replacement = binding.etReplacement.text.toString()
                     isRegex = binding.switchIsRegex.isChecked
                 }
-                val data = viewModel.liveData.value
+                val data = vm.liveData.value
 
                 val intent = Intent()
                 intent.putExtra(

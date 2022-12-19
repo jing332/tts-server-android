@@ -4,12 +4,14 @@ import android.content.Context
 import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
-import com.github.jing332.tts_server_android.ui.custom.MsTttQuickEditView
+import com.github.jing332.tts_server_android.ui.systts.edit.MsTttQuickEditView
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -51,7 +53,10 @@ data class MsTTS(
 
         const val DEFAULT_LOCALE = "zh-CN"
         const val DEFAULT_VOICE = "zh-CN-XiaoxiaoNeural"
-//        const val DEFAULT_VOICE_ID = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
+
+        //        const val DEFAULT_VOICE_ID = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
+        val strFollow by lazy { app.getString(R.string.follow) }
+        val strNone by lazy { app.getString(R.string.none) }
     }
 
     @IgnoredOnParcel
@@ -90,11 +95,12 @@ data class MsTTS(
     }
 
     override fun getDescription(): String {
-        val rateStr = if (isRateFollowSystem()) "跟随" else rate
-        val pitchStr = if (isPitchFollowSystem()) "跟随" else pitch
-        var style = "无"
+        val rateStr = if (isRateFollowSystem()) strFollow else rate
+        val pitchStr = if (isPitchFollowSystem()) strFollow else pitch
+
+        var style = strNone
         val styleDegree = expressAs?.styleDegree ?: 1F
-        var role = "无"
+        var role = strNone
         expressAs?.also { exp ->
             exp.style?.let { style = CnLocalMap.getStyleAndRole(it) }
             exp.role?.let { role = CnLocalMap.getStyleAndRole(it) }
@@ -102,7 +108,7 @@ data class MsTTS(
 
         val expressAs =
             if (api == MsTtsApiType.EDGE) ""
-            else "$style-$role | 强度: <b>${styleDegree}</b> | "
+            else "$style-$role | 强度: <b>${styleDegree}</b><br>"
         return "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b> | 音高:<b>$pitchStr</b>"
     }
 

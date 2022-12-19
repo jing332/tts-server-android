@@ -5,14 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.help.ExoByteArrayMediaSource
+import com.github.jing332.tts_server_android.help.ExoPlayerHelper.createMediaSourceFromByteArray
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.service.systts.help.AudioDecoder
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.upstream.DataSource
 import kotlinx.coroutines.launch
 
 class HttpTtsEditViewModel : ViewModel() {
@@ -20,13 +16,6 @@ class HttpTtsEditViewModel : ViewModel() {
         ExoPlayer.Builder(App.context).build().apply {
             playWhenReady = true
         }
-    }
-
-    // 创建音频媒体源
-    private fun createMediaSourceFromByteArray(data: ByteArray): MediaSource {
-        val factory = DataSource.Factory { ExoByteArrayMediaSource(data) }
-        return DefaultMediaSourceFactory(App.context).setDataSourceFactory(factory)
-            .createMediaSource(MediaItem.fromUri(""))
     }
 
     override fun onCleared() {

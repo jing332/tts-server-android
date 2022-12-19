@@ -6,12 +6,17 @@ import androidx.databinding.Observable
 import androidx.databinding.Observable.OnPropertyChangedCallback
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drake.net.utils.withMain
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.help.ExoPlayerHelper
 import com.github.jing332.tts_server_android.model.tts.ExpressAs
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
+import com.github.jing332.tts_server_android.util.runOnIO
+import com.google.android.exoplayer2.ExoPlayer
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -276,6 +281,44 @@ class MsTtsEditViewModel : ViewModel() {
             }
         }
 
+    }
+
+    private val exoPlayer = lazy {
+        ExoPlayer.Builder(App.context).build().apply { playWhenReady = true }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        if (exoPlayer.isInitialized())
+            exoPlayer.value.release()
+    }
+
+    fun doTest(text: String, onSuccess: (kb: Int) -> Unit, onFailure: (Throwable) -> Unit) {
+        viewModelScope.runOnIO {
+            val audio = try {
+                mTts.onLoad()
+                if (mTts.isRateFollowSystem()) mTts.rate = 0
+                if (mTts.isPitchFollowSystem()) mTts.pitch = 0
+                mTts.getAudio(text)
+            } catch (e: Exception) {
+                withMain { onFailure.invoke(e) }
+                return@runOnIO
+            }
+
+            audio?.let {
+                withMain {
+                    onSuccess.invoke(it.size / 1024)
+                    exoPlayer.value.setMediaSource(ExoPlayerHelper.createMediaSourceFromByteArray(it))
+                    exoPlayer.value.prepare()
+                }
+                return@runOnIO
+            }
+            withMain { onFailure.invoke(Exception("音频为空")) }
+        }
+    }
+
+    fun stopPlay() {
+        exoPlayer.value.stop()
     }
 }
 

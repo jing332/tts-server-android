@@ -162,16 +162,38 @@
                     tools:ignore="Deprecated" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.github.jing332.tts_server_android.ui.custom.MsTttQuickEditView
+            <com.github.jing332.tts_server_android.ui.systts.edit.MsTttQuickEditView
                 android:id="@+id/numEditView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/til_style" />
 
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_test"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="16dp"
+                android:hint="@string/test_text"
+                app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
+                app:endIconMode="custom"
+                app:endIconTint="@color/teal_200"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/numEditView">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_test_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/systts_ms_test_text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

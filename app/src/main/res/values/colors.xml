@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">@color/teal_700</color>
+
+    <color name="colorIconTint">@android:color/black</color>
 </resources>

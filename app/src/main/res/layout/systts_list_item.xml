@@ -35,16 +35,14 @@
                     android:id="@+id/btn_edit"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/desc_edit_item"
-                    android:minHeight="48dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_baseline_edit_24"
                     app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
                     app:layout_constraintEnd_toStartOf="@+id/btn_delete"
                     app:layout_constraintTop_toTopOf="@+id/btn_delete"
-                    app:tint="?editTextColor" />
+                    app:tint="@color/colorIconTint" />
 
                 <ImageView
                     android:id="@+id/btn_delete"
@@ -58,11 +56,11 @@
                     app:layout_constraintBottom_toTopOf="@+id/tv_apiType"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_raTarget"
-                    app:tint="?editTextColor" />
+                    app:tint="@color/colorIconTint" />
 
                 <TextView
                     android:id="@+id/tv_name"
-                    style="@style/TextAppearance.AppCompat.Body2"
+                    style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -78,13 +76,17 @@
                     tools:text="zh-CN-YunxiNeural" />
 
                 <TextView
-                    android:id="@+id/tv_format"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_bottom_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
                     android:layout_marginBottom="4dp"
+                    android:lines="1"
                     android:text="@{m.tts.bottomContent}"
                     android:textSize="11sp"
+                    android:textStyle="italic"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_apiType"
                     app:layout_constraintStart_toStartOf="@+id/tv_name"
                     tools:text="audio-16khz-32kbitrate-mono-mp3" />
 
@@ -119,17 +121,14 @@
                 <TextView
                     android:id="@+id/tv_description"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:elegantTextHeight="false"
-                    android:freezesText="true"
+                    android:layout_height="wrap_content"
+                    android:elegantTextHeight="true"
                     android:lineSpacingMultiplier="0.9"
+                    android:lines="2"
                     android:scrollbars="none"
                     android:text="@{Html.fromHtml(m.tts.description)}"
                     android:textSize="14sp"
-                    app:autoSizeMaxTextSize="14sp"
-                    app:autoSizeTextType="uniform"
-                    android:lines="2"
-                    app:layout_constraintBottom_toTopOf="@+id/tv_format"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_bottom_content"
                     app:layout_constraintEnd_toStartOf="@+id/btn_edit"
                     app:layout_constraintStart_toStartOf="@+id/tv_name"
                     app:layout_constraintTop_toBottomOf="@+id/tv_name"
