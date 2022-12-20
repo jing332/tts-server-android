@@ -24,6 +24,7 @@ data class SystemTts(
     var displayName: String? = null,
 
     // 是否启用
+    @kotlinx.serialization.Transient
     var isEnabled: Boolean = false,
 
     //朗读目标

@@ -44,7 +44,6 @@ class MsTtsEditActivity : BackActivity() {
                 .setMessage(R.string.systts_help_secondary_locale).setFadeAnim().show()
         }
 
-        val waitDialog = WaitDialog(this)
         // 接口加载回调
         vm.setCallback(object : MsTtsEditViewModel.CallBack {
             override fun onStart(@MsTtsApiType api: Int) {
@@ -90,7 +89,6 @@ class MsTtsEditActivity : BackActivity() {
             // 自动同步数据
             binding.numEditView.setData(data.tts as MsTTS)
         }
-
 
         binding.tilTest.setEndIconOnClickListener {
             waitDialog.show()

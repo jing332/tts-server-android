@@ -1,9 +1,11 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
 import androidx.lifecycle.ViewModel
+import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.systts.CompatSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import kotlinx.serialization.decodeFromString
@@ -34,19 +36,6 @@ class SysTtsListViewModel : ViewModel() {
         return true
     }
 
-
-    /* 按API排序 */
-    fun sortListByApi() {
-    }
-
-    /* 按朗读目标排序 */
-    fun sortListByRaTarget() {
-    }
-
-    /* 按显示名称排序 */
-    fun sortListByDisplayName() {
-    }
-
     /* 上传配置到URL */
     fun uploadConfigToUrl(json: String): Result<String> {
         return try {
@@ -70,25 +59,31 @@ class SysTtsListViewModel : ViewModel() {
     /* 从URL导入配置 */
     fun importConfigByUrl(url: String): String? {
         val jsonStr = try {
-            Tts_server_lib.httpGet(url, "")
+            Net.get(url).execute<String>()
         } catch (e: Exception) {
             return e.message
         }
-        return importConfig(jsonStr.decodeToString())
+        return importConfig(jsonStr)
     }
 
     /* 从json导入配置 */
     fun importConfig(json: String): String? {
         try {
-            val list = App.jsonBuilder.decodeFromString<List<GroupWithTtsItem>>(json)
-            list.forEach {
-//                appDb.systemTtsDao.insert(it)
+            if (json.contains("\"group\"")) { // 新数据结构
+                App.jsonBuilder.decodeFromString<List<GroupWithTtsItem>>(json).let { list ->
+                    appDb.systemTtsDao.insertGroup(*list.map { it.group }.toTypedArray())
+                    list.forEach { appDb.systemTtsDao.insertTts(*it.list.toTypedArray()) }
+                }
+            } else {
+                App.jsonBuilder.decodeFromString<List<CompatSystemTts>>(json).let { list ->
+                    appDb.systemTtsDao.insertTts(*list.map {
+                        SystemTts(displayName = it.displayName, tts = it.tts)
+                    }.toTypedArray())
+                }
             }
         } catch (e: Exception) {
             return e.message
         }
         return null
     }
-
-
 }

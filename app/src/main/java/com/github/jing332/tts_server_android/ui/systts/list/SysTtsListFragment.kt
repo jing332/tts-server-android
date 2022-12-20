@@ -178,16 +178,12 @@ class SysTtsListFragment : Fragment() {
         et.hint = getString(R.string.url_net)
         AlertDialog.Builder(requireContext()).setTitle(R.string.import_config).setView(et)
             .setPositiveButton(R.string.import_from_clip) { _, _ ->
-                vm.viewModelScope.launch {
-                    val err = vm.importConfig(ClipboardUtils.text.toString())
-                    err?.let {
-                        longToast("导入配置失败：$err")
-                    }
+                vm.importConfig(ClipboardUtils.text.toString())?.let {
+                    longToast("导入配置失败：$it")
                 }
             }.setNegativeButton(getString(R.string.import_from_url)) { _, _ ->
-                val err = vm.importConfigByUrl(et.text.toString())
-                err?.let {
-                    longToast("导入配置失败：$err")
+                lifecycleScope.runOnIO {
+                    vm.importConfigByUrl(et.text.toString())?.let { longToast("导入配置失败：$it") }
                 }
             }.setFadeAnim().show()
     }
