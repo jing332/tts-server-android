@@ -106,6 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/test_text"
+                android:singleLine="true"
                 android:imeOptions="actionGo"
                 android:text="@string/systts_http_sample_test_text" />
         </com.google.android.material.textfield.TextInputLayout>

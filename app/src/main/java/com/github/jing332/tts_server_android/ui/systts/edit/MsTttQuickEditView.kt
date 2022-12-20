@@ -33,12 +33,10 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         fun onFormatChanged(format: String) {}
     }
 
-    var isStyleDegreeVisible: Boolean = true
+    private var isStyleDegreeVisible: Boolean = true
         set(value) {
             field = value
             binding.seekbarStyleDegree.isVisible = value
-            binding.tvStyleDegree.isVisible = value
-            binding.tvValueStyleDegree.isVisible = value
         }
 
     var callback: Callback? = null
@@ -47,26 +45,58 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         SysttsMsQuickEditViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    var rateValue: Int = 0
-    var volumeValue: Int = 0
-    var pitchValue: Int = 0
-    var styleDegreeValue: Float = 1F
+    private val strFollow: String by lazy { context.getString(R.string.follow_system_or_read_aloud_app) }
+
+    private var rateValue: Int = 0
+        set(value) {
+            field = value
+            binding.seekbarRate.textValue =
+                if (value == MsTTS.RATE_FOLLOW_SYSTEM) strFollow else "${value}%"
+        }
+
+    private var volumeValue: Int = 0
+        set(value) {
+            field = value
+            binding.seekbarVolume.textValue = "${value}%"
+        }
+
+    private var pitchValue: Int = 0
+        set(value) {
+            field = value
+            binding.seekbarPitch.textValue =
+                if (value == MsTTS.PITCH_FOLLOW_SYSTEM) strFollow else "${value}%"
+        }
+
+    private var styleDegreeValue: Float = 1F
+        set(value) {
+            field = value
+            binding.seekbarStyleDegree.textValue = "$value"
+        }
+
     var formatValue: String = MsTtsAudioFormat.DEFAULT
 
     private fun setRate(v: Int) {
-        binding.seekbarRate.progress = v + 100
+        setProgress(binding.seekbarRate, v + 100)
     }
 
     private fun setVolume(v: Int) {
-        binding.seekbarVolume.progress = v + 50
+        setProgress(binding.seekbarVolume, v + 50)
     }
 
     private fun setPitch(v: Int) {
-        binding.seekbarPitch.progress = v + 50
+        setProgress(binding.seekbarPitch, v + 50)
     }
 
     private fun setStyleDegree(v: Float) {
-        binding.seekbarStyleDegree.progress = (v * 100).toInt()
+        setProgress(binding.seekbarStyleDegree, (v * 100).toInt())
+    }
+
+    // 解决 progress 相同时不回调 onProgressChanged()
+    private fun setProgress(seekBar: ConvenientSeekbar, progress: Int) {
+        if (seekBar.progress == progress) {
+            onProgressChanged(seekBar, progress, false)
+        } else
+            seekBar.progress = progress
     }
 
     fun setFormatByApi(@MsTtsApiType api: Int, currentFormat: String? = null) {
@@ -87,14 +117,11 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
      */
     fun setData(tts: MsTTS) {
         mTts = tts
-        isStyleDegreeVisible = tts.api != MsTtsApiType.EDGE
-
         setRate(tts.rate)
         setVolume(tts.volume)
         setPitch(tts.pitch)
-        tts.expressAs?.let {
-            setStyleDegree(it.styleDegree)
-        }
+        setStyleDegree(tts.expressAs?.styleDegree ?: 1F)
+        isStyleDegreeVisible = tts.api != MsTtsApiType.EDGE
 
         mFormatItems = MsTtsFormatManger.getFormatsByApiType(tts.api).map { SpinnerItem(it, it) }
         binding.spinnerFormat.setAdapter(MaterialSpinnerAdapter(context, mFormatItems))
@@ -120,41 +147,21 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
                 callback?.onFormatChanged(formatValue)
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
     @SuppressLint("SetTextI18n")
     override fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {
         when (seekBar.id) {
-            R.id.seekbar_rate -> {
-                if (progress == 0) {
-                    rateValue = MsTTS.RATE_FOLLOW_SYSTEM
-                    binding.tvValueRate.setText(R.string.follow_system_or_read_aloud_app)
-                } else {
-                    rateValue = progress - 100
-                    binding.tvValueRate.text = "${rateValue}%"
-                }
-            }
-            R.id.seekbar_volume -> {
-                volumeValue = progress - 50
-                binding.tvValueVolume.text = "${volumeValue}%"
-            }
-            R.id.seekbar_pitch -> {
-                if (progress == 0) {
-                    pitchValue = MsTTS.PITCH_FOLLOW_SYSTEM
-                    binding.tvPitchValue.setText(R.string.follow_system_or_read_aloud_app)
-                } else {
-                    pitchValue = progress - 50
-                    binding.tvPitchValue.text = "${pitchValue}%"
-                }
-            }
-            R.id.seekbar_styleDegree -> {
-                styleDegreeValue = (progress * 0.01).toFloat()
-                binding.tvValueStyleDegree.text = styleDegreeValue.toString()
-            }
+            R.id.seekbar_rate -> rateValue =
+                if (progress == 0) MsTTS.RATE_FOLLOW_SYSTEM else progress - 100
+
+            R.id.seekbar_volume -> volumeValue = progress - 50
+            R.id.seekbar_pitch -> pitchValue =
+                if (progress == 0) MsTTS.PITCH_FOLLOW_SYSTEM else progress - 50
+
+            R.id.seekbar_styleDegree -> styleDegreeValue = (progress * 0.01).toFloat()
         }
     }
 

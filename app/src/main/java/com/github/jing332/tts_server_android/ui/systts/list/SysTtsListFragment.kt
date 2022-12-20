@@ -236,11 +236,10 @@ class SysTtsListFragment : Fragment() {
                         seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean
                     ) {
                         if (progress <= 0) seekBar.progress = 1
-                        tvPitchValue.text = "${(seekBar.progress * 0.1).toFloat()}"
+                        tvValPitch.text = "${(seekBar.progress * 0.1).toFloat()}"
                     }
                 }
             seekbarPitch.progress = (SysTtsConfig.inAppPlayPitch * 10).toInt()
-
 
             SysTtsConfig.isInAppPlayAudio.let {
                 switchOnOff.isChecked = it

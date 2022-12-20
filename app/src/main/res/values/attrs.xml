@@ -3,9 +3,10 @@
     <declare-styleable name="ConvenientSeekbar">
         <attr name="max" format="integer" />
         <attr name="progress" format="integer" />
+        <attr name="hint" format="string|reference" />
     </declare-styleable>
 
     <declare-styleable name="MaterialSpinner">
-        <attr name="emptyText" format="reference|string"/>
+        <attr name="emptyText" format="reference|string" />
     </declare-styleable>
 </resources>

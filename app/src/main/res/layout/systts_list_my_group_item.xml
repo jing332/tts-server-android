@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:contentDescription="@string/expanded_state"
+            android:contentDescription="@{m.itemExpand == true ? @string/group_expanded : @string/group_closed}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +47,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="@{m.enabled}"
-            android:contentDescription="@string/desc_group_checkbox"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/iv_more"
             app:layout_constraintTop_toTopOf="parent" />

@@ -89,8 +89,8 @@
     <string name="desc_add_config">添加配置</string>
     <string name="desc_edit_item">编辑条目</string>
     <string name="desc_delete_item">删除本条目</string>
-    <string name="desc_seekbar_add">滑动条-增加按钮</string>
-    <string name="desc_seekbar_remove">滑动条-减少按钮</string>
+    <string name="desc_seekbar_add">滑动条 +1</string>
+    <string name="desc_seekbar_remove">滑动条 -1</string>
 
     <string name="add_config">添加配置</string>
     <string name="config_import_export">配置导入/导出</string>
@@ -188,6 +188,9 @@
         两者采样率(khz)不同将会导致音调异常(声音粗重或尖细)，请手动换为相同格式或在右上角将【APP内播放】选项打开。</string>
 
     <string name="expanded_state">展开状态</string>
+    <string name="group_expanded">分组 已展开</string>
+    <string name="group_closed">分组 已关闭</string>
+
     <string name="add_group">添加分组</string>
     <string name="more_options">更多选项</string>
     <string name="desc_group_checkbox">分组是否勾选</string>
