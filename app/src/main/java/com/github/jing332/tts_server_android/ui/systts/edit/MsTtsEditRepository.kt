@@ -1,5 +1,7 @@
 package com.github.jing332.tts_server_android.ui.systts.edit
 
+import com.drake.net.utils.withDefault
+import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.bean.AzureVoiceBean
@@ -8,16 +10,11 @@ import com.github.jing332.tts_server_android.bean.EdgeVoiceBean
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.util.FileUtils
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import tts_server_lib.Tts_server_lib
 import java.io.File
 
-class MsTtsEditRepository(
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-) {
+class MsTtsEditRepository() {
     companion object {
         private val json by lazy { App.jsonBuilder }
         private val EDGE_CACHE_PATH by lazy { "${app.cacheDir.path}/edge/voices.json" }
@@ -32,8 +29,8 @@ class MsTtsEditRepository(
      * 根据api获取数据
      */
     suspend fun voicesByApi(@MsTtsApiType api: Int): List<GeneralVoiceData> {
-        return withContext(defaultDispatcher) {
-            return@withContext when (api) {
+        return withDefault {
+            return@withDefault when (api) {
                 MsTtsApiType.EDGE -> edgeVoices()
                 MsTtsApiType.AZURE -> azureVoices()
                 else -> creationVoices()
@@ -42,22 +39,21 @@ class MsTtsEditRepository(
     }
 
     // 帮助 获取并解析数据
-    private inline fun <reified T> getVoicesHelper(
+    private suspend inline fun <reified T> getVoicesHelper(
         cachePath: String,
-        loadData: () -> ByteArray
+        crossinline loadData: () -> ByteArray?
     ): List<T> {
         val file = File(cachePath)
-        val voiceList: List<T> = if (FileUtils.fileExists(file)) {
-            json.decodeFromString(file.readText())
+        return if (FileUtils.fileExists(file)) {
+            json.decodeFromString(withIO { file.readText() })
         } else {
-            val data = loadData.invoke()
+            val data = withIO { loadData.invoke() ?: throw Exception("数据为空") }
             FileUtils.saveFile(file, data)
             json.decodeFromString(data.decodeToString())
         }
-        return voiceList
     }
 
-    private fun edgeVoices(): List<GeneralVoiceData> {
+    private suspend fun edgeVoices(): List<GeneralVoiceData> {
         mDataCacheMap[EDGE_CACHE_PATH]?.let { return it }
 
         val list = getVoicesHelper<EdgeVoiceBean>(EDGE_CACHE_PATH) {
@@ -73,7 +69,7 @@ class MsTtsEditRepository(
         }.apply { mDataCacheMap[EDGE_CACHE_PATH] = this }
     }
 
-    private fun azureVoices(): List<GeneralVoiceData> {
+    private suspend fun azureVoices(): List<GeneralVoiceData> {
         mDataCacheMap[AZURE_CACHE_PATH]?.let { return it }
 
         val list = getVoicesHelper<AzureVoiceBean>(AZURE_CACHE_PATH) {
@@ -89,7 +85,7 @@ class MsTtsEditRepository(
         }.also { mDataCacheMap[AZURE_CACHE_PATH] = it }
     }
 
-    private fun creationVoices(): List<GeneralVoiceData> {
+    private suspend fun creationVoices(): List<GeneralVoiceData> {
         mDataCacheMap[CREATION_CACHE_PATH]?.let { return it }
 
         val list = getVoicesHelper<CreationVoiceBean>(CREATION_CACHE_PATH) {

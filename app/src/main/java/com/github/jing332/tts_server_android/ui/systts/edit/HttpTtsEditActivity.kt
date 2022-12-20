@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import android.widget.TextView
@@ -84,38 +85,17 @@ class HttpTtsEditActivity : BackActivity() {
             checkBoxNeedDecode.isChecked = tts.audioFormat.isNeedDecode
         }
 
-        binding.btnTest.setOnClickListener {
-            updateValueToTts()
-            val waitDialog = WaitDialog(this).apply { show() }
-            vm.doTest(
-                data.tts as HttpTTS,
-                binding.etTestText.text.toString(),
-                { size, sampleRate, mime, contentType ->
-                    waitDialog.dismiss()
-                    AlertDialog.Builder(this@HttpTtsEditActivity)
-                        .setTitle(R.string.systts_test_success)
-                        .setMessage(
-                            getString(
-                                R.string.systts_http_test_msg,
-                                size / 1024,
-                                mime,
-                                sampleRate,
-                                contentType
-                            )
-                        ).setOnDismissListener {
-                            vm.stopPlay()
-                        }
-                        .setFadeAnim().show()
-
-                },
-                { err ->
-                    waitDialog.dismiss()
-
-                    AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试失败").setMessage(err)
-                        .setFadeAnim()
-                        .show()
-                })
+        binding.tilTest.setEndIconOnClickListener {
+            doTest()
         }
+        binding.etTestText.setOnEditorActionListener { _, actionId, _ ->
+            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_GO){
+                doTest()
+                true
+            }else
+                false
+        }
+
 
         // url 帮助按钮
         binding.textInputLayoutUrl.setEndIconOnClickListener {
@@ -165,6 +145,38 @@ class HttpTtsEditActivity : BackActivity() {
         binding.tvSampleRate.setAdapter(adapter)
         // 不过滤
         binding.tvSampleRate.threshold = Int.MAX_VALUE
+    }
+
+    private fun doTest() {
+        updateValueToTts()
+        val waitDialog = WaitDialog(this).apply { show() }
+        vm.doTest(
+            data.tts as HttpTTS,
+            binding.etTestText.text.toString(),
+            { size, sampleRate, mime, contentType ->
+                waitDialog.dismiss()
+                AlertDialog.Builder(this@HttpTtsEditActivity)
+                    .setTitle(R.string.systts_test_success)
+                    .setMessage(
+                        getString(
+                            R.string.systts_http_test_msg,
+                            size / 1024,
+                            mime,
+                            sampleRate,
+                            contentType
+                        )
+                    ).setOnDismissListener {
+                        vm.stopPlay()
+                    }
+                    .setFadeAnim().show()
+
+            },
+            { err ->
+                waitDialog.dismiss()
+                AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试失败").setMessage(err)
+                    .setFadeAnim()
+                    .show()
+            })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

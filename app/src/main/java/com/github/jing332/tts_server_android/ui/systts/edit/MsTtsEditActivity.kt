@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
@@ -18,7 +18,6 @@ import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.setFadeAnim
-import kotlinx.coroutines.launch
 
 class MsTtsEditActivity : BackActivity() {
     companion object {
@@ -66,51 +65,58 @@ class MsTtsEditActivity : BackActivity() {
             }
         })
 
-        lifecycleScope.launch {
-            // 初始化 注册监听
-            vm.init(
-                listOf(
-                    Pair(getString(R.string.systts_api_edge), R.drawable.ms_edge),
-                    Pair(getString(R.string.systts_api_azure), R.drawable.ms_azure),
-                    Pair(getString(R.string.systts_api_creation), R.drawable.ic_ms_speech_studio)
-                )
+        // 初始化 注册监听
+        vm.init(
+            listOf(
+                Pair(getString(R.string.systts_api_edge), R.drawable.ms_edge),
+                Pair(getString(R.string.systts_api_azure), R.drawable.ms_azure),
+                Pair(getString(R.string.systts_api_creation), R.drawable.ic_ms_speech_studio)
             )
+        )
 
+        var data: SystemTts? = intent.getParcelableExtra(KEY_DATA)
+        if (data == null) data = SystemTts(tts = MsTTS())
+        vm.initUserData(data)
 
-            var data: SystemTts? = intent.getParcelableExtra(KEY_DATA)
-            if (data == null) data = SystemTts(tts = MsTTS())
-            vm.initUserData(data)
+        // 组
+        appDb.systemTtsDao.allGroup.let { list ->
+            binding.baseInfoEditView.setData(data, list)
+        }
 
-            // 组
-            appDb.systemTtsDao.allGroup.let { list ->
-                binding.baseInfoEditView.setData(data, list)
+        // 自动同步数据
+        binding.numEditView.setData(data.tts as MsTTS)
+
+        // 监听Enter
+        binding.etTestText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_GO) {
+                doTest()
+                return@setOnEditorActionListener true
             }
-
-            // 自动同步数据
-            binding.numEditView.setData(data.tts as MsTTS)
+            false
         }
 
-        binding.tilTest.setEndIconOnClickListener {
-            waitDialog.show()
-            val text = binding.etTestText.text.toString()
-            vm.doTest(text, { kb ->
-                waitDialog.dismiss()
-                AlertDialog.Builder(this)
-                    .setTitle(R.string.systts_test_success)
-                    .setMessage("大小: ${kb}KiB")
-                    .setOnDismissListener { vm.stopPlay() }
-                    .setFadeAnim()
-                    .show()
-            }, { err ->
-                waitDialog.dismiss()
-                AlertDialog.Builder(this)
-                    .setTitle(R.string.test_failed)
-                    .setMessage(err.message)
-                    .setFadeAnim()
-                    .show()
-            })
+        binding.tilTest.setEndIconOnClickListener { doTest() }
+    }
 
-        }
+    private fun doTest() {
+        waitDialog.show()
+        val text = binding.etTestText.text.toString()
+        vm.doTest(text, { kb ->
+            waitDialog.dismiss()
+            AlertDialog.Builder(this)
+                .setTitle(R.string.systts_test_success)
+                .setMessage("大小: ${kb}KiB")
+                .setOnDismissListener { vm.stopPlay() }
+                .setFadeAnim()
+                .show()
+        }, { err ->
+            waitDialog.dismiss()
+            AlertDialog.Builder(this)
+                .setTitle(R.string.test_failed)
+                .setMessage(err.message)
+                .setFadeAnim()
+                .show()
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

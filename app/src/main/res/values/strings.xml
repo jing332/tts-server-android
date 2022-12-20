@@ -47,6 +47,7 @@
     <string name="label_play_speed">播放速度：</string>
     <string name="label_play_pitch">播放音调：</string>
     <string name="label_result">结果：</string>
+    <string name="label_audio_sample_rate">音频采样率(hz)：</string>
     <string name="label_port">端口:</string>
 
     <string name="systts_api_edge">微软Edge-大声朗读接口</string>
@@ -141,12 +142,13 @@
 
     <string name="systts_http_edit_title">编辑自定义TTS</string>
     <string name="systts_http_request_header">请求头</string>
-    <string name="systts_http_sample_test_text">自定义TTS测试文本</string>
+
+    <string name="systts_http_sample_test_text">单击右侧按钮即可测试并播放</string>
+    <string name="systts_ms_sample_test_text">单击右侧按钮即可测试并播放</string>
 
     <string name="systts_decode_audio">解码音频</string>
     <string name="systts_add_internal_tts">添加内置TTS</string>
     <string name="systts_add_custom_tts">添加自定义TTS</string>
-    <string name="label_audio_sample_rate">音频采样率(hz)：</string>
     <string name="off_multi_voice_use_global">请关闭多语音选项以使用单语音模式</string>
 
     <string name="use_dns_lookup_ip">使用DNS解析接口IP</string>
@@ -200,7 +202,5 @@
     <string name="config_updated">已更新配置</string>
     <string name="rename">重命名</string>
     <string name="test_failed">测试失败</string>
-    <string name="systts_ms_test_text">内置微软TTS测试文本</string>
-
 
 </resources>

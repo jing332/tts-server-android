@@ -10,20 +10,19 @@
         android:layout_height="wrap_content">
 
         <include
+            android:id="@+id/radio_raTarget"
+            layout="@layout/systts_ra_target_radio_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/radio_raTarget"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="8dp"
-            layout="@layout/systts_ra_target_radio_view" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginHorizontal="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radio_raTarget">
@@ -39,9 +38,8 @@
             android:id="@+id/textInputLayout_url"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             app:endIconCheckable="true"
             app:endIconDrawable="@drawable/ic_baseline_help_outline_24"
             app:endIconMode="custom"
@@ -61,9 +59,8 @@
             android:id="@+id/til_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             app:endIconCheckable="true"
             app:endIconDrawable="@drawable/ic_baseline_help_outline_24"
             app:endIconMode="custom"
@@ -90,26 +87,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_header" />
 
-        <Button
-            android:id="@+id/btn_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/test"
-            app:layout_constraintBottom_toBottomOf="@+id/textInputLayout7"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textInputLayout7"
-            app:layout_constraintTop_toTopOf="@+id/textInputLayout7" />
-
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout7"
+            android:id="@+id/til_test"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="2dp"
-            app:layout_constraintEnd_toStartOf="@+id/btn_test"
+            app:endIconContentDescription="@string/test"
+            app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
+            app:endIconMode="custom"
+            app:endIconTint="@color/teal_200"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_sampleRate">
 
@@ -118,6 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/test_text"
+                android:imeOptions="actionGo"
                 android:text="@string/systts_http_sample_test_text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -139,7 +128,7 @@
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout7" />
+            app:layout_constraintTop_toBottomOf="@+id/til_test" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout_sampleRate"

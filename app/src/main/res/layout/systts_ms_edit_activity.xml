@@ -5,8 +5,6 @@
 
     <data>
 
-        <import type="android.view.View" />
-
         <variable
             name="m"
             type="com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditViewModel" />
@@ -32,15 +30,38 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_test"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/test_text"
+                app:endIconContentDescription="@string/test"
+                app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
+                app:endIconMode="custom"
+                app:endIconTint="@color/teal_200"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/baseInfoEditView">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_test_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:imeOptions="actionGo"
+                    android:singleLine="true"
+                    android:text="@string/systts_ms_sample_test_text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_api"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:hint="@string/label_api"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/baseInfoEditView"
+                app:layout_constraintTop_toBottomOf="@id/til_test"
                 app:startIconDrawable="@drawable/ic_baseline_api_24">
 
                 <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
@@ -59,7 +80,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:hint="@string/label_language"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -81,7 +102,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:hint="@string/label_voice"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -103,10 +124,11 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:hint="@string/systts_secondaryLocale"
-                android:visibility="@{m.ui.secondaryLocales.items.empty ? View.GONE : View.VISIBLE}"
                 app:layout_constraintTop_toBottomOf="@id/til_voice"
-                app:startIconDrawable="@drawable/ic_baseline_help_outline_24">
+                app:startIconDrawable="@drawable/ic_baseline_help_outline_24"
+                app:visible="@{!m.ui.secondaryLocales.items.empty}">
 
                 <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
                     android:id="@+id/spinner_secondaryLocale"
@@ -121,7 +143,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="2dp"
                 android:enabled="@{!m.ui.styles.items.empty}"
                 android:hint="@string/label_voice_style"
@@ -166,34 +188,10 @@
                 android:id="@+id/numEditView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/til_style" />
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_test"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="16dp"
-                android:hint="@string/test_text"
-                app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
-                app:endIconMode="custom"
-                app:endIconTint="@color/teal_200"
-                app:layout_constraintEnd_toEndOf="parent"
-
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/numEditView">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_test_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/systts_ms_test_text" />
-            </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

@@ -17,6 +17,7 @@ import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.google.android.exoplayer2.ExoPlayer
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -40,9 +41,6 @@ class MsTtsEditViewModel : ViewModel() {
 
     // 当前地区下的list
     private lateinit var mCurrentVoiceList: List<GeneralVoiceData>
-
-    // 当前的发音人
-    private var mCurrentVoice: GeneralVoiceData? = null
 
     // UI数据
     var ui: UiData = UiData()
@@ -96,24 +94,24 @@ class MsTtsEditViewModel : ViewModel() {
     * 重新加载接口数据
     * */
     fun reloadApiData() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val spinner = ui.apis
             mTts.api = spinner.position
-            mCallback?.onStart(mTts.api)
+            withMain { mCallback?.onStart(mTts.api) }
 
             kotlin.runCatching {
                 // 开始获取 当前接口下的所有数据
                 mAllVoiceList = repo.voicesByApi(spinner.position)
             }.onFailure {
                 it.printStackTrace()
-                mCallback?.onDone(Result.failure(it))
+                withMain { mCallback?.onDone(Result.failure(it)) }
                 return@launch
             }
 
             // 更新地区列表
             updateLocales(mAllVoiceList)
 
-            mCallback?.onDone(Result.success(Unit))
+            withMain { mCallback?.onDone(Result.success(Unit)) }
         }
     }
 
@@ -137,21 +135,22 @@ class MsTtsEditViewModel : ViewModel() {
         ui.locales.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
                 mTts.locale = (ui.locales.selectedItem?.value ?: "") as String
-                viewModelScope.launch { updateVoices(mAllVoiceList) }
+                viewModelScope.launch(Dispatchers.Default) { updateVoices(mAllVoiceList) }
             }
         }
 
         // 语音
         ui.voices.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
-                viewModelScope.launch {
-                    mCurrentVoice = ui.voices.selectedItem?.value as GeneralVoiceData
-                    mCurrentVoice!!.let {
-                        mTts.voiceName = it.voiceName
-                        mTts.voiceId = it.voiceId
-                        updateStyles(it)
-                        updateRoles(it)
-                        updateSecondaryLocales(it)
+                viewModelScope.launch(Dispatchers.Default) {
+                    ui.voices.selectedItem?.value?.let {
+                        if (it is GeneralVoiceData) {
+                            mTts.voiceName = it.voiceName
+                            mTts.voiceId = it.voiceId
+                            updateStyles(it)
+                            updateRoles(it)
+                            updateSecondaryLocales(it)
+                        }
                     }
                 }
             }
@@ -199,12 +198,11 @@ class MsTtsEditViewModel : ViewModel() {
     private fun updateLocales(allList: List<GeneralVoiceData>) {
         ui.locales.apply {
             items =
-                allList.map { SpinnerItem(it.localeName, it.locale) }.distinctBy { it.value }
-            val pos = items.indexOfFirst { it.value == mTts.locale }
-            position = max(pos, 0)
+                allList.map { SpinnerItem(it.localeName, it.locale) }
+                    .distinctBy { it.value }.sortedBy { it.value.toString() }
+            position = items.indexOfFirst { it.value == mTts.locale }
         }
     }
-
 
     // 更新发音列表
     private fun updateVoices(data: List<GeneralVoiceData>) {
@@ -333,7 +331,7 @@ data class UiData(
 )
 
 
-class SpinnerData() : BaseObservable() {
+class SpinnerData : BaseObservable() {
     // 包装成lambda
     fun addOnPropertyChangedCallback(callback: (sender: Observable?, propertyId: Int) -> Unit) {
         super.addOnPropertyChangedCallback(object : OnPropertyChangedCallback() {
@@ -363,11 +361,6 @@ class SpinnerData() : BaseObservable() {
             field = value
             notifyPropertyChanged(BR.position)
         }
-
-
-    operator fun get(i: Int): SpinnerItem {
-        return items[i]
-    }
 
     val selectedItem: SpinnerItem?
         get() {
