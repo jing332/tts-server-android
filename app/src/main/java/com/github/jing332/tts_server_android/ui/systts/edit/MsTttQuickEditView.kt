@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.databinding.BindingAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.databinding.SysttsMsQuickEditViewBinding
@@ -19,6 +20,15 @@ import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import kotlin.math.max
+
+object MsTtsQuickEditViewAdapter {
+    @JvmStatic
+    @BindingAdapter("styleDegreeVisible")
+    fun setStyleDegreeVisible(view: View, visible: Boolean) {
+        if (view is MsTttQuickEditView)
+            view.isStyleDegreeVisible = visible
+    }
+}
 
 class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
@@ -33,7 +43,7 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         fun onFormatChanged(format: String) {}
     }
 
-    private var isStyleDegreeVisible: Boolean = true
+    var isStyleDegreeVisible: Boolean = true
         set(value) {
             field = value
             binding.seekbarStyleDegree.isVisible = value
@@ -120,8 +130,9 @@ class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         setRate(tts.rate)
         setVolume(tts.volume)
         setPitch(tts.pitch)
-        setStyleDegree(tts.expressAs?.styleDegree ?: 1F)
-        isStyleDegreeVisible = tts.api != MsTtsApiType.EDGE
+
+        isStyleDegreeVisible = tts.expressAs?.style?.isNotEmpty() == true
+        if (isStyleDegreeVisible) setStyleDegree(tts.expressAs?.styleDegree ?: 1F)
 
         mFormatItems = MsTtsFormatManger.getFormatsByApiType(tts.api).map { SpinnerItem(it, it) }
         binding.spinnerFormat.setAdapter(MaterialSpinnerAdapter(context, mFormatItems))
