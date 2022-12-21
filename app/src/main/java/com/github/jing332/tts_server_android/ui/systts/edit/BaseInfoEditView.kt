@@ -15,6 +15,7 @@ import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBaseInfoEditViewBinding
+import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 
@@ -57,6 +58,9 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
     }
 
     init {
+        binding.tilGroup.initAccessibilityDelegate()
+        binding.tilName.initAccessibilityDelegate()
+
         binding.etName.addTextChangedListener {
             mData?.apply { displayName = this@BaseInfoEditView.displayName }
         }

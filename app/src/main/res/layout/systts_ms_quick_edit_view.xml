@@ -9,7 +9,6 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/label_audio_format"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,9 +17,9 @@
         <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
             android:id="@+id/spinner_format"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:hint="@string/label_audio_format" />
     </com.google.android.material.textfield.TextInputLayout>
-
 
     <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
         android:id="@+id/seekbar_rate"

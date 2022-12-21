@@ -8,19 +8,13 @@ import android.widget.*
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 
 
-class MaterialSpinner :
-    AppCompatAutoCompleteTextView {
+class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
+    AppCompatAutoCompleteTextView(context, attrs, defStyleAttr) {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(
         context,
         attrs,
         com.google.android.material.R.attr.autoCompleteTextViewStyle
-    )
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
     )
 
     init {

@@ -16,6 +16,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.setFadeAnim
 
@@ -36,6 +37,13 @@ class MsTtsEditActivity : BackActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        binding.tilApi.initAccessibilityDelegate()
+        binding.tilLocale.initAccessibilityDelegate()
+        binding.tilVoice.initAccessibilityDelegate()
+        binding.tilSecondaryLocale.initAccessibilityDelegate()
+        binding.tilStyle.initAccessibilityDelegate()
+        binding.tilRole.initAccessibilityDelegate()
 
         // 帮助 二级语言
         binding.tilSecondaryLocale.setStartIconOnClickListener {

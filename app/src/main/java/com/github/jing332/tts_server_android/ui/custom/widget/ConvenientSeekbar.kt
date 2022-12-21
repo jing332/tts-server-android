@@ -11,6 +11,7 @@ import android.widget.SeekBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.postDelayed
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ConvenientSeekbarBinding
@@ -51,8 +52,9 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
             binding.tvValue.text = value
 
             binding.seekBar.handler?.removeCallbacksAndMessages(null)
-            binding.seekBar.postDelayed(500) {
-                binding.seekBar.announceForAccessibility("${hint}${value}")
+            binding.seekBar.postDelayed(100) {
+                if (binding.seekBar.isAccessibilityFocused)
+                    binding.seekBar.announceForAccessibility("${hint}${value}")
             }
         }
 
@@ -120,12 +122,20 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
             host: View,
             event: AccessibilityEvent
         ): Boolean {
-            if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
-                textValue = textValue
-                return true
-            }
+//            if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
+//                textValue = textValue
+//                return true
+//            }
 
             return super.dispatchPopulateAccessibilityEvent(host, event)
+        }
+
+        override fun onInitializeAccessibilityNodeInfo(
+            host: View,
+            info: AccessibilityNodeInfoCompat
+        ) {
+            super.onInitializeAccessibilityNodeInfo(host, info)
+            textValue = textValue
         }
 
         // 禁用原生的百分比朗读
