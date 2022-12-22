@@ -2,6 +2,8 @@ package com.github.jing332.tts_server_android.ui.custom.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +11,10 @@ import android.view.ViewGroup.*
 import android.view.accessibility.AccessibilityEvent
 import android.widget.SeekBar
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.postDelayed
 import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import androidx.core.view.postDelayed
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ConvenientSeekbarBinding
 
@@ -45,16 +47,20 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
             binding.tvHint.text = value
         }
 
+    private val mA11yHandler by lazy { Handler(Looper.getMainLooper()) }
+
     var textValue: String
         get() = binding.tvValue.text.toString()
         set(value) {
-            binding.tvValue.contentDescription = "${hint}=${value}"
-            binding.tvValue.text = value
+            binding.apply {
+                tvValue.text = value
 
-            binding.seekBar.handler?.removeCallbacksAndMessages(null)
-            binding.seekBar.postDelayed(100) {
-                if (binding.seekBar.isAccessibilityFocused)
-                    binding.seekBar.announceForAccessibility("${hint}${value}")
+                // 防高频调用
+                mA11yHandler.removeCallbacksAndMessages(null)
+                mA11yHandler.postDelayed(150) {
+                    if (seekBar.isAccessibilityFocused || remove.isAccessibilityFocused || add.isAccessibilityFocused)
+                        seekBar.announceForAccessibility("$hint $value")
+                }
             }
         }
 
@@ -79,7 +85,7 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
         })
 
         binding.add.setOnClickListener {
-            progress += 1
+            progress++
             onSeekBarChangeListener?.onStopTrackingTouch(this)
         }
         binding.add.setOnLongClickListener {
@@ -89,7 +95,7 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
         }
 
         binding.remove.setOnClickListener {
-            progress -= 1
+            progress--
             onSeekBarChangeListener?.onStopTrackingTouch(this)
         }
         binding.remove.setOnLongClickListener {
@@ -118,23 +124,13 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
 
     // https://stackoverflow.com/a/64703579/13197001
     private inner class SeekbarAccessibilityDelegate : AccessibilityDelegateCompat() {
-        override fun dispatchPopulateAccessibilityEvent(
-            host: View,
-            event: AccessibilityEvent
-        ): Boolean {
-//            if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
-//                textValue = textValue
-//                return true
-//            }
-
-            return super.dispatchPopulateAccessibilityEvent(host, event)
-        }
-
+        // 单击Seekbar时调用
         override fun onInitializeAccessibilityNodeInfo(
             host: View,
             info: AccessibilityNodeInfoCompat
         ) {
             super.onInitializeAccessibilityNodeInfo(host, info)
+            info.text = "$hint $textValue"
             textValue = textValue
         }
 

@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="@id/tv_hint"
         tools:text="1.0" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/add"
         android:layout_width="35dp"
         android:layout_height="0dp"
@@ -41,7 +41,7 @@
         app:srcCompat="@drawable/ic_baseline_add_24"
         app:tint="@color/colorPrimary" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/remove"
         android:layout_width="35dp"
         android:layout_height="0dp"

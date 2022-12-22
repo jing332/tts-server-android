@@ -292,6 +292,11 @@ class MsTtsEditViewModel : ViewModel() {
     }
 
     fun doTest(text: String, onSuccess: (kb: Int) -> Unit, onFailure: (Throwable) -> Unit) {
+        if (mTts.format.startsWith("raw")) {
+            onFailure.invoke(Exception("raw格式无法播放，请手动换为其他格式。"))
+            return
+        }
+
         viewModelScope.runOnIO {
             val audio = try {
                 mTts.onLoad()

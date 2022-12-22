@@ -23,6 +23,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityB
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
@@ -85,18 +86,20 @@ class HttpTtsEditActivity : BackActivity() {
             checkBoxNeedDecode.isChecked = tts.audioFormat.isNeedDecode
         }
 
+        binding.tilTest.initAccessibilityDelegate()
         binding.tilTest.setEndIconOnClickListener {
             doTest()
         }
         binding.etTestText.setOnEditorActionListener { _, actionId, _ ->
-            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_GO){
+            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_GO) {
                 doTest()
                 true
-            }else
+            } else
                 false
         }
 
 
+        binding.textInputLayoutUrl.initAccessibilityDelegate()
         // url 帮助按钮
         binding.textInputLayoutUrl.setEndIconOnClickListener {
             val tv = TextView(this)
@@ -107,6 +110,7 @@ class HttpTtsEditActivity : BackActivity() {
             AlertDialog.Builder(this).setTitle(R.string.help).setView(tv).setFadeAnim().show()
         }
 
+        binding.tilHeader.initAccessibilityDelegate()
         // 请求头 帮助按钮
         binding.tilHeader.setEndIconOnClickListener {
             AlertDialog.Builder(this).setTitle(R.string.systts_http_request_header)
@@ -116,6 +120,7 @@ class HttpTtsEditActivity : BackActivity() {
                 .setFadeAnim().show()
         }
 
+        binding.textInputLayoutSampleRate.initAccessibilityDelegate()
         // 采样率帮助按钮
         binding.textInputLayoutSampleRate.setStartIconOnClickListener {
             AlertDialog.Builder(this).setTitle(R.string.systts_sample_rate)

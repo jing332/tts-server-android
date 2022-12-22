@@ -44,6 +44,7 @@ class MsTtsEditActivity : BackActivity() {
         binding.tilSecondaryLocale.initAccessibilityDelegate()
         binding.tilStyle.initAccessibilityDelegate()
         binding.tilRole.initAccessibilityDelegate()
+        binding.tilTest.initAccessibilityDelegate()
 
         // 帮助 二级语言
         binding.tilSecondaryLocale.setStartIconOnClickListener {
