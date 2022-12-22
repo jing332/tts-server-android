@@ -6,7 +6,8 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsHttpQuickEditViewBinding
-import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.AnalyzeUrl
+import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 
 class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
@@ -23,22 +24,14 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
         binding.seekBarVolume.onSeekBarChangeListener = this
     }
 
-    var callBack: CallBack? = null
-
-    interface CallBack {
-        /*
-        * 当值变化时调用
-        * @return 解析后的url
-        * */
-        fun onValueChanged(rate: Int, volume: Int): String
-    }
-
     var rate: Int
         get() {
             return binding.seekBarRate.progress
         }
         set(value) {
+            mTts.rate = value
             binding.seekBarRate.progress = value
+            binding.seekBarRate.textValue = "$value"
         }
 
     var volume: Int
@@ -46,27 +39,49 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
             return binding.seekBarVolume.progress
         }
         set(value) {
+            mTts.volume = value
             binding.seekBarVolume.progress = value
+            binding.seekBarVolume.textValue =
+                if (value == 0) context.getString(R.string.follow_system_or_read_aloud_app) else value.toString()
         }
+
+    private lateinit var mTts: HttpTTS
+
+    fun setData(tts: HttpTTS) {
+        mTts = tts
+        rate = tts.rate
+        volume = tts.volume
+    }
 
     override fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {
         when (seekBar) {
             binding.seekBarRate -> {
-                binding.tvValRate.text =
-                    if (progress <= BaseTTS.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app) else progress.toString()
+                seekBar.textValue =
+                    if (progress == 0) context.getString(R.string.follow_system_or_read_aloud_app) else progress.toString()
             }
             binding.seekBarVolume -> {
-                binding.tvValVolume.text = "${binding.seekBarVolume.progress}"
+                seekBar.textValue = "${binding.seekBarVolume.progress}"
             }
         }
     }
 
-    override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {
-    }
+    override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
 
     override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
-        callBack?.onValueChanged(rate, volume)?.let {
-            binding.tvPreviewUrl.text = it
+        binding.tvPreviewUrl.text = doAnalyzeUrl()
+    }
+
+    private fun doAnalyzeUrl(): String {
+        kotlin.runCatching {
+            val result = AnalyzeUrl(
+                mUrl = this.mTts.url,
+                speakSpeed = rate,
+                speakVolume = volume
+            ).eval()
+            return result?.body ?: "解析url失败"
+        }.onFailure {
+            return "${it.message}"
         }
+        return ""
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.setPadding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.CnLocalMap
@@ -11,7 +12,7 @@ import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
-import com.github.jing332.tts_server_android.ui.systts.edit.MsTttQuickEditView
+import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsQuickEditView
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -115,11 +116,12 @@ data class MsTTS(
     override fun onDescriptionClick(
         context: Context,
         view: View?,
+        displayName: String,
         done: (modifiedData: BaseTTS?) -> Unit
     ) {
-        val editView = MsTttQuickEditView(context).apply {
+        val editView = MsTtsQuickEditView(context).apply {
             setData(this@MsTTS)
-            setPadding(10, 30, 10, 30)
+            setPadding(16)
         }
 
         AlertDialog.Builder(context)

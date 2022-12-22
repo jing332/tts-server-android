@@ -8,28 +8,20 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
-import android.widget.RadioButton
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.children
-import com.drake.net.utils.scopeLife
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityBinding
-import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
-import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.github.jing332.tts_server_android.util.setFadeAnim
-import kotlinx.coroutines.Dispatchers
 
 @Suppress("DEPRECATION")
 class HttpTtsEditActivity : BackActivity() {
@@ -45,51 +37,22 @@ class HttpTtsEditActivity : BackActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        // 朗读目标切换
-        binding.radioRaTarget.radioGroup.setOnCheckedChangeListener { _, id ->
-            val pos = when (id) {
-                R.id.radioBtn_ra_all -> ReadAloudTarget.ALL
-                R.id.radioBtn_only_ra_aside -> ReadAloudTarget.ASIDE
-                R.id.radioBtn_only_ra_dialogue -> ReadAloudTarget.DIALOGUE
-                else -> return@setOnCheckedChangeListener
-            }
-            data.apply { this.readAloudTarget = pos }
-        }
-
         // 获取数据 为null表示Add
         data = intent.getParcelableExtra(KEY_DATA) ?: SystemTts(tts = HttpTTS())
-
-        // 分组初始化
-        scopeLife(dispatcher = Dispatchers.IO) {
-            appDb.systemTtsDao.allGroup.let { list ->
-                binding.radioRaTarget.groupItems = list.map { SpinnerItem(it.name, it.id) }
-                val selectedPos = list.indexOfLast { data.groupId == it.id }
-                binding.radioRaTarget.groupCurrentPosition = selectedPos
-            }
-        }
-
         val tts = data.tts as HttpTTS
-        binding.apply {
-            // 设置朗读目标
-            binding.radioRaTarget.radioGroup.apply {
-                children.forEach { btn -> (btn as RadioButton).isChecked = false }
-                (getChildAt(data.readAloudTarget) as RadioButton).isChecked = true
-            }
 
-            etName.setText(data.displayName)
+        binding.apply {
+            baseEdit.setData(data)
+            binding.numEdit.setData(tts)
+
             etUrl.setText(tts.url)
             etHeaders.setText(tts.header)
-            binding.numEdit.rate = tts.rate
-            binding.numEdit.volume = tts.volume
-
             tvSampleRate.setText(tts.audioFormat.sampleRate.toString())
             checkBoxNeedDecode.isChecked = tts.audioFormat.isNeedDecode
         }
 
         binding.tilTest.initAccessibilityDelegate()
-        binding.tilTest.setEndIconOnClickListener {
-            doTest()
-        }
+        binding.tilTest.setEndIconOnClickListener { doTest() }
         binding.etTestText.setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_GO) {
                 doTest()
@@ -98,10 +61,9 @@ class HttpTtsEditActivity : BackActivity() {
                 false
         }
 
-
-        binding.textInputLayoutUrl.initAccessibilityDelegate()
+        binding.tilUrl.initAccessibilityDelegate()
         // url 帮助按钮
-        binding.textInputLayoutUrl.setEndIconOnClickListener {
+        binding.tilUrl.setEndIconOnClickListener {
             val tv = TextView(this)
             tv.setTextIsSelectable(true)
             tv.text =
@@ -120,30 +82,13 @@ class HttpTtsEditActivity : BackActivity() {
                 .setFadeAnim().show()
         }
 
-        binding.textInputLayoutSampleRate.initAccessibilityDelegate()
+        binding.tilSampleRate.initAccessibilityDelegate()
         // 采样率帮助按钮
-        binding.textInputLayoutSampleRate.setStartIconOnClickListener {
+        binding.tilSampleRate.setStartIconOnClickListener {
             AlertDialog.Builder(this).setTitle(R.string.systts_sample_rate)
                 .setMessage(R.string.systts_help_sample_rate).setFadeAnim().show()
         }
 
-        binding.numEdit.callBack = object : HttpTtsQuickEditView.CallBack {
-            override fun onValueChanged(rate: Int, volume: Int): String {
-                if (data.tts is HttpTTS) {
-                    data.tts.rate = rate
-                    data.tts.volume = volume
-
-                    val result = AnalyzeUrl(
-                        mUrl = tts.url,
-                        speakText = binding.etTestText.text.toString(),
-                        speakSpeed = rate,
-                        speakVolume = volume
-                    ).eval()
-                    return result?.body ?: "解析url失败"
-                }
-                return ""
-            }
-        }
         // 采样率
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item)
         adapter.addAll(resources.getStringArray(R.array.sample_rate_list).toList())
@@ -178,7 +123,8 @@ class HttpTtsEditActivity : BackActivity() {
             },
             { err ->
                 waitDialog.dismiss()
-                AlertDialog.Builder(this@HttpTtsEditActivity).setTitle("测试失败").setMessage(err)
+                AlertDialog.Builder(this@HttpTtsEditActivity).setTitle(R.string.test_failed)
+                    .setMessage(err)
                     .setFadeAnim()
                     .show()
             })
@@ -192,23 +138,17 @@ class HttpTtsEditActivity : BackActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_save -> {
-                if (binding.etName.text?.isBlank() == true) {
-                    binding.etName.error = getString(R.string.cannot_empty)
-                    binding.etName.requestFocus()
-                    return super.onOptionsItemSelected(item)
-                } else if (binding.etUrl.text?.isEmpty() == true) {
+                if (binding.etUrl.text?.isEmpty() == true) {
                     binding.etUrl.error = getString(R.string.cannot_empty)
                     binding.etUrl.requestFocus()
+                    return super.onOptionsItemSelected(item)
+                } else if (binding.baseEdit.checkDisplayNameEmpty()) {
                     return super.onOptionsItemSelected(item)
                 }
 
                 updateValueToTts()
                 SoftKeyboardUtils.hideSoftKeyboard(this)
 
-                binding.radioRaTarget.let {
-                    data.groupId =
-                        it.groupItems?.getOrNull(it.groupCurrentPosition)?.value as Long
-                }
                 val intent = Intent()
                 intent.putExtra(KEY_DATA, data)
                 setResult(RESULT_OK, intent)
@@ -221,7 +161,6 @@ class HttpTtsEditActivity : BackActivity() {
 
     private fun updateValueToTts() {
         data.let {
-            it.displayName = binding.etName.text.toString()
             (it.tts as HttpTTS).apply {
                 url = binding.etUrl.text.toString()
                 header = binding.etHeaders.text.toString()

@@ -104,7 +104,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
     private fun displayQuickEditDialog(v: View, data: SystemTts) {
         // 修改数据要clone，不然对比时数据相同导致UI不更新
         data.clone<SystemTts>()?.let { clonedData ->
-            clonedData.tts.onDescriptionClick(context, v) {
+            clonedData.tts.onDescriptionClick(context, v, data.displayName.toString()) {
                 it?.let {
                     appDb.systemTtsDao.updateTts(clonedData)
                     notifyTtsUpdate(clonedData.isEnabled)

@@ -9,43 +9,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include
-            android:id="@+id/radio_raTarget"
-            layout="@layout/systts_ra_target_radio_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout2"
-            android:layout_width="0dp"
+        <com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
+            android:id="@+id/base_edit"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radio_raTarget">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/display_name" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_url"
+            android:id="@+id/til_url"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
             app:endIconCheckable="true"
+            app:endIconContentDescription="@string/help"
             app:endIconDrawable="@drawable/ic_baseline_help_outline_24"
             app:endIconMode="custom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+            app:layout_constraintTop_toBottomOf="@id/base_edit">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_url"
@@ -62,11 +47,12 @@
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
             app:endIconCheckable="true"
+            app:endIconContentDescription="@string/help"
             app:endIconDrawable="@drawable/ic_baseline_help_outline_24"
             app:endIconMode="custom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_url">
+            app:layout_constraintTop_toBottomOf="@+id/til_url">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_headers"
@@ -99,15 +85,15 @@
             app:endIconTint="@color/teal_200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_sampleRate">
+            app:layout_constraintTop_toBottomOf="@+id/til_sample_rate">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_testText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/test_text"
-                android:singleLine="true"
                 android:imeOptions="actionGo"
+                android:singleLine="true"
                 android:text="@string/systts_http_sample_test_text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,21 +104,21 @@
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:text="@string/systts_decode_audio"
-            app:layout_constraintBottom_toBottomOf="@+id/textInputLayout_sampleRate"
+            app:layout_constraintBottom_toBottomOf="@+id/til_sample_rate"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textInputLayout_sampleRate" />
+            app:layout_constraintTop_toTopOf="@+id/til_sample_rate" />
 
         <com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsQuickEditView
             android:id="@+id/numEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_margin="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_test" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_sampleRate"
+            android:id="@+id/til_sample_rate"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -140,6 +126,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:hint="@string/systts_sample_rate"
+            app:endIconContentDescription="@string/help"
             app:layout_constraintEnd_toStartOf="@+id/checkBox_needDecode"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view"

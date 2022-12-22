@@ -26,12 +26,12 @@ object MsTtsQuickEditViewAdapter {
     @JvmStatic
     @BindingAdapter("styleDegreeVisible")
     fun setStyleDegreeVisible(view: View, visible: Boolean) {
-        if (view is MsTttQuickEditView)
+        if (view is MsTtsQuickEditView)
             view.isStyleDegreeVisible = visible
     }
 }
 
-class MsTttQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)

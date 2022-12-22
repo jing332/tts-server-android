@@ -205,5 +205,6 @@
     <string name="config_updated">已更新配置</string>
     <string name="rename">重命名</string>
     <string name="test_failed">测试失败</string>
+    <string name="systts_arg_quick_edit">朗读参数快捷编辑</string>
 
 </resources>

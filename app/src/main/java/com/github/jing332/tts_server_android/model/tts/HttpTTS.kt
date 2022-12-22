@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.setPadding
 import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
@@ -11,6 +12,7 @@ import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsQuickEditView
+import com.github.jing332.tts_server_android.util.setFadeAnim
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -59,31 +61,15 @@ data class HttpTTS(
     override fun onDescriptionClick(
         context: Context,
         view: View?,
+        displayName: String,
         done: (modifiedData: BaseTTS?) -> Unit
     ) {
-        val editView = HttpTtsQuickEditView(context)
-        editView.rate = rate
-        editView.volume = volume
-        editView.callBack = object : HttpTtsQuickEditView.CallBack {
-            override fun onValueChanged(rate: Int, volume: Int): String {
-                kotlin.runCatching {
-                    val result = AnalyzeUrl(
-                        mUrl = url,
-                        speakText = "",
-                        speakSpeed = rate,
-                        speakVolume = volume
-                    ).eval()
-                    return result?.body ?: "解析url失败"
-                }.onFailure {
-                    return "${it.message}"
-                }
-
-                return ""
-            }
+        val editView = HttpTtsQuickEditView(context).apply {
+            setData(this@HttpTTS)
+            setPadding(16)
         }
 
-
-        val dialog = AlertDialog.Builder(context).setView(editView)
+        AlertDialog.Builder(context).setView(editView)
             .setOnDismissListener {
                 if (editView.rate == rate && editView.volume == volume)
                     done(null)
@@ -92,9 +78,8 @@ data class HttpTTS(
                     volume = editView.volume
                     done(this)
                 }
-            }.create()
-        dialog.window?.setWindowAnimations(R.style.dialogFadeStyle)
-        dialog.show()
+            }.setFadeAnim()
+            .show()
     }
 
     @IgnoredOnParcel
@@ -122,7 +107,7 @@ data class HttpTTS(
             AnalyzeUrl(mUrl = url, speakText = speakText, speakSpeed = rate, speakVolume = volume)
         val urlOption = a.eval()
         return if (urlOption == null) { //GET
-            Net.get(a.baseUrl){
+            Net.get(a.baseUrl) {
                 if (!this@HttpTTS::httpClient.isInitialized) onLoad()
                 okHttpClient = this@HttpTTS.httpClient
                 setHeaders(httpHeaders.toHeaders())

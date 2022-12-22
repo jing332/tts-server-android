@@ -12,6 +12,7 @@ import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBaseInfoEditViewBinding
@@ -27,7 +28,6 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
     private val binding: SysttsBaseInfoEditViewBinding by lazy {
         SysttsBaseInfoEditViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
-
 
     @ReadAloudTarget
     var raTarget: Int = ReadAloudTarget.ALL
@@ -49,12 +49,20 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
 
     private var mData: SystemTts? = null
 
-    fun setData(data: SystemTts, groupList: List<SystemTtsGroup>) {
+    fun setData(data: SystemTts, groupList: List<SystemTtsGroup> = appDb.systemTtsDao.allGroup) {
         this.mData = data
         this.displayName = data.displayName ?: ""
         raTarget = data.readAloudTarget
         binding.groupItems = groupList.map { SpinnerItem(it.name, it) }
         binding.groupCurrentPosition = groupList.indexOfFirst { it.id == data.groupId }
+    }
+
+    fun checkDisplayNameEmpty(): Boolean {
+        if (mData?.displayName.isNullOrEmpty()) {
+            binding.etName.error = context.getString(R.string.cannot_empty)
+            return true
+        }
+        return false
     }
 
     init {

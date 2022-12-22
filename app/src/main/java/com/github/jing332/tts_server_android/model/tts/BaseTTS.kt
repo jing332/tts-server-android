@@ -62,6 +62,7 @@ sealed class BaseTTS : Parcelable {
     abstract fun onDescriptionClick(
         context: Context,
         view: View?,
+        displayName: String,
         done: (modifiedData: BaseTTS?) -> Unit
     )
 
