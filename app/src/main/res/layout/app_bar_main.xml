@@ -13,9 +13,10 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            tools:title="ToolBar Title"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary">
+            android:background="?attr/colorPrimary"
+            android:theme="@style/Theme.Toolbar"
+            tools:title="ToolBar Title">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
@@ -29,7 +30,7 @@
                 app:tabMinWidth="4dp"
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@android:color/darker_gray" />
+                app:tabTextColor="#99FFFFFF" />
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

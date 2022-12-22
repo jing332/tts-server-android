@@ -10,4 +10,5 @@
     <color name="colorPrimary">@color/teal_700</color>
 
     <color name="colorIconTint">@android:color/black</color>
+    <color name="colorText">@android:color/black</color>
 </resources>

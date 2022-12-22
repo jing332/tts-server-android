@@ -18,6 +18,10 @@
 
     </style>
 
+    <style name="Theme.Toolbar" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:textColor">@color/colorText</item>
+    </style>
+
     <style name="Theme.TtsServer.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
