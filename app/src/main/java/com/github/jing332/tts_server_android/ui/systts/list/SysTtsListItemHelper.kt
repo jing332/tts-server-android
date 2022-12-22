@@ -3,6 +3,8 @@ package com.github.jing332.tts_server_android.ui.systts.list
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import android.view.View.AccessibilityDelegate
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.CheckBox
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,7 +40,6 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                             getModelOrNull<RvGroupModel>(findParentPosition())?.let { group ->
                                 // 组中的item位置
                                 val subPos = modelPosition - findParentPosition() - 1
-//                                println("modelPos: ${modelPosition}, modelCont: ${modelCount}, groupPos: ${group.itemGroupPosition}, parentPos: ${findParentPosition()}")
                                 switchChanged(view, group.itemSublist as List<SystemTts>, subPos)
                             }
                         } else
@@ -50,7 +51,25 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         displayBaseEditDialog(getModel())
                         true
                     }
+
                     itemView.setOnClickListener { displayQuickEditDialog(it, getModel()) }
+                    itemView.accessibilityDelegate = object : AccessibilityDelegate() {
+                        override fun onInitializeAccessibilityNodeInfo(
+                            host: View,
+                            info: AccessibilityNodeInfo
+                        ) {
+                            super.onInitializeAccessibilityNodeInfo(host, info)
+                            (getModel() as SystemTts).let {
+                                val selectedStr = if (it.isEnabled) "已启用" else ""
+                                info.text = "$selectedStr，${tvName.text}，" +
+                                        "目标：${tvRaTarget.text}，" +
+                                        "接口：${tvApiType.text}，" +
+                                        "属性：${tvDescription.text}，" +
+                                        "格式：${tvBottomContent.text}"
+                            }
+                        }
+                    }
+
                 }
             }
         }

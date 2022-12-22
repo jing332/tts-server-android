@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/btn_edit"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
@@ -44,7 +44,7 @@
                     app:layout_constraintTop_toTopOf="@+id/btn_delete"
                     app:tint="@color/colorIconTint" />
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/btn_delete"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
@@ -66,6 +66,8 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
                     android:ellipsize="end"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
                     android:maxLines="1"
                     android:scrollbars="none"
                     android:text="@{m.displayName}"
@@ -81,6 +83,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:layout_marginBottom="4dp"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
                     android:lines="1"
                     android:text="@{m.tts.bottomContent}"
                     android:textSize="11sp"
@@ -96,6 +100,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:layout_marginBottom="4dp"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
                     android:text="@{m.tts.type}"
                     android:textColor="@android:color/holo_orange_dark"
                     android:textStyle="italic"
@@ -110,6 +116,8 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="4dp"
                     android:background="@drawable/textview_border"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
                     android:text="@{m.raTargetString}"
                     android:textColor="@color/teal_700"
                     android:textStyle="bold"
@@ -123,6 +131,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:elegantTextHeight="true"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
                     android:lineSpacingMultiplier="0.9"
                     android:lines="2"
                     android:scrollbars="none"

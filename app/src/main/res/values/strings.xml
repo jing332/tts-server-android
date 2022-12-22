@@ -189,7 +189,7 @@
 
     <string name="expanded_state">展开状态</string>
     <string name="group_expanded">分组 已展开</string>
-    <string name="group_closed">分组 已关闭</string>
+    <string name="group_collapsed">分组 已折叠</string>
 
     <string name="add_group">添加分组</string>
     <string name="more_options">更多选项</string>

@@ -55,6 +55,12 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                     itemView.setOnClickListener {
                         expandOrCollapse()
                         getModelOrNull<RvGroupModel>(modelPosition)?.let {
+                            val enabledCount =
+                                it.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
+                            val speakText =
+                                if (it.itemExpand) R.string.group_expanded else R.string.group_collapsed
+                            itemView.announceForAccessibility(getString(speakText) + ", 共${it.itemSublist?.size}条, 已启用${enabledCount}条")
+
                             if (it.itemExpand && it.itemSublist.isNullOrEmpty())
                                 longToast(R.string.msg_group_is_empty)
 
@@ -78,7 +84,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                         }
                     }
 
-                    ivMore.setOnClickListener { displayMoreMenu(it, getModel()) }
+                    btnMore.setOnClickListener { displayMoreMenu(it, getModel()) }
                 }
 
                 // TTS Item
