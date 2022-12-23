@@ -3,7 +3,9 @@ package com.github.jing332.tts_server_android.ui.custom.widget.spinner
 import android.content.Context
 import android.graphics.Typeface
 import android.view.View
+import android.view.View.AccessibilityDelegate
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.DrawableRes
 import com.github.jing332.tts_server_android.databinding.ItemMaterialSpinnerBinding
 
@@ -30,14 +32,27 @@ class MaterialSpinnerAdapter(var content: Context, var items: List<SpinnerItem>)
             binding = view.tag as ItemMaterialSpinnerBinding
         }
 
+
         val item = getItem(position)
         binding.text = item.displayText
-
         val isSelected = position == selectedItemPosition
+
         binding.selected = isSelected
         binding.tv.setTypeface(null, if (isSelected) Typeface.BOLD else Typeface.NORMAL)
         if (item.imageResId != -1)
             binding.imageView.setImageResource(item.imageResId)
+
+        view.accessibilityDelegate = object : AccessibilityDelegate() {
+            override fun onInitializeAccessibilityNodeInfo(
+                host: View,
+                info: AccessibilityNodeInfo
+            ) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                info.text = binding.text
+                info.isCheckable = true
+                info.isChecked = binding.selected == true
+            }
+        }
 
         return view
     }

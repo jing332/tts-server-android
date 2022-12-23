@@ -149,7 +149,6 @@
                     android:layout_width="40dp"
                     android:layout_height="0dp"
                     android:checked="@{m.enabled}"
-                    android:contentDescription="@string/desc_switch_item"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
