@@ -6,6 +6,17 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.562"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switch_on_off"
+        tools:text="介绍\n\n\n..." />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_num_edit"
         android:layout_width="match_parent"
@@ -14,66 +25,30 @@
         app:layout_constraintTop_toBottomOf="@id/tv_tip"
         tools:layout_editor_absoluteX="8dp">
 
-        <TextView
-            android:id="@+id/label_play_speed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_play_speed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginTop="8dp" />
-
-        <TextView
-            android:id="@+id/tv_rateValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1.0"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/label_play_speed"
-            app:layout_constraintStart_toEndOf="@+id/label_play_speed"
-            app:layout_constraintTop_toTopOf="@+id/label_play_speed"
-            tools:ignore="HardcodedText" />
 
         <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
             android:id="@+id/seekbar_speed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            app:hint="@string/label_play_speed"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_play_speed"
+            app:layout_constraintTop_toTopOf="parent"
             app:max="30"
             app:progress="10" />
 
-        <TextView
-            android:id="@+id/label_pitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/label_play_pitch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/seekbar_speed" />
-
-        <TextView
-            android:id="@+id/tv_val_pitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1.0"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/label_pitch"
-            app:layout_constraintStart_toEndOf="@id/label_pitch"
-            app:layout_constraintTop_toTopOf="@id/label_pitch"
-            tools:ignore="HardcodedText" />
 
         <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
             android:id="@+id/seekbar_pitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            app:hint="@string/label_play_pitch"
+            app:layout_constraintTop_toBottomOf="@id/seekbar_speed"
             app:max="30"
-            app:progress="10"
-            app:layout_constraintTop_toBottomOf="@id/label_pitch" />
+            app:progress="10" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -87,15 +62,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_tip"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.562"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch_on_off"
-        tools:text="介绍\n\n\n..." />
 </androidx.constraintlayout.widget.ConstraintLayout>

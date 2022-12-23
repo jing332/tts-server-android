@@ -225,7 +225,7 @@ class SysTtsListFragment : Fragment() {
                         seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean
                     ) {
                         if (progress <= 0) seekBar.progress = 1
-                        tvRateValue.text = "${(seekBar.progress * 0.1).toFloat()}"
+                        seekbarSpeed.textValue = "${(seekBar.progress * 0.1).toFloat()}"
                     }
                 }
             seekbarSpeed.progress = (SysTtsConfig.inAppPlaySpeed * 10).toInt()
@@ -236,7 +236,7 @@ class SysTtsListFragment : Fragment() {
                         seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean
                     ) {
                         if (progress <= 0) seekBar.progress = 1
-                        tvValPitch.text = "${(seekBar.progress * 0.1).toFloat()}"
+                        seekbarPitch.textValue = "${(seekBar.progress * 0.1).toFloat()}"
                     }
                 }
             seekbarPitch.progress = (SysTtsConfig.inAppPlayPitch * 10).toInt()

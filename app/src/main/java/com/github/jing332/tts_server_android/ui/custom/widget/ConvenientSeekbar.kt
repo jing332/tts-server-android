@@ -39,6 +39,7 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
         inline get() = seekBar.progress
         inline set(value) {
             seekBar.progress = value
+            onSeekBarChangeListener?.onProgressChanged(this, value, false)
         }
 
     var hint: String
