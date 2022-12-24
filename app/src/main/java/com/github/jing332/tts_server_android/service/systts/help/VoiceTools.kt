@@ -8,25 +8,27 @@ import kotlin.random.Random
 object VoiceTools {
     /* 分割旁白和对白 */
     private fun splitMultiVoice(s: String): List<ResultTextTag> {
-        val voiceTagList = arrayListOf<ResultTextTag>()
+        val voiceTagList = mutableListOf<ResultTextTag>()
 
         val tmpStr = StringBuilder()
+        var isInDialog = false
         val strLen = s.length
         s.forEachIndexed { index, char ->
             tmpStr.append(char)
-            if (char == '“') {
+            if (char == '“') { //引号开头
+                isInDialog = true
                 voiceTagList.add(ResultTextTag(tmpStr.toString(), false))
                 tmpStr.clear()
-            } else if (char == '”') {
+            } else if (char == '”') { //引号结尾
+                isInDialog = false
                 tmpStr.deleteAt(tmpStr.length - 1)
                 voiceTagList.add(ResultTextTag(tmpStr.toString(), true))
                 tmpStr.clear()
-            } else if (index == strLen - 1) voiceTagList.add(
-                ResultTextTag(
-                    tmpStr.toString(),
-                    false
+            } else if (index == strLen - 1) { //末尾
+                voiceTagList.add(
+                    ResultTextTag(tmpStr.toString(), isInDialog)
                 )
-            )
+            }
 
         }
         return voiceTagList
