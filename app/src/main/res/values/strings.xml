@@ -174,7 +174,7 @@
     <string name="systts_voice_multiple_option">相同朗读目标可多选</string>
     <string name="systts_voice_multiple_hint">⚠️相同朗读目标将不再排斥，并使用随机轮播。(单语音不支持此功能)</string>
     <string name="systts_groups_multiple">分组可多选</string>
-    <string name="systts_groups_multiple_hint">⚠️分组可多选，将不再互相排斥。</string>
+    <string name="systts_groups_multiple_hint">⚠️勾选分组时将不再互相排斥。</string>
 
     <string name="systts_warn_no_ra_dialogue">⚠️缺少{对话}，使用默认配置！</string>
     <string name="systts_warn_no_ra_all">⚠️缺少{全部}，使用默认！</string>
@@ -190,6 +190,8 @@
     <string name="expanded_state">展开状态</string>
     <string name="group_expanded">分组 已展开</string>
     <string name="group_collapsed">分组 已折叠</string>
+    <string name="systts_desc_list_count_info">共%1$d项，已启用%2$d项</string>
+    <string name="systts_list_item_desc">目标%1$s，接口%2$s，属性：%3$s，格式：%4$s</string>
 
     <string name="add_group">添加分组</string>
     <string name="more_options">更多选项</string>
@@ -206,5 +208,6 @@
     <string name="rename">重命名</string>
     <string name="test_failed">测试失败</string>
     <string name="systts_arg_quick_edit">朗读参数快捷编辑</string>
+    <string name="enabled">已启用</string>
 
 </resources>

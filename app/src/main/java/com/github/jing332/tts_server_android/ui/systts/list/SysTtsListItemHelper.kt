@@ -60,12 +60,15 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         ) {
                             super.onInitializeAccessibilityNodeInfo(host, info)
                             (getModel() as SystemTts).let {
-                                val selectedStr = if (it.isEnabled) "已启用" else ""
-                                info.text = "$selectedStr，${tvName.text}，" +
-                                        "目标：${tvRaTarget.text}，" +
-                                        "接口：${tvApiType.text}，" +
-                                        "属性：${tvDescription.text}，" +
-                                        "格式：${tvBottomContent.text}"
+                                val strEnabled =
+                                    if (it.isEnabled) context.getString(R.string.enabled) else ""
+                                info.text = "$strEnabled，${tvName.text}，" + context.getString(
+                                    R.string.systts_list_item_desc,
+                                    tvRaTarget.text,
+                                    tvApiType.text,
+                                    tvDescription.text,
+                                    tvBottomContent.text,
+                                )
                             }
                         }
                     }

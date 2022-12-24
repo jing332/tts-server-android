@@ -28,18 +28,23 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
     private val binding by lazy {
         ConvenientSeekbarBinding.inflate(LayoutInflater.from(context), this, true)
     }
-    val seekBar by lazy { binding.seekBar }
+    val seekBar: SeekBar
+        get() = binding.seekBar
 
     /* var max: Int
          inline get() = seekBar.max
          inline set(value) {
              seekBar.max = value
          }*/
+
     var progress: Int
         inline get() = seekBar.progress
-        inline set(value) {
-            seekBar.progress = value
-            onSeekBarChangeListener?.onProgressChanged(this, value, false)
+        set(value) {
+            if (seekBar.progress == value) {
+                onSeekBarChangeListener?.onProgressChanged(this, value, false)
+            } else {
+                seekBar.progress = value
+            }
         }
 
     var hint: String
@@ -67,8 +72,13 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
 
     init {
         ViewCompat.setAccessibilityDelegate(binding.seekBar, SeekbarAccessibilityDelegate())
-        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        binding.seekBar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
                 onSeekBarChangeListener?.onProgressChanged(
                     this@ConvenientSeekbar,
                     progress,
@@ -118,7 +128,13 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
     var onSeekBarChangeListener: OnSeekBarChangeListener? = null
 
     interface OnSeekBarChangeListener {
-        fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {}
+        fun onProgressChanged(
+            seekBar: ConvenientSeekbar,
+            progress: Int,
+            fromUser: Boolean
+        ) {
+        }
+
         fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
         fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {}
     }
@@ -136,7 +152,10 @@ class ConvenientSeekbar(context: Context, attrs: AttributeSet?, defaultStyle: In
         }
 
         // 禁用原生的百分比朗读
-        override fun sendAccessibilityEventUnchecked(host: View, event: AccessibilityEvent) {
+        override fun sendAccessibilityEventUnchecked(
+            host: View,
+            event: AccessibilityEvent
+        ) {
             if (event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
                 && event.eventType != AccessibilityEvent.TYPE_VIEW_SELECTED
             ) {

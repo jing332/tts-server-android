@@ -87,28 +87,28 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
     var formatValue: String = MsTtsAudioFormat.DEFAULT
 
     private fun setRate(v: Int) {
-        setProgress(binding.seekbarRate, v + 100)
+        binding.seekbarRate.progress = v + 100
     }
 
     private fun setVolume(v: Int) {
-        setProgress(binding.seekbarVolume, v + 50)
+        binding.seekbarVolume.progress = v + 50
     }
 
     private fun setPitch(v: Int) {
-        setProgress(binding.seekbarPitch, v + 50)
+        binding.seekbarPitch.progress = v + 50
     }
 
     private fun setStyleDegree(v: Float) {
-        setProgress(binding.seekbarStyleDegree, (v * 100).toInt())
+        binding.seekbarStyleDegree.progress = (v * 100).toInt()
     }
 
-    // 解决 progress 相同时不回调 onProgressChanged()
-    private fun setProgress(seekBar: ConvenientSeekbar, progress: Int) {
-        if (seekBar.progress == progress) {
-            onProgressChanged(seekBar, progress, false)
-        } else
-            seekBar.progress = progress
-    }
+//    // 解决 progress 相同时不回调 onProgressChanged()
+//    private fun setProgress(seekBar: ConvenientSeekbar, progress: Int) {
+//        if (seekBar.progress == progress) {
+//            onProgressChanged(seekBar, progress, false)
+//        } else
+//            seekBar.progress = progress
+//    }
 
     fun setFormatByApi(@MsTtsApiType api: Int, currentFormat: String? = null) {
         mFormatItems = MsTtsFormatManger.getFormatsByApiType(api).map { SpinnerItem(it, it) }

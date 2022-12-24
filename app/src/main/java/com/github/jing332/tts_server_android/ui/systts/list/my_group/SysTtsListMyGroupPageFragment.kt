@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.AccessibilityDelegate
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
@@ -52,20 +54,48 @@ class SysTtsListMyGroupPageFragment : Fragment() {
             onCreate {
                 // 分组Item
                 getBindingOrNull<SysttsListMyGroupItemBinding>()?.apply {
+                    itemView.accessibilityDelegate = object : AccessibilityDelegate() {
+                        override fun onInitializeAccessibilityNodeInfo(
+                            host: View,
+                            info: AccessibilityNodeInfo
+                        ) {
+                            super.onInitializeAccessibilityNodeInfo(host, info)
+                            val model = getModel<RvGroupModel>()
+                            val enabledCount =
+                                model.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
+
+                            info.text =
+                                "${ivState.contentDescription}, ${tvName.text}, ${
+                                    getString(
+                                        R.string.systts_desc_list_count_info,
+                                        model.itemSublist?.size,
+                                        enabledCount
+                                    )
+                                }"
+                        }
+                    }
                     itemView.setOnClickListener {
                         expandOrCollapse()
-                        getModelOrNull<RvGroupModel>(modelPosition)?.let {
+                        getModel<RvGroupModel>().let { model ->
                             val enabledCount =
-                                it.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
+                                model.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
                             val speakText =
-                                if (it.itemExpand) R.string.group_expanded else R.string.group_collapsed
-                            itemView.announceForAccessibility(getString(speakText) + ", 共${it.itemSublist?.size}条, 已启用${enabledCount}条")
+                                if (model.itemExpand) R.string.group_expanded else R.string.group_collapsed
+                            itemView.announceForAccessibility(
+                                getString(speakText) + ", ${
+                                    getString(
+                                        R.string.systts_desc_list_count_info,
+                                        model.itemSublist?.size,
+                                        enabledCount
+                                    )
+                                }"
+                            )
 
-                            if (it.itemExpand && it.itemSublist.isNullOrEmpty())
+                            if (model.itemExpand && model.itemSublist.isNullOrEmpty())
                                 longToast(R.string.msg_group_is_empty)
 
-                            appDb.systemTtsDao.updateGroup(it.data.apply {
-                                isExpanded = it.itemExpand
+                            appDb.systemTtsDao.updateGroup(model.data.apply {
+                                isExpanded = model.itemExpand
                             })
                         }
                     }
