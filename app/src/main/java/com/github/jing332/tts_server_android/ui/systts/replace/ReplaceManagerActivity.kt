@@ -13,10 +13,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.SwitchCompat
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.lifecycleScope
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
+import com.drake.net.utils.withDefault
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
@@ -27,6 +28,7 @@ import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
 class ReplaceManagerActivity : BackActivity() {
@@ -54,31 +56,32 @@ class ReplaceManagerActivity : BackActivity() {
                     appDb.replaceRuleDao.update(getModel())
                 }
             }
-            onBind { }
 
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
                     return (oldItem as ReplaceRule).id == (newItem as ReplaceRule).id
                 }
+
+                override fun getChangePayload(oldItem: Any, newItem: Any) = true
             }
         }
 
-        vm.viewModelScope.runOnIO {
+        lifecycleScope.launch {
             appDb.replaceRuleDao.flowAll().conflate().collect {
-                runOnUI {
-                    if (brv.models == null)
-                        brv.models = it
-                    else brv.setDifferModels(it)
-                }
+                if (brv.models == null)
+                    brv.models = it
+                else withDefault { brv.setDifferModels(it) }
             }
         }
     }
 
     fun delete(data: ReplaceRule) {
-        AlertDialog.Builder(this).setTitle(R.string.is_confirm_delete)
-            .setPositiveButton(R.string.delete) { _, _ ->
-                appDb.replaceRuleDao.delete(data)
-            }.show()
+        AlertDialog.Builder(this)
+            .setTitle(R.string.is_confirm_delete)
+            .setMessage(data.name)
+            .setPositiveButton(R.string.delete) { _, _ -> appDb.replaceRuleDao.delete(data) }
+            .setFadeAnim()
+            .show()
     }
 
     private fun edit(data: ReplaceRule) {

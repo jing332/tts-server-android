@@ -8,16 +8,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_url"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -37,11 +35,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            app:endIconContentDescription="@string/systts_replace_insert_pinyin"
             app:endIconDrawable="@drawable/ic_baseline_abc_24"
             app:endIconMode="custom"
+            app:endIconTint="@color/teal_200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_url">
@@ -61,11 +59,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            app:endIconContentDescription="@string/systts_replace_insert_pinyin"
             app:endIconDrawable="@drawable/ic_baseline_abc_24"
             app:endIconMode="custom"
+            app:endIconTint="@color/teal_200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_pattern">
@@ -83,23 +81,26 @@
             android:id="@+id/switch_isRegex"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/systts_replace_use_regex"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_replacement" />
 
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:importantForAccessibility="no"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/switch_isRegex" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout4"
+            android:id="@+id/til_test"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switch_isRegex">
+            app:layout_constraintTop_toBottomOf="@+id/divider">
 
             <EditText
                 android:id="@+id/et_testText"
@@ -121,8 +122,8 @@
             android:layout_marginTop="8dp"
             android:text="@string/label_result"
             android:textColor="?attr/editTextColor"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout4"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout4" />
+            app:layout_constraintStart_toStartOf="@+id/til_test"
+            app:layout_constraintTop_toBottomOf="@+id/til_test" />
 
         <TextView
             android:id="@+id/tv_result"

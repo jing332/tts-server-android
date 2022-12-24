@@ -9,7 +9,7 @@ interface ReplaceRuleDao {
     @get:Query("select * from ReplaceRule ORDER BY isEnabled ASC")
     val all: List<ReplaceRule>
 
-    @Query("select * from ReplaceRule ORDER BY isEnabled ASC")
+    @Query("select * from ReplaceRule ORDER BY isEnabled DESC")
     fun flowAll(): Flow<List<ReplaceRule>>
 
     @get:Query("select count(*) from ReplaceRule")

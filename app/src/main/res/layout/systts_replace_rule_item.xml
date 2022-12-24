@@ -32,26 +32,28 @@
                 app:layout_constraintVertical_bias="0.0"
                 tools:text="Replace Rule Name" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/btn_edit"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackground"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/desc_edit_item"
+                android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
                 app:layout_constraintEnd_toStartOf="@+id/btn_delete"
                 app:layout_constraintTop_toTopOf="@+id/btn_delete"
                 app:srcCompat="@drawable/ic_baseline_edit_24"
                 app:tint="?editTextColor" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/btn_delete"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackground"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/desc_delete_item"
+                android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

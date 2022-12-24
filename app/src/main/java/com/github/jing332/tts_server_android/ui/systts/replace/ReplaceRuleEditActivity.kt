@@ -14,6 +14,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
 import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.util.setFadeAnim
 
 @Suppress("DEPRECATION")
@@ -32,6 +33,11 @@ class ReplaceRuleEditActivity : BackActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        binding.tilTest.initAccessibilityDelegate()
+        binding.tilUrl.initAccessibilityDelegate()
+        binding.tilPattern.initAccessibilityDelegate()
+        binding.tilReplacement.initAccessibilityDelegate()
 
         binding.tilPattern.setEndIconOnClickListener { displayPinyinList() }
         binding.tilReplacement.setEndIconOnClickListener { displayPinyinList() }
