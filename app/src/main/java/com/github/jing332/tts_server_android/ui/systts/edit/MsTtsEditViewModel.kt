@@ -4,6 +4,7 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.Observable.OnPropertyChangedCallback
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withMain
@@ -32,6 +33,8 @@ class MsTtsEditViewModel : ViewModel() {
         // 默认的SpinnerItem 用于风格和角色
         private val DEFAULT_SPINNER_ITEM: SpinnerItem by lazy { SpinnerItem("默认", "") }
     }
+
+    val styleDegreeVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     lateinit var mTts: MsTTS
     lateinit var mData: SystemTts
@@ -225,6 +228,7 @@ class MsTtsEditViewModel : ViewModel() {
         ui.styles.apply {
             reset()
             currentVoice.localStyleList?.let { pair ->
+                styleDegreeVisibleLiveData.postValue(true)
                 val list = pair.filter { it.first != IGNORE_VALUE_DEFAULT }
                     .map { SpinnerItem(it.second, it.first) }.toMutableList()
                 list.add(0, DEFAULT_SPINNER_ITEM)

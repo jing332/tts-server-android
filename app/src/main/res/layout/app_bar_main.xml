@@ -16,6 +16,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:theme="@style/Theme.Toolbar"
+            app:popupTheme="@style/Theme.TtsServer"
             tools:title="ToolBar Title">
 
             <com.google.android.material.tabs.TabLayout

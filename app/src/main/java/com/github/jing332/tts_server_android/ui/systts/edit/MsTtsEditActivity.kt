@@ -11,7 +11,6 @@ import androidx.appcompat.app.AlertDialog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
@@ -74,6 +73,10 @@ class MsTtsEditActivity : BackActivity() {
             }
         })
 
+        vm.styleDegreeVisibleLiveData.observe(this){
+            binding.numEditView.isStyleDegreeVisible = it
+        }
+
         // 初始化 注册监听
         vm.init(
             listOf(
@@ -87,10 +90,7 @@ class MsTtsEditActivity : BackActivity() {
         if (data == null) data = SystemTts(tts = MsTTS())
         vm.initUserData(data)
 
-        // 组
-        appDb.systemTtsDao.allGroup.let { list ->
-            binding.baseInfoEditView.setData(data, list)
-        }
+        binding.baseInfoEditView.setData(data)
 
         // 自动同步数据
         binding.numEditView.setData(data.tts as MsTTS)

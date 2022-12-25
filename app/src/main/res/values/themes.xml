@@ -18,7 +18,7 @@
 
     </style>
 
-    <style name="Theme.Toolbar" parent="ThemeOverlay.AppCompat.Dark">
+    <style name="Theme.Toolbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="android:textColor">@color/colorText</item>
     </style>
 

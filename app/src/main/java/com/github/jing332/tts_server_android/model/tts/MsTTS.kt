@@ -126,9 +126,9 @@ data class MsTTS(
 
         AlertDialog.Builder(context)
             .setView(editView)
-            .setOnDismissListener {
-                done(this@MsTTS)
-            }.setFadeAnim().show()
+            .setOnDismissListener { done(this@MsTTS) }
+            .setFadeAnim()
+            .show()
     }
 
 

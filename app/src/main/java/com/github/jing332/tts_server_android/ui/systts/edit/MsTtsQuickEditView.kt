@@ -48,6 +48,7 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         set(value) {
             field = value
             binding.seekbarStyleDegree.isVisible = value
+            setStyleDegree(mTts?.expressAs?.styleDegree ?: 1F)
         }
 
     var callback: Callback? = null
