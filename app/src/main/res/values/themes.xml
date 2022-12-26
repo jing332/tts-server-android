@@ -16,9 +16,10 @@
         <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox
         </item>
 
+        <item name="actionBarTheme">@style/Theme.TtsServer.AppBarOverlay</item>
     </style>
 
-    <style name="Theme.Toolbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+    <style name="Theme.ActionBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="android:textColor">@color/colorText</item>
     </style>
 
