@@ -1,15 +1,17 @@
 package com.github.jing332.tts_server_android.ui.custom.widget.spinner
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
-import android.widget.*
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
+import android.widget.AdapterView
+import android.widget.Filterable
+import android.widget.ListAdapter
+import com.github.jing332.tts_server_android.R
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 
 class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
-    AppCompatAutoCompleteTextView(context, attrs, defStyleAttr) {
+    MaterialAutoCompleteTextView(context, attrs, defStyleAttr) {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(
         context,
@@ -24,7 +26,6 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
             super.getOnItemSelectedListener()?.onItemSelected(parent, view, position, id)
         }
         inputType = InputType.TYPE_NULL
-        setOnKeyListener(null)
     }
 
     companion object {
@@ -48,21 +49,7 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         set(value) {
             mSelectedPosition = value
             updateCurrentPositionText()
-
-            selectedPositionListeners.forEach {
-                it.invoke(selectedPosition)
-            }
         }
-
-    @SuppressLint("DiscouragedPrivateApi")
-    override fun showDropDown() {
-        super.showDropDown()
-        val mPopupField = AutoCompleteTextView::class.java.getDeclaredField("mPopup")
-        mPopupField.isAccessible = true
-
-        val listPopup = mPopupField.get(this) as ListPopupWindow
-        listPopup.setSelection(selectedPosition)
-    }
 
     override fun getAdapter(): BaseMaterialSpinnerAdapter<*>? {
         super.getAdapter()?.let {
@@ -74,27 +61,11 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     override fun <T> setAdapter(adapter: T?) where T : ListAdapter?, T : Filterable? {
         super.setAdapter(adapter)
         selectedPosition = 0
-//        if (adapter is BaseMaterialSpinnerAdapter<*>)
-//            addSelectedPositionListener(adapter::selectedItemPosition::set)
     }
 
     override fun setOnItemClickListener(l: AdapterView.OnItemClickListener?) {
         wrappedItemClickListener = l
     }
-
-    private val selectedPositionListeners: MutableSet<(Int) -> Unit> = mutableSetOf()
-
-/*
-    fun addSelectedPositionListener(listener: (Int) -> Unit) {
-        selectedPositionListeners.add(listener)
-        listener.invoke(selectedPosition)
-    }
-
-    fun removeSelectedPositionListener(listener: (Int) -> Unit) {
-        selectedPositionListeners.remove(listener)
-    }
-*/
-
 
     private fun updateCurrentPositionText() {
         adapter?.let {
@@ -102,10 +73,9 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
                 if (it.count > selectedPosition && selectedPosition >= 0) {
                     it.getItem(selectedPosition).toString()
                 } else {
-                    "无"
+                    context.getString(R.string.none)
                 }, false
             )
         }
     }
-
 }
