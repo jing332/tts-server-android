@@ -14,7 +14,6 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.drawerlayout.widget.DrawerLayout
@@ -33,6 +32,7 @@ import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 
 
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         tv.text = Html.fromHtml(resources.openRawResource(R.raw.abort_info).readAllText())
         tv.gravity = Gravity.CENTER /* 居中 */
         tv.setPadding(25, 25, 25, 25)
-        AlertDialog.Builder(this).setTitle(R.string.about).setView(tv)
+        MaterialAlertDialogBuilder(this).setTitle(R.string.about).setView(tv)
             .setMessage("本应用界面使用Kotlin开发，底层服务由Go开发.")
             .setFadeAnim().show()
     }

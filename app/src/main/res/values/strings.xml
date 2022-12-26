@@ -210,5 +210,7 @@
     <string name="systts_arg_quick_edit">朗读参数快捷编辑</string>
     <string name="enabled">已启用</string>
     <string name="choice_item">选择%1$s</string>
+    <string name="property_edit">属性编辑</string>
+    <string name="base_info_edit">基本信息编辑</string>
 
 </resources>

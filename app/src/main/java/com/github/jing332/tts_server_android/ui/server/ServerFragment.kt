@@ -13,7 +13,6 @@ import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -28,6 +27,7 @@ import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class ServerFragment : Fragment() {
@@ -118,7 +118,7 @@ class ServerFragment : Fragment() {
 
                 val editText = EditText(requireContext())
                 editText.setText(token)
-                AlertDialog.Builder(requireContext()).setTitle(getString(R.string.server_set_token))
+                MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.server_set_token))
                     .setView(editText)
                     .setPositiveButton(
                         android.R.string.ok

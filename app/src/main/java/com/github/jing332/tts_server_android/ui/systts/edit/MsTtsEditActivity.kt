@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
@@ -18,6 +17,7 @@ import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.setFadeAnim
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MsTtsEditActivity : BackActivity() {
     companion object {
@@ -47,7 +47,7 @@ class MsTtsEditActivity : BackActivity() {
 
         // 帮助 二级语言
         binding.tilSecondaryLocale.setStartIconOnClickListener {
-            AlertDialog.Builder(this).setTitle(R.string.systts_secondaryLocale)
+            MaterialAlertDialogBuilder(this).setTitle(R.string.systts_secondaryLocale)
                 .setMessage(R.string.systts_help_secondary_locale).setFadeAnim().show()
         }
 
@@ -61,7 +61,7 @@ class MsTtsEditActivity : BackActivity() {
             override fun onDone(ret: Result<Unit>) {
                 waitDialog.dismiss()
                 ret.onFailure { e ->
-                    AlertDialog.Builder(this@MsTtsEditActivity)
+                    MaterialAlertDialogBuilder(this@MsTtsEditActivity)
                         .setTitle(R.string.systts_voice_data_load_failed)
                         .setMessage(e.toString())
                         .setPositiveButton(R.string.retry) { _, _ -> vm.reloadApiData() }
@@ -73,7 +73,7 @@ class MsTtsEditActivity : BackActivity() {
             }
         })
 
-        vm.styleDegreeVisibleLiveData.observe(this){
+        vm.styleDegreeVisibleLiveData.observe(this) {
             binding.numEditView.isStyleDegreeVisible = it
         }
 
@@ -112,7 +112,7 @@ class MsTtsEditActivity : BackActivity() {
         val text = binding.etTestText.text.toString()
         vm.doTest(text, { kb ->
             waitDialog.dismiss()
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.systts_test_success)
                 .setMessage("大小: ${kb}KiB")
                 .setOnDismissListener { vm.stopPlay() }
@@ -120,7 +120,7 @@ class MsTtsEditActivity : BackActivity() {
                 .show()
         }, { err ->
             waitDialog.dismiss()
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.test_failed)
                 .setMessage(err.message)
                 .setFadeAnim()

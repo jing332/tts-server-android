@@ -11,11 +11,11 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.GithubReleaseApiBean
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -91,7 +91,7 @@ object MyTools {
         downloadUrl: String,
         tag: String
     ) {
-        AlertDialog.Builder(ctx)
+        MaterialAlertDialogBuilder(ctx)
             .setTitle("有新版本")
             .setMessage("版本号: $tag\n\n$body")
             .setPositiveButton(

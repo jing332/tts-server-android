@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
@@ -44,6 +43,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.my_group.SysTtsListMyGroupPageFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
@@ -155,7 +155,7 @@ class SysTtsListFragment : Fragment() {
 
     /* 警告 格式不同 */
     private val formatWarnDialog by lazy {
-        AlertDialog.Builder(requireContext()).setTitle(getString(R.string.warning))
+        MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.warning))
             .setMessage(getString(R.string.systts_msg_aside_and_dialogue_format_different))
             .setPositiveButton(android.R.string.ok) { _, _ -> }.create()
             .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
@@ -176,7 +176,7 @@ class SysTtsListFragment : Fragment() {
     private fun showImportConfig() {
         val et = EditText(requireContext())
         et.hint = getString(R.string.url_net)
-        AlertDialog.Builder(requireContext()).setTitle(R.string.import_config).setView(et)
+        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.import_config).setView(et)
             .setPositiveButton(R.string.import_from_clip) { _, _ ->
                 vm.importConfig(ClipboardUtils.text.toString())?.let {
                     longToast("导入配置失败：$it")
@@ -194,7 +194,7 @@ class SysTtsListFragment : Fragment() {
         tv.setTextIsSelectable(true)
         tv.setPadding(50, 50, 50, 0)
         tv.text = jsonStr
-        AlertDialog.Builder(requireContext()).setTitle(R.string.export_config).setView(tv)
+       MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.export_config).setView(tv)
             .setPositiveButton(R.string.copy) { _, _ ->
                 ClipboardUtils.copyText(jsonStr)
                 toast(R.string.copied)
@@ -248,7 +248,7 @@ class SysTtsListFragment : Fragment() {
             }
         }
 
-        AlertDialog.Builder(requireContext()).setView(view).setOnDismissListener {
+        MaterialAlertDialogBuilder(requireContext()).setView(view).setOnDismissListener {
             SysTtsConfig.isInAppPlayAudio = inAppBinding.switchOnOff.isChecked
             SysTtsConfig.inAppPlaySpeed = (inAppBinding.seekbarSpeed.progress * 0.1).toFloat()
             SysTtsConfig.inAppPlayPitch = (inAppBinding.seekbarPitch.progress * 0.1).toFloat()
@@ -269,7 +269,7 @@ class SysTtsListFragment : Fragment() {
         numPicker.displayedValues = displayList.toList().toTypedArray()
 
         numPicker.value = SysTtsConfig.requestTimeout / 1000 //转为秒
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.systts_set_request_timeout)
             .setMessage(R.string.systts_set_request_timeout_msg)
             .setView(numPicker).setPositiveButton(android.R.string.ok) { _, _ ->
@@ -290,7 +290,7 @@ class SysTtsListFragment : Fragment() {
             displayedValues = numList.toTypedArray()
             value = SysTtsConfig.minDialogueLength
         }
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.systts_set_dialogue_min_match_word_count)
             .setMessage(R.string.systts_set_dialogue_min_info).setView(picker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -333,7 +333,7 @@ class SysTtsListFragment : Fragment() {
     private fun addGroup() {
         val et = MaterialTextInput(requireContext())
         et.inputLayout.setHint(R.string.name)
-        AlertDialog.Builder(requireContext()).setMessage(R.string.add_group).setView(et)
+        MaterialAlertDialogBuilder(requireContext()).setMessage(R.string.add_group).setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 appDb.systemTtsDao.insertGroup(
                     SystemTtsGroup(

@@ -8,7 +8,6 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.CheckBox
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.drake.brv.BindingAdapter
 import com.github.jing332.tts_server_android.R
@@ -26,6 +25,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.my_group.RvGroupModel
 import com.github.jing332.tts_server_android.util.clone
 import com.github.jing332.tts_server_android.util.setFadeAnim
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("UNCHECKED_CAST", "DEPRECATION")
 class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = false) {
@@ -80,7 +80,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
 
     // 警告 多语音选项未开启
     private val checkMultiVoiceDialog by lazy {
-        AlertDialog.Builder(context)
+        MaterialAlertDialogBuilder(context)
             .setTitle(R.string.warning)
             .setCancelable(false)
             .setPositiveButton(android.R.string.ok) { _, _ -> }
@@ -141,7 +141,8 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                 setData(copiedData, appDb.systemTtsDao.allGroup)
             }
             editView.setPadding(16, 8, 16, 24)
-            AlertDialog.Builder(context)
+            MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.base_info_edit)
                 .setView(editView)
                 .setOnDismissListener {
                     appDb.systemTtsDao.updateTts(copiedData)
@@ -180,7 +181,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
     }
 
     fun delete(data: SystemTts) {
-        AlertDialog.Builder(context).setTitle(R.string.is_confirm_delete)
+        MaterialAlertDialogBuilder(context).setTitle(R.string.is_confirm_delete)
             .setMessage(data.displayName)
             .setPositiveButton(R.string.delete) { _, _ ->
                 appDb.systemTtsDao.deleteTts(data)

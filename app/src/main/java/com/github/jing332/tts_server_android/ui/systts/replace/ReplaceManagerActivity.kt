@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +26,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsReplaceRuleItemBi
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.util.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
@@ -76,7 +76,7 @@ class ReplaceManagerActivity : BackActivity() {
     }
 
     fun delete(data: ReplaceRule) {
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle(R.string.is_confirm_delete)
             .setMessage(data.name)
             .setPositiveButton(R.string.delete) { _, _ -> appDb.replaceRuleDao.delete(data) }
@@ -133,7 +133,7 @@ class ReplaceManagerActivity : BackActivity() {
             R.id.menu_importConfig -> {
                 val et = EditText(this)
                 et.setHint(R.string.url_net)
-                AlertDialog.Builder(this).setTitle(R.string.import_config).setView(et)
+                MaterialAlertDialogBuilder(this).setTitle(R.string.import_config).setView(et)
                     .setPositiveButton(R.string.import_from_clip) { _, _ ->
                         val err = vm.importConfig(ClipboardUtils.text.toString())
                         err?.let {
@@ -152,7 +152,7 @@ class ReplaceManagerActivity : BackActivity() {
                 val tv = TextView(this)
                 tv.text = jsonStr
                 tv.setPadding(50, 50, 50, 0)
-                AlertDialog.Builder(this).setTitle(R.string.export_config).setView(tv)
+                MaterialAlertDialogBuilder(this).setTitle(R.string.export_config).setView(tv)
                     .setPositiveButton(R.string.copy) { _, _ ->
                         ClipboardUtils.copyText(jsonStr)
                         toast(R.string.copied)

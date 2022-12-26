@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
@@ -16,6 +15,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivi
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.util.setFadeAnim
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("DEPRECATION")
 class ReplaceRuleEditActivity : BackActivity() {
@@ -72,7 +72,7 @@ class ReplaceRuleEditActivity : BackActivity() {
     }
 
     private fun displayPinyinList() {
-        AlertDialog.Builder(this).setItems(
+        MaterialAlertDialogBuilder(this).setItems(
             pinyinList
         ) { _, which ->
             val pinyin = pinyinList[which]

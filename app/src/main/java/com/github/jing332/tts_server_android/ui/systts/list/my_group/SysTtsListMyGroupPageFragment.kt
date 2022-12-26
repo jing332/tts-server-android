@@ -7,7 +7,6 @@ import android.view.View
 import android.view.View.AccessibilityDelegate
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityNodeInfo
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +27,7 @@ import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListItemHelper
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
@@ -182,7 +182,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
         val et = MaterialTextInput(requireContext())
         et.inputEdit.setText(data.name)
         et.inputLayout.setHint(R.string.name)
-        AlertDialog.Builder(requireContext()).setTitle(R.string.edit_group_name)
+        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.edit_group_name)
             .setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 appDb.systemTtsDao.updateGroup(
@@ -199,7 +199,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
     }
 
     private fun deleteGroup(data: SystemTtsGroup) {
-        AlertDialog.Builder(requireContext()).setTitle(R.string.is_confirm_delete)
+        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.is_confirm_delete)
             .setMessage(data.name)
             .setPositiveButton(R.string.delete) { _, _ ->
                 appDb.systemTtsDao.deleteGroup(data)

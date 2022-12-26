@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -22,6 +21,7 @@ import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.github.jing332.tts_server_android.util.setFadeAnim
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("DEPRECATION")
 class HttpTtsEditActivity : BackActivity() {
@@ -69,13 +69,15 @@ class HttpTtsEditActivity : BackActivity() {
             tv.text =
                 Html.fromHtml(resources.openRawResource(R.raw.help_http_tts_url).readAllText())
             tv.setPadding(20, 20, 20, 20)
-            AlertDialog.Builder(this).setTitle(R.string.help).setView(tv).setFadeAnim().show()
+            MaterialAlertDialogBuilder(this).setTitle(R.string.help).setView(tv).setFadeAnim()
+                .show()
+
         }
 
         binding.tilHeader.initAccessibilityDelegate()
         // 请求头 帮助按钮
         binding.tilHeader.setEndIconOnClickListener {
-            AlertDialog.Builder(this).setTitle(R.string.systts_http_request_header)
+            MaterialAlertDialogBuilder(this).setTitle(R.string.systts_http_request_header)
                 .setMessage(
                     resources.openRawResource(R.raw.help_http_tts_request_header).readAllText()
                 )
@@ -85,7 +87,7 @@ class HttpTtsEditActivity : BackActivity() {
         binding.tilSampleRate.initAccessibilityDelegate()
         // 采样率帮助按钮
         binding.tilSampleRate.setStartIconOnClickListener {
-            AlertDialog.Builder(this).setTitle(R.string.systts_sample_rate)
+            MaterialAlertDialogBuilder(this).setTitle(R.string.systts_sample_rate)
                 .setMessage(R.string.systts_help_sample_rate).setFadeAnim().show()
         }
 
@@ -105,7 +107,7 @@ class HttpTtsEditActivity : BackActivity() {
             binding.etTestText.text.toString(),
             { size, sampleRate, mime, contentType ->
                 waitDialog.dismiss()
-                AlertDialog.Builder(this@HttpTtsEditActivity)
+                MaterialAlertDialogBuilder(this@HttpTtsEditActivity)
                     .setTitle(R.string.systts_test_success)
                     .setMessage(
                         getString(
@@ -123,7 +125,7 @@ class HttpTtsEditActivity : BackActivity() {
             },
             { err ->
                 waitDialog.dismiss()
-                AlertDialog.Builder(this@HttpTtsEditActivity).setTitle(R.string.test_failed)
+                MaterialAlertDialogBuilder(this@HttpTtsEditActivity).setTitle(R.string.test_failed)
                     .setMessage(err)
                     .setFadeAnim()
                     .show()
