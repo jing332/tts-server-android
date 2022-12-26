@@ -17,7 +17,7 @@ data class SpinnerItem(
     override fun toString() = displayText
 }
 
-class MaterialSpinnerAdapter(var content: Context, var items: List<SpinnerItem>) :
+class MaterialSpinnerAdapter(val content: Context, items: List<SpinnerItem>) :
     BaseMaterialSpinnerAdapter<SpinnerItem>(content, items) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View

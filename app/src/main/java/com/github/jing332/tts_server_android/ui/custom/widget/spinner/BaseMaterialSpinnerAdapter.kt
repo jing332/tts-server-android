@@ -6,9 +6,11 @@ import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
 
-abstract class BaseMaterialSpinnerAdapter<T>(context: Context, private val items: List<T>) :
+abstract class BaseMaterialSpinnerAdapter<T>(context: Context, val items: List<T>) :
     BaseAdapter(),
     Filterable {
+
+
     private val _filter: Filter by lazy {
         object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {

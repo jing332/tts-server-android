@@ -3,10 +3,14 @@ package com.github.jing332.tts_server_android.ui.custom.widget.spinner
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
+import android.view.accessibility.AccessibilityManager
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Filterable
 import android.widget.ListAdapter
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.util.setFadeAnim
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 
@@ -50,6 +54,29 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
             mSelectedPosition = value
             updateCurrentPositionText()
         }
+
+    private val listDialog by lazy { MaterialAlertDialogBuilder(context) }
+    private val accessibilityManager by lazy {
+        context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    }
+
+    override fun showDropDown() {
+        if (accessibilityManager.isTouchExplorationEnabled) {
+            val adapter =
+                ArrayAdapter<String>(context, android.R.layout.simple_list_item_single_choice)
+
+            val items = getAdapter()!!.items
+            adapter.addAll(items.map { (it as SpinnerItem).displayText })
+            listDialog.setTitle(context.getString(R.string.choice_item, hint))
+            listDialog.setSingleChoiceItems(adapter, selectedPosition) { dlg, which ->
+                selectedPosition = which
+                super.getOnItemClickListener()?.onItemClick(null, this, which, -1)
+                dlg.dismiss()
+            }
+            listDialog.setFadeAnim().show()
+        } else
+            super.showDropDown()
+    }
 
     override fun getAdapter(): BaseMaterialSpinnerAdapter<*>? {
         super.getAdapter()?.let {
