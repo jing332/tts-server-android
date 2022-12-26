@@ -29,6 +29,21 @@ interface SystemTtsDao {
     @Query("SELECT * FROM SystemTtsGroup WHERE groupId = :id")
     fun getGroupById(id: Long = DEFAULT_GROUP_ID): SystemTtsGroup?
 
+    @Query("SELECT * FROM sysTts WHERE groupId = :groupId")
+    fun getTtsListByGroupId(groupId: Long): List<SystemTts>
+
+    /**
+     * 所有TTS 是否启用
+     */
+    @Query("UPDATE sysTts SET isEnabled = :isEnabled")
+    fun setAllTtsEnabled(isEnabled: Boolean)
+
+    /**
+     * 设置某个组中的所有TTS 是否启用
+     */
+    @Query("UPDATE sysTts SET isEnabled = :isEnabled WHERE groupId = :groupId")
+    fun setTtsEnabledInGroup(groupId: Long, isEnabled: Boolean)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTts(vararg items: SystemTts)
 

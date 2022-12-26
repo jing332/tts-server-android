@@ -27,6 +27,7 @@ import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListItemHelper
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
@@ -100,18 +101,15 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                         }
                     }
                     checkBox.setOnClickListener { _ ->
-                        getModel<RvGroupModel>().itemSublist?.let { list ->
-                            if (!SysTtsConfig.isGroupMultipleEnabled)
-                                appDb.systemTtsDao.allTts.forEach {
-                                    if (it.isEnabled) appDb.systemTtsDao.updateTts(it.copy(isEnabled = false))
-                                }
+                        val group = getModel<RvGroupModel>().data
+                        if (!SysTtsConfig.isGroupMultipleEnabled)
+                            appDb.systemTtsDao.setAllTtsEnabled(false)
 
-                            list.forEach {
-                                if (it is SystemTts && it.isEnabled != checkBox.isChecked)
-                                    appDb.systemTtsDao.updateTts(it.copy(isEnabled = checkBox.isChecked))
-                            }
-                            SystemTtsService.notifyUpdateConfig()
-                        }
+                        appDb.systemTtsDao.setTtsEnabledInGroup(
+                            groupId = group.id,
+                            checkBox.isChecked
+                        )
+                        SystemTtsService.notifyUpdateConfig()
                     }
 
                     btnMore.setOnClickListener { displayMoreMenu(it, getModel()) }
@@ -139,11 +137,17 @@ class SysTtsListMyGroupPageFragment : Fragment() {
             appDb.systemTtsDao.flowAllGroupWithTts.conflate().collect { list ->
                 val models = withDefault {
                     list.mapIndexed { i, v ->
-                        val isEnabled = v.list.any { it.isEnabled }
+                        val checkState =
+                            when (v.list.filter { it.isEnabled }.size) {
+                                v.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
+                                0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
+                                else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
+                            }
+
                         RvGroupModel(
                             data = v.group,
                             itemGroupPosition = i,
-                            isEnabled = isEnabled,
+                            checkedState = checkState,
                             itemSublist = v.list,
                             itemExpand = v.group.isExpanded
                         )
@@ -162,6 +166,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
 
     @SuppressLint("RestrictedApi")
     private fun displayMoreMenu(v: View, model: RvGroupModel) {
+
         PopupMenu(requireContext(), v).apply {
             this.setForceShowIcon(true)
 
