@@ -15,6 +15,13 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
+        <com.google.android.material.divider.MaterialDivider
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="0dp"
@@ -47,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/Theme.Material3.DayNight"
+            app:buttonTint="@color/colorPrimary"
             app:checkedState="@{m.checkedState}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_more"

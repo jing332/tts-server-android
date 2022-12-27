@@ -19,7 +19,6 @@ import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
-import com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.my_group.RvGroupModel
@@ -47,10 +46,6 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                     }
                     btnEdit.setOnClickListener { edit(getModel()) }
                     btnDelete.setOnClickListener { delete(getModel()) }
-                    itemView.setOnLongClickListener {
-                        displayBaseEditDialog(getModel())
-                        true
-                    }
 
                     itemView.setOnClickListener { displayQuickEditDialog(it, getModel()) }
                     itemView.accessibilityDelegate = object : AccessibilityDelegate() {
@@ -126,30 +121,12 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
     private fun displayQuickEditDialog(v: View, data: SystemTts) {
         // 修改数据要clone，不然对比时数据相同导致UI不更新
         data.clone<SystemTts>()?.let { clonedData ->
-            clonedData.tts.onDescriptionClick(context, v, data.displayName.toString()) {
+            clonedData.tts.onDescriptionClick(context, v, clonedData) {
                 it?.let {
-                    appDb.systemTtsDao.updateTts(clonedData)
+                    appDb.systemTtsDao.updateTts(it)
                     notifyTtsUpdate(clonedData.isEnabled)
                 }
             }
-        }
-    }
-
-    private fun displayBaseEditDialog(data: SystemTts) {
-        data.copy().let { copiedData ->
-            val editView = BaseInfoEditView(context).apply {
-                setData(copiedData, appDb.systemTtsDao.allGroup)
-            }
-            editView.setPadding(16, 8, 16, 24)
-            MaterialAlertDialogBuilder(context)
-                .setTitle(R.string.base_info_edit)
-                .setView(editView)
-                .setOnDismissListener {
-                    appDb.systemTtsDao.updateTts(copiedData)
-                    notifyTtsUpdate(copiedData.isEnabled)
-                }
-                .setFadeAnim()
-                .show()
         }
     }
 

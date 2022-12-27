@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.model.tts
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -62,8 +63,8 @@ sealed class BaseTTS : Parcelable {
     abstract fun onDescriptionClick(
         context: Context,
         view: View?,
-        displayName: String,
-        done: (modifiedData: BaseTTS?) -> Unit
+        data: SystemTts,
+        done: (modifiedData: SystemTts?) -> Unit
     )
 
     /**

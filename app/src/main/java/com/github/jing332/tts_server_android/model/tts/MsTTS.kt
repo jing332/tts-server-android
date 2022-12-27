@@ -3,17 +3,21 @@ package com.github.jing332.tts_server_android.model.tts
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.LinearLayout.VERTICAL
 import androidx.core.view.setPadding
+import androidx.core.view.updatePadding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsQuickEditView
-import com.github.jing332.tts_server_android.util.setFadeAnim
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -116,20 +120,26 @@ data class MsTTS(
     override fun onDescriptionClick(
         context: Context,
         view: View?,
-        displayName: String,
-        done: (modifiedData: BaseTTS?) -> Unit
+        data: SystemTts,
+        done: (modifiedData: SystemTts?) -> Unit
     ) {
+        val baseEdit = BaseInfoEditView(context).apply { setData(data) }
         val editView = MsTtsQuickEditView(context).apply {
             setData(this@MsTTS)
+            updatePadding(top = 8)
+        }
+        val layout = LinearLayout(context).apply {
+            orientation = VERTICAL
+            addView(baseEdit)
+            addView(editView)
             setPadding(16)
         }
 
-        MaterialAlertDialogBuilder(context)
-            .setTitle(R.string.property_edit)
-            .setView(editView)
-            .setOnDismissListener { done(this@MsTTS) }
-            .setFadeAnim()
-            .show()
+        BottomSheetDialog(context).apply {
+            setContentView(layout)
+            setOnDismissListener { done(data) }
+            show()
+        }
     }
 
 

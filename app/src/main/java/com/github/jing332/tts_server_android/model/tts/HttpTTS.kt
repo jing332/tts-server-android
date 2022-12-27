@@ -3,16 +3,18 @@ package com.github.jing332.tts_server_android.model.tts
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
+import android.widget.LinearLayout
 import androidx.core.view.setPadding
 import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsQuickEditView
-import com.github.jing332.tts_server_android.util.setFadeAnim
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -61,27 +63,25 @@ data class HttpTTS(
     override fun onDescriptionClick(
         context: Context,
         view: View?,
-        displayName: String,
-        done: (modifiedData: BaseTTS?) -> Unit
+        data: SystemTts,
+        done: (modifiedData: SystemTts?) -> Unit
     ) {
-        val editView = HttpTtsQuickEditView(context).apply {
-            setData(this@HttpTTS)
+        val baseEdit = BaseInfoEditView(context).apply { setData(data) }
+        val editView = HttpTtsQuickEditView(context).apply { setData(this@HttpTTS) }
+        val layout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(baseEdit)
+            addView(editView)
             setPadding(16)
         }
 
-        MaterialAlertDialogBuilder(context)
-            .setTitle(R.string.property_edit)
-            .setView(editView)
-            .setOnDismissListener {
-                if (editView.rate == rate && editView.volume == volume)
-                    done(null)
-                else {
-                    rate = editView.rate
-                    volume = editView.volume
-                    done(this)
-                }
-            }.setFadeAnim()
-            .show()
+        BottomSheetDialog(context).apply {
+            setContentView(layout)
+            setOnDismissListener {
+                done(data)
+            }
+            show()
+        }
     }
 
     @IgnoredOnParcel
