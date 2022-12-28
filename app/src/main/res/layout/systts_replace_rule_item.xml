@@ -10,7 +10,7 @@
             type="com.github.jing332.tts_server_android.data.entities.ReplaceRule" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
@@ -18,7 +18,10 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/item"
+            android:foreground="?attr/selectableItemBackground"
+            tools:ignore="UnusedAttribute">
 
             <CheckBox
                 android:id="@+id/checkBox"
@@ -63,5 +66,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

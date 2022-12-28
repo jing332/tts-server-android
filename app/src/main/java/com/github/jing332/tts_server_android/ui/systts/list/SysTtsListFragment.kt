@@ -174,16 +174,17 @@ class SysTtsListFragment : Fragment() {
     }
 
     private fun showImportConfig() {
-        val et = EditText(requireContext())
-        et.hint = getString(R.string.url_net)
+        val et = MaterialTextInput(requireContext())
+        et.inputLayout.setHint(R.string.url_net)
         MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.import_config).setView(et)
             .setPositiveButton(R.string.import_from_clip) { _, _ ->
                 vm.importConfig(ClipboardUtils.text.toString())?.let {
-                    longToast("导入配置失败：$it")
+                    longToast(getString(R.string.import_failed, it))
                 }
             }.setNegativeButton(getString(R.string.import_from_url)) { _, _ ->
                 lifecycleScope.runOnIO {
-                    vm.importConfigByUrl(et.text.toString())?.let { longToast("导入配置失败：$it") }
+                    vm.importConfigByUrl(et.inputEdit.text.toString())
+                        ?.let { longToast(getString(R.string.import_failed, it)) }
                 }
             }.setFadeAnim().show()
     }
@@ -194,7 +195,7 @@ class SysTtsListFragment : Fragment() {
         tv.setTextIsSelectable(true)
         tv.setPadding(50, 50, 50, 0)
         tv.text = jsonStr
-       MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.export_config).setView(tv)
+        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.export_config).setView(tv)
             .setPositiveButton(R.string.copy) { _, _ ->
                 ClipboardUtils.copyText(jsonStr)
                 toast(R.string.copied)

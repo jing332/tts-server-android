@@ -2,18 +2,16 @@ package com.github.jing332.tts_server_android.model.tts
 
 import android.content.Context
 import android.os.Parcelable
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
-import androidx.core.view.setPadding
 import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.databinding.SysttsHttpEditBottomSheetBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
-import com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
-import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsQuickEditView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -66,20 +64,16 @@ data class HttpTTS(
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
     ) {
-        val baseEdit = BaseInfoEditView(context).apply { setData(data) }
-        val editView = HttpTtsQuickEditView(context).apply { setData(this@HttpTTS) }
-        val layout = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            addView(baseEdit)
-            addView(editView)
-            setPadding(16)
+        val binding =
+            SysttsHttpEditBottomSheetBinding.inflate(LayoutInflater.from(context), null, false)
+        binding.apply {
+            baseEdit.setData(data)
+            editView.setData(this@HttpTTS)
         }
 
         BottomSheetDialog(context).apply {
-            setContentView(layout)
-            setOnDismissListener {
-                done(data)
-            }
+            setContentView(binding.root)
+            setOnDismissListener { done(data) }
             show()
         }
     }

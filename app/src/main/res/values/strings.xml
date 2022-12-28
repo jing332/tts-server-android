@@ -212,5 +212,6 @@
     <string name="choice_item">选择%1$s</string>
     <string name="property_edit">属性编辑</string>
     <string name="base_info_edit">基本信息编辑</string>
+    <string name="import_failed">导入失败：%1$s</string>
 
 </resources>

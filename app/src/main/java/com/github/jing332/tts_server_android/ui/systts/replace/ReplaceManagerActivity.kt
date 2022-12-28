@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
@@ -25,6 +24,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsReplaceActivityBi
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceRuleItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.conflate
@@ -131,18 +131,18 @@ class ReplaceManagerActivity : BackActivity() {
                 startForResult.launch(intent)
             }
             R.id.menu_importConfig -> {
-                val et = EditText(this)
-                et.setHint(R.string.url_net)
+                val et = MaterialTextInput(this)
+                et.inputLayout.setHint(R.string.url_net)
                 MaterialAlertDialogBuilder(this).setTitle(R.string.import_config).setView(et)
                     .setPositiveButton(R.string.import_from_clip) { _, _ ->
                         val err = vm.importConfig(ClipboardUtils.text.toString())
                         err?.let {
-                            longToast("导入失败：$it")
+                            longToast(getString(R.string.import_failed, it))
                         }
                     }.setNegativeButton(R.string.import_from_url) { _, _ ->
-                        val err = vm.importConfigFromUrl(et.text.toString())
+                        val err = vm.importConfigFromUrl(et.inputEdit.text.toString())
                         err?.let {
-                            longToast("导入失败：$it")
+                            longToast(getString(R.string.import_failed, it))
                         }
                     }.show()
             }

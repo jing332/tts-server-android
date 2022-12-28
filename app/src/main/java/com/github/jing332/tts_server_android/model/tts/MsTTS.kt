@@ -2,21 +2,17 @@ package com.github.jing332.tts_server_android.model.tts
 
 import android.content.Context
 import android.os.Parcelable
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.LinearLayout.VERTICAL
-import androidx.core.view.setPadding
-import androidx.core.view.updatePadding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.databinding.SysttsMsEditBottomSheetBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
-import com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
-import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsQuickEditView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -123,20 +119,13 @@ data class MsTTS(
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
     ) {
-        val baseEdit = BaseInfoEditView(context).apply { setData(data) }
-        val editView = MsTtsQuickEditView(context).apply {
-            setData(this@MsTTS)
-            updatePadding(top = 8)
-        }
-        val layout = LinearLayout(context).apply {
-            orientation = VERTICAL
-            addView(baseEdit)
-            addView(editView)
-            setPadding(16)
-        }
+        val binding =
+            SysttsMsEditBottomSheetBinding.inflate(LayoutInflater.from(context), null, false)
+        binding.baseEdit.setData(data)
+        binding.editView.setData(this@MsTTS)
 
         BottomSheetDialog(context).apply {
-            setContentView(layout)
+            setContentView(binding.root)
             setOnDismissListener { done(data) }
             show()
         }
