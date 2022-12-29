@@ -51,7 +51,7 @@
             android:id="@+id/menu_isInAppPlayAudio"
             android:checkable="true"
             android:icon="@drawable/ic_baseline_smart_display_24"
-            android:title="@string/systts_in_app_play_audio" />
+            android:title="@string/systts_use_internal_audio_player" />
         <item
             android:id="@+id/menu_setMinDialogueLen"
             android:icon="@drawable/ic_baseline_textsms_24"

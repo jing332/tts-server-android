@@ -22,8 +22,10 @@ import com.github.jing332.tts_server_android.databinding.SysttsListMyGroupFragme
 import com.github.jing332.tts_server_android.databinding.SysttsListMyGroupItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListItemHelper
+import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
@@ -75,7 +77,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                                 }"
                         }
                     }
-                    itemView.setOnClickListener {
+                    itemView.clickWithThrottle {
                         expandOrCollapse()
                         getModel<RvGroupModel>().let { model ->
                             val enabledCount =
@@ -100,7 +102,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                             })
                         }
                     }
-                    checkBox.setOnClickListener { _ ->
+                    checkBox.clickWithThrottle {
                         val group = getModel<RvGroupModel>().data
                         if (!SysTtsConfig.isGroupMultipleEnabled)
                             appDb.systemTtsDao.setAllTtsEnabled(false)
@@ -111,8 +113,8 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                         )
                         SystemTtsService.notifyUpdateConfig()
                     }
+                    btnMore.clickWithThrottle { displayMoreMenu(btnMore, getModel()) }
 
-                    onClick(R.id.btn_more) { displayMoreMenu(btnMore, getModel()) }
                 }
 
                 // TTS Item
@@ -204,11 +206,8 @@ class SysTtsListMyGroupPageFragment : Fragment() {
     }
 
     private fun deleteGroup(data: SystemTtsGroup) {
-        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.is_confirm_delete)
-            .setMessage(data.name)
-            .setPositiveButton(R.string.delete) { _, _ ->
-                appDb.systemTtsDao.deleteGroup(data)
-            }
-            .setFadeAnim().show()
+        AppDialogs.displayRemoveDialog(requireContext(), data.name) {
+            appDb.systemTtsDao.deleteGroup(data)
+        }
     }
 }

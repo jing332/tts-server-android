@@ -3,7 +3,6 @@ package com.github.jing332.tts_server_android.ui.systts.list
 import androidx.lifecycle.ViewModel
 import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.CompatSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
@@ -18,22 +17,14 @@ class SysTtsListViewModel : ViewModel() {
     }
 
     /**
-     * 检查多语音音频格式是否一致
-     * @return 采样率是否相等
+     * 检查多语音采样率是否相等
      */
     fun checkMultiVoiceFormat(list: List<SystemTts>): Boolean {
-        val aside =
-            list.filter { it.isEnabled && it.readAloudTarget == ReadAloudTarget.ASIDE }.getOrNull(0)
-        val dialogue =
-            list.filter { it.isEnabled && it.readAloudTarget == ReadAloudTarget.DIALOGUE }
-                .getOrNull(0)
-
-        if (aside == null || dialogue == null)
-            return true
-        else if (aside.isEnabled && dialogue.isEnabled)
-            return aside.tts.audioFormat.sampleRate == dialogue.tts.audioFormat.sampleRate
-
-        return true
+        list.filter { it.isEnabled }.ifEmpty { return true }.let { enabledList ->
+            val sampleRate = enabledList[0].tts.audioFormat.sampleRate
+            val size = enabledList.filter { it.tts.audioFormat.sampleRate == sampleRate }.size
+            return enabledList.size == size
+        }
     }
 
     /* 上传配置到URL */

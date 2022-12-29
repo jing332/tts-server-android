@@ -20,7 +20,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
@@ -46,7 +45,6 @@ import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
@@ -105,9 +103,9 @@ class SysTtsListFragment : Fragment() {
             tab.text = tabTitles[pos]
         }.attach()
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.runOnIO {
             appDb.systemTtsDao.flowAllTts.conflate().collect {
-                withMain { checkFormatAndShowDialog(it) }
+                checkFormatAndShowDialog(it)
             }
         }
 
@@ -156,7 +154,7 @@ class SysTtsListFragment : Fragment() {
     /* 警告 格式不同 */
     private val formatWarnDialog by lazy {
         MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.warning))
-            .setMessage(getString(R.string.systts_msg_aside_and_dialogue_format_different))
+            .setMessage(getString(R.string.systts_sample_rate_different_in_enabled_list))
             .setPositiveButton(android.R.string.ok) { _, _ -> }.create()
             .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
     }
@@ -165,7 +163,7 @@ class SysTtsListFragment : Fragment() {
     private fun checkFormatAndShowDialog(list: List<SystemTts>) {
         SysTtsConfig.apply {
             if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat(list))
-                formatWarnDialog.show()
+                runOnUI { formatWarnDialog.show() }
         }
     }
 

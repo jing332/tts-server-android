@@ -19,11 +19,12 @@ import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.my_group.RvGroupModel
+import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.clone
-import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("UNCHECKED_CAST", "DEPRECATION")
@@ -45,9 +46,9 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                             switchChanged(view, models as List<SystemTts>, modelPosition)
                     }
 
-                    onClick(R.id.btn_edit) { edit(getModel()) }
-                    onClick(R.id.btn_delete) { delete(getModel()) }
-                    onClick(R.id.systts_list_item) { displayQuickEditDialog(itemView, getModel()) }
+                    btnEdit.clickWithThrottle { edit(getModel()) }
+                    btnDelete.clickWithThrottle { delete(getModel()) }
+                    itemView.clickWithThrottle { displayQuickEditDialog(itemView, getModel()) }
 
                     itemView.accessibilityDelegate = object : AccessibilityDelegate() {
                         override fun onInitializeAccessibilityNodeInfo(
@@ -159,12 +160,9 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
     }
 
     fun delete(data: SystemTts) {
-        MaterialAlertDialogBuilder(context).setTitle(R.string.is_confirm_delete)
-            .setMessage(data.displayName)
-            .setPositiveButton(R.string.delete) { _, _ ->
-                appDb.systemTtsDao.deleteTts(data)
-                notifyTtsUpdate(data.isEnabled)
-            }
-            .setFadeAnim().show()
+        AppDialogs.displayRemoveDialog(context, data.displayName.toString()) {
+            appDb.systemTtsDao.deleteTts(data)
+            notifyTtsUpdate(data.isEnabled)
+        }
     }
 }
