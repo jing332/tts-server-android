@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@drawable/bg_rounded_top_cornets"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -25,6 +26,7 @@
                 android:layout_height="wrap_content" />
 
             <com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsQuickEditView
+                android:layout_marginTop="8dp"
                 android:id="@+id/edit_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

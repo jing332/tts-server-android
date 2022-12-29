@@ -385,9 +385,6 @@ class SysTtsListFragment : Fragment() {
         }
     }
 
-    private val mToast: Toast by lazy {
-        Toast.makeText(requireContext(), R.string.config_updated, Toast.LENGTH_SHORT)
-    }
 
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -397,7 +394,6 @@ class SysTtsListFragment : Fragment() {
                     val itemId = intent.getIntExtra(MainActivity.KEY_MENU_ITEM_ID, -1)
                     onOptionsItemSelected(itemId)
                 }
-                SystemTtsService.ACTION_REQUEST_UPDATE_CONFIG -> mToast.show()
             }
         }
     }

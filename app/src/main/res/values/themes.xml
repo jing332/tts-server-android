@@ -19,6 +19,16 @@
 
         <item name="actionBarStyle">@style/Theme.ActionBar</item>
         <item name="actionBarTheme">@style/Theme.TtsServer.AppBarOverlay</item>
+
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog</item>
+    </style>
+
+    <style name="BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
+
+    <style name="BottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
     <style name="Theme.ActionBar" parent="Widget.AppCompat.ActionBar">

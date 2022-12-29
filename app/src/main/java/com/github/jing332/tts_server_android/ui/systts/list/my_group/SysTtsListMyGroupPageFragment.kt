@@ -112,7 +112,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                         SystemTtsService.notifyUpdateConfig()
                     }
 
-                    btnMore.setOnClickListener { displayMoreMenu(it, getModel()) }
+                    onClick(R.id.btn_more) { displayMoreMenu(btnMore, getModel()) }
                 }
 
                 // TTS Item

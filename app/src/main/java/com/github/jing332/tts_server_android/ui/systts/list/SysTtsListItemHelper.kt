@@ -44,10 +44,11 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         } else
                             switchChanged(view, models as List<SystemTts>, modelPosition)
                     }
-                    btnEdit.setOnClickListener { edit(getModel()) }
-                    btnDelete.setOnClickListener { delete(getModel()) }
 
-                    itemView.setOnClickListener { displayQuickEditDialog(it, getModel()) }
+                    onClick(R.id.btn_edit) { edit(getModel()) }
+                    onClick(R.id.btn_delete) { delete(getModel()) }
+                    onClick(R.id.systts_list_item) { displayQuickEditDialog(itemView, getModel()) }
+
                     itemView.accessibilityDelegate = object : AccessibilityDelegate() {
                         override fun onInitializeAccessibilityNodeInfo(
                             host: View,

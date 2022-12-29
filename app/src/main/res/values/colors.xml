@@ -11,6 +11,4 @@
 
     <color name="colorIconTint">@android:color/black</color>
     <color name="colorText">@android:color/black</color>
-
-    <color name="item">@color/white</color>
 </resources>

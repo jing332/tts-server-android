@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"
-        tools:context=".ui.systts.edit.MsTtsEditAcSeektivity">
+        tools:context=".ui.systts.edit.MsTtsEditActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

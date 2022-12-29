@@ -1,13 +1,11 @@
 package com.github.jing332.tts_server_android.ui.custom.widget.spinner
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.accessibility.AccessibilityManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Filterable
-import android.widget.ListAdapter
+import android.widget.*
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -60,7 +58,14 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
     }
 
+    @SuppressLint("DiscouragedPrivateApi")
     override fun showDropDown() {
+        val mPopupField = AutoCompleteTextView::class.java.getDeclaredField("mPopup")
+        mPopupField.isAccessible = true
+
+        val listPopup = mPopupField.get(this) as ListPopupWindow
+        listPopup.setSelection(selectedPosition)
+
         if (accessibilityManager.isTouchExplorationEnabled) {
             val adapter =
                 ArrayAdapter<String>(context, android.R.layout.simple_list_item_single_choice)

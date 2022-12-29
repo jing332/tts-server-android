@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.model.tts
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsMsEditBottomSheet
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -113,6 +115,7 @@ data class MsTTS(
         return "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b> | 音高:<b>$pitchStr</b>"
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onDescriptionClick(
         context: Context,
         view: View?,
@@ -126,6 +129,11 @@ data class MsTTS(
 
         BottomSheetDialog(context).apply {
             setContentView(binding.root)
+            findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.let {
+                BottomSheetBehavior.from(it).apply {
+                    skipCollapsed
+                }
+            }
             setOnDismissListener { done(data) }
             show()
         }
