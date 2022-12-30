@@ -214,5 +214,13 @@
     <string name="property_edit">属性编辑</string>
     <string name="base_info_edit">基本信息编辑</string>
     <string name="import_failed">导入失败：%1$s</string>
+    <string name="compat_legado_http_tts">兼容阅读APP</string>
+    <string name="systts_from_legado_app_group_name">阅读APP (%1$s)</string>
+    <string name="clipboard">剪贴板</string>
+    <string name="type">类型</string>
+    <string name="source">来源</string>
+    <string name="legado">阅读Legado</string>
+    <string name="str_import">导入</string>
+    <string name="please_choose">请选择</string>
 
 </resources>

@@ -53,6 +53,9 @@ interface SystemTtsDao {
     @Delete
     fun deleteTts(vararg items: SystemTts)
 
+    @Query("DELETE from sysTts WHERE groupId = :groupId")
+    fun deleteTtsByGroup(groupId: Long)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertGroup(vararg group: SystemTtsGroup)
 
@@ -71,5 +74,13 @@ interface SystemTtsDao {
      */
     fun insertTtsIfDefault(tts: SystemTts) {
         insertTts(tts)
+    }
+
+    /**
+     * 删除组以及TTS
+     */
+    fun deleteGroupAndTts(group: SystemTtsGroup) {
+        deleteTtsByGroup(group.id)
+        deleteGroup(group)
     }
 }

@@ -207,7 +207,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
 
     private fun deleteGroup(data: SystemTtsGroup) {
         AppDialogs.displayRemoveDialog(requireContext(), data.name) {
-            appDb.systemTtsDao.deleteGroup(data)
+            appDb.systemTtsDao.deleteGroupAndTts(data)
         }
     }
 }

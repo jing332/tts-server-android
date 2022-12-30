@@ -171,20 +171,11 @@ class SysTtsListFragment : Fragment() {
         if (isUpdate) SystemTtsService.notifyUpdateConfig()
     }
 
+
     private fun showImportConfig() {
-        val et = MaterialTextInput(requireContext())
-        et.inputLayout.setHint(R.string.url_net)
-        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.import_config).setView(et)
-            .setPositiveButton(R.string.import_from_clip) { _, _ ->
-                vm.importConfig(ClipboardUtils.text.toString())?.let {
-                    longToast(getString(R.string.import_failed, it))
-                }
-            }.setNegativeButton(getString(R.string.import_from_url)) { _, _ ->
-                lifecycleScope.runOnIO {
-                    vm.importConfigByUrl(et.inputEdit.text.toString())
-                        ?.let { longToast(getString(R.string.import_failed, it)) }
-                }
-            }.setFadeAnim().show()
+        ConfigImportBottomSheetFragment().apply {
+            show(this@SysTtsListFragment.parentFragmentManager, ConfigImportBottomSheetFragment.TAG)
+        }
     }
 
     private fun showExportConfig() {

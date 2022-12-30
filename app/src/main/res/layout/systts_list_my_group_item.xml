@@ -29,6 +29,7 @@
             android:layout_marginStart="4dp"
             android:gravity="center_vertical"
             android:maxLines="1"
+            android:ellipsize="end"
             android:text="@{m.name}"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBottom_toBottomOf="parent"
