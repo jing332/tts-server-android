@@ -39,6 +39,7 @@ import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportActivity
 import com.github.jing332.tts_server_android.ui.systts.list.my_group.SysTtsListMyGroupPageFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.*
@@ -173,9 +174,7 @@ class SysTtsListFragment : Fragment() {
 
 
     private fun showImportConfig() {
-        ConfigImportBottomSheetFragment().apply {
-            show(this@SysTtsListFragment.parentFragmentManager, ConfigImportBottomSheetFragment.TAG)
-        }
+        startActivity(Intent(requireContext(), ConfigImportActivity::class.java))
     }
 
     private fun showExportConfig() {

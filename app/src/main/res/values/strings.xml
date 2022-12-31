@@ -222,5 +222,7 @@
     <string name="legado">阅读Legado</string>
     <string name="str_import">导入</string>
     <string name="please_choose">请选择</string>
+    <string name="back_to_previous_view">返回上一级界面</string>
+    <string name="config_import">配置导入</string>
 
 </resources>

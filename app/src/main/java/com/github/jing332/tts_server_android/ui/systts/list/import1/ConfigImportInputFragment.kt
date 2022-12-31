@@ -1,37 +1,34 @@
-package com.github.jing332.tts_server_android.ui.systts.list
+package com.github.jing332.tts_server_android.ui.systts.list.import1
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.drake.net.Net
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.LegadoHttpTts
-import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.CompatSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
-import com.github.jing332.tts_server_android.databinding.SysttsConfigImportBottomSheetBinding
+import com.github.jing332.tts_server_android.databinding.SysttsConfigImportInputFragmentBinding
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import java.time.LocalDateTime
 
-
-class ConfigImportBottomSheetFragment : BottomSheetDialogFragment() {
+class ConfigImportInputFragment : Fragment() {
     companion object {
-        const val TAG = "ConfigImportBottomSheetFragment"
-
         const val TYPE_APP = 1
         const val TYPE_LEGADO = 2
 
@@ -39,9 +36,17 @@ class ConfigImportBottomSheetFragment : BottomSheetDialogFragment() {
         const val SRC_URL = 2
     }
 
-    val binding: SysttsConfigImportBottomSheetBinding by lazy {
-        SysttsConfigImportBottomSheetBinding.inflate(layoutInflater)
+    val binding: SysttsConfigImportInputFragmentBinding by lazy {
+        SysttsConfigImportInputFragmentBinding.inflate(layoutInflater, null, false)
     }
+
+    private val vm: ConfigImportSharedViewModel by activityViewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = binding.root
 
     private val type: Int
         get() {
@@ -61,14 +66,6 @@ class ConfigImportBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -85,7 +82,8 @@ class ConfigImportBottomSheetFragment : BottomSheetDialogFragment() {
                 lifecycleScope.launch {
                     waitDialog.show()
                     kotlin.runCatching {
-                        importConfig(type, src, tilUrl.editText!!.text.toString())
+                        val list = importConfig(type, src, tilUrl.editText!!.text.toString())
+                        vm.setPreview(list!!)
                     }.onFailure {
                         it.printStackTrace()
                         MaterialAlertDialogBuilder(requireContext())
@@ -102,7 +100,11 @@ class ConfigImportBottomSheetFragment : BottomSheetDialogFragment() {
 
     private val waitDialog: WaitDialog by lazy { WaitDialog(requireContext()) }
 
-    private suspend fun importConfig(type: Int, src: Int, url: String? = null) {
+    private suspend fun importConfig(
+        type: Int,
+        src: Int,
+        url: String? = null
+    ): List<GroupWithTtsItem>? {
         val json = when (src) {
             SRC_URL -> {
                 withIO { Net.get(url.toString()).execute() }
@@ -110,55 +112,8 @@ class ConfigImportBottomSheetFragment : BottomSheetDialogFragment() {
             else -> ClipboardUtils.text.toString()
         }
 
-        getImportList(json, type == TYPE_LEGADO)?.let { list ->
-            val ttsList = mutableListOf<Pair<SystemTtsGroup, SystemTts>>()
-            list.forEach {
-                it.list.forEach { tts ->
-                    ttsList.add(Pair(it.group, tts))
-                }
-            }
-            // 显示item
-            val items = ttsList.map { "${it.first.name}⤵️\n${it.second.displayName.toString()}" }
-            // 全选item
-            val checkedList = mutableListOf(*items.map { true }.toTypedArray()).toBooleanArray()
-            // 已选择的tts
-            val selectedList = mutableListOf(*ttsList.toTypedArray())
+        return getImportList(json, type == TYPE_LEGADO)
 
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.please_choose)
-                .setMultiChoiceItems(
-                    items.toTypedArray(),
-                    checkedList
-                ) { _, which, isChecked ->
-                    val tts = ttsList[which]
-                    selectedList.remove(tts)
-                    if (isChecked)
-                        selectedList.add(tts)
-                }
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    val groupWithTtsList = mutableListOf<GroupWithTtsItem>()
-                    // 查重 添加Group
-                    selectedList.distinctBy { it.first.id }.forEach {
-                        groupWithTtsList.add(GroupWithTtsItem(group = it.first, mutableListOf()))
-                    }
-                    // 添加到对应的Group
-                    selectedList.forEach { pair ->
-                        val group = groupWithTtsList.last { it.group.id == pair.first.id }
-                        (group.list as MutableList).add(pair.second)
-                    }
-
-                    doImport(groupWithTtsList)
-                }
-                .show()
-        }
-    }
-
-
-    private fun doImport(list: List<GroupWithTtsItem>) {
-        list.forEach {
-            appDb.systemTtsDao.insertGroup(it.group)
-            appDb.systemTtsDao.insertTts(*it.list.toTypedArray())
-        }
     }
 
     private fun getImportList(json: String, fromLegado: Boolean): List<GroupWithTtsItem>? {
@@ -205,5 +160,4 @@ class ConfigImportBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
     }
-
 }

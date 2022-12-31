@@ -22,8 +22,8 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.TtsServer.NoActionBar"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TtsServer.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -39,6 +39,11 @@
             android:label="@string/title_activity_tts_config_edit">
 
         </activity>
+
+        <activity
+            android:name=".ui.systts.list.import1.ConfigImportActivity"
+            android:launchMode="singleTask"
+            android:label="@string/config_import" />
 
         <activity
             android:name=".ui.systts.edit.HttpTtsEditActivity"
