@@ -108,7 +108,10 @@ class MsTtsEditRepository() {
 }
 
 // 通用数据
+@Suppress("DEPRECATION")
 data class GeneralVoiceData(
+
+
     /**
      * 性别 Male:男, Female:女
      */
@@ -143,7 +146,7 @@ data class GeneralVoiceData(
      * 汉化的地区名
      */
     val localeName: String
-        get() = CnLocalMap.getLanguage(locale)
+        get() = if (App.isCnLocale) CnLocalMap.getLanguage(locale) else locale
 
     /**
      * 获取发音人本地化名称，edge则为汉化
@@ -157,21 +160,24 @@ data class GeneralVoiceData(
     /**
      * 获取风格列表
      */
-    val styleList: List<String>?
+    private val styleList: List<String>?
         get() = transformToList(_styles)
 
     /**
-     * 获取汉化的风格列表
-     * @return first: 原Key, second: 汉化Value
+     * 获取本地化的风格列表
+     * @return first: 原Key, second: 本地化value
      */
     val localStyleList: List<Pair<String, String>>?
-        get() = styleList?.map { Pair(it, CnLocalMap.getStyleAndRole(it)) }
+        get() = (
+                if (App.isCnLocale) styleList?.map { Pair(it, CnLocalMap.getStyleAndRole(it)) }
+                else styleList?.map { Pair(it, it) }
+                )
             ?.also { if (it.isEmpty()) return null }
 
     /**
      * 获取角色列表
      */
-    val roleList: List<String>?
+    private val roleList: List<String>?
         get() = transformToList(_roles)
 
     /**
@@ -179,13 +185,16 @@ data class GeneralVoiceData(
      * @return first: 原Key, second: 汉化Value
      */
     val localRoleList: List<Pair<String, String>>?
-        get() = roleList?.map { Pair(it, CnLocalMap.getStyleAndRole(it)) }
+        get() = (
+                if (App.isCnLocale) roleList?.map { Pair(it, CnLocalMap.getStyleAndRole(it)) }
+                else roleList?.map { Pair(it, it) }
+                )
             ?.also { if (it.isEmpty()) return null }
 
     /**
      * 二级语言列表
      */
-    val secondaryLocaleList: List<String>?
+    private val secondaryLocaleList: List<String>?
         get() = transformToList(_secondaryLocales)
 
     /**
@@ -193,7 +202,10 @@ data class GeneralVoiceData(
      * @return first: 原Key, second: 汉化Value
      */
     val localSecondaryLocaleList: List<Pair<String, String>>?
-        get() = secondaryLocaleList?.map { Pair(it, CnLocalMap.getLanguage(it)) }
+        get() = (
+                if (App.isCnLocale) secondaryLocaleList?.map { Pair(it, CnLocalMap.getLanguage(it)) }
+                else secondaryLocaleList?.map { Pair(it, it) }
+                )
             ?.also { if (it.isEmpty()) return null }
 
     // 根据类型(String或List) 自动转换

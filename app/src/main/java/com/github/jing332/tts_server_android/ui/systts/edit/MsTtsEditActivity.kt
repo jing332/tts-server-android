@@ -114,7 +114,7 @@ class MsTtsEditActivity : BackActivity() {
             waitDialog.dismiss()
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.systts_test_success)
-                .setMessage("大小: ${kb}KiB")
+                .setMessage(getString(R.string.systts_test_success_info, kb))
                 .setOnDismissListener { vm.stopPlay() }
                 .setFadeAnim()
                 .show()

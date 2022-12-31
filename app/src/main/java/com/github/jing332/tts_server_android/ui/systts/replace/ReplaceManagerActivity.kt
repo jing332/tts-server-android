@@ -134,15 +134,15 @@ class ReplaceManagerActivity : BackActivity() {
                 val et = MaterialTextInput(this)
                 et.inputLayout.setHint(R.string.url_net)
                 MaterialAlertDialogBuilder(this).setTitle(R.string.import_config).setView(et)
-                    .setPositiveButton(R.string.import_from_clip) { _, _ ->
+                    .setPositiveButton(R.string.import_from_clipboard) { _, _ ->
                         val err = vm.importConfig(ClipboardUtils.text.toString())
                         err?.let {
-                            longToast(getString(R.string.import_failed, it))
+                            longToast("${getString(R.string.import_failed)}: $it")
                         }
                     }.setNegativeButton(R.string.import_from_url) { _, _ ->
                         val err = vm.importConfigFromUrl(et.inputEdit.text.toString())
                         err?.let {
-                            longToast(getString(R.string.import_failed, it))
+                            longToast("${getString(R.string.import_failed)}: $it")
                         }
                     }.show()
             }

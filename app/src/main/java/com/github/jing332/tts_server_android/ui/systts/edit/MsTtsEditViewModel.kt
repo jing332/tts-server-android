@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BR
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.ExoPlayerHelper
@@ -31,7 +32,9 @@ class MsTtsEditViewModel : ViewModel() {
         private const val IGNORE_VALUE_DEFAULT = "Default"
 
         // 默认的SpinnerItem 用于风格和角色
-        private val DEFAULT_SPINNER_ITEM: SpinnerItem by lazy { SpinnerItem("默认", "") }
+        private val DEFAULT_SPINNER_ITEM: SpinnerItem by lazy {
+            SpinnerItem(App.context.getString(R.string.default_str), "")
+        }
     }
 
     val styleDegreeVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()

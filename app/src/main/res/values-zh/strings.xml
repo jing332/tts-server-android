@@ -1,0 +1,222 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">TTS Server</string>
+    <string name="app_switch">开关</string>
+
+    <string name="help">帮助</string>
+
+    <string name="warning">警告</string>
+    <string name="reset">重置</string>
+    <string name="exit">退出</string>
+    <string name="copied">已复制</string>
+    <string name="ok_reset">已重置</string>
+    <string name="loading">加载中</string>
+
+    <string name="selected">已选择</string>
+
+    <string name="close">关闭</string>
+    <string name="start">启动</string>
+    <string name="follow">跟随</string>
+    <string name="custom">自定义</string>
+    <string name="app_down_again_to_exit">再按一次退出APP</string>
+    <string name="cannot_empty">不可为空！</string>
+
+    <string name="open_web">打开网页版</string>
+    <string name="check_update">检查更新</string>
+    <string name="wake_lock">唤醒锁</string>
+    <string name="about">关于</string>
+    <string name="config">配置</string>
+    <string name="log">日志</string>
+    <string name="background_whitelist">电池优化白名单</string>
+    <string name="desktop_shortcut">桌面快捷方式</string>
+    <string name="added_background_whitelist">已加入后台白名单</string>
+
+    <string name="kill_process">结束进程</string>
+    <string name="cancel">取消</string>
+
+    <string name="label_read_aloud_target">朗读目标：</string>
+    <string name="label_api">接口：</string>
+    <string name="label_language">语言：</string>
+    <string name="label_voice">声音：</string>
+    <string name="label_voice_role">角色：</string>
+    <string name="label_voice_style">风格：</string>
+    <string name="label_styleDegree">风格强度：</string>
+    <string name="label_audio_format">音频格式：</string>
+    <string name="label_volume">音量：</string>
+    <string name="label_rate">语速：</string>
+    <string name="label_pitch">音高：</string>
+    <string name="label_play_speed">播放速度：</string>
+    <string name="label_play_pitch">播放音调：</string>
+    <string name="label_result">结果：</string>
+    <string name="label_audio_sample_rate">音频采样率(hz)：</string>
+    <string name="label_port">端口:</string>
+
+    <string name="systts_api_edge">微软Edge-大声朗读接口</string>
+    <string name="systts_api_azure">微软Azure-网页演示接口</string>
+    <string name="systts_api_creation">微软Creation-网页演示接口</string>
+
+    <string name="systts_state_idle">TTS空闲中</string>
+    <string name="systts_state_playing">TTS播放中：</string>
+    <string name="systts_service">系统TTS服务</string>
+
+    <string name="systts_split_long_sentences">分割长句</string>
+    <string name="system_not_support_please_manual_set">系统不支持，请手动操作</string>
+
+    <string name="service_started">服务已启动</string>
+    <string name="service_closed">服务已关闭</string>
+    <string name="server_tts_status">TTS服务器状态</string>
+    <string name="server_tts_running">TTS Server正在运行中</string>
+    <string name="server_listen_address_local">监听地址：%s</string>
+    <string name="server_please_start_service">请先启动服务</string>
+    <string name="server_restart_service_to_update">重启服务以生效</string>
+    <string name="server_set_token">设置Token</string>
+    <string name="server_token_set_to">Token已设为：</string>
+
+    <string name="systts_settings">系统TTS配置</string>
+    <string name="settings">设置</string>
+    <string name="global_settings">全局设置</string>
+    <string name="copy_address">复制地址</string>
+    <string name="check_update_failed">检查更新失败</string>
+    <string name="current_is_last_version">当前已是最新版</string>
+
+    <string name="title_activity_tts_config_edit">编辑内置TTS</string>
+    <string name="title_activity_replace_edit">编辑替换规则</string>
+    <string name="title_activity_replace_manager">替换规则管理</string>
+
+    <string name="display_name">显示名称</string>
+    <string name="save">保存</string>
+    <string name="desc_switch_item">启用或关闭本条目</string>
+    <string name="desc_add_config">添加配置</string>
+    <string name="desc_edit_item">编辑条目</string>
+    <string name="desc_delete_item">删除本条目</string>
+    <string name="desc_seekbar_add">滑动条 +1</string>
+    <string name="desc_seekbar_remove">滑动条 -1</string>
+
+    <string name="add_config">添加配置</string>
+    <string name="config_import_export">配置导入/导出</string>
+    <string name="import_config">导入配置</string>
+    <string name="export_config">导出配置</string>
+    <string name="copy" tools:ignore="PrivateResource">复制</string>
+    <string name="follow_system_or_read_aloud_app">跟随系统或朗读APP</string>
+    <string name="raw_format_is_play_while_downloading">Raw格式为边下边播模式</string>
+    <string name="is_confirm_delete">确认删除？</string>
+    <string name="delete">删除</string>
+    <string name="ra_all">朗读全部</string>
+    <string name="ra_aside">仅旁白</string>
+    <string name="ra_dialogue">仅对话</string>
+
+    <string name="all">全部</string>
+    <string name="aside">旁白</string>
+    <string name="dialogue">对话</string>
+    <string name="none">无</string>
+    <string name="default_str">默认</string>
+
+    <string name="web">网页</string>
+    <string name="clear_web_data">清空网页数据</string>
+    <string name="cleared">已清空</string>
+
+    <string name="import_from_clipboard">从剪贴板导入</string>
+    <string name="url_net">URL网络链接</string>
+    <string name="import_from_url">从上方URL导入</string>
+    <string name="retry">重试</string>
+    <string name="test">测试</string>
+    <string name="sample_text">测试文本</string>
+
+    <!-- 替换管理 -->
+    <string name="systts_replace_rule_manager">替换规则管理</string>
+    <string name="systts_replace_add_rule">添加替换规则</string>
+    <string name="systts_replace_rule">替换规则</string>
+    <string name="systts_replace_as">替换为</string>
+    <string name="systts_replace_insert_pinyin">插入拼音声调</string>
+    <string name="systts_replace_use_regex">使用正则表达式</string>
+
+    <!-- 系统TTS 设置 -->
+    <string name="systts_set_dialogue_min_match_word_count">设置对话最小匹配汉字数</string>
+    <string name="systts_set_dialogue_min_info">人物对话的汉字数（包括中文符号），即只有在大于等于此值时才作为对话朗读，反之使用旁白。</string>
+    <string name="systts_set_request_timeout">设置请求超时</string>
+    <string name="systts_set_request_timeout_msg">请求音频的等待时间超过设定值后，将取消请求并自动重试。</string>
+
+    <string name="systts_http_edit_title">编辑自定义TTS</string>
+    <string name="systts_http_request_header">请求头</string>
+
+    <string name="systts_http_sample_test_text">单击右侧按钮即可测试并播放</string>
+    <string name="systts_ms_sample_test_text">单击右侧按钮即可测试并播放</string>
+
+    <string name="systts_decode_audio">解码音频</string>
+    <string name="systts_add_internal_tts">添加内置TTS</string>
+    <string name="systts_add_custom_tts">添加自定义TTS</string>
+    <string name="off_multi_voice_use_global">请关闭多语音选项以使用单语音模式</string>
+
+    <string name="use_dns_lookup_ip">使用DNS解析接口IP</string>
+    <string name="pref_edge_dns_summary">而非内置北京微软云节点</string>
+    <string name="pref_title_global_edge">全局-Edge接口</string>
+
+    <string name="systts_multi_voice_option">多语音(旁白/对白)</string>
+    <string name="systts_use_internal_audio_player">使用内置播放器</string>
+    <string name="systts_in_app_play_info_html"><DATA><![CDATA[
+        打开此选项后，将直接<b>使用本APP内置的音频播放器</b>，而非转由系统TTS组件播放。
+        <br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。
+        <br><br>当然，直接播放也有兼容性问题：
+        <br> - 由于并未将原始音频发送到系统TTS组件，所以如果调用TTS者是先缓存后播放机制，即并非由系统播放时，这将会导致缓存时音频为空和意外播放。
+        <br> - raw格式依旧不支持，由系统播放。
+        <br> - 性能方面相较系统播放略低。
+        <br> - 由于内置播放器无音频缓冲，故<b>段落</b>与<b>句子(如已启用分割长句)</b>之间的间隔时间相较系统播放会<b>多出几百毫秒的延迟</b>。
+        ]]>
+    </DATA>
+    </string>
+    <string name="systts_help_secondary_locale">选择二级语言，即在朗读时使用此语言，目前微软只支持 en-US-JennyMultilingualNeural。</string>
+    <string name="systts_sample_rate">采样率（hz）</string>
+    <string name="systts_secondaryLocale">二级语言（语言技能）</string>
+    <string name="systts_voice_data_load_failed">语音数据加载失败</string>
+    <string name="systts_help_sample_rate">系统TTS在开始播放时需指定采样率，如已打开【APP内播放】则可忽略此选项。</string>
+    <string name="systts_voice_multiple_option">相同朗读目标可多选</string>
+    <string name="systts_voice_multiple_hint">⚠️相同朗读目标将不再排斥，并使用随机轮播。(单语音不支持此功能)</string>
+    <string name="systts_groups_multiple">分组可多选</string>
+    <string name="systts_groups_multiple_hint">⚠️勾选分组时将不再互相排斥。</string>
+
+    <string name="systts_warn_no_ra_dialogue">⚠️缺少{对话}，使用默认配置！</string>
+    <string name="systts_warn_no_ra_all">⚠️缺少{全部}，使用默认！</string>
+    <string name="systts_warn_no_ra_aside">⚠️缺少{旁白}，使用默认配置！</string>
+
+    <string name="systts_test_success">测试成功</string>
+    <string name="systts_test_success_info">大小: %1$dKiB</string>
+
+    <string name="systts_http_test_msg">音频大小：%1$d kb \n格式：%2$s \n采样率：%3$d hz \nContent-Type：%4$s</string>
+
+    <string name="systts_please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
+    <string name="systts_sample_rate_different_in_enabled_list">检测到已启用配置中的格式/采样率不同，
+        这将会导致音调异常(声音粗重或尖细)，请手动换为相同格式/采样率或在右上角将【使用内置播放器】选项打开。</string>
+
+    <string name="group_expanded">分组 已展开</string>
+    <string name="group_collapsed">分组 已折叠</string>
+    <string name="systts_desc_list_count_info">共%1$d项，已启用%2$d项</string>
+    <string name="systts_list_item_desc">目标%1$s，接口%2$s，属性：%3$s，格式：%4$s</string>
+
+    <string name="more_options">更多选项</string>
+    <string name="add_group">添加分组</string>
+    <string name="group">分组</string>
+    <string name="belonging_group">所属分组</string>
+    <string name="msg_group_is_empty">分组为空，请添加配置</string>
+    <string name="edit_group_name">编辑分组名称</string>
+    <string name="default_group">默认分组</string>
+
+    <string name="content">内容</string>
+    <string name="name">名称</string>
+    <string name="unnamed">未命名</string>
+    <string name="rename">重命名</string>
+    <string name="test_failed">测试失败</string>
+    <string name="enabled">已启用</string>
+    <string name="choice_item">选择%1$s</string>
+    <string name="import_failed">导入失败</string>
+    <string name="systts_from_legado_app_group_name">阅读APP (%1$s)</string>
+    <string name="clipboard">剪贴板</string>
+    <string name="type">类型</string>
+    <string name="source">来源</string>
+    <string name="legado">阅读Legado</string>
+    <string name="str_import">导入</string>
+    <string name="please_choose">请选择</string>
+    <string name="config_import">配置导入</string>
+
+    <string name="systts_ms_description">语速:%1$s | 音量:%2$s | 音高:%3$s</string>
+    <string name="systts_ms_express_as_description">%1$s-%2$s | 强度:%3$s</string>
+
+</resources>

@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.CnLocalMap
@@ -105,14 +106,23 @@ data class MsTTS(
         val styleDegree = expressAs?.styleDegree ?: 1F
         var role = strNone
         expressAs?.also { exp ->
-            exp.style?.let { style = CnLocalMap.getStyleAndRole(it) }
-            exp.role?.let { role = CnLocalMap.getStyleAndRole(it) }
+            exp.style?.let { style = if (App.isCnLocale) CnLocalMap.getStyleAndRole(it) else it }
+            exp.role?.let { role = if (App.isCnLocale) CnLocalMap.getStyleAndRole(it) else it }
         }
 
         val expressAs =
             if (api == MsTtsApiType.EDGE) ""
-            else "$style-$role | 强度: <b>${styleDegree}</b><br>"
-        return "${expressAs}语速:<b>$rateStr</b> | 音量:<b>$volume</b> | 音高:<b>$pitchStr</b>"
+            else App.context.getString(
+                R.string.systts_ms_express_as_description,
+                "<b>${style}</b>", "<b>${role}</b>", "<b>${styleDegree}</b>"
+            ) + "<br>"
+
+        return expressAs + App.context.getString(
+            R.string.systts_ms_description,
+            "<b>${rateStr}</b>",
+            "<b>${volume}</b>",
+            "<b>${pitchStr}</b>"
+        )
     }
 
     @SuppressLint("RestrictedApi")

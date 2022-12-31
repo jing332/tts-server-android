@@ -11,6 +11,7 @@ import kotlin.properties.Delegates
 
 val app: App by lazy { App.instance }
 
+@Suppress("DEPRECATION")
 class App : Application() {
     companion object {
         const val TAG = "App"
@@ -24,11 +25,16 @@ class App : Application() {
         @OptIn(ExperimentalSerializationApi::class)
         val jsonBuilder by lazy {
             Json {
-                allowStructuredMapKeys=true
+                allowStructuredMapKeys = true
                 ignoreUnknownKeys = true
                 prettyPrint = true
                 explicitNulls = false //忽略为null的字段
             }
+        }
+
+        val isCnLocale by lazy {
+            val locale = context.resources.configuration.locale
+            locale.language.endsWith("zh")
         }
     }
 

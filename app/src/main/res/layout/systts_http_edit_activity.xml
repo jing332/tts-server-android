@@ -91,7 +91,7 @@
                 android:id="@+id/et_testText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/test_text"
+                android:hint="@string/sample_text"
                 android:imeOptions="actionGo"
                 android:singleLine="true"
                 android:text="@string/systts_http_sample_test_text" />

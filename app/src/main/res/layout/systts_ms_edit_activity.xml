@@ -34,7 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="@string/test_text"
+                android:hint="@string/sample_text"
                 app:endIconContentDescription="@string/test"
                 app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
                 app:endIconMode="custom"
