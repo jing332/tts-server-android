@@ -13,6 +13,7 @@ import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.LegadoHttpTts
+import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.CompatSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -25,7 +26,8 @@ import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
-import java.time.LocalDateTime
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ConfigImportInputFragment : Fragment() {
     companion object {
@@ -106,21 +108,18 @@ class ConfigImportInputFragment : Fragment() {
         url: String? = null
     ): List<GroupWithTtsItem>? {
         val json = when (src) {
-            SRC_URL -> {
-                withIO { Net.get(url.toString()).execute() }
-            }
+            SRC_URL -> withIO { Net.get(url.toString()).execute() }
             else -> ClipboardUtils.text.toString()
         }
+            .run { if (!startsWith("[")) "[$this" else this }
+            .run { if (!endsWith("]")) "$this]" else this }
 
         return getImportList(json, type == TYPE_LEGADO)
 
     }
 
     private fun getImportList(json: String, fromLegado: Boolean): List<GroupWithTtsItem>? {
-        val groupName = App.context.getString(
-            R.string.systts_from_legado_app_group_name,
-            LocalDateTime.now()
-        )
+        val groupName = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
         val groupId = System.currentTimeMillis()
         if (fromLegado) {
             App.jsonBuilder.decodeFromString<List<LegadoHttpTts>>(json).ifEmpty { return null }
@@ -147,12 +146,13 @@ class ConfigImportInputFragment : Fragment() {
                 val list = App.jsonBuilder.decodeFromString<List<CompatSystemTts>>(json)
                 listOf(
                     GroupWithTtsItem(
-                        group =
-                        SystemTtsGroup(id = groupId, name = groupName),
-                        list = list.map {
+                        group = appDb.systemTtsDao.getGroupById(SystemTtsGroup.DEFAULT_GROUP_ID)!!,
+                        list = list.mapIndexed { index, value ->
                             SystemTts(
-                                displayName = it.displayName,
-                                tts = it.tts
+                                id = System.currentTimeMillis() + index,
+                                displayName = value.displayName,
+                                groupId = SystemTtsGroup.DEFAULT_GROUP_ID,
+                                tts = value.tts
                             )
                         }
                     )

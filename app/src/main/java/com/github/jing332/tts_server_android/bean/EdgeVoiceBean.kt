@@ -14,8 +14,8 @@ data class EdgeVoiceBean(
     val name: String,
     @SerialName("ShortName")
     val shortName: String,
-//    @SerialName("FriendlyName")
-//    val friendlyName: String,
+    @SerialName("FriendlyName")
+    val friendlyName: String,
 //    @SerialName("Status")
 //    val status: String,
 //    @SerialName("SuggestedCodec")

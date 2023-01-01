@@ -209,7 +209,6 @@
     <string name="choice_item">Select %1$s</string>
     <string name="import_failed">Import failed</string>
 
-    <string name="systts_from_legado_app_group_name">Legado APP (%1$s)</string>
     <string name="clipboard">clipboard</string>
     <string name="type">Type</string>
     <string name="source">Source</string>

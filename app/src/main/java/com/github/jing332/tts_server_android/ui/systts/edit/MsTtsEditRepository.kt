@@ -64,7 +64,8 @@ class MsTtsEditRepository() {
             GeneralVoiceData(
                 gender = it.gender,
                 locale = it.locale,
-                voiceName = it.shortName
+                voiceName = it.shortName,
+                _localeName = it.friendlyName.split("-").getOrNull(1)?.trim()
             )
         }.apply { mDataCacheMap[EDGE_CACHE_PATH] = this }
     }
@@ -80,7 +81,8 @@ class MsTtsEditRepository() {
                 gender = it.gender,
                 locale = it.locale, voiceName = it.shortName,
                 _styles = it.styleList, _roles = it.rolePlayList,
-                _secondaryLocales = it.secondaryLocaleList
+                _secondaryLocales = it.secondaryLocaleList,
+                _localeName = it.localeName
             )
         }.also { mDataCacheMap[AZURE_CACHE_PATH] = it }
     }
@@ -110,8 +112,6 @@ class MsTtsEditRepository() {
 // 通用数据
 @Suppress("DEPRECATION")
 data class GeneralVoiceData(
-
-
     /**
      * 性别 Male:男, Female:女
      */
@@ -128,6 +128,9 @@ data class GeneralVoiceData(
      * Voice zh-CN-XiaoxiaoNeural
      */
     val voiceName: String,
+
+    private val _localeName: String? = null,
+
     /**
      * 本地化发音人名称 晓晓
      */
@@ -137,16 +140,15 @@ data class GeneralVoiceData(
     private val _secondaryLocales: Any? = null,
 
     // 风格列表 azure为List<String>, Creation为string 逗号分割
-    private
-    val _styles: Any? = null,
+    private val _styles: Any? = null,
     // 角色列表
     private val _roles: Any? = null,
 ) {
     /**
-     * 汉化的地区名
+     * 地区名
      */
     val localeName: String
-        get() = if (App.isCnLocale) CnLocalMap.getLanguage(locale) else locale
+        get() = if (App.isCnLocale) CnLocalMap.getLanguage(locale) else _localeName ?: locale
 
     /**
      * 获取发音人本地化名称，edge则为汉化
@@ -203,7 +205,12 @@ data class GeneralVoiceData(
      */
     val localSecondaryLocaleList: List<Pair<String, String>>?
         get() = (
-                if (App.isCnLocale) secondaryLocaleList?.map { Pair(it, CnLocalMap.getLanguage(it)) }
+                if (App.isCnLocale) secondaryLocaleList?.map {
+                    Pair(
+                        it,
+                        CnLocalMap.getLanguage(it)
+                    )
+                }
                 else secondaryLocaleList?.map { Pair(it, it) }
                 )
             ?.also { if (it.isEmpty()) return null }
