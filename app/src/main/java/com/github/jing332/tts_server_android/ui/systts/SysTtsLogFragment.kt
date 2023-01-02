@@ -25,7 +25,7 @@ class SysTtsLogFragment : Fragment() {
     private val binding: SysttsLogFragmentBinding by lazy {
         SysttsLogFragmentBinding.inflate(layoutInflater)
     }
-    private val logAdapter: LogListItemAdapter by lazy { LogListItemAdapter() }
+    private val logAdapter: LogListItemAdapter by lazy { LogListItemAdapter(isHtmlText = true) }
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
 
     override fun onCreateView(

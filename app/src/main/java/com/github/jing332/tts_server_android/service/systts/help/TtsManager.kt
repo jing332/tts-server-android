@@ -31,6 +31,7 @@ class TtsManager(val context: Context) {
     companion object {
         private const val TAG = "TtsManager"
         private const val CLOSE_1006_PREFIX = "websocket: close 1006"
+        const val BAD_HANDSHAKE_PREFIX = "websocket: bad handshake"
 
         const val ERROR_DECODE_FAILED = 0
         const val ERROR_GET_FAILED = 1

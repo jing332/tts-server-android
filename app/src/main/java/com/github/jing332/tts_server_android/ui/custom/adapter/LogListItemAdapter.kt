@@ -17,7 +17,7 @@ import com.github.jing332.tts_server_android.util.longToast
 //显示日志的适配器
 class LogListItemAdapter(
     private val itemList: MutableList<AppLog> = mutableListOf(),
-    private val isHtmlText: Boolean = false
+    val isHtmlText: Boolean = false
 ) :
     RecyclerView.Adapter<LogListItemAdapter.ViewHolder>() {
     //追加日志

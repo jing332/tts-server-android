@@ -253,7 +253,7 @@ class SysTtsListFragment : Fragment() {
         numPicker.value = 5
         val displayList = ArrayList<String>()
         for (i in 2..30) {
-            displayList.add("${i}秒")
+            displayList.add("${i}s")
         }
         numPicker.displayedValues = displayList.toList().toTypedArray()
 
@@ -271,8 +271,8 @@ class SysTtsListFragment : Fragment() {
     }
 
     private fun showSetMinDialogueLengthDialog() {
-        val numList = arrayListOf("不限制")
-        for (i in 1..10) numList.add("对话字数 ≥ $i")
+        val numList = arrayListOf(getString(R.string.unlimited))
+        for (i in 1..10) numList.add(" ≥ $i")
 
         val picker = NumberPicker(requireContext()).apply {
             maxValue = numList.size - 1

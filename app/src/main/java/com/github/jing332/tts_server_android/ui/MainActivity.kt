@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             when (menuItem.itemId) {
                 R.id.nav_killBattery -> killBattery()
-                R.id.nav_checkUpdate -> MyTools.checkUpdate(this)
+                R.id.nav_checkUpdate -> MyTools.checkUpdate(this, isFromUser = true)
                 R.id.nav_about -> showAboutDialog()
             }
         }

@@ -60,12 +60,6 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
     @SuppressLint("DiscouragedPrivateApi")
     override fun showDropDown() {
-        val mPopupField = AutoCompleteTextView::class.java.getDeclaredField("mPopup")
-        mPopupField.isAccessible = true
-
-        val listPopup = mPopupField.get(this) as ListPopupWindow
-        listPopup.setSelection(selectedPosition)
-
         if (accessibilityManager.isTouchExplorationEnabled) {
             val adapter =
                 ArrayAdapter<String>(context, android.R.layout.simple_list_item_single_choice)
@@ -79,8 +73,14 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
                 dlg.dismiss()
             }
             listDialog.setFadeAnim().show()
-        } else
-            super.showDropDown()
+        } else{
+            val modalListPopup =
+                MaterialAutoCompleteTextView::class.java.getDeclaredField("modalListPopup")
+                    .apply { isAccessible = true }
+                    .get(this) as androidx.appcompat.widget.ListPopupWindow
+            modalListPopup.show()
+            modalListPopup.setSelection(selectedPosition)
+        }
     }
 
     override fun getAdapter(): BaseMaterialSpinnerAdapter<*>? {

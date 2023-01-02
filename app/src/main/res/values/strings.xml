@@ -131,7 +131,7 @@
     <string name="systts_replace_use_regex">use regular expressions</string>
 
     <!-- 系统TTS 设置 -->
-    <string name="systts_set_dialogue_min_match_word_count">set Chinese length for dialogue</string>
+    <string name="systts_set_dialogue_min_match_word_count">Set Chinese length for dialogue</string>
     <string name="systts_set_dialogue_min_info">The number of Chinese characters (including Chinese symbols) in the character\'s dialogue,
         that is, only when it is greater than or equal to this value, it will be read as a dialogue, otherwise the narration will be used.</string>
     <string name="systts_set_request_timeout">Set request timeout</string>
@@ -232,5 +232,7 @@
     <string name="systts_log_canceled">Canceled: %1$s</string>
     <string name="systts_log_finished_playing">FInished playing: %1$s</string>
     <string name="systts_log_start_retry">Start the %1$dth retry</string>
+    <string name="unlimited">Unlimited</string>
+    <string name="systts_log_ip_is_restricted">Your IP may have been restricted by the Microsoft server. Switching to an audio format with low traffic consumption can largely avoid this situation.</string>
 
 </resources>

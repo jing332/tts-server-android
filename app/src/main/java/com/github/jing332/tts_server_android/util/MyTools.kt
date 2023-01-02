@@ -33,21 +33,21 @@ object MyTools {
 
     /*从Github检查更新*/
     @OptIn(DelicateCoroutinesApi::class)
-    fun checkUpdate(ctx: Context) {
+    fun checkUpdate(ctx: Context, isFromUser: Boolean = true) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val resp: Response = Net.get(GITHUB_RELEASES_LATEST_URL).execute()
                 val jsonStr = resp.body?.string()
-                checkVersionFromJson(ctx, jsonStr!!)
+                checkVersionFromJson(ctx, jsonStr!!, isFromUser)
             } catch (e: Exception) {
                 e.printStackTrace()
-                ctx.toast(R.string.check_update_failed)
+                if (isFromUser) ctx.toast(R.string.check_update_failed)
             }
         }
     }
 
     @Suppress("DEPRECATION")
-    private fun checkVersionFromJson(ctx: Context, s: String) {
+    private fun checkVersionFromJson(ctx: Context, s: String, isFromUser: Boolean) {
         val bean = json.decodeFromString<GithubReleaseApiBean>(s)
         var apkUniversalUrl = ""
         var apkArmV8aUrl = ""
@@ -79,10 +79,10 @@ object MyTools {
         val appVersion = /* 本地版本号 */
             BigDecimal(pi.versionName.split("_").toTypedArray()[1].trim { it <= ' ' })
         Log.d(TAG, "appVersionName: $appVersion, versionName: $removeVersion")
-        if (removeVersion > appVersion) {/* 需要更新 */
+        if (removeVersion > appVersion) /* 需要更新 */
             runOnUI { downLoadAndInstall(ctx, body, downloadUrl, tag) }
-        }
-//            ctx.toast(R.string.current_is_last_version)
+        else if (isFromUser)
+            ctx.toast(R.string.current_is_last_version)
     }
 
     private fun downLoadAndInstall(
