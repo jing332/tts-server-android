@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.constant.KeyConst
@@ -23,7 +22,6 @@ class ServerLogFragment : Fragment() {
     private val binding: ServerLogFragmentBinding by lazy {
         ServerLogFragmentBinding.inflate(layoutInflater)
     }
-    private val vm: ServerLogViewModel by viewModels()
 
     private val mReceiver by lazy { MyReceiver() }
     private val logList: ArrayList<AppLog> by lazy { ArrayList() }
@@ -61,11 +59,14 @@ class ServerLogFragment : Fragment() {
         if (TtsIntentService.instance?.isRunning == true) {
             setControlStatus(false)
             val localIp = Tts_server_lib.getOutboundIP()
-            val msg = "服务已在运行, 监听地址: ${localIp}:${port}"
-            logList.add(AppLog(LogLevel.WARN, msg))
+            logList.add(
+                AppLog(
+                    LogLevel.WARN,
+                    getString(R.string.server_log_service_running, "${localIp}:${port}")
+                )
+            )
         } else {
-            val msg = "请点击启动按钮\n然后打开网页\n随后按需配置导入阅读APP即可朗读\n⚠️注意: 朗读时本APP需常驻后台运行！⚠️"
-            logList.add(AppLog(LogLevel.INFO, msg))
+            logList.add(AppLog(LogLevel.INFO, getString(R.string.server_log_tips)))
         }
     }
 

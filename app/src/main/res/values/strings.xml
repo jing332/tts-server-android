@@ -35,21 +35,21 @@
     <string name="cancel">Cancel</string>
 
     <string name="label_read_aloud_target">Read aloud target</string>
-    <string name="label_api">API:</string>
-    <string name="label_language">Locale:</string>
-    <string name="label_voice">Voice:</string>
-    <string name="label_voice_role">Role:</string>
-    <string name="label_voice_style">Style:</string>
-    <string name="label_styleDegree">Style degree:</string>
-    <string name="label_audio_format">Audio format:</string>
-    <string name="label_volume">Volume:</string>
-    <string name="label_rate">Rate:</string>
-    <string name="label_pitch">Pitch:</string>
-    <string name="label_play_speed">Play speed：</string>
-    <string name="label_play_pitch">Play pitch：</string>
-    <string name="label_result">Result：</string>
-    <string name="label_audio_sample_rate">Audio sample rate(hz)：</string>
-    <string name="label_port">Port:</string>
+    <string name="label_api">API: </string>
+    <string name="label_language">Locale: </string>
+    <string name="label_voice">Voice: </string>
+    <string name="label_voice_role">Role: </string>
+    <string name="label_voice_style">Style: </string>
+    <string name="label_styleDegree">Style degree: </string>
+    <string name="label_audio_format">Audio format: </string>
+    <string name="label_volume">Volume: </string>
+    <string name="label_rate">Rate: </string>
+    <string name="label_pitch">Pitch: </string>
+    <string name="label_play_speed">Play speed: </string>
+    <string name="label_play_pitch">Play pitch: </string>
+    <string name="label_result">Result: </string>
+    <string name="label_audio_sample_rate">Audio sample rate(hz): </string>
+    <string name="label_port">Port: </string>
 
     <string name="systts_api_edge">Microsoft Edge - Read aloud API</string>
     <string name="systts_api_azure">Microsoft Azure - Web demo API</string>
@@ -68,9 +68,9 @@
     <string name="server_tts_running">TTS Server is running</string>
     <string name="server_listen_address_local">Listen address：%s</string>
     <string name="server_please_start_service">Please start the service first</string>
-    <string name="server_restart_service_to_update">Restart the service to take effest</string>
+    <string name="server_restart_service_to_update">Restart the service to take effect</string>
     <string name="server_set_token">Set Token</string>
-    <string name="server_token_set_to">Token is set to:</string>
+    <string name="server_token_set_to">Token is set to: </string>
 
     <string name="systts_settings">System TTS</string>
     <string name="settings">Settings</string>
@@ -97,13 +97,13 @@
     <string name="import_config">Import</string>
     <string name="export_config">Export</string>
     <string name="copy" tools:ignore="PrivateResource">Copy</string>
-    <string name="follow_system_or_read_aloud_app">Follow system or read aloud APP</string>
-    <string name="raw_format_is_play_while_downloading">Format `raw` is play while downloading mode</string>
+    <string name="follow_system_or_read_aloud_app">Follow system or caller</string>
+    <string name="raw_format_is_play_while_downloading">Format `raw` is streaming mode</string>
     <string name="is_confirm_delete">Confirm deletion?</string>
     <string name="delete">Delete</string>
     <string name="ra_all">Read aloud all</string>
     <string name="ra_aside">Only aside</string>
-    <string name="ra_dialogue">Only Dialogue</string>
+    <string name="ra_dialogue">Only dialogue</string>
 
     <string name="all">All</string>
     <string name="aside">Aside</string>
@@ -148,7 +148,7 @@
     <string name="systts_add_custom_tts">Add custom TTS</string>
     <string name="off_multi_voice_use_global">Please turn off the multi-voice option to use single-voice model</string>
 
-    <string name="use_dns_lookup_ip">User Dns to resolve the API IP</string>
+    <string name="use_dns_lookup_ip">Use DNS to resolve the API IP</string>
     <string name="pref_edge_dns_summary">Instead of the built-in Beijing(China) Microsoft cloud node</string>
     <string name="pref_title_global_edge">Edge API</string>
 
@@ -167,10 +167,10 @@
     </string>
     <string name="systts_help_secondary_locale">Select the secondary language, that is, use this language when reading aloud.</string>
     <string name="systts_sample_rate">Sample rate（hz）</string>
-    <string name="systts_secondaryLocale">language secondary（language skill）</string>
+    <string name="systts_secondaryLocale">Language secondary（language skill）</string>
     <string name="systts_voice_data_load_failed">Voice failed to load</string>
     <string name="systts_help_sample_rate">The system TTS needs to specify the sample rate when starting to play. If Play-In-APP is turned on, this option can be ignored.</string>
-    <string name="systts_voice_multiple_option">Read aloud target can multiple</string>
+    <string name="systts_voice_multiple_option">Config can multiple</string>
     <string name="systts_voice_multiple_hint">⚠️The same reading target will no longer be excluded, and a random rotation will be used. (Single voice does not support this function)</string>
     <string name="systts_groups_multiple">Group can multiple</string>
     <string name="systts_groups_multiple_hint">⚠️Checking groups will no longer be mutually exclusive</string>
@@ -217,7 +217,20 @@
     <string name="please_choose">Please choose</string>
     <string name="config_import">Configuration import</string>
 
-    <string name="systts_ms_description">Rate:%1$s, Volume:%2$s, Pitch:%3$s</string>
-    <string name="systts_ms_express_as_description">%1$s-%2$s | degree:%3$s</string>
+    <string name="systts_ms_description">Rate: %1$s, Volume: %2$s, Pitch: %3$s</string>
+    <string name="systts_ms_express_as_description">%1$s - %2$s | degree: %3$s</string>
+    <string name="server_log_service_running">The service is already running, listening address: %1$s</string>
+    <string name="server_log_tips">1. Click the Start button
+        \n2. Open the webpage and select Configuration
+        \n3. Finally, generate a link and import it to the Legado APP
+        \n\n⚠️Note: The service needs to run in the background permanently when reading aloud!</string>
+    <string name="systts_log_request_audio">Request audio: %1$s</string>
+    <string name="systts_log_success">Success, size: %1$s, time: %2$s</string>
+    <string name="systts_log_failed">Failed: %1$s</string>
+    <string name="systts_log_audio_empty">Audio is empty: %1$s</string>
+    <string name="systts_log_decode_failed">Decode failed: %1$s</string>
+    <string name="systts_log_canceled">Canceled: %1$s</string>
+    <string name="systts_log_finished_playing">FInished playing: %1$s</string>
+    <string name="systts_log_start_retry">Start the %1$dth retry</string>
 
 </resources>

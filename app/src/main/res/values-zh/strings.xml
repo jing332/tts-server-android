@@ -218,5 +218,15 @@
 
     <string name="systts_ms_description">语速:%1$s | 音量:%2$s | 音高:%3$s</string>
     <string name="systts_ms_express_as_description">%1$s-%2$s | 强度:%3$s</string>
+    <string name="server_log_service_running">服务已在运行中，监听地址：%1$s</string>
+    <string name="server_log_tips">1. 单击启动按钮 \n2.打开网页并选择配置 \n3.最后生成链接导入到阅读APP  \n⚠️注意： 朗读时服务需常驻后台运行！</string>
+    <string name="systts_log_request_audio">请求音频：%1$s</string>
+    <string name="systts_log_success">获取成功, 大小: %1$s, 耗时: %2$s</string>
+    <string name="systts_log_failed">获取失败：%1$s</string>
+    <string name="systts_log_audio_empty">音频为空：%1$s</string>
+    <string name="systts_log_decode_failed">解码失败：%1$s</string>
+    <string name="systts_log_canceled">已取消：%1$s</string>
+    <string name="systts_log_finished_playing">播放完毕：%1$s</string>
+    <string name="systts_log_start_retry">开始第 %1$d 次重试</string>
 
 </resources>

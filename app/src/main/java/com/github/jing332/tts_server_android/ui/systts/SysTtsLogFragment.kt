@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.AppLog
-import com.github.jing332.tts_server_android.LogLevel
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.databinding.SysttsLogFragmentBinding
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService.Companion.ACTION_ON_LOG
@@ -26,16 +25,7 @@ class SysTtsLogFragment : Fragment() {
     private val binding: SysttsLogFragmentBinding by lazy {
         SysttsLogFragmentBinding.inflate(layoutInflater)
     }
-    private val logAdapter: LogListItemAdapter by lazy {
-        LogListItemAdapter(
-            arrayListOf(
-                AppLog(
-                    LogLevel.WARN,
-                    "请保持此页面存活以监听实时日志"
-                )
-            ), isHtmlText = true
-        )
-    }
+    private val logAdapter: LogListItemAdapter by lazy { LogListItemAdapter() }
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
 
     override fun onCreateView(

@@ -287,14 +287,21 @@ class SystemTtsService : TextToSpeechService(),
 
     override fun onStartRequest(text: String, tts: BaseTTS) {
         if (App.isSysTtsLogEnabled)
-            sendLog(LogLevel.INFO, "<br>请求音频：<b>${text}</b> <br><small><i>${tts}</small></i>")
+            sendLog(
+                LogLevel.INFO, "<br>" + getString(
+                    R.string.systts_log_request_audio,
+                    "<b>${text}</b> <br><small><i>${tts}</small></i>"
+                )
+            )
     }
 
     override fun onRequestSuccess(text: String, size: Int, costTime: Int, retryNum: Int) {
         if (App.isSysTtsLogEnabled)
             sendLog(
                 LogLevel.INFO,
-                "获取成功, 大小: <b>${(size / 1024)}kb</b>, 耗时: <b>${costTime}ms</b>"
+                getString(
+                    R.string.systts_log_success, "<b>${(size / 1024)}kb</b>", "<b>${costTime}ms</b>"
+                )
             )
         // 重试成功
         if (retryNum > 1) updateNotification(getString(R.string.systts_state_playing), mCurrentText)
@@ -303,29 +310,36 @@ class SystemTtsService : TextToSpeechService(),
     override fun onError(errCode: Int, speakText: String?, reason: String?) {
         if (!App.isSysTtsLogEnabled) return
         val msg = when (errCode) {
-            TtsManager.ERROR_GET_FAILED -> "获取失败: <b>${speakText}</b> <br>${reason}"
-            TtsManager.ERROR_AUDIO_NULL -> "音频为空：${speakText}"
-            TtsManager.ERROR_DECODE_FAILED -> "解码失败：${speakText} <br>${reason}"
+            TtsManager.ERROR_GET_FAILED ->
+                getString(R.string.systts_log_failed, "<b>${speakText}</b> <br>${reason}")
+            TtsManager.ERROR_AUDIO_NULL -> getString(R.string.systts_log_audio_empty, speakText)
+            TtsManager.ERROR_DECODE_FAILED ->
+                getString(R.string.systts_log_decode_failed, "$speakText <br>${reason}")
             else -> ""
         }
         sendLog(LogLevel.ERROR, msg)
     }
 
     override fun onStartRetry(retryNum: Int, message: Throwable) {
-        "开始第${retryNum}次重试...".let {
-            sendLog(LogLevel.WARN, it)
-            updateNotification("请求失败：$it", message.message)
-        }
+        val retryStr = getString(R.string.systts_log_start_retry, retryNum)
+        sendLog(LogLevel.WARN, retryStr)
+        updateNotification(getString(R.string.systts_log_failed, retryStr), message.message)
     }
 
     override fun onPlayDone(text: String?) {
         if (App.isSysTtsLogEnabled)
-            sendLog(LogLevel.INFO, "播放完毕：<b>${text?.limitLength()}</b>")
+            sendLog(
+                LogLevel.INFO,
+                getString(R.string.systts_log_finished_playing, "<b>${text?.limitLength()}</b>")
+            )
     }
 
     override fun onPlayCanceled(text: String?) {
         if (App.isSysTtsLogEnabled)
-            sendLog(LogLevel.WARN, "已取消：<b>${text?.limitLength()}</b>")
+            sendLog(
+                LogLevel.WARN,
+                getString(R.string.systts_log_canceled, "<b>${text?.limitLength()}</b>")
+            )
     }
 
     private fun sendLog(level: Int, msg: String) {

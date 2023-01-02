@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -23,6 +22,7 @@ import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.ScSwitchActivity
+import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
 import com.github.jing332.tts_server_android.util.setFadeAnim
@@ -116,16 +116,21 @@ class ServerFragment : Fragment() {
             R.id.menu_setToken -> {
                 val token = ServerConfig.token
 
-                val editText = EditText(requireContext())
-                editText.setText(token)
+                val et = MaterialTextInput(requireContext())
+                et.inputLayout.setHint(R.string.server_set_token)
+                et.inputEdit.setText(token)
                 MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.server_set_token))
-                    .setView(editText)
+                    .setView(et)
                     .setPositiveButton(
                         android.R.string.ok
                     ) { _, _ ->
-                        val text = editText.text.toString()
+                        val text = et.inputEdit.text.toString()
                         if (text != token) {
-                            toast(getString(R.string.server_token_set_to) + text.ifEmpty { "空" })
+                            toast(getString(R.string.server_token_set_to) + text.ifEmpty {
+                                getString(
+                                    R.string.none
+                                )
+                            })
                             ServerConfig.token = text
                         }
                     }.setNegativeButton(R.string.reset) { _, _ ->
