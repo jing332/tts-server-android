@@ -340,30 +340,33 @@ class TtsManager(val context: Context) {
     ): ByteArray? {
         event?.onStartRequest(text, tts)
 
-        val startTime = System.currentTimeMillis()
+        val startTime = SystemClock.elapsedRealtime()
         for (retryIndex in 1..100) {
-            kotlin.runCatching { tts.getAudio(text) }
-                .onSuccess {
-                    it?.let {
-                        event?.onRequestSuccess(
-                            text, it.size,
-                            (System.currentTimeMillis() - startTime).toInt(), retryIndex
-                        )
-                    }
-                    return it
-                }.onFailure {
-                    if (!isSynthesizing) return null
+            kotlin.runCatching {
+                val audio = tts.getAudio(text) ?: throw Exception("audio null")
+                audio
+            }.onSuccess {
+                event?.onRequestSuccess(
+                    text, it.size,
+                    (SystemClock.elapsedRealtime() - startTime).toInt(), retryIndex
+                )
+                return it
+            }.onFailure {
+                if (!isSynthesizing) return null
 
-                    val shortText = text.limitLength(20)
-                    event?.onError(ERROR_GET_FAILED, shortText, it.message)
+                val shortText = text.limitLength(20)
+                event?.onError(ERROR_GET_FAILED, shortText, it.message)
 
-                    // 为close 1006则直接跳过等待
-                    if (!it.message.toString().startsWith(CLOSE_1006_PREFIX))
-                        if (retryIndex > 3) delay(3000)
-                        else delay(requestInterval)
+                // 音频为空时至多重试两次
+                if (it.message == "audio null" && retryIndex > 2) return null
 
-                    event?.onStartRetry(retryIndex, it)
-                }
+                // 为close 1006则直接跳过等待
+                if (!it.message.toString().startsWith(CLOSE_1006_PREFIX))
+                    if (retryIndex > 3) delay(3000)
+                    else delay(requestInterval)
+
+                event?.onStartRetry(retryIndex, it)
+            }
         }
 
         return null
