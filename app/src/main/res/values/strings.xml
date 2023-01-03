@@ -10,7 +10,7 @@
     <string name="exit">Exit</string>
     <string name="copied">copied</string>
     <string name="ok_reset">Reset OK</string>
-    <string name="loading">loading</string>
+    <string name="loading">Loading</string>
 
     <string name="selected">Selected</string>
 
@@ -209,11 +209,11 @@
     <string name="choice_item">Select %1$s</string>
     <string name="import_failed">Import failed</string>
 
-    <string name="clipboard">clipboard</string>
+    <string name="clipboard">Clipboard</string>
     <string name="type">Type</string>
     <string name="source">Source</string>
     <string name="legado">Legado APP</string>
-    <string name="str_import">import</string>
+    <string name="str_import">Import</string>
     <string name="please_choose">Please choose</string>
     <string name="config_import">Configuration import</string>
 
@@ -230,9 +230,11 @@
     <string name="systts_log_audio_empty">Audio is empty: %1$s</string>
     <string name="systts_log_decode_failed">Decode failed: %1$s</string>
     <string name="systts_log_canceled">Canceled: %1$s</string>
-    <string name="systts_log_finished_playing">FInished playing: %1$s</string>
+    <string name="systts_log_finished_playing">Finished playing: %1$s</string>
     <string name="systts_log_start_retry">Start the %1$dth retry</string>
     <string name="unlimited">Unlimited</string>
     <string name="systts_log_ip_is_restricted">Your IP may have been restricted by the Microsoft server. Switching to an audio format with low traffic consumption can largely avoid this situation.</string>
-
+    <string name="local_file">Local file</string>
+    <string name="select_file">Select the file</string>
+    <string name="select_file_hint">Click the button on the right to select the file➡️</string>
 </resources>

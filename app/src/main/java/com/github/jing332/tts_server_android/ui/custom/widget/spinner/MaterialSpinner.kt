@@ -12,6 +12,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 
+@SuppressLint("DiscouragedPrivateApi")
 class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     MaterialAutoCompleteTextView(context, attrs, defStyleAttr) {
     constructor(context: Context) : this(context, null)
@@ -58,7 +59,11 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
     }
 
-    @SuppressLint("DiscouragedPrivateApi")
+    private val listPopup by lazy {
+        AutoCompleteTextView::class.java.getDeclaredField("mPopup")
+            .apply { isAccessible = true }.get(this) as ListPopupWindow
+    }
+
     override fun showDropDown() {
         if (accessibilityManager.isTouchExplorationEnabled) {
             val adapter =
@@ -73,13 +78,9 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
                 dlg.dismiss()
             }
             listDialog.setFadeAnim().show()
-        } else{
-            val modalListPopup =
-                MaterialAutoCompleteTextView::class.java.getDeclaredField("modalListPopup")
-                    .apply { isAccessible = true }
-                    .get(this) as androidx.appcompat.widget.ListPopupWindow
-            modalListPopup.show()
-            modalListPopup.setSelection(selectedPosition)
+        } else {
+            super.showDropDown()
+            listPopup.setSelection(selectedPosition)
         }
     }
 

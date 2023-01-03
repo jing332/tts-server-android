@@ -230,5 +230,8 @@
     <string name="systts_log_start_retry">开始第 %1$d 次重试</string>
     <string name="unlimited">无限制</string>
     <string name="systts_log_ip_is_restricted">您的IP可能已被微软服务器限制，换为流量消耗小的音频格式可大程度避免此情况。</string>
+    <string name="local_file">本地文件</string>
+    <string name="select_file">选择文件</string>
+    <string name="select_file_hint">单击右侧按钮选择文件➡️</string>
 
 </resources>

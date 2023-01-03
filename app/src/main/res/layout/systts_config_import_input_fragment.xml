@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_marginTop="16dp"
         android:id="@+id/tv_type_title"
         style="?attr/textAppearanceTitleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/type"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,6 +81,14 @@
 
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_src_local_file"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/local_file"
+            app:icon="@drawable/ic_baseline_insert_drive_file_24" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_src_url"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
@@ -89,22 +98,48 @@
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_url"
-        android:layout_width="0dp"
+    <FrameLayout
+        android:id="@+id/layout_input"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:hint="@string/url_net"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/group_source">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_url"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:hint="@string/url_net"
+            android:visibility="gone">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_file_path"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:endIconContentDescription="@string/select_file"
+            app:endIconDrawable="@drawable/ic_baseline_edit_24"
+            app:endIconMode="custom"
+            app:endIconTint="@color/teal_200"
+            app:hintEnabled="false"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:editable="false"
+                android:hint="@string/select_file_hint"
+                tools:ignore="Deprecated" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </FrameLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_import"
@@ -117,5 +152,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_url" />
+        app:layout_constraintTop_toBottomOf="@id/layout_input" />
 </androidx.constraintlayout.widget.ConstraintLayout>
