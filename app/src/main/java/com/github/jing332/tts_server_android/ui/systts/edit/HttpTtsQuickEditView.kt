@@ -25,9 +25,7 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
     }
 
     var rate: Int
-        get() {
-            return binding.seekBarRate.progress
-        }
+        get() = binding.seekBarRate.progress
         set(value) {
             mTts.rate = value
             binding.seekBarRate.progress = value
@@ -35,9 +33,7 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
         }
 
     var volume: Int
-        get() {
-            return binding.seekBarVolume.progress
-        }
+        get() = binding.seekBarVolume.progress
         set(value) {
             mTts.volume = value
             binding.seekBarVolume.progress = value
@@ -69,16 +65,19 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
 
     override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
         binding.tvPreviewUrl.text = doAnalyzeUrl()
+        mTts.rate = rate
+        mTts.volume = volume
     }
 
     private fun doAnalyzeUrl(): String {
         kotlin.runCatching {
-            val result = AnalyzeUrl(
+            val a = AnalyzeUrl(
                 mUrl = this.mTts.url,
                 speakSpeed = rate,
                 speakVolume = volume
-            ).eval()
-            return result?.body ?: "解析url失败"
+            )
+            val result = a.eval()
+            return result?.body ?: a.baseUrl
         }.onFailure {
             return "${it.message}"
         }
