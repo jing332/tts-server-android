@@ -92,10 +92,10 @@ object MyTools {
         tag: String
     ) {
         MaterialAlertDialogBuilder(ctx)
-            .setTitle("有新版本")
-            .setMessage("版本号: $tag\n\n$body")
+            .setTitle(ctx.getString(R.string.new_version_available, tag))
+            .setMessage(body)
             .setPositiveButton(
-                "Github下载"
+                "Github"
             ) { _, _ ->
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse(downloadUrl)
@@ -103,7 +103,7 @@ object MyTools {
                 ctx.startActivity(intent)
             }
             .setNegativeButton(
-                "Github加速"
+                "Ghproxy"
             ) { _, _ ->
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse("https://ghproxy.com/$downloadUrl")

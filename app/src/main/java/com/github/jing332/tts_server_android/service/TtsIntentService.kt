@@ -8,11 +8,11 @@ import android.os.Build
 import android.os.PowerManager
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.ServerConfig
+import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.toast

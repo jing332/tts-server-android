@@ -2,12 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:visible="false"
-        android:id="@+id/menu_add_config_from_existing"
-        android:icon="@drawable/ic_baseline_add_24"
-        android:title="@string/add_config"
-        app:iconTint="@color/colorPrimary" />
-    <item
         android:id="@+id/menu_edit_group_name"
         android:icon="@drawable/ic_baseline_edit_24"
         android:title="@string/rename"

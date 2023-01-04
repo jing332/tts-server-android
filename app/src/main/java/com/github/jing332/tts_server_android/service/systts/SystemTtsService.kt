@@ -23,6 +23,8 @@ import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.service.systts.help.TtsManager
+import com.github.jing332.tts_server_android.ui.AppLog
+import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils

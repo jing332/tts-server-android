@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.util.longToast
 
 //显示日志的适配器

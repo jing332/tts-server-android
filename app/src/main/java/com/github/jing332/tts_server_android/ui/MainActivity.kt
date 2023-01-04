@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             when (menuItem.itemId) {
                 R.id.nav_killBattery -> killBattery()
                 R.id.nav_checkUpdate -> MyTools.checkUpdate(this, isFromUser = true)
-                R.id.nav_about -> showAboutDialog()
+                R.id.nav_about -> displayAboutDialog()
             }
         }
 
@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     @Suppress("DEPRECATION")
-    private fun showAboutDialog() {
+    private fun displayAboutDialog() {
         val tv = TextView(this)
         tv.movementMethod = LinkMovementMethod()
         tv.text = Html.fromHtml(resources.openRawResource(R.raw.abort_info).readAllText())

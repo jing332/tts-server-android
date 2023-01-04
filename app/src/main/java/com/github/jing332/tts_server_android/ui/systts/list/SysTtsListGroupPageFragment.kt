@@ -47,7 +47,7 @@ class SysTtsListGroupPageFragment : Fragment() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    @SuppressLint("RestrictedApi", "SetTextI18n")
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) return

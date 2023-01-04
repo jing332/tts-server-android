@@ -15,6 +15,8 @@ import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.databinding.ServerLogFragmentBinding
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.TtsIntentService
+import com.github.jing332.tts_server_android.ui.AppLog
+import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
 import tts_server_lib.Tts_server_lib
 

@@ -27,7 +27,6 @@ import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListItemHelper
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.setFadeAnim
-import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.conflate
@@ -173,14 +172,12 @@ class SysTtsListMyGroupPageFragment : Fragment() {
 
     @SuppressLint("RestrictedApi")
     private fun displayMoreMenu(v: View, model: RvGroupModel) {
-
         PopupMenu(requireContext(), v).apply {
             this.setForceShowIcon(true)
 
             menuInflater.inflate(R.menu.menu_systts_list_group_more, menu)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    R.id.menu_add_config_from_existing -> addConfigFromExisting()
                     R.id.menu_edit_group_name -> editGroupName(model.data)
                     R.id.menu_delete_group -> deleteGroup(model.data)
                 }
@@ -204,10 +201,6 @@ class SysTtsListMyGroupPageFragment : Fragment() {
             }
             .setFadeAnim()
             .show()
-    }
-
-    private fun addConfigFromExisting() {
-        toast("😛 此功能计划中")
     }
 
     private fun deleteGroup(data: SystemTtsGroup) {

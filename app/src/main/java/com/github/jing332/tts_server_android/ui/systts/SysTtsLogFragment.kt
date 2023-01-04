@@ -11,10 +11,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.AppLog
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.databinding.SysttsLogFragmentBinding
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService.Companion.ACTION_ON_LOG
+import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
 
 class SysTtsLogFragment : Fragment() {

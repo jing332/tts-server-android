@@ -237,4 +237,5 @@
     <string name="select_file">Select the file</string>
     <string name="select_file_hint">Click the button on the right to select the file➡️</string>
     <string name="systts_group_empty_msg"><![CDATA[Click the ➕ button on the right side of the top application bar -> Add TTS, and set the group to which it belongs in the editing interface.]]></string>
+    <string name="new_version_available">New version available：%1$s</string>
 </resources>
