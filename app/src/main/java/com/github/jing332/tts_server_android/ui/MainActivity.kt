@@ -16,6 +16,7 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -182,9 +183,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         tv.movementMethod = LinkMovementMethod()
         tv.text = Html.fromHtml(resources.openRawResource(R.raw.abort_info).readAllText())
         tv.gravity = Gravity.CENTER /* 居中 */
-        tv.setPadding(25, 25, 25, 25)
+        tv.setPadding(25)
         MaterialAlertDialogBuilder(this).setTitle(R.string.about).setView(tv)
-            .setMessage("本应用界面使用Kotlin开发，底层服务由Go开发.")
             .setFadeAnim().show()
     }
 

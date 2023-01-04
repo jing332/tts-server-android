@@ -12,6 +12,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
+import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
@@ -104,7 +105,16 @@ class MsTtsEditActivity : BackActivity() {
             false
         }
 
+        if (AppConfig.testSampleText.isNotEmpty())
+            binding.etTestText.setText(AppConfig.testSampleText)
+
         binding.tilTest.setEndIconOnClickListener { doTest() }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (binding.etTestText.text.toString() != getString(R.string.systts_sample_test_text))
+            AppConfig.testSampleText = binding.etTestText.text.toString()
     }
 
     private fun doTest() {

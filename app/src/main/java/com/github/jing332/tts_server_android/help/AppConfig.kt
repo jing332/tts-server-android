@@ -11,5 +11,7 @@ object AppConfig : KotprefModel() {
      */
     var isEdgeDnsEnabled by booleanPref()
 
+    var testSampleText by stringPref()
+
     var fragmentIndex by intPref(0)
 }

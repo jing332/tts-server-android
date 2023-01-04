@@ -14,6 +14,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityBinding
+import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
@@ -91,12 +92,21 @@ class HttpTtsEditActivity : BackActivity() {
                 .setMessage(R.string.systts_help_sample_rate).setFadeAnim().show()
         }
 
+        if (AppConfig.testSampleText.isNotEmpty())
+            binding.etTestText.setText(AppConfig.testSampleText)
+
         // 采样率
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item)
         adapter.addAll(resources.getStringArray(R.array.sample_rate_list).toList())
         binding.tvSampleRate.setAdapter(adapter)
         // 不过滤
         binding.tvSampleRate.threshold = Int.MAX_VALUE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (binding.etTestText.text.toString() != getString(R.string.systts_sample_test_text))
+            AppConfig.testSampleText = binding.etTestText.text.toString()
     }
 
     private fun doTest() {
@@ -126,7 +136,7 @@ class HttpTtsEditActivity : BackActivity() {
             { err ->
                 waitDialog.dismiss()
                 MaterialAlertDialogBuilder(this@HttpTtsEditActivity).setTitle(R.string.test_failed)
-                    .setMessage(err)
+                    .setMessage(err.message ?: err.cause?.message)
                     .setFadeAnim()
                     .show()
             })

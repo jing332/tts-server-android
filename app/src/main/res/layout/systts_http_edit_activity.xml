@@ -94,7 +94,7 @@
                 android:hint="@string/sample_text"
                 android:imeOptions="actionGo"
                 android:singleLine="true"
-                android:text="@string/systts_http_sample_test_text" />
+                android:text="@string/systts_sample_test_text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox

@@ -140,8 +140,7 @@
     <string name="systts_http_edit_title">Edit custom TTS</string>
     <string name="systts_http_request_header">Http Request header</string>
 
-    <string name="systts_http_sample_test_text">click the button on the right to test and play</string>
-    <string name="systts_ms_sample_test_text">click the button on the right to test and play</string>
+    <string name="systts_sample_test_text">click the button on the right to test and play</string>
 
     <string name="systts_decode_audio">Decode audio</string>
     <string name="systts_add_internal_tts">Add built-in TTS</string>

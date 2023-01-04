@@ -138,8 +138,7 @@
     <string name="systts_http_edit_title">编辑自定义TTS</string>
     <string name="systts_http_request_header">请求头</string>
 
-    <string name="systts_http_sample_test_text">单击右侧按钮即可测试并播放</string>
-    <string name="systts_ms_sample_test_text">单击右侧按钮即可测试并播放</string>
+    <string name="systts_sample_test_text">单击右侧按钮即可测试并播放</string>
 
     <string name="systts_decode_audio">解码音频</string>
     <string name="systts_add_internal_tts">添加内置TTS</string>

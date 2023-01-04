@@ -49,7 +49,7 @@
                     android:layout_height="match_parent"
                     android:imeOptions="actionGo"
                     android:singleLine="true"
-                    android:text="@string/systts_ms_sample_test_text" />
+                    android:text="@string/systts_sample_test_text" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

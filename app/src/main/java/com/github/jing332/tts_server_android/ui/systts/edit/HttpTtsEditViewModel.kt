@@ -27,7 +27,7 @@ class HttpTtsEditViewModel : ViewModel() {
         tts: HttpTTS,
         text: String,
         onSuccess: suspend (size: Int, sampleRate: Int, mime: String, contentType: String) -> Unit,
-        onFailure: suspend (reason: String) -> Unit,
+        onFailure: suspend (reason: Throwable) -> Unit,
     ) {
         viewModelScope.launch {
             kotlin.runCatching {
@@ -35,11 +35,11 @@ class HttpTtsEditViewModel : ViewModel() {
                 val data = withIO { resp.body?.bytes() }
 
                 if (resp.code != 200) {
-                    onFailure("服务器返回错误信息：\n${data?.decodeToString()}")
+                    onFailure.invoke(Exception("服务器返回错误信息：\n${data?.decodeToString()}"))
                     return@launch
                 }
 
-                if (data == null) onFailure("音频为空")
+                if (data == null) onFailure.invoke(Exception("音频为空"))
                 val contentType = resp.header("Content-Type", "无") ?: "无"
 
                 data?.let {
@@ -62,7 +62,7 @@ class HttpTtsEditViewModel : ViewModel() {
 
                 }
             }.onFailure {
-                onFailure(it.stackTraceToString())
+                onFailure.invoke(it)
             }
         }
     }
