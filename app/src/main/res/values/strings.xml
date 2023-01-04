@@ -18,7 +18,7 @@
     <string name="start">Start</string>
     <string name="follow">Follow</string>
     <string name="custom">Customize</string>
-    <string name="app_down_again_to_exit">Press again to exit APP</string>
+    <string name="app_down_again_to_exit">Press again to exit application</string>
     <string name="cannot_empty">Not nullable！</string>
 
     <string name="open_web">Open Web</string>
@@ -155,7 +155,7 @@
     <string name="systts_multi_voice_option">Multi-Voice(aside/dialogue)</string>
     <string name="systts_use_internal_audio_player">Use built-in player</string>
     <string name="systts_in_app_play_info_html"><DATA><![CDATA[
-        After the option is turned on, the <b>audio player built into the APP</b> will be used directly instead of being played by the system TTS component.
+        After the option is turned on, the <b>audio player built into the application</b> will be used directly instead of being played by the system TTS component.
         <br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。
         <br><br>当然，直接播放也有兼容性问题：
         <br> - 由于并未将原始音频发送到系统TTS组件，所以如果调用TTS者是先缓存后播放机制，即并非由系统播放时，这将会导致缓存时音频为空和意外播放。
@@ -212,7 +212,7 @@
     <string name="clipboard">Clipboard</string>
     <string name="type">Type</string>
     <string name="source">Source</string>
-    <string name="legado">Legado APP</string>
+    <string name="legado">Legado</string>
     <string name="str_import">Import</string>
     <string name="please_choose">Please choose</string>
     <string name="config_import">Configuration import</string>
@@ -237,4 +237,5 @@
     <string name="local_file">Local file</string>
     <string name="select_file">Select the file</string>
     <string name="select_file_hint">Click the button on the right to select the file➡️</string>
+    <string name="systts_group_empty_msg"><![CDATA[Click the ➕ button on the right side of the top application bar -> Add TTS, and set the group to which it belongs in the editing interface.]]></string>
 </resources>

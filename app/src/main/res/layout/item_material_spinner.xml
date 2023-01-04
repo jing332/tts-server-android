@@ -46,26 +46,28 @@
             android:importantForAccessibility="no"
             android:singleLine="true"
             android:text="@{text}"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textAppearance="?attr/textAppearanceBody1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView_check"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/imageView"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_bias="0.25"
             tools:text="晓晓 (zh-CN.....)" />
 
-        <ImageView
+        <RadioButton
             android:id="@+id/imageView_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_width="26dp"
+            android:layout_height="20dp"
+            android:layout_marginVertical="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:checked="true"
+            android:clickable="false"
+            android:focusable="false"
             android:importantForAccessibility="no"
             app:layout_constraintBottom_toBottomOf="@+id/tv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv"
-            app:srcCompat="@drawable/ic_baseline_check_24"
             app:visible="@{selected}"
             tools:ignore="PrivateResource" />
 

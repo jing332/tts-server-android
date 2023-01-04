@@ -26,7 +26,6 @@ import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListItemHelper
 import com.github.jing332.tts_server_android.util.clickWithThrottle
-import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.checkbox.MaterialCheckBox
@@ -94,8 +93,14 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                                 }"
                             )
 
-                            if (model.itemExpand && model.itemSublist.isNullOrEmpty())
-                                longToast(R.string.msg_group_is_empty)
+                            if (model.itemExpand && model.itemSublist.isNullOrEmpty()) {
+                                collapse(modelPosition)
+                                MaterialAlertDialogBuilder(requireContext())
+                                    .setTitle(R.string.msg_group_is_empty)
+                                    .setMessage(getString(R.string.systts_group_empty_msg))
+                                    .setFadeAnim()
+                                    .show()
+                            }
 
                             appDb.systemTtsDao.updateGroup(model.data.apply {
                                 isExpanded = model.itemExpand
@@ -141,8 +146,8 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                     list.mapIndexed { i, v ->
                         val checkState =
                             when (v.list.filter { it.isEnabled }.size) {
-                                v.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
                                 0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
+                                v.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
                                 else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
                             }
 

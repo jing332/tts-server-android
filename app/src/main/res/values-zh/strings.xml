@@ -233,5 +233,6 @@
     <string name="local_file">本地文件</string>
     <string name="select_file">选择文件</string>
     <string name="select_file_hint">单击右侧按钮选择文件➡️</string>
+    <string name="systts_group_empty_msg"><![CDATA[单击顶部应用栏右侧的 ➕按钮 -> 添加TTS，然后在编辑界面设置所属分组。]]></string>
 
 </resources>
