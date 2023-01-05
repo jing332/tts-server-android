@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.data.entities
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
@@ -12,7 +13,7 @@ import kotlinx.serialization.Serializable
 data class ReplaceRule(
     @kotlinx.serialization.Transient
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0,
+    var id: Long = System.currentTimeMillis(),
 
     // 显示名称
     var name: String,
@@ -23,5 +24,8 @@ data class ReplaceRule(
     // 匹配
     var pattern: String,
     // 替换为
-    var replacement: String
+    var replacement: String,
+    // 索引 排序用
+    @ColumnInfo(defaultValue = "0")
+    var order: Int = 0,
 ) : Parcelable

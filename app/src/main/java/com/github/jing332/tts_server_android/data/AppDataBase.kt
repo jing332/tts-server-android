@@ -15,7 +15,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 val appDb by lazy { AppDatabase.createDatabase(App.context) }
 
 @Database(
-    version = 5,
+    version = 6,
     entities = [
         SystemTts::class, SystemTtsGroup::class,
         ReplaceRule::class
@@ -24,6 +24,7 @@ val appDb by lazy { AppDatabase.createDatabase(App.context) }
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
+        AutoMigration(from = 5, to = 6),
     ]
 )
 abstract class AppDatabase : RoomDatabase() {

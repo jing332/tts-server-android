@@ -128,7 +128,7 @@
     <string name="systts_replace_rule">Replace rule</string>
     <string name="systts_replace_as">Replace with</string>
     <string name="systts_replace_insert_pinyin">Insert pinyin tone</string>
-    <string name="systts_replace_use_regex">use regular expressions</string>
+    <string name="systts_replace_use_regex">Use regular expressions</string>
 
     <!-- 系统TTS 设置 -->
     <string name="systts_set_dialogue_min_match_word_count">Set Chinese length for dialogue</string>

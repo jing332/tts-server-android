@@ -3,6 +3,8 @@ package com.github.jing332.tts_server_android.ui.systts.replace
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
@@ -11,11 +13,14 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.os.postDelayed
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
+import com.drake.brv.BindingAdapter
+import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
-import com.drake.net.utils.withDefault
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
@@ -23,17 +28,17 @@ import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceRuleItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
 class ReplaceManagerActivity : BackActivity() {
     companion object {
-        const val TAG = "ReplaceRuleActivity"
+        const val TAG = "ReplaceManagerActivity"
     }
 
     private val vm: ReplaceManagerViewModel by viewModels()
@@ -47,41 +52,67 @@ class ReplaceManagerActivity : BackActivity() {
         setContentView(binding.root)
 
         val brv = binding.recyclerView.linear().setup {
-            addType<ReplaceRule>(R.layout.systts_replace_rule_item)
+            addType<ReplaceRuleModel>(R.layout.systts_replace_rule_item)
             onCreate {
                 val binding = getBinding<SysttsReplaceRuleItemBinding>()
-                binding.btnEdit.setOnClickListener { edit(getModel()) }
-                binding.btnDelete.setOnClickListener { delete(getModel()) }
+
+                binding.btnEdit.clickWithThrottle { edit(getModel<ReplaceRuleModel>().data) }
+                binding.btnDelete.clickWithThrottle { delete(getModel<ReplaceRuleModel>().data) }
                 binding.checkBox.setOnClickListener {
-                    appDb.replaceRuleDao.update(getModel())
+                    appDb.replaceRuleDao.update(getModel<ReplaceRuleModel>().data)
                 }
             }
 
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return (oldItem as ReplaceRule).id == (newItem as ReplaceRule).id
+                    return (oldItem as ReplaceRuleModel).data.id == (newItem as ReplaceRuleModel).data.id
+                }
+
+                override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+                    val old = oldItem as ReplaceRuleModel
+                    val new = newItem as ReplaceRuleModel
+                    return old.data == new.data
                 }
 
                 override fun getChangePayload(oldItem: Any, newItem: Any) = true
             }
+
+            itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
+                override fun onDrag(
+                    source: BindingAdapter.BindingViewHolder,
+                    target: BindingAdapter.BindingViewHolder
+                ) {
+                    updateOrder(models)
+                }
+
+            })
         }
 
-        lifecycleScope.launch {
-            appDb.replaceRuleDao.flowAll().conflate().collect {
-                if (brv.models == null)
-                    brv.models = it
-                else withDefault { brv.setDifferModels(it) }
+        val handler = Handler(Looper.getMainLooper())
+        lifecycleScope.runOnIO {
+            appDb.replaceRuleDao.flowAll().conflate().collect { list ->
+                val models = list.map { ReplaceRuleModel(data = it) }
+                if (brv.models == null) brv.models = models
+                else {
+                    handler.removeCallbacksAndMessages(null)
+                    handler.postDelayed(100) { brv.setDifferModels(models) }
+                }
             }
         }
     }
 
+    fun updateOrder(models: List<Any?>?) {
+        models?.forEachIndexed { index, value ->
+            val model = value as ReplaceRuleModel
+            model.data.order = index
+            appDb.replaceRuleDao.update(model.data)
+        }
+    }
+
     fun delete(data: ReplaceRule) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.is_confirm_delete)
-            .setMessage(data.name)
-            .setPositiveButton(R.string.delete) { _, _ -> appDb.replaceRuleDao.delete(data) }
-            .setFadeAnim()
-            .show()
+        AppDialogs.displayRemoveDialog(this, data.name) {
+            appDb.replaceRuleDao.delete(data)
+        }
     }
 
     private fun edit(data: ReplaceRule) {
@@ -94,18 +125,16 @@ class ReplaceManagerActivity : BackActivity() {
         result.data?.apply {
             getParcelableExtra<ReplaceRule>(KeyConst.KEY_DATA)?.let {
                 if (result.resultCode == KeyConst.RESULT_ADD)
-                    appDb.replaceRuleDao.insert(it)
-                else
-                    appDb.replaceRuleDao.update(it)
+                    appDb.replaceRuleDao.insert(it.apply { order = appDb.replaceRuleDao.count })
+                else appDb.replaceRuleDao.update(it)
             }
         }
     }
 
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        if (menu is MenuBuilder) {
-            menu.setOptionalIconsVisible(true)
-        }
+        if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
+
         menuInflater.inflate(R.menu.menu_replace_manager, menu)
         /* 开关选项 */
         val item = menu?.findItem(R.id.app_bar_switch)
@@ -164,8 +193,7 @@ class ReplaceManagerActivity : BackActivity() {
                         } else {
                             longToast("上传失败：${ret.exceptionOrNull()?.message}")
                         }
-                    }
-                    .show()
+                    }.show()
             }
         }
 

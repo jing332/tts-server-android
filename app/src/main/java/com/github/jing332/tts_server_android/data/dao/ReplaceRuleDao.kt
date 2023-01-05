@@ -9,7 +9,7 @@ interface ReplaceRuleDao {
     @get:Query("select * from ReplaceRule ORDER BY isEnabled ASC")
     val all: List<ReplaceRule>
 
-    @Query("select * from ReplaceRule ORDER BY isEnabled DESC")
+    @Query("select * from ReplaceRule ORDER BY `order` ASC")
     fun flowAll(): Flow<List<ReplaceRule>>
 
     @get:Query("select count(*) from ReplaceRule")
@@ -20,13 +20,13 @@ interface ReplaceRuleDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg httpTTS: ReplaceRule)
+    fun insert(vararg data: ReplaceRule)
 
     @Delete
-    fun delete(vararg httpTTS: ReplaceRule)
+    fun delete(vararg data: ReplaceRule)
 
     @Update
-    fun update(vararg httpTTS: ReplaceRule)
+    fun update(vararg data: ReplaceRule)
 
     @Query("delete from ReplaceRule where id < 0")
     fun deleteDefault()

@@ -43,7 +43,7 @@ class ReplaceRuleEditActivity : BackActivity() {
         binding.tilReplacement.setEndIconOnClickListener { displayPinyinList() }
 
         binding.etPattern.addTextChangedListener {
-            if (binding.etTestText.text.isEmpty()) {
+            if (binding.etTestText.text.isEmpty() && !binding.switchIsRegex.isChecked) {
                 binding.etTestText.text = it
             }
         }
@@ -58,10 +58,10 @@ class ReplaceRuleEditActivity : BackActivity() {
 
         vm.liveData.observe(this) {
             binding.apply {
+                switchIsRegex.isChecked = it.isRegex
                 etName.setText(it.name)
                 etPattern.setText(it.pattern)
                 etReplacement.setText(it.replacement)
-                switchIsRegex.isChecked = it.isRegex
             }
         }
 

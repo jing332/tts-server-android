@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.github.jing332.tts_server_android.data.entities.ReplaceRule" />
+            type="com.github.jing332.tts_server_android.ui.systts.replace.ReplaceRuleModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -25,8 +25,8 @@
                 android:id="@+id/checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="@={m.enabled}"
-                android:text="@={m.name}"
+                android:checked="@={m.data.enabled}"
+                android:text="@={m.data.name}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -37,7 +37,6 @@
                 android:id="@+id/btn_edit"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/desc_edit_item"
                 android:scaleType="centerInside"
