@@ -3,8 +3,6 @@ package com.github.jing332.tts_server_android.ui.systts.replace
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
@@ -13,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.os.postDelayed
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.drake.brv.BindingAdapter
@@ -33,7 +30,10 @@ import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
 class ReplaceManagerActivity : BackActivity() {
@@ -88,14 +88,17 @@ class ReplaceManagerActivity : BackActivity() {
             })
         }
 
-        val handler = Handler(Looper.getMainLooper())
+//        val handler = Handler(Looper.getMainLooper())
+        var job: Job? = null
         lifecycleScope.runOnIO {
             appDb.replaceRuleDao.flowAll().conflate().collect { list ->
                 val models = list.map { ReplaceRuleModel(data = it) }
                 if (brv.models == null) brv.models = models
                 else {
-                    handler.removeCallbacksAndMessages(null)
-                    handler.postDelayed(100) { brv.setDifferModels(models) }
+                    job?.cancel()
+                    job = null
+                    job = lifecycleScope.launch { delay(100); brv.setDifferModels(models) }
+                        .apply { start() }
                 }
             }
         }

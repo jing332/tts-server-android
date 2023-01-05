@@ -11,7 +11,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "replaceRule")
 data class ReplaceRule(
-    @kotlinx.serialization.Transient
     @PrimaryKey(autoGenerate = true)
     var id: Long = System.currentTimeMillis(),
 

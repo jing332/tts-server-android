@@ -12,7 +12,7 @@ class ReplaceHelper {
 
     fun load(): String? {
         try {
-            rules = appDb.replaceRuleDao.all
+            rules = appDb.replaceRuleDao.allEnabled
         } catch (e: Exception) {
             e.printStackTrace()
             rules = arrayListOf()
@@ -28,12 +28,10 @@ class ReplaceHelper {
     fun doReplace(text: String): String {
         var s = text
         rules.forEach {
-            if (it.isEnabled) {
-                s = if (it.isRegex)
-                    s.replace(Regex(it.pattern), it.replacement)
-                else
-                    s.replace(it.pattern, it.replacement)
-            }
+            s = if (it.isRegex)
+                s.replace(Regex(it.pattern), it.replacement)
+            else
+                s.replace(it.pattern, it.replacement)
         }
 
         return s

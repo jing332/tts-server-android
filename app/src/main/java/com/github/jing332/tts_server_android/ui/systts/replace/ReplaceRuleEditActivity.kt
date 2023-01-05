@@ -43,18 +43,14 @@ class ReplaceRuleEditActivity : BackActivity() {
         binding.tilReplacement.setEndIconOnClickListener { displayPinyinList() }
 
         binding.etPattern.addTextChangedListener {
-            if (binding.etTestText.text.isEmpty() && !binding.switchIsRegex.isChecked) {
-                binding.etTestText.text = it
+            if (!binding.switchIsRegex.isChecked) {
+                binding.etTestText.text.ifEmpty { binding.etTestText.text = binding.etPattern.text }
             }
-        }
-
-        binding.etReplacement.addTextChangedListener {
             doTest()
         }
 
-        binding.etTestText.addTextChangedListener {
-            doTest()
-        }
+        binding.etReplacement.addTextChangedListener { doTest() }
+        binding.etTestText.addTextChangedListener { doTest() }
 
         vm.liveData.observe(this) {
             binding.apply {

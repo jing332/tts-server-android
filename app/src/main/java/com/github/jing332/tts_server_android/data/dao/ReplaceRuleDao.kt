@@ -6,8 +6,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReplaceRuleDao {
-    @get:Query("select * from ReplaceRule ORDER BY isEnabled ASC")
+    @get:Query("select * from ReplaceRule ORDER BY `order` ASC")
     val all: List<ReplaceRule>
+
+    @get:Query("select * from ReplaceRule WHERE isEnabled = '1' ORDER BY `order` ASC")
+    val allEnabled: List<ReplaceRule>
 
     @Query("select * from ReplaceRule ORDER BY `order` ASC")
     fun flowAll(): Flow<List<ReplaceRule>>
@@ -27,8 +30,4 @@ interface ReplaceRuleDao {
 
     @Update
     fun update(vararg data: ReplaceRule)
-
-    @Query("delete from ReplaceRule where id < 0")
-    fun deleteDefault()
-
 }

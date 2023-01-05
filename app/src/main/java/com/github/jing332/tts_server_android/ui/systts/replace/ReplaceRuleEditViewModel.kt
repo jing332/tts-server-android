@@ -19,9 +19,13 @@ class ReplaceRuleEditViewModel : ViewModel() {
 
     fun test(text: String, pattern: String, replacement: String, isRegex: Boolean): String {
         return if (isRegex) {
-            val regex = Pattern.compile(pattern)
-            text.replace(regex.toRegex(), replacement)
-        }else{
+            return try {
+                val regex = Pattern.compile(pattern)
+                text.replace(regex.toRegex(), replacement)
+            } catch (e: Exception) {
+                e.message ?: e.cause?.message.toString()
+            }
+        } else {
             text.replace(pattern, replacement)
         }
     }
