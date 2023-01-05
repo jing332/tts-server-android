@@ -10,6 +10,10 @@ import android.view.accessibility.AccessibilityNodeInfo
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.drake.brv.BindingAdapter
+import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
@@ -29,8 +33,8 @@ import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.launch
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class SysTtsListMyGroupPageFragment : Fragment() {
@@ -137,9 +141,33 @@ class SysTtsListMyGroupPageFragment : Fragment() {
 
                 override fun getChangePayload(oldItem: Any, newItem: Any) = true
             }
+
+            itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
+                override fun onSelectedChanged(
+                    viewHolder: RecyclerView.ViewHolder?,
+                    actionState: Int
+                ) {
+                    if (actionState == ItemTouchHelper.ACTION_STATE_DRAG)
+                        (viewHolder as BindingAdapter.BindingViewHolder).collapse()
+
+                    super.onSelectedChanged(viewHolder, actionState)
+                }
+
+                override fun onDrag(
+                    source: BindingAdapter.BindingViewHolder,
+                    target: BindingAdapter.BindingViewHolder
+                ) {
+                    models?.filterIsInstance<RvGroupModel>()?.let { models ->
+                        models.forEachIndexed { index, value ->
+                            appDb.systemTtsDao.updateGroup(value.data.apply { order = index })
+                        }
+                    }
+                }
+            })
         }
 
         lifecycleScope.launch {
+            var job: Job? = null
             appDb.systemTtsDao.flowAllGroupWithTts.conflate().collect { list ->
                 val models = withDefault {
                     list.mapIndexed { i, v ->
@@ -160,10 +188,14 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                     }
                 }
 
-                if (brv.modelCount > 0)
-                    withDefault { brv.setDifferModels(models) }
-                else
+                if (brv.models == null)
                     brv.models = models
+                else {
+                    job?.cancel()
+                    job = null
+                    job = launch { delay(100); brv.setDifferModels(models) }
+                }
+
             }
 
         }
@@ -204,7 +236,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
     }
 
     private fun deleteGroup(data: SystemTtsGroup) {
-        AppDialogs.displayRemoveDialog(requireContext(), data.name) {
+        AppDialogs.displayDeleteDialog(requireContext(), data.name) {
             appDb.systemTtsDao.deleteGroupAndTts(data)
         }
     }

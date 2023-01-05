@@ -42,7 +42,7 @@ data class CompatSysTtsConfig(
             val compatConfig = read()
             compatConfig?.apply {
                 list.forEach {
-                    appDb.systemTtsDao.insertTtsIfDefault(
+                    appDb.systemTtsDao.insertTts(
                         SystemTts(
                             readAloudTarget = it.readAloudTarget,
                             tts = it.voiceProperty,

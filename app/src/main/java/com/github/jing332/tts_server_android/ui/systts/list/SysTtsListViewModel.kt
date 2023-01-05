@@ -5,7 +5,6 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import kotlinx.serialization.encodeToString
-import tts_server_lib.Tts_server_lib
 
 class SysTtsListViewModel : ViewModel() {
     companion object {
@@ -23,21 +22,10 @@ class SysTtsListViewModel : ViewModel() {
         }
     }
 
-    /* 上传配置到URL */
-    fun uploadConfigToUrl(json: String): Result<String> {
-        return try {
-            val url = Tts_server_lib.uploadConfig(json)
-
-            Result.success(url)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
     /* 导出配置 */
     fun exportConfig(): String {
         return try {
-            App.jsonBuilder.encodeToString(appDb.systemTtsDao.getSysTtsWithGroups())
+            App.jsonBuilder.encodeToString(appDb.systemTtsDao.sysTtsWithGroups)
         } catch (e: Exception) {
             "导出失败：${e.message}"
         }

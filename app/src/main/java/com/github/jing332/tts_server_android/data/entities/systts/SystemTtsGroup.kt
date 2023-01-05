@@ -7,15 +7,17 @@ import androidx.room.PrimaryKey
 @kotlinx.serialization.Serializable
 @Entity
 data class SystemTtsGroup(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "groupId")
     val id: Long = System.currentTimeMillis(),
 
     var name: String,
 
+    @ColumnInfo(defaultValue = "0")
+    var order: Int = 0,
+
     @kotlinx.serialization.Transient
     var isExpanded: Boolean = false,
-
 ) {
     companion object {
         const val DEFAULT_GROUP_ID = 1L

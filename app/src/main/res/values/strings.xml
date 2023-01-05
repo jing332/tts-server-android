@@ -238,4 +238,7 @@
     <string name="select_file_hint">Click the button on the right to select the file➡️</string>
     <string name="systts_group_empty_msg"><![CDATA[Click the ➕ button on the right side of the top application bar -> Add TTS, and set the group to which it belongs in the editing interface.]]></string>
     <string name="new_version_available">New version available：%1$s</string>
+    <string name="master_switch">Master switch</string>
+    <string name="upload_to_url">Upload to URL</string>
+    <string name="upload_failed">Upload failed: %1$s</string>
 </resources>

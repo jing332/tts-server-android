@@ -23,7 +23,7 @@ interface SystemTtsDao {
     val allGroup: List<SystemTtsGroup>
 
     @get:Transaction
-    @get:Query("SELECT * FROM SystemTtsGroup")
+    @get:Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")
     val flowAllGroupWithTts: Flow<List<GroupWithTtsItem>>
 
     @Query("SELECT * FROM SystemTtsGroup WHERE groupId = :id")
@@ -65,16 +65,9 @@ interface SystemTtsDao {
     @Delete
     fun deleteGroup(group: SystemTtsGroup)
 
-    @Transaction
-    @Query("SELECT * FROM SystemTtsGroup")
-    fun getSysTtsWithGroups(): List<GroupWithTtsItem>
-
-    /**
-     * 插入TTS 如果不存在默认组则插入一个
-     */
-    fun insertTtsIfDefault(tts: SystemTts) {
-        insertTts(tts)
-    }
+    @get:Transaction
+    @get:Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")
+    val sysTtsWithGroups: List<GroupWithTtsItem>
 
     /**
      * 删除组以及TTS

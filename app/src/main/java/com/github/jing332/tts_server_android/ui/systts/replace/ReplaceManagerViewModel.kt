@@ -9,16 +9,8 @@ import kotlinx.serialization.encodeToString
 import tts_server_lib.Tts_server_lib
 
 class ReplaceManagerViewModel : ViewModel() {
-    fun exportConfig(): String {
+    fun configToJson(): String {
         return App.jsonBuilder.encodeToString(appDb.replaceRuleDao.all)
-    }
-
-    fun uploadConfigToUrl(cfg: String): Result<String> {
-        return try {
-            Result.success(Tts_server_lib.uploadConfig(cfg))
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
     }
 
     fun importConfig(jsonStr: String): String? {

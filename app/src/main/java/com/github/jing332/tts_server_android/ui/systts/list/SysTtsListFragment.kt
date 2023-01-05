@@ -18,7 +18,6 @@ import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
@@ -35,6 +34,7 @@ import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.MainActivity
+import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
@@ -47,7 +47,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.launch
 
 
 @Suppress("DEPRECATION", "UNCHECKED_CAST")
@@ -172,30 +171,12 @@ class SysTtsListFragment : Fragment() {
         if (isUpdate) SystemTtsService.notifyUpdateConfig()
     }
 
-
-    private fun showImportConfig() {
+    private fun importConfig() {
         startActivity(Intent(requireContext(), ConfigImportActivity::class.java))
     }
 
-    private fun showExportConfig() {
-        val jsonStr = vm.exportConfig()
-        val tv = TextView(requireContext())
-        tv.setTextIsSelectable(true)
-        tv.setPadding(50, 50, 50, 0)
-        tv.text = jsonStr
-        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.export_config).setView(tv)
-            .setPositiveButton(R.string.copy) { _, _ ->
-                ClipboardUtils.copyText(jsonStr)
-                toast(R.string.copied)
-            }.setNegativeButton("上传到URL") { _, _ ->
-                vm.viewModelScope.launch {
-                    val result = vm.uploadConfigToUrl(jsonStr)
-                    if (result.isSuccess) {
-                        ClipboardUtils.copyText(result.getOrNull())
-                        longToast("已复制URL：\n${result.getOrNull()}")
-                    }
-                }
-            }.setFadeAnim().show()
+    private fun exportConfig() {
+        AppDialogs.displayExportDialog(requireContext(),lifecycleScope, vm.exportConfig())
     }
 
     @Suppress("DEPRECATION")
@@ -368,8 +349,8 @@ class SysTtsListFragment : Fragment() {
             )
 
             /* 导入导出 */
-            R.id.menu_importConfig -> showImportConfig()
-            R.id.menu_exportConfig -> showExportConfig()
+            R.id.menu_importConfig -> importConfig()
+            R.id.menu_exportConfig -> exportConfig()
         }
     }
 

@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/app_bar_switch"
-        android:title="@string/app_switch"
-        app:actionLayout="@layout/switch_item"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-    <item
         android:id="@+id/menu_add"
         android:icon="@drawable/ic_baseline_white_add_24"
         android:title="@string/systts_replace_add_rule"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/menu_switch"
+        android:checkable="true"
+        android:icon="@drawable/ic_baseline_find_replace_24"
+        android:title="@string/master_switch" />
     <item
         android:icon="@drawable/ic_baseline_import_export_24"
         android:title="@string/config_import_export">

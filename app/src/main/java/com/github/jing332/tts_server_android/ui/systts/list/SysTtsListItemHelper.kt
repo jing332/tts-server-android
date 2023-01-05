@@ -160,7 +160,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
     }
 
     fun delete(data: SystemTts) {
-        AppDialogs.displayRemoveDialog(context, data.displayName.toString()) {
+        AppDialogs.displayDeleteDialog(context, data.displayName.toString()) {
             appDb.systemTtsDao.deleteTts(data)
             notifyTtsUpdate(data.isEnabled)
         }

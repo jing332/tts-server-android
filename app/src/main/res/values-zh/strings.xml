@@ -234,5 +234,8 @@
     <string name="select_file_hint">单击右侧按钮选择文件➡️</string>
     <string name="systts_group_empty_msg"><![CDATA[单击顶部应用栏右侧的 ➕按钮 -> 添加TTS，然后在编辑界面设置所属分组。]]></string>
     <string name="new_version_available">有新版本：%1$s</string>
+    <string name="master_switch">总开关</string>
+    <string name="upload_to_url">上传到URL</string>
+    <string name="upload_failed">上传失败：%1$s</string>
 
 </resources>

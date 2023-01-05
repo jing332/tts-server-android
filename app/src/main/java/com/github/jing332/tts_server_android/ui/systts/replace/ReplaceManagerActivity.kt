@@ -5,12 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
-import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.drake.brv.BindingAdapter
@@ -18,6 +16,7 @@ import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
@@ -88,16 +87,15 @@ class ReplaceManagerActivity : BackActivity() {
             })
         }
 
-//        val handler = Handler(Looper.getMainLooper())
-        var job: Job? = null
-        lifecycleScope.runOnIO {
+        lifecycleScope.launch {
+            var job: Job? = null
             appDb.replaceRuleDao.flowAll().conflate().collect { list ->
                 val models = list.map { ReplaceRuleModel(data = it) }
-                if (brv.models == null) brv.models = models
+                if (brv.models == null) withMain { brv.models = models }
                 else {
                     job?.cancel()
                     job = null
-                    job = lifecycleScope.launch { delay(100); brv.setDifferModels(models) }
+                    job = launch { delay(100); brv.setDifferModels(models) }
                         .apply { start() }
                 }
             }
@@ -113,7 +111,7 @@ class ReplaceManagerActivity : BackActivity() {
     }
 
     fun delete(data: ReplaceRule) {
-        AppDialogs.displayRemoveDialog(this, data.name) {
+        AppDialogs.displayDeleteDialog(this, data.name) {
             appDb.replaceRuleDao.delete(data)
         }
     }
@@ -137,30 +135,26 @@ class ReplaceManagerActivity : BackActivity() {
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
-
         menuInflater.inflate(R.menu.menu_replace_manager, menu)
-        /* 开关选项 */
-        val item = menu?.findItem(R.id.app_bar_switch)
-        item?.apply {
-            val switch = actionView?.findViewById<SwitchCompat>(R.id.menu_switch)
-            switch!!.let {
-                it.isChecked = SysTtsConfig.isReplaceEnabled
-                it.setOnClickListener {
-                    SysTtsConfig.isReplaceEnabled = switch.isChecked
-                    this@ReplaceManagerActivity.setResult(RESULT_OK, intent)
-                }
-            }
-        }
-
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.menu_switch)?.let { menuItem ->
+            menuItem.isChecked = SysTtsConfig.isReplaceEnabled
+        }
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_add -> {
                 val intent = Intent(this, ReplaceRuleEditActivity::class.java)
-                intent.putExtra(KeyConst.KEY_POSITION, -1)
                 startForResult.launch(intent)
+            }
+            R.id.menu_switch -> {
+                item.isChecked = !item.isChecked
+                SysTtsConfig.isReplaceEnabled = item.isChecked
             }
             R.id.menu_importConfig -> {
                 val et = MaterialTextInput(this)
@@ -180,23 +174,7 @@ class ReplaceManagerActivity : BackActivity() {
             }
 
             R.id.menu_exportConfig -> {
-                val jsonStr = vm.exportConfig()
-                val tv = TextView(this)
-                tv.text = jsonStr
-                tv.setPadding(50, 50, 50, 0)
-                MaterialAlertDialogBuilder(this).setTitle(R.string.export_config).setView(tv)
-                    .setPositiveButton(R.string.copy) { _, _ ->
-                        ClipboardUtils.copyText(jsonStr)
-                        toast(R.string.copied)
-                    }.setNegativeButton("上传到URL") { _, _ ->
-                        val ret = vm.uploadConfigToUrl(jsonStr)
-                        if (ret.isSuccess) {
-                            ClipboardUtils.copyText(ret.getOrNull())
-                            longToast("已复制URL：\n${ret.getOrNull()}")
-                        } else {
-                            longToast("上传失败：${ret.exceptionOrNull()?.message}")
-                        }
-                    }.show()
+                AppDialogs.displayExportDialog(this, lifecycleScope, vm.configToJson())
             }
         }
 
