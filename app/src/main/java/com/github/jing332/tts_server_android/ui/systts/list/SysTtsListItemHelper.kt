@@ -25,6 +25,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.my_group.RvGroupModel
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.clone
+import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("UNCHECKED_CAST", "DEPRECATION")
@@ -47,6 +48,12 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                     }
 
                     btnEdit.clickWithThrottle { edit(getModel()) }
+                    btnEdit.setOnLongClickListener {
+                        context.toast(R.string.systts_copied_config)
+                        edit(getModel<SystemTts>().copy(id = System.currentTimeMillis()))
+                        true
+                    }
+
                     btnDelete.clickWithThrottle { delete(getModel()) }
                     itemView.clickWithThrottle { displayQuickEditDialog(itemView, getModel()) }
 

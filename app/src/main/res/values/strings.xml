@@ -241,4 +241,5 @@
     <string name="master_switch">Master switch</string>
     <string name="upload_to_url">Upload to URL</string>
     <string name="upload_failed">Upload failed: %1$s</string>
+    <string name="systts_copied_config">Copied configuration</string>
 </resources>

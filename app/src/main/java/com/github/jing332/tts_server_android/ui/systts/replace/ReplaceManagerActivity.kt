@@ -173,7 +173,7 @@ class ReplaceManagerActivity : BackActivity() {
                     }.show()
             }
 
-            R.id.menu_exportConfig -> {
+            R.id.menu_export_config -> {
                 AppDialogs.displayExportDialog(this, lifecycleScope, vm.configToJson())
             }
         }

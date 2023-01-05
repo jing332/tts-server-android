@@ -237,5 +237,6 @@
     <string name="master_switch">总开关</string>
     <string name="upload_to_url">上传到URL</string>
     <string name="upload_failed">上传失败：%1$s</string>
+    <string name="systts_copied_config">已复制配置</string>
 
 </resources>

@@ -8,6 +8,7 @@ import android.view.View.AccessibilityDelegate
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.MenuCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -18,8 +19,10 @@ import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.drake.net.utils.withDefault
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsListMyGroupFragmentBinding
@@ -35,6 +38,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.conflate
+import kotlinx.serialization.encodeToString
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class SysTtsListMyGroupPageFragment : Fragment() {
@@ -206,17 +210,28 @@ class SysTtsListMyGroupPageFragment : Fragment() {
     private fun displayMoreMenu(v: View, model: RvGroupModel) {
         PopupMenu(requireContext(), v).apply {
             this.setForceShowIcon(true)
-
+            MenuCompat.setGroupDividerEnabled(menu, true)
             menuInflater.inflate(R.menu.menu_systts_list_group_more, menu)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    R.id.menu_edit_group_name -> editGroupName(model.data)
+                    R.id.menu_export_config -> exportConfig(model)
+                    R.id.menu_rename_group -> editGroupName(model.data)
                     R.id.menu_delete_group -> deleteGroup(model.data)
                 }
                 true
             }
             show()
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun exportConfig(model: RvGroupModel) {
+        val obj = GroupWithTtsItem(group = model.data, list = model.itemSublist as List<SystemTts>)
+        AppDialogs.displayExportDialog(
+            requireContext(),
+            lifecycleScope,
+            App.jsonBuilder.encodeToString(obj)
+        )
     }
 
     private fun editGroupName(data: SystemTtsGroup) {

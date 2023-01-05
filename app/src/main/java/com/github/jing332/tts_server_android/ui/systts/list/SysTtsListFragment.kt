@@ -350,7 +350,7 @@ class SysTtsListFragment : Fragment() {
 
             /* 导入导出 */
             R.id.menu_importConfig -> importConfig()
-            R.id.menu_exportConfig -> exportConfig()
+            R.id.menu_export_config -> exportConfig()
         }
     }
 
