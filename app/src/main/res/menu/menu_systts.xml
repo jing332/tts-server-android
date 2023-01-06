@@ -26,7 +26,7 @@
         </menu>
     </item>
 
-    <group>
+    <group android:id="@+id/group1">
         <item
             android:id="@+id/menu_doSplit"
             android:checkable="true"
@@ -37,6 +37,10 @@
             android:checkable="true"
             android:icon="@drawable/ic_baseline_supervisor_account_24"
             android:title="@string/systts_multi_voice_option" />
+
+    </group>
+
+    <group android:id="@+id/group2">
         <item
             android:id="@+id/menu_voiceMultiple"
             android:checkable="true"
@@ -45,8 +49,8 @@
         <item
             android:id="@+id/menu_groupMultiple"
             android:checkable="true"
-            android:title="@string/systts_groups_multiple"
-            android:icon="@drawable/ic_baseline_groups_24"/>
+            android:icon="@drawable/ic_baseline_groups_24"
+            android:title="@string/systts_groups_multiple" />
         <item
             android:id="@+id/menu_isInAppPlayAudio"
             android:checkable="true"
@@ -57,12 +61,12 @@
             android:icon="@drawable/ic_baseline_textsms_24"
             android:title="@string/systts_set_dialogue_min_match_word_count" />
 
+        <item
+            android:id="@+id/menu_setAudioRequestTimeout"
+            android:icon="@drawable/ic_baseline_access_time_24"
+            android:title="@string/systts_set_request_timeout" />
     </group>
 
-    <item
-        android:id="@+id/menu_setAudioRequestTimeout"
-        android:icon="@drawable/ic_baseline_access_time_24"
-        android:title="@string/systts_set_request_timeout" />
 
     <item
         android:id="@+id/menu_replace_manager"

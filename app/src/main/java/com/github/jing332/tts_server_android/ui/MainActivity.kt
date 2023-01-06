@@ -16,6 +16,7 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.view.MenuCompat
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -119,6 +120,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_server -> R.menu.menu_server
             else -> return false
         }
+        MenuCompat.setGroupDividerEnabled(menu,true)
         menuInflater.inflate(id, menu)
         return true
     }

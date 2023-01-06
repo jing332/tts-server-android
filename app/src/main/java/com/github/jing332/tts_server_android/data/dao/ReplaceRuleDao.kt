@@ -6,19 +6,19 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReplaceRuleDao {
-    @get:Query("select * from ReplaceRule ORDER BY `order` ASC")
+    @get:Query("SELECT * FROM ReplaceRule ORDER BY `order` ASC")
     val all: List<ReplaceRule>
 
-    @get:Query("select * from ReplaceRule WHERE isEnabled = '1' ORDER BY `order` ASC")
+    @get:Query("SELECT * FROM ReplaceRule WHERE isEnabled = '1' ORDER BY `order` ASC")
     val allEnabled: List<ReplaceRule>
 
-    @Query("select * from ReplaceRule ORDER BY `order` ASC")
+    @Query("SELECT * FROM ReplaceRule ORDER BY `order` ASC")
     fun flowAll(): Flow<List<ReplaceRule>>
 
-    @get:Query("select count(*) from ReplaceRule")
+    @get:Query("SELECT count(*) FROM ReplaceRule")
     val count: Int
 
-    @Query("select * from ReplaceRule where id = :id")
+    @Query("SELECT * FROM ReplaceRule WHERE id = :id")
     fun get(id: Long): ReplaceRule?
 
 

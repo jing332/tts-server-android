@@ -22,9 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/check_box"
-                android:layout_width="wrap_content"
+                android:layout_width="34dp"
                 android:layout_height="wrap_content"
                 android:checked="@={m.checked}"
                 app:layout_constraintStart_toStartOf="parent"
@@ -32,13 +32,15 @@
 
             <TextView
                 android:id="@+id/tv_name"
-                style="?attr/textAppearanceTitleSmall"
+                style="?attr/textAppearanceTitleMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:singleLine="true"
                 android:text="@{m.name}"
+                app:layout_constraintBottom_toTopOf="@+id/tv_group_name"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@id/check_box"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Title" />
@@ -48,13 +50,15 @@
                 style="?attr/textAppearanceBodySmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:singleLine="true"
                 android:text="@{m.groupName}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/check_box"
                 app:layout_constraintTop_toBottomOf="@id/tv_name"
+                app:layout_constraintVertical_bias="1.0"
                 tools:text="Group Name" />
 
 

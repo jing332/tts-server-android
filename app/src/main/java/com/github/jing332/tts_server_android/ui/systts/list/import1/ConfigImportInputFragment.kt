@@ -166,12 +166,13 @@ class ConfigImportInputFragment : Fragment() {
     private fun getImportList(json: String, fromLegado: Boolean): List<GroupWithTtsItem>? {
         val groupName = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
         val groupId = System.currentTimeMillis()
+        val groupCount = appDb.systemTtsDao.groupCount
         if (fromLegado) {
             App.jsonBuilder.decodeFromString<List<LegadoHttpTts>>(json).ifEmpty { return null }
                 .let { list ->
                     return listOf(GroupWithTtsItem(
                         group =
-                        SystemTtsGroup(id = groupId, name = groupName),
+                        SystemTtsGroup(id = groupId, name = groupName, order = groupCount),
                         list = list.map {
                             SystemTts(
                                 groupId = groupId,

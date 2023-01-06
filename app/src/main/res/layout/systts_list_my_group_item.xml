@@ -33,11 +33,11 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="4dp"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:gravity="center_vertical"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@{m.name}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/checkBox"
                 app:layout_constraintStart_toEndOf="@id/iv_state"
@@ -76,7 +76,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_more_vert_24"
-                app:tint="?attr/editTextColor" />
+                app:tint="@color/colorIconTint" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

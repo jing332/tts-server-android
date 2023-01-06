@@ -15,6 +15,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsIt
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsConfigImportPreviewFragmentBinding
+import com.github.jing332.tts_server_android.databinding.SysttsConfigImportPreviewItemBinding
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 
 class ConfigImportPreviewFragment : Fragment() {
@@ -40,6 +41,12 @@ class ConfigImportPreviewFragment : Fragment() {
 
         brv = binding.recyclerView.linear().setup {
             addType<RvModelPreview>(R.layout.systts_config_import_preview_item)
+            onCreate {
+                val binding = getBinding<SysttsConfigImportPreviewItemBinding>()
+                itemView.clickWithThrottle {
+                    binding.checkBox.isChecked = !binding.checkBox.isChecked
+                }
+            }
         }
 
         vm.previewLiveData.observe(viewLifecycleOwner) { liveData ->

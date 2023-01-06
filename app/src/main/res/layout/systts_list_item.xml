@@ -55,18 +55,18 @@
 
             <TextView
                 android:id="@+id/tv_name"
-                style="@style/TextAppearance.AppCompat.Title"
+                style="?attr/textAppearanceTitleMedium"
+                android:textSize="18sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:focusable="false"
                 android:importantForAccessibility="no"
-                android:maxLines="1"
                 android:scrollbars="none"
+                android:singleLine="true"
                 android:text="@{m.displayName}"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toStartOf="@+id/tv_raTarget"
                 app:layout_constraintStart_toEndOf="@+id/checkBox_switch"
                 app:layout_constraintTop_toTopOf="parent"
@@ -82,7 +82,7 @@
                 android:importantForAccessibility="no"
                 android:lines="1"
                 android:text="@{m.tts.bottomContent}"
-                android:textSize="11sp"
+                style="?attr/textAppearanceBodySmall"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tv_apiType"
@@ -123,23 +123,23 @@
 
             <TextView
                 android:id="@+id/tv_description"
+                style="?attr/textAppearanceSubtitle2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:elegantTextHeight="true"
                 android:focusable="false"
                 android:importantForAccessibility="no"
-                android:lineSpacingMultiplier="0.9"
                 android:lines="2"
                 android:scrollbars="none"
                 android:text="@{Html.fromHtml(m.tts.description)}"
-                android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_bottom_content"
                 app:layout_constraintEnd_toStartOf="@+id/btn_edit"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/tv_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name"
-                tools:text="生气-小男孩 | 语速：0% | 音量：0%" />
+                app:layout_constraintVertical_bias="0.166"
+                tools:text="生气-小男孩 \n语速：0% | 音量：0%" />
 
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/checkBox_switch"
                 android:layout_width="40dp"
                 android:layout_height="0dp"
