@@ -23,8 +23,8 @@ import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerIte
 import kotlin.math.max
 
 object MsTtsQuickEditViewAdapter {
-    @JvmStatic
     @BindingAdapter("styleDegreeVisible")
+    @JvmStatic
     fun setStyleDegreeVisible(view: View, visible: Boolean) {
         if (view is MsTtsQuickEditView)
             view.isStyleDegreeVisible = visible
@@ -103,14 +103,6 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         binding.seekbarStyleDegree.progress = (v * 100).toInt()
     }
 
-//    // 解决 progress 相同时不回调 onProgressChanged()
-//    private fun setProgress(seekBar: ConvenientSeekbar, progress: Int) {
-//        if (seekBar.progress == progress) {
-//            onProgressChanged(seekBar, progress, false)
-//        } else
-//            seekBar.progress = progress
-//    }
-
     fun setFormatByApi(@MsTtsApiType api: Int, currentFormat: String? = null) {
         mFormatItems = MsTtsFormatManger.getFormatsByApiType(api).map { SpinnerItem(it, it) }
         binding.spinnerFormat.setAdapter(MaterialSpinnerAdapter(context, mFormatItems))
@@ -118,6 +110,7 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         val format = currentFormat ?: mTts?.format
         binding.spinnerFormat.selectedPosition =
             max(mFormatItems.indexOfFirst { it.value == format }, 0)
+        mTts?.format = mFormatItems[binding.spinnerFormat.selectedPosition].value.toString()
     }
 
     private var mTts: MsTTS? = null
@@ -132,14 +125,10 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         setRate(tts.rate)
         setVolume(tts.volume)
         setPitch(tts.pitch)
+        setFormatByApi(tts.api)
 
         isStyleDegreeVisible = tts.expressAs?.style?.isNotEmpty() == true
         if (isStyleDegreeVisible) setStyleDegree(tts.expressAs?.styleDegree ?: 1F)
-
-        mFormatItems = MsTtsFormatManger.getFormatsByApiType(tts.api).map { SpinnerItem(it, it) }
-        binding.spinnerFormat.setAdapter(MaterialSpinnerAdapter(context, mFormatItems))
-        binding.spinnerFormat.selectedPosition =
-            max(mFormatItems.indexOfFirst { it.value == tts.format }, 0)
     }
 
     init {

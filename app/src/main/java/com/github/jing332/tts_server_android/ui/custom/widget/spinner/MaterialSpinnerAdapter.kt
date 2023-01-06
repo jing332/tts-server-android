@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
+import androidx.core.view.isGone
 import com.github.jing332.tts_server_android.databinding.ItemMaterialSpinnerBinding
 
 data class SpinnerItem(
@@ -30,15 +31,13 @@ class MaterialSpinnerAdapter(val content: Context, items: List<SpinnerItem>) :
             binding = view.tag as ItemMaterialSpinnerBinding
         }
 
-
         val item = getItem(position)
-        binding.text = item.displayText
         val isSelected = position == selectedItemPosition
 
-        binding.selected = isSelected
+        binding.radioButton.isGone = !isSelected
+        binding.tv.text = item.displayText
         binding.tv.setTypeface(null, if (isSelected) Typeface.BOLD else Typeface.NORMAL)
-        if (item.imageResId != -1)
-            binding.imageView.setImageResource(item.imageResId)
+        if (item.imageResId != -1) binding.imageView.setImageResource(item.imageResId)
 
         return view
     }

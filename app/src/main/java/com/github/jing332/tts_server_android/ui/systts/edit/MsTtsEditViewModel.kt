@@ -25,7 +25,7 @@ import kotlin.math.max
 
 class MsTtsEditViewModel : ViewModel() {
     companion object {
-        const val TAG = "MsTtsEditViewModel2"
+        const val TAG = "MsTtsEditViewModel"
         private val repo: MsTtsEditRepository by lazy { MsTtsEditRepository() }
 
         // 风格和角色中忽略此字符串
@@ -116,6 +116,7 @@ class MsTtsEditViewModel : ViewModel() {
 
             // 更新地区列表
             updateLocales(mAllVoiceList)
+
 
             withMain { mCallback?.onDone(Result.success(Unit)) }
         }
@@ -225,7 +226,6 @@ class MsTtsEditViewModel : ViewModel() {
         }
     }
 
-
     // 更新风格列表
     private fun updateStyles(currentVoice: GeneralVoiceData) {
         ui.styles.apply {
@@ -280,7 +280,7 @@ class MsTtsEditViewModel : ViewModel() {
             currentVoice.localSecondaryLocaleList?.let { list ->
                 if (list.isNotEmpty()) {
                     items = list.map { SpinnerItem(it.second, it.first) }
-                    val pos = items.indexOfFirst { it.value == mTts.secondaryLocale }
+                    val pos = items.indexOfFirst { it.value == (mTts.secondaryLocale ?: "zh-CN") }
                     position = max(pos, 0)
                 }
             }

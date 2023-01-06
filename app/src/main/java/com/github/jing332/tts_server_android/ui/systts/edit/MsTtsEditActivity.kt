@@ -56,7 +56,7 @@ class MsTtsEditActivity : BackActivity() {
         vm.setCallback(object : MsTtsEditViewModel.CallBack {
             override fun onStart(@MsTtsApiType api: Int) {
                 waitDialog.show()
-                binding.numEditView.setFormatByApi(api)
+                binding.editView.setFormatByApi(api)
             }
 
             override fun onDone(ret: Result<Unit>) {
@@ -75,7 +75,7 @@ class MsTtsEditActivity : BackActivity() {
         })
 
         vm.styleDegreeVisibleLiveData.observe(this) {
-            binding.numEditView.isStyleDegreeVisible = it
+            binding.editView.isStyleDegreeVisible = it
         }
 
         // 初始化 注册监听
@@ -91,10 +91,9 @@ class MsTtsEditActivity : BackActivity() {
         if (data == null) data = SystemTts(tts = MsTTS())
         vm.initUserData(data)
 
-        binding.baseInfoEditView.setData(data)
-
         // 自动同步数据
-        binding.numEditView.setData(data.tts as MsTTS)
+        binding.baseInfoEditView.setData(data)
+        binding.editView.setData(data.tts as MsTTS)
 
         // 监听Enter
         binding.etTestText.setOnEditorActionListener { _, actionId, _ ->
