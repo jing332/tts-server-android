@@ -56,7 +56,18 @@ android {
             splits.abi.enable = false
             splits.density.enable = false
         }
+    }
 
+    // 分别打包APK 原版 和 dev共存版
+    flavorDimensions += "version"
+    productFlavors {
+        app {
+            dimension = "version"
+        }
+        dev {
+            dimension = "version"
+            applicationIdSuffix ".dev"
+        }
     }
 
     splits {

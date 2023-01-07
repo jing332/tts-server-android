@@ -74,22 +74,28 @@ jobs:
         run: |
           mkdir -p ${{ github.workspace }}/apk/
           rm -f ${{ github.workspace }}/apk/*
-          cp ${{ github.workspace }}/app/build/outputs/apk/release/*.apk ${{ github.workspace }}/apk/
-          cp ${{ github.workspace }}/app/build/outputs/apk/release/*.json ${{ github.workspace }}/apk/
-          cp ${{ github.workspace }}/app/build/outputs/mapping/release/*.txt ${{ github.workspace }}/apk/
+          cp ${{ github.workspace }}/app/build/outputs/apk/app/release/*.apk ${{ github.workspace }}/output/app
+          cp ${{ github.workspace }}/app/build/outputs/apk/dev/release/*.json ${{ github.workspace }}/output/dev
+          cp ${{ github.workspace }}/app/build/outputs/mapping ${{ github.workspace }}/output/
 
       - name: Get VerName
         run: |
-          echo "ver_name=$(grep -m 1 'versionName' apk/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
+          echo "ver_name=$(grep -m 1 'versionName' output/app/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
 
       - name: Upload Mappings to Artifact
         uses: actions/upload-artifact@v3
         with:
           name: mappings_${{ env.ver_name }}
-          path: ${{ github.workspace }}/apk/*.txt    
+          path: ${{ github.workspace }}/output/mapping
 
       - name: Upload App To Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: TTS-Server_${{ env.ver_name }}
-          path: ${{ github.workspace }}/apk/*${{ env.ver_name }}.apk
+          name: "TTS-Server_原版_${{ env.ver_name }}"
+          path: ${{ github.workspace }}/output/app/*${{ env.ver_name }}.apk
+
+      - name: Upload Dev App To Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "TTS-Server_Dev共存版_${{ env.ver_name }}"
+          path: ${{ github.workspace }}/output/dev/*${{ env.ver_name }}.apk
