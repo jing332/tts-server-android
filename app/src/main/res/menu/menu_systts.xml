@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:icon="@drawable/ic_baseline_white_add_24"
+        android:icon="@drawable/ic_baseline_add_24"
+        app:iconTint="?attr/colorOnBackground"
         android:title="@string/add_config"
         app:showAsAction="ifRoom">
         <menu>
@@ -56,11 +57,13 @@
             android:checkable="true"
             android:icon="@drawable/ic_baseline_smart_display_24"
             android:title="@string/systts_use_internal_audio_player" />
+    </group>
+
+    <group android:id="@+id/group3">
         <item
             android:id="@+id/menu_setMinDialogueLen"
             android:icon="@drawable/ic_baseline_textsms_24"
             android:title="@string/systts_set_dialogue_min_match_word_count" />
-
         <item
             android:id="@+id/menu_setAudioRequestTimeout"
             android:icon="@drawable/ic_baseline_access_time_24"

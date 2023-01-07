@@ -21,13 +21,6 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground">
 
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="0dp"

@@ -3,30 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+
     <item
         android:id="@+id/menu_add"
-        android:icon="@drawable/ic_baseline_white_add_24"
+        android:icon="@drawable/ic_baseline_add_24"
         android:title="@string/systts_replace_add_rule"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
 
-    <item
-        android:id="@+id/menu_switch"
-        android:checkable="true"
-        android:icon="@drawable/ic_baseline_find_replace_24"
-        android:title="@string/master_switch" />
-    <item
-        android:icon="@drawable/ic_baseline_import_export_24"
-        android:title="@string/config_import_export">
-        <menu>
-            <item
-                android:id="@+id/menu_importConfig"
-                android:icon="@drawable/ic_baseline_input_24"
-                android:title="@string/import_config" />
-            <item
-                android:id="@+id/menu_export_config"
-                android:icon="@drawable/ic_baseline_output_24"
-                android:title="@string/export_config" />
-        </menu>
-    </item>
+    <group android:id="@+id/group1">
+        <item
+            android:id="@+id/menu_switch"
+            android:checkable="true"
+            android:icon="@drawable/ic_baseline_find_replace_24"
+            android:title="@string/master_switch" />
+
+    </group>
+
+    <group android:id="@+id/group2">
+        <item
+            android:icon="@drawable/ic_baseline_import_export_24"
+            android:title="@string/config_import_export">
+            <menu>
+                <item
+                    android:id="@+id/menu_importConfig"
+                    android:icon="@drawable/ic_baseline_input_24"
+                    android:title="@string/import_config" />
+                <item
+                    android:id="@+id/menu_export_config"
+                    android:icon="@drawable/ic_baseline_output_24"
+                    android:title="@string/export_config" />
+            </menu>
+        </item>
+    </group>
 </menu>

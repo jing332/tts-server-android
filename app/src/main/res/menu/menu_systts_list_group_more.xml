@@ -7,12 +7,12 @@
             android:id="@+id/menu_rename_group"
             android:icon="@drawable/ic_baseline_edit_24"
             android:title="@string/rename"
-            app:iconTint="@color/colorPrimary" />
+            app:iconTint="?attr/colorPrimary" />
         <item
             android:id="@+id/menu_delete_group"
             android:icon="@drawable/ic_baseline_delete_forever_24"
             android:title="@string/delete"
-            app:iconTint="@android:color/holo_red_light" />
+            app:iconTint="?attr/colorError" />
     </group>
     <group android:id="@+id/group2">
         <item

@@ -22,6 +22,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsIt
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsConfigImportInputFragmentBinding
+import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.ClipboardUtils
@@ -178,7 +179,11 @@ class ConfigImportInputFragment : Fragment() {
                                 groupId = groupId,
                                 id = it.id,
                                 displayName = it.name,
-                                tts = HttpTTS(url = it.url, header = it.header)
+                                tts = HttpTTS(
+                                    url = it.url,
+                                    header = it.header,
+                                    audioFormat = BaseAudioFormat(isNeedDecode = true)
+                                )
                             )
                         }
 

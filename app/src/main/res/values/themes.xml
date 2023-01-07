@@ -1,33 +1,55 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.TtsServer" parent="Theme.Material3.DayNight">
-        <item name="colorPrimary">@color/teal_700</item>
-        <item name="colorPrimaryVariant">@color/teal_700</item>
-        <item name="colorOnPrimary">@color/white</item>
+    <style name="Base.Theme.TtsServer" parent="Theme.Material3.Light">
+        <item name="colorPrimary">@color/md_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_light_error</item>
+        <item name="colorErrorContainer">@color/md_theme_light_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_light_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_light_background</item>
+        <item name="colorOnBackground">@color/md_theme_light_onBackground</item>
+        <item name="colorSurface">@color/md_theme_light_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
 
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
+<!--        <item name="android:statusBarColor">?attr/colorPrimary</item>-->
 
-        <item name="android:statusBarColor">@color/colorPrimary</item>
 
-        <item name="actionBarStyle">@style/Theme.ActionBar</item>
-        <item name="actionBarTheme">@style/Theme.TtsServer.AppBarOverlay</item>
+    </style>
+
+    <style name="Theme.TtsServer" parent="Base.Theme.TtsServer">
+<!--        <item name="actionBarStyle">@style/Theme.ActionBar</item>-->
+<!--        <item name="actionBarTheme">@style/Theme.TtsServer.AppBarOverlay</item>-->
+
 
         <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox
         </item>
-
         <item name="materialButtonOutlinedStyle">@style/Widget.TtsServer.Button.OutlinedButton
         </item>
-
-        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.TtsServer.BottomSheetDialog</item>
     </style>
 
-    <style name="BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/BottomSheet</item>
+    <style name="ThemeOverlay.TtsServer.BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.TtsServer.BottomSheet.Modal</item>
     </style>
 
-    <style name="BottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+    <style name="Widget.TtsServer.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
         <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
@@ -36,12 +58,10 @@
         <item name="titleTextColor">@color/white</item>
         <item name="actionOverflowButtonStyle">@style/actionBarOverflowButton</item>
         <item name="colorControlNormal">@color/white</item>
-
     </style>
 
     <style name="Widget.TtsServer.Button.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton">
         <item name="backgroundTint">@color/bg_text_btn_color_selector</item>
-
     </style>
 
     <style name="actionBarOverflowButton" parent="Widget.AppCompat.ActionButton.Overflow">

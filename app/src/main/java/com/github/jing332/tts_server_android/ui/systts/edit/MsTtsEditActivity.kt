@@ -144,7 +144,7 @@ class MsTtsEditActivity : BackActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.systts_config_edit_save -> {
+            R.id.menu_save -> {
                 setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, vm.getData()) })
                 finish()
             }

@@ -47,6 +47,8 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                             switchChanged(view, models as List<SystemTts>, modelPosition)
                     }
 
+                    cardView.clickWithThrottle { displayQuickEditDialog(itemView, getModel()) }
+                    btnDelete.clickWithThrottle { delete(getModel()) }
                     btnEdit.clickWithThrottle { edit(getModel()) }
                     btnEdit.setOnLongClickListener {
                         context.toast(R.string.systts_copied_config)
@@ -54,8 +56,6 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         true
                     }
 
-                    btnDelete.clickWithThrottle { delete(getModel()) }
-                    itemView.clickWithThrottle { displayQuickEditDialog(itemView, getModel()) }
 
                     itemView.accessibilityDelegate = object : AccessibilityDelegate() {
                         override fun onInitializeAccessibilityNodeInfo(

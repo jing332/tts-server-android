@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.view.MenuCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.drake.brv.BindingAdapter
@@ -133,8 +134,10 @@ class ReplaceManagerActivity : BackActivity() {
     }
 
     @SuppressLint("RestrictedApi")
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
+        MenuCompat.setGroupDividerEnabled(menu, true)
+
         menuInflater.inflate(R.menu.menu_replace_manager, menu)
         return super.onCreateOptionsMenu(menu)
     }

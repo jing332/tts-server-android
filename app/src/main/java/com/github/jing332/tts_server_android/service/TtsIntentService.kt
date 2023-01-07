@@ -164,7 +164,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             smallIconRes = R.mipmap.ic_app_notification
         }
         val notification = builder
-            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+            .setColor(ContextCompat.getColor(this, R.color.md_theme_light_primary))
             .setContentTitle(getString(R.string.server_tts_running))
             .setContentText(getString(R.string.server_listen_address_local, listenAddress))
             .setSmallIcon(smallIconRes)

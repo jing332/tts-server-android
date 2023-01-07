@@ -50,6 +50,7 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
     private var mData: SystemTts? = null
 
     fun setData(data: SystemTts, groupList: List<SystemTtsGroup> = appDb.systemTtsDao.allGroup) {
+
         this.mData = data
         this.displayName = data.displayName ?: ""
         raTarget = data.readAloudTarget

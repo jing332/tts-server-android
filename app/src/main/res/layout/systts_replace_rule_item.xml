@@ -11,6 +11,7 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
@@ -21,16 +22,18 @@
             android:layout_height="match_parent"
             tools:ignore="UnusedAttribute">
 
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/checkBox"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:checked="@={m.data.enabled}"
                 android:text="@={m.data.name}"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_edit"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
+                tools:ignore="TextContrastCheck"
                 tools:text="Replace Rule Name" />
 
             <ImageButton
@@ -44,7 +47,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/btn_delete"
                 app:layout_constraintTop_toTopOf="@+id/btn_delete"
                 app:srcCompat="@drawable/ic_baseline_edit_24"
-                app:tint="?editTextColor" />
+                app:tint="?attr/colorOnBackground"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <ImageButton
                 android:id="@+id/btn_delete"
@@ -58,7 +62,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_delete_forever_24"
-                app:tint="?editTextColor" />
+                app:tint="?attr/colorError"
+                tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,14 +7,17 @@
         <item
             android:id="@+id/nav_systts"
             android:icon="@drawable/ic_tts"
+            android:checkable="true"
             android:title="@string/systts_settings" />
         <item
             android:id="@+id/nav_server"
             android:icon="@drawable/ic_baseline_menu_book_24"
+            android:checkable="true"
             android:title="Server"
             tools:ignore="HardcodedText" />
         <item
             android:id="@+id/nav_settings"
+            android:checkable="true"
             android:icon="@drawable/ic_baseline_settings_24"
             android:title="@string/settings" />
     </group>

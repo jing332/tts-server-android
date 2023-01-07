@@ -251,7 +251,7 @@ class SystemTtsService : TextToSpeechService(),
         notification = mNotificationBuilder
             .setSmallIcon(R.mipmap.ic_app_notification)
             .setContentIntent(pendingIntent)
-            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+            .setColor(ContextCompat.getColor(this, R.color.md_theme_light_primary))
             .addAction(0, getString(R.string.kill_process), killProcessPendingIntent)
             .addAction(0, getString(R.string.cancel), cancelPendingIntent)
             .build()

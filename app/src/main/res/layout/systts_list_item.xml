@@ -14,140 +14,148 @@
             type="com.github.jing332.tts_server_android.data.entities.systts.SystemTts" />
     </data>
 
-    <com.google.android.material.card.MaterialCardView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardCornerRadius="5dp">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_view"
+            style="@style/Widget.Material3.CardView.Elevated"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="5dp">
 
-            <ImageButton
-                android:id="@+id/btn_edit"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/desc_edit_item"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_baseline_edit_24"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
-                app:layout_constraintEnd_toStartOf="@+id/btn_delete"
-                app:layout_constraintTop_toTopOf="@+id/btn_delete"
-                app:tint="@color/colorIconTint" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/btn_delete"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/desc_delete_item"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_baseline_delete_forever_24"
-                app:layout_constraintBottom_toTopOf="@+id/tv_apiType"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_raTarget"
-                app:tint="@color/colorIconTint" />
+                <ImageButton
+                    android:id="@+id/btn_edit"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/desc_edit_item"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_baseline_edit_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+                    app:layout_constraintTop_toTopOf="@+id/btn_delete"
+                    app:tint="?attr/colorOnBackground" />
 
-            <TextView
-                android:id="@+id/tv_name"
-                style="?attr/textAppearanceTitleMedium"
-                android:textSize="18sp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:ellipsize="marquee"
-                android:focusable="false"
-                android:importantForAccessibility="no"
-                android:scrollbars="none"
-                android:singleLine="true"
-                android:text="@{m.displayName}"
-                app:layout_constraintEnd_toStartOf="@+id/tv_raTarget"
-                app:layout_constraintStart_toEndOf="@+id/checkBox_switch"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="zh-CN-YunxiNeural" />
+                <ImageButton
+                    android:id="@+id/btn_delete"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/desc_delete_item"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_baseline_delete_forever_24"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_apiType"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_raTarget"
+                    app:tint="?attr/colorError" />
 
-            <TextView
-                android:id="@+id/tv_bottom_content"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="4dp"
-                android:focusable="false"
-                android:importantForAccessibility="no"
-                android:lines="1"
-                android:text="@{m.tts.bottomContent}"
-                style="?attr/textAppearanceBodySmall"
-                android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_apiType"
-                app:layout_constraintStart_toStartOf="@+id/tv_name"
-                tools:text="audio-16khz-32kbitrate-mono-mp3" />
+                <TextView
+                    android:id="@+id/tv_name"
+                    style="?attr/textAppearanceTitleMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="marquee"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
+                    android:scrollbars="none"
+                    android:singleLine="true"
+                    android:text="@{m.displayName}"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_raTarget"
+                    app:layout_constraintStart_toEndOf="@+id/checkBox_switch"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="zh-CN-YunxiNeural" />
 
-            <TextView
-                android:id="@+id/tv_apiType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="4dp"
-                android:focusable="false"
-                android:importantForAccessibility="no"
-                android:text="@{m.tts.type}"
-                android:textColor="@android:color/holo_orange_dark"
-                android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="Edge" />
+                <TextView
+                    android:id="@+id/tv_bottom_content"
+                    style="?attr/textAppearanceBodySmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
+                    android:singleLine="true"
+                    android:text="@{m.tts.bottomContent}"
+                    android:textStyle="italic"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_apiType"
+                    app:layout_constraintStart_toStartOf="@+id/tv_name"
+                    tools:text="audio-16khz-32kbitrate-mono-mp3" />
 
-            <TextView
-                android:id="@+id/tv_raTarget"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="4dp"
-                android:background="@drawable/textview_border"
-                android:focusable="false"
-                android:importantForAccessibility="no"
-                android:text="@{m.raTargetString}"
-                android:textColor="@color/teal_700"
-                android:textStyle="bold"
-                android:visibility="@{m.raTargetString.empty ? View.INVISIBLE : View.VISIBLE}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="旁白" />
+                <TextView
+                    android:id="@+id/tv_apiType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
+                    android:text="@{m.tts.type}"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textStyle="italic"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="Edge" />
 
-            <TextView
-                android:id="@+id/tv_description"
-                style="?attr/textAppearanceSubtitle2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:importantForAccessibility="no"
-                android:lines="2"
-                android:scrollbars="none"
-                android:text="@{Html.fromHtml(m.tts.description)}"
-                app:layout_constraintBottom_toTopOf="@+id/tv_bottom_content"
-                app:layout_constraintEnd_toStartOf="@+id/btn_edit"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/tv_name"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name"
-                app:layout_constraintVertical_bias="0.166"
-                tools:text="生气-小男孩 \n语速：0% | 音量：0%" />
+                <TextView
+                    android:id="@+id/tv_raTarget"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/textview_border"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
+                    android:text="@{m.raTargetString}"
+                    android:textColor="@color/teal_700"
+                    android:textStyle="bold"
+                    android:visibility="@{m.raTargetString.empty ? View.INVISIBLE : View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="旁白" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/checkBox_switch"
-                android:layout_width="40dp"
-                android:layout_height="0dp"
-                android:checked="@{m.enabled}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="TouchTargetSizeCheck" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/tv_description"
+                    style="?attr/textAppearanceBodySmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
+                    android:lines="2"
+                    android:scrollbars="none"
+                    android:text="@{Html.fromHtml(m.tts.description)}"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_bottom_content"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_edit"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/tv_name"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_name"
+                    app:layout_constraintVertical_bias="0.166"
+                    tools:text="生气-小男孩 \n语速：0% | 音量：0%" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/checkBox_switch"
+                    android:layout_width="40dp"
+                    android:layout_height="0dp"
+                    android:checked="@{m.enabled}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 </layout>
