@@ -72,11 +72,15 @@ jobs:
 
       - name: Organize the Files
         run: |
-          mkdir -p ${{ github.workspace }}/apk/
-          rm -f ${{ github.workspace }}/apk/*
+          mkdir -p ${{ github.workspace }}/output/app
+          mkdir -p ${{ github.workspace }}/output/dev
+          rm -f ${{ github.workspace }}/output/app/*
+          rm -f ${{ github.workspace }}/output/dev/*
+          
           cp ${{ github.workspace }}/app/build/outputs/apk/app/release/*.apk ${{ github.workspace }}/output/app
-          cp ${{ github.workspace }}/app/build/outputs/apk/dev/release/*.json ${{ github.workspace }}/output/dev
-          cp ${{ github.workspace }}/app/build/outputs/mapping ${{ github.workspace }}/output/
+          cp ${{ github.workspace }}/app/build/outputs/apk/app/release/*.json ${{ github.workspace }}/output/app
+          cp ${{ github.workspace }}/app/build/outputs/apk/dev/release/*.apk ${{ github.workspace }}/output/dev
+          cp -r ${{ github.workspace }}/app/build/outputs/mapping ${{ github.workspace }}/output/
 
       - name: Get VerName
         run: |
