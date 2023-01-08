@@ -30,15 +30,17 @@
 # Grateful
 
 开源项目：
-|  Android APP   | 微软TTS实现  |
+|  Android Application   | Microsoft TTS  |
 |  ----  | ----  |
 | [gedoor/legado](https://github.com/gedoor/legado)        | [wxxxcxx/ms-ra-forwarder](https://github.com/wxxxcxx/ms-ra-forwarder) |
 | [ag2s20150909/TTS](https://github.com/ag2s20150909/TTS)  | [litcc/tts-server](https://github.com/litcc/tts-server) |
 | [benjaminwan/ChineseTtsTflite](https://github.com/benjaminwan/ChineseTtsTflite)| [asters1/tts](https://github.com/asters1/tts) |
+| [yellowgreatsun/MXTtsEngine](https://github.com/yellowgreatsun/MXTtsEngine) |
 | [2dust/v2rayNG](https://github.com/2dust/v2rayNG) |
 
-| Android 库| 介绍 |
+| Android Library | Description |
 | ----      | ---- |
+| [gedoor/rhino-android](https://github.com/gedoor/rhino-android) | Give access to RhinoScriptEngine from the JSR223 interfaces on Android JRE. |
 | [liangjingkanji/BRV](https://github.com/liangjingkanji/BRV) | Android上最好的RecyclerView框架, 比 BRVAH 更简单强大 |
 | [liangjingkanji/Net](https://github.com/liangjingkanji/Net) | Android最好的网络请求工具, 比 Retrofit/OkGo 更简单易用 |
 | [chibatching/kotpref](https://github.com/chibatching/kotpref) |  Android SharedPreferences delegation library for Kotlin |
