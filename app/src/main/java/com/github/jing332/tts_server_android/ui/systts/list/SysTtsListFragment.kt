@@ -120,12 +120,12 @@ class SysTtsListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        tabLayout.isGone = false
+        tabLayout.visibility = View.VISIBLE
     }
 
     override fun onPause() {
         super.onPause()
-        tabLayout.isGone = true
+        tabLayout.visibility = View.INVISIBLE
     }
 
     @SuppressLint("RestrictedApi", "SetTextI18n")

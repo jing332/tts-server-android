@@ -36,14 +36,12 @@
         </activity>
         <activity
             android:name=".ui.systts.edit.MsTtsEditActivity"
-            android:label="@string/title_activity_tts_config_edit">
-
-        </activity>
+            android:label="@string/title_activity_tts_config_edit" />
 
         <activity
             android:name=".ui.systts.list.import1.ConfigImportActivity"
-            android:launchMode="singleTask"
-            android:label="@string/config_import" />
+            android:label="@string/config_import"
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".ui.systts.edit.HttpTtsEditActivity"
@@ -53,8 +51,8 @@
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:exported="true"
             android:label="@string/title_activity_replace_manager"
-            android:theme="@style/Theme.TtsServer.NoActionBar"
-            android:launchMode="singleTask" /> <!-- 替换规则 -->
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TtsServer.NoActionBar" /> <!-- 替换规则 -->
         <activity
             android:name=".ui.systts.replace.ReplaceRuleEditActivity"
             android:label="@string/title_activity_replace_edit" />

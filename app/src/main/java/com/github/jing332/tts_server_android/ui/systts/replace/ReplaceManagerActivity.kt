@@ -8,6 +8,7 @@ import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuCompat
 import androidx.core.widget.addTextChangedListener
@@ -27,7 +28,6 @@ import com.github.jing332.tts_server_android.databinding.SysttsReplaceActivityBi
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceRuleItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
-import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
-class ReplaceManagerActivity : BackActivity() {
+class ReplaceManagerActivity : AppCompatActivity() {
     companion object {
         const val TAG = "ReplaceManagerActivity"
     }
@@ -54,6 +54,8 @@ class ReplaceManagerActivity : BackActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+
+        binding.toolbar.setNavigationOnClickListener { finish() }
 
         brv = binding.recyclerView.linear().setup {
             addType<ReplaceRuleModel>(R.layout.systts_replace_rule_item)
@@ -166,6 +168,8 @@ class ReplaceManagerActivity : BackActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+
+
             R.id.menu_add -> {
                 val intent = Intent(this, ReplaceRuleEditActivity::class.java)
                 startForResult.launch(intent)
@@ -198,6 +202,4 @@ class ReplaceManagerActivity : BackActivity() {
 
         return super.onOptionsItemSelected(item)
     }
-
-
 }

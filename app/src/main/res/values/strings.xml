@@ -243,4 +243,7 @@
     <string name="systts_copied_config">Copied configuration</string>
     <string name="search">Search</string>
     <string name="replace_rule_search">Replace rule - Search</string>
+    <string name="drawer_interface">Interface</string>
+    <string name="other">Other</string>
+    <string name="nav_back">Back</string>
 </resources>

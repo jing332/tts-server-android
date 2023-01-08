@@ -70,23 +70,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
         navView.setNavigationItemSelectedListener(this)
 
-        /* 版本名 */
+        // 设置启动页面
+        val checkedId = if (AppConfig.fragmentIndex == 1) R.id.nav_server else R.id.nav_systts
+        navView.setCheckedItem(checkedId)
+
+        val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
+        navGraph.setStartDestination(checkedId)
+        navController.graph = navGraph
+
         val tvVersion =
             binding.navView.getHeaderView(0).findViewById<TextView>(R.id.nav_header_subtitle)
         tvVersion.text = BuildConfig.VERSION_NAME
-
-        val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
-        navGraph.setStartDestination(
-            if (AppConfig.fragmentIndex == 1) {
-                R.id.nav_server
-            } else {
-                R.id.nav_systts
-            }
-        )
-        navController.graph = navGraph
 
         MyTools.checkUpdate(this)
     }

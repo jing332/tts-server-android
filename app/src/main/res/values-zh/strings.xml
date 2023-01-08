@@ -237,4 +237,7 @@
     <string name="systts_copied_config">已复制配置</string>
     <string name="search">搜索</string>
     <string name="replace_rule_search">替换规则 - 搜索</string>
+    <string name="drawer_interface">界面</string>
+    <string name="other">其他</string>
+    <string name="nav_back">返回</string>
 </resources>

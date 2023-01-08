@@ -4,33 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:animateLayoutChanges="true"
+            android:layout_height="wrap_content"
             tools:title="ToolBar Title">
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                app:tabGravity="center"
-                app:tabIndicatorAnimationMode="elastic"
-                app:tabIndicatorColor="?attr/colorPrimary"
-                app:tabIndicatorFullWidth="false"
-                app:tabMinWidth="4dp"
-                app:tabMode="scrollable"
-                app:tabSelectedTextAppearance="@style/tabSelectedTextStyle"
-                app:tabSelectedTextColor="?attr/colorPrimary"
-                app:tabTextColor="@color/tab_text_color" />
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true">
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:tabGravity="center"
+                    app:tabIndicatorAnimationMode="elastic"
+                    app:tabIndicatorColor="?attr/colorPrimary"
+                    app:tabIndicatorFullWidth="false"
+                    app:tabMinWidth="4dp"
+                    app:tabMode="scrollable"
+                    app:tabSelectedTextAppearance="@style/tabSelectedTextStyle"
+                    app:tabSelectedTextColor="?attr/colorPrimary"
+                    app:tabTextColor="@color/tab_text_color" />
+            </FrameLayout>
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

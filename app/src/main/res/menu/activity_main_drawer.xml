@@ -3,37 +3,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:id="@+id/group1">
-        <item
-            android:id="@+id/nav_systts"
-            android:icon="@drawable/ic_tts"
-            android:checkable="true"
-            android:title="@string/systts_settings" />
-        <item
-            android:id="@+id/nav_server"
-            android:icon="@drawable/ic_baseline_menu_book_24"
-            android:checkable="true"
-            android:title="Server"
-            tools:ignore="HardcodedText" />
-        <item
-            android:id="@+id/nav_settings"
-            android:checkable="true"
-            android:icon="@drawable/ic_baseline_settings_24"
-            android:title="@string/settings" />
-    </group>
+    <item
+        android:id="@+id/group1"
+        android:title="@string/drawer_interface">
+        <menu>
+            <item
+                android:id="@+id/nav_systts"
+                android:checkable="true"
+                android:icon="@drawable/ic_tts"
+                android:title="@string/systts_settings" />
+            <item
+                android:id="@+id/nav_server"
+                android:checkable="true"
+                android:icon="@drawable/ic_baseline_menu_book_24"
+                android:title="Server"
+                tools:ignore="HardcodedText" />
+            <item
+                android:id="@+id/nav_settings"
+                android:checkable="true"
+                android:icon="@drawable/ic_baseline_settings_24"
+                android:title="@string/settings" />
+        </menu>
+    </item>
 
-    <group android:id="@+id/group2">
-        <item
-            android:id="@+id/nav_killBattery"
-            android:icon="@drawable/ic_baseline_battery_full_24"
-            android:title="@string/background_whitelist" />
-        <item
-            android:id="@+id/nav_checkUpdate"
-            android:icon="@drawable/ic_check_update"
-            android:title="@string/check_update" />
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/ic_baseline_info_24"
-            android:title="@string/about" />
-    </group>
+    <item
+        android:id="@+id/group2"
+        android:title="@string/other">
+        <menu>
+            <item
+                android:id="@+id/nav_killBattery"
+                android:icon="@drawable/ic_baseline_battery_full_24"
+                android:title="@string/background_whitelist" />
+            <item
+                android:id="@+id/nav_checkUpdate"
+                android:icon="@drawable/ic_check_update"
+                android:title="@string/check_update" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_baseline_info_24"
+                android:title="@string/about" />
+        </menu>
+    </item>
 </menu>
