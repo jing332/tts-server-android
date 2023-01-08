@@ -241,4 +241,6 @@
     <string name="upload_to_url">Upload to URL</string>
     <string name="upload_failed">Upload failed: %1$s</string>
     <string name="systts_copied_config">Copied configuration</string>
+    <string name="search">Search</string>
+    <string name="replace_rule_search">Replace rule - Search</string>
 </resources>

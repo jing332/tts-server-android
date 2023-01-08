@@ -5,17 +5,23 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:theme="@style/Theme.TtsServer.AppBarOverlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
-            app:popupTheme="@style/Theme.TtsServer"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            app:navigationIcon="@drawable/ic_baseline_arrow_back_24">
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+            app:title="">
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/replace_rule_search"
+                android:importantForAutofill="no"
+                android:inputType="text" />
 
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>

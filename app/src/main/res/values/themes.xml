@@ -34,8 +34,8 @@
     </style>
 
     <style name="Theme.TtsServer" parent="Base.Theme.TtsServer">
-        <item name="actionBarStyle">@style/Theme.TtsServer.ActionBar</item>
-        <item name="actionBarTheme">@style/Theme.TtsServer.AppBarOverlay</item>
+<!--        <item name="actionBarStyle">@style/Theme.TtsServer.ActionBar</item>-->
+<!--        <item name="actionBarTheme">@style/Theme.TtsServer.AppBarOverlay</item>-->
         <item name="android:statusBarColor">?attr/colorPrimary</item>
 
 

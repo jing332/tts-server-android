@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.drake.brv.BindingAdapter
@@ -46,13 +47,15 @@ class ReplaceManagerActivity : BackActivity() {
         SysttsReplaceActivityBinding.inflate(layoutInflater)
     }
 
+    private lateinit var brv: BindingAdapter
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        val brv = binding.recyclerView.linear().setup {
+        brv = binding.recyclerView.linear().setup {
             addType<ReplaceRuleModel>(R.layout.systts_replace_rule_item)
             onCreate {
                 val binding = getBinding<SysttsReplaceRuleItemBinding>()
@@ -90,19 +93,29 @@ class ReplaceManagerActivity : BackActivity() {
         }
 
         lifecycleScope.launch {
-            var job: Job? = null
             appDb.replaceRuleDao.flowAll().conflate().collect { list ->
-                val models = list.map { ReplaceRuleModel(data = it) }
-                if (brv.models == null) withMain { brv.models = models }
-                else {
-                    job?.cancel()
-                    job = null
-                    job = launch { delay(100); brv.setDifferModels(models) }
-                        .apply { start() }
-                }
+                updateModels(list)
             }
         }
+
+        binding.etSearch.addTextChangedListener {
+            lifecycleScope.launch { updateModels(appDb.replaceRuleDao.all) }
+        }
+
     }
+
+    var modelsJob: Job? = null
+    private suspend fun updateModels(list: List<ReplaceRule>) {
+        val models = list.map { ReplaceRuleModel(data = it) }
+            .filter { it.data.name.contains(binding.etSearch.text) }
+        if (brv.models == null) withMain { brv.models = models }
+        else {
+            modelsJob?.cancel()
+            modelsJob = null
+            modelsJob = lifecycleScope.launch { delay(100); brv.setDifferModels(models) }
+        }
+    }
+
 
     fun updateOrder(models: List<Any?>?) {
         models?.forEachIndexed { index, value ->
@@ -138,8 +151,9 @@ class ReplaceManagerActivity : BackActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
         MenuCompat.setGroupDividerEnabled(menu, true)
-
         menuInflater.inflate(R.menu.menu_replace_manager, menu)
+
+
         return super.onCreateOptionsMenu(menu)
     }
 
