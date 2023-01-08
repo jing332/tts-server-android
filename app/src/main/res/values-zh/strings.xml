@@ -68,7 +68,7 @@
     <string name="server_set_token">设置Token</string>
     <string name="server_token_set_to">Token已设为：</string>
 
-    <string name="systts_settings">系统TTS配置</string>
+    <string name="systts_settings">系统TTS</string>
     <string name="settings">设置</string>
     <string name="global_settings">全局设置</string>
     <string name="copy_address">复制地址</string>

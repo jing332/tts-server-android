@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.RadioButton
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
@@ -19,6 +17,9 @@ import com.github.jing332.tts_server_android.databinding.SysttsBaseInfoEditViewB
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
+import com.github.jing332.tts_server_android.util.runOnIO
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 
 class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
@@ -33,9 +34,15 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
     var raTarget: Int = ReadAloudTarget.ALL
         set(value) {
             field = value
-            binding.radioGroup.children.forEach { (it as RadioButton).isChecked = false }
-            (binding.radioGroup.getChildAt(field) as RadioButton).isChecked = true
             mData?.apply { readAloudTarget = field }
+
+            binding.btnGroupRaTarget.check(
+                when (value) {
+                    ReadAloudTarget.ASIDE -> R.id.btn_aside
+                    ReadAloudTarget.DIALOGUE -> R.id.btn_dialogue
+                    else -> R.id.btn_ra_all
+                }
+            )
         }
 
     var displayName: String
@@ -49,13 +56,17 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
 
     private var mData: SystemTts? = null
 
-    fun setData(data: SystemTts, groupList: List<SystemTtsGroup> = appDb.systemTtsDao.allGroup) {
+    @OptIn(DelicateCoroutinesApi::class)
+    fun setData(data: SystemTts) {
+        GlobalScope.runOnIO {
+            val groupList = appDb.systemTtsDao.allGroup
+            binding.groupItems = groupList.map { SpinnerItem(it.name, it) }
+            binding.groupCurrentPosition = groupList.indexOfFirst { it.id == data.groupId }
+        }
 
         this.mData = data
         this.displayName = data.displayName ?: ""
         raTarget = data.readAloudTarget
-        binding.groupItems = groupList.map { SpinnerItem(it.name, it) }
-        binding.groupCurrentPosition = groupList.indexOfFirst { it.id == data.groupId }
     }
 
     fun checkDisplayNameEmpty(): Boolean {
@@ -73,14 +84,17 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
         binding.etName.addTextChangedListener {
             mData?.apply { displayName = this@BaseInfoEditView.displayName }
         }
-        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val raTarget = when (checkedId) {
-                R.id.radioBtn_ra_all -> ReadAloudTarget.ALL
-                R.id.radioBtn_only_ra_aside -> ReadAloudTarget.ASIDE
-                R.id.radioBtn_only_ra_dialogue -> ReadAloudTarget.DIALOGUE
-                else -> -1
+
+        binding.btnGroupRaTarget.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                val raTarget = when (checkedId) {
+                    R.id.btn_aside -> ReadAloudTarget.ASIDE
+                    R.id.btn_dialogue -> ReadAloudTarget.DIALOGUE
+                    else -> ReadAloudTarget.ALL
+                }
+                if (this.raTarget != raTarget) this.raTarget = raTarget
             }
-            if (this.raTarget != raTarget) this.raTarget = raTarget
+
         }
 
         binding.spinnerGroup.onItemSelectedListener = object : OnItemSelectedListener {

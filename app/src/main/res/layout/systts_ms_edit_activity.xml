@@ -13,12 +13,12 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
         tools:context=".ui.systts.edit.MsTtsEditActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
 
             <com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
                 android:id="@+id/baseInfoEditView"
@@ -38,7 +38,7 @@
                 app:endIconContentDescription="@string/test"
                 app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
                 app:endIconMode="custom"
-                app:endIconTint="@color/teal_200"
+                app:endIconTint="?attr/colorPrimaryInverse"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/baseInfoEditView">
@@ -54,11 +54,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_api"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:hint="@string/label_api"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/til_test"
@@ -77,11 +78,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_locale"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:hint="@string/label_language"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/til_api"
@@ -99,11 +101,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_voice"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:hint="@string/label_voice"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/til_locale"
@@ -121,11 +124,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_secondaryLocale"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:hint="@string/systts_secondaryLocale"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintTop_toBottomOf="@id/til_voice"
                 app:startIconDrawable="@drawable/ic_baseline_help_outline_24"
                 app:visible="@{!m.ui.secondaryLocales.items.empty}">
@@ -140,13 +144,14 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_style"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="2dp"
                 android:enabled="@{!m.ui.styles.items.empty}"
                 android:hint="@string/label_voice_style"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toStartOf="@id/til_role"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/til_secondaryLocale">
@@ -164,12 +169,13 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_role"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:enabled="@{!m.ui.roles.items.empty}"
                 android:hint="@string/label_voice_role"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/til_style"
                 app:layout_constraintTop_toTopOf="@id/til_style">

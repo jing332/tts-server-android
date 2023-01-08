@@ -25,41 +25,52 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RadioGroup
-            android:id="@+id/radioGroup"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/btn_group_ra_target"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:selectionRequired="true"
+            app:singleSelection="true">
 
-            <RadioButton
-                android:id="@+id/radioBtn_ra_all"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_ra_all"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ra_all" />
+                android:text="@string/ra_all"
+                app:icon="@drawable/ic_baseline_select_all_24" />
 
-            <RadioButton
-                android:id="@+id/radioBtn_only_ra_aside"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_aside"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ra_aside" />
+                android:text="@string/ra_aside"
+                app:icon="@drawable/ic_baseline_menu_book_24" />
 
-            <RadioButton
-                android:id="@+id/radioBtn_only_ra_dialogue"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_dialogue"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ra_dialogue" />
-        </RadioGroup>
+                android:text="@string/ra_dialogue"
+                app:icon="@drawable/ic_baseline_supervisor_account_24" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_group"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_marginTop="4dp"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/belonging_group"
-            app:layout_constraintTop_toBottomOf="@id/radioGroup"
+            app:hintAnimationEnabled="false"
+            app:layout_constraintTop_toBottomOf="@id/btn_group_ra_target"
             app:startIconDrawable="@drawable/ic_baseline_groups_24">
 
             <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
@@ -77,6 +88,7 @@
             android:layout_marginTop="4dp"
             android:hint="@string/display_name"
             app:endIconMode="clear_text"
+            app:hintAnimationEnabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

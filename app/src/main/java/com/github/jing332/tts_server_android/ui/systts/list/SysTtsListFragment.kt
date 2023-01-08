@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -121,7 +120,6 @@ class SysTtsListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        requireActivity().findViewById<Toolbar>(R.id.toolbar).title = ""
         tabLayout.isGone = false
     }
 
@@ -301,7 +299,9 @@ class SysTtsListFragment : Fragment() {
     private fun addGroup() {
         val et = MaterialTextInput(requireContext())
         et.inputLayout.setHint(R.string.name)
-        MaterialAlertDialogBuilder(requireContext()).setMessage(R.string.add_group).setView(et)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.add_group)
+            .setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 appDb.systemTtsDao.insertGroup(
                     SystemTtsGroup(

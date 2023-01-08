@@ -103,6 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:animateLayoutChanges="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/group_source">
@@ -125,9 +126,9 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:endIconContentDescription="@string/select_file"
-            app:endIconDrawable="@drawable/ic_baseline_edit_24"
+            app:endIconDrawable="@drawable/ic_baseline_file_open_24"
             app:endIconMode="custom"
-            app:endIconTint="@color/teal_200"
+            app:endIconTint="?attr/colorControlNormal"
             app:hintEnabled="false"
             tools:visibility="visible">
 
