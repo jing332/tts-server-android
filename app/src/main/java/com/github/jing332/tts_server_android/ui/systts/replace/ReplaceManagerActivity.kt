@@ -50,6 +50,7 @@ class ReplaceManagerActivity : BackActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
         val brv = binding.recyclerView.linear().setup {
             addType<ReplaceRuleModel>(R.layout.systts_replace_rule_item)

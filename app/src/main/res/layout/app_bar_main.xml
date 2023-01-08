@@ -8,12 +8,15 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.TtsServer.AppBarOverlay">
 
-        <com.google.android.material.appbar.MaterialToolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/Theme.TtsServer"
             tools:title="ToolBar Title">
 
             <com.google.android.material.tabs.TabLayout
@@ -23,12 +26,13 @@
                 android:background="@android:color/transparent"
                 app:tabGravity="center"
                 app:tabIndicatorAnimationMode="elastic"
-                app:tabIndicatorColor="?attr/colorPrimary"
+                app:tabIndicatorColor="@color/md_theme_light_inversePrimary"
                 app:tabIndicatorFullWidth="false"
                 app:tabMinWidth="4dp"
                 app:tabMode="scrollable"
-                app:tabSelectedTextColor="?attr/colorPrimary" />
-        </com.google.android.material.appbar.MaterialToolbar>
+                app:tabSelectedTextColor="@color/white"
+                app:tabTextColor="@color/tab_text_color" />
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 

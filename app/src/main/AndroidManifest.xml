@@ -53,6 +53,7 @@
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:exported="true"
             android:label="@string/title_activity_replace_manager"
+            android:theme="@style/Theme.TtsServer.NoActionBar"
             android:launchMode="singleTask" /> <!-- 替换规则 -->
         <activity
             android:name=".ui.systts.replace.ReplaceRuleEditActivity"
