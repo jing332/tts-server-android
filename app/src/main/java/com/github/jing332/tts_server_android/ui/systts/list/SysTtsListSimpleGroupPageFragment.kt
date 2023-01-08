@@ -14,26 +14,26 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.databinding.SysttsListGroupFragmentBinding
+import com.github.jing332.tts_server_android.databinding.SysttsListSimpleGroupFragmentBinding
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
-class SysTtsListGroupPageFragment : Fragment() {
+class SysTtsListSimpleGroupPageFragment : Fragment() {
     companion object {
         private const val ARG_RA_TARGET = "ARG_RA_TARGET"
 
-        fun newInstance(raTarget: Int = -1): SysTtsListGroupPageFragment {
-            return SysTtsListGroupPageFragment().apply {
+        fun newInstance(raTarget: Int = -1): SysTtsListSimpleGroupPageFragment {
+            return SysTtsListSimpleGroupPageFragment().apply {
                 arguments = Bundle().apply { putInt(ARG_RA_TARGET, raTarget) }
             }
         }
     }
 
-    private val binding: SysttsListGroupFragmentBinding by lazy {
-        SysttsListGroupFragmentBinding.inflate(layoutInflater)
+    private val binding: SysttsListSimpleGroupFragmentBinding by lazy {
+        SysttsListSimpleGroupFragmentBinding.inflate(layoutInflater)
     }
 
     private val itemHelper = SysTtsListItemHelper(this)

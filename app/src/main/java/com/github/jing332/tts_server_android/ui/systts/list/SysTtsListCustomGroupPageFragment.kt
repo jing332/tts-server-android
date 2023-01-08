@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.list.my_group
+package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -25,15 +25,13 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
-import com.github.jing332.tts_server_android.databinding.SysttsListMyGroupFragmentBinding
-import com.github.jing332.tts_server_android.databinding.SysttsListMyGroupItemBinding
+import com.github.jing332.tts_server_android.databinding.SysttsListCustomGroupFragmentBinding
+import com.github.jing332.tts_server_android.databinding.SysttsListCustomGroupItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
-import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListItemHelper
 import com.github.jing332.tts_server_android.util.clickWithThrottle
-import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
@@ -41,9 +39,9 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.serialization.encodeToString
 
 @Suppress("CAST_NEVER_SUCCEEDS")
-class SysTtsListMyGroupPageFragment : Fragment() {
-    val binding: SysttsListMyGroupFragmentBinding by lazy {
-        SysttsListMyGroupFragmentBinding.inflate(layoutInflater)
+class SysTtsListCustomGroupPageFragment : Fragment() {
+    val binding: SysttsListCustomGroupFragmentBinding by lazy {
+        SysttsListCustomGroupFragmentBinding.inflate(layoutInflater)
     }
 
     private val itemHelper = SysTtsListItemHelper(this, isGroupList = true)
@@ -57,19 +55,19 @@ class SysTtsListMyGroupPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val brv = binding.recyclerView.linear().setup {
-            addType<RvGroupModel>(R.layout.systts_list_my_group_item)
+            addType<CustomGroupModel>(R.layout.systts_list_custom_group_item)
             addType<SystemTts>(R.layout.systts_list_item)
 
             onCreate {
                 // 分组Item
-                getBindingOrNull<SysttsListMyGroupItemBinding>()?.apply {
+                getBindingOrNull<SysttsListCustomGroupItemBinding>()?.apply {
                     itemView.accessibilityDelegate = object : AccessibilityDelegate() {
                         override fun onInitializeAccessibilityNodeInfo(
                             host: View,
                             info: AccessibilityNodeInfo
                         ) {
                             super.onInitializeAccessibilityNodeInfo(host, info)
-                            val model = getModel<RvGroupModel>()
+                            val model = getModel<CustomGroupModel>()
                             val enabledCount =
                                 model.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
 
@@ -85,7 +83,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                     }
                     itemView.clickWithThrottle {
                         expandOrCollapse()
-                        getModel<RvGroupModel>().let { model ->
+                        getModel<CustomGroupModel>().let { model ->
                             val enabledCount =
                                 model.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
                             val speakText =
@@ -105,7 +103,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                                 MaterialAlertDialogBuilder(requireContext())
                                     .setTitle(R.string.msg_group_is_empty)
                                     .setMessage(getString(R.string.systts_group_empty_msg))
-                                    .setFadeAnim()
+
                                     .show()
                             }
 
@@ -115,7 +113,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                         }
                     }
                     checkBox.clickWithThrottle {
-                        val group = getModel<RvGroupModel>().data
+                        val group = getModel<CustomGroupModel>().data
                         if (!SysTtsConfig.isGroupMultipleEnabled)
                             appDb.systemTtsDao.setAllTtsEnabled(false)
 
@@ -135,7 +133,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
 
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    if (oldItem is RvGroupModel && newItem is RvGroupModel)
+                    if (oldItem is CustomGroupModel && newItem is CustomGroupModel)
                         return oldItem.data.id == newItem.data.id
                     if (oldItem is SystemTts && newItem is SystemTts)
                         return oldItem.id == newItem.id
@@ -161,7 +159,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                     source: BindingAdapter.BindingViewHolder,
                     target: BindingAdapter.BindingViewHolder
                 ) {
-                    models?.filterIsInstance<RvGroupModel>()?.let { models ->
+                    models?.filterIsInstance<CustomGroupModel>()?.let { models ->
                         models.forEachIndexed { index, value ->
                             appDb.systemTtsDao.updateGroup(value.data.apply { order = index })
                         }
@@ -182,7 +180,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                                 else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
                             }
 
-                        RvGroupModel(
+                        CustomGroupModel(
                             data = v.group,
                             itemGroupPosition = i,
                             checkedState = checkState,
@@ -207,7 +205,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
     }
 
     @SuppressLint("RestrictedApi")
-    private fun displayMoreMenu(v: View, model: RvGroupModel) {
+    private fun displayMoreMenu(v: View, model: CustomGroupModel) {
         PopupMenu(requireContext(), v).apply {
             this.setForceShowIcon(true)
             MenuCompat.setGroupDividerEnabled(menu, true)
@@ -225,7 +223,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun exportConfig(model: RvGroupModel) {
+    private fun exportConfig(model: CustomGroupModel) {
         val obj = GroupWithTtsItem(group = model.data, list = model.itemSublist as List<SystemTts>)
         AppDialogs.displayExportDialog(
             requireContext(),
@@ -246,7 +244,7 @@ class SysTtsListMyGroupPageFragment : Fragment() {
                         name = et.inputEdit.text.toString().ifEmpty { getString(R.string.unnamed) })
                 )
             }
-            .setFadeAnim()
+
             .show()
     }
 

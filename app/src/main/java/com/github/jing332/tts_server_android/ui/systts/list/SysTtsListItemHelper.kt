@@ -22,7 +22,6 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.list.my_group.RvGroupModel
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.clone
 import com.github.jing332.tts_server_android.util.toast
@@ -38,7 +37,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                 getBindingOrNull<SysttsListItemBinding>()?.apply {
                     checkBoxSwitch.setOnClickListener { view ->
                         if (isGroupList) {
-                            getModelOrNull<RvGroupModel>(findParentPosition())?.let { group ->
+                            getModelOrNull<CustomGroupModel>(findParentPosition())?.let { group ->
                                 // 组中的item位置
                                 val subPos = modelPosition - findParentPosition() - 1
                                 switchChanged(view, group.itemSublist as List<SystemTts>, subPos)
@@ -89,7 +88,6 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
             .setCancelable(false)
             .setPositiveButton(android.R.string.ok) { _, _ -> }
             .setMessage(R.string.systts_please_check_multi_voice_option).create()
-            .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
     }
 
     private fun switchChanged(view: View?, list: List<SystemTts>, position: Int) {

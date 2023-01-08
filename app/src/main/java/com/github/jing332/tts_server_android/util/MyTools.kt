@@ -110,7 +110,7 @@ object MyTools {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 ctx.startActivity(intent)
             }
-            .setFadeAnim().show()
+            .show()
     }
 
     /* 添加快捷方式 */

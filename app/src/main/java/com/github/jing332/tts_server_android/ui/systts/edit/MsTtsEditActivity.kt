@@ -17,7 +17,7 @@ import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
-import com.github.jing332.tts_server_android.util.setFadeAnim
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MsTtsEditActivity : BackActivity() {
@@ -49,7 +49,7 @@ class MsTtsEditActivity : BackActivity() {
         // 帮助 二级语言
         binding.tilSecondaryLocale.setStartIconOnClickListener {
             MaterialAlertDialogBuilder(this).setTitle(R.string.systts_secondaryLocale)
-                .setMessage(R.string.systts_help_secondary_locale).setFadeAnim().show()
+                .setMessage(R.string.systts_help_secondary_locale).show()
         }
 
         // 接口加载回调
@@ -68,7 +68,7 @@ class MsTtsEditActivity : BackActivity() {
                         .setPositiveButton(R.string.retry) { _, _ -> vm.reloadApiData() }
                         .setNegativeButton(R.string.exit) { _, _ -> finish() }
                         .setCancelable(false)
-                        .setFadeAnim()
+
                         .show()
                 }
             }
@@ -125,14 +125,14 @@ class MsTtsEditActivity : BackActivity() {
                 .setTitle(R.string.systts_test_success)
                 .setMessage(getString(R.string.systts_test_success_info, kb))
                 .setOnDismissListener { vm.stopPlay() }
-                .setFadeAnim()
+
                 .show()
         }, { err ->
             waitDialog.dismiss()
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.test_failed)
                 .setMessage(err.message)
-                .setFadeAnim()
+
                 .show()
         })
     }

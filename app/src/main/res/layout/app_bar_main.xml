@@ -31,7 +31,6 @@
                 app:tabSelectedTextColor="?attr/colorPrimary"
                 app:tabTextColor="@color/tab_text_color" />
         </com.google.android.material.appbar.MaterialToolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_main" />

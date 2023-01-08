@@ -27,20 +27,12 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
-
-        <!--        <item name="android:statusBarColor">?attr/colorPrimary</item>-->
-
-
     </style>
 
     <style name="Theme.TtsServer" parent="Base.Theme.TtsServer">
-<!--        <item name="actionBarStyle">@style/Theme.TtsServer.ActionBar</item>-->
-<!--        <item name="actionBarTheme">@style/Theme.TtsServer.AppBarOverlay</item>-->
         <item name="android:statusBarColor">?attr/colorPrimary</item>
 
-
-        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox
-        </item>
+        <item name="textInputStyle">?attr/textInputOutlinedStyle</item>
         <item name="materialButtonOutlinedStyle">@style/Widget.TtsServer.Button.OutlinedButton
         </item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.TtsServer.BottomSheetDialog</item>
@@ -78,9 +70,4 @@
     <style name="Theme.TtsServer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.TtsServer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="dialogFadeStyle" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
-        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
-    </style>
 </resources>

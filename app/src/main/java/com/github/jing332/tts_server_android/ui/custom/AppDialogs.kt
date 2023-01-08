@@ -5,7 +5,10 @@ import android.graphics.Color
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.util.*
+import com.github.jing332.tts_server_android.util.ClipboardUtils
+import com.github.jing332.tts_server_android.util.longToast
+import com.github.jing332.tts_server_android.util.runOnIO
+import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
 import tts_server_lib.Tts_server_lib
@@ -17,7 +20,7 @@ object AppDialogs {
             .setPositiveButton(R.string.delete) { _, _ ->
                 onRemove.invoke()
             }
-            .setFadeAnim().apply {
+            .create().apply {
                 show()
                 getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED)
             }
@@ -47,7 +50,7 @@ object AppDialogs {
                         }
                     }
                 }
-                .setFadeAnim()
+
                 .show()
         }
     }

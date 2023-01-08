@@ -40,7 +40,6 @@ import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportActivity
-import com.github.jing332.tts_server_android.ui.systts.list.my_group.SysTtsListMyGroupPageFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -87,8 +86,8 @@ class SysTtsListFragment : Fragment() {
         if (savedInstanceState != null) return
 
         val fragmentList = listOf(
-            SysTtsListMyGroupPageFragment(),
-            SysTtsListGroupPageFragment.newInstance()
+            SysTtsListCustomGroupPageFragment(),
+            SysTtsListSimpleGroupPageFragment.newInstance()
         )
         vpAdapter = GroupPageAdapter(this, fragmentList)
         binding.viewPager.isSaveEnabled = false
@@ -156,7 +155,6 @@ class SysTtsListFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.warning))
             .setMessage(getString(R.string.systts_sample_rate_different_in_enabled_list))
             .setPositiveButton(android.R.string.ok) { _, _ -> }.create()
-            .apply { window?.setWindowAnimations(R.style.dialogFadeStyle) }
     }
 
     /* 检查格式 如不同则显示对话框 */
@@ -176,7 +174,7 @@ class SysTtsListFragment : Fragment() {
     }
 
     private fun exportConfig() {
-        AppDialogs.displayExportDialog(requireContext(),lifecycleScope, vm.exportConfig())
+        AppDialogs.displayExportDialog(requireContext(), lifecycleScope, vm.exportConfig())
     }
 
     @Suppress("DEPRECATION")
@@ -223,7 +221,7 @@ class SysTtsListFragment : Fragment() {
             SysTtsConfig.inAppPlaySpeed = (inAppBinding.seekbarSpeed.progress * 0.1).toFloat()
             SysTtsConfig.inAppPlayPitch = (inAppBinding.seekbarPitch.progress * 0.1).toFloat()
             SystemTtsService.notifyUpdateConfig()
-        }.setFadeAnim().show()
+        }.show()
     }
 
     @SuppressLint("SetTextI18n")
@@ -248,7 +246,7 @@ class SysTtsListFragment : Fragment() {
             }.setNegativeButton(R.string.reset) { _, _ ->
                 SysTtsConfig.requestTimeout = 5000
                 SystemTtsService.notifyUpdateConfig()
-            }.setFadeAnim().show()
+            }.show()
     }
 
     private fun showSetMinDialogueLengthDialog() {
@@ -269,7 +267,7 @@ class SysTtsListFragment : Fragment() {
             }.setNegativeButton(R.string.reset) { _, _ ->
                 SysTtsConfig.minDialogueLength = 0
                 SystemTtsService.notifyUpdateConfig()
-            }.setFadeAnim().show()
+            }.show()
     }
 
     private fun addHttpTTS(
@@ -310,7 +308,7 @@ class SysTtsListFragment : Fragment() {
                         name = et.inputEdit.text.toString().ifEmpty { getString(R.string.unnamed) })
                 )
             }
-            .setFadeAnim().show()
+            .show()
     }
 
     private fun onOptionsItemSelected(itemId: Int) {

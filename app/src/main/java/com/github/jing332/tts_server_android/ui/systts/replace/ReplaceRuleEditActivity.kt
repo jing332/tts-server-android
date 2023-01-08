@@ -14,7 +14,7 @@ import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
-import com.github.jing332.tts_server_android.util.setFadeAnim
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("DEPRECATION")
@@ -86,7 +86,7 @@ class ReplaceRuleEditActivity : BackActivity() {
                 }
             }
         }
-            .setFadeAnim()
+
             .show()
     }
 

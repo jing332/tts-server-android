@@ -25,7 +25,7 @@ import com.github.jing332.tts_server_android.ui.ScSwitchActivity
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
-import com.github.jing332.tts_server_android.util.setFadeAnim
+
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -136,7 +136,7 @@ class ServerFragment : Fragment() {
                     }.setNegativeButton(R.string.reset) { _, _ ->
                         ServerConfig.token = ""
                         toast(getString(R.string.ok_reset))
-                    }.setFadeAnim().show()
+                    }.show()
             }
             R.id.menu_wakeLock -> { /* 唤醒锁 */
                 ServerConfig.isWakeLockEnabled = !ServerConfig.isWakeLockEnabled

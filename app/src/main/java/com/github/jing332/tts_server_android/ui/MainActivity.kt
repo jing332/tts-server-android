@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
+import android.os.SystemClock
 import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
@@ -32,7 +33,6 @@ import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.MyTools
-import com.github.jing332.tts_server_android.util.setFadeAnim
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_server -> R.menu.menu_server
             else -> return false
         }
-        MenuCompat.setGroupDividerEnabled(menu,true)
+        MenuCompat.setGroupDividerEnabled(menu, true)
         menuInflater.inflate(id, menu)
         return true
     }
@@ -158,10 +158,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onOptionsItemSelected(item)
     }
 
-    var lastBackDownTime = 0L
+    private var lastBackDownTime = 0L
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK)
-            System.currentTimeMillis().let {
+            SystemClock.elapsedRealtime().let {
                 if (it - lastBackDownTime <= 1500) {
                     finish()
                 } else {
@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         tv.gravity = Gravity.CENTER /* 居中 */
         tv.setPadding(25)
         MaterialAlertDialogBuilder(this).setTitle(R.string.about).setView(tv)
-            .setFadeAnim().show()
+            .show()
     }
 
     @SuppressLint("BatteryLife")

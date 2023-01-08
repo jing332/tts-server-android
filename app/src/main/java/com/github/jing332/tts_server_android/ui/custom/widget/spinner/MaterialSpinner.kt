@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.accessibility.AccessibilityManager
 import android.widget.*
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.util.setFadeAnim
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
@@ -77,7 +77,7 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
                 super.getOnItemClickListener()?.onItemClick(null, this, which, -1)
                 dlg.dismiss()
             }
-            listDialog.setFadeAnim().show()
+            listDialog.show()
         } else {
             super.showDropDown()
             listPopup.setSelection(selectedPosition)

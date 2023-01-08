@@ -21,7 +21,7 @@ import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibility
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
-import com.github.jing332.tts_server_android.util.setFadeAnim
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("DEPRECATION")
@@ -70,7 +70,7 @@ class HttpTtsEditActivity : BackActivity() {
             tv.text =
                 Html.fromHtml(resources.openRawResource(R.raw.help_http_tts_url).readAllText())
             tv.setPadding(20, 20, 20, 20)
-            MaterialAlertDialogBuilder(this).setTitle(R.string.help).setView(tv).setFadeAnim()
+            MaterialAlertDialogBuilder(this).setTitle(R.string.help).setView(tv)
                 .show()
 
         }
@@ -82,14 +82,14 @@ class HttpTtsEditActivity : BackActivity() {
                 .setMessage(
                     resources.openRawResource(R.raw.help_http_tts_request_header).readAllText()
                 )
-                .setFadeAnim().show()
+                .show()
         }
 
         binding.tilSampleRate.initAccessibilityDelegate()
         // 采样率帮助按钮
         binding.tilSampleRate.setStartIconOnClickListener {
             MaterialAlertDialogBuilder(this).setTitle(R.string.systts_sample_rate)
-                .setMessage(R.string.systts_help_sample_rate).setFadeAnim().show()
+                .setMessage(R.string.systts_help_sample_rate).show()
         }
 
         if (AppConfig.testSampleText.isNotEmpty())
@@ -130,14 +130,14 @@ class HttpTtsEditActivity : BackActivity() {
                     ).setOnDismissListener {
                         vm.stopPlay()
                     }
-                    .setFadeAnim().show()
+                    .show()
 
             },
             { err ->
                 waitDialog.dismiss()
                 MaterialAlertDialogBuilder(this@HttpTtsEditActivity).setTitle(R.string.test_failed)
                     .setMessage(err.message ?: err.cause?.message)
-                    .setFadeAnim()
+
                     .show()
             })
     }
