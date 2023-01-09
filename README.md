@@ -23,8 +23,9 @@
 
 # Download
 
-[稳定版(Release)](https://github.com/jing332/tts-server-android/relaease) |
-[开发版(Action)](https://github.com/jing332/tts-server-android/actions)
+* [稳定版(Release)](https://github.com/jing332/tts-server-android/relaease)
+
+* [开发版(Action 需登陆Github账户)](https://github.com/jing332/tts-server-android/actions)
 
 
 # Grateful
