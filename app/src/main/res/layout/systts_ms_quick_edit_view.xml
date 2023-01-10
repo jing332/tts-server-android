@@ -23,7 +23,7 @@
             android:hint="@string/label_audio_format" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
         android:id="@+id/seekbar_rate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -35,10 +35,10 @@
         app:max="200"
         app:progress="100">
 
-    </com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar>
+    </com.github.jing332.tts_server_android.ui.custom.widget.Seekbar>
 
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
         android:id="@+id/seekbar_volume"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         app:max="100"
         app:progress="50" />
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
         android:id="@+id/seekbar_pitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,8 +62,8 @@
         app:max="100"
         app:progress="50" />
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
-        android:id="@+id/seekbar_styleDegree"
+    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+        android:id="@+id/seekbar_style_Degree"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -73,5 +73,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekbar_pitch"
         app:max="200"
+        app:min="1"
         app:progress="100" />
 </androidx.constraintlayout.widget.ConstraintLayout>

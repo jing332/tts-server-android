@@ -147,10 +147,8 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-core:2.18.2'
 
     testImplementation 'junit:junit:4.13.2'
-    //noinspection GradleDependency
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    //noinspection GradleDependency
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
 static def releaseTime() {

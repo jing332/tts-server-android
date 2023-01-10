@@ -6,16 +6,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
         android:id="@+id/seekBar_rate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:hint="@string/label_rate">
 
-    </com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar>
+    </com.github.jing332.tts_server_android.ui.custom.widget.Seekbar>
 
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
         android:id="@+id/seekBar_volume"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

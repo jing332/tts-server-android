@@ -26,7 +26,7 @@
         tools:layout_editor_absoluteX="8dp">
 
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+        <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
             android:id="@+id/seekbar_speed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,10 +37,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:max="30"
+            app:min="1"
             app:progress="10" />
 
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+        <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
             android:id="@+id/seekbar_pitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,12 +49,13 @@
             app:hint="@string/label_play_pitch"
             app:layout_constraintTop_toBottomOf="@id/seekbar_speed"
             app:max="30"
+            app:min="1"
             app:progress="10" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/switch_on_off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

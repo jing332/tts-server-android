@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ConvenientSeekbar">
-        <attr name="max" format="integer" />
-        <attr name="progress" format="integer" />
-        <attr name="hint" format="string|reference" />
+    <attr name="max" format="integer" />
+    <attr name="progress" format="integer" />
+    <attr name="hint" format="string|reference" />
+
+    <declare-styleable name="Seekbar">
+        <attr name="min" format="integer" />
+        <attr name="max" />
+        <attr name="progress" />
+        <attr name="hint" />
     </declare-styleable>
 
     <declare-styleable name="MaterialSpinner">

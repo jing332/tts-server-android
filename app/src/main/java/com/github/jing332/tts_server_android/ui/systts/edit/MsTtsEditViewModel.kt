@@ -117,7 +117,6 @@ class MsTtsEditViewModel : ViewModel() {
             // 更新地区列表
             updateLocales(mAllVoiceList)
 
-
             withMain { mCallback?.onDone(Result.success(Unit)) }
         }
     }
@@ -162,7 +161,6 @@ class MsTtsEditViewModel : ViewModel() {
                 }
             }
         }
-
 
         // 风格
         ui.styles.addOnPropertyChangedCallback { _, propertyId ->
@@ -232,6 +230,7 @@ class MsTtsEditViewModel : ViewModel() {
             reset()
             currentVoice.localStyleList?.let { pair ->
                 styleDegreeVisibleLiveData.postValue(true)
+
                 val list = pair.filter { it.first != IGNORE_VALUE_DEFAULT }
                     .map { SpinnerItem(it.second, it.first) }.toMutableList()
                 list.add(0, DEFAULT_SPINNER_ITEM)
@@ -242,12 +241,13 @@ class MsTtsEditViewModel : ViewModel() {
                     val pos = items.indexOfFirst { it.value == expressAs.style }
                     position = max(pos, 0)
                 }
-                return@apply
+                return
             }
         }
         // 列表为空
         mTts.expressAs?.style = null
         mTts.expressAs?.styleDegree = 1F
+        styleDegreeVisibleLiveData.postValue(false)
     }
 
     // 更新角色列表
@@ -280,12 +280,12 @@ class MsTtsEditViewModel : ViewModel() {
             currentVoice.localSecondaryLocaleList?.let { list ->
                 if (list.isNotEmpty()) {
                     items = list.map { SpinnerItem(it.second, it.first) }
-                    val pos = items.indexOfFirst { it.value == (mTts.secondaryLocale ?: "zh-CN") }
-                    position = max(pos, 0)
+                    position = items.indexOfFirst { it.value == (mTts.secondaryLocale ?: "zh-CN") }
+                    return
                 }
             }
+            mTts.secondaryLocale = null
         }
-
     }
 
     private val exoPlayer = lazy {

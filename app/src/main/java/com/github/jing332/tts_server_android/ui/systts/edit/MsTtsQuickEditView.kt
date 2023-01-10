@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.ui.systts.edit
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import androidx.databinding.BindingAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.databinding.SysttsMsQuickEditViewBinding
@@ -17,22 +15,13 @@ import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
 import com.github.jing332.tts_server_android.model.tts.MsTtsFormatManger
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
-import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import kotlin.math.max
 
-object MsTtsQuickEditViewAdapter {
-    @BindingAdapter("styleDegreeVisible")
-    @JvmStatic
-    fun setStyleDegreeVisible(view: View, visible: Boolean) {
-        if (view is MsTtsQuickEditView)
-            view.isStyleDegreeVisible = visible
-    }
-}
-
 class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
-    ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
+    ConstraintLayout(context, attrs, defaultStyle), Seekbar.OnSeekBarChangeListener {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
 
@@ -48,7 +37,7 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
         set(value) {
             field = value
             binding.seekbarStyleDegree.isVisible = value
-            setStyleDegree(mTts?.expressAs?.styleDegree ?: 1F)
+            binding.seekbarStyleDegree.value = mTts?.expressAs?.styleDegree ?: 1F
         }
 
     var callback: Callback? = null
@@ -59,49 +48,7 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
 
     private val strFollow: String by lazy { context.getString(R.string.follow_system_or_read_aloud_app) }
 
-    private var rateValue: Int = 0
-        set(value) {
-            field = value
-            binding.seekbarRate.textValue =
-                if (value == MsTTS.RATE_FOLLOW_SYSTEM) strFollow else "${value}%"
-        }
-
-    private var volumeValue: Int = 0
-        set(value) {
-            field = value
-            binding.seekbarVolume.textValue = "${value}%"
-        }
-
-    private var pitchValue: Int = 0
-        set(value) {
-            field = value
-            binding.seekbarPitch.textValue =
-                if (value == MsTTS.PITCH_FOLLOW_SYSTEM) strFollow else "${value}%"
-        }
-
-    private var styleDegreeValue: Float = 1F
-        set(value) {
-            field = value
-            binding.seekbarStyleDegree.textValue = "$value"
-        }
-
     var formatValue: String = MsTtsAudioFormat.DEFAULT
-
-    private fun setRate(v: Int) {
-        binding.seekbarRate.progress = v + 100
-    }
-
-    private fun setVolume(v: Int) {
-        binding.seekbarVolume.progress = v + 50
-    }
-
-    private fun setPitch(v: Int) {
-        binding.seekbarPitch.progress = v + 50
-    }
-
-    private fun setStyleDegree(v: Float) {
-        binding.seekbarStyleDegree.progress = (v * 100).toInt()
-    }
 
     fun setFormatByApi(@MsTtsApiType api: Int, currentFormat: String? = null) {
         mFormatItems = MsTtsFormatManger.getFormatsByApiType(api).map { SpinnerItem(it, it) }
@@ -122,20 +69,84 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
      */
     fun setData(tts: MsTTS) {
         mTts = tts
-        setRate(tts.rate)
-        setVolume(tts.volume)
-        setPitch(tts.pitch)
         setFormatByApi(tts.api)
+        binding.apply {
+            seekbarRate.value = tts.rate
+            seekbarVolume.value = tts.volume
+            seekbarPitch.value = tts.pitch
 
-        isStyleDegreeVisible = tts.expressAs?.style?.isNotEmpty() == true
-        if (isStyleDegreeVisible) setStyleDegree(tts.expressAs?.styleDegree ?: 1F)
+            isStyleDegreeVisible = tts.expressAs?.style?.isNotEmpty() == true
+            if (isStyleDegreeVisible) seekbarStyleDegree.value = tts.expressAs?.styleDegree ?: 1F
+        }
+
     }
 
+    override fun onProgressChanged(seekBar: Seekbar, progress: Int, fromUser: Boolean) {
+
+    }
+
+    override fun onStopTrackingTouch(seekBar: Seekbar) {
+        when (seekBar.id) {
+            R.id.seekbar_rate -> {
+                val v = seekBar.value as Int
+                callback?.onRateChanged(v)
+                mTts?.rate = v
+            }
+            R.id.seekbar_volume -> {
+                val v = seekBar.value as Int
+                callback?.onVolumeChanged(v)
+                mTts?.volume = v
+            }
+            R.id.seekbar_pitch -> {
+                val v = seekBar.value as Int
+                callback?.onPitchChanged(v)
+                mTts?.prosody?.pitch = v
+            }
+            R.id.seekbar_style_Degree -> {
+                val v = seekBar.value as Float
+                callback?.onStyleDegreeChanged(v)
+                mTts?.expressAs?.styleDegree = v
+            }
+        }
+    }
+
+
     init {
-        binding.seekbarRate.onSeekBarChangeListener = this
-        binding.seekbarVolume.onSeekBarChangeListener = this
+        binding.apply {
+            seekbarRate.onSeekBarChangeListener = this@MsTtsQuickEditView
+            seekbarRate.valueFormatter =
+                Seekbar.ValueFormatter { value, progress -> if (progress == 0) strFollow else "${value}%" }
+            seekbarRate.progressConverter = object : Seekbar.ProgressConverter {
+                override fun valueToProgress(value: Any) = (value as Int) + 100
+                override fun progressToValue(progress: Int) = progress - 100
+            }
+
+            seekbarVolume.onSeekBarChangeListener = this@MsTtsQuickEditView
+            seekbarVolume.valueFormatter = Seekbar.ValueFormatter { value, _ -> "${value}%" }
+            seekbarVolume.progressConverter = object : Seekbar.ProgressConverter {
+                override fun valueToProgress(value: Any) = (value as Int) + 50
+                override fun progressToValue(progress: Int) = progress - 50
+            }
+
+            seekbarPitch.onSeekBarChangeListener = this@MsTtsQuickEditView
+            seekbarPitch.valueFormatter =
+                Seekbar.ValueFormatter { value, progress -> if (progress == 0) strFollow else "${value}%" }
+            seekbarPitch.progressConverter = object : Seekbar.ProgressConverter {
+                override fun valueToProgress(value: Any) = (value as Int) + 50
+                override fun progressToValue(progress: Int) = progress - 50
+            }
+
+            seekbarStyleDegree.onSeekBarChangeListener = this@MsTtsQuickEditView
+            seekbarStyleDegree.progressConverter = object : Seekbar.ProgressConverter {
+                override fun valueToProgress(value: Any) = ((value as Float) * 100).toInt()
+                override fun progressToValue(progress: Int) = (progress * 0.01).toFloat()
+            }
+        }
+
+
+
         binding.seekbarPitch.onSeekBarChangeListener = this
-        binding.seekbarStyleDegree.onSeekBarChangeListener = this
+
 
         binding.tilFormat.initAccessibilityDelegate()
         binding.spinnerFormat.onItemSelectedListener = object : OnItemSelectedListener {
@@ -151,43 +162,6 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    override fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {
-        when (seekBar.id) {
-            R.id.seekbar_rate -> rateValue =
-                if (progress == 0) MsTTS.RATE_FOLLOW_SYSTEM else progress - 100
-
-            R.id.seekbar_volume -> volumeValue = progress - 50
-            R.id.seekbar_pitch -> pitchValue =
-                if (progress == 0) MsTTS.PITCH_FOLLOW_SYSTEM else progress - 50
-
-            R.id.seekbar_styleDegree -> styleDegreeValue = (progress * 0.01).toFloat()
-        }
-    }
-
-    override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
-
-    override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
-        when (seekBar.id) {
-            R.id.seekbar_rate -> {
-                callback?.onRateChanged(rateValue)
-                mTts?.let { it.rate = rateValue }
-            }
-            R.id.seekbar_volume -> {
-                callback?.onVolumeChanged(volumeValue)
-                mTts?.let { it.volume = volumeValue }
-            }
-            R.id.seekbar_pitch -> {
-                callback?.onPitchChanged(pitchValue)
-                mTts?.prosody?.let { it.pitch = pitchValue }
-            }
-            R.id.seekbar_styleDegree -> {
-                callback?.onStyleDegreeChanged(styleDegreeValue)
-                mTts?.expressAs?.let { it.styleDegree = styleDegreeValue }
-            }
         }
     }
 }

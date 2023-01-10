@@ -8,10 +8,10 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsHttpQuickEditViewBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
-import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
 
 class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
-    ConstraintLayout(context, attrs, defaultStyle), ConvenientSeekbar.OnSeekBarChangeListener {
+    ConstraintLayout(context, attrs, defaultStyle), Seekbar.OnSeekBarChangeListener {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
 
@@ -22,26 +22,28 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
     init {
         binding.seekBarRate.onSeekBarChangeListener = this
         binding.seekBarVolume.onSeekBarChangeListener = this
+
+        binding.seekBarRate.valueFormatter =
+            Seekbar.ValueFormatter { _, progress ->
+                if (progress == 0) context.getString(R.string.follow_system_or_read_aloud_app)
+                else progress.toString()
+            }
     }
 
     var rate: Int
-        get() = binding.seekBarRate.progress
+        get() = binding.seekBarRate.value as Int
         set(value) {
-            mTts.rate = value
-            binding.seekBarRate.progress = value
-            binding.seekBarRate.textValue = "$value"
+            binding.seekBarRate.value = value
         }
 
-    var volume: Int
-        get() = binding.seekBarVolume.progress
+    private var volume: Int
+        get() = binding.seekBarVolume.value as Int
         set(value) {
-            mTts.volume = value
-            binding.seekBarVolume.progress = value
-            binding.seekBarVolume.textValue =
-                if (value == 0) context.getString(R.string.follow_system_or_read_aloud_app) else value.toString()
+            binding.seekBarVolume.value = value
         }
 
-    private lateinit var mTts: HttpTTS
+
+    private var mTts: HttpTTS? = null
 
     fun setData(tts: HttpTTS) {
         mTts = tts
@@ -49,30 +51,24 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
         volume = tts.volume
     }
 
-    override fun onProgressChanged(seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean) {
-        when (seekBar) {
-            binding.seekBarRate -> {
-                seekBar.textValue =
-                    if (progress == 0) context.getString(R.string.follow_system_or_read_aloud_app) else progress.toString()
-            }
-            binding.seekBarVolume -> {
-                seekBar.textValue = "${binding.seekBarVolume.progress}"
-            }
-        }
+    override fun onProgressChanged(seekBar: Seekbar, progress: Int, fromUser: Boolean) {
+
     }
 
-    override fun onStartTrackingTouch(seekBar: ConvenientSeekbar) {}
+    override fun onStartTrackingTouch(seekBar: Seekbar) {}
 
-    override fun onStopTrackingTouch(seekBar: ConvenientSeekbar) {
+    override fun onStopTrackingTouch(seekBar: Seekbar) {
         binding.tvPreviewUrl.text = doAnalyzeUrl()
-        mTts.rate = rate
-        mTts.volume = volume
+        mTts?.let {
+            it.rate = rate
+            it.volume = volume
+        }
     }
 
     private fun doAnalyzeUrl(): String {
         kotlin.runCatching {
             val a = AnalyzeUrl(
-                mUrl = this.mTts.url,
+                mUrl = this.mTts!!.url,
                 speakSpeed = rate,
                 speakVolume = volume
             )
@@ -83,4 +79,5 @@ class HttpTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle:
         }
         return ""
     }
+
 }

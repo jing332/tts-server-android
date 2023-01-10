@@ -35,7 +35,7 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
-import com.github.jing332.tts_server_android.ui.custom.widget.ConvenientSeekbar
+import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportActivity
@@ -85,8 +85,7 @@ class SysTtsListFragment : Fragment() {
         if (savedInstanceState != null) return
 
         val fragmentList = listOf(
-            SysTtsListCustomGroupPageFragment(),
-            SysTtsListSimpleGroupPageFragment.newInstance()
+            SysTtsListCustomGroupPageFragment(), SysTtsListSimpleGroupPageFragment.newInstance()
         )
         vpAdapter = GroupPageAdapter(this, fragmentList)
         binding.viewPager.isSaveEnabled = false
@@ -111,8 +110,7 @@ class SysTtsListFragment : Fragment() {
         if (appDb.systemTtsDao.getGroupById(SystemTtsGroup.DEFAULT_GROUP_ID) == null) {
             appDb.systemTtsDao.insertGroup(
                 SystemTtsGroup(
-                    id = SystemTtsGroup.DEFAULT_GROUP_ID,
-                    name = getString(R.string.default_group)
+                    id = SystemTtsGroup.DEFAULT_GROUP_ID, name = getString(R.string.default_group)
                 )
             )
         }
@@ -133,12 +131,10 @@ class SysTtsListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) return
 
-        App.localBroadcast.registerReceiver(
-            mReceiver,
+        App.localBroadcast.registerReceiver(mReceiver,
             IntentFilter(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID).apply {
                 addAction(SystemTtsService.ACTION_REQUEST_UPDATE_CONFIG)
-            }
-        )
+            })
 
         if (CompatSysTtsConfig.migrationConfig()) requireContext().longToast("旧版配置迁移成功，原文件已删除")
     }
@@ -158,8 +154,7 @@ class SysTtsListFragment : Fragment() {
     /* 检查格式 如不同则显示对话框 */
     private fun checkFormatAndShowDialog(list: List<SystemTts>) {
         SysTtsConfig.apply {
-            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat(list))
-                runOnUI { formatWarnDialog.show() }
+            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat(list)) runOnUI { formatWarnDialog.show() }
         }
     }
 
@@ -185,27 +180,22 @@ class SysTtsListFragment : Fragment() {
                 layoutNumEdit.isGone = !isChecked
                 tvTip.isGone = isChecked
             }
-            seekbarSpeed.onSeekBarChangeListener =
-                object : ConvenientSeekbar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(
-                        seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean
-                    ) {
-                        if (progress <= 0) seekBar.progress = 1
-                        seekbarSpeed.textValue = "${(seekBar.progress * 0.1).toFloat()}"
-                    }
-                }
-            seekbarSpeed.progress = (SysTtsConfig.inAppPlaySpeed * 10).toInt()
 
-            seekbarPitch.onSeekBarChangeListener =
-                object : ConvenientSeekbar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(
-                        seekBar: ConvenientSeekbar, progress: Int, fromUser: Boolean
-                    ) {
-                        if (progress <= 0) seekBar.progress = 1
-                        seekbarPitch.textValue = "${(seekBar.progress * 0.1).toFloat()}"
-                    }
+            val converter = object : Seekbar.ProgressConverter {
+                override fun progressToValue(progress: Int): Any {
+                    return (progress * 0.1).toFloat()
                 }
-            seekbarPitch.progress = (SysTtsConfig.inAppPlayPitch * 10).toInt()
+
+                override fun valueToProgress(value: Any): Int {
+                    return ((value as Float) * 10).toInt()
+                }
+            }
+
+            seekbarSpeed.progressConverter = converter
+            seekbarPitch.progressConverter = converter
+
+            seekbarSpeed.value = SysTtsConfig.inAppPlaySpeed
+            seekbarPitch.value = SysTtsConfig.inAppPlayPitch
 
             SysTtsConfig.isInAppPlayAudio.let {
                 switchOnOff.isChecked = it
@@ -235,10 +225,9 @@ class SysTtsListFragment : Fragment() {
         numPicker.displayedValues = displayList.toList().toTypedArray()
 
         numPicker.value = SysTtsConfig.requestTimeout / 1000 //转为秒
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.systts_set_request_timeout)
-            .setMessage(R.string.systts_set_request_timeout_msg)
-            .setView(numPicker).setPositiveButton(android.R.string.ok) { _, _ ->
+        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.systts_set_request_timeout)
+            .setMessage(R.string.systts_set_request_timeout_msg).setView(numPicker)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.requestTimeout = numPicker.value * 1000 //转为毫秒
                 SystemTtsService.notifyUpdateConfig()
             }.setNegativeButton(R.string.reset) { _, _ ->
@@ -256,8 +245,7 @@ class SysTtsListFragment : Fragment() {
             displayedValues = numList.toTypedArray()
             value = SysTtsConfig.minDialogueLength
         }
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.systts_set_dialogue_min_match_word_count)
+        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.systts_set_dialogue_min_match_word_count)
             .setMessage(R.string.systts_set_dialogue_min_info).setView(picker)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.minDialogueLength = picker.value
@@ -272,16 +260,14 @@ class SysTtsListFragment : Fragment() {
         @ReadAloudTarget raTarget: Int = ReadAloudTarget.ALL,
         groupId: Long = SystemTtsGroup.DEFAULT_GROUP_ID
     ) {
-        startForResult.launch(
-            Intent(
-                requireContext(),
-                HttpTtsEditActivity::class.java
-            ).apply {
-                putExtra(
-                    KEY_DATA,
-                    SystemTts(readAloudTarget = raTarget, tts = HttpTTS(), groupId = groupId)
-                )
-            })
+        startForResult.launch(Intent(
+            requireContext(), HttpTtsEditActivity::class.java
+        ).apply {
+            putExtra(
+                KEY_DATA,
+                SystemTts(readAloudTarget = raTarget, tts = HttpTTS(), groupId = groupId)
+            )
+        })
     }
 
     private fun addMsTTS(
@@ -299,16 +285,13 @@ class SysTtsListFragment : Fragment() {
     private fun addGroup() {
         val et = MaterialTextInput(requireContext())
         et.inputLayout.setHint(R.string.name)
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.add_group)
-            .setView(et)
+        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.add_group).setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 appDb.systemTtsDao.insertGroup(
-                    SystemTtsGroup(
-                        name = et.inputEdit.text.toString().ifEmpty { getString(R.string.unnamed) })
+                    SystemTtsGroup(name = et.inputEdit.text.toString()
+                        .ifEmpty { getString(R.string.unnamed) })
                 )
-            }
-            .show()
+            }.show()
     }
 
     private fun onOptionsItemSelected(itemId: Int) {
@@ -333,13 +316,11 @@ class SysTtsListFragment : Fragment() {
             R.id.menu_voiceMultiple -> {
                 SysTtsConfig.isVoiceMultipleEnabled = !SysTtsConfig.isVoiceMultipleEnabled
                 SystemTtsService.notifyUpdateConfig()
-                if (SysTtsConfig.isVoiceMultipleEnabled)
-                    longToast(R.string.systts_voice_multiple_hint)
+                if (SysTtsConfig.isVoiceMultipleEnabled) longToast(R.string.systts_voice_multiple_hint)
             }
             R.id.menu_groupMultiple -> {
                 SysTtsConfig.isGroupMultipleEnabled = !SysTtsConfig.isGroupMultipleEnabled
-                if (SysTtsConfig.isGroupMultipleEnabled)
-                    longToast(getString(R.string.systts_groups_multiple_hint))
+                if (SysTtsConfig.isGroupMultipleEnabled) longToast(getString(R.string.systts_groups_multiple_hint))
             }
 
             R.id.menu_replace_manager -> startActivity(

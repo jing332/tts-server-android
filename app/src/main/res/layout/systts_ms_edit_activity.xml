@@ -18,7 +18,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_margin="8dp"
+            android:animateLayoutChanges="true">
 
             <com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
                 android:id="@+id/baseInfoEditView"
@@ -195,10 +196,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:animateLayoutChanges="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_style"
-                app:styleDegreeVisible="@{!m.ui.styles.items.empty}" />
+                app:layout_constraintTop_toBottomOf="@id/til_style" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
