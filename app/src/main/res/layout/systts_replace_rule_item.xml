@@ -43,27 +43,26 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/desc_edit_item"
                 android:scaleType="centerInside"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
-                app:layout_constraintEnd_toStartOf="@+id/btn_delete"
-                app:layout_constraintTop_toTopOf="@+id/btn_delete"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_more"
+                app:layout_constraintEnd_toStartOf="@+id/btn_more"
+                app:layout_constraintTop_toTopOf="@+id/btn_more"
                 app:srcCompat="@drawable/ic_baseline_edit_24"
                 app:tint="?attr/colorOnBackground"
                 tools:ignore="TouchTargetSizeCheck" />
 
             <ImageButton
-                android:id="@+id/btn_delete"
+                android:id="@+id/btn_more"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/desc_delete_item"
+                android:contentDescription="@string/more_options"
                 android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_delete_forever_24"
-                app:tint="?attr/colorError"
-                tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+                app:srcCompat="@drawable/ic_baseline_more_vert_24"
+                app:tint="?attr/colorOnBackground" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

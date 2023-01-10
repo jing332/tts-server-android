@@ -5,11 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
@@ -63,7 +65,13 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 val binding = getBinding<SysttsReplaceRuleItemBinding>()
 
                 binding.btnEdit.clickWithThrottle { edit(getModel<ReplaceRuleModel>().data) }
-                binding.btnDelete.clickWithThrottle { delete(getModel<ReplaceRuleModel>().data) }
+//                binding.btnDelete.clickWithThrottle { delete(getModel<ReplaceRuleModel>().data) }
+                binding.btnMore.clickWithThrottle {
+                    displayMoreMenu(
+                        it,
+                        getModel<ReplaceRuleModel>().data
+                    )
+                }
                 binding.checkBox.setOnClickListener {
                     appDb.replaceRuleDao.update(getModel<ReplaceRuleModel>().data)
                 }
@@ -106,6 +114,31 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
     }
 
+    private fun displayMoreMenu(v: View, data: ReplaceRule) {
+        PopupMenu(this, v).apply {
+            setForceShowIcon(true)
+            MenuCompat.setGroupDividerEnabled(menu, true)
+            menuInflater.inflate(R.menu.menu_replace_rule_more, menu)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_delete -> {
+                        AppDialogs.displayDeleteDialog(this@ReplaceManagerActivity, data.name) {
+                            appDb.replaceRuleDao.delete(data)
+                        }
+                    }
+                    R.id.menu_move_to_top -> {
+                        appDb.replaceRuleDao.updateDataAndRefreshOrder(data.copy(order = 0))
+                    }
+                    R.id.menu_move_to_bottom -> {
+                        appDb.replaceRuleDao.updateDataAndRefreshOrder(data.copy(order = appDb.replaceRuleDao.count))
+                    }
+                }
+                true
+            }
+        }.show()
+
+    }
+
     var modelsJob: Job? = null
     private suspend fun updateModels(list: List<ReplaceRule>) {
         val models = list.map { ReplaceRuleModel(data = it) }
@@ -127,11 +160,6 @@ class ReplaceManagerActivity : AppCompatActivity() {
         }
     }
 
-    fun delete(data: ReplaceRule) {
-        AppDialogs.displayDeleteDialog(this, data.name) {
-            appDb.replaceRuleDao.delete(data)
-        }
-    }
 
     private fun edit(data: ReplaceRule) {
         val intent = Intent(this, ReplaceRuleEditActivity::class.java)

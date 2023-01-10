@@ -240,4 +240,6 @@
     <string name="drawer_interface">界面</string>
     <string name="other">其他</string>
     <string name="nav_back">返回</string>
+    <string name="move_to_top">移到顶部</string>
+    <string name="move_to_bottom">移到底部</string>
 </resources>

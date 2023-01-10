@@ -62,14 +62,13 @@
                 android:hint="@string/systts_http_request_header" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <View
-            android:id="@+id/view"
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:background="?attr/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_header" />
@@ -83,7 +82,7 @@
             app:endIconContentDescription="@string/test"
             app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
             app:endIconMode="custom"
-            app:endIconTint="@color/teal_200"
+            app:endIconTint="?attr/colorPrimaryInverse"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_sample_rate">
@@ -130,7 +129,7 @@
             app:endIconContentDescription="@string/help"
             app:layout_constraintEnd_toStartOf="@+id/checkBox_needDecode"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
             app:startIconDrawable="@drawable/ic_baseline_help_outline_24">
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView

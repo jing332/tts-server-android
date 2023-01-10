@@ -246,4 +246,6 @@
     <string name="drawer_interface">Interface</string>
     <string name="other">Other</string>
     <string name="nav_back">Back</string>
+    <string name="move_to_top">Move to top</string>
+    <string name="move_to_bottom">Move to bottom</string>
 </resources>
