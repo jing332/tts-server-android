@@ -39,8 +39,8 @@ class MsTtsEditViewModel : ViewModel() {
 
     val styleDegreeVisibleLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
-    lateinit var mTts: MsTTS
-    lateinit var mData: SystemTts
+    private lateinit var mTts: MsTTS
+    private lateinit var mData: SystemTts
 
     // 全部的list
     private lateinit var mAllVoiceList: List<GeneralVoiceData>
@@ -51,7 +51,7 @@ class MsTtsEditViewModel : ViewModel() {
     // UI数据
     var ui: UiData = UiData()
 
-    fun getData(): SystemTts {
+    fun onSave() {
         val displayName = mData.displayName
         if (displayName.isNullOrEmpty() || isAutoGenDisplayName(displayName)) { // 为自动生成的
             mData.displayName = getDisplayName()
@@ -61,7 +61,6 @@ class MsTtsEditViewModel : ViewModel() {
         if (mTts.api == MsTtsApiType.EDGE) {
             mTts.expressAs = null
         }
-        return mData
     }
 
     // 判断是否为自动生成的名称

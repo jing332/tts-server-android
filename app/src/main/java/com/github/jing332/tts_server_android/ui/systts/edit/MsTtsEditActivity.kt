@@ -1,26 +1,19 @@
 package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
-import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class MsTtsEditActivity : BackActivity() {
+class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>() {
     companion object {
         const val TAG = "MsTtsEditActivity"
     }
@@ -87,13 +80,14 @@ class MsTtsEditActivity : BackActivity() {
             )
         )
 
-        var data: SystemTts? = intent.getParcelableExtra(KEY_DATA)
-        if (data == null) data = SystemTts(tts = MsTTS())
-        vm.initUserData(data)
+
+//        var data: SystemTts? = intent.getParcelableExtra(KEY_DATA)
+//        if (data == null) data = SystemTts(tts = MsTTS())
+        vm.initUserData(systemTts)
 
         // 自动同步数据
-        binding.baseInfoEditView.setData(data)
-        binding.editView.setData(data.tts as MsTTS)
+        binding.baseInfoEditView.setData(systemTts)
+        binding.editView.setData(tts)
 
         // 监听Enter
         binding.etTestText.setOnEditorActionListener { _, actionId, _ ->
@@ -137,19 +131,8 @@ class MsTtsEditActivity : BackActivity() {
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_systts_config_edit, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_save -> {
-                setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, vm.getData()) })
-                finish()
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
+    override fun onSave() {
+        vm.onSave()
+        super.onSave()
     }
 }

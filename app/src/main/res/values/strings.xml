@@ -100,7 +100,7 @@
     <string name="raw_format_is_play_while_downloading">Format `raw` is streaming mode</string>
     <string name="is_confirm_delete">Confirm deletion?</string>
     <string name="delete">Delete</string>
-    <string name="ra_all">Read aloud all</string>
+    <string name="ra_all">All</string>
     <string name="ra_aside">Only aside</string>
     <string name="ra_dialogue">Only dialogue</string>
 

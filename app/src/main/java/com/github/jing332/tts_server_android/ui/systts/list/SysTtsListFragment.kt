@@ -36,6 +36,7 @@ import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportActivity
@@ -264,7 +265,7 @@ class SysTtsListFragment : Fragment() {
             requireContext(), HttpTtsEditActivity::class.java
         ).apply {
             putExtra(
-                KEY_DATA,
+                BaseTtsEditActivity.KEY_DATA,
                 SystemTts(readAloudTarget = raTarget, tts = HttpTTS(), groupId = groupId)
             )
         })
@@ -276,7 +277,8 @@ class SysTtsListFragment : Fragment() {
     ) {
         val intent = Intent(requireContext(), MsTtsEditActivity::class.java).apply {
             putExtra(
-                KEY_DATA, SystemTts(readAloudTarget = raTarget, tts = MsTTS(), groupId = groupId)
+                BaseTtsEditActivity.KEY_DATA,
+                SystemTts(readAloudTarget = raTarget, tts = MsTTS(), groupId = groupId)
             )
         }
         startForResult.launch(intent)

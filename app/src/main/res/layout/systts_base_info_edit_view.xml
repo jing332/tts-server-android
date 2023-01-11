@@ -21,56 +21,61 @@
             type="java.lang.String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/btn_group_ra_target"
+        <HorizontalScrollView
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:selectionRequired="true"
-            app:singleSelection="true">
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_ra_all"
-                style="?attr/materialButtonOutlinedStyle"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/btn_group_ra_target"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ra_all"
-                app:icon="@drawable/ic_baseline_select_all_24" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_aside"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ra_aside"
-                app:icon="@drawable/ic_baseline_menu_book_24" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_ra_all"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ra_all"
+                    app:icon="@drawable/ic_baseline_select_all_24" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_dialogue"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ra_dialogue"
-                app:icon="@drawable/ic_baseline_supervisor_account_24" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_aside"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ra_aside"
+                    app:icon="@drawable/ic_baseline_menu_book_24" />
 
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_dialogue"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ra_dialogue"
+                    app:icon="@drawable/ic_baseline_supervisor_account_24" />
 
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </HorizontalScrollView>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_group"
-            android:layout_marginTop="4dp"
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:hint="@string/belonging_group"
             app:hintAnimationEnabled="false"
-            app:layout_constraintTop_toBottomOf="@id/btn_group_ra_target"
             app:startIconDrawable="@drawable/ic_baseline_groups_24">
 
             <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
@@ -89,10 +94,7 @@
             android:hint="@string/display_name"
             app:endIconMode="clear_text"
             app:hintAnimationEnabled="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_group"
+
             app:startIconDrawable="@drawable/ic_baseline_text_fields_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -101,5 +103,5 @@
                 android:layout_height="match_parent"
                 android:text="@={displayName}" />
         </com.google.android.material.textfield.TextInputLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

@@ -20,6 +20,7 @@ import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.util.clickWithThrottle
@@ -158,7 +159,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
         }
         startForResult.launch(Intent(context, cls).apply {
             putExtra(
-                KeyConst.KEY_DATA,
+                BaseTtsEditActivity.KEY_DATA,
                 data
             )
         })

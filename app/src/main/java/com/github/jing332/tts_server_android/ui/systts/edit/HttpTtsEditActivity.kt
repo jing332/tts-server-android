@@ -1,37 +1,28 @@
 package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.text.Html
-import android.view.Menu
-import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
-import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("DEPRECATION")
-class HttpTtsEditActivity : BackActivity() {
+class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>() {
     private val vm: HttpTtsEditViewModel by viewModels()
     private val binding: SysttsHttpEditActivityBinding by lazy {
         SysttsHttpEditActivityBinding.inflate(layoutInflater)
     }
-
-    private lateinit var data: SystemTts
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,11 +30,9 @@ class HttpTtsEditActivity : BackActivity() {
         setContentView(binding.root)
 
         // 获取数据 为null表示Add
-        data = intent.getParcelableExtra(KEY_DATA) ?: SystemTts(tts = HttpTTS())
-        val tts = data.tts as HttpTTS
 
         binding.apply {
-            baseEdit.setData(data)
+            baseEdit.setData(systemTts)
             binding.numEdit.setData(tts)
 
             etUrl.setText(tts.url)
@@ -113,7 +102,7 @@ class HttpTtsEditActivity : BackActivity() {
         updateValueToTts()
         val waitDialog = WaitDialog(this).apply { show() }
         vm.doTest(
-            data.tts as HttpTTS,
+            tts,
             binding.etTestText.text.toString(),
             { size, sampleRate, mime, contentType ->
                 waitDialog.dismiss()
@@ -142,37 +131,24 @@ class HttpTtsEditActivity : BackActivity() {
             })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_http_tts_edit, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_save -> {
-                if (binding.etUrl.text?.isEmpty() == true) {
-                    binding.etUrl.error = getString(R.string.cannot_empty)
-                    binding.etUrl.requestFocus()
-                    return super.onOptionsItemSelected(item)
-                } else if (binding.baseEdit.checkDisplayNameEmpty()) {
-                    return super.onOptionsItemSelected(item)
-                }
-
-                updateValueToTts()
-                SoftKeyboardUtils.hideSoftKeyboard(this)
-
-                val intent = Intent()
-                intent.putExtra(KEY_DATA, data)
-                setResult(RESULT_OK, intent)
-                finish()
-            }
+    override fun onSave() {
+        if (binding.etUrl.text?.isEmpty() == true) {
+            binding.etUrl.error = getString(R.string.cannot_empty)
+            binding.etUrl.requestFocus()
+            return
+        } else if (binding.baseEdit.checkDisplayNameEmpty()) {
+            return
         }
 
-        return super.onOptionsItemSelected(item)
+        updateValueToTts()
+        SoftKeyboardUtils.hideSoftKeyboard(this)
+
+        super.onSave()
     }
 
+
     private fun updateValueToTts() {
-        data.let {
+        systemTts.let {
             (it.tts as HttpTTS).apply {
                 url = binding.etUrl.text.toString()
                 header = binding.etHeaders.text.toString()

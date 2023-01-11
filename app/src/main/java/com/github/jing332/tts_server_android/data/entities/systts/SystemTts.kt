@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.*
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.tts.MsTTS
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -64,8 +65,9 @@ data class SystemTts(
         }
 
         @TypeConverter
-        fun stringToTts(json: String?): BaseTTS? {
-            return decodeFromString(json)
+        fun stringToTts(json: String?): BaseTTS {
+
+            return decodeFromString(json) ?: MsTTS()
         }
     }
 }
