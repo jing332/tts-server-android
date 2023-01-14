@@ -11,17 +11,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.drake.brv.BindingAdapter
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.clone
@@ -141,7 +142,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
     // EditActivity的返回值
     private val startForResult =
         fragment.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            val data = result.data?.getParcelableExtra<SystemTts>(KeyConst.KEY_DATA)
+            val data = result.data?.getParcelableExtra<SystemTts>(BaseTtsEditActivity.KEY_DATA)
             data?.let {
                 appDb.systemTtsDao.insertTts(data)
                 notifyTtsUpdate(data.isEnabled)
@@ -155,6 +156,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
     fun edit(data: SystemTts) {
         val cls = when (data.tts) {
             is MsTTS -> MsTtsEditActivity::class.java
+            is LocalTTS -> LocalTtsEditActivity::class.java
             else -> HttpTtsEditActivity::class.java
         }
         startForResult.launch(Intent(context, cls).apply {

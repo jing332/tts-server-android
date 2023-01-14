@@ -212,7 +212,7 @@
     <string name="please_choose">请选择</string>
     <string name="config_import">配置导入</string>
 
-    <string name="systts_ms_description">语速:%1$s | 音量:%2$s | 音高:%3$s</string>
+    <string name="systts_play_params_description">语速:%1$s | 音量:%2$s | 音高:%3$s</string>
     <string name="systts_ms_express_as_description">%1$s-%2$s | 强度:%3$s</string>
     <string name="server_log_service_running">服务已在运行中，监听地址：%1$s</string>
     <string name="server_log_tips">1. 单击启动按钮 \n2.打开网页并选择配置 \n3.最后生成链接导入到阅读APP  \n⚠️注意： 朗读时服务需常驻后台运行！</string>
@@ -242,4 +242,8 @@
     <string name="nav_back">返回</string>
     <string name="move_to_top">移到顶部</string>
     <string name="move_to_bottom">移到底部</string>
+    <string name="local_tts_engine">本地TTS引擎</string>
+    <string name="add_local_tts">添加本地TTS</string>
+    <string name="local">本地</string>
+    <string name="systts_local_edit_title">编辑本地TTS</string>
 </resources>

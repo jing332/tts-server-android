@@ -29,6 +29,7 @@
         android:layout_marginBottom="8dp"
         android:gravity="center_vertical"
         android:importantForAccessibility="no"
+        android:ellipsize="marquee"
         android:singleLine="true"
         android:textAppearance="?attr/textAppearanceBody1"
         app:layout_constraintBottom_toBottomOf="parent"

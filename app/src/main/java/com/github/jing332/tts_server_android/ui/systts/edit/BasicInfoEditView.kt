@@ -20,7 +20,7 @@ import com.github.jing332.tts_server_android.util.runOnIO
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 
-class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle) {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
@@ -81,7 +81,7 @@ class BaseInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int
         binding.tilName.initAccessibilityDelegate()
 
         binding.etName.addTextChangedListener {
-            mData?.apply { displayName = this@BaseInfoEditView.displayName }
+            mData?.apply { displayName = this@BasicInfoEditView.displayName }
         }
 
         binding.btnGroupRaTarget.addOnButtonCheckedListener { _, checkedId, isChecked ->

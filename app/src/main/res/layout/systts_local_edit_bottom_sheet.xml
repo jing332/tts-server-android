@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="8dp"
+    android:background="@drawable/bg_rounded_top_cornets"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.github.jing332.tts_server_android.ui.systts.edit.BasicInfoEditView
+        android:id="@+id/basic_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.github.jing332.tts_server_android.ui.systts.edit.LocalTtsParamsEditView
+        android:id="@+id/params_edit"
+        android:paddingVertical="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>

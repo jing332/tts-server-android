@@ -13,7 +13,7 @@ import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibility
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>() {
+class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({ MsTTS() }) {
     companion object {
         const val TAG = "MsTtsEditActivity"
     }

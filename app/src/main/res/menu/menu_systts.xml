@@ -9,13 +9,19 @@
         app:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/menu_addMsTts"
+                android:id="@+id/menu_add_ms_tts"
                 android:icon="@drawable/ic_baseline_dashboard_customize_24"
                 android:title="@string/systts_add_internal_tts"
                 tools:ignore="AlwaysShowAction" />
 
             <item
-                android:id="@+id/menu_addHttpTts"
+                android:id="@+id/menu_add_local_tts"
+                android:icon="@drawable/ic_text_to_speech_24"
+                android:title="@string/add_local_tts"
+                app:iconTint="?attr/colorPrimary" />
+
+            <item
+                android:id="@+id/menu_add_http_tts"
                 android:icon="@drawable/ic_baseline_http_24"
                 android:title="@string/systts_add_custom_tts" />
 

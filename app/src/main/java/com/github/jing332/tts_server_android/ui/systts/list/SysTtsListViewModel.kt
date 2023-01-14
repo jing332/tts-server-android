@@ -15,11 +15,12 @@ class SysTtsListViewModel : ViewModel() {
      * 检查多语音采样率是否相等
      */
     fun checkMultiVoiceFormat(list: List<SystemTts>): Boolean {
-        list.filter { it.isEnabled }.ifEmpty { return true }.let { enabledList ->
-            val sampleRate = enabledList[0].tts.audioFormat.sampleRate
-            val size = enabledList.filter { it.tts.audioFormat.sampleRate == sampleRate }.size
-            return enabledList.size == size
-        }
+        list.filter { it.isEnabled && !it.tts.isDirectPlay() }.ifEmpty { return true }
+            .let { enabledList ->
+                val sampleRate = enabledList[0].tts.audioFormat.sampleRate
+                val size = enabledList.filter { it.tts.audioFormat.sampleRate == sampleRate }.size
+                return enabledList.size == size
+            }
     }
 
     /* 导出配置 */

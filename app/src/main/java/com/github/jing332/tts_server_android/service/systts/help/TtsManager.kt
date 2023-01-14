@@ -85,24 +85,17 @@ class TtsManager(val context: Context) {
     // Room数据库
     private val mSysTts by lazy { appDb.systemTtsDao }
 
+    private val mCfg = SysTtsConfig
+
     // 全局默认 TTS配置
-    private lateinit var mDefaultConfig: List<SystemTts>
+    private var mDefaultConfig: List<Pair<SystemTts, TtsDataState>>? = null
 
     // 旁白 TTS配置
-    private lateinit var mAsideConfig: List<SystemTts>
+    private var mAsideConfig: List<Pair<SystemTts, TtsDataState>>? = null
 
     // 对话 TTS配置
-    private lateinit var mDialogueConfig: List<SystemTts>
+    private var mDialogueConfig: List<Pair<SystemTts, TtsDataState>>? = null
 
-    // 一些开关偏好
-    private var mInAppPlayAudio = false
-    private var mInAppPlaySpeed = 1F
-    private var mInAppPlayPitch = 1F
-    private var mSplitEnabled = false
-    private var mReplaceEnabled = false
-    private var mMultiVoiceEnabled = false
-    private var mVoiceMultipleEnabled = false
-    private var mMinDialogueLen = 0
 
     /**
      * 停止合成及播放
@@ -110,8 +103,11 @@ class TtsManager(val context: Context) {
     fun stop() {
         isSynthesizing = false
         mAudioDecoder.stop()
-
         mInAppPlayJob?.cancel()
+
+        mDefaultConfig?.forEach { it.first.tts.onStop() }
+        mAsideConfig?.forEach { it.first.tts.onStop() }
+        mDialogueConfig?.forEach { it.first.tts.onStop() }
     }
 
     /*
@@ -120,66 +116,66 @@ class TtsManager(val context: Context) {
     fun destroy() {
         mScope.cancel()
         if (isSynthesizing) stop()
+
+        mDefaultConfig?.forEach { it.first.tts.onDestroy() }
+        mAsideConfig?.forEach { it.first.tts.onDestroy() }
+        mDialogueConfig?.forEach { it.first.tts.onDestroy() }
     }
 
     /**
      * 加载配置
      */
     fun loadConfig() {
-        SysTtsConfig.apply {
-            mInAppPlayAudio = isInAppPlayAudio
-            mInAppPlaySpeed = inAppPlaySpeed
-            mInAppPlayPitch = inAppPlayPitch
-
-            mVoiceMultipleEnabled = isVoiceMultipleEnabled
-            mSplitEnabled = isSplitEnabled
-            mMultiVoiceEnabled = isMultiVoiceEnabled
-            mReplaceEnabled = isReplaceEnabled
-            mMinDialogueLen = minDialogueLength
-        }
-
         mSysTts.apply {
-            if (mReplaceEnabled) mReplacer.load()
+            if (mCfg.isReplaceEnabled) mReplacer.load()
 
             if (SysTtsConfig.isMultiVoiceEnabled) {
+                mDefaultConfig = null
                 // 旁白
                 getAllByReadAloudTarget(ReadAloudTarget.ASIDE).let { list ->
                     mAsideConfig = if (list == null || list.isEmpty()) {
                         context.toast(context.getString(R.string.systts_warn_no_ra_aside))
                         listOf(
-                            SystemTts(
-                                readAloudTarget = ReadAloudTarget.ASIDE,
-                                tts = MsTTS()
+                            Pair(
+                                SystemTts(
+                                    readAloudTarget = ReadAloudTarget.ASIDE,
+                                    tts = MsTTS()
+                                ), TtsDataState()
                             )
                         )
-                    } else list
+                    } else list.map { Pair(it, TtsDataState()) }
                 }
-                mAsideConfig.forEach { it.tts.onLoad() }
+                mAsideConfig!!.forEach { it.first.tts.onLoad() }
 
                 // 对话
                 getAllByReadAloudTarget(ReadAloudTarget.DIALOGUE).let { list ->
                     mDialogueConfig = if (list == null || list.isEmpty()) {
                         context.toast(R.string.systts_warn_no_ra_dialogue)
                         listOf(
-                            SystemTts(
-                                readAloudTarget = ReadAloudTarget.DIALOGUE,
-                                tts = MsTTS()
+                            Pair(
+                                SystemTts(
+                                    readAloudTarget = ReadAloudTarget.DIALOGUE,
+                                    tts = MsTTS()
+                                ), TtsDataState()
                             )
                         )
-                    } else list
+                    } else list.map { Pair(it, TtsDataState()) }
                 }
 
-                mDialogueConfig.forEach { it.tts.onLoad() }
-                mAudioFormat = mDialogueConfig[0].tts.audioFormat
+                mDialogueConfig!!.forEach { it.first.tts.onLoad() }
+                mAudioFormat = mDialogueConfig!![0].first.tts.audioFormat
             } else {
+                mAsideConfig = null
+                mDialogueConfig = null
+
                 mSysTts.getAllByReadAloudTarget().let { list ->
                     mDefaultConfig = if (list == null || list.isEmpty()) {
                         context.toast(context.getString(R.string.systts_warn_no_ra_all))
-                        listOf(SystemTts(isEnabled = true, tts = MsTTS()))
-                    } else list
+                        listOf(Pair(SystemTts(isEnabled = true, tts = MsTTS()), TtsDataState()))
+                    } else list.map { Pair(it, TtsDataState()) }
 
-                    mDefaultConfig.forEach { it.tts.onLoad() }
-                    mAudioFormat = mDefaultConfig[0].tts.audioFormat
+                    mDefaultConfig!!.forEach { it.first.tts.onLoad() }
+                    mAudioFormat = mDefaultConfig!![0].first.tts.audioFormat
                 }
             }
         }
@@ -191,10 +187,26 @@ class TtsManager(val context: Context) {
     // APP内播放音频Job 用于 job.cancel() 取消播放
     private var mInAppPlayJob: Job? = null
 
-    private fun handleTTS(list: List<SystemTts>, rate: Int, pitch: Int): List<BaseTTS> {
-        val handledList = list.map { it.tts.clone<BaseTTS>()!! }
-        handledList.forEach { it.setPlayBackParameters(rate, pitch) }
-        return handledList
+    private fun handleTTS(
+        list: List<Pair<SystemTts, TtsDataState>>,
+        rate: Int,
+        pitch: Int
+    ): List<BaseTTS> {
+        list.forEach {
+            val sysTts = it.first
+            val state = it.second
+
+            if (sysTts.tts.isRateFollowSystem() || state.isRateFollowSystem) {
+                state.isRateFollowSystem = true
+                sysTts.tts.rate = rate
+            }
+
+            if (sysTts.tts.isPitchFollowSystem() || state.isPitchFollowSystem) {
+                state.isPitchFollowSystem = true
+                sysTts.tts.pitch = pitch
+            }
+        }
+        return list.map { it.first.tts }
     }
 
     /* 开始转语音 */
@@ -204,30 +216,32 @@ class TtsManager(val context: Context) {
         isSynthesizing = true
         callback!!.start(mAudioFormat.sampleRate, mAudioFormat.bitRate, 1)
 
-        val text = if (mReplaceEnabled) mReplacer.doReplace(aText) else aText
+        val text = if (mCfg.isReplaceEnabled) mReplacer.doReplace(aText) else aText
 
         val sysPitch = request!!.pitch - 100
         val sysRate = (mNorm.normalize(request.speechRate.toFloat()) - 100).toInt()
 
         mProducer = null
-        if (mMultiVoiceEnabled) { //多语音
+        if (mCfg.isMultiVoiceEnabled) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
 
-            val aside = handleTTS(mAsideConfig, sysRate, sysPitch)
-            val dialogue = handleTTS(mDialogueConfig, sysRate, sysPitch)
+            val aside = handleTTS(mAsideConfig!!, sysRate, sysPitch)
+            val dialogue = handleTTS(mDialogueConfig!!, sysRate, sysPitch)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
-            mProducer = multiVoiceProducer(mSplitEnabled, text, aside, dialogue)
+            mProducer = multiVoiceProducer(mCfg.isSplitEnabled, text, aside, dialogue)
         } else { //单语音
-            val pro = handleTTS(mDefaultConfig, sysRate, sysPitch)[0]
+            val pro = handleTTS(mDefaultConfig!!, sysRate, sysPitch)[0]
 
             Log.d(TAG, "单语音：${pro}")
-            if (mSplitEnabled) {
+            if (mCfg.isSplitEnabled) {
                 Log.d(TAG, "splitSentences...")
                 mProducer = splitSentencesProducer(text, pro)
             } else {
-                if (mAudioFormat.isNeedDecode) getAudioAndDecodeWrite(text, pro, callback)
-                else mProducer = audioStreamProducer(text, pro)
+                if (pro.isDirectPlay() || mAudioFormat.isNeedDecode)
+                    getAudioAndDecodeWrite(text, pro, callback)
+                else
+                    mProducer = audioStreamProducer(text, pro)
             }
         }
 
@@ -241,7 +255,9 @@ class TtsManager(val context: Context) {
                 }
 
                 mScope.launch {
-                    if (data.audio == null) {
+                    if (data.tts.isDirectPlay()) {
+                        data.tts.directPlay(data.text.toString())
+                    } else if (data.audio == null) {
                         event?.onError(ERROR_AUDIO_NULL, shortText)
                     } else {
                         playAudioHelper(data.audio, data.tts.audioFormat, callback)
@@ -281,7 +297,7 @@ class TtsManager(val context: Context) {
     ): ReceiveChannel<ChannelData> = mScope.produce(capacity = 1000) {
         try {
             /* 分割为多语音  */
-            val map = VoiceTools.splitMultiVoice(text, aside, dialogue, mMinDialogueLen)
+            val map = VoiceTools.splitMultiVoice(text, aside, dialogue, mCfg.minDialogueLength)
             if (isSplit) map.forEach {
                 StringUtils.splitSentences(it.speakText).forEach { splitedText ->
                     if (!isSynthesizing) return@produce
@@ -324,7 +340,10 @@ class TtsManager(val context: Context) {
         channel: SendChannel<ChannelData>, text: String, tts: BaseTTS
     ) {
         if (!isSynthesizing) return
-        if (tts.audioFormat.isNeedDecode) {
+
+        if (tts.isDirectPlay()) {
+            channel.send(ChannelData(text, null, tts))
+        } else if (tts.audioFormat.isNeedDecode) {
             val audio = getAudioHelper(text, tts)
             channel.send(ChannelData(text, audio, tts))
         } else {
@@ -449,7 +468,7 @@ class TtsManager(val context: Context) {
                 mScope.launch(Dispatchers.Main) {
                     exoPlayer.setMediaSource(createMediaSourceFromByteArray(audio))
                     exoPlayer.playbackParameters =
-                        PlaybackParameters(mInAppPlaySpeed, mInAppPlayPitch)
+                        PlaybackParameters(mCfg.inAppPlaySpeed, mCfg.inAppPlayPitch)
                     exoPlayer.prepare()
                 }.join()
                 // 一直等待 直到 job.cancel
@@ -468,12 +487,16 @@ class TtsManager(val context: Context) {
         text: String, tts: BaseTTS, callback: SynthesisCallback
     ) {
         runBlocking {
-            val audio = getAudioHelper(text, tts)
-            if (audio != null) {
-                playAudioHelper(audio, tts.audioFormat, callback)
+            if (tts.isDirectPlay()) {
+                tts.directPlay(text)
                 event?.onPlayDone(text)
-            } else event?.onError(ERROR_AUDIO_NULL, text)
-
+            } else {
+                val audio = getAudioHelper(text, tts)
+                if (audio != null) {
+                    playAudioHelper(audio, tts.audioFormat, callback)
+                    event?.onPlayDone(text)
+                } else event?.onError(ERROR_AUDIO_NULL, text)
+            }
         }
     }
 
@@ -488,7 +511,7 @@ class TtsManager(val context: Context) {
             return
         }
 
-        if (mInAppPlayAudio) {
+        if (mCfg.isInAppPlayAudio) {
             playAudioInApp(audio)
         } else {
             mAudioDecoder.doDecode(audio,
@@ -517,5 +540,10 @@ class TtsManager(val context: Context) {
     /* 生产的数据 */
     class ChannelData(
         val text: String? = null, val audio: ByteArray?, val tts: BaseTTS
+    )
+
+    class TtsDataState(
+        var isRateFollowSystem: Boolean = false,
+        var isPitchFollowSystem: Boolean = false
     )
 }

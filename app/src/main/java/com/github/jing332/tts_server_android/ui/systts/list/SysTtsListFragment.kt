@@ -20,8 +20,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -29,7 +27,9 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.DialogInAppPlaySettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
+import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.MainActivity
@@ -38,6 +38,7 @@ import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
@@ -68,7 +69,7 @@ class SysTtsListFragment : Fragment() {
     /* EditActivity的返回值 */
     private val startForResult =
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
-            result.data?.getParcelableExtra<SystemTts>(KEY_DATA)?.let {
+            result.data?.getParcelableExtra<SystemTts>(BaseTtsEditActivity.KEY_DATA)?.let {
                 appDb.systemTtsDao.insertTts(it)
                 notifyTtsUpdate(it.isEnabled)
             }
@@ -155,7 +156,8 @@ class SysTtsListFragment : Fragment() {
     /* 检查格式 如不同则显示对话框 */
     private fun checkFormatAndShowDialog(list: List<SystemTts>) {
         SysTtsConfig.apply {
-            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat(list)) runOnUI { formatWarnDialog.show() }
+            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat(list))
+                runOnUI { formatWarnDialog.show() }
         }
     }
 
@@ -257,28 +259,11 @@ class SysTtsListFragment : Fragment() {
             }.show()
     }
 
-    private fun addHttpTTS(
-        @ReadAloudTarget raTarget: Int = ReadAloudTarget.ALL,
-        groupId: Long = SystemTtsGroup.DEFAULT_GROUP_ID
-    ) {
-        startForResult.launch(Intent(
-            requireContext(), HttpTtsEditActivity::class.java
-        ).apply {
+    private fun addTtsConfig(tts: BaseTTS, cls: Class<*>) {
+        val intent = Intent(requireContext(), cls).apply {
             putExtra(
                 BaseTtsEditActivity.KEY_DATA,
-                SystemTts(readAloudTarget = raTarget, tts = HttpTTS(), groupId = groupId)
-            )
-        })
-    }
-
-    private fun addMsTTS(
-        @ReadAloudTarget raTarget: Int = ReadAloudTarget.ALL,
-        groupId: Long = SystemTtsGroup.DEFAULT_GROUP_ID
-    ) {
-        val intent = Intent(requireContext(), MsTtsEditActivity::class.java).apply {
-            putExtra(
-                BaseTtsEditActivity.KEY_DATA,
-                SystemTts(readAloudTarget = raTarget, tts = MsTTS(), groupId = groupId)
+                SystemTts(tts = tts)
             )
         }
         startForResult.launch(intent)
@@ -299,8 +284,9 @@ class SysTtsListFragment : Fragment() {
     private fun onOptionsItemSelected(itemId: Int) {
         when (itemId) {
             /* 添加配置 */
-            R.id.menu_addMsTts -> addMsTTS(binding.viewPager.currentItem)
-            R.id.menu_addHttpTts -> addHttpTTS(binding.viewPager.currentItem)
+            R.id.menu_add_ms_tts -> addTtsConfig(MsTTS(), MsTtsEditActivity::class.java)
+            R.id.menu_add_local_tts -> addTtsConfig(LocalTTS(), LocalTtsEditActivity::class.java)
+            R.id.menu_add_http_tts -> addTtsConfig(HttpTTS(), HttpTtsEditActivity::class.java)
             R.id.menu_addGroup -> addGroup()
 
             R.id.menu_isInAppPlayAudio -> showInAppSettingsDialog()

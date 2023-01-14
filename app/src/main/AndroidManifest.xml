@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
@@ -47,6 +53,11 @@
             android:name=".ui.systts.edit.HttpTtsEditActivity"
             android:label="@string/systts_http_edit_title"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.systts.edit.LocalTtsEditActivity"
+            android:label="@string/systts_local_edit_title"
+            android:exported="true" />
         <activity
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:exported="true"

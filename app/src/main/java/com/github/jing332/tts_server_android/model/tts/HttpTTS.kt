@@ -34,8 +34,10 @@ data class HttpTTS(
     override var pitch: Int = 1,
     override var volume: Int = 1,
     override var rate: Int = 1,
+
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
-) : Parcelable, BaseTTS() {
+
+    ) : Parcelable, BaseTTS() {
     override fun isRateFollowSystem(): Boolean {
         return VALUE_FOLLOW_SYSTEM == rate
     }

@@ -18,7 +18,7 @@ import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("DEPRECATION")
-class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>() {
+class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
     private val vm: HttpTtsEditViewModel by viewModels()
     private val binding: SysttsHttpEditActivityBinding by lazy {
         SysttsHttpEditActivityBinding.inflate(layoutInflater)

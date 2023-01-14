@@ -37,7 +37,7 @@ data class MsTTS(
     var expressAs: ExpressAs? = null,
 
     @kotlinx.serialization.Transient
-    override var audioFormat: BaseAudioFormat = MsTtsFormatManger.getFormatOrDefault(format),
+    override var audioFormat: BaseAudioFormat  = MsTtsFormatManger.getFormatOrDefault(format),
 ) : Parcelable, BaseTTS() {
     constructor() : this(DEFAULT_VOICE)
     constructor(voiceName: String) : this(voiceName, Prosody())
@@ -118,7 +118,7 @@ data class MsTTS(
             ) + "<br>"
 
         return expressAs + App.context.getString(
-            R.string.systts_ms_description,
+            R.string.systts_play_params_description,
             "<b>${rateStr}</b>",
             "<b>${volume}</b>",
             "<b>${pitchStr}</b>"

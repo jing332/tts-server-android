@@ -21,7 +21,7 @@
             android:layout_margin="8dp"
             android:animateLayoutChanges="true">
 
-            <com.github.jing332.tts_server_android.ui.systts.edit.BaseInfoEditView
+            <com.github.jing332.tts_server_android.ui.systts.edit.BasicInfoEditView
                 android:id="@+id/baseInfoEditView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
