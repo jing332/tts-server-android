@@ -21,6 +21,7 @@ class CrashHandler(var context: Context) : Thread.UncaughtExceptionHandler {
     }
 
     private fun handleException(e: Throwable) {
+        e.printStackTrace()
         context.longToast("TTS Server已崩溃 上传日志中 稍后将会复制到剪贴板")
         val log = "\n${LocalDateTime.now()}" +
                 "\n版本代码：${AppConst.appInfo.versionCode}， 版本名称：${AppConst.appInfo.versionName}\n" +

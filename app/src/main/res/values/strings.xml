@@ -252,4 +252,5 @@
     <string name="add_local_tts">add local TTS</string>
     <string name="local">Local</string>
     <string name="systts_local_edit_title">Edit local TTS</string>
+    <string name="label_tts_engine">TTS Engine</string>
 </resources>

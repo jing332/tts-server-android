@@ -25,6 +25,8 @@ import kotlinx.serialization.Transient
 @SerialName("local")
 data class LocalTTS(
     var engine: String? = null,
+    var locale: String? = null,
+    var voiceName: String? = null,
 
     override var pitch: Int = 0,
     override var volume: Int = 0,
@@ -47,11 +49,11 @@ data class LocalTTS(
 
     override fun getDescription(): String {
         val rateStr = if (isRateFollowSystem()) App.context.getString(R.string.follow) else rate
-        return App.context.getString(
+        return "$voiceName <br>" + App.context.getString(
             R.string.systts_play_params_description,
             "<b>${rateStr}</b>",
-            "<b>暂不支持</b>",
-            "<b>暂不支持</b>"
+            "<b>0</b>",
+            "<b>0</b>"
         )
     }
 

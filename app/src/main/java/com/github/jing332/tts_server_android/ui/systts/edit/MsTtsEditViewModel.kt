@@ -1,9 +1,5 @@
 package com.github.jing332.tts_server_android.ui.systts.edit
 
-import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
-import androidx.databinding.Observable
-import androidx.databinding.Observable.OnPropertyChangedCallback
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -127,8 +123,7 @@ class MsTtsEditViewModel : ViewModel() {
         // 接口
         ui.apis.items = list.map {
             SpinnerItem(
-                displayText = it.first, value = it.first,
-                imageResId = it.second
+                displayText = it.first, value = it.first, imageResId = it.second
             )
         }
 
@@ -201,9 +196,8 @@ class MsTtsEditViewModel : ViewModel() {
     // 更新地区列表
     private fun updateLocales(allList: List<GeneralVoiceData>) {
         ui.locales.apply {
-            items =
-                allList.map { SpinnerItem(it.localeName, it.locale) }
-                    .distinctBy { it.value }.sortedBy { it.value.toString() }
+            items = allList.map { SpinnerItem(it.localeName, it.locale) }.distinctBy { it.value }
+                .sortedBy { it.value.toString() }
             position = items.indexOfFirst { it.value == mTts.locale }
         }
     }
@@ -293,8 +287,7 @@ class MsTtsEditViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        if (exoPlayer.isInitialized())
-            exoPlayer.value.release()
+        if (exoPlayer.isInitialized()) exoPlayer.value.release()
     }
 
     fun doTest(text: String, onSuccess: (kb: Int) -> Unit, onFailure: (Throwable) -> Unit) {
@@ -329,52 +322,14 @@ class MsTtsEditViewModel : ViewModel() {
     fun stopPlay() {
         exoPlayer.value.stop()
     }
-}
 
-data class UiData(
-    val apis: SpinnerData = SpinnerData(),
-    val locales: SpinnerData = SpinnerData(),
-    var secondaryLocales: SpinnerData = SpinnerData(),
-    val voices: SpinnerData = SpinnerData(),
-    val styles: SpinnerData = SpinnerData(),
-    val roles: SpinnerData = SpinnerData(),
+    data class UiData(
+        val apis: SpinnerData = SpinnerData(),
+        val locales: SpinnerData = SpinnerData(),
+        var secondaryLocales: SpinnerData = SpinnerData(),
+        val voices: SpinnerData = SpinnerData(),
+        val styles: SpinnerData = SpinnerData(),
+        val roles: SpinnerData = SpinnerData(),
 //    val formats: SpinnerData = SpinnerData()
-)
-
-
-class SpinnerData : BaseObservable() {
-    // 包装成lambda
-    fun addOnPropertyChangedCallback(callback: (sender: Observable?, propertyId: Int) -> Unit) {
-        super.addOnPropertyChangedCallback(object : OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                callback(sender, propertyId)
-            }
-        })
-    }
-
-    fun reset() {
-        items = listOf()
-        position = 0
-    }
-
-    // View -> ViewModel 单向绑定
-    @Bindable("items")
-    var items: List<SpinnerItem> = emptyList()
-        set(value) {
-            field = value
-            notifyPropertyChanged(BR.items)
-        }
-
-    // 双向绑定
-    @Bindable("position")
-    var position: Int = 0
-        set(value) {
-            field = value
-            notifyPropertyChanged(BR.position)
-        }
-
-    val selectedItem: SpinnerItem?
-        get() {
-            return items.getOrNull(position)
-        }
+    )
 }

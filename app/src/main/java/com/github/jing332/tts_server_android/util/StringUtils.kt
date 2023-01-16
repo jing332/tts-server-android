@@ -7,19 +7,6 @@ object StringUtils {
     private val splitSentencesRegex by lazy { Pattern.compile("[。？?！!;；]") }
 
     /**
-     * 打印链式错误消息
-     */
-     fun getExceptionMessageChain(throwable: Throwable?): MutableList<String?> {
-        var inner = throwable
-        val result: MutableList<String?> = ArrayList()
-        while (inner != null) {
-            result.add(inner.message)
-            inner = inner.cause
-        }
-        return result
-    }
-
-    /**
      *  是否为不发音的字符串
      */
     fun isSilent(s: String): Boolean {
