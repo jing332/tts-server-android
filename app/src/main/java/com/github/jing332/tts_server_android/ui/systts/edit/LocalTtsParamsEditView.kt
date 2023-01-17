@@ -20,6 +20,7 @@ import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.tts.LocalTtsParameter
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
+import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
@@ -110,9 +111,15 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
     ) {
         val binding =
             SysttsLocalParamsExtraEditViewBinding.inflate(LayoutInflater.from(context), null, false)
+                .apply {
+                    tilType.initAccessibilityDelegate()
+                    tilKey.initAccessibilityDelegate()
+                    tilValue.initAccessibilityDelegate()
 
-        binding.tilKey.editText?.setText(data.key)
-        binding.tilValue.editText?.setText(data.value)
+                    tilKey.editText?.setText(data.key)
+                    tilValue.editText?.setText(data.value)
+                }
+
 
         val types = LocalTtsParameter.typeList.map { SpinnerItem(it, it) }
         binding.spinnerType.setAdapter(MaterialSpinnerAdapter(context, types))

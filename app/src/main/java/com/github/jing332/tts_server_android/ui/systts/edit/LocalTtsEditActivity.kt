@@ -2,15 +2,12 @@ package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.databinding.SysttsLocalEditActivityBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
+import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
-import com.github.jing332.tts_server_android.util.runOnIO
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
@@ -37,6 +34,10 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
         setContentView(binding.root)
 
         binding.apply {
+            tilEngine.initAccessibilityDelegate()
+            tilLocale.initAccessibilityDelegate()
+            tilVoice.initAccessibilityDelegate()
+
             basicEdit.setData(systemTts)
             paramsEdit.setData(tts)
 
@@ -57,7 +58,6 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
                 }, { // finished
 
                 })
-
             }
         }
 
@@ -70,16 +70,5 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
         }, { //onDone
             waitDialog.dismiss()
         })
-
-        lifecycleScope.runOnIO {
-            if (appDb.systemTtsDao.allTts.find { it.tts is LocalTTS } == null) {
-                withMain {
-                    MaterialAlertDialogBuilder(this@LocalTtsEditActivity)
-                        .setTitle(R.string.warning)
-                        .setMessage("请注意！【语言】以及【声音】选项并非全部TTS都支持，有些虽说可以读取显示但实际上是 无效/不可用的。")
-                        .show()
-                }
-            }
-        }
     }
 }
