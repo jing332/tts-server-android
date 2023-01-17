@@ -31,8 +31,9 @@
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/label_tts_engine">
+            android:layout_marginTop="4dp"
+            android:hint="@string/label_tts_engine"
+            app:startIconDrawable="@drawable/ic_text_to_speech_24">
 
             <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
                 android:id="@+id/spinner_engine"
@@ -47,8 +48,9 @@
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/label_language">
+            android:layout_marginTop="4dp"
+            android:hint="@string/label_language"
+            app:startIconDrawable="@drawable/ic_web">
 
             <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
                 android:id="@+id/spinner_locale"
@@ -63,8 +65,9 @@
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/label_voice">
+            android:layout_marginTop="4dp"
+            android:hint="@string/label_voice"
+            app:startIconDrawable="@drawable/ic_baseline_supervisor_account_24">
 
             <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
                 android:id="@+id/spinner_voice"

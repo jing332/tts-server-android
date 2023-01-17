@@ -45,16 +45,7 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
 
             test.tilTest.setEndIconOnClickListener {
                 waitDialog.show()
-                vm.doTest(test.etTestText.text.toString(), { // init
-                    it?.let {
-                        waitDialog.dismiss()
-                        MaterialAlertDialogBuilder(this@LocalTtsEditActivity)
-                            .setTitle(R.string.test_failed)
-                            .setMessage(it)
-                            .show()
-                        return@doTest
-                    }
-                }, { // start
+                vm.doTest(test.etTestText.text.toString(), { // start
                     waitDialog.dismiss()
                     MaterialAlertDialogBuilder(this@LocalTtsEditActivity)
                         .setTitle(R.string.systts_test_success)
@@ -68,6 +59,10 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
                 })
 
             }
+        }
+
+        vm.voiceEnabledLiveData.observe(this) {
+            binding.tilVoice.isEnabled = it
         }
 
         vm.init(systemTts, { // onStart

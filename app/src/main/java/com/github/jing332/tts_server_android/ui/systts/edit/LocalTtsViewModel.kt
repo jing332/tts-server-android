@@ -1,23 +1,33 @@
 package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.Voice
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.drake.net.utils.runMain
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BR
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
+import com.github.jing332.tts_server_android.util.runOnIO
+import com.github.jing332.tts_server_android.util.runOnUI
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import kotlin.math.max
 
 class LocalTtsViewModel : ViewModel() {
+    companion object {
+        // 默认的SpinnerItem 用于风格和角色
+        private val DEFAULT_SPINNER_ITEM: SpinnerItem by lazy {
+            SpinnerItem(App.context.getString(R.string.default_str), null)
+        }
+    }
+
+    val voiceEnabledLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val ui: UiData = UiData()
 
     private lateinit var mData: SystemTts
@@ -39,12 +49,11 @@ class LocalTtsViewModel : ViewModel() {
         mData = sysTts
         mTts = sysTts.tts as LocalTTS
 
-        ui.engines.addOnPropertyChangedCallback { sender, propertyId ->
+        ui.engines.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
                 ui.engines.selectedItem?.let { mTts.engine = it.value.toString() }
                 viewModelScope.launch {
                     onStart.invoke()
-
 
                     val pair = getLanguagesAndVoices(mTts.engine.toString())
                     val locales = pair.first.sortedBy { it.toString() }
@@ -54,6 +63,8 @@ class LocalTtsViewModel : ViewModel() {
                     ui.locales.apply {
                         reset()
                         items = locales.map { SpinnerItem(it.displayName, it) }
+                            .toMutableList()
+                            .apply { add(0, DEFAULT_SPINNER_ITEM) }
                         position =
                             max(0, locales.indexOfFirst { it.toLanguageTag() == mTts.locale })
                     }
@@ -67,7 +78,9 @@ class LocalTtsViewModel : ViewModel() {
             if (propertyId == BR.position) {
                 ui.voices.apply {
                     ui.locales.selectedItem?.let {
-                        mTts.locale = (it.value as Locale).toLanguageTag()
+                        mTts.locale =
+                            if (it.value == null) null
+                            else (it.value as Locale).toLanguageTag()
                     }
 
                     items = mAllVoices.filter { it.locale.toLanguageTag() == mTts.locale }
@@ -76,15 +89,22 @@ class LocalTtsViewModel : ViewModel() {
                                 if (it.features.isEmpty()) "" else it.features.toString()
                             SpinnerItem("${it.name} $featureStr", it)
                         }
+                        .toMutableList()
+                        .apply { add(0, DEFAULT_SPINNER_ITEM) }
+
                     position =
                         max(0, items.indexOfFirst { it.value.toString() == mTts.voiceName })
+
+                    voiceEnabledLiveData.postValue(mTts.locale != null)
                 }
             }
         }
 
         ui.voices.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
-                ui.voices.selectedItem?.let { mTts.voiceName = (it.value as Voice).name }
+                ui.voices.selectedItem?.let {
+                    mTts.voiceName = if (it.value == null) null else (it.value as Voice).name
+                }
             }
         }
 
@@ -125,16 +145,26 @@ class LocalTtsViewModel : ViewModel() {
     }
 
 
-    var mTestTtsEngine: TextToSpeech? = null
-
     @Synchronized
     fun doTest(
         text: String,
-        onInitFinished: (err: String?) -> Unit,
         onStartPlay: () -> Unit,
         onPlayFinished: () -> Unit,
     ) {
-        mTestTtsEngine = TextToSpeech(App.context, { status ->
+        mTts.engineListener = object : LocalTTS.EngineProgressListener {
+            override fun onStart() {
+                runOnUI { onStartPlay.invoke() }
+            }
+
+            override fun onDone() {
+                runOnUI { onPlayFinished.invoke() }
+            }
+        }
+        mTts.onLoad()
+        viewModelScope.runOnIO { mTts.directPlay(text) }
+
+        return
+/*        mTestTtsEngine = TextToSpeech(App.context, { status ->
             if (status == TextToSpeech.SUCCESS) {
                 mTestTtsEngine?.setOnUtteranceProgressListener(object :
                     UtteranceProgressListener() {
@@ -168,13 +198,16 @@ class LocalTtsViewModel : ViewModel() {
                 onInitFinished.invoke("TTS Engine initialize failed!")
                 mTestTtsEngine = null
             }
-        }, mTts.engine)
+        }, mTts.engine)*/
     }
 
     fun stopTestPlay() {
-        mTestTtsEngine?.stop()
-        mTestTtsEngine?.shutdown()
-        mTestTtsEngine = null
+        mTts.onStop()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mTts.onDestroy()
     }
 
 
