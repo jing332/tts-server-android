@@ -34,4 +34,37 @@
         app:max="100"
         app:progress="50" />
 
+    <com.google.android.material.card.MaterialCardView
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        app:cardBackgroundColor="@android:color/transparent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_params"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="8dp"
+                android:text="@string/add_extra_params"
+                app:icon="@drawable/ic_baseline_add_24"
+                app:iconGravity="textStart"
+                app:iconSize="24dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginHorizontal="4dp"
+                android:paddingBottom="4dp"
+                android:id="@+id/rv_extra_params"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
 </LinearLayout>

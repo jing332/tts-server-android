@@ -247,4 +247,9 @@
     <string name="local">本地</string>
     <string name="systts_local_edit_title">编辑本地TTS</string>
     <string name="label_tts_engine">TTS引擎：</string>
+    <string name="type_of_data">数据类型</string>
+    <string name="str_key">键</string>
+    <string name="str_value">值</string>
+    <string name="add_extra_params">新建附加参数</string>
+    <string name="edit_extra_parameter">编辑附加参数</string>
 </resources>

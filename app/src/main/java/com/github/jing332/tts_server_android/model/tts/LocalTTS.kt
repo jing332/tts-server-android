@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.content.Context
+import android.os.Bundle
 import android.os.Parcelable
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
@@ -28,6 +29,8 @@ data class LocalTTS(
     var engine: String? = null,
     var locale: String? = null,
     var voiceName: String? = null,
+
+    var extraParams: MutableList<LocalTtsParameter>? = null,
 
     override var pitch: Int = 0,
     override var volume: Int = 0,
@@ -153,10 +156,17 @@ data class LocalTTS(
                 mTtsEngine?.apply {
                     locale?.let { language = Locale.forLanguageTag(it) }
                     voiceName?.let { selectedVoice ->
-                        voices.toList().find { it.name == selectedVoice }?.let { voice = it }
+                        voices.toList().find { it.name == selectedVoice }?.let {
+                            println(setVoice(it))
+                        }
                     }
                     setSpeechRate(rate / 20f)
-                    speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
+
+                    val params = Bundle().apply {
+                        extraParams?.forEach { it.putValueFromBundle(this) }
+                    }
+
+                    speak(text, TextToSpeech.QUEUE_FLUSH, params, "")
                 }
                 awaitCancellation()
             }.job

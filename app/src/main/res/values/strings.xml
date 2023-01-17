@@ -253,4 +253,9 @@
     <string name="local">Local</string>
     <string name="systts_local_edit_title">Edit local TTS</string>
     <string name="label_tts_engine">TTS Engine</string>
+    <string name="type_of_data">Data type</string>
+    <string name="str_key">Key</string>
+    <string name="str_value">Value</string>
+    <string name="add_extra_params">Add extra params</string>
+    <string name="edit_extra_parameter">Edit extra parameter</string>
 </resources>

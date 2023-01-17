@@ -59,14 +59,14 @@ class LocalTtsViewModel : ViewModel() {
                     val locales = pair.first.sortedBy { it.toString() }
                     mAllVoices = pair.second
 
-
                     ui.locales.apply {
                         reset()
                         items = locales.map { SpinnerItem(it.displayName, it) }
                             .toMutableList()
                             .apply { add(0, DEFAULT_SPINNER_ITEM) }
-                        position =
-                            max(0, locales.indexOfFirst { it.toLanguageTag() == mTts.locale })
+                        position = max(0, items.indexOfFirst {
+                            it.value != null && (it.value as Locale).toLanguageTag() == mTts.locale
+                        })
                     }
 
                     onDone.invoke()
@@ -93,7 +93,9 @@ class LocalTtsViewModel : ViewModel() {
                         .apply { add(0, DEFAULT_SPINNER_ITEM) }
 
                     position =
-                        max(0, items.indexOfFirst { it.value.toString() == mTts.voiceName })
+                        max(0, items.indexOfFirst {
+                            it.value != null && (it.value as Voice).name == mTts.voiceName
+                        })
 
                     voiceEnabledLiveData.postValue(mTts.locale != null)
                 }
