@@ -14,7 +14,6 @@ import com.github.jing332.tts_server_android.databinding.SysttsMsQuickEditViewBi
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
 import com.github.jing332.tts_server_android.model.tts.MsTtsFormatManger
-import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
@@ -147,8 +146,6 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
 
         binding.seekbarPitch.onSeekBarChangeListener = this
 
-
-        binding.tilFormat.initAccessibilityDelegate()
         binding.spinnerFormat.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,

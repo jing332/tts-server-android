@@ -1,145 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_marginTop="8dp"
+    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+        android:id="@+id/til_url"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:endIconCheckable="true"
+        app:endIconContentDescription="@string/help"
+        app:endIconDrawable="@drawable/ic_baseline_help_outline_24"
+        app:endIconMode="custom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.github.jing332.tts_server_android.ui.systts.edit.BasicInfoEditView
-            android:id="@+id/base_edit"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:hint="url"
+            tools:ignore="HardcodedText" />
+    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_url"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="8dp"
-            app:endIconCheckable="true"
-            app:endIconContentDescription="@string/help"
-            app:endIconDrawable="@drawable/ic_baseline_help_outline_24"
-            app:endIconMode="custom"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/base_edit">
+    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+        android:id="@+id/til_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:endIconCheckable="true"
+        app:endIconContentDescription="@string/help"
+        app:endIconDrawable="@drawable/ic_baseline_help_outline_24"
+        app:endIconMode="custom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_url">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_url"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="url"
-                tools:ignore="HardcodedText" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_header"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="8dp"
-            app:endIconCheckable="true"
-            app:endIconContentDescription="@string/help"
-            app:endIconDrawable="@drawable/ic_baseline_help_outline_24"
-            app:endIconMode="custom"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_url">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_headers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/systts_http_request_header" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/divider"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_headers"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_header" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_test"
-            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="8dp"
-            app:endIconContentDescription="@string/test"
-            app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
-            app:endIconMode="custom"
-            app:endIconTint="?attr/colorPrimaryInverse"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_sample_rate">
+            android:hint="@string/systts_http_request_header" />
+    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_testText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/sample_text"
-                android:imeOptions="actionGo"
-                android:singleLine="true"
-                android:text="@string/systts_sample_test_text" />
-        </com.google.android.material.textfield.TextInputLayout>
 
-        <CheckBox
-            android:id="@+id/checkBox_needDecode"
-            android:layout_width="wrap_content"
+    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+        android:id="@+id/til_sample_rate"
+        style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="@string/systts_sample_rate"
+        app:endIconContentDescription="@string/help"
+        app:layout_constraintEnd_toStartOf="@id/checkBox_needDecode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_header"
+        app:startIconDrawable="@drawable/ic_baseline_help_outline_24">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/tv_sampleRate"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:text="@string/systts_decode_audio"
-            app:layout_constraintBottom_toBottomOf="@+id/til_sample_rate"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/til_sample_rate" />
+            android:inputType="number"
+            tools:ignore="Deprecated" />
+    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-        <com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsQuickEditView
-            android:id="@+id/numEdit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_test" />
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/checkBox_needDecode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:text="@string/systts_decode_audio"
+        app:layout_constraintBottom_toBottomOf="@id/til_sample_rate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/til_sample_rate" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_sample_rate"
-            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:hint="@string/systts_sample_rate"
-            app:endIconContentDescription="@string/help"
-            app:layout_constraintEnd_toStartOf="@+id/checkBox_needDecode"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
-            app:startIconDrawable="@drawable/ic_baseline_help_outline_24">
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_sample_rate" />
 
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/tv_sampleRate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:editable="true"
-                android:inputType="number"
-                tools:ignore="Deprecated" />
-        </com.google.android.material.textfield.TextInputLayout>
+    <include
+        android:id="@+id/test_layout"
+        layout="@layout/systts_edit_test_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+
+    <com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsLiteEditView
+        android:id="@+id/lite_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/test_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

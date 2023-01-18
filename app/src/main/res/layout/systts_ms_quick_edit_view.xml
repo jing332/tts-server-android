@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="16dp">
 
-    <com.google.android.material.textfield.TextInputLayout
+    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
         android:id="@+id/til_format"
         style="?attr/textInputOutlinedExposedDropdownMenuStyle"
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/label_audio_format" />
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
     <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
         android:id="@+id/seekbar_rate"

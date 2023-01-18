@@ -14,19 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="8dp"
         tools:context=".ui.systts.edit.LocalTtsEditActivity">
 
-        <com.github.jing332.tts_server_android.ui.systts.edit.BasicInfoEditView
-            android:id="@+id/basic_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
         <include
-            android:id="@+id/test"
+            android:id="@+id/test_layout"
             layout="@layout/systts_edit_test_layout" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_engine"
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
@@ -41,9 +35,9 @@
                 android:layout_height="match_parent"
                 app:items="@{m.ui.engines.items}"
                 app:selectedPosition="@={m.ui.engines.position}" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_locale"
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
@@ -58,9 +52,9 @@
                 android:layout_height="match_parent"
                 app:items="@{m.ui.locales.items}"
                 app:selectedPosition="@={m.ui.locales.position}" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_voice"
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
@@ -75,7 +69,7 @@
                 android:layout_height="match_parent"
                 app:items="@{m.ui.voices.items}"
                 app:selectedPosition="@={m.ui.voices.position}" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"

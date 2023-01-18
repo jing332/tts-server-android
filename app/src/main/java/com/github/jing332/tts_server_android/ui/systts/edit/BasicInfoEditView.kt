@@ -14,7 +14,6 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBaseInfoEditViewBinding
-import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.runOnIO
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -77,9 +76,6 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
     }
 
     init {
-        binding.tilGroup.initAccessibilityDelegate()
-        binding.tilName.initAccessibilityDelegate()
-
         binding.etName.addTextChangedListener {
             mData?.apply { displayName = this@BasicInfoEditView.displayName }
         }

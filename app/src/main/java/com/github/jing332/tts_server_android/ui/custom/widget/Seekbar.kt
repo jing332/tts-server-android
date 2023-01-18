@@ -111,7 +111,7 @@ class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     }
 
     companion object {
-        private val defaultValueFormatter = ValueFormatter { value, progress ->
+        private val defaultValueFormatter = ValueFormatter { value, _ ->
             value.toString()
         }
 

@@ -108,7 +108,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/group_source">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -118,9 +118,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_file_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                 android:editable="false"
                 android:hint="@string/select_file_hint"
                 tools:ignore="Deprecated" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
     </FrameLayout>
 

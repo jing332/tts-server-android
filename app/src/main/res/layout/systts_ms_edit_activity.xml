@@ -10,197 +10,171 @@
             type="com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditViewModel" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.systts.edit.MsTtsEditActivity">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/test_layout"
+            layout="@layout/systts_edit_test_layout" />
+
+
+            
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            android:id="@+id/til_api"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:animateLayoutChanges="true">
+            android:layout_marginTop="4dp"
+            android:hint="@string/label_api"
+            app:hintAnimationEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/test_layout"
+            app:startIconDrawable="@drawable/ic_baseline_api_24">
 
-            <com.github.jing332.tts_server_android.ui.systts.edit.BasicInfoEditView
-                android:id="@+id/baseInfoEditView"
+            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+                android:id="@+id/spinner_api"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="match_parent"
+                android:editable="false"
+                app:items="@{m.ui.apis.items}"
+                app:selectedPosition="@={m.ui.apis.position}"
+                tools:ignore="Deprecated" />
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_test"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="@string/sample_text"
-                app:endIconContentDescription="@string/test"
-                app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
-                app:endIconMode="custom"
-                app:endIconTint="?attr/colorPrimaryInverse"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/baseInfoEditView">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_test_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:imeOptions="actionGo"
-                    android:singleLine="true"
-                    android:text="@string/systts_sample_test_text" />
-            </com.google.android.material.textfield.TextInputLayout>
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            android:id="@+id/til_locale"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:hint="@string/label_language"
+            app:hintAnimationEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_api"
+            app:startIconDrawable="@drawable/ic_web">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_api"
-                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+                android:id="@+id/spinner_locale"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:hint="@string/label_api"
-                app:hintAnimationEnabled="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_test"
-                app:startIconDrawable="@drawable/ic_baseline_api_24">
+                android:layout_height="match_parent"
+                android:editable="false"
+                app:items="@{m.ui.locales.items}"
+                app:selectedPosition="@={m.ui.locales.position}"
+                tools:ignore="Deprecated" />
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-                <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
-                    android:id="@+id/spinner_api"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:editable="false"
-                    app:items="@{m.ui.apis.items}"
-                    app:selectedPosition="@={m.ui.apis.position}"
-                    tools:ignore="Deprecated" />
-            </com.google.android.material.textfield.TextInputLayout>
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            android:id="@+id/til_voice"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:hint="@string/label_voice"
+            app:hintAnimationEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_locale"
+            app:startIconDrawable="@drawable/ic_baseline_supervisor_account_24">
 
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_locale"
-                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+                android:id="@+id/spinner_voice"
+                items="@{m.ui.voices.items}"
+                selectedPosition="@={m.ui.voices.position}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:hint="@string/label_language"
-                app:hintAnimationEnabled="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_api"
-                app:startIconDrawable="@drawable/ic_web">
+                android:layout_height="match_parent"
+                android:editable="false"
+                tools:ignore="Deprecated" />
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-                <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
-                    android:id="@+id/spinner_locale"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:editable="false"
-                    app:items="@{m.ui.locales.items}"
-                    app:selectedPosition="@={m.ui.locales.position}"
-                    tools:ignore="Deprecated" />
-            </com.google.android.material.textfield.TextInputLayout>
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            android:id="@+id/til_secondaryLocale"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:hint="@string/systts_secondaryLocale"
+            app:hintAnimationEnabled="false"
+            app:layout_constraintTop_toBottomOf="@id/til_voice"
+            app:startIconDrawable="@drawable/ic_baseline_help_outline_24"
+            app:visible="@{!m.ui.secondaryLocales.items.empty}">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_voice"
-                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+                android:id="@+id/spinner_secondaryLocale"
+                items="@{m.ui.secondaryLocales.items}"
+                selectedPosition="@={m.ui.secondaryLocales.position}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:hint="@string/label_voice"
-                app:hintAnimationEnabled="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_locale"
-                app:startIconDrawable="@drawable/ic_baseline_supervisor_account_24">
+                android:layout_height="match_parent" />
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-                <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
-                    android:id="@+id/spinner_voice"
-                    items="@{m.ui.voices.items}"
-                    selectedPosition="@={m.ui.voices.position}"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:editable="false"
-                    tools:ignore="Deprecated" />
-            </com.google.android.material.textfield.TextInputLayout>
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            android:id="@+id/til_style"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="2dp"
+            android:enabled="@{!m.ui.styles.items.empty}"
+            android:hint="@string/label_voice_style"
+            app:hintAnimationEnabled="false"
+            app:layout_constraintEnd_toStartOf="@id/til_role"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_secondaryLocale">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_secondaryLocale"
-                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+                android:id="@+id/spinner_style"
+                items="@{m.ui.styles.items}"
+                selectedPosition="@={m.ui.styles.position}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:hint="@string/systts_secondaryLocale"
-                app:hintAnimationEnabled="false"
-                app:layout_constraintTop_toBottomOf="@id/til_voice"
-                app:startIconDrawable="@drawable/ic_baseline_help_outline_24"
-                app:visible="@{!m.ui.secondaryLocales.items.empty}">
+                android:layout_height="match_parent"
+                android:editable="false"
 
-                <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
-                    android:id="@+id/spinner_secondaryLocale"
-                    items="@{m.ui.secondaryLocales.items}"
-                    selectedPosition="@={m.ui.secondaryLocales.position}"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </com.google.android.material.textfield.TextInputLayout>
+                tools:ignore="Deprecated" />
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_style"
-                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="2dp"
-                android:enabled="@{!m.ui.styles.items.empty}"
-                android:hint="@string/label_voice_style"
-                app:hintAnimationEnabled="false"
-                app:layout_constraintEnd_toStartOf="@id/til_role"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_secondaryLocale">
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            android:id="@+id/til_role"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:enabled="@{!m.ui.roles.items.empty}"
+            android:hint="@string/label_voice_role"
+            app:hintAnimationEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/til_style"
+            app:layout_constraintTop_toTopOf="@id/til_style">
 
-                <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
-                    android:id="@+id/spinner_style"
-                    items="@{m.ui.styles.items}"
-                    selectedPosition="@={m.ui.styles.position}"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:editable="false"
-
-                    tools:ignore="Deprecated" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_role"
-                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:enabled="@{!m.ui.roles.items.empty}"
-                android:hint="@string/label_voice_role"
-                app:hintAnimationEnabled="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/til_style"
-                app:layout_constraintTop_toTopOf="@id/til_style">
-
-                <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
-                    android:id="@+id/spinner_role"
-                    items="@{m.ui.roles.items}"
-                    selectedPosition="@={m.ui.roles.position}"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:editable="false"
-                    tools:ignore="Deprecated" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.github.jing332.tts_server_android.ui.systts.edit.MsTtsQuickEditView
-                android:id="@+id/edit_view"
+            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+                android:id="@+id/spinner_role"
+                items="@{m.ui.roles.items}"
+                selectedPosition="@={m.ui.roles.position}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:animateLayoutChanges="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_style" />
+                android:layout_height="match_parent"
+                android:editable="false"
+                tools:ignore="Deprecated" />
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/til_style" />
+
+        <com.github.jing332.tts_server_android.ui.systts.edit.MsTtsQuickEditView
+            android:layout_marginTop="8dp"
+            android:id="@+id/edit_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

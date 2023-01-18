@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
@@ -20,7 +21,6 @@ import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.tts.LocalTtsParameter
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
-import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
@@ -59,11 +59,9 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
                 mTts?.rate = seekBar.progress
             }
         }
-        binding.seekbarRate.valueFormatter = Seekbar.ValueFormatter { value, progress ->
-            if (value == BaseTTS.VALUE_FOLLOW_SYSTEM)
-                context.getString(R.string.follow_system_or_read_aloud_app)
-            else
-                value.toString()
+        binding.seekbarRate.valueFormatter = Seekbar.ValueFormatter { value, _ ->
+            if (value == BaseTTS.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app)
+            else value.toString()
         }
 
         binding.btnAddParams.clickWithThrottle {
@@ -75,6 +73,9 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
             }
         }
 
+        binding.rvExtraParams.addItemDecoration(
+            DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        )
         mBrv = binding.rvExtraParams.linear().setup {
             addType<LocalTtsParameter>(R.layout.systts_local_extra_params_item)
             onCreate {
@@ -112,10 +113,6 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
         val binding =
             SysttsLocalParamsExtraEditViewBinding.inflate(LayoutInflater.from(context), null, false)
                 .apply {
-                    tilType.initAccessibilityDelegate()
-                    tilKey.initAccessibilityDelegate()
-                    tilValue.initAccessibilityDelegate()
-
                     tilKey.editText?.setText(data.key)
                     tilValue.editText?.setText(data.value)
                 }

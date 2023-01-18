@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_url"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -28,9 +28,9 @@
                 android:importantForAutofill="no"
                 android:inputType="text" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_pattern"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -52,9 +52,9 @@
                 android:importantForAutofill="no"
                 android:inputType="text" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_replacement"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -75,7 +75,7 @@
                 android:hint="@string/systts_replace_as"
                 android:importantForAutofill="no"
                 android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/switch_isRegex"
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/switch_isRegex" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_test"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/switch_isRegex"
                 tools:layout_editor_absoluteX="8dp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
 
         <TextView

@@ -2,14 +2,11 @@ package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
-import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
-import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -29,15 +26,7 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({ MsTTS() }) {
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-
-        binding.tilApi.initAccessibilityDelegate()
-        binding.tilLocale.initAccessibilityDelegate()
-        binding.tilVoice.initAccessibilityDelegate()
-        binding.tilSecondaryLocale.initAccessibilityDelegate()
-        binding.tilStyle.initAccessibilityDelegate()
-        binding.tilRole.initAccessibilityDelegate()
-        binding.tilTest.initAccessibilityDelegate()
+        setContentView(binding.root, binding.testLayout.tilTest)
 
         // 帮助 二级语言
         binding.tilSecondaryLocale.setStartIconOnClickListener {
@@ -81,45 +70,19 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({ MsTTS() }) {
         )
 
 
-//        var data: SystemTts? = intent.getParcelableExtra(KEY_DATA)
-//        if (data == null) data = SystemTts(tts = MsTTS())
+        binding.editView.setData(tts)
         vm.initUserData(systemTts)
 
-        // 自动同步数据
-        binding.baseInfoEditView.setData(systemTts)
-        binding.editView.setData(tts)
-
-        // 监听Enter
-        binding.etTestText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_GO) {
-                doTest()
-                return@setOnEditorActionListener true
-            }
-            false
-        }
-
-        if (AppConfig.testSampleText.isNotEmpty())
-            binding.etTestText.setText(AppConfig.testSampleText)
-
-        binding.tilTest.setEndIconOnClickListener { doTest() }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (binding.etTestText.text.toString() != getString(R.string.systts_sample_test_text))
-            AppConfig.testSampleText = binding.etTestText.text.toString()
-    }
-
-    private fun doTest() {
+    override fun onTest(text: String) {
         waitDialog.show()
-        val text = binding.etTestText.text.toString()
         vm.doTest(text, { kb ->
             waitDialog.dismiss()
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.systts_test_success)
                 .setMessage(getString(R.string.systts_test_success_info, kb))
                 .setOnDismissListener { vm.stopPlay() }
-
                 .show()
         }, { err ->
             waitDialog.dismiss()

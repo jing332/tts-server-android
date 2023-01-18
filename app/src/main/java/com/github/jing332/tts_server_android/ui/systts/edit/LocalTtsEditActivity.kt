@@ -4,9 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsLocalEditActivityBinding
-import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
-import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -18,47 +16,32 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
     private val waitDialog by lazy { WaitDialog(this) }
 
     override fun onSave() {
-        vm.checkAndSetDisplayName(binding.basicEdit.displayName)
-
+        vm.checkAndSetDisplayName(basicEditView.displayName)
         super.onSave()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (binding.test.etTestText.text.toString() != getString(R.string.systts_sample_test_text))
-            AppConfig.testSampleText = binding.test.etTestText.text.toString()
+    override fun onTest(text: String) {
+        waitDialog.show()
+        vm.doTest(text, { // start
+            waitDialog.dismiss()
+            MaterialAlertDialogBuilder(this@LocalTtsEditActivity)
+                .setTitle(R.string.systts_test_success)
+                .setMessage(R.string.systts_state_playing)
+                .setOnDismissListener {
+                    vm.stopTestPlay()
+                }
+                .show()
+        }, { // finished
+
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setContentView(binding.root, binding.testLayout.tilTest)
 
         binding.apply {
-            tilEngine.initAccessibilityDelegate()
-            tilLocale.initAccessibilityDelegate()
-            tilVoice.initAccessibilityDelegate()
-
-            basicEdit.setData(systemTts)
-            paramsEdit.setData(tts)
-
-            if (AppConfig.testSampleText.isNotEmpty())
-                test.etTestText.setText(AppConfig.testSampleText)
-
-            test.tilTest.setEndIconOnClickListener {
-                waitDialog.show()
-                vm.doTest(test.etTestText.text.toString(), { // start
-                    waitDialog.dismiss()
-                    MaterialAlertDialogBuilder(this@LocalTtsEditActivity)
-                        .setTitle(R.string.systts_test_success)
-                        .setMessage(R.string.systts_state_playing)
-                        .setOnDismissListener {
-                            vm.stopTestPlay()
-                        }
-                        .show()
-                }, { // finished
-
-                })
-            }
+            binding.paramsEdit.setData(tts)
         }
 
         vm.voiceEnabledLiveData.observe(this) {

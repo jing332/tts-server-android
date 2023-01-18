@@ -2,12 +2,18 @@ package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.databinding.SysttsBaseEditActivityBinding
+import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.google.android.material.textfield.TextInputLayout
 
 open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : BackActivity() {
     companion object {
@@ -19,7 +25,48 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
         finish()
     }
 
+    open fun onTest(text: String) {}
 
+    private val binding: SysttsBaseEditActivityBinding by lazy {
+        SysttsBaseEditActivityBinding.inflate(layoutInflater)
+    }
+
+    var testInputLayout: TextInputLayout? = null
+    val basicEditView: BasicInfoEditView by lazy { binding.basicEdit }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        super.setContentView(binding.root)
+
+        binding.basicEdit.setData(systemTts)
+    }
+
+    final override fun setContentView(layoutResID: Int) {
+        super.setContentView(layoutResID)
+    }
+
+    final override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
+        super.setContentView(view, params)
+    }
+
+    final override fun setContentView(view: View?) {
+        super.setContentView(view)
+    }
+
+    fun setContentView(view: View?, testTil: TextInputLayout? = null) {
+        binding.content.removeAllViews()
+        binding.content.addView(view)
+        this.testInputLayout = testTil
+
+        testInputLayout?.editText?.apply {
+            testInputLayout?.setEndIconOnClickListener {
+                if (text.toString() != getString(R.string.systts_sample_test_text))
+                    AppConfig.testSampleText = text.toString()
+                onTest(text.toString())
+            }
+            if (AppConfig.testSampleText.isNotEmpty()) setText(AppConfig.testSampleText)
+        }
+    }
 
     private var mData: SystemTts? = null
 

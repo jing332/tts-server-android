@@ -3,15 +3,12 @@ package com.github.jing332.tts_server_android.ui.systts.edit
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Html
-import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityBinding
-import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
-import com.github.jing332.tts_server_android.ui.custom.adapter.initAccessibilityDelegate
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
@@ -27,13 +24,12 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setContentView(binding.root, binding.testLayout.tilTest)
 
         // 获取数据 为null表示Add
 
         binding.apply {
-            baseEdit.setData(systemTts)
-            binding.numEdit.setData(tts)
+            binding.liteEdit.setData(tts)
 
             etUrl.setText(tts.url)
             etHeaders.setText(tts.header)
@@ -41,17 +37,7 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
             checkBoxNeedDecode.isChecked = tts.audioFormat.isNeedDecode
         }
 
-        binding.tilTest.initAccessibilityDelegate()
-        binding.tilTest.setEndIconOnClickListener { doTest() }
-        binding.etTestText.setOnEditorActionListener { _, actionId, _ ->
-            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_GO) {
-                doTest()
-                true
-            } else
-                false
-        }
 
-        binding.tilUrl.initAccessibilityDelegate()
         // url 帮助按钮
         binding.tilUrl.setEndIconOnClickListener {
             val tv = TextView(this)
@@ -64,7 +50,6 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
 
         }
 
-        binding.tilHeader.initAccessibilityDelegate()
         // 请求头 帮助按钮
         binding.tilHeader.setEndIconOnClickListener {
             MaterialAlertDialogBuilder(this).setTitle(R.string.systts_http_request_header)
@@ -74,15 +59,13 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
                 .show()
         }
 
-        binding.tilSampleRate.initAccessibilityDelegate()
+
         // 采样率帮助按钮
         binding.tilSampleRate.setStartIconOnClickListener {
             MaterialAlertDialogBuilder(this).setTitle(R.string.systts_sample_rate)
                 .setMessage(R.string.systts_help_sample_rate).show()
         }
 
-        if (AppConfig.testSampleText.isNotEmpty())
-            binding.etTestText.setText(AppConfig.testSampleText)
 
         // 采样率
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item)
@@ -92,18 +75,12 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
         binding.tvSampleRate.threshold = Int.MAX_VALUE
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (binding.etTestText.text.toString() != getString(R.string.systts_sample_test_text))
-            AppConfig.testSampleText = binding.etTestText.text.toString()
-    }
+    private val waitDialog by lazy { WaitDialog(this) }
 
-    private fun doTest() {
+    override fun onTest(text: String) {
         updateValueToTts()
-        val waitDialog = WaitDialog(this).apply { show() }
-        vm.doTest(
-            tts,
-            binding.etTestText.text.toString(),
+        waitDialog.show()
+        vm.doTest(tts, text,
             { size, sampleRate, mime, contentType ->
                 waitDialog.dismiss()
                 MaterialAlertDialogBuilder(this@HttpTtsEditActivity)
@@ -120,13 +97,11 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
                         vm.stopPlay()
                     }
                     .show()
-
             },
             { err ->
                 waitDialog.dismiss()
                 MaterialAlertDialogBuilder(this@HttpTtsEditActivity).setTitle(R.string.test_failed)
                     .setMessage(err.message ?: err.cause?.message)
-
                     .show()
             })
     }
@@ -136,7 +111,7 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
             binding.etUrl.error = getString(R.string.cannot_empty)
             binding.etUrl.requestFocus()
             return
-        } else if (binding.baseEdit.checkDisplayNameEmpty()) {
+        } else if (basicEditView.checkDisplayNameEmpty()) {
             return
         }
 
