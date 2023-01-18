@@ -98,7 +98,7 @@
         app:layout_constraintTop_toBottomOf="@id/divider" />
 
 
-    <com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsLiteEditView
+    <com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsLiteEditView
         android:id="@+id/lite_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

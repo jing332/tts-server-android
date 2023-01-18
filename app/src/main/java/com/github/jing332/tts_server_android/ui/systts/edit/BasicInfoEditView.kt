@@ -28,6 +28,8 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
         SysttsBaseInfoEditViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
+//    var isStandby
+
     @ReadAloudTarget
     var raTarget: Int = ReadAloudTarget.ALL
         set(value) {

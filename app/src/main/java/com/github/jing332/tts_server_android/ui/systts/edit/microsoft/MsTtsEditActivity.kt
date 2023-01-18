@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.edit
+package com.github.jing332.tts_server_android.ui.systts.edit.microsoft
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -8,6 +8,7 @@ import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({ MsTTS() }) {

@@ -249,10 +249,10 @@
     <string name="move_to_top">Move to top</string>
     <string name="move_to_bottom">Move to bottom</string>
     <string name="local_tts_engine">Local TTS engine</string>
-    <string name="add_local_tts">add local TTS</string>
+    <string name="add_local_tts">Add local TTS</string>
     <string name="local">Local</string>
     <string name="systts_local_edit_title">Edit local TTS</string>
-    <string name="label_tts_engine">TTS Engine</string>
+    <string name="label_tts_engine">TTS Engine:</string>
     <string name="type_of_data">Data type</string>
     <string name="str_key">Key</string>
     <string name="str_value">Value</string>

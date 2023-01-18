@@ -4,10 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
-import android.view.accessibility.AccessibilityManager
 import android.widget.*
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
@@ -22,6 +21,11 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         com.google.android.material.R.attr.autoCompleteTextViewStyle
     )
 
+    companion object {
+        const val TAG = "MaterialSpinner"
+    }
+
+
     init {
         super.setOnItemClickListener { parent, view, position, id ->
             mSelectedPosition = position
@@ -31,11 +35,6 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         inputType = InputType.TYPE_NULL
     }
 
-    companion object {
-        const val TAG = "MaterialSpinner"
-    }
-
-
     private var wrappedItemClickListener: AdapterView.OnItemClickListener? = null
 
     private var mSelectedPosition: Int = 0
@@ -44,9 +43,6 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
             adapter?.selectedItemPosition = value
         }
 
-    /*
-        * 当前选中
-        * */
     var selectedPosition: Int
         get() = mSelectedPosition
         set(value) {
@@ -55,17 +51,9 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         }
 
     private val listDialog by lazy { MaterialAlertDialogBuilder(context) }
-    private val accessibilityManager by lazy {
-        context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-    }
-
-    private val listPopup by lazy {
-        AutoCompleteTextView::class.java.getDeclaredField("mPopup")
-            .apply { isAccessible = true }.get(this) as ListPopupWindow
-    }
 
     override fun showDropDown() {
-        if (accessibilityManager.isTouchExplorationEnabled) {
+        if (App.accessibilityManager.isTouchExplorationEnabled) {
             val adapter =
                 ArrayAdapter<String>(context, android.R.layout.simple_list_item_single_choice)
 
@@ -80,7 +68,7 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
             listDialog.show()
         } else {
             super.showDropDown()
-            listPopup.setSelection(selectedPosition)
+            listSelection = selectedPosition
         }
     }
 
@@ -96,6 +84,7 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         selectedPosition = 0
     }
 
+    // 供DataBindingAdapter使用
     override fun setOnItemClickListener(l: AdapterView.OnItemClickListener?) {
         wrappedItemClickListener = l
     }

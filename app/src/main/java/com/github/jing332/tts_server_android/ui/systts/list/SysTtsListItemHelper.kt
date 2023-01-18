@@ -21,9 +21,9 @@ import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.LocalTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.clone
 import com.github.jing332.tts_server_android.util.toast
@@ -48,7 +48,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                             switchChanged(view, models as List<SystemTts>, modelPosition)
                     }
 
-                    cardView.clickWithThrottle { displayQuickEditDialog(itemView, getModel()) }
+                    cardView.clickWithThrottle { displayLiteEditDialog(itemView, getModel()) }
                     btnDelete.clickWithThrottle { delete(getModel()) }
                     btnEdit.clickWithThrottle { edit(getModel()) }
                     btnEdit.setOnLongClickListener {
@@ -127,7 +127,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
         return true
     }
 
-    private fun displayQuickEditDialog(v: View, data: SystemTts) {
+    private fun displayLiteEditDialog(v: View, data: SystemTts) {
         // 修改数据要clone，不然对比时数据相同导致UI不更新
         data.clone<SystemTts>()?.let { clonedData ->
             clonedData.tts.onDescriptionClick(context, v, clonedData) {

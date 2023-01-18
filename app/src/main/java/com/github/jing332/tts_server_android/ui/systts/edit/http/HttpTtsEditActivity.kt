@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.edit
+package com.github.jing332.tts_server_android.ui.systts.edit.http
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -10,6 +10,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityBinding
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -25,8 +26,6 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root, binding.testLayout.tilTest)
-
-        // 获取数据 为null表示Add
 
         binding.apply {
             binding.liteEdit.setData(tts)

@@ -154,7 +154,7 @@ class SystemTtsService : TextToSpeechService(),
             callback?.done()
             return
         }
-        runBlocking { mTtsManager.synthesizeText(text, request, callback) }
+        runBlocking { mTtsManager.synthesizeText(text, request!!, callback!!) }
 
         callback?.done()
     }

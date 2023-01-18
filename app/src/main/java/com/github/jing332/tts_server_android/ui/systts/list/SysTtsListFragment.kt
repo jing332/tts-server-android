@@ -37,9 +37,9 @@ import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.HttpTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.LocalTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.MsTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.*

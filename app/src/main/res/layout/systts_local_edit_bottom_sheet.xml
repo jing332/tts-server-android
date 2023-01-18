@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.github.jing332.tts_server_android.ui.systts.edit.LocalTtsParamsEditView
+    <com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsParamsEditView
         android:id="@+id/params_edit"
         android:paddingVertical="8dp"
         android:layout_width="match_parent"

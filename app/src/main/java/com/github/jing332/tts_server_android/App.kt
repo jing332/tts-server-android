@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android
 
 import android.app.Application
 import android.content.Context
+import android.view.accessibility.AccessibilityManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.chibatching.kotpref.Kotpref
 import com.drake.brv.utils.BRV
@@ -30,6 +31,10 @@ class App : Application() {
                 prettyPrint = true
                 explicitNulls = false //忽略为null的字段
             }
+        }
+
+        val accessibilityManager by lazy {
+            context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         }
 
         val isCnLocale by lazy {

@@ -211,14 +211,13 @@ class TtsManager(val context: Context) {
 
     /* 开始转语音 */
     suspend fun synthesizeText(
-        aText: String, request: SynthesisRequest?, callback: SynthesisCallback?
+        aText: String, request: SynthesisRequest, callback: SynthesisCallback
     ) {
         isSynthesizing = true
-        callback!!.start(mAudioFormat.sampleRate, mAudioFormat.bitRate, 1)
+        callback.start(mAudioFormat.sampleRate, mAudioFormat.bitRate, 1)
 
         val text = if (mCfg.isReplaceEnabled) mReplacer.doReplace(aText) else aText
-
-        val sysPitch = request!!.pitch - 100
+        val sysPitch = request.pitch - 100
         val sysRate = (mNorm.normalize(request.speechRate.toFloat()) - 100).toInt()
 
         mProducer = null
