@@ -23,14 +23,16 @@
 
 # Download
 
-* [稳定版(Release)](https://github.com/jing332/tts-server-android/releases)
+* [稳定版(Releases)](https://github.com/jing332/tts-server-android/releases)
 
-* [开发版(Action 需登陆Github账户)](https://github.com/jing332/tts-server-android/actions)
+* [开发版(Actions 需登陆Github账户)](https://github.com/jing332/tts-server-android/actions)
 
 
 # Grateful
 
-开源项目：
+<details>
+  <summary>开源项目</summary>
+
 |  Android Application   | Microsoft TTS  |
 |  ----  | ----  |
 | [gedoor/legado](https://github.com/gedoor/legado)        | [wxxxcxx/ms-ra-forwarder](https://github.com/wxxxcxx/ms-ra-forwarder) |
@@ -50,6 +52,7 @@
 | [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization/) | Kotlin multiplatform / multi-format serialization |
 | [kotlinx.coroutine](https://github.com/Kotlin/kotlinx.coroutines) | Library support for Kotlin coroutines |
 
+</details>
 
 其他资源：
 * [阿里巴巴Iconfont](https://www.iconfont.cn/)
