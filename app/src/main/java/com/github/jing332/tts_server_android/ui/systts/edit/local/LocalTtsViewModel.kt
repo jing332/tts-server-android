@@ -58,8 +58,7 @@ class LocalTtsViewModel : ViewModel() {
                     mTts.engine = it.value.toString()
                     mTts.onLoad()
                 }
-                mTts.locale = null
-                mTts.voiceName = null
+                
 
                 viewModelScope.runOnIO {
                     withMain { onStart.invoke() }
