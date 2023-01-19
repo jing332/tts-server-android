@@ -59,11 +59,11 @@ sealed class BaseTTS : Parcelable {
     )
 
 
-    open fun onLoad(){}
+    open fun onLoad() {}
 
-    open fun onStop(){}
+    open fun onStop() {}
 
-    open fun onDestroy(){}
+    open fun onDestroy() {}
 
     /**
      * 是否为 直接播放
@@ -73,7 +73,7 @@ sealed class BaseTTS : Parcelable {
     /**
      * 直接播放并等待完毕
      */
-    open fun directPlay(text: String) {}
+    open fun directPlay(text: String): Boolean = false
 
     /**
      * 完整获取音频

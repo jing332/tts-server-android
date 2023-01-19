@@ -34,16 +34,40 @@
         app:max="100"
         app:progress="50" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_marginTop="8dp"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        app:cardBackgroundColor="@android:color/transparent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_direct_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/direct_play" />
+
+        <ImageButton
+            android:layout_marginStart="4dp"
+            android:id="@+id/btn_help_direct_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/systts_direct_play_help"
+            app:srcCompat="@drawable/ic_baseline_help_outline_24"
+            app:tint="?attr/colorOnBackground" />
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="@android:color/transparent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add_params"
@@ -58,11 +82,11 @@
                 app:iconSize="24dp" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_marginHorizontal="4dp"
-                android:paddingBottom="4dp"
                 android:id="@+id/rv_extra_params"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="4dp"
+                android:paddingBottom="4dp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

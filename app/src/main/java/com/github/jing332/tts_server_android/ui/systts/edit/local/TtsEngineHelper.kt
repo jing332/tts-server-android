@@ -50,10 +50,4 @@ class TtsEngineHelper(val context: Context, val scope: CoroutineScope) {
         get() {
             return tts!!.availableLanguages.toList().sortedBy { it.toString() }
         }
-
-
-    val defaultLocale: Locale?
-        get() {
-            return tts!!.defaultVoice?.locale
-        }
 }

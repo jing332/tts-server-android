@@ -255,13 +255,17 @@ class TtsManager(val context: Context) {
 
                 mScope.launch {
                     if (data.tts.isDirectPlay()) {
-                        data.tts.directPlay(data.text.toString())
+                        event?.onStartRequest(data.text!!, data.tts)
+                        if (!data.tts.directPlay(data.text!!)){
+                            event?.onError(ERROR_GET_FAILED, shortText)
+                            return@launch
+                        }
                     } else if (data.audio == null) {
                         event?.onError(ERROR_AUDIO_NULL, shortText)
-                    } else {
-                        playAudioHelper(data.audio, data.tts.audioFormat, callback)
-                        shortText?.let { event?.onPlayDone(it) }
-                    }
+                        return@launch
+                    } else playAudioHelper(data.audio, data.tts.audioFormat, callback)
+
+                    shortText?.let { event?.onPlayDone(it) }
                 }.join()
             } // producer
 
@@ -487,6 +491,7 @@ class TtsManager(val context: Context) {
     ) {
         runBlocking {
             if (tts.isDirectPlay()) {
+                event?.onStartRequest(text, tts)
                 tts.directPlay(text)
                 event?.onPlayDone(text)
             } else {

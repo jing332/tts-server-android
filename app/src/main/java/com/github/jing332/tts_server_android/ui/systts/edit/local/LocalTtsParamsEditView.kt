@@ -47,6 +47,8 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
         this.mTts = tts
 
         binding.seekbarRate.progress = tts.rate
+        binding.cbDirectPlay.isChecked = tts.isDirectPlayMode
+
         mBrv.models = tts.extraParams
     }
 
@@ -71,6 +73,17 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
                 mTts?.extraParams?.add(it)
                 mBrv.models = mTts?.extraParams
             }
+        }
+
+        binding.btnHelpDirectPlay.clickWithThrottle {
+            MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.systts_direct_play_help)
+                .setMessage(R.string.systts_direct_play_help_msg)
+                .show()
+        }
+
+        binding.cbDirectPlay.setOnClickListener {
+            mTts?.isDirectPlayMode = binding.cbDirectPlay.isChecked
         }
 
         binding.rvExtraParams.addItemDecoration(

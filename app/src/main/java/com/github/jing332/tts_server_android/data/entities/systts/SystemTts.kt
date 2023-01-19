@@ -70,8 +70,7 @@ data class SystemTts(
 
         @TypeConverter
         fun stringToTts(json: String?): BaseTTS {
-
-            return decodeFromString(json) ?: MsTTS()
+            return decodeFromString(json)!!
         }
     }
 }

@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.model.tts
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.os.SystemClock
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
@@ -20,6 +21,7 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import java.io.File
 import java.util.*
 
 @Parcelize
@@ -32,6 +34,8 @@ data class LocalTTS(
 
     var extraParams: MutableList<LocalTtsParameter>? = null,
 
+    var isDirectPlayMode: Boolean = false,
+
     override var pitch: Int = 0,
     override var volume: Int = 0,
     override var rate: Int = 0,
@@ -41,6 +45,18 @@ data class LocalTTS(
     companion object {
         private const val TAG = "LocalTTS"
         private const val STATUS_INITIALIZING = -2
+
+        private val saveDir by lazy {
+            App.context.cacheDir.absolutePath + "/local_tts_audio"
+        }
+
+        init {
+            kotlin.runCatching {
+                File(saveDir).apply { deleteRecursively() }
+            }.onFailure {
+                it.printStackTrace()
+            }
+        }
     }
 
     override fun getType(): String {
@@ -114,7 +130,8 @@ data class LocalTTS(
         mTtsEngine = TextToSpeech(App.context, {
             engineInitStatus = it
             if (it == TextToSpeech.SUCCESS) {
-                mTtsEngine!!.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                mTtsEngine!!.setOnUtteranceProgressListener(object :
+                    UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) {
                         engineListener?.onStart()
                     }
@@ -144,38 +161,73 @@ data class LocalTTS(
         mTtsEngine?.shutdown()
     }
 
-    override fun directPlay(text: String) {
-        Log.i(TAG, "directPlay: $text")
-        runBlocking {
-            while (true) {
-                delay(100)
-                if (mTtsEngine != null && engineInitStatus == TextToSpeech.SUCCESS)
-                    break
+    // return 是否成功
+    private suspend fun checkInitAndWait(): Boolean {
+        for (i in 1..100) { //5s
+            if (mTtsEngine != null && engineInitStatus == TextToSpeech.SUCCESS)
+                break
+            else if (i == 100)
+                return false
+            delay(50)
+        }
+        return true
+    }
+
+    private fun setEnginePlayParams(engine: TextToSpeech): Bundle? {
+        engine.apply {
+            locale?.let { language = Locale.forLanguageTag(it) }
+            voiceName?.let { selectedVoice ->
+                voices.toList().find { it.name == selectedVoice }?.let {
+                    Log.i(TAG, "setVoice: ${it.name}")
+                    voice = it
+                }
             }
+
+            setSpeechRate((rate - 40) / 10f)
+            return Bundle().apply {
+                extraParams?.forEach { it.putValueFromBundle(this) }
+            }
+        }
+    }
+
+    override fun directPlay(text: String): Boolean {
+        return runBlocking {
+            if (!checkInitAndWait()) return@runBlocking false
 
             waitJob = launch {
                 mTtsEngine?.apply {
-                    locale?.let { language = Locale.forLanguageTag(it) }
-                    voiceName?.let { selectedVoice ->
-                        voices.toList().find { it.name == selectedVoice }?.let {
-                            println(setVoice(it))
-                        }
-                    }
-                    setSpeechRate(rate / 20f)
-
-                    val params = Bundle().apply {
-                        extraParams?.forEach { it.putValueFromBundle(this) }
-                    }
-
-                    speak(text, TextToSpeech.QUEUE_FLUSH, params, "")
+                    speak(text, TextToSpeech.QUEUE_FLUSH, setEnginePlayParams(this), "")
                 }
                 awaitCancellation()
             }.job
             waitJob?.start()
+            return@runBlocking true
         }
-        Log.i(TAG, "play done")
+    }
+
+    @IgnoredOnParcel
+    private var currentJobId: String? = null
+
+    override fun getAudio(speakText: String): ByteArray? {
+        currentJobId = SystemClock.elapsedRealtime().toString()
+
+        File(saveDir).apply { if (!exists()) mkdirs() }
+        val file = File("$saveDir/$currentJobId.wav")
+        runBlocking {
+            checkInitAndWait()
+            waitJob = launch {
+                mTtsEngine?.apply {
+                    synthesizeToFile(speakText, setEnginePlayParams(this), file, currentJobId)
+                    // 等待完毕
+                    awaitCancellation()
+                }
+            }.job
+            waitJob?.start()
+        }
+
+        return if (file.exists()) file.readBytes() else null
     }
 
 
-    override fun isDirectPlay() = true
+    override fun isDirectPlay() = isDirectPlayMode
 }
