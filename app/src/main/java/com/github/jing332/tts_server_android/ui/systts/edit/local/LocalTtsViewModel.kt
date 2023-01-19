@@ -58,6 +58,8 @@ class LocalTtsViewModel : ViewModel() {
                     mTts.engine = it.value.toString()
                     mTts.onLoad()
                 }
+                mTts.locale = null
+                mTts.voiceName = null
 
                 viewModelScope.runOnIO {
                     withMain { onStart.invoke() }
@@ -111,9 +113,18 @@ class LocalTtsViewModel : ViewModel() {
                 .toMutableList()
                 .apply { add(0, DEFAULT_SPINNER_ITEM) }
 
-            position = max(0, items.indexOfFirst {
+            val userPos = max(0, items.indexOfFirst {
                 it.value != null && (it.value as Locale).toLanguageTag() == mTts.locale
             })
+            position = max(0, if (userPos == 0) {
+                val default = Locale.getDefault()
+                items.indexOfFirst {
+                    if (it.value == null) false else {
+                        val locale = it.value as Locale
+                        locale.language == default.language && locale.country == default.country
+                    }
+                }
+            } else userPos)
         }
     }
 

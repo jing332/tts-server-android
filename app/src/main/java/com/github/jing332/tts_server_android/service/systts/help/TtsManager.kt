@@ -520,10 +520,7 @@ class TtsManager(val context: Context) {
         } else {
             mAudioDecoder.doDecode(audio,
                 mAudioFormat.sampleRate,
-                onRead = {
-                    println(it.size)
-                    writeToCallBack(callback, it)
-                },
+                onRead = { writeToCallBack(callback, it) },
                 error = { event?.onError(ERROR_DECODE_FAILED, it) })
         }
 

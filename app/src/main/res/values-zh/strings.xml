@@ -255,5 +255,5 @@
     <string name="standby">备用</string>
     <string name="direct_play">直接播放</string>
     <string name="systts_direct_play_help">关于【直接播放】</string>
-    <string name="systts_direct_play_help_msg">打开此选项后，将直接由其TTS引擎进行流式播放；\n关闭选项后，将会经TTS Server中转音频，但对于多语音情况下，可减低同一引擎在声音切换时带来的初始化延迟。</string>
+    <string name="systts_direct_play_help_msg">打开选项后，将直接由其TTS引擎进行流式播放；\n关闭选项后，将会经TTS Server中转音频，这会有些性能损耗(缓存的读写)，但对于多语音情况下，可降低同一引擎在声音切换时带来的初始化延迟。</string>
 </resources>
