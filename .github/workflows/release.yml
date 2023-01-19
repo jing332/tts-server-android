@@ -75,7 +75,7 @@ jobs:
         rm -f ${{ github.workspace }}/apk/*
         cp ${{ github.workspace }}/app/build/outputs/apk/app/release/*.apk ${{ github.workspace }}/apk/
         cp ${{ github.workspace }}/app/build/outputs/apk/app/release/*.json ${{ github.workspace }}/apk/
-        cp ${{ github.workspace }}/app/build/outputs/mapping/app/release/*.txt ${{ github.workspace }}/apk/
+        
         
     - name: Get VerName
       run: |
@@ -87,11 +87,7 @@ jobs:
         name: TTS-Server_${{ env.ver_name }}
         path: ${{ github.workspace }}/apk/*.apk  
 
-    - name: Upload Mappings to Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: mappings_${{ env.ver_name }}
-        path: ${{ github.workspace }}/apk/*.txt
+  
         
     - uses: softprops/action-gh-release@v0.1.15
       with:
