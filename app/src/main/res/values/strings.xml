@@ -258,4 +258,5 @@
     <string name="str_value">Value</string>
     <string name="add_extra_params">Add extra params</string>
     <string name="edit_extra_parameter">Edit extra parameter</string>
+    <string name="standby">备用</string>
 </resources>

@@ -28,9 +28,13 @@ data class SystemTts(
     @kotlinx.serialization.Transient
     var isEnabled: Boolean = false,
 
+    @ColumnInfo(defaultValue = "0")
+    var isStandby: Boolean = false,
+
     //朗读目标
     @ReadAloudTarget
     var readAloudTarget: Int = ReadAloudTarget.ALL,
+
 
     var tts: BaseTTS
 ) : Parcelable {
