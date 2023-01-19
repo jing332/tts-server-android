@@ -112,6 +112,8 @@ class ReplaceManagerActivity : AppCompatActivity() {
             lifecycleScope.launch { updateModels(appDb.replaceRuleDao.all) }
         }
 
+        if (!SysTtsConfig.isReplaceEnabled)
+            toast(R.string.systts_replace_please_on_switch)
     }
 
     private fun displayMoreMenu(v: View, data: ReplaceRule) {

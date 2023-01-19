@@ -27,9 +27,9 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:ellipsize="marquee"
         android:gravity="center_vertical"
         android:importantForAccessibility="no"
-        android:ellipsize="marquee"
         android:singleLine="true"
         android:textAppearance="?attr/textAppearanceBody1"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -53,6 +53,6 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv"/>
+        app:layout_constraintTop_toTopOf="@+id/tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

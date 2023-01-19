@@ -50,8 +50,6 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({ MsTTS() }) {
                         .setMessage(e.toString())
                         .setPositiveButton(R.string.retry) { _, _ -> vm.reloadApiData() }
                         .setNegativeButton(R.string.exit) { _, _ -> finish() }
-                        .setCancelable(false)
-
                         .show()
                 }
             }

@@ -52,7 +52,7 @@
 
     <string name="systts_api_edge">Microsoft Edge - Read aloud API</string>
     <string name="systts_api_azure">Microsoft Azure - Web demo API</string>
-    <string name="systts_api_creation">Microsoft Creation - Web demo API</string>
+    <string name="systts_api_creation">(⚠️ Invalid)Microsoft Creation - Web demo API</string>
 
     <string name="systts_state_idle">TTS Idle</string>
     <string name="systts_state_playing">TTS Playing：</string>
@@ -259,8 +259,8 @@
     <string name="add_extra_params">Add extra params</string>
     <string name="edit_extra_parameter">Edit extra parameter</string>
     <string name="standby">备用</string>
-    <string name="direct_play">直接播放</string>
-    <string name="systts_direct_play_help">关于【直接播放】</string>
-    <string name="systts_direct_play_help_msg">打开此选项后，将直接由其TTS引擎进行流式播放；\n
-    关闭选项后，将会经TTS Server中转音频，但对于多语音情况下，可减低声音切换时带来的初始化延迟。</string>
+    <string name="direct_play">Direct play</string>
+    <string name="systts_direct_play_help">Help [direct play]</string>
+    <string name="systts_direct_play_help_msg">When the option is turned on, it will be directly streamed play by its TTS engine;\nWhen the option is turned off, the audio will be transferred through the TTS Server, which will cause some performance loss (cache read and write), but for multi-voice situations, it can be reduced Initialization delay  when switching between voice.</string>
+    <string name="systts_replace_please_on_switch">⚠️Master switch not turned on</string>
 </resources>

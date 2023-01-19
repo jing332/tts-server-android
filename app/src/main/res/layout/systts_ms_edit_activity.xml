@@ -37,7 +37,7 @@
             <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
                 android:id="@+id/spinner_api"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:editable="false"
                 app:items="@{m.ui.apis.items}"
                 app:selectedPosition="@={m.ui.apis.position}"
