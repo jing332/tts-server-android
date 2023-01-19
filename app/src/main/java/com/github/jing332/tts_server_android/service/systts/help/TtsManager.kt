@@ -256,7 +256,7 @@ class TtsManager(val context: Context) {
                 mScope.launch {
                     if (data.tts.isDirectPlay()) {
                         event?.onStartRequest(data.text!!, data.tts)
-                        if (!data.tts.directPlay(data.text!!)){
+                        if (!data.tts.directPlay(data.text!!)) {
                             event?.onError(ERROR_GET_FAILED, shortText)
                             return@launch
                         }
@@ -520,7 +520,10 @@ class TtsManager(val context: Context) {
         } else {
             mAudioDecoder.doDecode(audio,
                 mAudioFormat.sampleRate,
-                onRead = { writeToCallBack(callback, it) },
+                onRead = {
+                    println(it.size)
+                    writeToCallBack(callback, it)
+                },
                 error = { event?.onError(ERROR_DECODE_FAILED, it) })
         }
 

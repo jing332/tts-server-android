@@ -79,6 +79,14 @@ class AudioDecoder {
     ) {
         isDecoding = true
         try {
+            // RIFF WAVEfmt直接去除文件头即可
+            if (srcData.copyOfRange(0, 15).decodeToString().endsWith("WAVEfmt")) {
+                val data = srcData.copyOfRange(44, srcData.size)
+                onRead.invoke(data)
+                isDecoding = false
+                return
+            }
+
             val mediaExtractor = MediaExtractor()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 mediaExtractor.setDataSource(ByteArrayMediaDataSource(srcData))
@@ -181,6 +189,7 @@ class AudioDecoder {
                 //不一定能一次取完，所以要循环取
                 var outputBuffer: ByteBuffer?
                 var pcmData: ByteArray
+
                 while (outputIndex >= 0) {
                     outputBuffer = mediaCodec.getOutputBuffer(outputIndex)
                     pcmData = ByteArray(bufferInfo.size)
@@ -188,7 +197,7 @@ class AudioDecoder {
                         outputBuffer.get(pcmData)
                         outputBuffer.clear() //用完后清空，复用
                     }
-                    /* 回调 传出数据 */
+
                     onRead.invoke(pcmData)
                     mediaCodec.releaseOutputBuffer(outputIndex, false)
                     outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
