@@ -32,7 +32,7 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
                     vm.stopTestPlay()
                 }
                 .show()
-        }, { // finished
+        }, {
 
         })
     }
@@ -53,6 +53,9 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
             waitDialog.show()
         }, { //onDone
             waitDialog.dismiss()
+            if (!it) {
+                MaterialAlertDialogBuilder(this).setTitle("引擎初始化失败").show()
+            }
         })
     }
 }

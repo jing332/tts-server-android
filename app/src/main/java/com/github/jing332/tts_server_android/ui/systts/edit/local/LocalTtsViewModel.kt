@@ -54,12 +54,16 @@ class LocalTtsViewModel : ViewModel() {
 
         ui.engines.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
-                ui.engines.selectedItem?.let { mTts.engine = it.value.toString() }
+                ui.engines.selectedItem?.let {
+                    mTts.engine = it.value.toString()
+                    mTts.onLoad()
+                }
+
                 viewModelScope.runOnIO {
                     withMain { onStart.invoke() }
 
-                    if (!engineHelper.setEngineName(mTts.engine!!)) {
-                        onDone(false)
+                    if (!engineHelper.setEngine(mTts.engine!!)) {
+                        withMain { onDone(false) }
                         return@runOnIO
                     }
 

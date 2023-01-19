@@ -108,8 +108,9 @@ data class LocalTTS(
 
     override fun onLoad() {
         Log.i(TAG, "onLoad")
-        mTtsEngine?.let { return }
 
+        mTtsEngine?.shutdown()
+        engineInitStatus = STATUS_INITIALIZING
         mTtsEngine = TextToSpeech(App.context, {
             engineInitStatus = it
             if (it == TextToSpeech.SUCCESS) {

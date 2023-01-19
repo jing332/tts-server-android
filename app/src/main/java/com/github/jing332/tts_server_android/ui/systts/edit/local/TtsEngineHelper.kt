@@ -19,7 +19,7 @@ class TtsEngineHelper(val context: Context, val scope: CoroutineScope) {
     /**
      * return 是否 初始化成功
      */
-    suspend fun setEngineName(name: String): Boolean {
+    suspend fun setEngine(name: String): Boolean {
         if (engineName != name) {
             engineName = name
             shutdown()
