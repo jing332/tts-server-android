@@ -170,7 +170,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
 
         lifecycleScope.launch {
             var job: Job? = null
-            appDb.systemTtsDao.flowAllGroupWithTts.conflate().collect { list ->
+            appDb.systemTtsDao.getFlowAllGroupWithTts().conflate().collect { list ->
                 val models = withDefault {
                     list.mapIndexed { i, v ->
                         val checkState =

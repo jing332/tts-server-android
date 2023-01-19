@@ -33,10 +33,6 @@ class App : Application() {
             }
         }
 
-        val accessibilityManager by lazy {
-            context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-        }
-
         val isCnLocale by lazy {
             val locale = context.resources.configuration.locale
             locale.language.endsWith("zh")

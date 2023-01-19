@@ -26,7 +26,7 @@ class SysTtsListViewModel : ViewModel() {
     /* 导出配置 */
     fun exportConfig(): String {
         return try {
-            App.jsonBuilder.encodeToString(appDb.systemTtsDao.sysTtsWithGroups)
+            App.jsonBuilder.encodeToString(appDb.systemTtsDao.getSysTtsWithGroups())
         } catch (e: Exception) {
             "导出失败：${e.message}"
         }

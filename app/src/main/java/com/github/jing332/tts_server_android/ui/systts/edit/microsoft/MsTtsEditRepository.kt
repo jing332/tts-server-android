@@ -13,6 +13,7 @@ import com.github.jing332.tts_server_android.util.FileUtils
 import kotlinx.serialization.decodeFromString
 import tts_server_lib.Tts_server_lib
 import java.io.File
+import java.util.*
 
 class MsTtsEditRepository() {
     companion object {
@@ -148,7 +149,7 @@ data class GeneralVoiceData(
      * 地区名
      */
     val localeName: String
-        get() = if (App.isCnLocale) CnLocalMap.getLanguage(locale) else _localeName ?: locale
+        get() = Locale.forLanguageTag(locale).displayName
 
     /**
      * 获取发音人本地化名称，edge则为汉化
@@ -204,15 +205,7 @@ data class GeneralVoiceData(
      * @return first: 原Key, second: 汉化Value
      */
     val localSecondaryLocaleList: List<Pair<String, String>>?
-        get() = (
-                if (App.isCnLocale) secondaryLocaleList?.map {
-                    Pair(
-                        it,
-                        CnLocalMap.getLanguage(it)
-                    )
-                }
-                else secondaryLocaleList?.map { Pair(it, it) }
-                )
+        get() = secondaryLocaleList?.map { Pair(it, Locale.forLanguageTag(it).displayLanguage) }
             ?.also { if (it.isEmpty()) return null }
 
     // 根据类型(String或List) 自动转换

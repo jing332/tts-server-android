@@ -31,9 +31,9 @@ interface SystemTtsDao {
     @get:Query("SELECT count(*) FROM SystemTtsGroup")
     val groupCount: Int
 
-    @get:Transaction
-    @get:Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")
-    val flowAllGroupWithTts: Flow<List<GroupWithTtsItem>>
+    @Transaction
+    @Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")
+    fun getFlowAllGroupWithTts(): Flow<List<GroupWithTtsItem>>
 
     @Query("SELECT * FROM SystemTtsGroup WHERE groupId = :id")
     fun getGroupById(id: Long = DEFAULT_GROUP_ID): SystemTtsGroup?
@@ -74,9 +74,9 @@ interface SystemTtsDao {
     @Delete
     fun deleteGroup(group: SystemTtsGroup)
 
-    @get:Transaction
-    @get:Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")
-    val sysTtsWithGroups: List<GroupWithTtsItem>
+    @Transaction
+    @Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")
+    fun getSysTtsWithGroups(): List<GroupWithTtsItem>
 
     /**
      * 删除组以及TTS

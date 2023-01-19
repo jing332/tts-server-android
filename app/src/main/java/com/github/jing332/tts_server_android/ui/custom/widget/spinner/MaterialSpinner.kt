@@ -4,16 +4,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
+import android.view.accessibility.AccessibilityManager
 import android.widget.*
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 
 @SuppressLint("DiscouragedPrivateApi")
 class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
-    MaterialAutoCompleteTextView(context, attrs, defStyleAttr) {
+    AppCompatAutoCompleteTextView(context, attrs, defStyleAttr) {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(
         context,
@@ -23,6 +24,10 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
     companion object {
         const val TAG = "MaterialSpinner"
+
+        val accessibilityManager by lazy {
+            App.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        }
     }
 
 
@@ -53,7 +58,8 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     private val listDialog by lazy { MaterialAlertDialogBuilder(context) }
 
     override fun showDropDown() {
-        if (App.accessibilityManager.isTouchExplorationEnabled) {
+        requestFocus()
+        if (accessibilityManager.isTouchExplorationEnabled) {
             val adapter =
                 ArrayAdapter<String>(context, android.R.layout.simple_list_item_single_choice)
 
