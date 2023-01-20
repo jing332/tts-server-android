@@ -263,4 +263,7 @@
     <string name="systts_direct_play_help">Help [direct play]</string>
     <string name="systts_direct_play_help_msg">When the option is turned on, it will be directly streamed play by its TTS engine;\nWhen the option is turned off, the audio will be transferred through the TTS Server, which will cause some performance loss (cache read and write), but for multi-voice situations, it can be reduced Initialization delay  when switching between voice.</string>
     <string name="systts_replace_please_on_switch">⚠️Master switch not turned on</string>
+    <string name="md_checkbox_checked">Checked</string>
+    <string name="md_checkbox_unchecked">Unchecked</string>
+    <string name="md_checkbox_indeterminate">Indeterminate</string>
 </resources>

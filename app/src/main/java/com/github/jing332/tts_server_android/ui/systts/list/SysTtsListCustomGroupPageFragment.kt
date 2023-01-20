@@ -112,6 +112,22 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                             })
                         }
                     }
+
+                    checkBox.accessibilityDelegate = object : AccessibilityDelegate() {
+                        override fun onInitializeAccessibilityNodeInfo(
+                            host: View,
+                            info: AccessibilityNodeInfo
+                        ) {
+                            super.onInitializeAccessibilityNodeInfo(host, info)
+                            val str = when (checkBox.checkedState){
+                                MaterialCheckBox.STATE_CHECKED -> getString(R.string.md_checkbox_checked)
+                                MaterialCheckBox.STATE_UNCHECKED-> getString(R.string.md_checkbox_unchecked)
+                                MaterialCheckBox.STATE_INDETERMINATE -> getString(R.string.md_checkbox_indeterminate)
+                                else -> ""
+                            }
+                            info.text = ", $str, "
+                        }
+                    }
                     checkBox.clickWithThrottle {
                         val group = getModel<CustomGroupModel>().data
                         if (!SysTtsConfig.isGroupMultipleEnabled)
