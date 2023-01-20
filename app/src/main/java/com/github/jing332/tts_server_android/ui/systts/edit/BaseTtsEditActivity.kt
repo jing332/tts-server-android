@@ -7,10 +7,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsBaseEditActivityBinding
 import com.github.jing332.tts_server_android.help.AppConfig
+import com.github.jing332.tts_server_android.help.AudioPlayer
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.ui.custom.BackActivity
 import com.google.android.material.textfield.TextInputLayout
@@ -19,6 +21,23 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
     companion object {
         const val KEY_DATA = "KEY_DATA"
     }
+
+    private var mAudioPlayer: AudioPlayer? = null
+
+    suspend fun playAudio(audio: ByteArray) {
+        mAudioPlayer = mAudioPlayer ?: AudioPlayer(this, lifecycleScope)
+        mAudioPlayer?.play(audio)
+    }
+
+    fun stopPlay(){
+        mAudioPlayer?.stop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mAudioPlayer?.release()
+    }
+
 
     open fun onSave() {
         setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, systemTts) })

@@ -76,13 +76,14 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({ MsTTS() }) {
 
     override fun onTest(text: String) {
         waitDialog.show()
-        vm.doTest(text, { kb ->
+        vm.doTest(text, { audio ->
             waitDialog.dismiss()
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.systts_test_success)
-                .setMessage(getString(R.string.systts_test_success_info, kb))
-                .setOnDismissListener { vm.stopPlay() }
+                .setMessage(getString(R.string.systts_test_success_info, audio.size / 1024))
+                .setOnDismissListener { stopPlay() }
                 .show()
+            playAudio(audio)
         }, { err ->
             waitDialog.dismiss()
             MaterialAlertDialogBuilder(this)

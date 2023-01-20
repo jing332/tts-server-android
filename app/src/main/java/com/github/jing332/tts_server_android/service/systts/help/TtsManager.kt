@@ -1,29 +1,20 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.SystemClock
 import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.util.Log
-import com.drake.net.utils.runMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.help.ExoByteArrayMediaSource
+import com.github.jing332.tts_server_android.help.AudioPlayer
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.util.*
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.PlaybackParameters
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.upstream.DataSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
@@ -73,6 +64,9 @@ class TtsManager(val context: Context) {
     // 音频解码器
     private val mAudioDecoder by lazy { AudioDecoder() }
 
+    // 音频播放器
+    private var mAudioPlayer: AudioPlayer? = null
+
     // 归一化，将某个范围值缩小到另一范围 (500-0 -> 200-0)
     private val mNorm by lazy { NormUtil(500F, 0F, 200F, 0F) }
 
@@ -103,7 +97,7 @@ class TtsManager(val context: Context) {
     fun stop() {
         isSynthesizing = false
         mAudioDecoder.stop()
-        mInAppPlayJob?.cancel()
+        mAudioPlayer?.stop()
 
         mDefaultConfig?.forEach { it.first.tts.onStop() }
         mAsideConfig?.forEach { it.first.tts.onStop() }
@@ -126,6 +120,7 @@ class TtsManager(val context: Context) {
      * 加载配置
      */
     fun loadConfig() {
+        mAudioPlayer = mAudioPlayer ?: AudioPlayer(context, mScope)
         mSysTts.apply {
             if (mCfg.isReplaceEnabled) mReplacer.load()
 
@@ -183,9 +178,6 @@ class TtsManager(val context: Context) {
 
     // 音频生产者
     private var mProducer: ReceiveChannel<ChannelData>? = null
-
-    // APP内播放音频Job 用于 job.cancel() 取消播放
-    private var mInAppPlayJob: Job? = null
 
     private fun handleTTS(
         list: List<Pair<SystemTts, TtsDataState>>,
@@ -438,53 +430,6 @@ class TtsManager(val context: Context) {
         }
     }
 
-    // 创建音频媒体源
-    private fun createMediaSourceFromByteArray(data: ByteArray): MediaSource {
-        val factory = DataSource.Factory { ExoByteArrayMediaSource(data) }
-        return DefaultMediaSourceFactory(context).setDataSourceFactory(factory)
-            .createMediaSource(MediaItem.fromUri(""))
-    }
-
-    // APP内音频播放器 必须在主线程调用
-    private val exoPlayer by lazy {
-        ExoPlayer.Builder(context).build().apply {
-            playWhenReady = true
-            addListener(object : Player.Listener {
-                @SuppressLint("SwitchIntDef")
-                override fun onPlaybackStateChanged(playbackState: Int) {
-                    when (playbackState) {
-                        ExoPlayer.STATE_ENDED -> {
-                            mInAppPlayJob?.cancel()
-                        }
-                    }
-
-                    super.onPlaybackStateChanged(playbackState)
-                }
-            })
-        }
-    }
-
-    // 在APP内直接播放
-    private suspend fun playAudioInApp(audio: ByteArray) {
-        mInAppPlayJob = mScope.launch {
-            try {
-                mScope.launch(Dispatchers.Main) {
-                    exoPlayer.setMediaSource(createMediaSourceFromByteArray(audio))
-                    exoPlayer.playbackParameters =
-                        PlaybackParameters(mCfg.inAppPlaySpeed, mCfg.inAppPlayPitch)
-                    exoPlayer.prepare()
-                }.join()
-                // 一直等待 直到 job.cancel
-                awaitCancellation()
-            } catch (e: CancellationException) {
-                Log.w(TAG, "in-app play job cancel: ${e.message}")
-                runMain { exoPlayer.stop() }
-            }
-        }
-        mInAppPlayJob?.join()
-        mInAppPlayJob = null
-    }
-
     /* 获取音频并直接解码播放 */
     private suspend fun getAudioAndDecodeWrite(
         text: String, tts: BaseTTS, callback: SynthesisCallback
@@ -516,7 +461,7 @@ class TtsManager(val context: Context) {
         }
 
         if (mCfg.isInAppPlayAudio) {
-            playAudioInApp(audio)
+            mAudioPlayer!!.play(audio, mCfg.inAppPlaySpeed, mCfg.inAppPlayPitch)
         } else {
             mAudioDecoder.doDecode(audio,
                 mAudioFormat.sampleRate,

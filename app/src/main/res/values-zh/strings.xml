@@ -176,7 +176,7 @@
     <string name="systts_test_success">测试成功</string>
     <string name="systts_test_success_info">大小: %1$dKiB</string>
 
-    <string name="systts_http_test_msg">音频大小：%1$d kb \n格式：%2$s \n采样率：%3$d hz \nContent-Type：%4$s</string>
+    <string name="systts_http_test_msg">音频大小：%1$d Kib \n格式：%2$s \n采样率：%3$d HZ \nContent-Type：%4$s</string>
 
     <string name="systts_please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
     <string name="systts_sample_rate_different_in_enabled_list">检测到已启用配置中的格式/采样率不同，
@@ -260,4 +260,5 @@
     <string name="md_checkbox_checked">已全选</string>
     <string name="md_checkbox_unchecked">全部未选</string>
     <string name="md_checkbox_indeterminate">部分选择</string>
+    <string name="systts_local_test_msg">直接播放已关闭 \n大小：%1$d KiB \n采样率：%2$d HZ</string>
 </resources>

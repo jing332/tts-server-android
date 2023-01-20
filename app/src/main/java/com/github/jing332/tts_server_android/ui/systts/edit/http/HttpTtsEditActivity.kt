@@ -80,22 +80,21 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
         updateValueToTts()
         waitDialog.show()
         vm.doTest(tts, text,
-            { size, sampleRate, mime, contentType ->
+            { audio, sampleRate, mime, contentType ->
                 waitDialog.dismiss()
                 MaterialAlertDialogBuilder(this@HttpTtsEditActivity)
                     .setTitle(R.string.systts_test_success)
                     .setMessage(
                         getString(
                             R.string.systts_http_test_msg,
-                            size / 1024,
-                            mime,
-                            sampleRate,
-                            contentType
+                            audio.size / 1024,
+                            mime, sampleRate, contentType
                         )
                     ).setOnDismissListener {
-                        vm.stopPlay()
+                        stopPlay()
                     }
                     .show()
+                playAudio(audio)
             },
             { err ->
                 waitDialog.dismiss()

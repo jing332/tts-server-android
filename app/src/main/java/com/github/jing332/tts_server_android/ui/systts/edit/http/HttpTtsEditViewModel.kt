@@ -4,29 +4,15 @@ import android.media.MediaFormat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withIO
-import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.help.ExoPlayerHelper.createMediaSourceFromByteArray
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.service.systts.help.AudioDecoder
-import com.google.android.exoplayer2.ExoPlayer
 import kotlinx.coroutines.launch
 
 class HttpTtsEditViewModel : ViewModel() {
-    private val exoPlayer = lazy {
-        ExoPlayer.Builder(App.context).build().apply {
-            playWhenReady = true
-        }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        if (exoPlayer.isInitialized()) exoPlayer.value.release()
-    }
-
     fun doTest(
         tts: HttpTTS,
         text: String,
-        onSuccess: suspend (size: Int, sampleRate: Int, mime: String, contentType: String) -> Unit,
+        onSuccess: suspend (audio:ByteArray, sampleRate: Int, mime: String, contentType: String) -> Unit,
         onFailure: suspend (reason: Throwable) -> Unit,
     ) {
         viewModelScope.launch {
@@ -54,20 +40,11 @@ class HttpTtsEditViewModel : ViewModel() {
                         mMime = formats[0].getString(MediaFormat.KEY_MIME) ?: ""
                     }
 
-                    onSuccess(it.size, mSampleRate, mMime, contentType)
-                    exoPlayer.value.apply {
-                        setMediaSource(createMediaSourceFromByteArray(it))
-                        prepare()
-                    }
-
+                    onSuccess(it, mSampleRate, mMime, contentType)
                 }
             }.onFailure {
                 onFailure.invoke(it)
             }
         }
-    }
-
-    fun stopPlay() {
-        exoPlayer.value.stop()
     }
 }

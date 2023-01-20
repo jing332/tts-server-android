@@ -9,13 +9,11 @@ import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.help.ExoPlayerHelper
 import com.github.jing332.tts_server_android.model.tts.ExpressAs
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.util.runOnIO
-import com.google.android.exoplayer2.ExoPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -282,16 +280,11 @@ class MsTtsEditViewModel : ViewModel() {
         }
     }
 
-    private val exoPlayer = lazy {
-        ExoPlayer.Builder(App.context).build().apply { playWhenReady = true }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        if (exoPlayer.isInitialized()) exoPlayer.value.release()
-    }
-
-    fun doTest(text: String, onSuccess: (kb: Int) -> Unit, onFailure: (Throwable) -> Unit) {
+    fun doTest(
+        text: String,
+        onSuccess: suspend (audio: ByteArray) -> Unit,
+        onFailure: (Throwable) -> Unit
+    ) {
         if (mTts.format.startsWith("raw")) {
             onFailure.invoke(Exception("raw格式无法播放，请手动换为其他格式。"))
             return
@@ -310,18 +303,12 @@ class MsTtsEditViewModel : ViewModel() {
 
             audio?.let {
                 withMain {
-                    onSuccess.invoke(it.size / 1024)
-                    exoPlayer.value.setMediaSource(ExoPlayerHelper.createMediaSourceFromByteArray(it))
-                    exoPlayer.value.prepare()
+                    onSuccess.invoke(it)
                 }
                 return@runOnIO
             }
             withMain { onFailure.invoke(Exception("音频为空")) }
         }
-    }
-
-    fun stopPlay() {
-        exoPlayer.value.stop()
     }
 
     data class UiData(
