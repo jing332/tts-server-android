@@ -4,6 +4,7 @@ import android.content.Context
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.longToast
+import com.github.jing332.tts_server_android.util.runOnUI
 import tts_server_lib.Tts_server_lib
 import java.time.LocalDateTime
 
@@ -33,7 +34,9 @@ class CrashHandler(var context: Context) : Thread.UncaughtExceptionHandler {
             log
         }
 
-        ClipboardUtils.copyText("TTS-Server崩溃日志", copyContent)
-        context.longToast("已将日志复制到剪贴板")
+        runOnUI {
+            ClipboardUtils.copyText("TTS-Server崩溃日志", copyContent)
+            context.longToast("已将日志复制到剪贴板")
+        }
     }
 }

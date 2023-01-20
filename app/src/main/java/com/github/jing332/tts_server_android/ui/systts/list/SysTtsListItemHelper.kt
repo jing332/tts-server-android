@@ -57,7 +57,6 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         true
                     }
 
-
                     itemView.accessibilityDelegate = object : AccessibilityDelegate() {
                         override fun onInitializeAccessibilityNodeInfo(
                             host: View,

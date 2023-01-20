@@ -43,11 +43,17 @@ class TtsEngineHelper(val context: Context, val scope: CoroutineScope) {
 
 
     val voices: List<Voice>
-        get() = tts!!.voices.toList()
-
+        get() = try {
+            tts!!.voices?.toList()!!
+        } catch (e: NullPointerException) {
+            emptyList()
+        }
 
     val locales: List<Locale>
-        get() {
-            return tts!!.availableLanguages.toList().sortedBy { it.toString() }
+        get() = try {
+            tts!!.availableLanguages.toList().sortedBy { it.toString() }
+        } catch (e: NullPointerException) {
+            emptyList()
         }
+
 }

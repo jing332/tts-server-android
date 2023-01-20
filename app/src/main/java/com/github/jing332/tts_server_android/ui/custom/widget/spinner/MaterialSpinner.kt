@@ -6,15 +6,15 @@ import android.text.InputType
 import android.util.AttributeSet
 import android.view.accessibility.AccessibilityManager
 import android.widget.*
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
 
 @SuppressLint("DiscouragedPrivateApi")
 class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
-    AppCompatAutoCompleteTextView(context, attrs, defStyleAttr) {
+    MaterialAutoCompleteTextView(context, attrs, defStyleAttr) {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(
         context,

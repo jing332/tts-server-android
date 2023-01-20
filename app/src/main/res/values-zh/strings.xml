@@ -201,7 +201,7 @@
     <string name="rename">重命名</string>
     <string name="test_failed">测试失败</string>
     <string name="enabled">已启用</string>
-    <string name="choice_item">选择%1$s</string>
+    <string name="choice_item">选择 %1$s</string>
     <string name="import_failed">导入失败</string>
 
     <string name="clipboard">剪贴板</string>
