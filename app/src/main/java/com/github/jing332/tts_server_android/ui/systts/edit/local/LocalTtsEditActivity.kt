@@ -28,7 +28,7 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
 
     override fun onTest(text: String) {
         waitDialog.show()
-        vm.doTest(text, { // start
+        vm.doTest(text, { // 直接播放模式
             waitDialog.dismiss()
             MaterialAlertDialogBuilder(this@LocalTtsEditActivity)
                 .setTitle(R.string.systts_test_success)
@@ -37,8 +37,18 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
                     vm.stopTestPlay()
                 }
                 .show()
-        }, {
-
+        }, { audio, sampleRate ->
+            waitDialog.dismiss()
+            MaterialAlertDialogBuilder(this@LocalTtsEditActivity)
+                .setTitle(R.string.systts_test_success)
+                .setMessage(
+                    getString(R.string.systts_local_test_msg, audio.size / 1024, sampleRate)
+                )
+                .setOnDismissListener {
+                    stopPlay()
+                }
+                .show()
+            playAudio(audio)
         })
     }
 

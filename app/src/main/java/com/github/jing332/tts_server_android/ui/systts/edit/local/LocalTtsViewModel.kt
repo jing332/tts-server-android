@@ -1,20 +1,24 @@
 package com.github.jing332.tts_server_android.ui.systts.edit.local
 
+import android.media.MediaFormat
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drake.net.utils.withIO
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
+import com.github.jing332.tts_server_android.service.systts.help.AudioDecoder
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.runOnUI
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.max
 
@@ -58,7 +62,7 @@ class LocalTtsViewModel : ViewModel() {
                     mTts.engine = it.value.toString()
                     mTts.onLoad()
                 }
-                
+
 
                 viewModelScope.runOnIO {
                     withMain { onStart.invoke() }
@@ -156,20 +160,38 @@ class LocalTtsViewModel : ViewModel() {
     @Synchronized
     fun doTest(
         text: String,
-        onStartPlay: () -> Unit,
-        onPlayFinished: () -> Unit,
-    ) {
-        mTts.engineListener = object : LocalTTS.EngineProgressListener {
-            override fun onStart() {
-                runOnUI { onStartPlay.invoke() }
-            }
+        onEngineInitSuccess: () -> Unit,
 
-            override fun onDone() {
-                runOnUI { onPlayFinished.invoke() }
+        onGetAudioSuccess: suspend (audio: ByteArray, sampleRate: Int) -> Unit
+    ) {
+        viewModelScope.launch {
+            mTts.onLoad()
+            mTts.engineListener = null
+            if (mTts.isDirectPlayMode) {
+                mTts.engineListener = object : LocalTTS.EngineProgressListener {
+                    override fun onStart() {
+                        runOnUI { onEngineInitSuccess.invoke() }
+                    }
+
+                    override fun onDone() {
+                    }
+                }
+                withIO { mTts.directPlay(text) }
+            } else {
+                withIO {
+                    mTts.getAudio(text)?.let {
+                        val ad = AudioDecoder()
+                        val formats = ad.getFormats(it)
+                        val sampleRate = if (formats.isNotEmpty()) {
+                            formats[0].getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                        } else 0
+
+                        withMain { onGetAudioSuccess(it, sampleRate) }
+                        return@withIO
+                    }
+                }
             }
         }
-        mTts.onLoad()
-        viewModelScope.runOnIO { mTts.directPlay(text) }
     }
 
     fun stopTestPlay() {
