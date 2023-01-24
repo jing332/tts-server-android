@@ -30,6 +30,10 @@ class TtsManager(val context: Context) {
 
         // 音频请求间隔
         private const val requestInterval = 100L
+
+        private val defaultConfig by lazy {
+            listOf(SystemTtsWithState(SystemTts(tts = MsTTS())))
+        }
     }
 
     interface EventListener {
@@ -79,17 +83,16 @@ class TtsManager(val context: Context) {
     // Room数据库
     private val mSysTts by lazy { appDb.systemTtsDao }
 
+    // 偏好设置
     private val mCfg = SysTtsConfig
 
-    // 全局默认 TTS配置
-    private var mDefaultConfig: List<Pair<SystemTts, TtsDataState>>? = null
+    private val configMap: MutableMap<Int, List<SystemTtsWithState>> = mutableMapOf()
 
-    // 旁白 TTS配置
-    private var mAsideConfig: List<Pair<SystemTts, TtsDataState>>? = null
-
-    // 对话 TTS配置
-    private var mDialogueConfig: List<Pair<SystemTts, TtsDataState>>? = null
-
+    data class SystemTtsWithState(
+        val data: SystemTts,
+        var isRateFollowSystem: Boolean = false,
+        var isPitchFollowSystem: Boolean = false
+    )
 
     /**
      * 停止合成及播放
@@ -99,9 +102,9 @@ class TtsManager(val context: Context) {
         mAudioDecoder.stop()
         mAudioPlayer?.stop()
 
-        mDefaultConfig?.forEach { it.first.tts.onStop() }
-        mAsideConfig?.forEach { it.first.tts.onStop() }
-        mDialogueConfig?.forEach { it.first.tts.onStop() }
+        configMap.forEach { (_, v) ->
+            v.forEach { it.data.tts.onStop() }
+        }
     }
 
     /*
@@ -111,67 +114,58 @@ class TtsManager(val context: Context) {
         mScope.cancel()
         if (isSynthesizing) stop()
 
-        mDefaultConfig?.forEach { it.first.tts.onDestroy() }
-        mAsideConfig?.forEach { it.first.tts.onDestroy() }
-        mDialogueConfig?.forEach { it.first.tts.onDestroy() }
+        configMap.forEach { (_, v) ->
+            v.forEach { it.data.tts.onDestroy() }
+        }
+    }
+
+    private fun getConfigByTarget(@ReadAloudTarget target: Int): List<SystemTtsWithState> {
+        val list = mSysTts.getAllEnabledByTarget(target)
+        return list.map { SystemTtsWithState(it) }
     }
 
     /**
      * 加载配置
      */
+    @Suppress("ReplaceIsEmptyWithIfEmpty")
     fun loadConfig() {
         mAudioPlayer = mAudioPlayer ?: AudioPlayer(context, mScope)
         mSysTts.apply {
             if (mCfg.isReplaceEnabled) mReplacer.load()
 
             if (SysTtsConfig.isMultiVoiceEnabled) {
-                mDefaultConfig = null
-                // 旁白
-                getAllByReadAloudTarget(ReadAloudTarget.ASIDE).let { list ->
-                    mAsideConfig = if (list == null || list.isEmpty()) {
-                        context.toast(context.getString(R.string.systts_warn_no_ra_aside))
-                        listOf(
-                            Pair(
-                                SystemTts(
-                                    readAloudTarget = ReadAloudTarget.ASIDE,
-                                    tts = MsTTS()
-                                ), TtsDataState()
-                            )
-                        )
-                    } else list.map { Pair(it, TtsDataState()) }
-                }
-                mAsideConfig!!.forEach { it.first.tts.onLoad() }
+                configMap.remove(ReadAloudTarget.ALL)
 
-                // 对话
-                getAllByReadAloudTarget(ReadAloudTarget.DIALOGUE).let { list ->
-                    mDialogueConfig = if (list == null || list.isEmpty()) {
-                        context.toast(R.string.systts_warn_no_ra_dialogue)
-                        listOf(
-                            Pair(
-                                SystemTts(
-                                    readAloudTarget = ReadAloudTarget.DIALOGUE,
-                                    tts = MsTTS()
-                                ), TtsDataState()
-                            )
-                        )
-                    } else list.map { Pair(it, TtsDataState()) }
-                }
+                val aside = getConfigByTarget(ReadAloudTarget.ASIDE)
+                configMap[ReadAloudTarget.ASIDE] = if (aside.isEmpty()) {
+                    context.toast(R.string.systts_warn_no_ra_aside)
+                    defaultConfig
+                } else aside
 
-                mDialogueConfig!!.forEach { it.first.tts.onLoad() }
-                mAudioFormat = mDialogueConfig!![0].first.tts.audioFormat
+                val dialogue = getConfigByTarget(ReadAloudTarget.DIALOGUE)
+                configMap[ReadAloudTarget.DIALOGUE] = if (dialogue.isEmpty()) {
+                    context.toast(R.string.systts_warn_no_ra_dialogue)
+                    defaultConfig
+                } else dialogue
+
+                configMap[ReadAloudTarget.ASIDE]!!.forEach { it.data.tts.onLoad() }
+                configMap[ReadAloudTarget.DIALOGUE]!!.forEach { it.data.tts.onLoad() }
+
+
+                mAudioFormat = configMap[ReadAloudTarget.ASIDE]!![0].data.tts.audioFormat
             } else {
-                mAsideConfig = null
-                mDialogueConfig = null
+                configMap.remove(ReadAloudTarget.ASIDE)
+                configMap.remove(ReadAloudTarget.DIALOGUE)
 
-                mSysTts.getAllByReadAloudTarget().let { list ->
-                    mDefaultConfig = if (list == null || list.isEmpty()) {
-                        context.toast(context.getString(R.string.systts_warn_no_ra_all))
-                        listOf(Pair(SystemTts(isEnabled = true, tts = MsTTS()), TtsDataState()))
-                    } else list.map { Pair(it, TtsDataState()) }
-
-                    mDefaultConfig!!.forEach { it.first.tts.onLoad() }
-                    mAudioFormat = mDefaultConfig!![0].first.tts.audioFormat
+                val raAll = getConfigByTarget(ReadAloudTarget.ALL)
+                configMap[ReadAloudTarget.ALL] = if (raAll.isEmpty()) {
+                    context.toast(context.getString(R.string.systts_warn_no_ra_all))
+                    defaultConfig
+                } else {
+                    raAll
                 }
+                configMap[ReadAloudTarget.ALL]!!.forEach { it.data.tts.onLoad() }
+                mAudioFormat = configMap[ReadAloudTarget.ALL]!![0].data.tts.audioFormat
             }
         }
     }
@@ -179,26 +173,25 @@ class TtsManager(val context: Context) {
     // 音频生产者
     private var mProducer: ReceiveChannel<ChannelData>? = null
 
-    private fun handleTTS(
-        list: List<Pair<SystemTts, TtsDataState>>,
+    private fun handleTtsAndConvert(
+        list: List<SystemTtsWithState>,
         rate: Int,
         pitch: Int
     ): List<BaseTTS> {
         list.forEach {
-            val sysTts = it.first
-            val state = it.second
+            val sysTts = it.data
 
-            if (sysTts.tts.isRateFollowSystem() || state.isRateFollowSystem) {
-                state.isRateFollowSystem = true
+            if (sysTts.tts.isRateFollowSystem() || it.isRateFollowSystem) {
+                it.isRateFollowSystem = true
                 sysTts.tts.rate = rate
             }
 
-            if (sysTts.tts.isPitchFollowSystem() || state.isPitchFollowSystem) {
-                state.isPitchFollowSystem = true
+            if (sysTts.tts.isPitchFollowSystem() || it.isPitchFollowSystem) {
+                it.isPitchFollowSystem = true
                 sysTts.tts.pitch = pitch
             }
         }
-        return list.map { it.first.tts }
+        return list.map { it.data.tts }
     }
 
     /* 开始转语音 */
@@ -216,13 +209,14 @@ class TtsManager(val context: Context) {
         if (mCfg.isMultiVoiceEnabled) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
 
-            val aside = handleTTS(mAsideConfig!!, sysRate, sysPitch)
-            val dialogue = handleTTS(mDialogueConfig!!, sysRate, sysPitch)
+            val aside = handleTtsAndConvert(configMap[ReadAloudTarget.ASIDE]!!, sysRate, sysPitch)
+            val dialogue =
+                handleTtsAndConvert(configMap[ReadAloudTarget.DIALOGUE]!!, sysRate, sysPitch)
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
             mProducer = multiVoiceProducer(mCfg.isSplitEnabled, text, aside, dialogue)
         } else { //单语音
-            val pro = handleTTS(mDefaultConfig!!, sysRate, sysPitch)[0]
+            val pro = handleTtsAndConvert(configMap[ReadAloudTarget.ALL]!!, sysRate, sysPitch)[0]
 
             Log.d(TAG, "单语音：${pro}")
             if (mCfg.isSplitEnabled) {
@@ -434,19 +428,18 @@ class TtsManager(val context: Context) {
     private suspend fun getAudioAndDecodeWrite(
         text: String, tts: BaseTTS, callback: SynthesisCallback
     ) {
-        runBlocking {
-            if (tts.isDirectPlay()) {
-                event?.onStartRequest(text, tts)
-                tts.directPlay(text)
+        if (tts.isDirectPlay()) {
+            event?.onStartRequest(text, tts)
+            tts.directPlay(text)
+            event?.onPlayDone(text)
+        } else {
+            val audio = getAudioHelper(text, tts)
+            if (audio != null) {
+                playAudioHelper(audio, tts.audioFormat, callback)
                 event?.onPlayDone(text)
-            } else {
-                val audio = getAudioHelper(text, tts)
-                if (audio != null) {
-                    playAudioHelper(audio, tts.audioFormat, callback)
-                    event?.onPlayDone(text)
-                } else event?.onError(ERROR_AUDIO_NULL, text)
-            }
+            } else event?.onError(ERROR_AUDIO_NULL, text)
         }
+
     }
 
     // 播放音频
@@ -491,8 +484,4 @@ class TtsManager(val context: Context) {
         val text: String? = null, val audio: ByteArray?, val tts: BaseTTS
     )
 
-    class TtsDataState(
-        var isRateFollowSystem: Boolean = false,
-        var isPitchFollowSystem: Boolean = false
-    )
 }
