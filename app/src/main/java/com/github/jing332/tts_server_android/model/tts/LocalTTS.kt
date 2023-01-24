@@ -34,7 +34,7 @@ data class LocalTTS(
 
     var extraParams: MutableList<LocalTtsParameter>? = null,
 
-    var isDirectPlayMode: Boolean = false,
+    var isDirectPlayMode: Boolean = true,
 
     override var pitch: Int = 0,
     override var volume: Int = 0,

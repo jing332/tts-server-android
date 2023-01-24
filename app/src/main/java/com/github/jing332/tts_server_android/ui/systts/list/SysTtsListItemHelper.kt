@@ -49,6 +49,19 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                     }
 
                     cardView.clickWithThrottle { displayLiteEditDialog(itemView, getModel()) }
+                    cardView.setOnLongClickListener {
+                        val model = getModel<SystemTts>().copy()
+                        if (model.readAloudTarget == ReadAloudTarget.ASIDE)
+                            model.readAloudTarget = ReadAloudTarget.DIALOGUE
+                        else
+                            model.readAloudTarget = ReadAloudTarget.ASIDE
+
+                        appDb.systemTtsDao.updateTts(model)
+                        notifyTtsUpdate(model.isEnabled)
+
+                        true
+                    }
+
                     btnDelete.clickWithThrottle { delete(getModel()) }
                     btnEdit.clickWithThrottle { edit(getModel()) }
                     btnEdit.setOnLongClickListener {
