@@ -261,4 +261,6 @@
     <string name="md_checkbox_unchecked">全部未选</string>
     <string name="md_checkbox_indeterminate">部分选择</string>
     <string name="systts_local_test_msg">直接播放已关闭 \n大小：%1$d KiB \n采样率：%2$d HZ</string>
+    <string name="systts_set_standby">设置备用TTS</string>
+    <string name="systts_local_params_int_must">必须为 true或1, false或0</string>
 </resources>

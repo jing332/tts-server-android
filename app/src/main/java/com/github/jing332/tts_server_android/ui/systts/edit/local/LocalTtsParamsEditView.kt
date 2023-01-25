@@ -3,12 +3,14 @@ package com.github.jing332.tts_server_android.ui.systts.edit.local
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Html
+import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.linear
@@ -142,24 +144,41 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
                 position: Int,
                 id: Long
             ) {
-                types[position].value
+                binding.tilValue.editText?.setText("")
+                binding.tilValue.editText?.inputType = when (types[position].value) {
+                    "Int" -> InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
+                    "Float" -> InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                    else -> InputType.TYPE_CLASS_TEXT
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
+        binding.tilValue.editText?.addTextChangedListener {
+            if (binding.spinnerType.selectedPosition == 0)
+                if (it.toString() != "true" && it.toString() != "false" && it.toString() != "1" && it.toString() != "0")
+                    binding.tilValue.editText?.error = context.getString(R.string.systts_local_params_int_must)
+        }
 
-        MaterialAlertDialogBuilder(context)
+        val dlg = MaterialAlertDialogBuilder(context)
             .setTitle(R.string.edit_extra_parameter)
             .setView(binding.root)
-            .setPositiveButton(R.string.save) { _, _ ->
-                val type = types[binding.spinnerType.selectedPosition].value.toString()
-                val key = binding.tilKey.editText?.text.toString()
-                val value = binding.tilValue.editText?.text.toString()
+            .create()
 
-                onDone.invoke(LocalTtsParameter(type, key, value))
+        binding.save.clickWithThrottle {
+            if (binding.tilValue.editText?.error?.isNotEmpty() == true) {
+                binding.tilValue.requestFocus()
+                return@clickWithThrottle
             }
-            .show()
+            val type = types[binding.spinnerType.selectedPosition].value.toString()
+            val key = binding.tilKey.editText?.text.toString()
+            val value = binding.tilValue.editText?.text.toString()
+
+            onDone.invoke(LocalTtsParameter(type, key, value))
+            dlg.dismiss()
+        }
+        dlg.show()
     }
 }
 
