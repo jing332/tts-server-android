@@ -59,7 +59,7 @@ object VoiceTools {
                         dialogueProperty[random.nextInt(dialogSize)]
                     else asideProperty[random.nextInt(asideSize)]
 
-                list.add(ResultMultiVoiceData(pro, it.text))
+                list.add(ResultMultiVoiceData(pro, it.text, it.isDialogue))
             }
         }
 
@@ -69,5 +69,5 @@ object VoiceTools {
 
 data class ResultTextTag(val text: String, val isDialogue: Boolean)
 data class ResultMultiVoiceData(
-    val ttsProperty: BaseTTS, val speakText: String
+    val tts: BaseTTS, val speakText: String, val isDialogue: Boolean,
 )

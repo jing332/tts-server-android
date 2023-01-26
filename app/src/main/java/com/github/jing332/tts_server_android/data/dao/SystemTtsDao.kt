@@ -22,7 +22,7 @@ interface SystemTtsDao {
     @Query("SELECT * FROM sysTts WHERE isStandby = '1' AND isEnabled = '1' AND readAloudTarget = :target")
     fun getAllEnabledStandbyTts(target: Int = ReadAloudTarget.ALL): List<SystemTts>
 
-    @Query("SELECT * FROM sysTts WHERE readAloudTarget = :target AND isEnabled = '1'")
+    @Query("SELECT * FROM sysTts WHERE isEnabled = '1' AND readAloudTarget = :target AND isStandby = '0'")
     fun getAllEnabledByTarget(target: Int = ReadAloudTarget.ALL): List<SystemTts>
 
     @get:Query("SELECT * FROM SystemTtsGroup ORDER by `order` ASC")

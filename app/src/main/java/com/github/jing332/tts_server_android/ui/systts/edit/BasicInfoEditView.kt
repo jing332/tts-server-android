@@ -28,7 +28,12 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
         SysttsBaseInfoEditViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-//    var isStandby
+    var isStandby: Boolean
+        get() = binding.cbStandby.isChecked
+        set(value) {
+            binding.cbStandby.isChecked = value
+        }
+
 
     @ReadAloudTarget
     var raTarget: Int = ReadAloudTarget.ALL
@@ -67,6 +72,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
         this.mData = data
         this.displayName = data.displayName ?: ""
         raTarget = data.readAloudTarget
+        isStandby = data.isStandby
     }
 
     fun checkDisplayNameEmpty(): Boolean {
@@ -78,6 +84,10 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
     }
 
     init {
+        binding.cbStandby.setOnClickListener {
+            mData?.isStandby = isStandby
+        }
+
         binding.etName.addTextChangedListener {
             mData?.apply { displayName = this@BasicInfoEditView.displayName }
         }

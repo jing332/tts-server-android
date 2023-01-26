@@ -20,6 +20,7 @@ import com.google.android.material.textfield.TextInputLayout
 open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : BackActivity() {
     companion object {
         const val KEY_DATA = "KEY_DATA"
+        const val KEY_BASIC_VISIBLE = "KEY_BASIC_VISIBLE"
     }
 
     private var mAudioPlayer: AudioPlayer? = null
@@ -29,7 +30,7 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
         mAudioPlayer?.play(audio)
     }
 
-    fun stopPlay(){
+    fun stopPlay() {
         mAudioPlayer?.stop()
     }
 
@@ -56,6 +57,9 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         super.setContentView(binding.root)
+
+        val visible = intent.getBooleanExtra(KEY_BASIC_VISIBLE, true)
+        binding.basicEdit.visibility = if (visible) View.VISIBLE else View.GONE
 
         binding.basicEdit.setData(systemTts)
     }
