@@ -26,7 +26,7 @@ class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
         SeekbarBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    private var min: Int = 0
+    var min: Int = 0
 
     var progress: Int
         get() = binding.seekBar.progress

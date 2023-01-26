@@ -263,4 +263,7 @@
     <string name="systts_local_test_msg">直接播放已关闭 \n大小：%1$d KiB \n采样率：%2$d HZ</string>
     <string name="systts_set_standby">设置备用TTS</string>
     <string name="systts_local_params_int_must">必须为 true或1, false或0</string>
+    <string name="set_built_in_player_params">内置播放器设置</string>
+    <string name="built_in_player_not_enabled">⚠️内置播放器未启用，请前往右上角菜单手动启用。</string>
+    <string name="please_trun_off_direct_play">请关闭【直接播放】选项</string>
 </resources>

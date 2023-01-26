@@ -191,11 +191,15 @@ class SysTtsListFragment : Fragment() {
                 }
             }
 
-            seekbarSpeed.progressConverter = converter
-            seekbarPitch.progressConverter = converter
+            val formatter = Seekbar.ValueFormatter { value, _ -> value.toString() }
 
-            seekbarSpeed.value = SysTtsConfig.inAppPlaySpeed
-            seekbarPitch.value = SysTtsConfig.inAppPlayPitch
+            seekRate.progressConverter = converter
+            seekPitch.progressConverter = converter
+            seekRate.valueFormatter = formatter
+            seekPitch.valueFormatter = formatter
+
+            seekRate.value = SysTtsConfig.inAppPlaySpeed
+            seekPitch.value = SysTtsConfig.inAppPlayPitch
 
             SysTtsConfig.isInAppPlayAudio.let {
                 switchOnOff.isChecked = it
@@ -206,8 +210,8 @@ class SysTtsListFragment : Fragment() {
 
         MaterialAlertDialogBuilder(requireContext()).setView(view).setOnDismissListener {
             SysTtsConfig.isInAppPlayAudio = inAppBinding.switchOnOff.isChecked
-            SysTtsConfig.inAppPlaySpeed = (inAppBinding.seekbarSpeed.progress * 0.1).toFloat()
-            SysTtsConfig.inAppPlayPitch = (inAppBinding.seekbarPitch.progress * 0.1).toFloat()
+            SysTtsConfig.inAppPlaySpeed = (inAppBinding.seekRate.progress * 0.1).toFloat()
+            SysTtsConfig.inAppPlayPitch = (inAppBinding.seekPitch.progress * 0.1).toFloat()
             SystemTtsService.notifyUpdateConfig()
         }.show()
     }

@@ -36,6 +36,7 @@ data class HttpTTS(
     override var rate: Int = 1,
 
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
+    override var audioPlayer: AudioPlayer = AudioPlayer(),
 
     ) : Parcelable, BaseTTS() {
     override fun isRateFollowSystem(): Boolean {

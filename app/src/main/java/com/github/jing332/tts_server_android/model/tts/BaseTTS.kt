@@ -22,6 +22,7 @@ sealed class BaseTTS : Parcelable {
     abstract var volume: Int
     abstract var rate: Int
     abstract var audioFormat: BaseAudioFormat
+    abstract var audioPlayer: AudioPlayer
 
     /**
      * 语速是否跟随系统

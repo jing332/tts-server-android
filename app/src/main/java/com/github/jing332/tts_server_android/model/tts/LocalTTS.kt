@@ -39,8 +39,9 @@ data class LocalTTS(
     override var pitch: Int = 0,
     override var volume: Int = 0,
     override var rate: Int = 0,
+    override var audioPlayer: AudioPlayer = AudioPlayer(),
     @Transient
-    override var audioFormat: BaseAudioFormat = BaseAudioFormat(isNeedDecode = true)
+    override var audioFormat: BaseAudioFormat = BaseAudioFormat(isNeedDecode = true),
 ) : Parcelable, BaseTTS() {
     companion object {
         private const val TAG = "LocalTTS"

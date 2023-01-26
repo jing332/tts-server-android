@@ -35,6 +35,15 @@
             android:text="@string/standby"
             android:visibility="gone" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_set_player_params"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="-4dp"
+            android:text="@string/set_built_in_player_params" />
+
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

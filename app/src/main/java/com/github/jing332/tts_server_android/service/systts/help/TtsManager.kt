@@ -252,7 +252,7 @@ class TtsManager(val context: Context) {
                     } else if (data.audio == null) {
                         event?.onError(ERROR_AUDIO_NULL, shortText)
                         return@launch
-                    } else playAudioHelper(data.audio, data.tts.audioFormat, callback)
+                    } else playAudio(data.tts, data.audio, data.tts.audioFormat, callback)
 
                     shortText?.let { event?.onPlayDone(it) }
                 }.join()
@@ -445,7 +445,7 @@ class TtsManager(val context: Context) {
         } else {
             val audio = getAudioForRetry(text, tts)
             if (audio != null) {
-                playAudioHelper(audio, tts.audioFormat, callback)
+                playAudio(tts, audio, tts.audioFormat, callback)
                 event?.onPlayDone(text)
             } else event?.onError(ERROR_AUDIO_NULL, text)
         }
@@ -453,7 +453,8 @@ class TtsManager(val context: Context) {
     }
 
     // 播放音频
-    private suspend fun playAudioHelper(
+    private suspend fun playAudio(
+        tts: BaseTTS,
         audio: ByteArray,
         format: BaseAudioFormat,
         callback: SynthesisCallback
@@ -464,14 +465,16 @@ class TtsManager(val context: Context) {
         }
 
         if (mCfg.isInAppPlayAudio) {
-            mAudioPlayer!!.play(audio, mCfg.inAppPlaySpeed, mCfg.inAppPlayPitch)
+            val params = tts.audioPlayer.copy().apply {
+                setParamsIfFollow(mCfg.inAppPlaySpeed, mCfg.inAppPlayPitch)
+            }
+            mAudioPlayer!!.play(audio, params.rate, params.pitch)
         } else {
             mAudioDecoder.doDecode(audio,
                 mAudioFormat.sampleRate,
                 onRead = { writeToCallBack(callback, it) },
                 error = { event?.onError(ERROR_DECODE_FAILED, it) })
         }
-
     }
 
     /* 写入PCM音频到系统组件 */
