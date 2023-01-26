@@ -163,7 +163,7 @@
     <string name="systts_sample_rate">采样率（hz）</string>
     <string name="systts_secondaryLocale">二级语言（语言技能）</string>
     <string name="systts_voice_data_load_failed">语音数据加载失败</string>
-    <string name="systts_help_sample_rate">系统TTS在开始播放时需指定采样率，如已打开【APP内播放】则可忽略此选项。</string>
+    <string name="systts_help_sample_rate">系统TTS在开始播放时需指定采样率，如已启用【内置播放器】、【直接播放】则可忽略此选项。</string>
     <string name="systts_voice_multiple_option">相同朗读目标可多选</string>
     <string name="systts_voice_multiple_hint">⚠️相同朗读目标将不再排斥，并使用随机轮播。(单语音不支持此功能)</string>
     <string name="systts_groups_multiple">分组可多选</string>

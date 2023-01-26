@@ -61,8 +61,10 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
 
         // 采样率帮助按钮
         binding.tilSampleRate.setStartIconOnClickListener {
-            MaterialAlertDialogBuilder(this).setTitle(R.string.systts_sample_rate)
-                .setMessage(R.string.systts_help_sample_rate).show()
+            MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.systts_sample_rate)
+                .setMessage(R.string.systts_help_sample_rate)
+                .show()
         }
 
 

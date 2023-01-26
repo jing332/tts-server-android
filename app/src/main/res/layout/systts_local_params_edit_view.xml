@@ -40,22 +40,47 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/cb_direct_play"
-            android:layout_width="wrap_content"
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            android:id="@+id/til_sample_rate"
+            android:layout_weight="1"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/direct_play" />
+            android:hint="@string/label_audio_sample_rate"
+            app:startIconDrawable="@drawable/ic_baseline_help_outline_24">
 
-        <ImageButton
-            android:layout_marginStart="4dp"
-            android:id="@+id/btn_help_direct_play"
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/spinner_sample_rate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="number" />
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/systts_direct_play_help"
-            app:srcCompat="@drawable/ic_baseline_help_outline_24"
-            app:tint="?attr/colorOnBackground" />
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_direct_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/direct_play" />
+
+            <ImageButton
+                android:id="@+id/btn_help_direct_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/systts_direct_play_help"
+                app:srcCompat="@drawable/ic_baseline_help_outline_24"
+                app:tint="?attr/colorOnBackground" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView

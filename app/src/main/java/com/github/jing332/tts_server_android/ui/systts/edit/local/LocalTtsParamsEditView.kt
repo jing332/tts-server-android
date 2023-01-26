@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -50,6 +51,7 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
 
         binding.seekbarRate.progress = tts.rate
         binding.cbDirectPlay.isChecked = tts.isDirectPlayMode
+        binding.spinnerSampleRate.setText(tts.audioFormat.sampleRate.toString())
 
         mBrv.models = tts.extraParams
     }
@@ -83,6 +85,24 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
                 .setMessage(R.string.systts_direct_play_help_msg)
                 .show()
         }
+
+        binding.tilSampleRate.setStartIconOnClickListener {
+            MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.systts_sample_rate)
+                .setMessage(R.string.systts_help_sample_rate)
+                .show()
+        }
+
+        binding.spinnerSampleRate.addTextChangedListener {
+            mTts?.audioFormat?.sampleRate = it.toString().toInt()
+        }
+
+        // 采样率
+        val adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item)
+        adapter.addAll(resources.getStringArray(R.array.sample_rate_list).toList())
+        binding.spinnerSampleRate.setAdapter(adapter)
+        // 不过滤
+        binding.spinnerSampleRate.threshold = Int.MAX_VALUE
 
         binding.cbDirectPlay.setOnClickListener {
             mTts?.isDirectPlayMode = binding.cbDirectPlay.isChecked
@@ -158,7 +178,8 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
         binding.tilValue.editText?.addTextChangedListener {
             if (binding.spinnerType.selectedPosition == 0)
                 if (it.toString() != "true" && it.toString() != "false" && it.toString() != "1" && it.toString() != "0")
-                    binding.tilValue.editText?.error = context.getString(R.string.systts_local_params_int_must)
+                    binding.tilValue.editText?.error =
+                        context.getString(R.string.systts_local_params_int_must)
         }
 
         val dlg = MaterialAlertDialogBuilder(context)

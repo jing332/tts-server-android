@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 open class BaseAudioFormat(
     var sampleRate: Int = 16000,
     var bitRate: Int = AudioFormat.ENCODING_PCM_16BIT,
-    var isNeedDecode: Boolean = false,
+    var isNeedDecode: Boolean = true,
 ) : Parcelable {
     override fun toString(): String {
         return if (isNeedDecode) "${sampleRate}hz (解码)" else "${sampleRate}hz"
