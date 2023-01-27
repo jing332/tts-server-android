@@ -9,7 +9,7 @@ object AppConfig : KotprefModel() {
     /**
      * 是否 Edge接口使用DNS解析IP
      */
-    var isEdgeDnsEnabled by booleanPref()
+    var isEdgeDnsEnabled by booleanPref(true)
 
     var testSampleText by stringPref()
 
