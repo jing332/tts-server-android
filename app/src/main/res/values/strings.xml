@@ -271,7 +271,9 @@
     <string name="systts_local_params_int_must">Must be true or 1, false or 0</string>
     <string name="set_built_in_player_params">Built-in player settings</string>
     <string name="built_in_player_not_enabled">⚠️Built-in player is not enabled</string>
-    <string name="please_trun_off_direct_play">⚠️Please turn off the [Direct Play] option</string>
-    <string name="systts_as_standby_help">关于【作为备用】</string>
+    <string name="please_turn_off_direct_play">⚠️Please turn off the [Direct Play] option</string>
+    <string name="systts_as_standby_help">About [as standby]</string>
+    <string name="systts_standby">standby</string>
+    <string name="decode">解码</string>
 
 </resources>

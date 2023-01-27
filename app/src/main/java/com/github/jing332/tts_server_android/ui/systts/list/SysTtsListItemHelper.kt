@@ -42,10 +42,10 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                             getModelOrNull<CustomGroupModel>(findParentPosition())?.let { group ->
                                 // 组中的item位置
                                 val subPos = modelPosition - findParentPosition() - 1
-                                switchChanged(view, group.itemSublist as List<SystemTts>, subPos)
+                                switchChanged(view, group.itemSublist!![subPos] as SystemTts)
                             }
                         } else
-                            switchChanged(view, models as List<SystemTts>, modelPosition)
+                            switchChanged(view, getModel())
                     }
 
                     cardView.clickWithThrottle { displayLiteEditDialog(itemView, getModel()) }
@@ -77,9 +77,11 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         ) {
                             super.onInitializeAccessibilityNodeInfo(host, info)
                             (getModel() as SystemTts).let {
-                                val strEnabled =
+                                var str =
                                     if (it.isEnabled) context.getString(R.string.enabled) else ""
-                                info.text = "$strEnabled，${tvName.text}，" + context.getString(
+
+                                if (it.isStandby) str += ", " + context.getString(R.string.as_standby)
+                                info.text = "$str, ${tvName.text}, " + context.getString(
                                     R.string.systts_list_item_desc,
                                     tvRaTarget.text,
                                     tvApiType.text,
@@ -104,10 +106,10 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
             .setMessage(R.string.systts_please_check_multi_voice_option).create()
     }
 
-    private fun switchChanged(view: View?, list: List<SystemTts>, position: Int) {
+    private fun switchChanged(view: View?, current: SystemTts) {
         val checkBox = view as CheckBox
         // 检测是否开启多语音
-        if (setCheckBoxSwitch(list, position, checkBox.isChecked))
+        if (setCheckBoxSwitch(appDb.systemTtsDao.allEnabledTts, current, checkBox.isChecked))
             notifyTtsUpdate()
         else {
             checkBox.isChecked = false
@@ -115,27 +117,33 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
         }
     }
 
-    private fun setCheckBoxSwitch(list: List<SystemTts>, position: Int, checked: Boolean): Boolean {
-        //检测多语音是否开启
-        if (checked && !SysTtsConfig.isMultiVoiceEnabled) {
-            val target =
-                list.getOrNull(position)?.readAloudTarget ?: ReadAloudTarget.ALL
-            if (target == ReadAloudTarget.ASIDE || target == ReadAloudTarget.DIALOGUE) {
-                return false
+    private fun setCheckBoxSwitch(
+        list: List<SystemTts>,
+        current: SystemTts,
+        checked: Boolean
+    ): Boolean {
+        if (checked) {
+            //检测多语音是否开启
+            if (!SysTtsConfig.isMultiVoiceEnabled) {
+                val target = current.readAloudTarget
+                if (target == ReadAloudTarget.ASIDE || target == ReadAloudTarget.DIALOGUE)
+                    return false
             }
-        }
 
-        list[position].let { data ->
-            if (checked && !SysTtsConfig.isVoiceMultipleEnabled) { // 多选关闭下 确保同类型只可单选
+            if (current.isStandby) {
                 list.forEach {
-                    if (it.readAloudTarget == data.readAloudTarget) {
+                    if (it.isStandby && it.readAloudTarget == current.readAloudTarget)
                         appDb.systemTtsDao.updateTts(it.copy(isEnabled = false))
-                    }
+                }
+            } else if (!SysTtsConfig.isVoiceMultipleEnabled) { // 多选关闭下 确保同目标只可单选
+                list.forEach {
+                    if (!it.isStandby && it.readAloudTarget == current.readAloudTarget)
+                        appDb.systemTtsDao.updateTts(it.copy(isEnabled = false))
                 }
             }
-
-            appDb.systemTtsDao.updateTts(data.copy(isEnabled = checked))
         }
+        appDb.systemTtsDao.updateTts(current.copy(isEnabled = checked))
+
         return true
     }
 

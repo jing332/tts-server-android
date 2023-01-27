@@ -2,9 +2,10 @@ package com.github.jing332.tts_server_android.data.entities.systts
 
 import android.os.Parcelable
 import androidx.room.*
+import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
-import com.github.jing332.tts_server_android.model.tts.MsTTS
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -40,6 +41,12 @@ data class SystemTts(
 ) : Parcelable {
     val raTargetString: String
         get() = ReadAloudTarget.toText(readAloudTarget)
+
+    val typeString: String
+        get() {
+            return if (isStandby) App.context.getString(R.string.systts_standby) + " - " + tts.getType()
+            else tts.getType()
+        }
 
     // 转换器
     class Converters {

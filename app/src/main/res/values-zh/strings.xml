@@ -265,6 +265,8 @@
     <string name="systts_local_params_int_must">必须为 true或1, false或0</string>
     <string name="set_built_in_player_params">内置播放器设置</string>
     <string name="built_in_player_not_enabled">⚠️内置播放器未启用，请前往右上角菜单手动启用。</string>
-    <string name="please_trun_off_direct_play">请关闭【直接播放】选项</string>
+    <string name="please_turn_off_direct_play">请关闭【直接播放】选项</string>
     <string name="systts_as_standby_help">关于【作为备用】</string>
+    <string name="systts_standby">备</string>
+    <string name="decode">解码</string>
 </resources>

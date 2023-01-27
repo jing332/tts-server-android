@@ -2,7 +2,6 @@ package com.github.jing332.tts_server_android
 
 import android.app.Application
 import android.content.Context
-import android.view.accessibility.AccessibilityManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.chibatching.kotpref.Kotpref
 import com.drake.brv.utils.BRV
@@ -11,13 +10,14 @@ import kotlinx.serialization.json.Json
 import kotlin.properties.Delegates
 
 val app: App by lazy { App.instance }
+val ctx: Context by lazy { App.context }
 
 @Suppress("DEPRECATION")
 class App : Application() {
     companion object {
         const val TAG = "App"
         var instance: App by Delegates.notNull()
-        val context: Context by lazy { instance.applicationContext }
+        val context: Context by lazy { instance }
         val localBroadcast by lazy { LocalBroadcastManager.getInstance(context) }
 
         var isSysTtsLogEnabled = false
