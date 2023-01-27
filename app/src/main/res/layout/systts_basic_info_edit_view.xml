@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,12 +35,13 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_set_player_params"
-                style="?attr/materialButtonOutlinedStyle"
+                style="?attr/materialIconButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="-4dp"
-                android:text="@string/set_built_in_player_params" />
+                android:text="@string/set_built_in_player_params"
+                app:icon="@drawable/ic_baseline_smart_display_24" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/cb_standby"

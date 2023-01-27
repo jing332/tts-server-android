@@ -19,15 +19,7 @@ data class LocalTtsParameter(var type: String, var key: String, var value: Strin
 
     fun putValueFromBundle(b: Bundle) {
         when (type) {
-            "Boolean" -> {
-                val bool = when (value) {
-                    "true", "1" -> true
-                    "false", "0" -> false
-                    else -> return
-                }
-
-                b.putBoolean(key, bool)
-            }
+            "Boolean" -> b.putBoolean(key, value.toBoolean())
             "Int" -> b.putInt(key, value.toInt())
             "Float" -> b.putFloat(key, value.toFloat())
             else -> b.putString(key, value)

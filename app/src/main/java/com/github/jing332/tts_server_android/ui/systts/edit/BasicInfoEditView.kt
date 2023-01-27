@@ -134,7 +134,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
         if (mData?.tts?.isDirectPlay() == true) {
             MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.warning)
-                .setMessage(R.string.please_trun_off_direct_play)
+                .setMessage(R.string.please_turn_off_direct_play)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                 }
                 .show()

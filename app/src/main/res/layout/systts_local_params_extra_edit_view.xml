@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:orientation="vertical"
     android:padding="8dp">
 
@@ -39,20 +41,36 @@
         android:hint="@string/str_value">
 
         <com.google.android.material.textfield.TextInputEditText
-
+            android:id="@+id/et_value"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:layout_marginTop="8dp"
-        android:textSize="16sp"
-        android:id="@+id/save"
-        style="?attr/materialIconButtonStyle"
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/group_bool_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/save"
-        app:icon="@drawable/ic_baseline_save_24" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:selectionRequired="true"
+        app:singleSelection="true">
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_true"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="true"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_false"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="false"
+            tools:ignore="HardcodedText" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 </LinearLayout>

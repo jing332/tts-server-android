@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -115,7 +116,7 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
             addType<LocalTtsParameter>(R.layout.systts_local_extra_params_item)
             onCreate {
                 getBinding<SysttsLocalExtraParamsItemBinding>().apply {
-                    btnEdit.clickWithThrottle {
+                    itemView.clickWithThrottle {
                         displayExtraParamsEditDialog(getModel()) {
                             mutable[modelPosition] = it
                             notifyItemChanged(modelPosition)
@@ -149,9 +150,20 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
             SysttsLocalParamsExtraEditViewBinding.inflate(LayoutInflater.from(context), null, false)
                 .apply {
                     tilKey.editText?.setText(data.key)
-                    tilValue.editText?.setText(data.value)
-                }
+                    if (data.type == "Boolean") {
+                        tilValue.visibility = View.GONE
+                        groupBoolValue.visibility = View.VISIBLE
 
+                        if (data.value.toBoolean()) {
+                            groupBoolValue.check(R.id.btn_true)
+                        } else
+                            groupBoolValue.check(R.id.btn_false)
+                    } else {
+                        tilValue.visibility = View.VISIBLE
+                        groupBoolValue.visibility = View.GONE
+                        tilValue.editText?.setText(data.value)
+                    }
+                }
 
         val types = LocalTtsParameter.typeList.map { SpinnerItem(it, it) }
         binding.spinnerType.setAdapter(MaterialSpinnerAdapter(context, types))
@@ -165,6 +177,9 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
                 id: Long
             ) {
                 binding.tilValue.editText?.setText("")
+                binding.tilValue.visibility = if (position == 0) View.GONE else View.VISIBLE
+                binding.groupBoolValue.visibility = if (position == 0) View.VISIBLE else View.GONE
+
                 binding.tilValue.editText?.inputType = when (types[position].value) {
                     "Int" -> InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
                     "Float" -> InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
@@ -175,31 +190,40 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-        binding.tilValue.editText?.addTextChangedListener {
-            if (binding.spinnerType.selectedPosition == 0)
-                if (it.toString() != "true" && it.toString() != "false" && it.toString() != "1" && it.toString() != "0")
-                    binding.tilValue.editText?.error =
-                        context.getString(R.string.systts_local_params_int_must)
-        }
 
         val dlg = MaterialAlertDialogBuilder(context)
             .setTitle(R.string.edit_extra_parameter)
             .setView(binding.root)
+            .setPositiveButton(R.string.save, null)
             .create()
 
-        binding.save.clickWithThrottle {
-            if (binding.tilValue.editText?.error?.isNotEmpty() == true) {
-                binding.tilValue.requestFocus()
-                return@clickWithThrottle
-            }
+        dlg.show()
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).clickWithThrottle {
             val type = types[binding.spinnerType.selectedPosition].value.toString()
             val key = binding.tilKey.editText?.text.toString()
-            val value = binding.tilValue.editText?.text.toString()
+
+            if (key.isBlank()) {
+                binding.tilKey.editText?.error = context.getString(R.string.cannot_empty)
+                binding.tilKey.requestFocus()
+                return@clickWithThrottle
+            }
+
+            val value = if (type == "Boolean") {
+                (binding.groupBoolValue.checkedButtonId == R.id.btn_true).toString()
+            } else {
+                val text = binding.tilValue.editText?.text.toString()
+                if (text.isBlank()) {
+                    binding.tilValue.editText?.error = context.getString(R.string.cannot_empty)
+                    binding.tilValue.requestFocus()
+                    return@clickWithThrottle
+                }
+
+                text
+            }
 
             onDone.invoke(LocalTtsParameter(type, key, value))
             dlg.dismiss()
         }
-        dlg.show()
     }
 }
 
