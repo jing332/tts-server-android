@@ -183,20 +183,16 @@ class SysTtsListFragment : Fragment() {
 
             val converter = object : Seekbar.ProgressConverter {
                 override fun progressToValue(progress: Int): Any {
-                    return (progress * 0.1).toFloat()
+                    return (progress * 0.01).toFloat()
                 }
 
                 override fun valueToProgress(value: Any): Int {
-                    return ((value as Float) * 10).toInt()
+                    return ((value as Float) * 100).toInt()
                 }
             }
 
-            val formatter = Seekbar.ValueFormatter { value, _ -> value.toString() }
-
             seekRate.progressConverter = converter
             seekPitch.progressConverter = converter
-            seekRate.valueFormatter = formatter
-            seekPitch.valueFormatter = formatter
 
             seekRate.value = SysTtsConfig.inAppPlaySpeed
             seekPitch.value = SysTtsConfig.inAppPlayPitch

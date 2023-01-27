@@ -232,7 +232,7 @@
     <string name="systts_log_start_retry">Start the %1$dth retry</string>
     <string name="unlimited">Unlimited</string>
     <string name="systts_log_ip_is_restricted">Your IP may have been restricted by the Microsoft server. Switching to an audio format with low traffic consumption can largely avoid this situation.</string>
-    <string name="local_file">Local file</string>
+    <string name="local_file">File</string>
     <string name="select_file">Select the file</string>
     <string name="select_file_hint">Click the button on the right to select the file➡️</string>
     <string name="systts_group_empty_msg"><![CDATA[Click the ➕ button on the right side of the top application bar -> Add TTS, and set the group to which it belongs in the editing interface.]]></string>
