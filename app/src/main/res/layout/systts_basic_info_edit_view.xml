@@ -27,22 +27,41 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/cb_standby"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/standby"
-            android:visibility="gone" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_set_player_params"
-            style="?attr/materialButtonOutlinedStyle"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="-4dp"
-            android:text="@string/set_built_in_player_params" />
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_set_player_params"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="-4dp"
+                android:text="@string/set_built_in_player_params" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_standby"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="4dp"
+                android:text="@string/as_standby" />
+
+            <ImageButton
+                android:id="@+id/btn_help_standby"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/systts_as_standby_help"
+                app:srcCompat="@drawable/ic_baseline_help_outline_24"
+                app:tint="?attr/colorOnBackground" />
+        </LinearLayout>
 
         <HorizontalScrollView
             android:layout_width="wrap_content"

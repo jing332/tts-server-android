@@ -91,6 +91,11 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
     init {
         binding.apply {
             btnSetPlayerParams.clickWithThrottle { displayPlayerParamsSettings() }
+            btnHelpStandby.clickWithThrottle {
+                MaterialAlertDialogBuilder(context).setTitle(R.string.systts_as_standby_help)
+                    .setMessage("作为备用后，当请求失败时将会根据 [全部/旁白/对话] 使用此配置朗读。\n也就是说，可以根据朗读目标单独配置备用。\n注意：备用配置无自动重试功能，首次失败后将直接跳过朗读，所以建议使用本地TTS类型作为备用。")
+                    .show()
+            }
 
             cbStandby.setOnClickListener {
                 mData?.isStandby = isStandby
@@ -133,7 +138,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                 }
                 .show()
-        }else if (SysTtsConfig.isInAppPlayAudio) {
+        } else if (SysTtsConfig.isInAppPlayAudio) {
             val binding =
                 DialogInAppPlaySettingsBinding.inflate(LayoutInflater.from(context), this, false)
             binding.apply {

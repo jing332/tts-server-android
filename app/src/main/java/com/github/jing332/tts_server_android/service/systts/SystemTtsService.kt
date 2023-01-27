@@ -314,7 +314,7 @@ class SystemTtsService : TextToSpeechService(),
         val msg = when (errCode) {
             TtsManager.ERROR_GET_FAILED -> {
                 val str = reason.toString()
-                if (str.endsWith(TtsManager.BAD_HANDSHAKE_PREFIX)) {
+                if (str.contains(TtsManager.BAD_HANDSHAKE_PREFIX)) {
                     str + "<br>" + getString(R.string.systts_log_ip_is_restricted)
                 }
                 getString(R.string.systts_log_failed, "<b>${speakText}</b> <br>${str}")

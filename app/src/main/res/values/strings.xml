@@ -258,7 +258,7 @@
     <string name="str_value">Value</string>
     <string name="add_extra_params">Add extra params</string>
     <string name="edit_extra_parameter">Edit extra parameter</string>
-    <string name="standby">备用</string>
+    <string name="as_standby">As standby</string>
     <string name="direct_play">Direct play</string>
     <string name="systts_direct_play_help">Help [direct play]</string>
     <string name="systts_direct_play_help_msg">When the option is turned on, it will be directly streamed play by its TTS engine;\nWhen the option is turned off, the audio will be transferred through the TTS Server, which will cause some performance loss (cache read and write), but for multi-voice situations, it can be reduced Initialization delay  when switching between voice.</string>
@@ -272,5 +272,6 @@
     <string name="set_built_in_player_params">Built-in player settings</string>
     <string name="built_in_player_not_enabled">⚠️Built-in player is not enabled</string>
     <string name="please_trun_off_direct_play">⚠️Please turn off the [Direct Play] option</string>
+    <string name="systts_as_standby_help">关于【作为备用】</string>
 
 </resources>
