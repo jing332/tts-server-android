@@ -31,6 +31,7 @@ import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
+import com.github.jing332.tts_server_android.util.ThrottleUtil
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -119,9 +120,9 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                             info: AccessibilityNodeInfo
                         ) {
                             super.onInitializeAccessibilityNodeInfo(host, info)
-                            val str = when (checkBox.checkedState){
+                            val str = when (checkBox.checkedState) {
                                 MaterialCheckBox.STATE_CHECKED -> getString(R.string.md_checkbox_checked)
-                                MaterialCheckBox.STATE_UNCHECKED-> getString(R.string.md_checkbox_unchecked)
+                                MaterialCheckBox.STATE_UNCHECKED -> getString(R.string.md_checkbox_unchecked)
                                 MaterialCheckBox.STATE_INDETERMINATE -> getString(R.string.md_checkbox_indeterminate)
                                 else -> ""
                             }
@@ -185,40 +186,40 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            var job: Job? = null
+            val throttleUtil = ThrottleUtil(time = 10L)
             appDb.systemTtsDao.getFlowAllGroupWithTts().conflate().collect { list ->
-                val models = withDefault {
-                    list.mapIndexed { i, v ->
-                        val checkState =
-                            when (v.list.filter { it.isEnabled }.size) {
-                                0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
-                                v.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
-                                else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
-                            }
+                throttleUtil.runAction {
+                    val models = withDefault {
+                        list.mapIndexed { i, v ->
+                            val checkState =
+                                when (v.list.filter { it.isEnabled }.size) {
+                                    0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
+                                    v.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
+                                    else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
+                                }
 
-                        CustomGroupModel(
-                            data = v.group,
-                            itemGroupPosition = i,
-                            checkedState = checkState,
-                            itemSublist = v.list,
-                            itemExpand = v.group.isExpanded
-                        )
+                            CustomGroupModel(
+                                data = v.group,
+                                itemGroupPosition = i,
+                                checkedState = checkState,
+                                itemSublist = v.list,
+                                itemExpand = v.group.isExpanded
+                            )
+                        }
+                    }
+
+                    if (brv.models == null)
+                        brv.models = models
+                    else {
+                        brv.setDifferModels(models)
                     }
                 }
 
-                if (brv.models == null)
-                    brv.models = models
-                else {
-                    job?.cancel()
-                    job = null
-                    job = launch { delay(100); brv.setDifferModels(models) }
-                }
-
             }
-
         }
 
     }
+
 
     @SuppressLint("RestrictedApi")
     private fun displayMoreMenu(v: View, model: CustomGroupModel) {

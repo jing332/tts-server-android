@@ -33,8 +33,7 @@ import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
@@ -65,12 +64,8 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 val binding = getBinding<SysttsReplaceRuleItemBinding>()
 
                 binding.btnEdit.clickWithThrottle { edit(getModel<ReplaceRuleModel>().data) }
-//                binding.btnDelete.clickWithThrottle { delete(getModel<ReplaceRuleModel>().data) }
                 binding.btnMore.clickWithThrottle {
-                    displayMoreMenu(
-                        it,
-                        getModel<ReplaceRuleModel>().data
-                    )
+                    displayMoreMenu(it, getModel<ReplaceRuleModel>().data)
                 }
                 binding.checkBox.setOnClickListener {
                     appDb.replaceRuleDao.update(getModel<ReplaceRuleModel>().data)
@@ -112,8 +107,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
             lifecycleScope.launch { updateModels(appDb.replaceRuleDao.all) }
         }
 
-        if (!SysTtsConfig.isReplaceEnabled)
-            toast(R.string.systts_replace_please_on_switch)
+        if (!SysTtsConfig.isReplaceEnabled) toast(R.string.systts_replace_please_on_switch)
     }
 
     private fun displayMoreMenu(v: View, data: ReplaceRule) {
@@ -141,18 +135,15 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
     }
 
-    var modelsJob: Job? = null
+    private val throttleUtil = ThrottleUtil(time = 10L)
     private suspend fun updateModels(list: List<ReplaceRule>) {
-        val models = list.map { ReplaceRuleModel(data = it) }
-            .filter { it.data.name.contains(binding.etSearch.text) }
-        if (brv.models == null) withMain { brv.models = models }
-        else {
-            modelsJob?.cancel()
-            modelsJob = null
-            modelsJob = lifecycleScope.launch { delay(100); brv.setDifferModels(models) }
+        throttleUtil.runAction(Dispatchers.Default) {
+            val models = list.map { ReplaceRuleModel(data = it) }
+                .filter { it.data.name.contains(binding.etSearch.text) }
+            if (brv.models == null) withMain { brv.models = models }
+            else brv.setDifferModels(models)
         }
     }
-
 
     fun updateOrder(models: List<Any?>?) {
         models?.forEachIndexed { index, value ->

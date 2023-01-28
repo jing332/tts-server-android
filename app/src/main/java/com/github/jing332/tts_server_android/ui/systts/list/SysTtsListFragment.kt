@@ -89,6 +89,7 @@ class SysTtsListFragment : Fragment() {
         vpAdapter = GroupPageAdapter(this, fragmentList)
         binding.viewPager.isSaveEnabled = false
         binding.viewPager.adapter = vpAdapter
+        binding.viewPager.reduceDragSensitivity(8)
 
         val tabTitles = listOf(
             getString(R.string.group),
