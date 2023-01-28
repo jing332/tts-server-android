@@ -197,7 +197,7 @@ class MsTtsEditViewModel : ViewModel() {
         ui.locales.apply {
             items = allList.map { SpinnerItem(it.localeName, it.locale) }.distinctBy { it.value }
                 .sortedBy { it.value.toString() }
-            position = items.indexOfFirst { it.value == mTts.locale }
+            position = max(0, items.indexOfFirst { it.value == mTts.locale })
         }
     }
 

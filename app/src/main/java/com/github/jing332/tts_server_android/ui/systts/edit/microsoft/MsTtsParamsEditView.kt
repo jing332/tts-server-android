@@ -10,7 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.databinding.SysttsMsQuickEditViewBinding
+import com.github.jing332.tts_server_android.databinding.SysttsMsParamsEditViewBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
 import com.github.jing332.tts_server_android.model.tts.MsTtsFormatManger
@@ -19,7 +19,7 @@ import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSp
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import kotlin.math.max
 
-class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+class MsTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), Seekbar.OnSeekBarChangeListener {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
@@ -41,8 +41,8 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
 
     var callback: Callback? = null
 
-    private val binding: SysttsMsQuickEditViewBinding by lazy {
-        SysttsMsQuickEditViewBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding: SysttsMsParamsEditViewBinding by lazy {
+        SysttsMsParamsEditViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     private val strFollow: String by lazy { context.getString(R.string.follow_system_or_read_aloud_app) }
@@ -112,7 +112,7 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
 
     init {
         binding.apply {
-            seekbarRate.onSeekBarChangeListener = this@MsTtsQuickEditView
+            seekbarRate.onSeekBarChangeListener = this@MsTtsParamsEditView
             seekbarRate.valueFormatter =
                 Seekbar.ValueFormatter { value, progress -> if (progress == 0) strFollow else "${value}%" }
             seekbarRate.progressConverter = object : Seekbar.ProgressConverter {
@@ -120,14 +120,14 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
                 override fun progressToValue(progress: Int) = progress - 100
             }
 
-            seekbarVolume.onSeekBarChangeListener = this@MsTtsQuickEditView
+            seekbarVolume.onSeekBarChangeListener = this@MsTtsParamsEditView
             seekbarVolume.valueFormatter = Seekbar.ValueFormatter { value, _ -> "${value}%" }
             seekbarVolume.progressConverter = object : Seekbar.ProgressConverter {
                 override fun valueToProgress(value: Any) = (value as Int) + 50
                 override fun progressToValue(progress: Int) = progress - 50
             }
 
-            seekbarPitch.onSeekBarChangeListener = this@MsTtsQuickEditView
+            seekbarPitch.onSeekBarChangeListener = this@MsTtsParamsEditView
             seekbarPitch.valueFormatter =
                 Seekbar.ValueFormatter { value, progress -> if (progress == 0) strFollow else "${value}%" }
             seekbarPitch.progressConverter = object : Seekbar.ProgressConverter {
@@ -135,7 +135,7 @@ class MsTtsQuickEditView(context: Context, attrs: AttributeSet?, defaultStyle: I
                 override fun progressToValue(progress: Int) = progress - 50
             }
 
-            seekbarStyleDegree.onSeekBarChangeListener = this@MsTtsQuickEditView
+            seekbarStyleDegree.onSeekBarChangeListener = this@MsTtsParamsEditView
             seekbarStyleDegree.progressConverter = object : Seekbar.ProgressConverter {
                 override fun valueToProgress(value: Any) = ((value as Float) * 100).toInt()
                 override fun progressToValue(progress: Int) = (progress * 0.01).toFloat()

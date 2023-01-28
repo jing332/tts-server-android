@@ -10,8 +10,11 @@ import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.util.*
 
-class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({ MsTTS() }) {
+class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
+    MsTTS(locale = Locale.getDefault().run { "$language-$country" })
+}) {
     companion object {
         const val TAG = "MsTtsEditActivity"
     }
@@ -68,10 +71,8 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({ MsTTS() }) {
             )
         )
 
-
         binding.editView.setData(tts)
         vm.initUserData(systemTts)
-
     }
 
     override fun onTest(text: String) {

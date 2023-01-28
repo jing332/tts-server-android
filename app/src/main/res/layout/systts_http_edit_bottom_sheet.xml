@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsLiteEditView
+            <com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsParamsEditView
                 android:layout_marginTop="8dp"
                 android:id="@+id/edit_view"
                 android:layout_width="match_parent"

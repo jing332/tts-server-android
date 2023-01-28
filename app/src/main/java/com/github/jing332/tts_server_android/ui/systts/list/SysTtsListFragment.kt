@@ -256,13 +256,8 @@ class SysTtsListFragment : Fragment() {
             }.show()
     }
 
-    private fun addTtsConfig(tts: BaseTTS, cls: Class<*>) {
-        val intent = Intent(requireContext(), cls).apply {
-            putExtra(
-                BaseTtsEditActivity.KEY_DATA,
-                SystemTts(tts = tts)
-            )
-        }
+    private fun addTtsConfig(cls: Class<*>) {
+        val intent = Intent(requireContext(), cls)
         startForResult.launch(intent)
     }
 
@@ -281,9 +276,9 @@ class SysTtsListFragment : Fragment() {
     private fun onOptionsItemSelected(itemId: Int) {
         when (itemId) {
             /* 添加配置 */
-            R.id.menu_add_ms_tts -> addTtsConfig(MsTTS(), MsTtsEditActivity::class.java)
-            R.id.menu_add_local_tts -> addTtsConfig(LocalTTS(), LocalTtsEditActivity::class.java)
-            R.id.menu_add_http_tts -> addTtsConfig(HttpTTS(), HttpTtsEditActivity::class.java)
+            R.id.menu_add_ms_tts -> addTtsConfig(MsTtsEditActivity::class.java)
+            R.id.menu_add_local_tts -> addTtsConfig(LocalTtsEditActivity::class.java)
+            R.id.menu_add_http_tts -> addTtsConfig(HttpTtsEditActivity::class.java)
             R.id.menu_addGroup -> addGroup()
 
             R.id.menu_isInAppPlayAudio -> showInAppSettingsDialog()

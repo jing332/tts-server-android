@@ -31,26 +31,26 @@ data class MsTTS(
     var locale: String = DEFAULT_LOCALE,
     // 二级语言（语言技能）仅限en-US-JennyMultilingualNeural
     var secondaryLocale: String? = null,
-    var voiceName: String,
+    var voiceName: String = "",
     var voiceId: String? = null,
-    var prosody: Prosody,
+    var prosody: Prosody = Prosody(),
     var expressAs: ExpressAs? = null,
 
     @kotlinx.serialization.Transient
     override var audioFormat: BaseAudioFormat  = MsTtsFormatManger.getFormatOrDefault(format),
     override var audioPlayer: AudioPlayer = AudioPlayer(),
 ) : Parcelable, BaseTTS() {
-    constructor() : this(DEFAULT_VOICE)
-    constructor(voiceName: String) : this(voiceName, Prosody())
-    constructor(voiceName: String, prosody: Prosody) : this(
-        MsTtsApiType.EDGE, MsTtsAudioFormat.DEFAULT,
-        DEFAULT_LOCALE,
-        null,
-        voiceName,
-        null,
-        prosody,
-        null
-    )
+//    constructor() : this(DEFAULT_VOICE)
+//    constructor(voiceName: String) : this(voiceName, Prosody())
+//    constructor(voiceName: String, prosody: Prosody) : this(
+//        MsTtsApiType.EDGE, MsTtsAudioFormat.DEFAULT,
+//        DEFAULT_LOCALE,
+//        null,
+//        voiceName,
+//        null,
+//        prosody,
+//        null
+//    )
 
     companion object {
         const val RATE_FOLLOW_SYSTEM = -100
