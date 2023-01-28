@@ -285,6 +285,7 @@ class SysTtsListFragment : Fragment() {
             R.id.menu_isInAppPlayAudio -> showInAppSettingsDialog()
             R.id.menu_setAudioRequestTimeout -> showSetAudioRequestTimeoutDialog()
             R.id.menu_setMinDialogueLen -> showSetMinDialogueLengthDialog()
+            R.id.menu_set_sby_use_conditions -> displaySetStandbyUseConditions()
 
             R.id.menu_doSplit -> {
                 SysTtsConfig.isSplitEnabled = !SysTtsConfig.isSplitEnabled
@@ -314,6 +315,29 @@ class SysTtsListFragment : Fragment() {
         }
     }
 
+    private fun displaySetStandbyUseConditions() {
+        val ranges = 1..10
+        val picker = NumberPicker(requireContext()).apply {
+            minValue = 1
+            maxValue = ranges.last
+            displayedValues = ranges.map { it.toString() }.toTypedArray()
+            value = SysTtsConfig.standbyTriggeredRetryIndex
+        }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.systts_sby_conditions_for_use)
+            .setMessage(R.string.systts_sby_settings_msg)
+            .setView(picker)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                SysTtsConfig.standbyTriggeredRetryIndex = picker.value
+            }
+            .setNegativeButton(R.string.reset) { _, _ ->
+                SysTtsConfig.standbyTriggeredRetryIndex = 1
+                toast(R.string.ok_reset)
+            }
+            .show()
+    }
+
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
@@ -325,7 +349,6 @@ class SysTtsListFragment : Fragment() {
             }
         }
     }
-
 
     class GroupPageAdapter(parent: Fragment, val list: List<Fragment>) :
         FragmentStateAdapter(parent) {

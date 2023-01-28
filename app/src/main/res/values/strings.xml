@@ -273,8 +273,11 @@
     <string name="built_in_player_not_enabled">⚠️Built-in player is not enabled</string>
     <string name="please_turn_off_direct_play">⚠️Please turn off the [Direct Play] option</string>
     <string name="systts_as_standby_help">About [as standby]</string>
-    <string name="systts_standby">standby</string>
-    <string name="decode">解码</string>
+    <string name="systts_standby">Standby</string>
+    <string name="decode">decode</string>
     <string name="systts_log_replace_failed">Failed to execute replace: %1$s</string>
+    <string name="systts_sby_conditions_for_use">Standby Settings</string>
+    <string name="systts_sby_settings_msg">Standby configuration fires on how many retries? Defaults to 1, i.e. the alternate configuration is used on the first failed retry.</string>
+    <string name="systts_ms_webm_warn_msg">After testing, the actual traffic consumption of webm…-24kbps… is more than three times its audio size, so it is not recommended!</string>
 
 </resources>

@@ -46,7 +46,7 @@ class ServerLogFragment : Fragment() {
         /*启动按钮*/
         binding.btnStart.setOnClickListener {
             ServerConfig.port = binding.etPort.text.toString().toInt()
-            val i = Intent(App.context, TtsIntentService::class.java)
+            val i = Intent(app, TtsIntentService::class.java)
             requireContext().startService(i)
         }
         /* 关闭按钮 */

@@ -367,28 +367,37 @@ class TtsManager(val context: Context) {
         if (tts.isDirectPlay()) { // 转到消费者去播放
             channel.send(ChannelData(text, null, tts))
         } else if (tts.audioFormat.isNeedDecode) {
-            var ret = false
-            val audio = getAudioForRetry(text, tts) {
-                sbyTts?.let { //备用TTS
-                    val audio = it.getAudioHasEvent(text)
-                    channel.send(ChannelData(text, audio, it))
-                    ret = true
-                    return@getAudioForRetry true
-                }
+            var isSbyUsed = false
+            val audio = getAudioForRetry(text, tts) { index ->
+                if (index >= mCfg.standbyTriggeredRetryIndex)
+                    sbyTts?.let { //备用TTS
+                        val audio = it.getAudioWithEvent(text)
+                        channel.send(ChannelData(text, audio, it))
+                        isSbyUsed = true
+                        return@getAudioForRetry true
+                    }
 
                 false
             }
-            if (ret) return
+            if (isSbyUsed) return
             channel.send(ChannelData(text, audio, tts))
         } else {
-            getAudioStreamHelper(text, tts) {
+            getAudioStream(text, tts, { index ->
+                if (index >= mCfg.standbyTriggeredRetryIndex)
+                    sbyTts?.let { //备用TTS
+                        val audio = it.getAudioWithEvent(text)
+                        channel.send(ChannelData(text, audio, it))
+                        return@getAudioStream true
+                    }
+                false
+            }, {
                 runBlocking { channel.send(ChannelData(null, it, tts)) }
-            }
+            })
         }
     }
 
     // 获取音频并输出事件
-    private fun BaseTTS.getAudioHasEvent(text: String, retryNum: Int = 0): ByteArray? {
+    private fun BaseTTS.getAudioWithEvent(text: String, retryNum: Int = 0): ByteArray? {
         return if (isDirectPlay()) null
         else {
             event?.onStartRequest(text, this)
@@ -452,8 +461,11 @@ class TtsManager(val context: Context) {
     }
 
     // 音频流
-    private suspend fun getAudioStreamHelper(
-        text: String, tts: BaseTTS, onRead: (ByteArray?) -> Unit
+    private suspend fun getAudioStream(
+        text: String,
+        tts: BaseTTS,
+        onFailure: suspend (Int) -> Boolean,
+        onRead: (ByteArray?) -> Unit
     ) {
         var lastFailLength = -1
         var audioSize = 0
@@ -490,6 +502,7 @@ class TtsManager(val context: Context) {
                     return@onFailure
                 }
 
+                if (onFailure.invoke(retryIndex)) return
                 if (retryIndex > 3) delay(3000) else delay(500)
 
                 event?.onStartRetry(retryIndex, e)

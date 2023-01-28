@@ -270,4 +270,7 @@
     <string name="systts_standby">备</string>
     <string name="decode">解码</string>
     <string name="systts_log_replace_failed">执行替换失败：%1$s</string>
+    <string name="systts_sby_conditions_for_use">备用配置使用条件</string>
+    <string name="systts_sby_settings_msg">备用配置在第几次重试时触发？默认为1，即备用配置在首次失败重试时使用。</string>
+    <string name="systts_ms_webm_warn_msg">⚠️ 经测试，音频格式 webm..-24kbps-.. 的实际所耗流量是其音频大小的三倍有余，不推荐使用！</string>
 </resources>

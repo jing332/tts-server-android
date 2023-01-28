@@ -10,7 +10,6 @@ import kotlinx.serialization.json.Json
 import kotlin.properties.Delegates
 
 val app: App by lazy { App.instance }
-val ctx: Context by lazy { App.context }
 
 @Suppress("DEPRECATION")
 class App : Application() {

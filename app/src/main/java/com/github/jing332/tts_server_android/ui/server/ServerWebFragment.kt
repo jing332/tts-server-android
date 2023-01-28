@@ -15,6 +15,7 @@ import android.webkit.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.databinding.ServerWebFragmentBinding
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.util.toast
@@ -77,7 +78,7 @@ class ServerWebFragment : Fragment() {
         val port = TtsIntentService.instance?.cfg?.port ?: 1233
         binding.webView.loadUrl("http://localhost:${port}")
         if (TtsIntentService.instance?.isRunning != true) {
-            val i = Intent(App.context, TtsIntentService::class.java)
+            val i = Intent(app, TtsIntentService::class.java)
             requireContext().startService(i)
         }
     }

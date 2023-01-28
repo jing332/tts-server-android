@@ -286,7 +286,7 @@ class MsTtsEditViewModel : ViewModel() {
         onFailure: (Throwable) -> Unit
     ) {
         if (mTts.format.startsWith("raw")) {
-            onFailure.invoke(Exception("raw格式无法播放，请手动换为其他格式。"))
+            onFailure.invoke(Exception("raw格式无法播放，请手动换为其他格式。\nPS：不推荐使用raw-pcm，其极耗流量、卡顿不稳定，且易被微软限制IP！"))
             return
         }
 

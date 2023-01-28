@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.constant
 
 import android.content.pm.PackageManager
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.app
 import com.script.javascript.RhinoScriptEngine
 
 @Suppress("DEPRECATION")
@@ -12,7 +13,7 @@ object AppConst {
     val appInfo: AppInfo by lazy {
         val appInfo = AppInfo()
         App.context.packageManager.getPackageInfo(
-            App.context.packageName,
+            app.packageName,
             PackageManager.GET_ACTIVITIES
         )
             ?.let {

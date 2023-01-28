@@ -3,7 +3,7 @@ package com.github.jing332.tts_server_android.model.tts
 import android.media.AudioFormat
 import android.os.Parcelable
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.ctx
+import com.github.jing332.tts_server_android.app
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
@@ -15,7 +15,7 @@ open class BaseAudioFormat(
     var isNeedDecode: Boolean = true,
 ) : Parcelable {
     override fun toString(): String {
-        val str = if (isNeedDecode) " | " + ctx.getString(R.string.decode) else ""
+        val str = if (isNeedDecode) " | " + app.getString(R.string.decode) else ""
         return "${sampleRate}hz" + str
     }
 }
