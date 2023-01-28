@@ -19,7 +19,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import okhttp3.Headers.Companion.toHeaders
-import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.util.concurrent.TimeUnit
@@ -81,14 +80,7 @@ data class HttpTTS(
         }
     }
 
-    @IgnoredOnParcel
-    @kotlinx.serialization.Transient
-    private lateinit var httpClient: OkHttpClient
-
     override fun onLoad() {
-        httpClient = OkHttpClient.Builder()
-            .connectTimeout(SysTtsConfig.requestTimeout.toLong(), TimeUnit.MILLISECONDS).build()
-
         runCatching { parseHeaders() }.onFailure { throw Throwable("解析请求头失败：$it") }
     }
 
@@ -107,14 +99,16 @@ data class HttpTTS(
         val urlOption = a.eval()
         return if (urlOption == null) { //GET
             Net.get(a.baseUrl) {
-                if (!this@HttpTTS::httpClient.isInitialized) onLoad()
-                okHttpClient = this@HttpTTS.httpClient
+                setClient {
+                    connectTimeout(SysTtsConfig.requestTimeout.toLong(), TimeUnit.MILLISECONDS)
+                }
                 setHeaders(httpHeaders.toHeaders())
             }.execute()
         } else {
             Net.post(a.baseUrl) {
-                if (!this@HttpTTS::httpClient.isInitialized) onLoad()
-                okHttpClient = this@HttpTTS.httpClient
+                setClient {
+                    connectTimeout(SysTtsConfig.requestTimeout.toLong(), TimeUnit.MILLISECONDS)
+                }
                 setHeaders(httpHeaders.toHeaders())
                 body = urlOption.body.toString().toRequestBody(null)
             }.execute()

@@ -118,15 +118,10 @@ data class LocalTTS(
     private var waitJob: Job? = null
 
     @IgnoredOnParcel
-    @Transient
-    var engineListener: EngineProgressListener? = null
+    private var isInitialzed = false
 
-    interface EngineProgressListener {
-        fun onStart()
-        fun onDone()
-    }
-
-    override fun onLoad() {
+    private fun initEngineIf() {
+        if (isInitialzed) return
         Log.i(TAG, "onLoad")
 
         mTtsEngine?.shutdown()
@@ -152,7 +147,19 @@ data class LocalTTS(
                 })
             }
         }, engine)
+        isInitialzed = true
     }
+
+    @IgnoredOnParcel
+    @Transient
+    var engineListener: EngineProgressListener? = null
+
+    interface EngineProgressListener {
+        fun onStart()
+        fun onDone()
+    }
+
+    override fun onLoad() {}
 
     override fun onStop() {
         Log.i(TAG, "onStop")
@@ -195,6 +202,7 @@ data class LocalTTS(
     }
 
     override fun directPlay(text: String): Boolean {
+        initEngineIf()
         return runBlocking {
             if (!checkInitAndWait()) return@runBlocking false
 
@@ -213,10 +221,11 @@ data class LocalTTS(
     private var currentJobId: String? = null
 
     override fun getAudio(speakText: String): ByteArray? {
+        initEngineIf()
         currentJobId = SystemClock.elapsedRealtime().toString()
 
         File(saveDir).apply { if (!exists()) mkdirs() }
-        val file = File("$saveDir/$currentJobId.wav")
+        val file = File("$saveDir/$engine.wav")
         runBlocking {
             checkInitAndWait()
             waitJob = launch {
@@ -231,7 +240,6 @@ data class LocalTTS(
 
         return if (file.exists()) file.readBytes() else null
     }
-
 
     override fun isDirectPlay() = isDirectPlayMode
 }
