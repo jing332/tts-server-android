@@ -143,17 +143,43 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
     }
 
     private fun displayExtraParamsEditDialog(
-        data: LocalTtsParameter = LocalTtsParameter("Boolean", "", ""),
+        data: LocalTtsParameter = LocalTtsParameter("Boolean", "", true.toString()),
         onDone: (p: LocalTtsParameter) -> Unit
     ) {
+        val types = LocalTtsParameter.typeList.map { SpinnerItem(it, it) }
         val binding =
             SysttsLocalParamsExtraEditViewBinding.inflate(LayoutInflater.from(context), null, false)
                 .apply {
+                    spinnerType.setAdapter(MaterialSpinnerAdapter(context, types))
+                    spinnerType.selectedPosition =
+                        max(types.indexOfFirst { it.value.toString() == data.type }, 0)
+                    spinnerType.onItemSelectedListener = object : OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            tilValue.editText?.setText("")
+                            tilValue.visibility =
+                                if (position == 0) View.GONE else View.VISIBLE
+                            groupBoolValue.visibility =
+                                if (position == 0) View.VISIBLE else View.GONE
+
+                            tilValue.editText?.inputType = when (types[position].value) {
+                                "Int" -> InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
+                                "Float" -> InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                                else -> InputType.TYPE_CLASS_TEXT
+                            }
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                        }
+                    }
+
+                    spinnerType.onItemSelectedListener.onItemSelected(null, null, 0, 0)
                     tilKey.editText?.setText(data.key)
                     if (data.type == "Boolean") {
-                        tilValue.visibility = View.GONE
-                        groupBoolValue.visibility = View.VISIBLE
-
                         if (data.value.toBoolean()) {
                             groupBoolValue.check(R.id.btn_true)
                         } else
@@ -165,31 +191,6 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
                     }
                 }
 
-        val types = LocalTtsParameter.typeList.map { SpinnerItem(it, it) }
-        binding.spinnerType.setAdapter(MaterialSpinnerAdapter(context, types))
-        binding.spinnerType.selectedPosition =
-            max(types.indexOfFirst { it.value.toString() == data.type }, 0)
-        binding.spinnerType.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                binding.tilValue.editText?.setText("")
-                binding.tilValue.visibility = if (position == 0) View.GONE else View.VISIBLE
-                binding.groupBoolValue.visibility = if (position == 0) View.VISIBLE else View.GONE
-
-                binding.tilValue.editText?.inputType = when (types[position].value) {
-                    "Int" -> InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
-                    "Float" -> InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
-                    else -> InputType.TYPE_CLASS_TEXT
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
 
         val dlg = MaterialAlertDialogBuilder(context)
             .setTitle(R.string.edit_extra_parameter)
