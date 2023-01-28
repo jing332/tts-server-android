@@ -50,6 +50,8 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
     private lateinit var brv: BindingAdapter
 
+    private var currentSearchTarget: SearchTargetFilter = SearchTargetFilter.Name
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +109,34 @@ class ReplaceManagerActivity : AppCompatActivity() {
             lifecycleScope.launch { updateModels(appDb.replaceRuleDao.all) }
         }
 
+        binding.btnTarget.clickWithThrottle { view ->
+            PopupMenu(this, view).apply {
+                val list = listOf(
+                    SearchTargetFilter.Name,
+                    SearchTargetFilter.Pattern,
+                    SearchTargetFilter.Replacement
+                )
+                list.forEachIndexed { index, v ->
+                    val item = menu.add(Menu.NONE, index, index, v.strId)
+                    item.isCheckable = true
+                    if (currentSearchTarget == v)
+                        item.isChecked = true
+                }
+
+                setOnMenuItemClickListener { menuItem ->
+                    list.forEachIndexed { index, _ ->
+                        menu.findItem(index).isChecked = false
+                    }
+                    menuItem.isChecked = true
+                    currentSearchTarget = list[menuItem.itemId]
+                    lifecycleScope.launch { updateModels(appDb.replaceRuleDao.all) }
+                    true
+                }
+
+                show()
+            }
+        }
+
         if (!SysTtsConfig.isReplaceEnabled) toast(R.string.systts_replace_please_on_switch)
     }
 
@@ -139,7 +169,15 @@ class ReplaceManagerActivity : AppCompatActivity() {
     private suspend fun updateModels(list: List<ReplaceRule>) {
         throttleUtil.runAction(Dispatchers.Default) {
             val models = list.map { ReplaceRuleModel(data = it) }
-                .filter { it.data.name.contains(binding.etSearch.text) }
+                .filter {
+                    val s = when (currentSearchTarget) {
+                        SearchTargetFilter.Name -> it.data.name
+                        SearchTargetFilter.Pattern -> it.data.pattern
+                        SearchTargetFilter.Replacement -> it.data.replacement
+                        else -> it.data.name
+                    }
+                    s.contains(binding.etSearch.text)
+                }
             if (brv.models == null) withMain { brv.models = models }
             else brv.setDifferModels(models)
         }
@@ -222,5 +260,12 @@ class ReplaceManagerActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    sealed class SearchTargetFilter(val strId: Int, val index: Int) {
+        object Name : SearchTargetFilter(R.string.display_name, 0)
+        object Pattern : SearchTargetFilter(R.string.systts_replace_rule, 1)
+        object Replacement : SearchTargetFilter(R.string.systts_replace_as, 2)
+
     }
 }
