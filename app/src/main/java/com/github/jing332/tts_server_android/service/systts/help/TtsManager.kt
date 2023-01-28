@@ -28,6 +28,7 @@ class TtsManager(val context: Context) {
         const val ERROR_DECODE_FAILED = 0
         const val ERROR_GET_FAILED = 1
         const val ERROR_AUDIO_NULL = 2
+        const val ERROR_REPLACE_FAILED = 3
 
         // 音频请求间隔
         private const val requestInterval = 100L
@@ -189,6 +190,7 @@ class TtsManager(val context: Context) {
     // 音频生产者
     private var mProducer: ReceiveChannel<ChannelData>? = null
 
+    // 设置语速音高
     private fun handleTtsAndConvert(
         list: List<SystemTtsWithState>?,
         rate: Int,
@@ -210,14 +212,24 @@ class TtsManager(val context: Context) {
         return list?.map { it.data.tts } ?: emptyList()
     }
 
-    /* 开始转语音 */
+
     suspend fun synthesizeText(
         aText: String, request: SynthesisRequest, callback: SynthesisCallback
     ) {
         isSynthesizing = true
         callback.start(mAudioFormat.sampleRate, mAudioFormat.bitRate, 1)
 
-        val text = if (mCfg.isReplaceEnabled) mReplacer.doReplace(aText) else aText
+        val text = if (mCfg.isReplaceEnabled) {
+            try {
+                mReplacer.doReplace(aText)
+            } catch (e: Exception) {
+                event?.onError(ERROR_REPLACE_FAILED, aText, e.message ?: e.cause?.message)
+                aText
+            }
+        } else {
+            aText
+        }
+
         val sysPitch = request.pitch - 100
         val sysRate = (mNorm.normalize(request.speechRate.toFloat()) - 100).toInt()
 
@@ -357,7 +369,7 @@ class TtsManager(val context: Context) {
         } else if (tts.audioFormat.isNeedDecode) {
             var ret = false
             val audio = getAudioForRetry(text, tts) {
-                sbyTts?.let {
+                sbyTts?.let { //备用TTS
                     val audio = it.getAudioHasEvent(text)
                     channel.send(ChannelData(text, audio, it))
                     ret = true
@@ -440,7 +452,7 @@ class TtsManager(val context: Context) {
     }
 
     // 音频流
-    private fun getAudioStreamHelper(
+    private suspend fun getAudioStreamHelper(
         text: String, tts: BaseTTS, onRead: (ByteArray?) -> Unit
     ) {
         var lastFailLength = -1
@@ -467,22 +479,23 @@ class TtsManager(val context: Context) {
             }.onSuccess {
                 event?.onRequestSuccess(text, audioSize, -1)
                 return
-            }.onFailure {
-                event?.onError(ERROR_GET_FAILED, text, it.message)
+            }.onFailure { e ->
+                event?.onError(ERROR_GET_FAILED, text, e.message)
                 // 是否断点
                 lastFailLength = if (breakPoint) currentLength else -1
                 // 1006则跳过等待
-                if (!it.message.toString()
-                        .startsWith(CLOSE_1006_PREFIX)
-                ) if (retryIndex > 3) SystemClock.sleep(
-                    3000
-                ) else SystemClock.sleep(500)
+                // 为close 1006则直接跳过等待
+                if (e.message.toString().startsWith(CLOSE_1006_PREFIX)) {
+                    event?.onStartRetry(retryIndex, e)
+                    return@onFailure
+                }
 
-                event?.onStartRetry(retryIndex, it)
+                if (retryIndex > 3) delay(3000) else delay(500)
+
+                event?.onStartRetry(retryIndex, e)
             }
         }
     }
-
 
     // 播放音频
     private suspend fun playAudio(

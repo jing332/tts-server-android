@@ -275,5 +275,6 @@
     <string name="systts_as_standby_help">About [as standby]</string>
     <string name="systts_standby">standby</string>
     <string name="decode">解码</string>
+    <string name="systts_log_replace_failed">Failed to execute replace: %1$s</string>
 
 </resources>

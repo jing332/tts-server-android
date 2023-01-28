@@ -269,4 +269,5 @@
     <string name="systts_as_standby_help">关于【作为备用】</string>
     <string name="systts_standby">备</string>
     <string name="decode">解码</string>
+    <string name="systts_log_replace_failed">执行替换失败：%1$s</string>
 </resources>

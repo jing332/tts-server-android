@@ -322,6 +322,9 @@ class SystemTtsService : TextToSpeechService(),
             TtsManager.ERROR_AUDIO_NULL -> getString(R.string.systts_log_audio_empty, speakText)
             TtsManager.ERROR_DECODE_FAILED ->
                 getString(R.string.systts_log_decode_failed, "$speakText <br>${reason}")
+            TtsManager.ERROR_REPLACE_FAILED ->
+                getString(R.string.systts_log_replace_failed, "$speakText <br>${reason}")
+
             else -> ""
         }
         sendLog(LogLevel.ERROR, msg)
