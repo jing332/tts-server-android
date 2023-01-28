@@ -53,10 +53,11 @@
 
             <ImageButton
                 android:id="@+id/btn_help_standby"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="4dp"
+                android:scaleType="centerInside"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/systts_as_standby_help"
                 app:srcCompat="@drawable/ic_baseline_help_outline_24"

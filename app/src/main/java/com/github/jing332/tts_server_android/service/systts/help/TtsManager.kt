@@ -132,7 +132,7 @@ class TtsManager(val context: Context) {
     }
 
     @Suppress("ReplaceIsEmptyWithIfEmpty")
-    private fun initConfigByTarget(@ReadAloudTarget target: Int): Boolean {
+    private fun initConfig(@ReadAloudTarget target: Int, isInitSby: Boolean = true): Boolean {
         val list = mSysTts.getAllEnabledByTarget(target).map { SystemTtsWithState(it) }
 
         var isMissing = false
@@ -142,12 +142,16 @@ class TtsManager(val context: Context) {
         } else list
 
         configMap[target]?.forEach { it.data.tts.onLoad() }
+        if (isInitSby) initSbyConfig(target)
 
+        return isMissing
+    }
+
+
+    private fun initSbyConfig(target: Int) {
         val sbyList = mSysTts.getAllEnabledStandbyTts(target).map { SystemTtsWithState(it) }
         sbyConfigMap[target] = sbyList
         sbyList.forEach { it.data.tts.onLoad() }
-
-        return isMissing
     }
 
     /**
@@ -159,13 +163,14 @@ class TtsManager(val context: Context) {
         mSysTts.apply {
             if (mCfg.isReplaceEnabled) mReplacer.load()
 
+            initSbyConfig(ReadAloudTarget.ALL)
             if (SysTtsConfig.isMultiVoiceEnabled) {
                 configMap.remove(ReadAloudTarget.ALL)
 
-                if (initConfigByTarget(ReadAloudTarget.ASIDE))
+                if (initConfig(ReadAloudTarget.ASIDE))
                     context.toast(R.string.systts_warn_no_ra_aside)
 
-                if (initConfigByTarget(ReadAloudTarget.DIALOGUE))
+                if (initConfig(ReadAloudTarget.DIALOGUE))
                     context.toast(R.string.systts_warn_no_ra_dialogue)
 
                 mAudioFormat = configMap[ReadAloudTarget.ASIDE]!![0].data.tts.audioFormat
@@ -173,7 +178,7 @@ class TtsManager(val context: Context) {
                 configMap.remove(ReadAloudTarget.ASIDE)
                 configMap.remove(ReadAloudTarget.DIALOGUE)
 
-                if (initConfigByTarget(ReadAloudTarget.ALL))
+                if (initConfig(ReadAloudTarget.ALL, isInitSby = false))
                     context.toast(R.string.systts_warn_no_ra_all)
 
                 mAudioFormat = configMap[ReadAloudTarget.ALL]!![0].data.tts.audioFormat
@@ -216,6 +221,8 @@ class TtsManager(val context: Context) {
         val sysPitch = request.pitch - 100
         val sysRate = (mNorm.normalize(request.speechRate.toFloat()) - 100).toInt()
 
+        val sby =
+            handleTtsAndConvert(sbyConfigMap[ReadAloudTarget.ALL], sysRate, sysPitch).getOrNull(0)
         mProducer = null
         if (mCfg.isMultiVoiceEnabled) { //多语音
             Log.d(TAG, "multiVoiceProducer...")
@@ -223,11 +230,17 @@ class TtsManager(val context: Context) {
             val aside = handleTtsAndConvert(configMap[ReadAloudTarget.ASIDE], sysRate, sysPitch)
             val sbyAside =
                 handleTtsAndConvert(sbyConfigMap[ReadAloudTarget.ASIDE], sysRate, sysPitch)
+                    .ifEmpty { listOf(sby) }
 
             val dialogue =
                 handleTtsAndConvert(configMap[ReadAloudTarget.DIALOGUE]!!, sysRate, sysPitch)
             val sbyDialogue =
-                handleTtsAndConvert(sbyConfigMap[ReadAloudTarget.DIALOGUE], sysRate, sysPitch)
+                handleTtsAndConvert(
+                    sbyConfigMap[ReadAloudTarget.DIALOGUE],
+                    sysRate,
+                    sysPitch
+                ).ifEmpty { listOf(sby) }
+
 
             Log.d(TAG, "旁白：${aside}, 对话：${dialogue}")
             mProducer = multiVoiceProducer(
@@ -236,9 +249,6 @@ class TtsManager(val context: Context) {
             )
         } else { //单语音
             val tts = handleTtsAndConvert(configMap[ReadAloudTarget.ALL]!!, sysRate, sysPitch)[0]
-            val sby =
-                handleTtsAndConvert(sbyConfigMap[ReadAloudTarget.ALL], sysRate, sysPitch)
-                    .getOrNull(0)
 
             Log.d(TAG, "单语音：${tts}")
             mProducer = singleVoiceProducer(text, tts, sby)
@@ -348,7 +358,7 @@ class TtsManager(val context: Context) {
             var ret = false
             val audio = getAudioForRetry(text, tts) {
                 sbyTts?.let {
-                    val audio = it.extGetAudio(text)
+                    val audio = it.getAudioHasEvent(text)
                     channel.send(ChannelData(text, audio, it))
                     ret = true
                     return@getAudioForRetry true
@@ -366,7 +376,7 @@ class TtsManager(val context: Context) {
     }
 
     // 获取音频并输出事件
-    private fun BaseTTS.extGetAudio(text: String, retryNum: Int = 0): ByteArray? {
+    private fun BaseTTS.getAudioHasEvent(text: String, retryNum: Int = 0): ByteArray? {
         return if (isDirectPlay()) null
         else {
             event?.onStartRequest(text, this)
@@ -410,7 +420,7 @@ class TtsManager(val context: Context) {
 
                 // 音频为空时至多重试两次
                 if (e.message == "audio null" && retryIndex > 2) return null
-                
+
                 // 为close 1006则直接跳过等待
                 if (e.message.toString().startsWith(CLOSE_1006_PREFIX)) {
                     event?.onStartRetry(retryIndex, e)
