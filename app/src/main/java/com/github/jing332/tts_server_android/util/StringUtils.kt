@@ -44,6 +44,13 @@ object StringUtils {
     }
 }
 
+fun String.toJsonListString(): String {
+    var s = this.trim().removeSuffix(",")
+    if (!startsWith("[")) s = "[$s"
+    if (!endsWith("]")) s += "]"
+    return s
+}
+
 /**
  * 限制字符串长度，过长自动加 "···"
  */

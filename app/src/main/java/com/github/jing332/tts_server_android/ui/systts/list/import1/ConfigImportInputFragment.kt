@@ -27,6 +27,7 @@ import com.github.jing332.tts_server_android.model.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.github.jing332.tts_server_android.util.toJsonListString
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -157,10 +158,7 @@ class ConfigImportInputFragment : Fragment() {
             }
             else -> ClipboardUtils.text.toString()
         }
-            .run { if (!startsWith("[")) "[$this" else this }
-            .run { if (!endsWith("]")) "$this]" else this }
-
-        return getImportList(json, type == TYPE_LEGADO)
+        return getImportList(json.toJsonListString(), type == TYPE_LEGADO)
 
     }
 
