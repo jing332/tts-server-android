@@ -297,14 +297,18 @@ class SystemTtsService : TextToSpeechService(),
             )
     }
 
-    override fun onRequestSuccess(text: String, size: Int, costTime: Int, retryNum: Int) {
+    override fun onRequestSuccess(text: String?, size: Int, costTime: Int, retryNum: Int) {
         if (App.isSysTtsLogEnabled)
-            sendLog(
-                LogLevel.INFO,
-                getString(
-                    R.string.systts_log_success, "<b>${(size / 1024)}kb</b>", "<b>${costTime}ms</b>"
+            text?.let {
+                sendLog(
+                    LogLevel.INFO,
+                    getString(
+                        R.string.systts_log_success,
+                        "<b>${(size / 1024)}kb</b>",
+                        "<b>${costTime}ms</b>"
+                    )
                 )
-            )
+            }
         // 重试成功
         if (retryNum > 1) updateNotification(getString(R.string.systts_state_playing), mCurrentText)
     }

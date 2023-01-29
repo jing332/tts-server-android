@@ -43,7 +43,12 @@ class TtsManager(val context: Context) {
         fun onStartRequest(text: String, tts: BaseTTS)
 
         // 请求成功
-        fun onRequestSuccess(text: String, size: Int, costTime: Int = 0, retryNum: Int = 1)
+        fun onRequestSuccess(
+            text: String? = null,
+            size: Int = 0,
+            costTime: Int = 0,
+            retryNum: Int = 2
+        )
 
         // 错误
         fun onError(errCode: Int, speakText: String? = null, reason: String? = null)
@@ -61,11 +66,11 @@ class TtsManager(val context: Context) {
     // 事件监听
     var event: EventListener? = null
 
-    // 协程作用域
-    private val mScope = CoroutineScope(Job() + Dispatchers.IO)
-
     // 是否合成中
     var isSynthesizing = false
+
+    // 协程作用域
+    private val mScope = CoroutineScope(Job() + Dispatchers.IO)
 
     // 音频解码器
     private val mAudioDecoder by lazy { AudioDecoder() }
@@ -148,7 +153,6 @@ class TtsManager(val context: Context) {
         return isMissing
     }
 
-
     private fun initSbyConfig(target: Int) {
         val sbyList = mSysTts.getAllEnabledStandbyTts(target).map { SystemTtsWithState(it) }
         sbyConfigMap[target] = sbyList
@@ -212,7 +216,6 @@ class TtsManager(val context: Context) {
         return list?.map { it.data.tts } ?: emptyList()
     }
 
-
     suspend fun synthesizeText(
         aText: String, request: SynthesisRequest, callback: SynthesisCallback
     ) {
@@ -269,17 +272,17 @@ class TtsManager(val context: Context) {
         try {
             /* 阻塞 消费者 */
             mProducer?.consumeEach { data ->
-                val shortText = data.text?.limitLength()
                 if (!isSynthesizing) {
-                    shortText?.let { event?.onPlayCanceled(it) }
+                    event?.onPlayCanceled(data.text)
                     return@consumeEach
                 }
 
                 mScope.launch {
                     if (data.tts.isDirectPlay()) {
-                        event?.onStartRequest(data.text!!, data.tts)
-                        if (!data.tts.directPlay(data.text!!)) {
-                            event?.onError(ERROR_GET_FAILED, shortText)
+                        event?.onStartRequest(data.text.toString(), data.tts)
+                        event?.onRequestSuccess()
+                        if (!data.tts.directPlay(data.text.toString())) {
+                            event?.onError(ERROR_GET_FAILED, data.text)
                             return@launch
                         }
                     } else if (data.audio == null) {
@@ -287,7 +290,7 @@ class TtsManager(val context: Context) {
                         return@launch
                     } else playAudio(data.tts, data.audio, data.tts.audioFormat, callback)
 
-                    shortText?.let { event?.onPlayDone(it) }
+                    data.text?.let { event?.onPlayDone(it) }
                 }.join()
             } // producer
 
