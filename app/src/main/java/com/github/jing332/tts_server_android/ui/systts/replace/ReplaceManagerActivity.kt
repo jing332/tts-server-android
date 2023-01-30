@@ -174,7 +174,6 @@ class ReplaceManagerActivity : AppCompatActivity() {
                         SearchTargetFilter.Name -> it.data.name
                         SearchTargetFilter.Pattern -> it.data.pattern
                         SearchTargetFilter.Replacement -> it.data.replacement
-                        else -> it.data.name
                     }
                     s.contains(binding.etSearch.text)
                 }

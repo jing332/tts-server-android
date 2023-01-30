@@ -198,6 +198,12 @@ class SysTtsListFragment : Fragment() {
             seekRate.value = SysTtsConfig.inAppPlaySpeed
             seekPitch.value = SysTtsConfig.inAppPlayPitch
 
+            btnReset.visibility = View.VISIBLE
+            btnReset.clickWithThrottle {
+                seekRate.value = 1F
+                seekPitch.value = 1F
+            }
+
             SysTtsConfig.isInAppPlayAudio.let {
                 switchOnOff.isChecked = it
                 tvTip.isGone = it
@@ -207,8 +213,8 @@ class SysTtsListFragment : Fragment() {
 
         MaterialAlertDialogBuilder(requireContext()).setView(view).setOnDismissListener {
             SysTtsConfig.isInAppPlayAudio = inAppBinding.switchOnOff.isChecked
-            SysTtsConfig.inAppPlaySpeed = (inAppBinding.seekRate.progress * 0.1).toFloat()
-            SysTtsConfig.inAppPlayPitch = (inAppBinding.seekPitch.progress * 0.1).toFloat()
+            SysTtsConfig.inAppPlaySpeed = inAppBinding.seekRate.value as Float
+            SysTtsConfig.inAppPlayPitch = inAppBinding.seekPitch.value as Float
             SystemTtsService.notifyUpdateConfig()
         }.show()
     }
