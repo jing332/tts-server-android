@@ -167,7 +167,7 @@
     <string name="systts_sample_rate">Sample rate（hz）</string>
     <string name="systts_secondaryLocale">Language secondary（language skill）</string>
     <string name="systts_voice_data_load_failed">Voice failed to load</string>
-    <string name="systts_help_sample_rate">The system TTS needs to specify the sample rate when starting to play. If Play-In-APP is turned on, this option can be ignored.</string>
+    <string name="systts_help_sample_rate">The system TTS needs to specify the sample rate when starting to play. If [built-in player] is turned on, this option can be ignored.</string>
     <string name="systts_voice_multiple_option">Config can multiple</string>
     <string name="systts_voice_multiple_hint">⚠️The same reading target will no longer be excluded, and a random rotation will be used. (Single voice does not support this function)</string>
     <string name="systts_groups_multiple">Group can multiple</string>
@@ -270,7 +270,7 @@
     <string name="systts_set_standby">Set standby TTS</string>
     <string name="systts_local_params_int_must">Must be true or 1, false or 0</string>
     <string name="set_built_in_player_params">Built-in player settings</string>
-    <string name="built_in_player_not_enabled">⚠️Built-in player is not enabled</string>
+    <string name="built_in_player_not_enabled">⚠️[Built-in player] is not enabled</string>
     <string name="please_turn_off_direct_play">⚠️Please turn off the [Direct Play] option</string>
     <string name="systts_as_standby_help">About [as standby]</string>
     <string name="systts_standby">Standby</string>

@@ -169,9 +169,9 @@
     <string name="systts_groups_multiple">分组可多选</string>
     <string name="systts_groups_multiple_hint">⚠️勾选分组时将不再互相排斥。</string>
 
-    <string name="systts_warn_no_ra_dialogue">⚠️缺少{对话}，使用默认配置！</string>
-    <string name="systts_warn_no_ra_all">⚠️缺少{全部}，使用默认！</string>
-    <string name="systts_warn_no_ra_aside">⚠️缺少{旁白}，使用默认配置！</string>
+    <string name="systts_warn_no_ra_dialogue">⚠️缺少{对话}，使用默认！\n请启用对话配置。</string>
+    <string name="systts_warn_no_ra_all">⚠️缺少{全部}，使用默认！\n请确保关闭多语音选项。</string>
+    <string name="systts_warn_no_ra_aside">⚠️缺少{旁白}，使用默认！\n请启用旁白配置。</string>
 
     <string name="systts_test_success">测试成功</string>
     <string name="systts_test_success_info">大小: %1$dKiB</string>
@@ -181,7 +181,6 @@
     <string name="systts_please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
     <string name="systts_sample_rate_different_in_enabled_list">检测到已启用配置中的格式/采样率不同，
         这将会导致音调异常(声音粗重或尖细)，请手动换为相同格式/采样率或在右上角将【使用内置播放器】选项打开。</string>
-
     <string name="group_expanded">分组 已展开</string>
     <string name="group_collapsed">分组 已折叠</string>
     <string name="systts_desc_list_count_info">共%1$d项，已启用%2$d项</string>
@@ -215,7 +214,7 @@
     <string name="systts_play_params_description">语速:%1$s | 音量:%2$s | 音高:%3$s</string>
     <string name="systts_ms_express_as_description">%1$s-%2$s | 强度:%3$s</string>
     <string name="server_log_service_running">服务已在运行中，监听地址：%1$s</string>
-    <string name="server_log_tips">1. 单击启动按钮 \n2.打开网页并选择配置 \n3.最后生成链接导入到阅读APP  \n⚠️注意： 朗读时服务需常驻后台运行！</string>
+    <string name="server_log_tips">1. 单击启动按钮 \n2. 打开网页并选择配置 \n3. 最后生成链接导入到阅读APP  \n⚠️朗读时服务需常驻后台运行！\n⚠️本功能与系统TTS互相独立，互不干涉！</string>
     <string name="systts_log_request_audio">请求音频：%1$s</string>
     <string name="systts_log_success">获取成功, 大小: %1$s, 耗时: %2$s</string>
     <string name="systts_log_failed">获取失败：%1$s</string>
