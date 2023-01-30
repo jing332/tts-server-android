@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.NestedScrollView
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.longToast
@@ -28,14 +29,16 @@ object AppDialogs {
 
     fun displayExportDialog(context: Context, scope: CoroutineScope, json: String) {
         context.apply {
+            val scrollview = NestedScrollView(context)
             val tv = TextView(this).apply {
                 text = json
                 setTextIsSelectable(true)
                 setPadding(50, 50, 50, 0)
             }
+            scrollview.addView(tv)
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.export_config)
-                .setView(tv)
+                .setView(scrollview)
                 .setPositiveButton(R.string.copy) { _, _ ->
                     ClipboardUtils.copyText(json)
                     toast(R.string.copied)
@@ -44,7 +47,7 @@ object AppDialogs {
                         kotlin.runCatching {
                             val url = updateToUrl(json)
                             ClipboardUtils.copyText(url)
-                            longToast("${getString(R.string.copied)}: \n${url}")
+                            longToast("${getString(R.string.copied)}: $url")
                         }.onFailure {
                             longToast(getString(R.string.upload_failed, it.message))
                         }
