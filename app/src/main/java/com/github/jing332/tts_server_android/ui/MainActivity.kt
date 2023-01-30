@@ -16,7 +16,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.os.LocaleListCompat
 import androidx.core.view.MenuCompat
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
@@ -27,15 +29,17 @@ import androidx.navigation.ui.*
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
+import com.github.jing332.tts_server_android.databinding.NavHeaderBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.util.*
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
-import com.github.jing332.tts_server_android.util.MyTools
-import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -47,6 +51,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private lateinit var navHeaderBinding: NavHeaderBinding
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
@@ -79,12 +84,72 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
         navGraph.setStartDestination(checkedId)
         navController.graph = navGraph
+        navHeaderBinding = NavHeaderBinding.bind(binding.navView.getHeaderView(0))
+        navHeaderBinding.apply {
+            subtitle.text = BuildConfig.VERSION_NAME
 
-        val tvVersion =
-            binding.navView.getHeaderView(0).findViewById<TextView>(R.id.nav_header_subtitle)
-        tvVersion.text = BuildConfig.VERSION_NAME
+            btnLangSet.clickWithThrottle {
+                val followStr = getString(R.string.app_language_follow)
+                val appLocales =
+                    ApplicationUtils.getAppLanguages(
+                        this@MainActivity,
+                        R.string.app_language_follow
+                    ).map { Locale.forLanguageTag(it) }
+
+                val displayNameList =
+                    mutableListOf(followStr).apply {
+                        addAll(appLocales.map { it.getDisplayName(it) })
+                    }
+                val currentLocale = AppCompatDelegate.getApplicationLocales().get(0)
+                val checkedIndex =
+                    if (currentLocale == null) 0
+                    else {
+                        val i =
+                            appLocales.indexOfFirst { it.toLanguageTag() == currentLocale.toLanguageTag() }
+                        if (i == -1) 0
+                        else i + 1
+                    }
+                MaterialAlertDialogBuilder(this@MainActivity)
+                    .setSingleChoiceItems(
+                        displayNameList.toTypedArray(),
+                        checkedIndex
+                    ) { dlg, which ->
+                        val locale = if (which > 0) {
+                            LocaleListCompat.create(appLocales[which - 1])
+                        } else {
+                            longToast(R.string.app_language_to_follow_tip_msg)
+                            app.updateLocale(Locale.getDefault())
+                            LocaleListCompat.getEmptyLocaleList()
+                        }
+                        AppCompatDelegate.setApplicationLocales(locale)
+
+                        dlg.dismiss()
+                    }
+                    .show()
+            }
+        }
 
         MyTools.checkUpdate(this)
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onStart() {
+        super.onStart()
+        updateLanguageSetBtnText()
+
+        app.updateLocale(resources.configuration.locale)
+    }
+
+    private fun updateLanguageSetBtnText() {
+        AppCompatDelegate.getApplicationLocales().let { localeListCompat ->
+            val locale = localeListCompat.get(0)
+            navHeaderBinding.btnLangSet.text =
+                if (locale == null) getString(R.string.app_language_follow)
+                else locale.getDisplayName(locale)
+            navHeaderBinding.btnLangSet.apply {
+                contentDescription = getString(R.string.app_language_desc, text.toString())
+            }
+        }
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {

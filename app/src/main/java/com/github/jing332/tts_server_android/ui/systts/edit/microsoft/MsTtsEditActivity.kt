@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.ui.systts.edit.microsoft
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.viewModels
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
@@ -13,7 +14,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
 class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
-    MsTTS(locale = Locale.getDefault().run { "$language-$country" })
+    MsTTS(locale = App.locale.run { "$language-$country" })
 }) {
     companion object {
         const val TAG = "MsTtsEditActivity"

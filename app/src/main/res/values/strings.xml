@@ -280,5 +280,8 @@
     <string name="systts_sby_settings_msg">Standby configuration fires on how many retries? Defaults to 1, i.e. the alternate configuration is used on the first failed retry.</string>
     <string name="systts_ms_webm_warn_msg">After testing, the actual traffic consumption of webm…-24kbps… is more than three times its audio size, so it is not recommended!</string>
     <string name="search_filter">Filter search</string>
+    <string name="app_language_follow">Follow system</string>
+    <string name="app_language_desc">Application language：%1$s</string>
+    <string name="app_language_to_follow_tip_msg">If change fail, Please restart application</string>
 
 </resources>

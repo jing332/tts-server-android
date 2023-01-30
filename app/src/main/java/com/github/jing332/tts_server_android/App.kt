@@ -2,14 +2,21 @@ package com.github.jing332.tts_server_android
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
+import android.os.Build
+import android.os.LocaleList
+import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.chibatching.kotpref.Kotpref
 import com.drake.brv.utils.BRV
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import java.util.*
 import kotlin.properties.Delegates
 
-val app: App by lazy { App.instance }
+
+val app: App
+    inline get() = App.instance
 
 @Suppress("DEPRECATION")
 class App : Application() {
@@ -32,10 +39,22 @@ class App : Application() {
             }
         }
 
-        val isCnLocale by lazy {
-            val locale = context.resources.configuration.locale
-            locale.language.endsWith("zh")
-        }
+        val isCnLocale: Boolean
+            get() = context.resources.configuration.locale.language.endsWith("zh")
+
+        val locale: Locale
+            get() = context.resources.configuration.locale
+    }
+
+    fun updateLocale(locale: Locale) {
+        Log.i(TAG, "updateLocale: $locale")
+        val configuration: Configuration = resources.configuration
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            configuration.setLocales(LocaleList(locale))
+        else
+            configuration.setLocale(locale)
+
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
     override fun onCreate() {

@@ -37,21 +37,9 @@ data class MsTTS(
     var expressAs: ExpressAs? = null,
 
     @kotlinx.serialization.Transient
-    override var audioFormat: BaseAudioFormat  = MsTtsFormatManger.getFormatOrDefault(format),
+    override var audioFormat: BaseAudioFormat = MsTtsFormatManger.getFormatOrDefault(format),
     override var audioPlayer: AudioPlayer = AudioPlayer(),
 ) : Parcelable, BaseTTS() {
-//    constructor() : this(DEFAULT_VOICE)
-//    constructor(voiceName: String) : this(voiceName, Prosody())
-//    constructor(voiceName: String, prosody: Prosody) : this(
-//        MsTtsApiType.EDGE, MsTtsAudioFormat.DEFAULT,
-//        DEFAULT_LOCALE,
-//        null,
-//        voiceName,
-//        null,
-//        prosody,
-//        null
-//    )
-
     companion object {
         const val RATE_FOLLOW_SYSTEM = -100
         const val PITCH_FOLLOW_SYSTEM = -50
@@ -60,8 +48,6 @@ data class MsTTS(
         const val DEFAULT_VOICE = "zh-CN-XiaoxiaoNeural"
 
         //        const val DEFAULT_VOICE_ID = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
-        val strFollow by lazy { app.getString(R.string.follow) }
-        val strNone by lazy { app.getString(R.string.none) }
     }
 
     @IgnoredOnParcel
@@ -100,6 +86,9 @@ data class MsTTS(
     }
 
     override fun getDescription(): String {
+        val strFollow by lazy { app.getString(R.string.follow) }
+        val strNone by lazy { app.getString(R.string.none) }
+
         val rateStr = if (isRateFollowSystem()) strFollow else rate
         val pitchStr = if (isPitchFollowSystem()) strFollow else pitch
 

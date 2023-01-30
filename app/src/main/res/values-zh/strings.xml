@@ -273,4 +273,7 @@
     <string name="systts_sby_settings_msg">备用配置在第几次重试时触发？默认为1，即备用配置在首次失败重试时使用。</string>
     <string name="systts_ms_webm_warn_msg">⚠️ 经测试，音频格式 webm..-24kbps-.. 的实际所耗流量是其音频大小的三倍有余，不推荐使用！</string>
     <string name="search_filter">搜索过滤</string>
+    <string name="app_language_follow">跟随系统</string>
+    <string name="app_language_desc">APP语言：%1$s</string>
+    <string name="app_language_to_follow_tip_msg">如更新语言失败，请手动结束程序并重启。</string>
 </resources>
