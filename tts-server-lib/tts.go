@@ -17,6 +17,7 @@ import (
 func init() {
 	// 跳过证书验证
 	http.DefaultClient.Transport = &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+	http.DefaultClient.Timeout = time.Second * 5
 }
 
 type VoiceProperty tts.VoiceProperty
@@ -69,7 +70,7 @@ func (e *EdgeApi) GetEdgeAudio(text, format string, property *VoiceProperty,
 	case <-time.After(time.Duration(e.Timeout) * time.Millisecond):
 		e.tts.CloseConn()
 		e.tts = nil
-		return nil, fmt.Errorf("已超时：%dms", e.Timeout)
+		return nil, fmt.Errorf("timed out：%dms", e.Timeout)
 	}
 }
 
@@ -100,7 +101,7 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 	if a.tts == nil {
 		a.tts = &azure.TTS{}
 	}
-	property.Api = 1
+	property.Api = tts.ApiAzure
 	proto := property.Proto(prosody, expressAS)
 
 	text = core.SpecialCharReplace(text)
@@ -127,7 +128,7 @@ func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
 	case <-time.After(time.Duration(a.Timeout) * time.Millisecond):
 		a.tts.CloseConn()
 		a.tts = nil
-		return nil, fmt.Errorf("已超时：%dms", a.Timeout)
+		return nil, fmt.Errorf("timed out：%dms", a.Timeout)
 	}
 }
 
