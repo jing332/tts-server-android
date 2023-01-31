@@ -71,7 +71,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // 关联抽屉菜单和Fragment
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_systts, R.id.nav_server, R.id.nav_settings), drawerLayout
+            setOf(
+                R.id.nav_systts,
+                R.id.nav_server,
+//                R.id.nav_api_convert_server,
+                R.id.nav_settings
+            ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
@@ -89,15 +94,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             subtitle.text = BuildConfig.VERSION_NAME
 
             btnLangSet.clickWithThrottle {
-                val followStr = getString(R.string.app_language_follow)
-                val appLocales =
-                    ApplicationUtils.getAppLanguages(
-                        this@MainActivity,
-                        R.string.app_language_follow
-                    ).map { Locale.forLanguageTag(it) }
-
+                val appLocales = BuildConfig.TRANSLATION_ARRAY.map { Locale.forLanguageTag(it) }
                 val displayNameList =
-                    mutableListOf(followStr).apply {
+                    mutableListOf(getString(R.string.app_language_follow)).apply {
                         addAll(appLocales.map { it.getDisplayName(it) })
                     }
                 val currentLocale = AppCompatDelegate.getApplicationLocales().get(0)
@@ -159,6 +158,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             AppConfig.fragmentIndex = when (menuItem.itemId) {
                 R.id.nav_systts -> 0
                 R.id.nav_server -> 1
+                R.id.nav_api_convert_server -> 2
                 else -> 0
             }
         } else {

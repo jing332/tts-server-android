@@ -283,5 +283,6 @@
     <string name="app_language_follow">Follow system</string>
     <string name="app_language_desc">Application language：%1$s</string>
     <string name="app_language_to_follow_tip_msg">If change fail, Please restart application</string>
+    <string name="api_conv_server">接口转换服务</string>
 
 </resources>

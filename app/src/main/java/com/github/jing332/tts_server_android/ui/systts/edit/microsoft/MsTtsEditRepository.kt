@@ -149,7 +149,7 @@ data class GeneralVoiceData(
      * 地区名
      */
     val localeName: String
-        get() = Locale.forLanguageTag(locale).displayName
+        get() = Locale.forLanguageTag(locale).run { getDisplayName(this) }
 
     /**
      * 获取发音人本地化名称，edge则为汉化
