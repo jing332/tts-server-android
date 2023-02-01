@@ -63,7 +63,6 @@ class LocalTtsViewModel : ViewModel() {
                     mTts.onLoad()
                 }
 
-
                 viewModelScope.runOnIO {
                     withMain { onStart.invoke() }
 
@@ -84,9 +83,12 @@ class LocalTtsViewModel : ViewModel() {
             if (propertyId == BR.position) {
                 ui.voices.apply {
                     ui.locales.selectedItem?.let {
-                        mTts.locale =
-                            if (it.value == null) null
-                            else (it.value as Locale).toLanguageTag()
+                        mTts.locale = if (it.value == null) {
+                            mTts.voiceName = null
+                            null
+                        } else {
+                            (it.value as Locale).toLanguageTag()
+                        }
                     }
                     updateVoice(mAllVoices)
 
@@ -98,7 +100,9 @@ class LocalTtsViewModel : ViewModel() {
         ui.voices.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
                 ui.voices.selectedItem?.let {
-                    mTts.voiceName = if (it.value == null) null else (it.value as Voice).name
+                    mTts.voiceName = if (it.value == null)
+                        null
+                    else (it.value as Voice).name
                 }
             }
         }
