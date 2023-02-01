@@ -276,5 +276,8 @@
     <string name="app_language_follow">跟随系统</string>
     <string name="app_language_desc">APP语言：%1$s</string>
     <string name="app_language_to_follow_tip_msg">如更新语言失败，请手动结束程序并重启。</string>
-    <string name="api_conv_server">接口转换服务</string>
+    <string name="systts_forwarder_fail_audio_file">合成失败：未找到音频文件</string>
+    <string name="systts_forwarder_fail_engine_init_timeout">引擎初始化失败：已超时</string>
+    <string name="systts_forwarder">系统TTS转发器</string>
+    <string name="systts_forwarder_running">系统TTS转发器运行中</string>
 </resources>

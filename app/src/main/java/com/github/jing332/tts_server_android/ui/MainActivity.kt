@@ -48,6 +48,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         const val KEY_MENU_ITEM_ID = "KEY_MENU_ITEM_ID"
 
         const val ACTION_BACK_KEY_DOWN = "ACTION_BACK_KEY_DOWN"
+
+        private val drawerMenus by lazy {
+            listOf(R.id.nav_systts, R.id.nav_server, R.id.nav_systts_forwarder, R.id.nav_settings)
+        }
     }
 
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -71,19 +75,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // 关联抽屉菜单和Fragment
         appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_systts,
-                R.id.nav_server,
-//                R.id.nav_api_convert_server,
-                R.id.nav_settings
-            ), drawerLayout
+            drawerMenus.toSet(), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
         // 设置启动页面
-        val checkedId = if (AppConfig.fragmentIndex == 1) R.id.nav_server else R.id.nav_systts
+        val checkedId = drawerMenus.getOrElse(AppConfig.fragmentIndex) { 0 }
         navView.setCheckedItem(checkedId)
 
         val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
@@ -158,7 +157,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             AppConfig.fragmentIndex = when (menuItem.itemId) {
                 R.id.nav_systts -> 0
                 R.id.nav_server -> 1
-                R.id.nav_api_convert_server -> 2
+                R.id.nav_systts_forwarder -> 2
                 else -> 0
             }
         } else {
@@ -179,6 +178,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val id = when (navController.currentDestination?.id) {
             R.id.nav_systts -> R.menu.menu_systts
             R.id.nav_server -> R.menu.menu_server
+            R.id.nav_systts_forwarder -> R.menu.menu_systts_forwarder
             else -> return false
         }
         MenuCompat.setGroupDividerEnabled(menu, true)
@@ -204,6 +204,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     R.id.nav_server -> {
                         findItem(R.id.menu_wakeLock)?.isChecked = ServerConfig.isWakeLockEnabled
+                    }
+                    R.id.nav_systts_forwarder ->{
+
                     }
                 }
             }

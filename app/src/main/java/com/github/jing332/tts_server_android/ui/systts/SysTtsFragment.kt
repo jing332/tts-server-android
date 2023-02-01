@@ -27,11 +27,11 @@ class SysTtsFragment : Fragment() {
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                binding.bottomNavigationView.menu.getItem(position).isChecked = true
+                binding.bnv.menu.getItem(position).isChecked = true
             }
         })
 
-        binding.bottomNavigationView.setOnItemSelectedListener {
+        binding.bnv.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.navbar_config -> binding.viewPager.setCurrentItem(0, true)
                 R.id.navbar_log -> binding.viewPager.setCurrentItem(1, true)

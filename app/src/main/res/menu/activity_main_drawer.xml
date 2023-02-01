@@ -19,9 +19,10 @@
                 android:title="Server"
                 tools:ignore="HardcodedText" />
             <item
-                android:id="@+id/nav_api_convert_server"
+                android:id="@+id/nav_systts_forwarder"
                 android:checkable="true"
-                android:title="@string/api_conv_server" />
+                android:icon="@drawable/ic_baseline_compare_arrows_24"
+                android:title="@string/systts_forwarder" />
             <item
                 android:id="@+id/nav_settings"
                 android:checkable="true"

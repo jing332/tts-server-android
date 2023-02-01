@@ -53,6 +53,7 @@ func (lh LogHandler) Close() {
 }
 
 type MyFormatter struct {
+	OnLog func(level int32, msg string)
 }
 
 func (f *MyFormatter) Format(entry *log.Entry) ([]byte, error) {

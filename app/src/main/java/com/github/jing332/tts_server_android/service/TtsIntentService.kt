@@ -175,7 +175,6 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         startForeground(1, notification) //启动前台服务
     }
 
-
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {/*点击通知上的退出按钮*/
             when (intent?.action) {

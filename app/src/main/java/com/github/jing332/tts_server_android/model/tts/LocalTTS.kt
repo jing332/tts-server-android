@@ -217,28 +217,34 @@ data class LocalTTS(
         }
     }
 
-    @IgnoredOnParcel
-    private var currentJobId: String? = null
-
-    override fun getAudio(speakText: String): ByteArray? {
+    fun getAudioFile(text: String, timeout: Long = 8000L): File {
         initEngineIf()
         currentJobId = SystemClock.elapsedRealtime().toString()
 
         File(saveDir).apply { if (!exists()) mkdirs() }
         val file = File("$saveDir/$engine.wav")
         runBlocking {
-            checkInitAndWait()
+            if (!checkInitAndWait()){
+                throw Exception("Engine initialize failed")
+            }
+
             waitJob = launch {
                 mTtsEngine?.apply {
-                    synthesizeToFile(speakText, setEnginePlayParams(this), file, currentJobId)
+                    synthesizeToFile(text, setEnginePlayParams(this), file, currentJobId)
                     // 等待完毕
                     awaitCancellation()
                 }
             }.job
             waitJob?.start()
         }
+        return file
+    }
 
-        return if (file.exists()) file.readBytes() else null
+    @IgnoredOnParcel
+    private var currentJobId: String? = null
+
+    override fun getAudio(speakText: String): ByteArray? {
+        return getAudioFile(speakText).run { if (exists()) readBytes() else null }
     }
 
     override fun isDirectPlay() = isDirectPlayMode

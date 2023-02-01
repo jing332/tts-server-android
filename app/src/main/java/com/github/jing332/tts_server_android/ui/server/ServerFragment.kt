@@ -53,10 +53,10 @@ class ServerFragment : Fragment() {
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                binding.bottomNavigationView.menu.getItem(position).isChecked = true
+                binding.bnv.menu.getItem(position).isChecked = true
             }
         })
-        binding.bottomNavigationView.setOnItemSelectedListener {
+        binding.bnv.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.menu_serverLog -> binding.viewPager.setCurrentItem(0, true)
                 R.id.menu_serverWeb -> {

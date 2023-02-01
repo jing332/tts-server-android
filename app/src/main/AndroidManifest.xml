@@ -113,6 +113,11 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
+        <service
+            android:name=".service.sysforwarder.SysTtsForwarderService"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedService,Instantiatable" />
     </application>
 
 </manifest>

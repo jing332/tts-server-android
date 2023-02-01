@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Android System TTS Server</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.staticfile.org/bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script>
+</head>
+<body>
+<nav>
+    <a class="navbar-brand github-button" href="https://github.com/jing332/tts-server-android" data-size="large"
+       data-show-count="true" aria-label="Star jing332/tts-server-android on GitHub">tts-server-android</a>
+</nav>
+<div class="container" style="margin-top: 10px;">
+    <div class="row" hidden=hidden>
+        <div class="col">
+            <div class="alert alert-info" role="alert">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <label class="from-label"> TTS引擎（Engine）:</label>
+            <select class="form-select" id="select_engine" aria-label="Engine / 引擎"></select>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 10px">
+        <div class="col">
+            <label for="textarea_test"> 测试文本 (Test text)</label>
+            <textarea class="form-control" id="textarea_test">这是测试文本。&#13;This is the test text.</textarea>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+        <div class="col">
+            <button class="btn btn-primary" id="btn_test" onclick="onBtnTestClick()">
+                <span class="spinner-border spinner-border-sm" id="btn_test_load" hidden="hidden"></span>
+                测试 (Test)
+            </button>
+            <button class="btn btn-success" id="btn_import_legado" onclick="onBtnImportClick()">阅读 Legado</button>
+        </div>
+        <div class="col">
+            <audio controls="controls" id="audio">
+                Your browser does not support the &lt;audio&gt; tag.
+                <source id="source" src="" type="audio/wav"/>
+            </audio>
+        </div>
+    </div>
+
+</div>
+
+
+<div id="legadoUrlModal" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">阅读链接</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div style="position: relative">
+                    <textarea id="legadoUrl" class="form-control" readonly rows="3"
+                              cols="2"></textarea>
+                    <button id="copyBtn" class="btn btn-dark btn-sm"
+                            style="--bs-btn-font-size: 10px;position:absolute;right:0;top:0;z-index: 20"
+                            onclick="copyLegadoUrl()">复制
+                    </button>
+
+                </div>
+                <div class="alert alert-primary" role="alert">
+                    请在阅读的朗读引擎设置中选择网络导入此链接。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="onBtnOneImportClick()">一键导入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src=https://cdn.staticfile.org/github-buttons/2.22.0/buttons.min.js></script>
+<script src="https://cdn.staticfile.org/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@keeex/qrcodejs-kx@1.0.2/qrcode.min.js"></script>
+<script>
+    // let baseUrl = 'http://192.168.0.105:1221'
+    let baseUrl = ''
+
+    let engines = {}
+    fetch(baseUrl + '/api/engines', {mode: 'cors'})
+        .then(response => {
+            if (response.status === 200) {
+                return response.json()
+            } else {
+                return response.text().then(text => Promise.reject(text))
+            }
+        })
+        .then(data => {
+            engines = data
+            updateEngine()
+        })
+
+    /* 复制导入链接 */
+    function copyLegadoUrl() {
+        let copyBtn = $('#copyBtn')[0]
+        copyBtn.disabled = true
+        setTimeout(function () {
+            copyBtn.innerText = "复制"
+            copyBtn.disabled = false
+        }, 2000)
+
+        try {
+            document.getElementById("legadoUrl").select()
+            let ok = document.execCommand("copy");
+            if (ok) copyBtn.innerText = "已复制到剪贴板"
+            else copyBtn.innerText = "复制失败 请手动复制"
+        } catch (e) {
+            copyBtn.innerText = "复制失败 请手动复制"
+        }
+    }
+
+    function onBtnOneImportClick() {
+        window.location.href = 'legado://import/httpTTS?src=' + $('#legadoUrl')[0].value
+    }
+
+    function onBtnImportClick() {
+        let selectEngine = $('#select_engine')[0]
+        let engine = selectEngine.value
+        let name = getSelectedText(selectEngine)
+        $('#legadoUrl')[0].value = `${window.location.protocol}//${window.location.host}/api/legado?api=${encodeURI(window.location.protocol)}//${window.location.host}/api/tts`
+            + `&name=${name}&engine=${engine}`
+        let modal = new bootstrap.Modal($('#legadoUrlModal')[0])
+        modal.show()
+    }
+
+    function getSelectedText(obj) {
+        let index = obj.selectedIndex
+        return obj.options[index].text
+    }
+
+    function onBtnTestClick() {
+        let engine = $('#select_engine')[0].value
+        let btn = $("#btn_test")[0]
+        let load = $('#btn_test_load')[0]
+        btn.disabled = true
+        load.hidden = false
+
+        let text = $('#textarea_test')[0].value
+        fetch(baseUrl + `/api/tts?text=${text}&engine=${engine}&rate=50`,
+            {method: 'GET'})
+            .then(response => {
+                if (response.status === 200) {
+                    return response.arrayBuffer()
+                } else {
+                    return response.text().then(text => Promise.reject(text))
+                }
+            })
+            .then(arrayBuffer => {
+                let blob = new Blob([arrayBuffer], {type: 'audio/x-wav'})
+                let audio = $('#audio')[0]
+                audio.src = window.URL.createObjectURL(blob)
+                audio.load()
+                audio.play()
+            })
+            .catch(reason => {
+                alert(reason)
+            })
+            .finally(() => {
+                btn.disabled = false
+                load.hidden = true
+            })
+    }
+
+    function updateEngine() {
+        engines.forEach(engine => {
+                let name = engine['name']
+                let label = engine['label']
+
+                let option = document.createElement('option')
+                console.log(name, label)
+                option.innerText = label + " (" + name + ")"
+                option.value = name
+
+                $("#select_engine").append(option)
+            }
+        )
+    }
+
+
+</script>
+</body>
+</html>

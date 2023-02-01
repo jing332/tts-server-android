@@ -18,10 +18,10 @@
         tools:layout="@layout/server_fragment" />
 
     <fragment
-        android:id="@+id/nav_api_convert_server"
-        android:name="com.github.jing332.tts_server_android.ui.systts2http.ApiConvServerFragment"
-        android:label="@string/api_conv_server"
-        tools:layout="@layout/api_conv_fragment" />
+        android:id="@+id/nav_systts_forwarder"
+        android:name="com.github.jing332.tts_server_android.ui.sys_forwarder.SysTtsForwarderFragment"
+        android:label="@string/systts_forwarder"
+        tools:layout="@layout/sys_tts_forwarder_fragment" />
 
     <fragment
         android:id="@+id/nav_settings"
