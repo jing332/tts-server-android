@@ -22,19 +22,19 @@
 
     <div class="row">
         <div class="col">
-            <label class="from-label"> TTS引擎（Engine）:</label>
+            <label class="from-label"> TTS引擎 (Engine)</label>
             <select class="form-select" id="select_engine" aria-label="Engine / 引擎"></select>
         </div>
     </div>
 
     <div class="row" style="margin-top: 10px">
         <div class="col">
-            <label for="textarea_test"> 测试文本 (Test text)</label>
-            <textarea class="form-control" id="textarea_test">这是测试文本。&#13;This is the test text.</textarea>
+            <label for="textarea_test"> 测试文本 (Sample text)</label>
+            <textarea class="form-control" id="textarea_test">如果喜欢这个项目的话请点个Star吧。&#13;If you like this project, please click Star.</textarea>
         </div>
     </div>
 
-    <div class="row" style="margin-top:10px">
+    <div class="row" style="margin-top:25px">
         <div class="col">
             <button class="btn btn-primary" id="btn_test" onclick="onBtnTestClick()">
                 <span class="spinner-border spinner-border-sm" id="btn_test_load" hidden="hidden"></span>
@@ -42,12 +42,13 @@
             </button>
             <button class="btn btn-success" id="btn_import_legado" onclick="onBtnImportClick()">阅读 Legado</button>
         </div>
-        <div class="col">
-            <audio controls="controls" id="audio">
-                Your browser does not support the &lt;audio&gt; tag.
-                <source id="source" src="" type="audio/wav"/>
-            </audio>
-        </div>
+    </div>
+
+    <div class="col" style="margin-top: 10px">
+        <audio controls="controls" id="audio">
+            Your browser does not support the &lt;audio&gt; tag.
+            <source id="source" src="" type="audio/wav"/>
+        </audio>
     </div>
 
 </div>

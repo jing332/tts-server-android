@@ -1,10 +1,7 @@
-package com.github.jing332.tts_server_android.ui.server
+package com.github.jing332.tts_server_android.ui.base
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -13,21 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.databinding.ServerWebFragmentBinding
-import com.github.jing332.tts_server_android.service.TtsIntentService
+import com.github.jing332.tts_server_android.databinding.WebPageFragmentBinding
 import com.github.jing332.tts_server_android.util.toast
 
-
-class ServerWebFragment : Fragment() {
-    private val binding: ServerWebFragmentBinding by lazy {
-        ServerWebFragmentBinding.inflate(layoutInflater)
+open class BaseWebViewPageFragment() : Fragment() {
+    private val binding: WebPageFragmentBinding by lazy {
+        WebPageFragmentBinding.inflate(layoutInflater)
     }
-    private val viewModel: ServerWebViewModel by viewModels()
 
-    private val mReceiver by lazy { MyReceiver() }
+    val webView: WebView
+        get() = binding.webView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,23 +61,10 @@ class ServerWebFragment : Fragment() {
                 return super.shouldOverrideUrlLoading(view, request)
             }
         }
-
-        App.localBroadcast.registerReceiver(
-            mReceiver,
-            IntentFilter(TtsIntentService.ACTION_ON_STARTED)
-        )
-
-        val port = TtsIntentService.instance?.cfg?.port ?: 1233
-        binding.webView.loadUrl("http://localhost:${port}")
-        if (TtsIntentService.instance?.isRunning != true) {
-            val i = Intent(app, TtsIntentService::class.java)
-            requireContext().startService(i)
-        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
         binding.webView.clearHistory()
     }
 
@@ -108,16 +87,5 @@ class ServerWebFragment : Fragment() {
         }
 
         return false
-    }
-
-
-    inner class MyReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                TtsIntentService.ACTION_ON_STARTED -> {
-                    binding.webView.reload()
-                }
-            }
-        }
     }
 }

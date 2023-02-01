@@ -7,15 +7,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.text.Html
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.App
@@ -113,6 +114,109 @@ class SysTtsListFragment : Fragment() {
                     id = SystemTtsGroup.DEFAULT_GROUP_ID, name = getString(R.string.default_group)
                 )
             )
+        }
+
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(MyMenuProvider(), viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    inner class MyMenuProvider : MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.menu_systts, menu)
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            return when (menuItem.itemId) {
+                /* 添加配置 */
+                R.id.menu_add_ms_tts -> {
+                    addTtsConfig(MsTtsEditActivity::class.java)
+                    true
+                }
+                R.id.menu_add_local_tts -> {
+                    addTtsConfig(LocalTtsEditActivity::class.java)
+                    true
+                }
+                R.id.menu_add_http_tts -> {
+                    addTtsConfig(HttpTtsEditActivity::class.java)
+                    true
+                }
+                R.id.menu_addGroup -> {
+                    addGroup()
+                    true
+                }
+
+                R.id.menu_isInAppPlayAudio -> {
+                    showInAppSettingsDialog()
+                    true
+                }
+                R.id.menu_setAudioRequestTimeout -> {
+                    showSetAudioRequestTimeoutDialog()
+                    true
+                }
+                R.id.menu_setMinDialogueLen -> {
+                    showSetMinDialogueLengthDialog()
+                    true
+                }
+                R.id.menu_set_sby_use_conditions -> {
+                    displaySetStandbyUseConditions()
+                    true
+                }
+
+                R.id.menu_doSplit -> {
+                    SysTtsConfig.isSplitEnabled = !SysTtsConfig.isSplitEnabled
+                    SystemTtsService.notifyUpdateConfig()
+                    true
+                }
+                R.id.menu_isMultiVoice -> {
+                    SysTtsConfig.isMultiVoiceEnabled = !SysTtsConfig.isMultiVoiceEnabled
+                    SystemTtsService.notifyUpdateConfig()
+                    true
+                }
+                R.id.menu_voiceMultiple -> {
+                    SysTtsConfig.isVoiceMultipleEnabled = !SysTtsConfig.isVoiceMultipleEnabled
+                    SystemTtsService.notifyUpdateConfig()
+                    if (SysTtsConfig.isVoiceMultipleEnabled) longToast(R.string.systts_voice_multiple_hint)
+                    true
+                }
+                R.id.menu_groupMultiple -> {
+                    SysTtsConfig.isGroupMultipleEnabled = !SysTtsConfig.isGroupMultipleEnabled
+                    if (SysTtsConfig.isGroupMultipleEnabled) longToast(getString(R.string.systts_groups_multiple_hint))
+                    true
+                }
+
+                R.id.menu_replace_manager -> {
+                    startActivity(
+                        Intent(requireContext(), ReplaceManagerActivity::class.java)
+                    )
+                    true
+                }
+
+                /* 导入导出 */
+                R.id.menu_importConfig -> {
+                    importConfig()
+                    true
+                }
+                R.id.menu_export_config -> {
+                    exportConfig()
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+        override fun onPrepareMenu(menu: Menu) {
+            super.onPrepareMenu(menu)
+            SysTtsConfig.apply {
+                menu.apply {
+                    findItem(R.id.menu_isMultiVoice)?.isChecked = isMultiVoiceEnabled
+                    findItem(R.id.menu_doSplit)?.isChecked = isSplitEnabled
+                    findItem(R.id.menu_replace_manager)?.isChecked = isReplaceEnabled
+                    findItem(R.id.menu_isInAppPlayAudio)?.isChecked = isInAppPlayAudio
+                    findItem(R.id.menu_voiceMultiple)?.isChecked = isVoiceMultipleEnabled
+                    findItem(R.id.menu_groupMultiple)?.isChecked = isGroupMultipleEnabled
+                }
+            }
         }
     }
 

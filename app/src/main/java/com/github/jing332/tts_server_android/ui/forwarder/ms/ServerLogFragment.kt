@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.server
+package com.github.jing332.tts_server_android.ui.forwarder.ms
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -26,8 +26,7 @@ class ServerLogFragment : Fragment() {
     }
 
     private val mReceiver by lazy { MyReceiver() }
-    private val logList: ArrayList<AppLog> by lazy { ArrayList() }
-    private val logAdapter: LogListItemAdapter by lazy { LogListItemAdapter(logList) }
+    private var mLogAdapter: LogListItemAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +37,8 @@ class ServerLogFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvLog.adapter = logAdapter
+        mLogAdapter = LogListItemAdapter()
+        binding.rvLog.adapter = mLogAdapter
         val layoutManager = LinearLayoutManager(requireContext())
         layoutManager.stackFromEnd = true
         binding.rvLog.layoutManager = layoutManager
@@ -61,14 +61,14 @@ class ServerLogFragment : Fragment() {
         if (TtsIntentService.instance?.isRunning == true) {
             setControlStatus(false)
             val localIp = Tts_server_lib.getOutboundIP()
-            logList.add(
+            mLogAdapter?.append(
                 AppLog(
                     LogLevel.WARN,
                     getString(R.string.server_log_service_running, "${localIp}:${port}")
                 )
             )
         } else {
-            logList.add(AppLog(LogLevel.INFO, getString(R.string.server_log_tips)))
+            mLogAdapter?.append((AppLog(LogLevel.INFO, getString(R.string.server_log_tips))))
         }
     }
 
@@ -108,16 +108,18 @@ class ServerLogFragment : Fragment() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
             when (intent?.action) {
                 TtsIntentService.ACTION_ON_LOG -> {
-                    val log = intent.getParcelableExtra<AppLog>(KeyConst.KEY_DATA) as AppLog
-                    val layout = binding.rvLog.layoutManager as LinearLayoutManager
-                    val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
-                    logAdapter.append(log)
-                    /* 判断是否在最底部 */
-                    if (isBottom)
-                        binding.rvLog.scrollToPosition(logAdapter.itemCount - 1)
+                    mLogAdapter?.let {
+                        val log = intent.getParcelableExtra<AppLog>(KeyConst.KEY_DATA) as AppLog
+                        val layout = binding.rvLog.layoutManager as LinearLayoutManager
+                        val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
+                        it.append(log)
+                        /* 判断是否在最底部 */
+                        if (isBottom)
+                            binding.rvLog.scrollToPosition(it.itemCount - 1)
+                    }
                 }
                 TtsIntentService.ACTION_ON_STARTED -> {
-                    logAdapter.removeAll() /* 清空日志 */
+                    mLogAdapter?.removeAll() /* 清空日志 */
                     setControlStatus(false)
                 }
                 TtsIntentService.ACTION_ON_CLOSED -> {

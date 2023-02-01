@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.server.ServerFragment">
+    tools:context=".ui.forwarder.ms.ServerFragment">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bnv"

@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Build
+import android.os.PowerManager
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.core.content.ContextCompat
@@ -34,6 +35,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
         const val TAG = "SysTtsServerService"
         const val ACTION_REQUEST_CLOSE_SERVER = "ACTION_REQUEST_CLOSE_SERVER"
         const val ACTION_ON_CLOSED = "ACTION_ON_CLOSED"
+        const val ACTION_ON_STARTING = "ACTION_ON_STARTING"
         const val ACTION_ON_LOG = "ACTION_ON_LOG"
 
         const val ACTION_NOTIFICATION_COPY_URL = "ACTION_NOTIFICATION_COPY_URL"
@@ -46,7 +48,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
         instance = this
     }
 
-    private val listenAddress: String
+    val listenAddress: String
         get() {
             val localIp = Tts_server_lib.getOutboundIP()
             return "${localIp}:${mCfg.port}"
@@ -59,14 +61,25 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
     private var mLocalTTS: LocalTTS? = null
     private val mLocalTtsHelper by lazy { LocalTtsEngineHelper(this) }
 
+    private var mWakeLock: PowerManager.WakeLock? = null
+
     private val mCfg by lazy { SysTtsForwarderConfig }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (mCfg.isWakeLockEnabled) {
+            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+            mWakeLock = powerManager.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "tts_server:systts-forwarder"
+            )
+        }
+
         initNotification()
         mServer = SysTtsForwarder().apply {
             initCallback(object : tts_server_lib.SysTtsForwarderCallback {
                 override fun log(level: Int, msg: String) {
                     sendLog(level, msg)
+                    mWakeLock?.acquire(30 * 60 * 1000L /*10 minutes*/)
                 }
 
                 override fun cancelAudio(engine: String) {
@@ -124,6 +137,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
         isRunning = true
         mServer?.let {
             toast(R.string.service_started)
+            App.localBroadcast.sendBroadcast(Intent(ACTION_ON_STARTING))
             it.start(mCfg.port.toLong())
             toast(R.string.service_closed)
             App.localBroadcast.sendBroadcast(Intent(ACTION_ON_CLOSED))
@@ -147,6 +161,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
         App.localBroadcast.unregisterReceiver(mReceiver)
         unregisterReceiver(mNotificationReceiver)
         stopForeground(true)
+        mWakeLock?.release()
     }
 
     private fun initNotification() {

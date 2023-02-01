@@ -26,15 +26,12 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
 import com.github.jing332.tts_server_android.databinding.NavHeaderBinding
 import com.github.jing332.tts_server_android.help.AppConfig
-import com.github.jing332.tts_server_android.help.ServerConfig
-import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.util.*
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -153,7 +150,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
         if (handled) {
-            invalidateOptionsMenu()
+//            invalidateOptionsMenu()
             AppConfig.fragmentIndex = when (menuItem.itemId) {
                 R.id.nav_systts -> 0
                 R.id.nav_server -> 1
@@ -173,54 +170,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return handled
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.clear()
-        val id = when (navController.currentDestination?.id) {
-            R.id.nav_systts -> R.menu.menu_systts
-            R.id.nav_server -> R.menu.menu_server
-            R.id.nav_systts_forwarder -> R.menu.menu_systts_forwarder
-            else -> return false
-        }
-        MenuCompat.setGroupDividerEnabled(menu, true)
-        menuInflater.inflate(id, menu)
-        return true
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.let { MenuCompat.setGroupDividerEnabled(it, true) }
+        return super.onCreateOptionsMenu(menu)
     }
 
     @SuppressLint("RestrictedApi")
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        if (menu is MenuBuilder) {
-            menu.setOptionalIconsVisible(true)
-        }
-        menu?.apply {
-            SysTtsConfig.apply {
-                when (navController.currentDestination?.id) {
-                    R.id.nav_systts -> {
-                        findItem(R.id.menu_isMultiVoice)?.isChecked = isMultiVoiceEnabled
-                        findItem(R.id.menu_doSplit)?.isChecked = isSplitEnabled
-                        findItem(R.id.menu_replace_manager)?.isChecked = isReplaceEnabled
-                        findItem(R.id.menu_isInAppPlayAudio)?.isChecked = isInAppPlayAudio
-                        findItem(R.id.menu_voiceMultiple)?.isChecked = isVoiceMultipleEnabled
-                        findItem(R.id.menu_groupMultiple)?.isChecked = isGroupMultipleEnabled
-                    }
-                    R.id.nav_server -> {
-                        findItem(R.id.menu_wakeLock)?.isChecked = ServerConfig.isWakeLockEnabled
-                    }
-                    R.id.nav_systts_forwarder ->{
-
-                    }
-                }
-            }
-        }
-
+        if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
         return super.onPrepareOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        App.localBroadcast.sendBroadcast(Intent(ACTION_OPTION_ITEM_SELECTED_ID).apply {
-            putExtra(KEY_MENU_ITEM_ID, item.itemId)
-        })
-        return super.onOptionsItemSelected(item)
-    }
 
     private var lastBackDownTime = 0L
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

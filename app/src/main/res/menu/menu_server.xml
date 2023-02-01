@@ -13,7 +13,7 @@
         android:icon="@drawable/ic_baseline_token_24"
         android:title="@string/server_set_token" />
     <item
-        android:id="@+id/menu_wakeLock"
+        android:id="@+id/menu_wake_lock"
         android:checkable="true"
         android:icon="@drawable/ic_baseline_lock_24"
         android:title="@string/wake_lock" />

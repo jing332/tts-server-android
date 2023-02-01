@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_server"
-        android:name="com.github.jing332.tts_server_android.ui.server.ServerFragment"
+        android:name="com.github.jing332.tts_server_android.ui.forwarder.ms.ServerFragment"
         android:label="Server"
         tools:layout="@layout/server_fragment" />
 
     <fragment
         android:id="@+id/nav_systts_forwarder"
-        android:name="com.github.jing332.tts_server_android.ui.sys_forwarder.SysTtsForwarderFragment"
+        android:name="com.github.jing332.tts_server_android.ui.forwarder.system.SysTtsForwarderFragment"
         android:label="@string/systts_forwarder"
         tools:layout="@layout/sys_tts_forwarder_fragment" />
 

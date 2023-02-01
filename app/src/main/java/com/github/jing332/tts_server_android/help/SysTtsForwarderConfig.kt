@@ -7,4 +7,6 @@ object SysTtsForwarderConfig : KotprefModel() {
         get() = "systts_forwarder"
 
     var port by intPref(1221)
+
+    var isWakeLockEnabled by booleanPref(false)
 }

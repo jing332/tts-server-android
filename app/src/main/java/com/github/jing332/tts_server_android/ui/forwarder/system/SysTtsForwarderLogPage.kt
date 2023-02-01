@@ -1,10 +1,9 @@
-package com.github.jing332.tts_server_android.ui.sys_forwarder
+package com.github.jing332.tts_server_android.ui.forwarder.system
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,24 +13,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
-import com.github.jing332.tts_server_android.databinding.SysTtsServerLogPageFragmentBinding
+import com.github.jing332.tts_server_android.databinding.SysTtsForwarderLogPageFragmentBinding
 import com.github.jing332.tts_server_android.help.SysTtsForwarderConfig
 import com.github.jing332.tts_server_android.service.sysforwarder.SysTtsForwarderService
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel
-import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
 import com.github.jing332.tts_server_android.util.clickWithThrottle
-import com.github.jing332.tts_server_android.util.toast
 
-class SysTtsServerLogPage : Fragment() {
-    private val binding: SysTtsServerLogPageFragmentBinding by lazy {
-        SysTtsServerLogPageFragmentBinding.inflate(layoutInflater)
+class SysTtsForwarderLogPage : Fragment() {
+    private val binding: SysTtsForwarderLogPageFragmentBinding by lazy {
+        SysTtsForwarderLogPageFragmentBinding.inflate(layoutInflater)
     }
 
     private val mReceiver by lazy { MyReceiver() }
-    private val logAdapter: LogListItemAdapter by lazy { LogListItemAdapter() }
-
+    private var logAdapter: LogListItemAdapter? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,12 +53,21 @@ class SysTtsServerLogPage : Fragment() {
             }
         }
 
+        logAdapter = LogListItemAdapter()
         binding.rvLog.adapter = logAdapter
         val layoutManager = LinearLayoutManager(requireContext())
         layoutManager.stackFromEnd = true
         binding.rvLog.layoutManager = layoutManager
 
-        logAdapter.append(AppLog(LogLevel.INFO, "启动后点击右上角打开网页, 以进行配置测试和导入阅读。"))
+        if (SysTtsForwarderService.instance?.isRunning == true) {
+            updateSwitch(true)
+            val address = SysTtsForwarderService.instance?.listenAddress
+            logAdapter?.append(
+                AppLog(LogLevel.WARN, getString(R.string.server_log_service_running, address))
+            )
+        } else {
+            logAdapter?.append(AppLog(LogLevel.INFO, "启动后点击右上角打开网页, 以进行配置测试和导入阅读。"))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +76,7 @@ class SysTtsServerLogPage : Fragment() {
             mReceiver,
             IntentFilter(SysTtsForwarderService.ACTION_ON_CLOSED).apply {
                 addAction(SysTtsForwarderService.ACTION_ON_LOG)
-                addAction(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID)
+                addAction(SysTtsForwarderService.ACTION_ON_STARTING)
             }
         )
     }
@@ -82,47 +87,33 @@ class SysTtsServerLogPage : Fragment() {
     }
 
     private fun updateSwitch(isStarted: Boolean) {
-        if (isStarted)
+        binding.tilPort.isEnabled = !isStarted
+        if (isStarted) {
             binding.fabSwitch.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
-        else
+        } else
             binding.fabSwitch.setImageResource(R.drawable.ic_baseline_do_disturb_alt_24)
     }
 
 
-    fun optionsItemSelected(itemId: Int) {
-        when (itemId) {
-            R.id.menu_openWeb -> { /* {打开网页版} 按钮 */
-                if (SysTtsForwarderService.instance?.isRunning == true) {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data =
-                        Uri.parse("http://localhost:${SysTtsForwarderConfig.port}")
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                } else {
-                    toast(R.string.server_please_start_service)
-                }
-            }
-        }
-    }
 
     @Suppress("DEPRECATION")
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
             when (intent?.action) {
-                MainActivity.ACTION_OPTION_ITEM_SELECTED_ID -> {
-                    optionsItemSelected(intent.getIntExtra(MainActivity.KEY_MENU_ITEM_ID, -1))
-                }
                 SysTtsForwarderService.ACTION_ON_CLOSED -> {
                     updateSwitch(SysTtsForwarderService.instance?.isRunning == true)
                 }
+                SysTtsForwarderService.ACTION_ON_STARTING -> logAdapter?.removeAll()
                 SysTtsForwarderService.ACTION_ON_LOG -> {
-                    val log = intent.getParcelableExtra<AppLog>(KeyConst.KEY_DATA) as AppLog
-                    val layout = binding.rvLog.layoutManager as LinearLayoutManager
-                    val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
-                    logAdapter.append(log)
-                    /* 判断是否在最底部 */
-                    if (isBottom)
-                        binding.rvLog.scrollToPosition(logAdapter.itemCount - 1)
+                    logAdapter?.let {
+                        val log = intent.getParcelableExtra<AppLog>(KeyConst.KEY_DATA) as AppLog
+                        val layout = binding.rvLog.layoutManager as LinearLayoutManager
+                        val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
+                        it.append(log)
+                        /* 判断是否在最底部 */
+                        if (isBottom)
+                            binding.rvLog.scrollToPosition(it.itemCount - 1)
+                    }
                 }
             }
         }
