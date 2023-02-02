@@ -45,6 +45,9 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
             App.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_CLOSE_SERVER))
         }
 
+        val isRunning: Boolean
+            get() = instance?.isRunning == true
+
         var instance: SysTtsForwarderService? = null
     }
 
@@ -212,7 +215,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
             chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
             val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             service.createNotificationChannel(chan)
-            smallIconRes = R.drawable.ic_app_notification
+            smallIconRes = R.drawable.ic_baseline_compare_arrows_24
             builder.setChannelId(chanId)
         } else {
             smallIconRes = R.mipmap.ic_app_notification

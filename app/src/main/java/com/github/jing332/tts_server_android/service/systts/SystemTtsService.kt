@@ -147,7 +147,7 @@ class SystemTtsService : TextToSpeechService(),
         startForegroundService()
         val text = request?.charSequenceText.toString().trim()
         mCurrentText = text
-        updateNotification(getString(R.string.systts_state_playing), text)
+        updateNotification(getString(R.string.systts_state_synthesizing), text)
 
         if (StringUtils.isSilent(text)) {
             callback?.start(16000, AudioFormat.ENCODING_PCM_16BIT, 1)
@@ -310,7 +310,7 @@ class SystemTtsService : TextToSpeechService(),
                 )
             }
         // 重试成功
-        if (retryNum > 1) updateNotification(getString(R.string.systts_state_playing), mCurrentText)
+        if (retryNum > 1) updateNotification(getString(R.string.systts_state_synthesizing), mCurrentText)
     }
 
     override fun onError(errCode: Int, speakText: String?, reason: String?) {

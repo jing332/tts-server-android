@@ -32,7 +32,7 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
             waitDialog.dismiss()
             MaterialAlertDialogBuilder(this@LocalTtsEditActivity)
                 .setTitle(R.string.systts_test_success)
-                .setMessage(R.string.systts_state_playing)
+                .setMessage(R.string.systts_state_synthesizing)
                 .setOnDismissListener {
                     vm.stopTestPlay()
                 }

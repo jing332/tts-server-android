@@ -57,13 +57,18 @@
         <activity
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:label="@string/title_activity_replace_manager"
-            android:theme="@style/Theme.TtsServer.NoActionBar" /> <!-- 替换规则 -->
+            android:theme="@style/Theme.TtsServer.NoActionBar" />
         <activity
             android:name=".ui.systts.replace.ReplaceRuleEditActivity"
             android:label="@string/title_activity_replace_edit" />
         <activity
-            android:name=".ui.ScSwitchActivity"
-            android:theme="@android:style/Theme.NoDisplay" /><!-- Server开关 -->
+            android:name=".ui.forwarder.ms.ScSwitchActivity"
+            android:taskAffinity="sc.switch"
+            android:theme="@android:style/Theme.NoDisplay" />
+        <activity
+            android:name=".ui.forwarder.system.ScSwitchActivity"
+            android:taskAffinity="sc.switch"
+            android:theme="@android:style/Theme.NoDisplay" />
         <activity
             android:name=".service.systts.CheckVoiceData"
             android:exported="true"

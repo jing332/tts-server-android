@@ -52,7 +52,7 @@
     <string name="systts_api_creation">(⚠️ 已失效)微软Creation-网页演示接口</string>
 
     <string name="systts_state_idle">TTS空闲中</string>
-    <string name="systts_state_playing">TTS播放中：</string>
+    <string name="systts_state_synthesizing">TTS合成中</string>
     <string name="systts_service">系统TTS服务</string>
 
     <string name="systts_split_long_sentences">分割长句</string>
@@ -60,7 +60,7 @@
 
     <string name="service_started">服务已启动</string>
     <string name="service_closed">服务已关闭</string>
-    <string name="server_tts_status">TTS服务器状态</string>
+    <string name="forwarder_ms">微软TTS转发器</string>
     <string name="server_tts_running">TTS Server正在运行中</string>
     <string name="server_listen_address_local">监听地址：%s</string>
     <string name="server_please_start_service">请先启动服务</string>

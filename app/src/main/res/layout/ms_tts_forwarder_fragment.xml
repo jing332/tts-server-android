@@ -13,7 +13,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/ms_tts_forwarder_navbar" />
+        app:menu="@menu/forwarder_ms_navbar" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

@@ -14,6 +14,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysTtsForwarderFragmentBinding
 import com.github.jing332.tts_server_android.help.SysTtsForwarderConfig
 import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService
+import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
 import com.github.jing332.tts_server_android.util.toast
 
@@ -35,12 +36,12 @@ class SysTtsForwarderFragment : Fragment() {
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.systts_forwarder, menu)
+                menuInflater.inflate(R.menu.forwarder_system, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.menu_openWeb -> {
+                    R.id.menu_open_web -> {
                         if (SysTtsForwarderService.instance?.isRunning == true) {
                             val intent = Intent(Intent.ACTION_VIEW)
                             intent.data =
@@ -56,6 +57,16 @@ class SysTtsForwarderFragment : Fragment() {
                         menuItem.isChecked = !menuItem.isChecked
                         SysTtsForwarderConfig.isWakeLockEnabled = menuItem.isChecked
                         toast(R.string.server_restart_service_to_update)
+                        true
+                    }
+                    R.id.menu_shortcut -> {
+                        MyTools.addShortcut(
+                            requireContext(),
+                            getString(R.string.systts_forwarder),
+                            "forwarder_system",
+                            R.mipmap.ic_launcher_round,
+                            Intent(requireContext(), ScSwitchActivity::class.java)
+                        )
                         true
                     }
                     else -> false

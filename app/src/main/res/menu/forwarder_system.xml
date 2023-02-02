@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_openWeb"
+        android:id="@+id/menu_open_web"
         android:icon="@drawable/ic_web"
         android:title="@string/open_web"
         app:iconTint="?attr/colorPrimary"
@@ -14,9 +14,9 @@
         android:icon="@drawable/ic_baseline_lock_24"
         android:title="@string/wake_lock" />
 
-<!--    <item
+    <item
         android:id="@+id/menu_shortcut"
         android:icon="@drawable/ic_baseline_add_business_24"
-        android:title="@string/desktop_shortcut" />-->
+        android:title="@string/desktop_shortcut" />
 
 </menu>

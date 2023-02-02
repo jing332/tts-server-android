@@ -22,7 +22,6 @@ import com.github.jing332.tts_server_android.databinding.MsTtsForwarderFragmentB
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
 import com.github.jing332.tts_server_android.ui.MainActivity
-import com.github.jing332.tts_server_android.ui.ScSwitchActivity
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
@@ -112,12 +111,12 @@ class MsTtsForwarderFragment : Fragment(), MenuProvider {
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.ms_tts_forwarder, menu)
+        menuInflater.inflate(R.menu.forwarder_ms, menu)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
-            R.id.menu_openWeb -> { /* {打开网页版} 按钮 */
+            R.id.menu_open_web -> { /* {打开网页版} 按钮 */
                 if (TtsIntentService.instance?.isRunning == true) {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data =

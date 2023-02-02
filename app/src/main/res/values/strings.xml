@@ -55,7 +55,7 @@
     <string name="systts_api_creation">(⚠️ Invalid)Microsoft Creation - Web demo API</string>
 
     <string name="systts_state_idle">TTS Idle</string>
-    <string name="systts_state_playing">TTS Playing：</string>
+    <string name="systts_state_synthesizing">TTS synthesizing</string>
     <string name="systts_service">System TTS Service</string>
 
     <string name="systts_split_long_sentences">Split long sentences (Only Chinese)</string>
@@ -63,7 +63,7 @@
 
     <string name="service_started">Service started</string>
     <string name="service_closed">Service closed</string>
-    <string name="server_tts_status">TTS Server Status</string>
+    <string name="forwarder_ms">Microsoft TTS forwarder</string>
     <string name="server_tts_running">TTS Server is running</string>
     <string name="server_listen_address_local">Listen address：%s</string>
     <string name="server_please_start_service">Please start the service first</string>

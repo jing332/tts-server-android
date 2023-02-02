@@ -151,7 +151,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {/*Android 8.0+ 要求必须设置通知信道*/
             val chan = NotificationChannel(
                 chanId,
-                getString(R.string.server_tts_status),
+                getString(R.string.forwarder_ms),
                 NotificationManager.IMPORTANCE_NONE
             )
             chan.lightColor = Color.BLUE
