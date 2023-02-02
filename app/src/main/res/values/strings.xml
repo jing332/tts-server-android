@@ -287,5 +287,6 @@
     <string name="systts_forwarder_fail_engine_init_timeout">引擎初始化失败：已超时</string>
     <string name="systts_forwarder">System TTS forwarder</string>
     <string name="systts_forwarder_running">System TTS forwarder is running</string>
+    <string name="language">Language</string>
 
 </resources>

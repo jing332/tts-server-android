@@ -45,8 +45,7 @@ class MsTtsForwarderFragment : Fragment(), MenuProvider {
 
         App.localBroadcast.registerReceiver(
             mReceiver,
-            IntentFilter(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID).apply {
-                addAction(MainActivity.ACTION_BACK_KEY_DOWN)
+            IntentFilter(MainActivity.ACTION_BACK_KEY_DOWN).apply {
             }
         )
 

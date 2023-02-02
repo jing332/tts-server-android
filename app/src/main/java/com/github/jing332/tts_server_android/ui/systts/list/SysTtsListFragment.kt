@@ -1,10 +1,7 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.text.Html
 import android.view.*
@@ -19,7 +16,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
@@ -30,7 +26,6 @@ import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBindi
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
-import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
@@ -61,8 +56,6 @@ class SysTtsListFragment : Fragment() {
 
     private lateinit var vpAdapter: GroupPageAdapter
     private lateinit var tabLayout: TabLayout
-
-    private val mReceiver: MyReceiver by lazy { MyReceiver() }
 
     /* EditActivity的返回值 */
     private val startForResult =
@@ -158,7 +151,7 @@ class SysTtsListFragment : Fragment() {
                     true
                 }
                 R.id.menu_set_sby_use_conditions -> {
-                    displaySetStandbyUseConditions()
+                    displayStandbySettings()
                     true
                 }
 
@@ -235,17 +228,7 @@ class SysTtsListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) return
 
-        App.localBroadcast.registerReceiver(mReceiver,
-            IntentFilter(MainActivity.ACTION_OPTION_ITEM_SELECTED_ID).apply {
-                addAction(SystemTtsService.ACTION_REQUEST_UPDATE_CONFIG)
-            })
-
-        if (CompatSysTtsConfig.migrationConfig()) requireContext().longToast("旧版配置迁移成功，原文件已删除")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
+        CompatSysTtsConfig.migrationConfig()
     }
 
     /* 警告 格式不同 */
@@ -384,48 +367,7 @@ class SysTtsListFragment : Fragment() {
             }.show()
     }
 
-    private fun onOptionsItemSelected(itemId: Int) {
-        when (itemId) {
-            /* 添加配置 */
-            R.id.menu_add_ms_tts -> addTtsConfig(MsTtsEditActivity::class.java)
-            R.id.menu_add_local_tts -> addTtsConfig(LocalTtsEditActivity::class.java)
-            R.id.menu_add_http_tts -> addTtsConfig(HttpTtsEditActivity::class.java)
-            R.id.menu_addGroup -> addGroup()
-
-            R.id.menu_isInAppPlayAudio -> showInAppSettingsDialog()
-            R.id.menu_setAudioRequestTimeout -> showSetAudioRequestTimeoutDialog()
-            R.id.menu_setMinDialogueLen -> showSetMinDialogueLengthDialog()
-            R.id.menu_set_sby_use_conditions -> displaySetStandbyUseConditions()
-
-            R.id.menu_doSplit -> {
-                SysTtsConfig.isSplitEnabled = !SysTtsConfig.isSplitEnabled
-                SystemTtsService.notifyUpdateConfig()
-            }
-            R.id.menu_isMultiVoice -> {
-                SysTtsConfig.isMultiVoiceEnabled = !SysTtsConfig.isMultiVoiceEnabled
-                SystemTtsService.notifyUpdateConfig()
-            }
-            R.id.menu_voiceMultiple -> {
-                SysTtsConfig.isVoiceMultipleEnabled = !SysTtsConfig.isVoiceMultipleEnabled
-                SystemTtsService.notifyUpdateConfig()
-                if (SysTtsConfig.isVoiceMultipleEnabled) longToast(R.string.systts_voice_multiple_hint)
-            }
-            R.id.menu_groupMultiple -> {
-                SysTtsConfig.isGroupMultipleEnabled = !SysTtsConfig.isGroupMultipleEnabled
-                if (SysTtsConfig.isGroupMultipleEnabled) longToast(getString(R.string.systts_groups_multiple_hint))
-            }
-
-            R.id.menu_replace_manager -> startActivity(
-                Intent(requireContext(), ReplaceManagerActivity::class.java)
-            )
-
-            /* 导入导出 */
-            R.id.menu_importConfig -> importConfig()
-            R.id.menu_export_config -> exportConfig()
-        }
-    }
-
-    private fun displaySetStandbyUseConditions() {
+    private fun displayStandbySettings() {
         val ranges = 1..10
         val picker = NumberPicker(requireContext()).apply {
             minValue = 1
@@ -446,18 +388,6 @@ class SysTtsListFragment : Fragment() {
                 toast(R.string.ok_reset)
             }
             .show()
-    }
-
-    inner class MyReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                // MainActivity 的点击右上角菜单的ID
-                MainActivity.ACTION_OPTION_ITEM_SELECTED_ID -> {
-                    val itemId = intent.getIntExtra(MainActivity.KEY_MENU_ITEM_ID, -1)
-                    onOptionsItemSelected(itemId)
-                }
-            }
-        }
     }
 
     class GroupPageAdapter(parent: Fragment, val list: List<Fragment>) :

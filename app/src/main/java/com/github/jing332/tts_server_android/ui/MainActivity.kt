@@ -16,9 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.menu.MenuBuilder
-import androidx.core.os.LocaleListCompat
 import androidx.core.view.MenuCompat
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
@@ -41,9 +39,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object {
-        const val ACTION_OPTION_ITEM_SELECTED_ID = "ACTION_OPTION_ITEM_SELECTED_ID"
-        const val KEY_MENU_ITEM_ID = "KEY_MENU_ITEM_ID"
-
         const val ACTION_BACK_KEY_DOWN = "ACTION_BACK_KEY_DOWN"
 
         private val drawerMenus by lazy {
@@ -90,40 +85,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navHeaderBinding.apply {
             subtitle.text = BuildConfig.VERSION_NAME
-
-            btnLangSet.clickWithThrottle {
-                val appLocales = BuildConfig.TRANSLATION_ARRAY.map { Locale.forLanguageTag(it) }
-                val displayNameList =
-                    mutableListOf(getString(R.string.app_language_follow)).apply {
-                        addAll(appLocales.map { it.getDisplayName(it) })
-                    }
-                val currentLocale = AppCompatDelegate.getApplicationLocales().get(0)
-                val checkedIndex =
-                    if (currentLocale == null) 0
-                    else {
-                        val i =
-                            appLocales.indexOfFirst { it.toLanguageTag() == currentLocale.toLanguageTag() }
-                        if (i == -1) 0
-                        else i + 1
-                    }
-                MaterialAlertDialogBuilder(this@MainActivity)
-                    .setSingleChoiceItems(
-                        displayNameList.toTypedArray(),
-                        checkedIndex
-                    ) { dlg, which ->
-                        val locale = if (which > 0) {
-                            LocaleListCompat.create(appLocales[which - 1])
-                        } else {
-                            longToast(R.string.app_language_to_follow_tip_msg)
-                            app.updateLocale(Locale.getDefault())
-                            LocaleListCompat.getEmptyLocaleList()
-                        }
-                        AppCompatDelegate.setApplicationLocales(locale)
-
-                        dlg.dismiss()
-                    }
-                    .show()
-            }
         }
 
         MyTools.checkUpdate(this)
@@ -132,21 +93,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @Suppress("DEPRECATION")
     override fun onStart() {
         super.onStart()
-        updateLanguageSetBtnText()
 
+        // 更新Application语言
         app.updateLocale(resources.configuration.locale)
-    }
-
-    private fun updateLanguageSetBtnText() {
-        AppCompatDelegate.getApplicationLocales().let { localeListCompat ->
-            val locale = localeListCompat.get(0)
-            navHeaderBinding.btnLangSet.text =
-                if (locale == null) getString(R.string.app_language_follow)
-                else locale.getDisplayName(locale)
-            navHeaderBinding.btnLangSet.apply {
-                contentDescription = getString(R.string.app_language_desc, text.toString())
-            }
-        }
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
