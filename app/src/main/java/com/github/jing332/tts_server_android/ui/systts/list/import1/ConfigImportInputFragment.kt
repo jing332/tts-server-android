@@ -195,12 +195,11 @@ class ConfigImportInputFragment : Fragment() {
                 val list = App.jsonBuilder.decodeFromString<List<CompatSystemTts>>(json)
                 listOf(
                     GroupWithTtsItem(
-                        group = appDb.systemTtsDao.getGroupById(SystemTtsGroup.DEFAULT_GROUP_ID)!!,
+                        group = appDb.systemTtsDao.getGroup()!!,
                         list = list.mapIndexed { index, value ->
                             SystemTts(
                                 id = System.currentTimeMillis() + index,
                                 displayName = value.displayName,
-                                groupId = SystemTtsGroup.DEFAULT_GROUP_ID,
                                 tts = value.tts
                             )
                         }

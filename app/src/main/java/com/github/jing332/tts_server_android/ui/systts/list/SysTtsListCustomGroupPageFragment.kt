@@ -56,7 +56,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val brv = binding.recyclerView.linear().setup {
-            addType<CustomGroupModel>(R.layout.systts_list_custom_group_item)
+            addType<SysTtsGroupModel>(R.layout.systts_list_custom_group_item)
             addType<SystemTts>(R.layout.systts_list_item)
 
             onCreate {
@@ -68,7 +68,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                             info: AccessibilityNodeInfo
                         ) {
                             super.onInitializeAccessibilityNodeInfo(host, info)
-                            val model = getModel<CustomGroupModel>()
+                            val model = getModel<SysTtsGroupModel>()
                             val enabledCount =
                                 model.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
 
@@ -84,7 +84,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                     }
                     itemView.clickWithThrottle {
                         expandOrCollapse()
-                        getModel<CustomGroupModel>().let { model ->
+                        getModel<SysTtsGroupModel>().let { model ->
                             val enabledCount =
                                 model.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
                             val speakText =
@@ -104,7 +104,6 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                                 MaterialAlertDialogBuilder(requireContext())
                                     .setTitle(R.string.msg_group_is_empty)
                                     .setMessage(getString(R.string.systts_group_empty_msg))
-
                                     .show()
                             }
 
@@ -130,7 +129,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                         }
                     }
                     checkBox.clickWithThrottle {
-                        val group = getModel<CustomGroupModel>().data
+                        val group = getModel<SysTtsGroupModel>().data
                         if (!SysTtsConfig.isGroupMultipleEnabled)
                             appDb.systemTtsDao.setAllTtsEnabled(false)
 
@@ -141,7 +140,6 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                         SystemTtsService.notifyUpdateConfig()
                     }
                     btnMore.clickWithThrottle { displayMoreMenu(btnMore, getModel()) }
-
                 }
 
                 // TTS Item
@@ -150,7 +148,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
 
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    if (oldItem is CustomGroupModel && newItem is CustomGroupModel)
+                    if (oldItem is SysTtsGroupModel && newItem is SysTtsGroupModel)
                         return oldItem.data.id == newItem.data.id
                     if (oldItem is SystemTts && newItem is SystemTts)
                         return oldItem.id == newItem.id
@@ -176,7 +174,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                     source: BindingAdapter.BindingViewHolder,
                     target: BindingAdapter.BindingViewHolder
                 ) {
-                    models?.filterIsInstance<CustomGroupModel>()?.let { models ->
+                    models?.filterIsInstance<SysTtsGroupModel>()?.let { models ->
                         models.forEachIndexed { index, value ->
                             appDb.systemTtsDao.updateGroup(value.data.apply { order = index })
                         }
@@ -198,13 +196,14 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                                     else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
                                 }
 
-                            CustomGroupModel(
+                            SysTtsGroupModel(
                                 data = v.group,
-                                itemGroupPosition = i,
-                                checkedState = checkState,
                                 itemSublist = v.list,
+                            ).apply {
+                                itemGroupPosition = i
+                                checkedState = checkState
                                 itemExpand = v.group.isExpanded
-                            )
+                            }
                         }
                     }
 
@@ -222,7 +221,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
 
 
     @SuppressLint("RestrictedApi")
-    private fun displayMoreMenu(v: View, model: CustomGroupModel) {
+    private fun displayMoreMenu(v: View, model: SysTtsGroupModel) {
         PopupMenu(requireContext(), v).apply {
             this.setForceShowIcon(true)
             MenuCompat.setGroupDividerEnabled(menu, true)
@@ -240,7 +239,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun exportConfig(model: CustomGroupModel) {
+    private fun exportConfig(model: SysTtsGroupModel) {
         val obj = GroupWithTtsItem(group = model.data, list = model.itemSublist as List<SystemTts>)
         AppDialogs.displayExportDialog(
             requireContext(),

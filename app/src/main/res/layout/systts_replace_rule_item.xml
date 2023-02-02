@@ -10,64 +10,70 @@
             type="com.github.jing332.tts_server_android.ui.systts.replace.ReplaceRuleModel" />
     </data>
 
-    <com.google.android.material.card.MaterialCardView
-        style="?attr/materialCardViewElevatedStyle"
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="2dp"
-        android:layout_marginBottom="4dp"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="2dp">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="UnusedAttribute">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginBottom="4dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp">
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/checkBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:checked="@={m.data.enabled}"
-                android:text="@={m.data.name}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_edit"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                tools:ignore="TextContrastCheck"
-                tools:text="Replace Rule Name" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:ignore="UnusedAttribute">
 
-            <ImageButton
-                android:id="@+id/btn_edit"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/desc_edit_item"
-                android:scaleType="centerInside"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_more"
-                app:layout_constraintEnd_toStartOf="@+id/btn_more"
-                app:layout_constraintTop_toTopOf="@+id/btn_more"
-                app:srcCompat="@drawable/ic_baseline_edit_24"
-                app:tint="?attr/colorOnBackground"
-                tools:ignore="TouchTargetSizeCheck" />
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/checkBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:checked="@={m.data.enabled}"
+                    android:text="@={m.data.name}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_edit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:ignore="TextContrastCheck"
+                    tools:text="Replace Rule Name" />
 
-            <ImageButton
-                android:id="@+id/btn_more"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/more_options"
-                android:scaleType="centerInside"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_more_vert_24"
-                app:tint="?attr/colorOnBackground" />
+                <ImageButton
+                    android:id="@+id/btn_edit"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/desc_edit_item"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_more"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_more"
+                    app:layout_constraintTop_toTopOf="@+id/btn_more"
+                    app:srcCompat="@drawable/ic_baseline_edit_24"
+                    app:tint="?attr/colorOnBackground"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <ImageButton
+                    android:id="@+id/btn_more"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/more_options"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_more_vert_24"
+                    app:tint="?attr/colorOnBackground" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 </layout>

@@ -2,10 +2,10 @@ package com.github.jing332.tts_server_android.data.dao
 
 import androidx.room.*
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup.Companion.DEFAULT_GROUP_ID
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -42,7 +42,7 @@ interface SystemTtsDao {
     fun getFlowAllGroupWithTts(): Flow<List<GroupWithTtsItem>>
 
     @Query("SELECT * FROM SystemTtsGroup WHERE groupId = :id")
-    fun getGroupById(id: Long = DEFAULT_GROUP_ID): SystemTtsGroup?
+    fun getGroup(id: Long = DEFAULT_GROUP_ID): SystemTtsGroup?
 
     @Query("SELECT * FROM sysTts WHERE groupId = :groupId")
     fun getTtsListByGroupId(groupId: Long): List<SystemTts>

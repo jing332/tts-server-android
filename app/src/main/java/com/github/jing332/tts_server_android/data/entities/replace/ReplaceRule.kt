@@ -1,9 +1,10 @@
-package com.github.jing332.tts_server_android.data.entities
+package com.github.jing332.tts_server_android.data.entities.replace
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
@@ -13,6 +14,10 @@ import kotlinx.serialization.Serializable
 data class ReplaceRule(
     @PrimaryKey(autoGenerate = true)
     var id: Long = System.currentTimeMillis(),
+
+    // 所属组的ID
+    @ColumnInfo(defaultValue = DEFAULT_GROUP_ID.toString())
+    var groupId: Long = DEFAULT_GROUP_ID,
 
     // 显示名称
     var name: String,

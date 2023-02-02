@@ -5,6 +5,7 @@ import androidx.room.*
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.data.entities.AbstractListGroup
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
@@ -20,8 +21,8 @@ data class SystemTts(
     val id: Long = System.currentTimeMillis(),
 
     // 所属组的ID
-    @ColumnInfo(defaultValue = SystemTtsGroup.DEFAULT_GROUP_ID.toString())
-    var groupId: Long = SystemTtsGroup.DEFAULT_GROUP_ID,
+    @ColumnInfo(defaultValue = AbstractListGroup.DEFAULT_GROUP_ID.toString())
+    var groupId: Long = AbstractListGroup.DEFAULT_GROUP_ID,
     // 名称
     var displayName: String? = null,
 

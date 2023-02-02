@@ -1,7 +1,7 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.ReplaceRule
+import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 
 class ReplaceHelper {
     companion object {

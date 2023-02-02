@@ -15,6 +15,25 @@ import kotlinx.coroutines.CoroutineScope
 import tts_server_lib.Tts_server_lib
 
 object AppDialogs {
+    fun displayInputDialog(
+        context: Context,
+        title: String,
+        hint: String,
+        text: String = "",
+        onSave: (text: String) -> Unit
+    ) {
+        val et = MaterialTextInput(context)
+        et.inputLayout.hint = hint
+        et.inputEdit.setText(text)
+        MaterialAlertDialogBuilder(context)
+            .setTitle(title)
+            .setView(et)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                onSave.invoke(et.inputEdit.text.toString())
+            }.show()
+    }
+
+
     fun displayDeleteDialog(context: Context, message: String, onRemove: () -> Unit) {
         MaterialAlertDialogBuilder(context).setTitle(R.string.is_confirm_delete)
             .setMessage(message)

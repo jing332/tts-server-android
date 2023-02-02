@@ -8,17 +8,18 @@ import androidx.room.RoomDatabase
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.data.dao.ReplaceRuleDao
 import com.github.jing332.tts_server_android.data.dao.SystemTtsDao
-import com.github.jing332.tts_server_android.data.entities.ReplaceRule
+import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
+import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 
 val appDb by lazy { AppDatabase.createDatabase(App.context) }
 
 @Database(
-    version = 8,
+    version = 9,
     entities = [
         SystemTts::class, SystemTtsGroup::class,
-        ReplaceRule::class
+        ReplaceRule::class, ReplaceRuleGroup::class,
     ],
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -27,6 +28,7 @@ val appDb by lazy { AppDatabase.createDatabase(App.context) }
         AutoMigration(from = 5, to = 6),
         AutoMigration(from = 6, to = 7),
         AutoMigration(from = 7, to = 8),
+        AutoMigration(from = 8, to = 9),
     ]
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -4,17 +4,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
-import com.github.jing332.tts_server_android.data.entities.ReplaceRule
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
+import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
-
+import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinnerAdapter
+import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.lang.Integer.max
 
 @Suppress("DEPRECATION")
 class ReplaceRuleEditActivity : BackActivity() {
@@ -32,6 +39,26 @@ class ReplaceRuleEditActivity : BackActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        val data = intent.getParcelableExtra<ReplaceRule>(KeyConst.KEY_DATA)
+
+        val groups = appDb.replaceRuleDao.allGroup
+        val groupItems = groups.map { SpinnerItem(it.name, it) }
+        binding.spinnerGroup.setAdapter(MaterialSpinnerAdapter(this, groupItems))
+        binding.spinnerGroup.selectedPosition =
+            max(0, groups.indexOfFirst { it.id == data?.groupId })
+        binding.spinnerGroup.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                data?.groupId = (groupItems[position].value as ReplaceRuleGroup).id
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
 
         binding.tilPattern.setEndIconOnClickListener { displayPinyinList() }
         binding.tilReplacement.setEndIconOnClickListener { displayPinyinList() }
@@ -55,7 +82,7 @@ class ReplaceRuleEditActivity : BackActivity() {
             }
         }
 
-        intent.getParcelableExtra<ReplaceRule>(KeyConst.KEY_DATA).let {
+        data.let {
             if (it == null) resultCode = RESULT_ADD
             vm.load(it)
         }
@@ -80,7 +107,6 @@ class ReplaceRuleEditActivity : BackActivity() {
                 }
             }
         }
-
             .show()
     }
 

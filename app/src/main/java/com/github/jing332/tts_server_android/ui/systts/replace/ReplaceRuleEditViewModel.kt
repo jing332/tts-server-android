@@ -2,7 +2,7 @@ package com.github.jing332.tts_server_android.ui.systts.replace
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.github.jing332.tts_server_android.data.entities.ReplaceRule
+import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import java.util.regex.Pattern
 
 class ReplaceRuleEditViewModel : ViewModel() {

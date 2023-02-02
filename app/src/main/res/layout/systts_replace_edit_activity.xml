@@ -12,13 +12,30 @@
         android:layout_margin="8dp">
 
         <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
-            android:id="@+id/til_url"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/til_group"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/belonging_group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+                android:id="@+id/spinner_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+
+        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            android:id="@+id/til_name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_group">
 
             <EditText
                 android:id="@+id/et_name"
@@ -42,7 +59,7 @@
             app:endIconTint="@color/teal_200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_url">
+            app:layout_constraintTop_toBottomOf="@+id/til_name">
 
             <EditText
                 android:id="@+id/et_pattern"
@@ -89,8 +106,8 @@
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:importantForAccessibility="no"
             android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
             app:layout_constraintTop_toBottomOf="@id/switch_isRegex" />
 
         <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout

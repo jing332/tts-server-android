@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.github.jing332.tts_server_android.ui.systts.list.CustomGroupModel" />
+            type="com.github.jing332.tts_server_android.ui.systts.BaseGroupModel" />
     </data>
 
 

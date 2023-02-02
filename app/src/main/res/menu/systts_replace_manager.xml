@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_add"
         android:icon="@drawable/ic_baseline_add_24"
-        android:title="@string/systts_replace_add_rule"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
+        android:title="@string/add_config"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menu_add"
+                android:icon="@drawable/ic_baseline_find_replace_24"
+                android:title="@string/systts_replace_add_rule"
+                app:iconTint="?attr/colorPrimary" />
+            <item
+                android:id="@+id/menu_add_group"
+                android:icon="@drawable/ic_baseline_supervisor_account_24"
+                android:title="@string/add_group"
+                app:iconTint="?attr/colorPrimary" />
+        </menu>
+    </item>
 
     <group android:id="@+id/group1">
         <item
