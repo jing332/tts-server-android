@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
-import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService
 
 /* 桌面长按菜单{开关} */
 class ScSwitchActivity : Activity() {
@@ -15,7 +14,7 @@ class ScSwitchActivity : Activity() {
         if (TtsIntentService.instance?.isRunning == true)
             TtsIntentService.instance?.closeServer()
         else
-            startService(Intent(this, SysTtsForwarderService::class.java))
+            startService(Intent(this, TtsIntentService::class.java))
 
         finish()
     }

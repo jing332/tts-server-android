@@ -26,6 +26,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.ShortCuts
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
@@ -88,6 +89,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         MyTools.checkUpdate(this)
+
+        ShortCuts.buildShortCuts(this)
     }
 
     @Suppress("DEPRECATION")

@@ -33,5 +33,4 @@ class QSTileService : TileService() {
         qsTile.updateTile()
     }
 
-
 }
