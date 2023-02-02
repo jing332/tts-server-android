@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.service.TtsIntentService
+import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
 
 /* 桌面长按菜单{开关} */
 class ScSwitchActivity : Activity() {

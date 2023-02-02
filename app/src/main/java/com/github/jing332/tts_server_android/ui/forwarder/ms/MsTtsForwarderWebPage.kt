@@ -10,7 +10,7 @@ import android.view.View
 import android.webkit.*
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.service.TtsIntentService
+import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
 import com.github.jing332.tts_server_android.ui.base.BaseWebViewPageFragment
 
 

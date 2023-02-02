@@ -1,6 +1,6 @@
 @file:Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
 
-package com.github.jing332.tts_server_android.service.sysforwarder
+package com.github.jing332.tts_server_android.service.forwarder.system
 
 import android.app.*
 import android.content.BroadcastReceiver
@@ -40,6 +40,10 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
 
         const val ACTION_NOTIFICATION_COPY_URL = "ACTION_NOTIFICATION_COPY_URL"
         const val ACTION_NOTIFICATION_EXIT = "ACTION_NOTIFICATION_STOP"
+
+        fun requestCloseServer() {
+            App.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_CLOSE_SERVER))
+        }
 
         var instance: SysTtsForwarderService? = null
     }
@@ -243,8 +247,10 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_REQUEST_CLOSE_SERVER -> kotlin.runCatching { mServer?.close() }.onFailure {
-                    longToast("关闭服务失败：${it.message}")
+                ACTION_REQUEST_CLOSE_SERVER -> kotlin.runCatching {
+                    mServer?.close()
+                }.onFailure {
+                    longToast("Close failed：${it.message}")
                 }
             }
         }

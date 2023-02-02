@@ -15,7 +15,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.databinding.SysTtsForwarderLogPageFragmentBinding
 import com.github.jing332.tts_server_android.help.SysTtsForwarderConfig
-import com.github.jing332.tts_server_android.service.sysforwarder.SysTtsForwarderService
+import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter

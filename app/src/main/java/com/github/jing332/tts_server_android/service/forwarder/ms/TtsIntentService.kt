@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.service
+package com.github.jing332.tts_server_android.service.forwarder.ms
 
 import android.annotation.SuppressLint
 import android.app.*
