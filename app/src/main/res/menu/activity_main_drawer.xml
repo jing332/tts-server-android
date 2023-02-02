@@ -15,14 +15,14 @@
             <item
                 android:id="@+id/nav_server"
                 android:checkable="true"
-                android:icon="@drawable/ic_baseline_menu_book_24"
-                android:title="Server"
+                android:icon="@drawable/ic_microsoft"
+                android:title="@string/forwarder_ms"
                 tools:ignore="HardcodedText" />
             <item
                 android:id="@+id/nav_systts_forwarder"
                 android:checkable="true"
                 android:icon="@drawable/ic_baseline_compare_arrows_24"
-                android:title="@string/systts_forwarder" />
+                android:title="@string/forwarder_systts" />
             <item
                 android:id="@+id/nav_settings"
                 android:checkable="true"

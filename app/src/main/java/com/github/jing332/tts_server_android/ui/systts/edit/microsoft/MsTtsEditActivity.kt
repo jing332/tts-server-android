@@ -66,8 +66,8 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
         // 初始化 注册监听
         vm.init(
             listOf(
-                Pair(getString(R.string.systts_api_edge), R.drawable.ms_edge),
-                Pair(getString(R.string.systts_api_azure), R.drawable.ms_azure),
+                Pair(getString(R.string.systts_api_edge), R.drawable.ic_ms_edge),
+                Pair(getString(R.string.systts_api_azure), R.drawable.ic_microsoft),
                 Pair(getString(R.string.systts_api_creation), R.drawable.ic_ms_speech_studio)
             )
         )

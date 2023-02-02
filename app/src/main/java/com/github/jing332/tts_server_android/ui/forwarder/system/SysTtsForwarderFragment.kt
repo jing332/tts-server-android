@@ -62,7 +62,7 @@ class SysTtsForwarderFragment : Fragment() {
                     R.id.menu_shortcut -> {
                         MyTools.addShortcut(
                             requireContext(),
-                            getString(R.string.systts_forwarder),
+                            getString(R.string.forwarder_systts),
                             "forwarder_system",
                             R.mipmap.ic_launcher_round,
                             Intent(requireContext(), ScSwitchActivity::class.java)

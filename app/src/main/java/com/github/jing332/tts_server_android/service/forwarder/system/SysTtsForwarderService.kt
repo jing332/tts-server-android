@@ -104,7 +104,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
                         val file = it.getAudioFile(text)
                         if (file.exists()) return file.absolutePath
                     }
-                    throw Exception(getString(R.string.systts_forwarder_fail_audio_file))
+                    throw Exception(getString(R.string.forwarder_sys_fail_audio_file))
                 }
 
                 override fun getEngines(): String {
@@ -115,7 +115,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
                 override fun getVoices(engine: String): String {
                     return runBlocking {
                         val ok = mLocalTtsHelper.setEngine(engine)
-                        if (!ok) throw Exception(getString(R.string.systts_forwarder_fail_engine_init_timeout))
+                        if (!ok) throw Exception(getString(R.string.forwarder_sys_fail_engine_init_timeout))
 
                         val data = mLocalTtsHelper.voices.map {
                             VoiceInfo(
@@ -208,7 +208,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {/*Android 8.0+ 要求必须设置通知信道*/
             val chan = NotificationChannel(
                 chanId,
-                getString(R.string.systts_forwarder),
+                getString(R.string.forwarder_systts),
                 NotificationManager.IMPORTANCE_NONE
             )
             chan.lightColor = Color.BLUE
@@ -222,7 +222,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
         }
         val notification = builder
             .setColor(ContextCompat.getColor(this, R.color.md_theme_light_primary))
-            .setContentTitle(getString(R.string.systts_forwarder_running))
+            .setContentTitle(getString(R.string.forwarder_sys_running))
             .setContentText(getString(R.string.server_listen_address_local, listenAddress))
             .setSmallIcon(smallIconRes)
             .setContentIntent(pendingIntent)
