@@ -226,7 +226,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
         PopupMenu(requireContext(), v).apply {
             this.setForceShowIcon(true)
             MenuCompat.setGroupDividerEnabled(menu, true)
-            menuInflater.inflate(R.menu.menu_systts_list_group_more, menu)
+            menuInflater.inflate(R.menu.systts_list_group_more, menu)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.menu_export_config -> exportConfig(model)

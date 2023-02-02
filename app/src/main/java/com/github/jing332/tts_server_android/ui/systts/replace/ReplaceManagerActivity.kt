@@ -144,7 +144,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
         PopupMenu(this, v).apply {
             setForceShowIcon(true)
             MenuCompat.setGroupDividerEnabled(menu, true)
-            menuInflater.inflate(R.menu.menu_replace_rule_more, menu)
+            menuInflater.inflate(R.menu.systts_replace_rule_more, menu)
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_delete -> {
@@ -211,7 +211,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
         MenuCompat.setGroupDividerEnabled(menu, true)
-        menuInflater.inflate(R.menu.menu_replace_manager, menu)
+        menuInflater.inflate(R.menu.systts_replace_manager, menu)
 
 
         return super.onCreateOptionsMenu(menu)

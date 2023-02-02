@@ -25,7 +25,7 @@ import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
-import com.github.jing332.tts_server_android.databinding.DialogInAppPlaySettingsBinding
+import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.*
@@ -122,7 +122,7 @@ class SysTtsListFragment : Fragment() {
 
     inner class MyMenuProvider : MenuProvider {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            menuInflater.inflate(R.menu.menu_systts, menu)
+            menuInflater.inflate(R.menu.systts, menu)
         }
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -278,7 +278,7 @@ class SysTtsListFragment : Fragment() {
     @Suppress("DEPRECATION")
     private fun showInAppSettingsDialog() {
         val view = FrameLayout(requireContext())
-        val inAppBinding = DialogInAppPlaySettingsBinding.inflate(layoutInflater, view, true)
+        val inAppBinding = SysttsBuiltinPlayerSettingsBinding.inflate(layoutInflater, view, true)
         inAppBinding.apply {
             tvTip.text = Html.fromHtml(getString(R.string.systts_in_app_play_info_html))
             switchOnOff.setOnCheckedChangeListener { _, isChecked ->

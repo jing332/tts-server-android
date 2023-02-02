@@ -14,7 +14,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsBaseEditActivityB
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.AudioPlayer
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
-import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.google.android.material.textfield.TextInputLayout
 
 open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : BackActivity() {
@@ -115,7 +115,7 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
         }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_systts_config_edit, menu)
+        menuInflater.inflate(R.menu.systts_config_edit, menu)
         return super.onCreateOptionsMenu(menu)
     }
 

@@ -14,7 +14,7 @@ import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.ui.base.BaseWebViewPageFragment
 
 
-class ServerWebFragment : BaseWebViewPageFragment() {
+class MsTtsForwarderWebPage : BaseWebViewPageFragment() {
     private val mReceiver by lazy { MyReceiver() }
 
     @SuppressLint("SetJavaScriptEnabled")

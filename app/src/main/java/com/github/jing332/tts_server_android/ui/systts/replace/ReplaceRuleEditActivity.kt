@@ -12,7 +12,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_ADD
 import com.github.jing332.tts_server_android.constant.KeyConst.RESULT_EDIT
 import com.github.jing332.tts_server_android.data.entities.ReplaceRule
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
-import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.ui.base.BackActivity
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -96,7 +96,7 @@ class ReplaceRuleEditActivity : BackActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_replace_rule_edit, menu)
+        menuInflater.inflate(R.menu.systts_replace_rule_edit, menu)
         return super.onCreateOptionsMenu(menu)
     }
 

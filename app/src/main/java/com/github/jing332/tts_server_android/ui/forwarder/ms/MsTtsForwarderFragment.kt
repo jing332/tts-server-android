@@ -18,7 +18,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.ServerFragmentBinding
+import com.github.jing332.tts_server_android.databinding.MsTtsForwarderFragmentBinding
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.TtsIntentService
 import com.github.jing332.tts_server_android.ui.MainActivity
@@ -31,10 +31,9 @@ import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
-class ServerFragment : Fragment(), MenuProvider {
-
-    private val binding: ServerFragmentBinding by lazy {
-        ServerFragmentBinding.inflate(layoutInflater)
+class MsTtsForwarderFragment : Fragment(), MenuProvider {
+    private val binding: MsTtsForwarderFragmentBinding by lazy {
+        MsTtsForwarderFragmentBinding.inflate(layoutInflater)
     }
 
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
@@ -85,8 +84,8 @@ class ServerFragment : Fragment(), MenuProvider {
         App.localBroadcast.unregisterReceiver(mReceiver)
     }
 
-    val logFragment = ServerLogFragment()
-    val webFragment = ServerWebFragment()
+    val logFragment = MsTtsForwarderLogPage()
+    val webFragment = MsTtsForwarderWebPage()
 
     inner class FragmentAdapter(fragment: Fragment) :
         FragmentStateAdapter(fragment) {
@@ -113,7 +112,7 @@ class ServerFragment : Fragment(), MenuProvider {
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.menu_server, menu)
+        menuInflater.inflate(R.menu.ms_tts_forwarder, menu)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

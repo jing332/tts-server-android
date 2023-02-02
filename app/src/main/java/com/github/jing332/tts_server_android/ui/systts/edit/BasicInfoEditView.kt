@@ -13,8 +13,8 @@ import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
-import com.github.jing332.tts_server_android.databinding.DialogInAppPlaySettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
+import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.AudioPlayer
 import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
@@ -140,7 +140,9 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                 .show()
         } else if (SysTtsConfig.isInAppPlayAudio) {
             val binding =
-                DialogInAppPlaySettingsBinding.inflate(LayoutInflater.from(context), this, false)
+                SysttsBuiltinPlayerSettingsBinding.inflate(
+                    LayoutInflater.from(context), this, false
+                )
             binding.apply {
                 val converter = object : Seekbar.ProgressConverter {
                     override fun progressToValue(progress: Int): Any {

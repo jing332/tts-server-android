@@ -35,7 +35,7 @@ class SysTtsForwarderFragment : Fragment() {
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_systts_forwarder, menu)
+                menuInflater.inflate(R.menu.systts_forwarder, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

@@ -1,14 +1,14 @@
-package com.github.jing332.tts_server_android.ui.custom
+package com.github.jing332.tts_server_android.ui.base
 
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.BackActivityBinding
+import com.github.jing332.tts_server_android.databinding.ActivityBackBinding
 
 open class BackActivity : AppCompatActivity() {
-    private val binding: BackActivityBinding by lazy { BackActivityBinding.inflate(layoutInflater) }
+    private val binding: ActivityBackBinding by lazy { ActivityBackBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_TtsServer_NoActionBar)

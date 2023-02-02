@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.databinding.SysttsConfigImportActivityBinding
-import com.github.jing332.tts_server_android.ui.custom.BackActivity
+import com.github.jing332.tts_server_android.ui.base.BackActivity
 
 class ConfigImportActivity : BackActivity() {
     val binding: SysttsConfigImportActivityBinding by lazy {

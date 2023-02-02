@@ -29,8 +29,8 @@ import androidx.navigation.ui.*
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.databinding.ActivityMainBinding
-import com.github.jing332.tts_server_android.databinding.NavHeaderBinding
+import com.github.jing332.tts_server_android.databinding.MainActivityBinding
+import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.util.*
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
@@ -51,8 +51,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private lateinit var navHeaderBinding: NavHeaderBinding
+    private val binding: MainActivityBinding by lazy { MainActivityBinding.inflate(layoutInflater) }
+    private val navHeaderBinding: MainDrawerNavHeaderBinding by lazy {
+        MainDrawerNavHeaderBinding.bind(binding.navView.getHeaderView(0))
+    }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
@@ -85,7 +87,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
         navGraph.setStartDestination(checkedId)
         navController.graph = navGraph
-        navHeaderBinding = NavHeaderBinding.bind(binding.navView.getHeaderView(0))
+
         navHeaderBinding.apply {
             subtitle.text = BuildConfig.VERSION_NAME
 
@@ -150,7 +152,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
         if (handled) {
-//            invalidateOptionsMenu()
             AppConfig.fragmentIndex = when (menuItem.itemId) {
                 R.id.nav_systts -> 0
                 R.id.nav_server -> 1
