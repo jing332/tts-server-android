@@ -14,6 +14,8 @@ import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.MainActivity
+import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_FORWARDER_MS
+import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.toast
 import tts_server_lib.LogCallback
@@ -127,7 +129,8 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                 this, 0, Intent(
                     this,
                     MainActivity::class.java
-                ), pendingIntentFlags
+                ).apply { putExtra(KEY_FRAGMENT_INDEX, INDEX_FORWARDER_MS) },
+                pendingIntentFlags
             )
         /*当点击退出按钮时发送广播*/
         val closePendingIntent: PendingIntent =

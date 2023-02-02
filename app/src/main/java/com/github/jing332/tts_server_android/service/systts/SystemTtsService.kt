@@ -26,6 +26,8 @@ import com.github.jing332.tts_server_android.service.systts.help.TtsManager
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
+import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_SYS_TTS
+import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.limitLength
@@ -230,10 +232,10 @@ class SystemTtsService : TextToSpeechService(),
         /*点击通知跳转*/
         val pendingIntent =
             PendingIntent.getActivity(
-                this, 0, Intent(
+                this, 1, Intent(
                     this,
                     MainActivity::class.java
-                ), pendingIntentFlags
+                ).apply { putExtra(KEY_FRAGMENT_INDEX, INDEX_SYS_TTS) }, pendingIntentFlags
             )
 
         val killProcessPendingIntent = PendingIntent.getBroadcast(
@@ -310,7 +312,10 @@ class SystemTtsService : TextToSpeechService(),
                 )
             }
         // 重试成功
-        if (retryNum > 1) updateNotification(getString(R.string.systts_state_synthesizing), mCurrentText)
+        if (retryNum > 1) updateNotification(
+            getString(R.string.systts_state_synthesizing),
+            mCurrentText
+        )
     }
 
     override fun onError(errCode: Int, speakText: String?, reason: String?) {

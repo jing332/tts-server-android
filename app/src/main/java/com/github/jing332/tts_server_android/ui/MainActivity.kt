@@ -41,9 +41,14 @@ import java.util.*
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object {
         const val ACTION_BACK_KEY_DOWN = "ACTION_BACK_KEY_DOWN"
+        const val KEY_FRAGMENT_INDEX = "KEY_INDEX"
+
+        const val INDEX_SYS_TTS = 0
+        const val INDEX_FORWARDER_SYS = 1
+        const val INDEX_FORWARDER_MS = 2
 
         private val drawerMenus by lazy {
-            listOf(R.id.nav_systts, R.id.nav_server, R.id.nav_systts_forwarder, R.id.nav_settings)
+            listOf(R.id.nav_systts, R.id.nav_systts_forwarder, R.id.nav_server, R.id.nav_settings)
         }
     }
 
@@ -59,6 +64,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
+
+        val fragmentIndex = intent.getIntExtra(KEY_FRAGMENT_INDEX, AppConfig.fragmentIndex)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -77,7 +84,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
 
         // 设置启动页面
-        val checkedId = drawerMenus.getOrElse(AppConfig.fragmentIndex) { 0 }
+        val checkedId = drawerMenus.getOrElse(fragmentIndex) { 0 }
         navView.setCheckedItem(checkedId)
 
         val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
