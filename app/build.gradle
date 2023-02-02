@@ -25,8 +25,8 @@ android {
             }
         }
 
-        def locales = ["en", "zh"]
-        buildConfigField "String[]", "TRANSLATION_ARRAY", "new String[]{\""+locales.join("\",\"")+"\"}"
+        def locales = ["en", "zh-rCN", "zh-rTW"]
+        buildConfigField "String[]", "TRANSLATION_ARRAY", "new String[]{\""+locales.join("\",\"").replaceAll("-r", "-")+"\"}"
         resConfigs locales
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

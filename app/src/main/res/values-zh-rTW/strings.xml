@@ -1,0 +1,274 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_switch">開關</string>
+    <string name="help">幫助</string>
+    <string name="warning">警告</string>
+    <string name="reset">重置</string>
+    <string name="exit">退出</string>
+    <string name="copied">已復制</string>
+    <string name="ok_reset">已重置</string>
+    <string name="loading">加載中</string>
+
+    <string name="selected">已選擇</string>
+
+    <string name="close">關閉</string>
+    <string name="start">啟動</string>
+    <string name="follow">跟隨</string>
+    <string name="custom">自定義</string>
+    <string name="app_down_again_to_exit">再按一次退出APP</string>
+    <string name="cannot_empty">不可為空！</string>
+
+    <string name="open_web">打開網頁版</string>
+    <string name="check_update">檢查更新</string>
+    <string name="wake_lock">喚醒鎖</string>
+    <string name="about">關於</string>
+    <string name="config">配置</string>
+    <string name="log">日誌</string>
+    <string name="background_whitelist">電池優化白名單</string>
+    <string name="desktop_shortcut">桌面快捷方式</string>
+    <string name="added_background_whitelist">已加入後台白名單</string>
+
+    <string name="kill_process">結束進程</string>
+    <string name="cancel">取消</string>
+
+    <string name="label_read_aloud_target">朗讀目標：</string>
+    <string name="label_api">接口：</string>
+    <string name="label_language">語言：</string>
+    <string name="label_voice">聲音：</string>
+    <string name="label_voice_role">角色：</string>
+    <string name="label_voice_style">風格：</string>
+    <string name="label_styleDegree">風格強度：</string>
+    <string name="label_audio_format">音頻格式：</string>
+    <string name="label_volume">體積：</string>
+    <string name="label_rate">語速：</string>
+    <string name="label_pitch">音高：</string>
+    <string name="label_play_speed">播放速度：</string>
+    <string name="label_play_pitch">播放音調：</string>
+    <string name="label_result">結果：</string>
+    <string name="label_audio_sample_rate">音頻採樣率(hz)：</string>
+    <string name="label_port">端口:</string>
+
+    <string name="systts_api_edge">微軟Edge-大聲朗讀接口</string>
+    <string name="systts_api_azure">微軟Azure-網頁演示接口</string>
+    <string name="systts_api_creation">(⚠️ 已失效)微軟Creation-網頁演示接口</string>
+
+    <string name="systts_state_idle">TTS空閒中</string>
+    <string name="systts_state_synthesizing">TTS合成中</string>
+    <string name="systts_service">系統TTS服務</string>
+
+    <string name="systts_split_long_sentences">分割長句</string>
+    <string name="system_not_support_please_manual_set">系統不支持，請手動操作</string>
+
+    <string name="service_started">服務已啟動</string>
+    <string name="service_closed">服務已關閉</string>
+    <string name="forwarder_ms">微軟TTS轉發器</string>
+    <string name="server_tts_running">TTS Server正在運行中</string>
+    <string name="server_listen_address_local">監聽地址：%s</string>
+    <string name="server_please_start_service">請先啟動服務</string>
+    <string name="server_restart_service_to_update">重啟服務以生效</string>
+    <string name="server_set_token">設置Token</string>
+    <string name="server_token_set_to">Token已設為：</string>
+
+    <string name="systts_settings">系統TTS</string>
+    <string name="settings">設置</string>
+    <string name="global_settings">全局設置</string>
+    <string name="copy_address">複製地址</string>
+    <string name="check_update_failed">檢查更新失敗</string>
+    <string name="current_is_last_version">當前已是最新版</string>
+
+    <string name="title_activity_tts_config_edit">編輯內置TTS</string>
+    <string name="title_activity_replace_edit">編輯替換規則</string>
+    <string name="title_activity_replace_manager">替換規則管理</string>
+
+    <string name="display_name">顯示名稱</string>
+    <string name="save">保持</string>
+    <string name="desc_switch_item">啟用或關閉本條目</string>
+    <string name="desc_add_config">添加配置</string>
+    <string name="desc_edit_item">編輯條目</string>
+    <string name="desc_delete_item">刪除本條目</string>
+    <string name="desc_seekbar_add">滑動條 +1</string>
+    <string name="desc_seekbar_remove">滑動條 -1</string>
+
+    <string name="add_config">添加配置</string>
+    <string name="config_import_export">配置導入/導出</string>
+    <string name="import_config">導入配置</string>
+    <string name="export_config">導出配置</string>
+    <string name="copy" tools:ignore="PrivateResource">複製</string>
+    <string name="follow_system_or_read_aloud_app">跟隨系統或朗讀APP</string>
+    <string name="raw_format_is_play_while_downloading">Raw格式為邊下邊播模式</string>
+    <string name="is_confirm_delete">確認刪除？</string>
+    <string name="delete">刪除</string>
+    <string name="ra_all">朗讀全部</string>
+    <string name="ra_aside">僅旁白</string>
+    <string name="ra_dialogue">僅對話</string>
+
+    <string name="all">全部</string>
+    <string name="aside">旁白</string>
+    <string name="dialogue">對話</string>
+    <string name="none">無</string>
+    <string name="default_str">默認</string>
+
+    <string name="web">網頁</string>
+    <string name="clear_web_data">清空網頁數據</string>
+    <string name="cleared">已清空</string>
+
+    <string name="import_from_clipboard">從剪貼板導入</string>
+    <string name="url_net">網絡鏈接</string>
+    <string name="import_from_url">從上方URL導入</string>
+    <string name="retry">重試</string>
+    <string name="test">測試</string>
+    <string name="sample_text">測試文本</string>
+
+    <!-- 替换管理 -->
+    <string name="systts_replace_rule_manager">替換規則管理</string>
+    <string name="systts_replace_add_rule">添加替換規則</string>
+    <string name="systts_replace_rule">替換規則</string>
+    <string name="systts_replace_as">替換為</string>
+    <string name="systts_replace_insert_pinyin">插入拼音聲調</string>
+    <string name="systts_replace_use_regex">使用正則表達式</string>
+
+    <!-- 系统TTS 设置 -->
+    <string name="systts_set_dialogue_min_match_word_count">設置對話最小匹配漢字數</string>
+    <string name="systts_set_dialogue_min_info">人物對話的漢字數（包括中文符號），即只有在大於等於此值時才作為對話朗讀，反之使用旁白。</string>
+    <string name="systts_set_request_timeout">設定請求超時</string>
+    <string name="systts_set_request_timeout_msg">請求音訊的等待時間超過設定值後，將取消請求並自動重試。</string>
+
+    <string name="systts_http_edit_title">編輯自定義TTS</string>
+    <string name="systts_http_request_header">請求頭</string>
+
+    <string name="systts_sample_test_text">按一下右側按鈕即可測試並播放</string>
+
+    <string name="systts_decode_audio">解碼音訊</string>
+    <string name="systts_add_internal_tts">添加內寘TTS</string>
+    <string name="systts_add_custom_tts">添加自定義TTS</string>
+    <string name="off_multi_voice_use_global">請關閉多語音選項以使用單語音模式</string>
+
+    <string name="use_dns_lookup_ip">使用DNS解析介面IP</string>
+    <string name="pref_edge_dns_summary">而非內寘北京微軟雲節點</string>
+    <string name="pref_title_global_edge">全域-Edge介面</string>
+
+    <string name="systts_multi_voice_option">多語音（旁白/對白）</string>
+    <string name="systts_use_internal_audio_player">使用內寘播放機</string>
+    <string name="systts_in_app_play_info_html"><DATA><![CDATA[打開此選項後，將直接<b>使用本APP內寘的音訊播放機</b>，而非轉由系統TTS組件播放。]]></DATA>
+    </string>
+    <string name="systts_help_secondary_locale">選擇二級語言，即在朗讀時使用此語言，現時微軟只支持en-US-JennyMultilingualNeural。</string>
+    <string name="systts_sample_rate">取樣速率（hz）</string>
+    <string name="systts_secondaryLocale">二級語言（語言技能）</string>
+    <string name="systts_voice_data_load_failed">語音數據加載失敗</string>
+    <string name="systts_help_sample_rate">系統TTS在開始播放時需指定取樣速率，如已啟用【內寘播放機】、【直接播放】則可忽略此選項。</string>
+    <string name="systts_voice_multiple_option">相同朗讀目標可多選</string>
+    <string name="systts_voice_multiple_hint">⚠️ 相同朗讀目標將不再排斥，並使用隨機輪播。 （單語音不支持此功能）</string>
+    <string name="systts_groups_multiple">分組可多選</string>
+    <string name="systts_groups_multiple_hint">⚠ ️勾選分組時將不再互相排斥。</string>
+
+    <string name="systts_warn_no_ra_dialogue">⚠️ 缺少{對話}，使用默認！ \n請啟用對話配寘。</string>
+    <string name="systts_warn_no_ra_all">⚠️ 缺少{全部}，使用默認！ \n請確保關閉多語音選項。</string>
+    <string name="systts_warn_no_ra_aside">⚠ ️缺少{旁白}，使用默認！ \n請啟用旁白配寘。</string>
+
+    <string name="systts_test_success">測試成功</string>
+    <string name="systts_test_success_info">大小：%1$dKiB</string>
+
+    <string name="systts_http_test_msg">音訊大小：%1$d Kib \n格式：%2$s \n取樣速率：%3$d HZ \nContent-Type:%4$s</string>
+
+    <string name="systts_please_check_multi_voice_option">請先在右上角選單勾選多語音選項！</string>
+    <string name="systts_sample_rate_different_in_enabled_list">檢測到已啟用配寘中的格式/取樣速率不同，</string>
+    <string name="group_expanded">分組已展開</string>
+    <string name="group_collapsed">分組已折疊</string>
+    <string name="systts_desc_list_count_info">共%1$d項，已啟用%2$d項</string>
+    <string name="systts_list_item_desc">目標%1$s，介面%2$s，内容：%3$s，格式：%4$s</string>
+
+    <string name="more_options">更多選項</string>
+    <string name="add_group">添加分組</string>
+    <string name="group">分組</string>
+    <string name="belonging_group">所屬分組</string>
+    <string name="msg_group_is_empty">分組為空，請添加配寘</string>
+    <string name="edit_group_name">編輯分組名稱</string>
+    <string name="default_group">默認分組</string>
+
+    <string name="content">內容</string>
+    <string name="name">名稱</string>
+    <string name="unnamed">未命名</string>
+    <string name="rename">重命名</string>
+    <string name="test_failed">測試失敗</string>
+    <string name="enabled">已啟用</string>
+    <string name="choice_item">選擇%1$s</string>
+    <string name="import_failed">導入失敗</string>
+
+    <string name="clipboard">剪貼板</string>
+    <string name="type">類型</string>
+    <string name="source">來源</string>
+    <string name="legado">閱讀Legado</string>
+    <string name="str_import">導入</string>
+    <string name="please_choose">請選擇</string>
+    <string name="config_import">配寘導入</string>
+
+    <string name="systts_play_params_description">語速：%1$s |音量：%2$s |音高：%3$s</string>
+    <string name="systts_ms_express_as_description">%1$s-%2$s |强度：%3$s</string>
+    <string name="server_log_service_running">服務已在運行中，監聽地址：%1$s</string>
+    <string name="server_log_tips">1.按一下啟動按鈕\n2. 打開網頁並選擇配寘\n3. 最後生成連結導入到閱讀APP \n ⚠️ 朗讀時服務需常駐後臺運行！ \n ⚠️ 本功能與系統TTS互相獨立，互不干涉！</string>
+    <string name="systts_log_request_audio">請求音訊：%1$s</string>
+    <string name="systts_log_success">獲取成功，大小：%1$s，耗時：%2$s</string>
+    <string name="systts_log_failed">獲取失敗：%1$s</string>
+    <string name="systts_log_audio_empty">音訊為空：%1$s</string>
+    <string name="systts_log_decode_failed">解碼失敗：%1$s</string>
+    <string name="systts_log_canceled">已取消：%1$s</string>
+    <string name="systts_log_finished_playing">播放完畢：%1$s</string>
+    <string name="systts_log_start_retry">開始第%1$d次重試</string>
+    <string name="unlimited">無限制</string>
+    <string name="systts_log_ip_is_restricted">您的IP可能已被微軟服務器限制，換為流量消耗小的音訊格式可大程度避免此情况。</string>
+    <string name="local_file">文件</string>
+    <string name="select_file">選擇檔案</string>
+    <string name="select_file_hint">按一下右側按鈕選擇檔案 ➡️</string>
+    <string name="systts_group_empty_msg"><![CDATA[按一下頂部應用欄右側的 ➕ 按鈕->添加TTS，然後在編輯介面設定所屬分組。]]></string>
+    <string name="new_version_available">有新版本：%1$s</string>
+    <string name="master_switch">總開關</string>
+    <string name="upload_to_url">上傳到URL</string>
+    <string name="upload_failed">上傳失敗：%1$s</string>
+    <string name="systts_copied_config">已複製配寘</string>
+    <string name="search">蒐索</string>
+    <string name="replace_rule_search">替換規則-蒐索</string>
+    <string name="drawer_interface">介面</string>
+    <string name="other">其他</string>
+    <string name="nav_back">返回</string>
+    <string name="move_to_top">移到頂部</string>
+    <string name="move_to_bottom">移到底部</string>
+    <string name="local_tts_engine">本地TTS引擎</string>
+    <string name="add_local_tts">添加本地TTS</string>
+    <string name="local">本地</string>
+    <string name="systts_local_edit_title">編輯本地TTS</string>
+    <string name="label_tts_engine">TTS引擎：</string>
+    <string name="type_of_data">資料類型</string>
+    <string name="str_key">鍵</string>
+    <string name="str_value">值</string>
+    <string name="add_extra_params">新建附加參數</string>
+    <string name="edit_extra_parameter">編輯附加參數</string>
+    <string name="as_standby">作為備用</string>
+    <string name="direct_play">直接播放</string>
+    <string name="systts_direct_play_help">關於【直接播放】</string>
+    <string name="systts_direct_play_help_msg">打開選項後，將直接由其TTS引擎進行流式播放； \n關閉選項後，將會經TTS Server中轉音訊，這會有些效能損耗（緩存的讀寫），但對於多語音情况下，可降低同一引擎在聲音切換時帶來的初始化延遲。</string>
+    <string name="systts_replace_please_on_switch">⚠️ 右上角選單開啟【總開關】</string>
+    <string name="md_checkbox_checked">已全選</string>
+    <string name="md_checkbox_unchecked">全部未選</string>
+    <string name="md_checkbox_indeterminate">部分選擇</string>
+    <string name="systts_local_test_msg">直接播放已關閉\n大小：%1$d KiB \n取樣速率：%2$d HZ</string>
+    <string name="systts_set_standby">設定備用TTS</string>
+    <string name="systts_local_params_int_must">必須為true或1，false或0</string>
+    <string name="set_built_in_player_params">內寘播放機設定</string>
+    <string name="built_in_player_not_enabled">⚠ ️內寘播放機未啟用，請前往右上角選單手動啟用。</string>
+    <string name="please_turn_off_direct_play">請關閉【直接播放】選項</string>
+    <string name="systts_as_standby_help">關於【作為備用】</string>
+    <string name="systts_standby">備</string>
+    <string name="decode">解碼</string>
+    <string name="systts_log_replace_failed">執行替換失敗：%1$s</string>
+    <string name="systts_sby_conditions_for_use">備用配寘使用條件</string>
+    <string name="systts_sby_settings_msg">備用配寘在第幾次重試時觸發？ 默認為1，即備用配寘在首次失敗重試時使用。</string>
+    <string name="systts_ms_webm_warn_msg">⚠️  經測試，音訊格式webm..- 24kbps-.. 的實際所耗流量是其音訊大小的三倍有餘，不推薦使用！</string>
+    <string name="search_filter">蒐索過濾</string>
+    <string name="app_language_follow">跟隨系統</string>
+    <string name="app_language_desc">APP語言：%1$s</string>
+    <string name="app_language_to_follow_tip_msg">如更新語言失敗，請手動結束程式並重啓。</string>
+    <string name="forwarder_sys_fail_audio_file">合成失敗：未找到音訊檔案</string>
+    <string name="forwarder_sys_fail_engine_init_timeout">引擎初始化失敗：已超時</string>
+    <string name="forwarder_systts">系統TTS轉發器</string>
+    <string name="forwarder_sys_running">系統TTS轉發器運行中</string>
+    <string name="language">語言</string>
+</resources>
