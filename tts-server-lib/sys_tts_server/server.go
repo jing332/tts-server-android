@@ -59,7 +59,7 @@ func (c *ConvServer) Start(port int64) error {
 		Handler:        c.serveMux,
 	}
 
-	c.Log.Infoln("starting server...")
+	c.Log.Infoln("\nstarting server...")
 	err := c.server.ListenAndServe()
 	if err == http.ErrServerClosed { // 说明调用Shutdown关闭
 		err = nil
@@ -132,11 +132,12 @@ func (c *ConvServer) enginesApiHandler(w http.ResponseWriter, r *http.Request) {
 
 	s, err := c.OnGetEngines()
 	if err != nil {
-		c.Log.Errorln(err)
+		c.writeErrorMsg(w, err)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err = w.Write([]byte(s))
 	if err != nil {
 		c.Log.Errorln(err)
@@ -165,6 +166,7 @@ func (c *ConvServer) voicesApiHandler(w http.ResponseWriter, r *http.Request) {
 		c.writeErrorMsg(w, err)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err = w.Write([]byte(json))
 	if err != nil {
 		c.handleError(err)
@@ -186,6 +188,7 @@ func (c *ConvServer) legadoUrlApiHandler(w http.ResponseWriter, r *http.Request)
 		c.writeErrorMsg(w, err)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err = w.Write([]byte(json))
 	if err != nil {
 		c.handleError(err)
@@ -205,6 +208,7 @@ func writeAudioData(w http.ResponseWriter, data []byte) error {
 func (c *ConvServer) writeErrorMsg(w http.ResponseWriter, e error) {
 	c.Log.Errorln(e)
 	w.WriteHeader(http.StatusInternalServerError)
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	_, err := w.Write([]byte(e.Error()))
 	if err != nil {
 		c.Log.Warnf("write error to client failed: %v", err)

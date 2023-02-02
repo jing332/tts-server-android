@@ -22,7 +22,7 @@ type LegadoJson struct {
 func getLegadoJson(api string, displayName string, engine string) (string, error) {
 	t := time.Now().UnixNano() / 1e6
 	url := api + `?engine=` + engine + `&text={{java.encodeURI(speakText)}}&rate={{speakSpeed * 2}}`
-	data := &LegadoJson{Name: displayName, LastUpdateTime: t, ID: t, URL: url}
+	data := &LegadoJson{Name: displayName, LastUpdateTime: t, ID: t, URL: url, ContentType: "audio/x-wav", ConcurrentRate: "100"}
 	jsonStr, err := json.Marshal(data)
 	if err != nil {
 		return "", err
