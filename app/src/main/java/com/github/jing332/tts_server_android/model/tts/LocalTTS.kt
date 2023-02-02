@@ -118,10 +118,10 @@ data class LocalTTS(
     private var waitJob: Job? = null
 
     @IgnoredOnParcel
-    private var isInitialzed = false
+    private var isInitialized = false
 
     private fun initEngineIf() {
-        if (isInitialzed) return
+        if (isInitialized) return
         Log.i(TAG, "onLoad")
 
         mTtsEngine?.shutdown()
@@ -137,7 +137,7 @@ data class LocalTTS(
 
                     override fun onDone(utteranceId: String?) {
                         engineListener?.onDone()
-                        waitJob?.cancel()
+                        waitJob?.cancel("onDone")
                     }
 
                     @Deprecated("Deprecated in Java")
@@ -147,7 +147,7 @@ data class LocalTTS(
                 })
             }
         }, engine)
-        isInitialzed = true
+        isInitialized = true
     }
 
     @IgnoredOnParcel
@@ -164,7 +164,7 @@ data class LocalTTS(
     override fun onStop() {
         Log.i(TAG, "onStop")
         mTtsEngine?.stop()
-        waitJob?.cancel()
+        waitJob?.cancel("onStop")
     }
 
     override fun onDestroy() {
@@ -217,14 +217,14 @@ data class LocalTTS(
         }
     }
 
-    fun getAudioFile(text: String, timeout: Long = 8000L): File {
+    fun getAudioFile(text: String): File {
         initEngineIf()
         currentJobId = SystemClock.elapsedRealtime().toString()
 
         File(saveDir).apply { if (!exists()) mkdirs() }
         val file = File("$saveDir/$engine.wav")
         runBlocking {
-            if (!checkInitAndWait()){
+            if (!checkInitAndWait()) {
                 throw Exception("Engine initialize failed")
             }
 
@@ -232,7 +232,12 @@ data class LocalTTS(
                 mTtsEngine?.apply {
                     synthesizeToFile(text, setEnginePlayParams(this), file, currentJobId)
                     // 等待完毕
-                    awaitCancellation()
+                    try {
+                        awaitCancellation()
+                    } catch (e: CancellationException) {
+                        if (e.message == "onStop")
+                            kotlin.runCatching { file.delete() }
+                    }
                 }
             }.job
             waitJob?.start()

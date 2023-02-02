@@ -90,7 +90,10 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
                 }
 
                 override fun cancelAudio(engine: String) {
-                    sendLog(LogLevel.WARN, "Cancel: $engine")
+                    if (mLocalTTS?.engine == engine) {
+                        mLocalTTS?.onStop()
+                        sendLog(LogLevel.WARN, "Canceled: $engine")
+                    }
                 }
 
                 override fun getAudio(engine: String, text: String, rate: Int): String {

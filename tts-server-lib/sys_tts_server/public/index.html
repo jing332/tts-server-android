@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Android System TTS Server</title>
+    <title>System TTS Forwarder</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.staticfile.org/bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
@@ -13,13 +13,6 @@
        data-show-count="true" aria-label="Star jing332/tts-server-android on GitHub">tts-server-android</a>
 </nav>
 <div class="container" style="margin-top: 10px;">
-    <div class="row" hidden=hidden>
-        <div class="col">
-            <div class="alert alert-info" role="alert">
-            </div>
-        </div>
-    </div>
-
     <div class="row">
         <div class="col">
             <label class="from-label"> TTS引擎 (Engine)</label>
@@ -30,11 +23,19 @@
     <div class="row" style="margin-top: 10px">
         <div class="col">
             <label for="textarea_test"> 测试文本 (Sample text)</label>
-            <textarea class="form-control" id="textarea_test">如果喜欢这个项目的话请点个Star吧。&#13;If you like this project, please click Star.</textarea>
+            <textarea class="form-control" id="textarea_test" rows="4">如果喜欢这个项目的话请点个Star吧。&#13;If you like this project, please click Star.</textarea>
         </div>
     </div>
 
-    <div class="row" style="margin-top:25px">
+    <div class="row" style="margin-top: 10px">
+        <label>
+            测试语速 (speech rate)
+            <input id="input_rate" class="form-control" type="number" value="50" style="max-width: 100px"
+                   oninput="if(value>100){value=100}else if (value <1){value=1}">
+        </label>
+    </div>
+
+    <div class="row" style="margin-top:10px">
         <div class="col">
             <button class="btn btn-primary" id="btn_test" onclick="onBtnTestClick()">
                 <span class="spinner-border spinner-border-sm" id="btn_test_load" hidden="hidden"></span>
@@ -83,10 +84,9 @@
 </div>
 <script src=https://cdn.staticfile.org/github-buttons/2.22.0/buttons.min.js></script>
 <script src="https://cdn.staticfile.org/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@keeex/qrcodejs-kx@1.0.2/qrcode.min.js"></script>
 <script>
-    // let baseUrl = 'http://192.168.0.105:1221'
-    let baseUrl = ''
+    let baseUrl = 'http://192.168.0.105:1221'
+    // let baseUrl = ''
 
     let engines = {}
     fetch(baseUrl + '/api/engines', {mode: 'cors'})
@@ -141,6 +141,7 @@
     }
 
     function onBtnTestClick() {
+        let speechRate = $('#input_rate')[0].value
         let engine = $('#select_engine')[0].value
         let btn = $("#btn_test")[0]
         let load = $('#btn_test_load')[0]
@@ -148,7 +149,7 @@
         load.hidden = false
 
         let text = $('#textarea_test')[0].value
-        fetch(baseUrl + `/api/tts?text=${text}&engine=${engine}&rate=50`,
+        fetch(baseUrl + `/api/tts?text=${text}&engine=${engine}&rate=${speechRate}`,
             {method: 'GET'})
             .then(response => {
                 if (response.status === 200) {
