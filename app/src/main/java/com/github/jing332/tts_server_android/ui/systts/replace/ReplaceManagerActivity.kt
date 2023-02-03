@@ -34,6 +34,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsListCustomGroupIt
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceRuleItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
 import com.github.jing332.tts_server_android.util.*
@@ -267,33 +268,33 @@ class ReplaceManagerActivity : AppCompatActivity() {
     private suspend fun updateListModels(list: List<GroupWithReplaceRule>? = mLastModels) {
         mLastModels = list
         mLastModels?.let { lastModels ->
-        val filterText = binding.etSearch.text
-        val models =
-            lastModels.map { data ->
-                val checkedState =
-                    when (data.list.filter { it.isEnabled }.size) {
-                        0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
-                        data.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
-                        else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
-                    }
-
-                ReplaceRuleGroupModel(
-                    data = data.group,
-                    itemSublist = data.list.filter {
-                        val pro = when (currentSearchTarget) {
-                            SearchTargetFilter.Name -> it.name
-                            SearchTargetFilter.Pattern -> it.pattern
-                            SearchTargetFilter.Replacement -> it.replacement
+            val filterText = binding.etSearch.text
+            val models =
+                lastModels.map { data ->
+                    val checkedState =
+                        when (data.list.filter { it.isEnabled }.size) {
+                            0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
+                            data.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
+                            else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
                         }
-                        pro.contains(filterText)
-                    }.sortedBy { it.order }.map { ReplaceRuleModel(it) },
-                    itemExpand = filterText.isNotBlank() || data.group.isExpanded,
-                    checkedState = checkedState
-                )
-            }.filter { filterText.isEmpty() || it.itemSublist?.isNotEmpty() == true }
 
-        if (brv.models == null) withMain { brv.models = models }
-        else brv.setDifferModels(models)
+                    ReplaceRuleGroupModel(
+                        data = data.group,
+                        itemSublist = data.list.filter {
+                            val pro = when (currentSearchTarget) {
+                                SearchTargetFilter.Name -> it.name
+                                SearchTargetFilter.Pattern -> it.pattern
+                                SearchTargetFilter.Replacement -> it.replacement
+                            }
+                            pro.contains(filterText)
+                        }.sortedBy { it.order }.map { ReplaceRuleModel(it) },
+                        itemExpand = filterText.isNotBlank() || data.group.isExpanded,
+                        checkedState = checkedState
+                    )
+                }.filter { filterText.isEmpty() || it.itemSublist?.isNotEmpty() == true }
+
+            if (brv.models == null) withMain { brv.models = models }
+            else brv.setDifferModels(models)
         }
     }
 
@@ -316,6 +317,8 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 if (result.resultCode == KeyConst.RESULT_ADD)
                     appDb.replaceRuleDao.insert(it.apply { order = appDb.replaceRuleDao.count })
                 else appDb.replaceRuleDao.update(it)
+
+                if (it.isEnabled) SystemTtsService.notifyUpdateConfig()
             }
         }
     }
@@ -385,6 +388,5 @@ class ReplaceManagerActivity : AppCompatActivity() {
         object Name : SearchTargetFilter(R.string.display_name, 0)
         object Pattern : SearchTargetFilter(R.string.systts_replace_rule, 1)
         object Replacement : SearchTargetFilter(R.string.systts_replace_as, 2)
-
     }
 }
