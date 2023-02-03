@@ -157,8 +157,13 @@ object MyTools {
                 val pinnedShortcutCallbackIntent = shortcutManager
                     .createShortcutResultIntent(pinShortcutInfo)
                 //Get notified when a shortcut is pinned successfully//
+                val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    0
+                }
                 val successCallback = PendingIntent.getBroadcast(
-                    ctx, 0, pinnedShortcutCallbackIntent, 0
+                    ctx, 0, pinnedShortcutCallbackIntent, pendingIntentFlags
                 )
                 shortcutManager.requestPinShortcut(
                     pinShortcutInfo, successCallback.intentSender
