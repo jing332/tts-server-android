@@ -9,10 +9,12 @@ import com.github.jing332.tts_server_android.util.toJsonListString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import tts_server_lib.Tts_server_lib
+import java.util.*
 
 class ReplaceManagerViewModel : ViewModel() {
     fun configToJson(): String {
-        return App.jsonBuilder.encodeToString(appDb.replaceRuleDao.all)
+        val list = appDb.replaceRuleDao.allGroupWithReplaceRules()
+        return App.jsonBuilder.encodeToString(list)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -24,10 +26,18 @@ class ReplaceManagerViewModel : ViewModel() {
         )
     }
 
-    fun importConfig(jsonStr: String): String? {
+    fun importConfig(json: String): String? {
         try {
-            App.jsonBuilder.decodeFromString<List<ReplaceRule>>(jsonStr.toJsonListString())
-                .forEach { appDb.replaceRuleDao.insert(it) }
+            if (json.contains("\"group\"")) {
+                App.jsonBuilder.decodeFromString<List<GroupWithReplaceRule>>(json.toJsonListString())
+                    .forEach {
+                        appDb.replaceRuleDao.insert(*it.list.toTypedArray())
+                        appDb.replaceRuleDao.insertGroup(it.group)
+                    }
+            } else {
+                App.jsonBuilder.decodeFromString<List<ReplaceRule>>(json.toJsonListString())
+                    .forEach { appDb.replaceRuleDao.insert(it) }
+            }
         } catch (e: Exception) {
             return e.message
         }

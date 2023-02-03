@@ -11,5 +11,7 @@ data class ReplaceRuleGroup(
     override val id: Long = System.currentTimeMillis(),
     override var name: String,
     override var order: Int = 0,
+
+    @kotlinx.serialization.Transient
     override var isExpanded: Boolean = false
 ) : AbstractListGroup

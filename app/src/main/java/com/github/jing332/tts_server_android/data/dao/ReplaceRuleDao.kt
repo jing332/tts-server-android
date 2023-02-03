@@ -30,6 +30,10 @@ interface ReplaceRuleDao {
 
     @Transaction
     @Query("SELECT * FROM replaceRuleGroup ORDER BY `order` ASC")
+    fun allGroupWithReplaceRules(): List<GroupWithReplaceRule>
+
+    @Transaction
+    @Query("SELECT * FROM replaceRuleGroup ORDER BY `order` ASC")
     fun flowAllGroupWithReplaceRules(): Flow<List<GroupWithReplaceRule>>
 
     @Query("SELECT * FROM replaceRuleGroup WHERE id = :id")

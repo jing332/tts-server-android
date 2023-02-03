@@ -20,15 +20,15 @@ data class ReplaceRule(
     var groupId: Long = DEFAULT_GROUP_ID,
 
     // 显示名称
-    var name: String,
+    var name: String = "",
     // 是否启用
     var isEnabled: Boolean = true,
     // 是否正则
     var isRegex: Boolean = false,
     // 匹配
-    var pattern: String,
+    var pattern: String = "",
     // 替换为
-    var replacement: String,
+    var replacement: String = "",
     // 索引 排序用
     @ColumnInfo(defaultValue = "0")
     var order: Int = 0,

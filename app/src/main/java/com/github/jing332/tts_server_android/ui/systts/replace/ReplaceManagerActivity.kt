@@ -271,23 +271,24 @@ class ReplaceManagerActivity : AppCompatActivity() {
             val filterText = binding.etSearch.text
             val models =
                 lastModels.map { data ->
+                    val filteredList = data.list.filter {
+                        val pro = when (currentSearchTarget) {
+                            SearchTargetFilter.Name -> it.name
+                            SearchTargetFilter.Pattern -> it.pattern
+                            SearchTargetFilter.Replacement -> it.replacement
+                        }
+                        pro.contains(filterText)
+                    }.sortedBy { it.order }
                     val checkedState =
-                        when (data.list.filter { it.isEnabled }.size) {
+                        when (filteredList.filter { it.isEnabled }.size) {
                             0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
-                            data.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
+                            filteredList.size -> MaterialCheckBox.STATE_CHECKED   // 全选
                             else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
                         }
 
                     ReplaceRuleGroupModel(
                         data = data.group,
-                        itemSublist = data.list.filter {
-                            val pro = when (currentSearchTarget) {
-                                SearchTargetFilter.Name -> it.name
-                                SearchTargetFilter.Pattern -> it.pattern
-                                SearchTargetFilter.Replacement -> it.replacement
-                            }
-                            pro.contains(filterText)
-                        }.sortedBy { it.order }.map { ReplaceRuleModel(it) },
+                        itemSublist = filteredList.map { ReplaceRuleModel(it) },
                         itemExpand = filterText.isNotBlank() || data.group.isExpanded,
                         checkedState = checkedState
                     )
@@ -314,10 +315,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
     private val startForResult = registerForActivityResult(StartActivityForResult()) { result ->
         result.data?.apply {
             getParcelableExtra<ReplaceRule>(KeyConst.KEY_DATA)?.let {
-                if (result.resultCode == KeyConst.RESULT_ADD)
-                    appDb.replaceRuleDao.insert(it.apply { order = appDb.replaceRuleDao.count })
-                else appDb.replaceRuleDao.update(it)
-
+                appDb.replaceRuleDao.insert(it)
                 if (it.isEnabled) SystemTtsService.notifyUpdateConfig()
             }
         }
