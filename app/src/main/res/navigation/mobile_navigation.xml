@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/nav_server"
         android:name="com.github.jing332.tts_server_android.ui.forwarder.ms.MsTtsForwarderFragment"
-        android:label="Server"
+        android:label="@string/forwarder_ms"
         tools:layout="@layout/ms_tts_forwarder_fragment" />
 
     <fragment

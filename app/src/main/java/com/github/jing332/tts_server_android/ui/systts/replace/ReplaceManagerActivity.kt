@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
 import androidx.activity.viewModels
@@ -73,7 +74,31 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 getBindingOrNull<SysttsListCustomGroupItemBinding>()?.apply {
                     itemView.clickWithThrottle {
                         val data = getModel<ReplaceRuleGroupModel>().data
-                        appDb.replaceRuleDao.insertGroup(data.copy(isExpanded = !data.isExpanded))
+                        val isExpanded = !data.isExpanded
+                        appDb.replaceRuleDao.insertGroup(data.copy(isExpanded = isExpanded))
+                        getModel<ReplaceRuleGroupModel>().let { model ->
+                            val enabledCount =
+                                model.itemSublist?.filter { (it as ReplaceRuleModel).data.isEnabled }?.size
+                            val speakText =
+                                if (isExpanded) R.string.group_expanded else R.string.group_collapsed
+                            itemView.announceForAccessibility(
+                                getString(speakText) + ", ${
+                                    getString(
+                                        R.string.systts_desc_list_count_info,
+                                        model.itemSublist?.size,
+                                        enabledCount
+                                    )
+                                }"
+                            )
+
+                            if (model.itemExpand && model.itemSublist.isNullOrEmpty()) {
+                                collapse(modelPosition)
+                                MaterialAlertDialogBuilder(this@ReplaceManagerActivity)
+                                    .setTitle(R.string.msg_group_is_empty)
+                                    .setMessage(getString(R.string.systts_group_empty_msg))
+                                    .show()
+                            }
+                        }
                     }
                     btnMore.clickWithThrottle {
                         displayGroupMenu(
@@ -86,6 +111,22 @@ class ReplaceManagerActivity : AppCompatActivity() {
                             if (it is ReplaceRuleModel) {
                                 appDb.replaceRuleDao.update(it.data.copy(isEnabled = checkBox.isChecked))
                             }
+                        }
+                    }
+
+                    checkBox.accessibilityDelegate = object : View.AccessibilityDelegate() {
+                        override fun onInitializeAccessibilityNodeInfo(
+                            host: View,
+                            info: AccessibilityNodeInfo
+                        ) {
+                            super.onInitializeAccessibilityNodeInfo(host, info)
+                            val str = when (checkBox.checkedState) {
+                                MaterialCheckBox.STATE_CHECKED -> getString(R.string.md_checkbox_checked)
+                                MaterialCheckBox.STATE_UNCHECKED -> getString(R.string.md_checkbox_unchecked)
+                                MaterialCheckBox.STATE_INDETERMINATE -> getString(R.string.md_checkbox_indeterminate)
+                                else -> ""
+                            }
+                            info.text = ", $str, "
                         }
                     }
                 }
@@ -345,7 +386,9 @@ class ReplaceManagerActivity : AppCompatActivity() {
                     getString(R.string.edit_group_name),
                     getString(R.string.name)
                 ) { text ->
-                    appDb.replaceRuleDao.insertGroup(ReplaceRuleGroup(name = text))
+                    appDb.replaceRuleDao.insertGroup(ReplaceRuleGroup(name = text.ifEmpty {
+                        getString(R.string.unnamed)
+                    }))
                 }
             }
 

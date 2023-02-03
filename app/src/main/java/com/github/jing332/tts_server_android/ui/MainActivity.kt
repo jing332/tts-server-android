@@ -112,9 +112,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
         if (handled) {
             AppConfig.fragmentIndex = when (menuItem.itemId) {
-                R.id.nav_systts -> 0
-                R.id.nav_server -> 1
-                R.id.nav_systts_forwarder -> 2
+                R.id.nav_systts -> INDEX_SYS_TTS
+                R.id.nav_systts_forwarder -> INDEX_FORWARDER_SYS
+                R.id.nav_server -> INDEX_FORWARDER_MS
                 else -> 0
             }
         } else {

@@ -26,11 +26,12 @@
                 <ImageButton
                     android:id="@+id/btn_target"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="4dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/search_filter"
+                    android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_filter" />
 
                 <EditText
