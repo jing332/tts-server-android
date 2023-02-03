@@ -157,12 +157,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
         }
         binding.btnTarget.clickWithThrottle { view ->
             PopupMenu(this, view).apply {
-                val list = listOf(
-                    SearchTargetFilter.Name,
-                    SearchTargetFilter.Pattern,
-                    SearchTargetFilter.Replacement
-                )
-                list.forEachIndexed { index, v ->
+                SearchTargetFilter.list.forEachIndexed { index, v ->
                     val item = menu.add(Menu.NONE, index, index, v.strId)
                     item.isCheckable = true
                     if (currentSearchTarget == v)
@@ -170,11 +165,11 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 }
 
                 setOnMenuItemClickListener { menuItem ->
-                    list.forEachIndexed { index, _ ->
+                    SearchTargetFilter.list.forEachIndexed { index, _ ->
                         menu.findItem(index).isChecked = false
                     }
                     menuItem.isChecked = true
-                    currentSearchTarget = list[menuItem.itemId]
+                    currentSearchTarget = SearchTargetFilter.list[menuItem.itemId]
                     lifecycleScope.launch { updateListModels() }
                     true
                 }
@@ -276,6 +271,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
                             SearchTargetFilter.Name -> it.name
                             SearchTargetFilter.Pattern -> it.pattern
                             SearchTargetFilter.Replacement -> it.replacement
+                            SearchTargetFilter.Group -> appDb.replaceRuleDao.getGroup(it.groupId)?.name.toString()
                         }
                         pro.contains(filterText)
                     }.sortedBy { it.order }
@@ -383,8 +379,20 @@ class ReplaceManagerActivity : AppCompatActivity() {
     }
 
     sealed class SearchTargetFilter(val strId: Int, val index: Int) {
+        companion object {
+            val list by lazy {
+                listOf(
+                    Name,
+                    Pattern,
+                    Replacement,
+                    Group,
+                )
+            }
+        }
+
         object Name : SearchTargetFilter(R.string.display_name, 0)
         object Pattern : SearchTargetFilter(R.string.systts_replace_rule, 1)
         object Replacement : SearchTargetFilter(R.string.systts_replace_as, 2)
+        object Group : SearchTargetFilter(R.string.group, 3)
     }
 }

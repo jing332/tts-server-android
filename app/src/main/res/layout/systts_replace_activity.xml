@@ -25,13 +25,13 @@
 
                 <ImageButton
                     android:id="@+id/btn_target"
-                    android:contentDescription="@string/search_filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_baseline_filter_alt_24" />
+                    android:contentDescription="@string/search_filter"
+                    app:srcCompat="@drawable/ic_filter" />
 
                 <EditText
                     android:id="@+id/et_search"
