@@ -49,10 +49,10 @@ android {
         release {
             versionNameSuffix "_${releaseTime()}"
             signingConfig signingConfigs.release
-            minifyEnabled false
-            shrinkResources true
-            zipAlignEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+           // minifyEnabled false
+           // shrinkResources true
+            // zipAlignEnabled true
+          //  proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             applicationIdSuffix ".debug"
