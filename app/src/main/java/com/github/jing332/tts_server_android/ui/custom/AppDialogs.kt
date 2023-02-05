@@ -33,7 +33,6 @@ object AppDialogs {
             }.show()
     }
 
-
     fun displayDeleteDialog(context: Context, message: String, onRemove: () -> Unit) {
         MaterialAlertDialogBuilder(context).setTitle(R.string.is_confirm_delete)
             .setMessage(message)

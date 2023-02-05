@@ -7,17 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class AppLog(var level: Int, var msg: String) : Parcelable {
     fun toColor(): Int {
-        return when {
-            level == LogLevel.WARN -> {
-                Color.rgb(255, 215, 0) /* 金色 */
-            }
-            level <= LogLevel.ERROR -> {
-                Color.RED
-            }
-            else -> {
-                Color.GRAY
-            }
-        }
+        return LogLevel.toColor(level)
     }
 
 }
@@ -30,6 +20,20 @@ object LogLevel {
     const val INFO = 4
     const val DEBUG = 5
     const val TRACE = 6
+
+    fun toColor(level: Int): Int {
+        return when {
+            level == WARN -> {
+                Color.rgb(255, 215, 0) /* 金色 */
+            }
+            level <= ERROR -> {
+                Color.RED
+            }
+            else -> {
+                Color.GRAY
+            }
+        }
+    }
 
     fun toString(level: Int): String {
         when (level) {

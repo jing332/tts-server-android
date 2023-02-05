@@ -26,24 +26,40 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".ui.systts.plugin.PluginEditActivity"
+            android:exported="false"
+            android:label=""
+            android:theme="@style/Theme.TtsServer.NoActionBar">
+        </activity>
+        <activity
+            android:label="@string/plugin_manager"
+            android:name=".ui.systts.plugin.PluginManagerActivity"
+            android:exported="true">
+
+        </activity>
+        <activity
+            android:name=".ui.systts.edit.plugin.PluginTtsEditActivity"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.TtsServer.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
+
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.systts.edit.microsoft.MsTtsEditActivity"
             android:label="@string/title_activity_tts_config_edit" />
-
         <activity
             android:name=".ui.systts.list.import1.ConfigImportActivity"
             android:label="@string/config_import" />
-
         <activity
             android:name=".ui.systts.edit.http.HttpTtsEditActivity"
             android:label="@string/systts_http_edit_title" />
@@ -85,7 +101,6 @@
                 android:name="autoStoreLocales"
                 android:value="true" />
         </service>
-
         <service
             android:name=".service.systts.SystemTtsService"
             android:exported="true"
@@ -93,6 +108,7 @@
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.intent.action.TTS_SERVICE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 

@@ -26,6 +26,11 @@
                 android:title="@string/systts_add_custom_tts" />
 
             <item
+                android:id="@+id/menu_add_plugin_tts"
+                android:icon="@drawable/ic_baseline_javascript_24"
+                android:title="systts_add_plugin_tts" />
+
+            <item
                 android:id="@+id/menu_addGroup"
                 android:icon="@drawable/ic_baseline_groups_24"
                 android:title="@string/add_group" />
@@ -79,6 +84,11 @@
             android:icon="@drawable/ic_baseline_mode_standby_24"
             android:title="@string/systts_sby_conditions_for_use" />
     </group>
+
+    <item
+        android:id="@+id/menu_plugin_manager"
+        android:icon="@drawable/ic_baseline_javascript_24"
+        android:title="@string/plugin_manager" />
 
     <item
         android:id="@+id/menu_replace_manager"

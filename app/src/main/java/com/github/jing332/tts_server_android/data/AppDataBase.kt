@@ -6,8 +6,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.data.dao.PluginDao
 import com.github.jing332.tts_server_android.data.dao.ReplaceRuleDao
 import com.github.jing332.tts_server_android.data.dao.SystemTtsDao
+import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -16,10 +18,11 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 val appDb by lazy { AppDatabase.createDatabase(App.context) }
 
 @Database(
-    version = 9,
+    version = 10,
     entities = [
         SystemTts::class, SystemTtsGroup::class,
         ReplaceRule::class, ReplaceRuleGroup::class,
+        Plugin::class,
     ],
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -29,11 +32,13 @@ val appDb by lazy { AppDatabase.createDatabase(App.context) }
         AutoMigration(from = 6, to = 7),
         AutoMigration(from = 7, to = 8),
         AutoMigration(from = 8, to = 9),
+        AutoMigration(from = 9, to = 10)
     ]
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract val replaceRuleDao: ReplaceRuleDao
     abstract val systemTtsDao: SystemTtsDao
+    abstract val pluginDao: PluginDao
 
     companion object {
         private const val DATABASE_NAME = "systts.db"

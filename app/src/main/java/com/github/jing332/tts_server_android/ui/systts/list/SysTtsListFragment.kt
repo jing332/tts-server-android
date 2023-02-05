@@ -34,7 +34,9 @@ import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportActivity
+import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -124,14 +126,22 @@ class SysTtsListFragment : Fragment() {
                     addTtsConfig(MsTtsEditActivity::class.java)
                     true
                 }
+
                 R.id.menu_add_local_tts -> {
                     addTtsConfig(LocalTtsEditActivity::class.java)
                     true
                 }
+
                 R.id.menu_add_http_tts -> {
                     addTtsConfig(HttpTtsEditActivity::class.java)
                     true
                 }
+
+                R.id.menu_add_plugin_tts -> {
+                    addPluginTts()
+                    true
+                }
+
                 R.id.menu_addGroup -> {
                     addGroup()
                     true
@@ -141,14 +151,17 @@ class SysTtsListFragment : Fragment() {
                     showInAppSettingsDialog()
                     true
                 }
+
                 R.id.menu_setAudioRequestTimeout -> {
                     showSetAudioRequestTimeoutDialog()
                     true
                 }
+
                 R.id.menu_setMinDialogueLen -> {
                     showSetMinDialogueLengthDialog()
                     true
                 }
+
                 R.id.menu_set_sby_use_conditions -> {
                     displayStandbySettings()
                     true
@@ -159,27 +172,33 @@ class SysTtsListFragment : Fragment() {
                     SystemTtsService.notifyUpdateConfig()
                     true
                 }
+
                 R.id.menu_isMultiVoice -> {
                     SysTtsConfig.isMultiVoiceEnabled = !SysTtsConfig.isMultiVoiceEnabled
                     SystemTtsService.notifyUpdateConfig()
                     true
                 }
+
                 R.id.menu_voiceMultiple -> {
                     SysTtsConfig.isVoiceMultipleEnabled = !SysTtsConfig.isVoiceMultipleEnabled
                     SystemTtsService.notifyUpdateConfig()
                     if (SysTtsConfig.isVoiceMultipleEnabled) longToast(R.string.systts_voice_multiple_hint)
                     true
                 }
+
                 R.id.menu_groupMultiple -> {
                     SysTtsConfig.isGroupMultipleEnabled = !SysTtsConfig.isGroupMultipleEnabled
                     if (SysTtsConfig.isGroupMultipleEnabled) longToast(getString(R.string.systts_groups_multiple_hint))
                     true
                 }
 
+                R.id.menu_plugin_manager -> {
+                    startActivity(Intent(requireContext(), PluginManagerActivity::class.java))
+                    true
+                }
+
                 R.id.menu_replace_manager -> {
-                    startActivity(
-                        Intent(requireContext(), ReplaceManagerActivity::class.java)
-                    )
+                    startActivity(Intent(requireContext(), ReplaceManagerActivity::class.java))
                     true
                 }
 
@@ -188,6 +207,7 @@ class SysTtsListFragment : Fragment() {
                     importConfig()
                     true
                 }
+
                 R.id.menu_export_config -> {
                     exportConfig()
                     true
@@ -352,6 +372,28 @@ class SysTtsListFragment : Fragment() {
     private fun addTtsConfig(cls: Class<*>) {
         val intent = Intent(requireContext(), cls)
         startForResult.launch(intent)
+    }
+
+    private fun addPluginTts() {
+        val plugins = appDb.pluginDao.allEnabled
+        val pluginItems = plugins.map { "${it.name} (${it.pluginId})" }.toTypedArray()
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("请选择插件")
+            .setItems(pluginItems) { _, which ->
+                val selected = plugins[which]
+
+                startForResult.launch(
+                    Intent(
+                        requireContext(),
+                        PluginTtsEditActivity::class.java
+                    ).apply {
+                        putExtra(
+                            BaseTtsEditActivity.KEY_DATA,
+                            SystemTts(tts = PluginTTS(pluginId = selected.pluginId))
+                        )
+                    })
+            }
+            .show()
     }
 
     private fun addGroup() {

@@ -18,12 +18,13 @@ import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.clone
 import com.github.jing332.tts_server_android.util.toast
@@ -177,7 +178,8 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
         val cls = when (data.tts) {
             is MsTTS -> MsTtsEditActivity::class.java
             is LocalTTS -> LocalTtsEditActivity::class.java
-            else -> HttpTtsEditActivity::class.java
+            is PluginTTS -> PluginTtsEditActivity::class.java
+            else -> return
         }
         startForResult.launch(Intent(context, cls).apply {
             putExtra(

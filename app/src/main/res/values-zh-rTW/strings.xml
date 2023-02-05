@@ -271,4 +271,6 @@
     <string name="forwarder_systts">系統TTS轉發器</string>
     <string name="forwarder_sys_running">系統TTS轉發器運行中</string>
     <string name="language">語言</string>
+    <string name="plugin_manager">插件管理</string>
+    <string name="systts_plugin_no_obj_engine_js">未找到EngineJS！</string>
 </resources>

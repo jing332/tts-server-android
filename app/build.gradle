@@ -121,6 +121,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
     implementation 'com.google.android.material:material:1.9.0-alpha01'
 
     implementation 'androidx.preference:preference:1.2.0'
@@ -132,6 +133,12 @@ dependencies {
 
     //RecyclerView
     implementation 'com.github.liangjingkanji:BRV:1.3.90'
+
+    // 代码编辑器
+    implementation 'io.github.Rosemoe.sora-editor:editor:0.21.0'
+
+    // https://mvnrepository.com/artifact/cn.hutool/hutool-crypto
+    implementation 'cn.hutool:hutool-crypto:5.8.11'
 
     //Room
     implementation("androidx.room:room-runtime:$room_version")
