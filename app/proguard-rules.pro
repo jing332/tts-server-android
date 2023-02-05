@@ -48,6 +48,9 @@
 -keep class org.mozilla.javascript.** { *; }
 -keep class com.script.javascript.** { *; }
 
+## 插件
+-keep class com.github.jing332.tts_server_android.help.plugin.ext.** { *; }
+
 #-------------- 去掉所有打印 -------------
 
 -assumenosideeffects class android.util.Log {
