@@ -3,7 +3,7 @@
 package com.github.jing332.tts_server_android.help.plugin.ext
 
 import androidx.annotation.Keep
-import com.github.jing332.tts_server_android.help.plugin.LogOutputer
+import com.github.jing332.tts_server_android.help.plugin.LogOutputter
 import com.github.jing332.tts_server_android.ui.LogLevel
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.NativeObject
@@ -11,19 +11,19 @@ import org.mozilla.javascript.NativeObject
 @Keep
 interface JsLogger {
     fun d(obj: Any) {
-        LogOutputer.writeLine(jsObj2String(obj), LogLevel.DEBUG)
+        LogOutputter.writeLine(jsObj2String(obj), LogLevel.DEBUG)
     }
 
     fun i(obj: Any) {
-        LogOutputer.writeLine(jsObj2String(obj), LogLevel.INFO)
+        LogOutputter.writeLine(jsObj2String(obj), LogLevel.INFO)
     }
 
     fun w(obj: Any) {
-        LogOutputer.writeLine(jsObj2String(obj), LogLevel.WARN)
+        LogOutputter.writeLine(jsObj2String(obj), LogLevel.WARN)
     }
 
     fun e(obj: Any) {
-        LogOutputer.writeLine(jsObj2String(obj), LogLevel.ERROR)
+        LogOutputter.writeLine(jsObj2String(obj), LogLevel.ERROR)
     }
 
     fun jsObj2String(obj: Any): String {

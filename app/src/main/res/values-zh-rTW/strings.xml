@@ -273,4 +273,6 @@
     <string name="language">語言</string>
     <string name="plugin_manager">插件管理</string>
     <string name="systts_plugin_no_obj_engine_js">未找到EngineJS！</string>
+    <string name="error">错误</string>
+    <string name="systts_add_plugin_tts">添加插件TTS</string>
 </resources>

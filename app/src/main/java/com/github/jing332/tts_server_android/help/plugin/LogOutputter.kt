@@ -1,8 +1,12 @@
 package com.github.jing332.tts_server_android.help.plugin
 
+import android.util.Log
+import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.ui.LogLevel
 
-object LogOutputer {
+object LogOutputter {
+    var DEBUG = BuildConfig.DEBUG
+
     private val targets: ArrayList<OutputInterface> = arrayListOf()
     fun addTarget(target: OutputInterface) {
         if (!targets.contains(target)) {
@@ -15,6 +19,7 @@ object LogOutputer {
     }
 
     fun writeLine(text: CharSequence, level: Int = LogLevel.DEBUG) {
+        if (DEBUG) Log.i("Plugin output $level", text.toString())
         targets.forEach { it.appendLog(text, level) }
     }
 

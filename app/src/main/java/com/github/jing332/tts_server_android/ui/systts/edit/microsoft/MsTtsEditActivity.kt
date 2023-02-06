@@ -31,7 +31,7 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root, binding.testLayout.tilTest)
+        setEditContentView(binding.root, binding.testLayout.tilTest)
 
         // 帮助 二级语言
         binding.tilSecondaryLocale.setStartIconOnClickListener {

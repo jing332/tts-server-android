@@ -17,7 +17,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.databinding.SysttsPluginDebugResultBottomsheetBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditorActivityBinding
-import com.github.jing332.tts_server_android.help.plugin.LogOutputer
+import com.github.jing332.tts_server_android.help.plugin.LogOutputter
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
@@ -65,7 +65,7 @@ class PluginEditActivity : BackActivity() {
 
             R.id.menu_debug -> {
                 val tv = displayDebugMessage()
-                val output = LogOutputer.OutputInterface { msg, level ->
+                val output = LogOutputter.OutputInterface { msg, level ->
                     val span = SpannableString(msg).apply {
                         setSpan(
                             ForegroundColorSpan(LogLevel.toColor(level)),
@@ -75,13 +75,13 @@ class PluginEditActivity : BackActivity() {
                     tv.append("\n")
                     tv.append(span)
                 }
-                LogOutputer.addTarget(output)
+                LogOutputter.addTarget(output)
 
                 val plugin = try {
                     vm.pluginEngine.evalPluginInfo()
                 } catch (e: Exception) {
-                    LogOutputer.writeLine(e.stackTraceToString(), LogLevel.ERROR)
-                    LogOutputer.removeTarget(output)
+                    LogOutputter.writeLine(e.stackTraceToString(), LogLevel.ERROR)
+                    LogOutputter.removeTarget(output)
                     return true
                 }
                 tv.append("\n" + plugin.toString().replace(", ", "\n"))
@@ -90,16 +90,16 @@ class PluginEditActivity : BackActivity() {
                 val sampleRate = try {
                     vm.pluginEngine.getSampleRate()
                 } catch (e: Exception) {
-                    LogOutputer.writeLine(e.stackTraceToString(), LogLevel.ERROR)
+                    LogOutputter.writeLine(e.stackTraceToString(), LogLevel.ERROR)
                 }
-                LogOutputer.writeLine("采样率: $sampleRate")
+                LogOutputter.writeLine("采样率: $sampleRate")
 
                 lifecycleScope.runOnIO {
                     val audio = try {
                         vm.pluginEngine.getAudio("测试文本", 1)
                     } catch (e: Exception) {
-                        LogOutputer.writeLine(e.stackTraceToString(), LogLevel.ERROR)
-                        LogOutputer.removeTarget(output)
+                        LogOutputter.writeLine(e.stackTraceToString(), LogLevel.ERROR)
+                        LogOutputter.removeTarget(output)
                         return@runOnIO
                     }
                     if (audio == null) {
@@ -108,7 +108,7 @@ class PluginEditActivity : BackActivity() {
                         tv.append("\n音频大小: ${audio.size / 1024}KiB")
                     }
 
-                    LogOutputer.removeTarget(output)
+                    LogOutputter.removeTarget(output)
                 }
             }
         }

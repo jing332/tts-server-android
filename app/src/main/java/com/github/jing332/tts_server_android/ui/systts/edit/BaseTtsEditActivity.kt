@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -64,19 +63,7 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
         binding.basicEdit.setData(systemTts)
     }
 
-    final override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-    }
-
-    final override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
-        super.setContentView(view, params)
-    }
-
-    final override fun setContentView(view: View?) {
-        super.setContentView(view)
-    }
-
-    fun setContentView(view: View?, testTil: TextInputLayout? = null) {
+    fun setEditContentView(view: View?, testTil: TextInputLayout? = null) {
         binding.content.removeAllViews()
         binding.content.addView(view)
         this.testInputLayout = testTil

@@ -54,7 +54,7 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root, binding.testLayout.tilTest)
+        setEditContentView(binding.root, binding.testLayout.tilTest)
 
         binding.apply {
             binding.paramsEdit.setData(tts)

@@ -8,7 +8,7 @@ import com.github.jing332.tts_server_android.help.plugin.ext.JsExtensions
 import com.github.jing332.tts_server_android.help.plugin.ext.JsLogger
 import org.mozilla.javascript.NativeObject
 
-class JsEngine(
+open class JsEngine(
     private val context: android.content.Context = app, val plugin: Plugin = Plugin()
 ) : JsExtensions(), JsLogger {
     companion object {
@@ -17,10 +17,10 @@ class JsEngine(
         const val OBJ_PLUGIN_JS = "PluginJS"
 
         const val FUNC_GET_AUDIO = "getAudio"
-        const val FUNC_SAMPLE_RATE = "getAudioSampleRate"
     }
 
-    private val pluginJsObject: NativeObject
+
+    protected val pluginJsObject: NativeObject
         get() {
             return SCRIPT_ENGINE.get(OBJ_PLUGIN_JS).run {
                 if (this == null) throw Exception(context.getString(R.string.systts_plugin_no_obj_engine_js))
@@ -28,14 +28,14 @@ class JsEngine(
             }
         }
 
-    private fun eval() {
+    protected fun eval() {
         SCRIPT_ENGINE.put(OBJ_TTSER, this@JsEngine)
         SCRIPT_ENGINE.put(OBJ_LOGGER, this@JsEngine as JsLogger)
         SCRIPT_ENGINE.eval(plugin.code)
     }
 
     fun evalPluginInfo(): Plugin {
-        LogOutputer.writeLine("\n获取插件信息...")
+        LogOutputter.writeLine("\n获取插件信息...")
         eval()
 
         pluginJsObject.apply {
@@ -49,21 +49,13 @@ class JsEngine(
     }
 
     fun getAudio(
-        text: String, rate: Int = 1, pitch: Int = 1
+        text: String, rate: Int = 1, volume: Int = 1, pitch: Int = 1
     ): ByteArray? {
-        LogOutputer.writeLine("\n执行getAudio()...")
+        LogOutputter.writeLine("\n执行getAudio()...")
         eval()
 
         return SCRIPT_ENGINE.invokeMethod(
-            pluginJsObject, FUNC_GET_AUDIO, text, rate, pitch
+            pluginJsObject, FUNC_GET_AUDIO, text, rate, volume, pitch
         )?.run { this as ByteArray }
-    }
-
-    fun getSampleRate(): Int? {
-        LogOutputer.writeLine("执行getAudioSampleRate()...")
-        eval()
-
-        return SCRIPT_ENGINE.invokeMethod(pluginJsObject, FUNC_SAMPLE_RATE)
-            ?.run { (this as Double).toInt() }
     }
 }

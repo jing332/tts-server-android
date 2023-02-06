@@ -28,7 +28,7 @@
             <item
                 android:id="@+id/menu_add_plugin_tts"
                 android:icon="@drawable/ic_baseline_javascript_24"
-                android:title="systts_add_plugin_tts" />
+                android:title="@string/systts_add_plugin_tts" />
 
             <item
                 android:id="@+id/menu_addGroup"

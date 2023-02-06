@@ -25,7 +25,7 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root, binding.testLayout.tilTest)
+        setEditContentView(binding.root, binding.testLayout.tilTest)
 
         binding.apply {
             binding.liteEdit.setData(tts)
