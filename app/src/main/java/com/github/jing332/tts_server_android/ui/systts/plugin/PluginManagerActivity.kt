@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
@@ -18,12 +19,18 @@ import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBin
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
+import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
+import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.github.jing332.tts_server_android.util.longToast
+import com.github.jing332.tts_server_android.util.runOnIO
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 class PluginManagerActivity : BackActivity() {
     val binding by lazy { SysttsPluginManagerActivityBinding.inflate(layoutInflater) }
+    val vm: PluginManagerViewModel by viewModels()
 
     @Suppress("DEPRECATION")
     private val startForResult =
@@ -82,6 +89,29 @@ class PluginManagerActivity : BackActivity() {
         when (item.itemId) {
             R.id.menu_add -> {
                 startForResult.launch(Intent(this, PluginEditActivity::class.java))
+            }
+
+            R.id.menu_export -> {
+                AppDialogs.displayExportDialog(this, lifecycleScope, vm.exportConfig())
+            }
+
+            R.id.menu_import -> {
+                val et = MaterialTextInput(this)
+                et.inputLayout.setHint(R.string.url_net)
+                MaterialAlertDialogBuilder(this).setTitle(R.string.import_config).setView(et)
+                    .setPositiveButton(R.string.import_from_clipboard) { _, _ ->
+                        val err = vm.importConfig(ClipboardUtils.text.toString())
+                        err?.let {
+                            longToast("${getString(R.string.import_failed)}: $it")
+                        }
+                    }.setNegativeButton(R.string.import_from_url) { _, _ ->
+                        lifecycleScope.runOnIO {
+                            val err = vm.importConfigFromUrl(et.inputEdit.text.toString())
+                            err?.let {
+                                longToast("${getString(R.string.import_failed)}: $it")
+                            }
+                        }
+                    }.show()
             }
         }
         return super.onOptionsItemSelected(item)

@@ -21,7 +21,7 @@
 
             <item
                 android:id="@+id/menu_export"
-                android:icon="@drawable/ic_baseline_import_export_24"
+                android:icon="@drawable/ic_baseline_output_24"
                 android:title="@string/export_config" />
 
         </menu>
