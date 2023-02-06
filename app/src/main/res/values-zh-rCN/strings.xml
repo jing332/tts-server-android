@@ -271,7 +271,7 @@
     <string name="systts_log_replace_failed">执行替换失败：%1$s</string>
     <string name="systts_sby_conditions_for_use">备用配置使用条件</string>
     <string name="systts_sby_settings_msg">备用配置在第几次重试时触发？默认为1，即备用配置在首次失败重试时使用。</string>
-    <string name="systts_ms_webm_warn_msg">⚠️ 经测试，音频格式 webm..-24kbps-.. 的实际所耗流量是其音频大小的三倍有余，不推荐使用！</string>
+    <string name="systts_ms_webm_warn_msg">⚠️经测试，音频格式 webm..-24kbps-.. 的实际所耗流量是其音频大小的三倍有余，不推荐使用！</string>
     <string name="search_filter">搜索过滤</string>
     <string name="app_language_follow">跟随系统</string>
     <string name="app_language_desc">APP语言：%1$s</string>
@@ -285,4 +285,9 @@
     <string name="systts_plugin_no_obj_engine_js">未找到PluginJS！</string>
     <string name="error">错误</string>
     <string name="systts_add_plugin_tts">添加插件TTS</string>
+    <string name="debug">调试</string>
+    <string name="set_params">设置参数</string>
+    <string name="edit_plugin_tts">编辑插件TTS</string>
+    <string name="not_found_plugin">⚠️未找到插件: %1$s</string>
+    <string name="plugin_tts_get_sample_rate_fail_msg">获取音频采样率失败：%1$s</string>
 </resources>

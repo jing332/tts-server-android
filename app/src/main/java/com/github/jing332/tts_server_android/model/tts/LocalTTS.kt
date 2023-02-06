@@ -13,6 +13,7 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsLocalEditBottomSheetBinding
+import com.github.jing332.tts_server_android.util.toHtmlBold
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.*
@@ -75,7 +76,7 @@ data class LocalTTS(
         val rateStr = if (isRateFollowSystem()) App.context.getString(R.string.follow) else rate
         return "${voiceName ?: App.context.getString(R.string.default_str)} <br>" + App.context.getString(
             R.string.systts_play_params_description,
-            "<b>${rateStr}</b>",
+            "$rateStr".toHtmlBold(),
             "<b>0</b>",
             "<b>0</b>"
         )

@@ -6,11 +6,11 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivityBinding
 import com.github.jing332.tts_server_android.help.plugin.EditUiJsEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.github.jing332.tts_server_android.ui.custom.AppDialogs
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
-    private val engine: EditUiJsEngine by lazy { EditUiJsEngine(tts.plugin) }
+    private val engine: EditUiJsEngine by lazy { EditUiJsEngine(tts.requirePlugin) }
     private val vm: PluginTtsEditViewModel by viewModels()
     private val binding by lazy {
         SysttsPluginEditActivityBinding.inflate(layoutInflater).apply { m = vm }
@@ -23,35 +23,32 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         binding.paramsEdit.setData(tts)
 
         if (basicEditView.displayName.isEmpty()) {
-            basicEditView.displayName = tts.plugin.name
+            basicEditView.displayName = tts.requirePlugin.name
         }
 
         kotlin.runCatching { engine.onLoadUI(binding.root) }.onFailure {
-            MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.error)
-                .setMessage("加载UI时失败：${it.stackTraceToString()}")
-                .show()
+            AppDialogs.displayErrorDialog(this, it.stackTraceToString())
         }
 
-        vm.errMessageLiveData.observe(this) { e ->
-            MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.error)
-                .setMessage("JS执行失败：${e.stackTraceToString()}")
-                .setPositiveButton(android.R.string.ok, null)
-                .show()
+        vm.errMessageLiveData.observe(this) {
+            AppDialogs.displayErrorDialog(this, it.stackTraceToString())
         }
 
         vm.init(tts)
     }
 
     override fun onSave() {
+        systemTts.displayName = vm.checkDisplayName(basicEditView.displayName)
+
         kotlin.runCatching {
             tts.audioFormat.sampleRate = engine.getSampleRate() ?: 16000
         }.onFailure {
-            MaterialAlertDialogBuilder(this)
-                .setTitle("错误")
-                .setMessage("获取音频采样率失败：${it.stackTraceToString()}")
-                .show()
+            AppDialogs.displayErrorDialog(
+                this, getString(
+                    R.string.plugin_tts_get_sample_rate_fail_msg,
+                    it.stackTraceToString()
+                )
+            )
         }.onSuccess {
             super.onSave()
         }

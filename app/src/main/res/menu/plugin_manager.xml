@@ -7,4 +7,24 @@
         android:icon="@drawable/ic_baseline_add_24"
         android:title="@string/add_config"
         app:showAsAction="always" />
+
+    <item
+        android:icon="@drawable/ic_baseline_import_export_24"
+        android:title="@string/config_import_export">
+        <menu>
+            <item
+                android:id="@+id/menu_import"
+                android:icon="@drawable/ic_baseline_input_24"
+                android:title="@string/import_config">
+
+            </item>
+
+            <item
+                android:id="@+id/menu_export"
+                android:icon="@drawable/ic_baseline_import_export_24"
+                android:title="@string/export_config" />
+
+        </menu>
+
+    </item>
 </menu>

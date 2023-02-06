@@ -50,12 +50,6 @@ data class HttpTTS(
         return app.getString(R.string.custom)
     }
 
-    override fun getDescription(): String {
-        val rateStr =
-            if (isRateFollowSystem()) app.getString(R.string.follow) else rate
-        return "语速：<b>${rateStr}</b> | 音量：<b>${volume}</b>"
-    }
-
     override fun getBottomContent(): String {
         return audioFormat.toString()
     }
@@ -118,7 +112,7 @@ data class HttpTTS(
     override fun getAudio(speakText: String): ByteArray? {
         val resp = getAudioResponse(speakText)
         val body = resp.body?.bytes()
-        if (resp.code != 200) throw  Throwable(body?.contentToString())
+        if (resp.code != 200) throw Throwable(body?.contentToString())
 
         resp.body?.close()
         return body

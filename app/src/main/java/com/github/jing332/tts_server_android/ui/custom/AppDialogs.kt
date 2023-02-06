@@ -15,6 +15,17 @@ import kotlinx.coroutines.CoroutineScope
 import tts_server_lib.Tts_server_lib
 
 object AppDialogs {
+    fun displayErrorDialog(
+        context: Context,
+        message: String,
+    ) {
+        MaterialAlertDialogBuilder(context)
+            .setTitle(R.string.error)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
+    }
+
     fun displayInputDialog(
         context: Context,
         title: String,

@@ -59,6 +59,7 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
 
         val visible = intent.getBooleanExtra(KEY_BASIC_VISIBLE, true)
         binding.basicEdit.visibility = if (visible) View.VISIBLE else View.GONE
+        binding.divider.visibility = binding.basicEdit.visibility
 
         binding.basicEdit.setData(systemTts)
     }

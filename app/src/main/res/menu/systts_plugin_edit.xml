@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <item
         android:id="@+id/menu_debug"
         android:icon="@drawable/ic_baseline_bug_report_24"
-        android:title="debug"
+        android:title="@string/debug"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_save"
         android:icon="@drawable/ic_baseline_save_24"
         android:title="@string/save"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/menu_params"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/set_params" />
 
 </menu>

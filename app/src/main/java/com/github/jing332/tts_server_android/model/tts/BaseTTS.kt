@@ -3,17 +3,26 @@ package com.github.jing332.tts_server_android.model.tts
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.util.toHtmlBold
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonClassDiscriminator
 
 @OptIn(ExperimentalSerializationApi::class)
 @Parcelize
 @Serializable
 @JsonClassDiscriminator("#type")
-sealed class BaseTTS : Parcelable {
+sealed class BaseTTS(
+    @Transient
+    @IgnoredOnParcel
+    protected val context: Context = app
+) : Parcelable {
     companion object {
         const val VALUE_FOLLOW_SYSTEM = 0
     }
@@ -42,12 +51,22 @@ sealed class BaseTTS : Parcelable {
     /**
      * UI 底部的格式
      */
-    abstract fun getBottomContent(): String
+    open fun getBottomContent(): String {
+        return audioFormat.toString()
+    }
 
     /**
      * UI 显示名称下方的描述，如音量语速等
      */
-    abstract fun getDescription(): String
+    open fun getDescription(): String {
+        val followStr = context.getString(R.string.follow)
+        return context.getString(
+            R.string.systts_play_params_description,
+            if (isRateFollowSystem()) followStr else "$rate".toHtmlBold(),
+            "$volume".toHtmlBold(),
+            if (isPitchFollowSystem()) followStr else "$pitch".toHtmlBold()
+        )
+    }
 
     /**
      * UI 当点击 描述TextView

@@ -10,24 +10,33 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginDebugResultBottomsheetBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditorActivityBinding
 import com.github.jing332.tts_server_android.help.plugin.LogOutputter
+import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.base.BackActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.runOnIO
+import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class PluginEditActivity : BackActivity() {
     private val binding by lazy { SysttsPluginEditorActivityBinding.inflate(layoutInflater) }
     private val vm by viewModels<PluginEditViewModel>()
+
     private lateinit var mData: Plugin
+    private var mTts: PluginTTS = PluginTTS()
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +50,7 @@ class PluginEditActivity : BackActivity() {
         binding.editor.setText(mData.code)
 
         vm.setData(mData)
+        PluginTTS(pluginId = mData.pluginId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -51,6 +61,7 @@ class PluginEditActivity : BackActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         mData.code = binding.editor.text.toString()
         when (item.itemId) {
+            R.id.menu_params -> displayParamsSettings()
             R.id.menu_save -> {
                 val plugin = try {
                     vm.pluginEngine.evalPluginInfo()
@@ -66,14 +77,16 @@ class PluginEditActivity : BackActivity() {
             R.id.menu_debug -> {
                 val tv = displayDebugMessage()
                 val output = LogOutputter.OutputInterface { msg, level ->
-                    val span = SpannableString(msg).apply {
-                        setSpan(
-                            ForegroundColorSpan(LogLevel.toColor(level)),
-                            0, msg.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
+                    synchronized(this) {
+                        val span = SpannableString(msg).apply {
+                            setSpan(
+                                ForegroundColorSpan(LogLevel.toColor(level)),
+                                0, msg.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                        }
+                        tv.append("\n")
+                        tv.append(span)
                     }
-                    tv.append("\n")
-                    tv.append(span)
                 }
                 LogOutputter.addTarget(output)
 
@@ -96,7 +109,10 @@ class PluginEditActivity : BackActivity() {
 
                 lifecycleScope.runOnIO {
                     val audio = try {
-                        vm.pluginEngine.getAudio("测试文本", 1)
+                        vm.pluginEngine.getAudio(
+                            "测试文本", mTts.locale, mTts.voice, mTts.rate,
+                            mTts.volume, mTts.pitch
+                        )
                     } catch (e: Exception) {
                         LogOutputter.writeLine(e.stackTraceToString(), LogLevel.ERROR)
                         LogOutputter.removeTarget(output)
@@ -116,12 +132,25 @@ class PluginEditActivity : BackActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            result.data?.getParcelableExtra<SystemTts>(BaseTtsEditActivity.KEY_DATA)?.let {
+                toast("参数仅本次编辑生效")
+                mTts = it.tts as PluginTTS
+            }
+        }
+
+    private fun displayParamsSettings() {
+        startForResult.launch(Intent(this, PluginTtsEditActivity::class.java).apply {
+            putExtra(BaseTtsEditActivity.KEY_BASIC_VISIBLE, false)
+            putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = PluginTTS(plugin = mData)))
+        })
+    }
+
     @Suppress("DEPRECATION")
     private fun displayDebugMessage(msg: String = ""): TextView {
         val viewBinding = SysttsPluginDebugResultBottomsheetBinding.inflate(
-            LayoutInflater.from(this),
-            null,
-            false
+            LayoutInflater.from(this), null, false
         )
         viewBinding.tvLog.text = msg
 

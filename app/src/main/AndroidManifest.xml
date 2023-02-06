@@ -38,6 +38,7 @@
 
         </activity>
         <activity
+            android:label="@string/edit_plugin_tts"
             android:name=".ui.systts.edit.plugin.PluginTtsEditActivity"
             android:exported="false">
         </activity>

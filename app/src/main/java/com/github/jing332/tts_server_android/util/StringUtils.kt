@@ -70,3 +70,10 @@ fun String.lengthOfChinese(): Int {
     }
     return count
 }
+
+/**
+ * 转为html粗体标签
+ */
+fun String.toHtmlBold(): String {
+    return "<b>$this</b>"
+}

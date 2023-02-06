@@ -49,13 +49,17 @@ open class JsEngine(
     }
 
     fun getAudio(
-        text: String, rate: Int = 1, volume: Int = 1, pitch: Int = 1
+        text: String, locale: String, voice: String, rate: Int = 1, volume: Int = 1, pitch: Int = 1
     ): ByteArray? {
-        LogOutputter.writeLine("\n执行getAudio()...")
+        LogOutputter.writeLine(
+            "\n执行getAudio()..." +
+                    "\ntext: $text, locale: $locale, voice: $voice, rate: $rate, volume: $volume, pitch: $pitch"
+        )
+
         eval()
 
         return SCRIPT_ENGINE.invokeMethod(
-            pluginJsObject, FUNC_GET_AUDIO, text, rate, volume, pitch
+            pluginJsObject, FUNC_GET_AUDIO, text, locale, voice, rate, volume, pitch
         )?.run { this as ByteArray }
     }
 }

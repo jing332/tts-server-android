@@ -15,8 +15,12 @@ class PluginTtsEditViewModel : ViewModel() {
 
     val ui: UiData = UiData()
 
-    private val engine by lazy { EditUiJsEngine(mTts.plugin) }
+    private val engine by lazy { EditUiJsEngine(mTts.requirePlugin) }
     private lateinit var mTts: PluginTTS
+
+    fun checkDisplayName(name: String): String {
+        return name.ifBlank { ui.voices.selectedItem?.displayText ?: name }
+    }
 
     fun init(tts: PluginTTS) {
         mTts = tts
@@ -54,6 +58,7 @@ class PluginTtsEditViewModel : ViewModel() {
             max(0, ui.locales.items.indexOfFirst { it.value.toString() == mTts.locale })
     }
 
+    @Suppress("RemoveSingleExpressionStringTemplate")
     private fun updateVoices() {
         val voices = try {
             engine.getVoices(mTts.locale).map { it }
@@ -64,7 +69,8 @@ class PluginTtsEditViewModel : ViewModel() {
 
         ui.voices.apply {
             items = voices.map { SpinnerItem(it.value, it.key) }
-            position = max(0, voices.indexOfFirst { it.value == mTts.voice })
+            position = //it.key.toString() 不能从Integer转换??
+                max(0, voices.indexOfFirst { "${it.key}" == mTts.voice })
         }
     }
 
