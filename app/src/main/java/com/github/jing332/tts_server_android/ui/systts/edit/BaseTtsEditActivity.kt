@@ -68,6 +68,10 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
         binding.content.removeAllViews()
         binding.content.addView(view)
         this.testInputLayout = testTil
+        if (this.testInputLayout == null) {
+            this.testInputLayout = binding.testLayout.tilTest
+            binding.testLayout.root.visibility = View.VISIBLE
+        }
 
         testInputLayout?.editText?.apply {
             testInputLayout?.setEndIconOnClickListener {

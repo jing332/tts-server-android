@@ -7,7 +7,9 @@ import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivit
 import com.github.jing332.tts_server_android.help.plugin.EditUiJsEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
+import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
     private val engine: EditUiJsEngine by lazy { EditUiJsEngine(tts.requirePlugin) }
@@ -20,12 +22,6 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         super.onCreate(savedInstanceState)
         setEditContentView(binding.root)
 
-        binding.paramsEdit.setData(tts)
-
-        if (basicEditView.displayName.isEmpty()) {
-            basicEditView.displayName = tts.requirePlugin.name
-        }
-
         kotlin.runCatching { engine.onLoadUI(binding.root) }.onFailure {
             AppDialogs.displayErrorDialog(this, it.stackTraceToString())
         }
@@ -34,7 +30,32 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
             AppDialogs.displayErrorDialog(this, it.stackTraceToString())
         }
 
+        binding.paramsEdit.setData(tts)
         vm.init(tts)
+    }
+
+    val waitDialog by lazy { WaitDialog(this) }
+
+    override fun onTest(text: String) {
+        waitDialog.show()
+        vm.doTest(text,
+            { audio ->
+                waitDialog.dismiss()
+                MaterialAlertDialogBuilder(this@PluginTtsEditActivity)
+                    .setTitle(R.string.systts_test_success)
+                    .setMessage(
+                        getString(R.string.systts_test_success_info, audio.size / 1024)
+                    ).setOnDismissListener {
+                        stopPlay()
+                    }
+                    .show()
+                playAudio(audio)
+            }, { err ->
+                waitDialog.dismiss()
+                MaterialAlertDialogBuilder(this@PluginTtsEditActivity).setTitle(R.string.test_failed)
+                    .setMessage(err.message ?: err.cause?.message)
+                    .show()
+            })
     }
 
     override fun onSave() {

@@ -38,6 +38,7 @@
 
         <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
             android:id="@+id/til_voice"
+            android:layout_marginTop="4dp"
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

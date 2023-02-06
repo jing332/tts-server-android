@@ -2,11 +2,14 @@ package com.github.jing332.tts_server_android.ui.systts.edit.plugin
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.help.plugin.EditUiJsEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
+import com.github.jing332.tts_server_android.util.runOnIO
 import java.lang.Integer.max
 import java.util.Locale
 
@@ -71,6 +74,28 @@ class PluginTtsEditViewModel : ViewModel() {
             items = voices.map { SpinnerItem(it.value, it.key) }
             position = //it.key.toString() 不能从Integer转换??
                 max(0, voices.indexOfFirst { "${it.key}" == mTts.voice })
+        }
+    }
+
+    fun doTest(
+        text: String,
+        onSuccess: suspend (audio: ByteArray) -> Unit,
+        onFailure: suspend (Throwable) -> Unit
+    ) {
+        viewModelScope.runOnIO {
+            val audio = try {
+                mTts.getAudio(text)
+            } catch (e: Exception) {
+                withMain { onFailure.invoke(e) }
+                return@runOnIO
+            }
+
+            if (audio == null) {
+                withMain { onFailure.invoke(Exception("null")) }
+                return@runOnIO
+            }
+
+            withMain { onSuccess(audio) }
         }
     }
 
