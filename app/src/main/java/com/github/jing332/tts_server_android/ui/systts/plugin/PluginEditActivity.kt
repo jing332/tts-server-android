@@ -116,6 +116,7 @@ class PluginEditActivity : BackActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @Suppress("DEPRECATION")
     private fun displayDebugMessage(msg: String = ""): TextView {
         val viewBinding = SysttsPluginDebugResultBottomsheetBinding.inflate(
             LayoutInflater.from(this),

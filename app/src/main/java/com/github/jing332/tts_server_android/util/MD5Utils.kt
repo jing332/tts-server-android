@@ -1,4 +1,4 @@
-package io.legado.app.utils
+package com.github.jing332.tts_server_android.util
 
 import cn.hutool.crypto.digest.DigestUtil
 import java.io.InputStream

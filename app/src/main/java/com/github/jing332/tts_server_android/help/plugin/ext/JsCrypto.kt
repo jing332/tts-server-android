@@ -4,7 +4,7 @@ package com.github.jing332.tts_server_android.help.plugin.ext
 
 import cn.hutool.core.codec.Base64
 import cn.hutool.crypto.symmetric.SymmetricCrypto
-import io.legado.app.utils.MD5Utils
+import com.github.jing332.tts_server_android.util.MD5Utils
 
 interface JsCrypto {
     fun md5Encode(str: String): String {

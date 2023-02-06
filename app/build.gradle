@@ -26,7 +26,7 @@ android {
         }
 
         def locales = ["en", "zh-rCN", "zh-rTW"]
-        buildConfigField "String[]", "TRANSLATION_ARRAY", "new String[]{\""+locales.join("\",\"").replaceAll("-r", "-")+"\"}"
+        buildConfigField "String[]", "TRANSLATION_ARRAY", "new String[]{\"" + locales.join("\",\"").replaceAll("-r", "-") + "\"}"
         resConfigs locales
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -49,10 +49,10 @@ android {
         release {
             versionNameSuffix "_${releaseTime()}"
             signingConfig signingConfigs.release
-           // minifyEnabled false
-           // shrinkResources true
-            // zipAlignEnabled true
-          //  proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             applicationIdSuffix ".debug"
@@ -85,12 +85,17 @@ android {
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
+
+    kotlin {
+        jvmToolchain(17)
+    }
+
 
     // 修改apk文件名
     android.applicationVariants.all { variant ->
@@ -147,10 +152,10 @@ dependencies {
     androidTestImplementation("androidx.room:room-testing:$room_version")
 
     //SharedPreference
-    implementation 'com.chibatching.kotpref:kotpref:2.13.1'
+    implementation 'com.chibatching.kotpref:kotpref:2.13.2'
 
     // IO & NET
-    implementation 'com.squareup.okio:okio:3.2.0'
+    implementation 'com.squareup.okio:okio:3.3.0'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.github.liangjingkanji:Net:3.5.2'
 

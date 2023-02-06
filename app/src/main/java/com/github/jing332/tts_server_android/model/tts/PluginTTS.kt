@@ -23,6 +23,7 @@ data class PluginTTS(
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
     override var audioPlayer: AudioPlayer = AudioPlayer()
 ) : BaseTTS() {
+    @IgnoredOnParcel
     val plugin: Plugin by lazy { appDb.pluginDao.getByPluginId(pluginId)!! }
 
     override fun isRateFollowSystem() = true

@@ -48,8 +48,10 @@
 -keep class org.mozilla.javascript.** { *; }
 -keep class com.script.javascript.** { *; }
 
-## 插件
+## 插件相关
 -keep class com.github.jing332.tts_server_android.help.plugin.ext.** { *; }
+-keep class cn.hutool.crypto.** { *; }
+-keep class cn.hutool.core.** { *; }
 
 #-------------- 去掉所有打印 -------------
 
