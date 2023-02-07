@@ -12,6 +12,8 @@ object AppConfig : KotprefModel() {
      */
     var isEdgeDnsEnabled by booleanPref(true)
 
+    var isSwapListenAndEditButton by booleanPref(false)
+
     private var mTestSampleText by stringPref(key = "testSampleText")
 
     /**
@@ -23,7 +25,9 @@ object AppConfig : KotprefModel() {
                 context.getString(R.string.systts_sample_test_text)
             return mTestSampleText
         }
-        set(value) { mTestSampleText = value }
+        set(value) {
+            mTestSampleText = value
+        }
 
     var fragmentIndex by intPref(0)
 }

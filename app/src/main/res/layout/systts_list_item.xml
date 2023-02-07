@@ -35,6 +35,19 @@
                 android:layout_height="wrap_content">
 
                 <ImageButton
+                    android:id="@+id/btn_edit"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_baseline_edit_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_more"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_more"
+                    app:layout_constraintTop_toTopOf="@+id/btn_more"
+                    app:tint="?attr/colorOnBackground"
+                    android:contentDescription="@string/audition" />
+
+                <ImageButton
                     android:id="@+id/btn_listen"
                     android:layout_width="36dp"
                     android:layout_height="36dp"

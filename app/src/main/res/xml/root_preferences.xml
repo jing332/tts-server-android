@@ -7,6 +7,13 @@
             app:title="@string/use_dns_lookup_ip" />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/sys_tts_interface_preference">
+        <SwitchPreferenceCompat
+            app:icon="@drawable/ic_baseline_headset_24"
+            app:key="isSwapListenAndEditButton"
+            app:title="@string/pref_swap_listen_and_edit_button" />
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/other">
         <ListPreference
             app:icon="@drawable/ic_web"

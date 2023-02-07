@@ -10,6 +10,11 @@
             android:title="@string/edit" />
 
         <item
+            android:id="@+id/menu_listen"
+            android:icon="@drawable/ic_baseline_headset_24"
+            android:title="@string/audition" />
+
+        <item
             android:id="@+id/menu_copy_config"
             android:icon="@drawable/ic_baseline_content_copy_24"
             android:title="@string/copy"

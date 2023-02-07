@@ -283,4 +283,6 @@
     <string name="select_plugin">選擇外掛程式</string>
     <string name="audition">试听</string>
     <string name="no_plugins">无插件</string>
+    <string name="sys_tts_interface_preference">系統TTS - 介面</string>
+    <string name="pref_swap_listen_and_edit_button">交換試聽和編輯按鈕位置</string>
 </resources>

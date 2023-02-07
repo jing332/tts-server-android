@@ -10,6 +10,8 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.drake.brv.BindingAdapter
 import com.drake.net.utils.withIO
@@ -67,8 +69,15 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         true
                     }
 
+                    btnListen.isGone = AppConfig.isSwapListenAndEditButton
+                    btnEdit.isVisible = AppConfig.isSwapListenAndEditButton
+
                     btnListen.clickWithThrottle {
                         listen(getModel())
+                    }
+
+                    btnEdit.clickWithThrottle {
+                        edit(getModel())
                     }
 
                     btnListen.setOnLongClickListener {
@@ -155,9 +164,14 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
             menuInflater.inflate(R.menu.sysstts_more_options, menu)
             setForceShowIcon(true)
             MenuCompat.setGroupDividerEnabled(menu, true)
+
+            menu.findItem(R.id.menu_listen).isVisible = AppConfig.isSwapListenAndEditButton
+            menu.findItem(R.id.menu_edit).isVisible = !AppConfig.isSwapListenAndEditButton
+
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_edit -> edit(model)
+                    R.id.menu_listen -> listen(model)
                     R.id.menu_copy_config -> {
                         context.toast(R.string.systts_copied_config)
                         edit(model.copy(id = System.currentTimeMillis()))
