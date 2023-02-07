@@ -61,7 +61,6 @@
     <string name="service_started">服务已启动</string>
     <string name="service_closed">服务已关闭</string>
     <string name="forwarder_ms">微软TTS转发器</string>
-    <string name="server_tts_running">TTS Server正在运行中</string>
     <string name="server_listen_address_local">监听地址：%s</string>
     <string name="server_please_start_service">请先启动服务</string>
     <string name="server_restart_service_to_update">重启服务以生效</string>

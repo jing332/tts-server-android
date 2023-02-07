@@ -61,7 +61,6 @@
     <string name="service_started">服務已啟動</string>
     <string name="service_closed">服務已關閉</string>
     <string name="forwarder_ms">微軟TTS轉發器</string>
-    <string name="server_tts_running">TTS Server正在運行中</string>
     <string name="server_listen_address_local">監聽地址：%s</string>
     <string name="server_please_start_service">請先啟動服務</string>
     <string name="server_restart_service_to_update">重啟服務以生效</string>
@@ -273,13 +272,13 @@
     <string name="language">語言</string>
     <string name="plugin_manager">插件管理</string>
     <string name="systts_plugin_no_obj_engine_js">未找到EngineJS！</string>
-    <string name="error">错误</string>
-    <string name="systts_add_plugin_tts">添加插件TTS</string>
-    <string name="debug">调试</string>
-    <string name="plugin_preview_ui">设置参数</string>
-    <string name="edit_plugin_tts">编辑插件TTS</string>
-    <string name="not_found_plugin">未找到插件: %1$s</string>
-    <string name="plugin_tts_get_sample_rate_fail_msg">获取音频采样率失败：%1$s</string>
-    <string name="edit">编辑</string>
+    <string name="error">錯誤</string>
+    <string name="systts_add_plugin_tts">添加外掛程式TTS</string>
+    <string name="debug">調試</string>
+    <string name="plugin_preview_ui">預覽UI並設置</string>
+    <string name="edit_plugin_tts">編輯外掛程式TTS</string>
+    <string name="not_found_plugin">⚠找不到外掛程式： %1$s</string>
+    <string name="plugin_tts_get_sample_rate_fail_msg">獲取音訊採樣率失敗：%1$s</string>
+    <string name="edit">編輯</string>
     <string name="playing">播放中</string>
 </resources>

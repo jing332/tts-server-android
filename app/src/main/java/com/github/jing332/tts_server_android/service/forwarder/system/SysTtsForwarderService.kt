@@ -2,7 +2,11 @@
 
 package com.github.jing332.tts_server_android.service.forwarder.system
 
-import android.app.*
+import android.app.IntentService
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -16,6 +20,7 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.help.LocalTtsEngineHelper
 import com.github.jing332.tts_server_android.help.SysTtsForwarderConfig
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
@@ -235,7 +240,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
             .addAction(0, getString(R.string.exit), closePendingIntent)
             .addAction(0, getString(R.string.copy_address), copyAddressPendingIntent)
             .build()
-        startForeground(1, notification) //启动前台服务
+        startForeground(SystemNotificationConst.ID_FORWARDER_SYS, notification) //启动前台服务
     }
 
     inner class NotificationActionReceiver : BroadcastReceiver() {

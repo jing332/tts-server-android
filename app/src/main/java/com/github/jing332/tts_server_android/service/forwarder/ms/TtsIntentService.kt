@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.ui.AppLog
@@ -161,21 +162,21 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
             chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
             val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             service.createNotificationChannel(chan)
-            smallIconRes = R.drawable.ic_app_notification
+            smallIconRes = R.drawable.ic_microsoft
             builder.setChannelId(chanId)
         } else {
             smallIconRes = R.mipmap.ic_app_notification
         }
         val notification = builder
             .setColor(ContextCompat.getColor(this, R.color.md_theme_light_primary))
-            .setContentTitle(getString(R.string.server_tts_running))
+            .setContentTitle(getString(R.string.forwarder_ms))
             .setContentText(getString(R.string.server_listen_address_local, listenAddress))
             .setSmallIcon(smallIconRes)
             .setContentIntent(pendingIntent)
             .addAction(0, getString(R.string.exit), closePendingIntent)
             .addAction(0, getString(R.string.copy_address), copyAddressPendingIntent)
             .build()
-        startForeground(1, notification) //启动前台服务
+        startForeground(SystemNotificationConst.ID_FORWARDER_MS, notification) //启动前台服务
     }
 
     inner class MyReceiver : BroadcastReceiver() {
@@ -184,6 +185,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
                 ACTION_NOTIFY_EXIT -> {
                     closeServer()
                 }
+
                 ACTION_NOTIFY_COPY_ADDRESS -> {
                     ClipboardUtils.copyText(listenAddress)
                     ctx?.toast(R.string.copied)

@@ -21,6 +21,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.service.systts.help.TtsManager
 import com.github.jing332.tts_server_android.ui.AppLog
@@ -31,6 +32,7 @@ import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGM
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.limitLength
+import com.github.jing332.tts_server_android.util.toHtmlBold
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
@@ -46,7 +48,6 @@ class SystemTtsService : TextToSpeechService(),
         const val ACTION_NOTIFY_CANCEL = "SYS_TTS_NOTIFY_CANCEL"
         const val ACTION_KILL_PROCESS = "SYS_TTS_NOTIFY_EXIT_0"
         const val NOTIFICATION_CHAN_ID = "system_tts_service"
-        const val NOTIFICATION_ID = 2
 
         /**
          * 更新配置
@@ -190,7 +191,7 @@ class SystemTtsService : TextToSpeechService(),
                     getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 mNotificationManager.createNotificationChannel(chan)
             }
-            startForeground(NOTIFICATION_ID, getNotification())
+            startForeground(SystemNotificationConst.ID_SYSTEM_TTS, getNotification())
             mNotificationDisplayed = true
 
             mScope.launch {
@@ -216,7 +217,7 @@ class SystemTtsService : TextToSpeechService(),
         }
 
         mNotificationBuilder.setContentTitle(title)
-        startForeground(NOTIFICATION_ID, mNotificationBuilder.build())
+        startForeground(SystemNotificationConst.ID_SYSTEM_TTS, mNotificationBuilder.build())
     }
 
     /* 获取通知 */
@@ -269,6 +270,7 @@ class SystemTtsService : TextToSpeechService(),
                     stopForeground(true)
                     exitProcess(0)
                 }
+
                 ACTION_NOTIFY_CANCEL -> { // 通知按钮{取消}
                     if (mTtsManager.isSynthesizing)
                         onStop() /* 取消当前播放 */
@@ -326,11 +328,13 @@ class SystemTtsService : TextToSpeechService(),
                 if (str.contains(TtsManager.BAD_HANDSHAKE_PREFIX)) {
                     str + "<br>" + getString(R.string.systts_log_ip_is_restricted)
                 }
-                getString(R.string.systts_log_failed, "<b>${speakText}</b> <br>${str}")
+                getString(R.string.systts_log_failed, "${speakText?.toHtmlBold()} <br>${str}")
             }
+
             TtsManager.ERROR_AUDIO_NULL -> getString(R.string.systts_log_audio_empty, speakText)
             TtsManager.ERROR_DECODE_FAILED ->
                 getString(R.string.systts_log_decode_failed, "$speakText <br>${reason}")
+
             TtsManager.ERROR_REPLACE_FAILED ->
                 getString(R.string.systts_log_replace_failed, "$speakText <br>${reason}")
 
@@ -349,7 +353,7 @@ class SystemTtsService : TextToSpeechService(),
         if (App.isSysTtsLogEnabled)
             sendLog(
                 LogLevel.INFO,
-                getString(R.string.systts_log_finished_playing, "<b>${text?.limitLength()}</b>")
+                getString(R.string.systts_log_finished_playing, text?.limitLength()?.toHtmlBold())
             )
     }
 
@@ -357,7 +361,9 @@ class SystemTtsService : TextToSpeechService(),
         if (App.isSysTtsLogEnabled)
             sendLog(
                 LogLevel.WARN,
-                getString(R.string.systts_log_canceled, "<b>${text?.limitLength()}</b>")
+                getString(
+                    R.string.systts_log_canceled, text?.limitLength()?.toHtmlBold()
+                )
             )
     }
 
