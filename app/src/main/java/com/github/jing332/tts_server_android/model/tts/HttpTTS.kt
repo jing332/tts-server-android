@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.model.tts
 
+import android.app.Activity
 import android.content.Context
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditBottomSheetBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
+import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -45,6 +47,8 @@ data class HttpTTS(
     override fun isPitchFollowSystem(): Boolean {
         return false
     }
+
+    override fun getEditActivity(): Class<out Activity> = HttpTtsEditActivity::class.java
 
     override fun getType(): String {
         return app.getString(R.string.custom)

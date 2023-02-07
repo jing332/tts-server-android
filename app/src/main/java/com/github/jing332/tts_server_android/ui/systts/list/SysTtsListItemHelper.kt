@@ -21,14 +21,8 @@ import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.AudioPlayer
 import com.github.jing332.tts_server_android.help.SysTtsConfig
-import com.github.jing332.tts_server_android.model.tts.LocalTTS
-import com.github.jing332.tts_server_android.model.tts.MsTTS
-import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.clickWithThrottle
@@ -255,17 +249,8 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
     }
 
     fun edit(data: SystemTts) {
-        val cls = when (data.tts) {
-            is MsTTS -> MsTtsEditActivity::class.java
-            is LocalTTS -> LocalTtsEditActivity::class.java
-            is PluginTTS -> PluginTtsEditActivity::class.java
-            else -> return
-        }
-        startForResult.launch(Intent(context, cls).apply {
-            putExtra(
-                BaseTtsEditActivity.KEY_DATA,
-                data
-            )
+        startForResult.launch(Intent(context, data.tts.getEditActivity()).apply {
+            putExtra(BaseTtsEditActivity.KEY_DATA, data)
         })
     }
 

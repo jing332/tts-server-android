@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.model.tts
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
@@ -13,6 +14,7 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsLocalEditBottomSheetBinding
+import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -63,6 +65,8 @@ data class LocalTTS(
     init {
         audioFormat.isNeedDecode = true
     }
+
+    override fun getEditActivity(): Class<out Activity> = LocalTtsEditActivity::class.java
 
     override fun getType(): String {
         return App.context.getString(R.string.local)

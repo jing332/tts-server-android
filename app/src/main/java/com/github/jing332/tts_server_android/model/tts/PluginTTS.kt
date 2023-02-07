@@ -9,6 +9,7 @@ import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditBottomSheetBinding
 import com.github.jing332.tts_server_android.help.plugin.JsEngine
+import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -48,6 +49,7 @@ data class PluginTTS(
         return "$voice <br>${super.getDescription()}"
     }
 
+    override fun getEditActivity() = PluginTtsEditActivity::class.java
 
     override fun getType(): String {
         return try {

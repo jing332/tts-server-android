@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.model.tts
 
+import android.app.Activity
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
@@ -43,6 +44,9 @@ sealed class BaseTTS(
      */
     open fun isPitchFollowSystem(): Boolean = rate == VALUE_FOLLOW_SYSTEM
 
+
+    abstract fun getEditActivity(): Class<out Activity>
+
     /**
      * UI 右下角类型
      */
@@ -77,7 +81,6 @@ sealed class BaseTTS(
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
     )
-
 
     open fun onLoad() {}
 

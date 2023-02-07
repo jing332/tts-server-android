@@ -15,6 +15,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsMsEditBottomSheet
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
+import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
@@ -84,6 +85,8 @@ data class MsTTS(
     override fun isPitchFollowSystem(): Boolean {
         return PITCH_FOLLOW_SYSTEM == pitch
     }
+
+    override fun getEditActivity() = MsTtsEditActivity::class.java
 
     override fun getDescription(): String {
         val strFollow by lazy { app.getString(R.string.follow) }
