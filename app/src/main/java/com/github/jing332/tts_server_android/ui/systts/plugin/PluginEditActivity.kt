@@ -148,7 +148,7 @@ class PluginEditActivity : BackActivity() {
 
 
                 val sampleRate = try {
-                    vm.pluginEngine.getSampleRate()
+                    vm.pluginEngine.getSampleRate(mTts.locale, mTts.voice)
                 } catch (e: Exception) {
                     LogOutputter.writeLine(e.stackTraceToString(), LogLevel.ERROR)
                 }
@@ -202,7 +202,8 @@ class PluginEditActivity : BackActivity() {
         viewBinding.tvLog.text = msg
 
         BottomSheetDialog(this).apply {
-            viewBinding.root.minimumHeight = this@PluginEditActivity.windowManager.defaultDisplay.height
+            viewBinding.root.minimumHeight =
+                this@PluginEditActivity.windowManager.defaultDisplay.height
             setContentView(viewBinding.root)
             show()
         }

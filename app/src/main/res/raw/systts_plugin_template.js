@@ -6,7 +6,7 @@ let PluginJS = {
     "version": 1, // 插件版本号
 
     // 获取音频
-    "getAudio": function(text, rate, volume, pitch){
+    "getAudio": function(text, locale, voice, rate, volume, pitch){
         // 日志： 错误 logger.e(), 警告 logger.w(), 信息 logger.i()
         // 输出某对象所有属性/方法:  for (v : 某对象) logger.i(v)
         // ttsrv为实用方法的包装对象，如
@@ -19,7 +19,8 @@ let PluginJS = {
 
 let EditorJS = {
     //音频的采样率 编辑TTS界面保存时调用
-    "getAudioSampleRate": function() {
+    "getAudioSampleRate": function(locale, voice) {
+        // 根据voice判断返回的采样率
         return 16000
     },
 

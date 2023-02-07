@@ -34,17 +34,22 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         vm.init(tts)
     }
 
-    val waitDialog by lazy { WaitDialog(this) }
+    private val waitDialog by lazy { WaitDialog(this) }
 
     override fun onTest(text: String) {
         waitDialog.show()
         vm.doTest(text,
-            { audio ->
+            { audio, sampleRate, mime ->
                 waitDialog.dismiss()
                 MaterialAlertDialogBuilder(this@PluginTtsEditActivity)
                     .setTitle(R.string.systts_test_success)
                     .setMessage(
-                        getString(R.string.systts_test_success_info, audio.size / 1024)
+                        getString(
+                            R.string.systts_test_success_info,
+                            audio.size / 1024,
+                            sampleRate,
+                            mime
+                        )
                     ).setOnDismissListener {
                         stopPlay()
                     }
@@ -62,7 +67,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         systemTts.displayName = vm.checkDisplayName(basicEditView.displayName)
 
         kotlin.runCatching {
-            tts.audioFormat.sampleRate = engine.getSampleRate() ?: 16000
+            tts.audioFormat.sampleRate = engine.getSampleRate(tts.locale, tts.voice) ?: 16000
         }.onFailure {
             AppDialogs.displayErrorDialog(
                 this, getString(

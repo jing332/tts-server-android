@@ -4,8 +4,8 @@ import android.media.MediaFormat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withIO
+import com.github.jing332.tts_server_android.help.AudioDecoder
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
-import com.github.jing332.tts_server_android.service.systts.help.AudioDecoder
 import kotlinx.coroutines.launch
 
 class HttpTtsEditViewModel : ViewModel() {

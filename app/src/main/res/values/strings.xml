@@ -177,7 +177,7 @@
     <string name="systts_warn_no_ra_aside">⚠️Missing {aside}，use default configuration!</string>
 
     <string name="systts_test_success">Test was successful</string>
-    <string name="systts_test_success_info">Size: %1$dKiB</string>
+    <string name="systts_test_success_info">Size: %1$dKiB \nSample rate: %2$d \nMime: %3$s</string>
     <string name="systts_http_test_msg">Audio size：%1$d KiB \nFormat：%2$s \nSample rate：%3$d hz \nContent-Type：%4$s</string>
 
     <string name="systts_please_check_multi_voice_option">Please Enable multi-voice</string>

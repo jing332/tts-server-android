@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.BR
+import com.github.jing332.tts_server_android.help.AudioDecoder
 import com.github.jing332.tts_server_android.help.plugin.EditUiJsEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
@@ -79,7 +80,7 @@ class PluginTtsEditViewModel : ViewModel() {
 
     fun doTest(
         text: String,
-        onSuccess: suspend (audio: ByteArray) -> Unit,
+        onSuccess: suspend (audio: ByteArray, sampleRate: Int, mime: String) -> Unit,
         onFailure: suspend (Throwable) -> Unit
     ) {
         viewModelScope.runOnIO {
@@ -94,8 +95,9 @@ class PluginTtsEditViewModel : ViewModel() {
                 withMain { onFailure.invoke(Exception("null")) }
                 return@runOnIO
             }
+            val ret = AudioDecoder().getSampleRateAndMime(audio)
 
-            withMain { onSuccess(audio) }
+            withMain { onSuccess(audio, ret.first, ret.second) }
         }
     }
 

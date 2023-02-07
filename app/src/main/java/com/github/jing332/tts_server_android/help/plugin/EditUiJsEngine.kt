@@ -24,11 +24,15 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
             }
         }
 
-    fun getSampleRate(): Int? {
+    fun getSampleRate(locale: String, voice: String): Int? {
         LogOutputter.writeLine("执行getAudioSampleRate()...")
 
-
-        return JsEngineConfig.SCRIPT_ENGINE.invokeMethod(editorJsObject, FUNC_SAMPLE_RATE)
+        return JsEngineConfig.SCRIPT_ENGINE.invokeMethod(
+            editorJsObject,
+            FUNC_SAMPLE_RATE,
+            locale,
+            voice
+        )
             ?.run { (this as Double).toInt() }
     }
 

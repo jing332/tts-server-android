@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.service.systts.help
+package com.github.jing332.tts_server_android.help
 
 import android.media.MediaCodec
 import android.media.MediaExtractor
@@ -46,6 +46,22 @@ class AudioDecoder {
         mediaCodec!!.reset()
         mediaCodec!!.configure(mediaFormat, null, null, 0)
         return mediaCodec as MediaCodec
+    }
+
+    /**
+     * 获取采样率和MIME
+     */
+    fun getSampleRateAndMime(audio: ByteArray): Pair<Int, String> {
+        val formats = getFormats(audio)
+
+        var sampleRate = 0
+        var mime = ""
+        if (formats.isNotEmpty()) {
+            sampleRate = formats[0].getInteger(MediaFormat.KEY_SAMPLE_RATE)
+            mime = formats[0].getString(MediaFormat.KEY_MIME) ?: ""
+        }
+
+        return Pair(sampleRate, mime)
     }
 
     /**

@@ -173,7 +173,7 @@
     <string name="systts_warn_no_ra_aside">⚠️缺少{旁白}，使用默认！\n请启用旁白配置。</string>
 
     <string name="systts_test_success">测试成功</string>
-    <string name="systts_test_success_info">大小: %1$dKiB</string>
+    <string name="systts_test_success_info">大小: %1$dKiB \n采样率：%2$d \n格式: %3$s</string>
 
     <string name="systts_http_test_msg">音频大小：%1$d Kib \n格式：%2$s \n采样率：%3$d HZ \nContent-Type：%4$s</string>
 
