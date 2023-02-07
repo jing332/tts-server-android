@@ -71,7 +71,8 @@ object AppDialogs {
                 .setPositiveButton(R.string.copy) { _, _ ->
                     ClipboardUtils.copyText(json)
                     toast(R.string.copied)
-                }.setNegativeButton(getString(R.string.upload_to_url)) { _, _ ->
+                }
+                .setNegativeButton(getString(R.string.upload_to_url)) { _, _ ->
                     scope.runOnIO {
                         kotlin.runCatching {
                             val url = updateToUrl(json)

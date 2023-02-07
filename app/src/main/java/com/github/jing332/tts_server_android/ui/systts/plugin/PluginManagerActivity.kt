@@ -21,12 +21,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBin
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
-import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
-import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
-import com.github.jing332.tts_server_android.util.longToast
-import com.github.jing332.tts_server_android.util.runOnIO
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
@@ -103,22 +98,7 @@ class PluginManagerActivity : BackActivity() {
             }
 
             R.id.menu_import -> {
-                val et = MaterialTextInput(this)
-                et.inputLayout.setHint(R.string.url_net)
-                MaterialAlertDialogBuilder(this).setTitle(R.string.import_config).setView(et)
-                    .setPositiveButton(R.string.import_from_clipboard) { _, _ ->
-                        val err = vm.importConfig(ClipboardUtils.text.toString())
-                        err?.let {
-                            longToast("${getString(R.string.import_failed)}: $it")
-                        }
-                    }.setNegativeButton(R.string.import_from_url) { _, _ ->
-                        lifecycleScope.runOnIO {
-                            val err = vm.importConfigFromUrl(et.inputEdit.text.toString())
-                            err?.let {
-                                longToast("${getString(R.string.import_failed)}: $it")
-                            }
-                        }
-                    }.show()
+                startActivity(Intent(this, PluginConfigImportActivity::class.java))
             }
         }
         return super.onOptionsItemSelected(item)

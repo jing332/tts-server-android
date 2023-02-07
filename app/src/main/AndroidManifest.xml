@@ -26,22 +26,26 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".ui.base.import1.BaseConfigImportActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.systts.plugin.PluginEditActivity"
             android:exported="false"
             android:label=""
-            android:theme="@style/Theme.TtsServer.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.TtsServer.NoActionBar" />
         <activity
-            android:label="@string/plugin_manager"
             android:name=".ui.systts.plugin.PluginManagerActivity"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/plugin_manager" />
 
-        </activity>
         <activity
-            android:label="@string/edit_plugin_tts"
+            android:name=".ui.systts.plugin.PluginConfigImportActivity"
+            android:label="插件导入"
+            android:exported="true" />
+        <activity
             android:name=".ui.systts.edit.plugin.PluginTtsEditActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false"
+            android:label="@string/edit_plugin_tts" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
