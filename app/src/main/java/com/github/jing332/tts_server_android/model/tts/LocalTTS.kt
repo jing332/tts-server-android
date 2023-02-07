@@ -175,6 +175,7 @@ data class LocalTTS(
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
         mTtsEngine?.shutdown()
+        isInitialized = false
     }
 
     // return 是否成功

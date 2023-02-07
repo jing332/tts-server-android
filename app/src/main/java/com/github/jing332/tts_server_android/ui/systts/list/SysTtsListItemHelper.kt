@@ -23,6 +23,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.AppConfig
 import com.github.jing332.tts_server_android.help.AudioPlayer
 import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -124,10 +125,17 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
         waitDialog.show()
 
         GlobalScope.launch(Dispatchers.Main) {
+            val tts = model.tts.clone<BaseTTS>()!!
             val audio = try {
                 withIO {
-                    model.tts.onLoad()
-                    model.tts.getAudio(AppConfig.testSampleText)
+                    tts.onLoad()
+                    if (tts.isRateFollowSystem()){
+                        tts.rate = 50
+                    }
+                    if (tts.isPitchFollowSystem()){
+                        tts.pitch = 0
+                    }
+                    tts.getAudio(AppConfig.testSampleText)
                 }
             } catch (e: Exception) {
                 AppDialogs.displayErrorDialog(context, e.stackTraceToString())
@@ -151,7 +159,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                 .setPositiveButton(R.string.cancel, null)
                 .setOnDismissListener {
                     audioPlayer.stop()
-                    model.tts.onDestroy()
+                    tts.onDestroy()
                 }.show()
 
             withIO { audioPlayer.play(audio) }
