@@ -202,7 +202,7 @@ class PluginEditActivity : BackActivity() {
         viewBinding.tvLog.text = msg
 
         BottomSheetDialog(this).apply {
-            viewBinding.tvLog.height = this@PluginEditActivity.windowManager.defaultDisplay.height
+            viewBinding.root.minimumHeight = this@PluginEditActivity.windowManager.defaultDisplay.height
             setContentView(viewBinding.root)
             show()
         }

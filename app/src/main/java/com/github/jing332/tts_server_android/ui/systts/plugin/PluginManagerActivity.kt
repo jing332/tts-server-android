@@ -55,8 +55,7 @@ class PluginManagerActivity : BackActivity() {
                     btnDelete.clickWithThrottle {
                         val model = getModel<PluginModel>()
                         AppDialogs.displayDeleteDialog(
-                            this@PluginManagerActivity,
-                            model.name
+                            this@PluginManagerActivity, model.title
                         ) { appDb.pluginDao.delete(model.data) }
                     }
                     btnEdit.clickWithThrottle {
@@ -83,7 +82,6 @@ class PluginManagerActivity : BackActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         menuInflater.inflate(R.menu.plugin_manager, menu)
         return super.onCreateOptionsMenu(menu)
     }

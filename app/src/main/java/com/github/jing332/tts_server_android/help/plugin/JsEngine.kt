@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.help.plugin
 
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.help.plugin.JsEngineConfig.Companion.SCRIPT_ENGINE
@@ -17,7 +18,6 @@ open class JsEngine(
 
         const val FUNC_GET_AUDIO = "getAudio"
     }
-
 
     private val pluginJsObject: NativeObject
         get() {
@@ -41,7 +41,12 @@ open class JsEngine(
             plugin.name = get("name").toString()
             plugin.pluginId = get("id").toString()
             plugin.author = get("author").toString()
-            plugin
+
+            runCatching {
+                plugin.version = (get("version") as Double).toInt()
+            }.onFailure {
+                throw NumberFormatException(context.getString(R.string.plugin_bad_format))
+            }
         }
 
         return plugin

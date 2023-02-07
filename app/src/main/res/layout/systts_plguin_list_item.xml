@@ -29,18 +29,18 @@
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/cb_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:checked="@{m.data.enabled}"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{m.name}"
+                    android:text="@{m.title}"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     app:layout_constraintStart_toEndOf="@id/cb_switch"
                     app:layout_constraintTop_toTopOf="parent"
@@ -50,7 +50,7 @@
                     android:id="@+id/tv_author"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{m.data.author}"
+                    android:text="@{m.subTitle}"
                     android:textAppearance="?attr/textAppearanceBodySmall"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/cb_switch"
