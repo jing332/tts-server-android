@@ -38,7 +38,7 @@ data class MsTTS(
 
     @kotlinx.serialization.Transient
     override var audioFormat: BaseAudioFormat = MsTtsFormatManger.getFormatOrDefault(format),
-    override var audioPlayer: AudioPlayer = AudioPlayer(),
+    override var audioPlayer: PlayerParams = PlayerParams(),
 ) : Parcelable, BaseTTS() {
     companion object {
         const val RATE_FOLLOW_SYSTEM = -100

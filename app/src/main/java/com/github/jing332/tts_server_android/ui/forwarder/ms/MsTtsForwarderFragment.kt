@@ -6,7 +6,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
@@ -22,10 +27,9 @@ import com.github.jing332.tts_server_android.databinding.MsTtsForwarderFragmentB
 import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
 import com.github.jing332.tts_server_android.ui.MainActivity
-import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
+import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
-
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 

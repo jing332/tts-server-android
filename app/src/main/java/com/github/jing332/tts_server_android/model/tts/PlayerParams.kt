@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Parcelize
-data class AudioPlayer(
+data class PlayerParams(
     var rate: Float = VALUE_FOLLOW_GLOBAL,
     var pitch: Float = VALUE_FOLLOW_GLOBAL
 ) : Parcelable {

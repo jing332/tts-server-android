@@ -4,7 +4,7 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import com.github.jing332.tts_server_android.BR
-import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
+import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 
 class SpinnerData : BaseObservable() {
     // 包装成lambda

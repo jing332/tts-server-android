@@ -9,8 +9,8 @@ import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityBinding
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
-import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
+import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

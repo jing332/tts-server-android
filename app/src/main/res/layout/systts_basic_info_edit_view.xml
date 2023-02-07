@@ -7,7 +7,7 @@
 
         <import type="java.util.List" />
 
-        <import type="com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem" />
+        <import type="com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem" />
 
         <variable
             name="groupCurrentPosition"
@@ -109,7 +109,7 @@
             </com.google.android.material.button.MaterialButtonToggleGroup>
         </HorizontalScrollView>
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+        <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
             android:id="@+id/til_group"
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
@@ -119,16 +119,16 @@
             app:hintAnimationEnabled="false"
             app:startIconDrawable="@drawable/ic_baseline_groups_24">
 
-            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+            <com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinner
                 android:id="@+id/spinner_group"
                 items="@{groupItems}"
                 selectedPosition="@={groupCurrentPosition}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+        </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+        <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
             android:id="@+id/til_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -145,6 +145,6 @@
                 android:layout_height="match_parent"
                 android:text="@={displayName}"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
-        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+        </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
     </LinearLayout>
 </layout>

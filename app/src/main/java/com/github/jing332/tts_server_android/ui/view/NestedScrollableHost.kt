@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.jing332.tts_server_android.ui.custom
+package com.github.jing332.tts_server_android.ui.view
 
 import android.content.Context
 import android.util.AttributeSet

@@ -8,8 +8,8 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditActivityBinding
 import com.github.jing332.tts_server_android.model.tts.MsTTS
-import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
+import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 

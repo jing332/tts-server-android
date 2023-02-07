@@ -16,9 +16,9 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
-import com.github.jing332.tts_server_android.model.tts.AudioPlayer
-import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
-import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
+import com.github.jing332.tts_server_android.model.tts.PlayerParams
+import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
+import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -155,7 +155,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                 }
 
                 val formatter = Seekbar.ValueFormatter { value, _ ->
-                    if (value == AudioPlayer.VALUE_FOLLOW_GLOBAL) context.getString(R.string.follow)
+                    if (value == PlayerParams.VALUE_FOLLOW_GLOBAL) context.getString(R.string.follow)
                     else value.toString()
                 }
 

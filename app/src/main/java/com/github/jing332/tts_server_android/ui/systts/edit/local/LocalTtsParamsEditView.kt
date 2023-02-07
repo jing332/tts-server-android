@@ -24,10 +24,10 @@ import com.github.jing332.tts_server_android.databinding.SysttsLocalParamsExtraE
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.tts.LocalTtsParameter
-import com.github.jing332.tts_server_android.ui.custom.AppDialogs
-import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
-import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinnerAdapter
-import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
+import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
+import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
+import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.lang.Integer.max

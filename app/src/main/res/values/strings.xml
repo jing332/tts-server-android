@@ -297,5 +297,8 @@
     <string name="plugin_tts_get_sample_rate_fail_msg">Failed to get audio sample rate: %1$s</string>
     <string name="edit">Edit</string>
     <string name="playing">playing</string>
+    <string name="select_plugin">Select the plugin</string>
+    <string name="audition">试听</string>
+    <string name="no_plugins">无插件</string>
 
 </resources>

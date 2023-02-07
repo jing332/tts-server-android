@@ -8,20 +8,20 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
         android:id="@+id/til_type"
         style="?attr/textInputOutlinedExposedDropdownMenuStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/type_of_data">
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+        <com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinner
             android:id="@+id/spinner_type"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
         android:id="@+id/til_key"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,9 +31,9 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
         android:id="@+id/til_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             android:id="@+id/et_value"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/group_bool_value"

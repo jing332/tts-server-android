@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
         android:id="@+id/til_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,9 +23,9 @@
             android:layout_height="wrap_content"
             android:hint="url"
             tools:ignore="HardcodedText" />
-    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
         android:id="@+id/til_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -43,10 +43,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/systts_http_request_header" />
-    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
         android:id="@+id/til_sample_rate"
         style="?attr/textInputOutlinedExposedDropdownMenuStyle"
         android:layout_width="0dp"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             tools:ignore="Deprecated" />
-    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkBox_needDecode"

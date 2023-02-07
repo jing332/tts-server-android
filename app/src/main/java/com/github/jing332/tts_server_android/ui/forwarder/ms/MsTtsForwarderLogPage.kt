@@ -17,7 +17,7 @@ import com.github.jing332.tts_server_android.help.ServerConfig
 import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel
-import com.github.jing332.tts_server_android.ui.custom.adapter.LogListItemAdapter
+import com.github.jing332.tts_server_android.ui.view.adapter.LogListItemAdapter
 import tts_server_lib.Tts_server_lib
 
 class MsTtsForwarderLogPage : Fragment() {

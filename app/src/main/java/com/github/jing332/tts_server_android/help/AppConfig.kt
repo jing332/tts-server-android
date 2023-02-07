@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.help
 
 import com.chibatching.kotpref.KotprefModel
+import com.github.jing332.tts_server_android.R
 
 object AppConfig : KotprefModel() {
     override val kotprefName: String
@@ -11,7 +12,18 @@ object AppConfig : KotprefModel() {
      */
     var isEdgeDnsEnabled by booleanPref(true)
 
-    var testSampleText by stringPref()
+    private var mTestSampleText by stringPref(key = "testSampleText")
+
+    /**
+     * 如果为空则设置默认
+     */
+    var testSampleText: String
+        get() {
+            if (mTestSampleText.isBlank()) mTestSampleText =
+                context.getString(R.string.systts_sample_test_text)
+            return mTestSampleText
+        }
+        set(value) { mTestSampleText = value }
 
     var fragmentIndex by intPref(0)
 }

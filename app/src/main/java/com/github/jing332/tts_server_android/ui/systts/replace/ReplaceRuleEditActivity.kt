@@ -18,8 +18,8 @@ import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
-import com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinnerAdapter
-import com.github.jing332.tts_server_android.ui.custom.widget.spinner.SpinnerItem
+import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
+import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

@@ -271,7 +271,6 @@
     <string name="forwarder_sys_running">系統TTS轉發器運行中</string>
     <string name="language">語言</string>
     <string name="plugin_manager">插件管理</string>
-    <string name="systts_plugin_no_obj_engine_js">未找到EngineJS！</string>
     <string name="error">錯誤</string>
     <string name="systts_add_plugin_tts">添加外掛程式TTS</string>
     <string name="debug">調試</string>
@@ -281,4 +280,7 @@
     <string name="plugin_tts_get_sample_rate_fail_msg">獲取音訊採樣率失敗：%1$s</string>
     <string name="edit">編輯</string>
     <string name="playing">播放中</string>
+    <string name="select_plugin">選擇外掛程式</string>
+    <string name="audition">试听</string>
+    <string name="no_plugins">无插件</string>
 </resources>

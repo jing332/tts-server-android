@@ -44,7 +44,8 @@
                     app:layout_constraintBottom_toBottomOf="@+id/btn_more"
                     app:layout_constraintEnd_toStartOf="@+id/btn_more"
                     app:layout_constraintTop_toTopOf="@+id/btn_more"
-                    app:tint="?attr/colorOnBackground" />
+                    app:tint="?attr/colorOnBackground"
+                    android:contentDescription="@string/audition" />
 
                 <ImageButton
                     android:id="@+id/btn_more"

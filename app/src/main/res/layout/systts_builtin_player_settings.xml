@@ -26,7 +26,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_tip"
         tools:layout_editor_absoluteX="8dp">
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+        <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
             android:id="@+id/seek_rate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             app:progress="100" />
 
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+        <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
             android:id="@+id/seek_pitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

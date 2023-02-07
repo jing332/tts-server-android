@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.custom.widget.spinner
+package com.github.jing332.tts_server_android.ui.view.widget.spinner
 
 import android.content.Context
 import android.graphics.Typeface

@@ -29,8 +29,8 @@ import com.github.jing332.tts_server_android.databinding.SysttsListCustomGroupFr
 import com.github.jing332.tts_server_android.databinding.SysttsListCustomGroupItemBinding
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
-import com.github.jing332.tts_server_android.ui.custom.AppDialogs
-import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
+import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.util.ThrottleUtil
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.google.android.material.checkbox.MaterialCheckBox

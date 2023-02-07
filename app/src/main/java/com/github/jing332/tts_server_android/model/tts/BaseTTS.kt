@@ -31,7 +31,7 @@ sealed class BaseTTS(
     abstract var volume: Int
     abstract var rate: Int
     abstract var audioFormat: BaseAudioFormat
-    abstract var audioPlayer: AudioPlayer
+    abstract var audioPlayer: PlayerParams
 
     /**
      * 语速是否跟随系统
@@ -102,7 +102,6 @@ sealed class BaseTTS(
 
     /**
      * 获取PCM音频流
-     * @return 是否从上次断点处开始
      */
     open fun getAudioStream(
         speakText: String,

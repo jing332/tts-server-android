@@ -8,7 +8,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsHttpParamsEditViewBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
-import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 
 class HttpTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), Seekbar.OnSeekBarChangeListener {

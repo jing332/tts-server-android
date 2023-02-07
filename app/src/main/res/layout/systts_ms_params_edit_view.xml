@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="16dp">
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
         android:id="@+id/til_format"
         style="?attr/textInputOutlinedExposedDropdownMenuStyle"
         android:layout_width="match_parent"
@@ -16,14 +16,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:startIconDrawable="@drawable/ic_baseline_audio_file_24">
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+        <com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinner
             android:id="@+id/spinner_format"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/label_audio_format" />
-    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+    <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
         android:id="@+id/seekbar_rate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -35,10 +35,10 @@
         app:max="200"
         app:progress="100">
 
-    </com.github.jing332.tts_server_android.ui.custom.widget.Seekbar>
+    </com.github.jing332.tts_server_android.ui.view.widget.Seekbar>
 
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+    <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
         android:id="@+id/seekbar_volume"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         app:max="100"
         app:progress="50" />
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+    <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
         android:id="@+id/seekbar_pitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
         app:max="100"
         app:progress="50" />
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+    <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
         android:id="@+id/seekbar_style_Degree"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

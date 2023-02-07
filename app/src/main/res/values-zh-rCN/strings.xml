@@ -290,4 +290,7 @@
     <string name="plugin_tts_get_sample_rate_fail_msg">获取音频采样率失败：%1$s</string>
     <string name="edit">编辑</string>
     <string name="playing">播放中</string>
+    <string name="select_plugin">选择插件</string>
+    <string name="audition">试听</string>
+    <string name="no_plugins">无插件</string>
 </resources>

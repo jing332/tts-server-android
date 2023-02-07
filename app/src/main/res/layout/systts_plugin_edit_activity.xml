@@ -16,7 +16,7 @@
         android:layout_margin="4dp"
         tools:context=".ui.systts.edit.plugin.PluginTtsEditActivity">
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+        <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
             android:id="@+id/til_locale"
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
@@ -28,15 +28,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/ic_web">
 
-            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+            <com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinner
                 android:id="@+id/spinner_locale"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:items="@{m.ui.locales.items}"
                 app:selectedPosition="@={m.ui.locales.position}" />
-        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+        </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
-        <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+        <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
             android:id="@+id/til_voice"
             android:layout_marginTop="4dp"
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
@@ -49,13 +49,13 @@
             app:layout_constraintTop_toBottomOf="@id/til_locale"
             app:startIconDrawable="@drawable/ic_baseline_supervisor_account_24">
 
-            <com.github.jing332.tts_server_android.ui.custom.widget.spinner.MaterialSpinner
+            <com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinner
                 android:id="@+id/spinner_voice"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:items="@{m.ui.voices.items}"
                 app:selectedPosition="@={m.ui.voices.position}" />
-        </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+        </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
         <com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsParamsEditView
             android:id="@+id/params_edit"

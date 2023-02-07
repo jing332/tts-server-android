@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.help.plugin
 
-import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.help.plugin.JsEngineConfig.Companion.SCRIPT_ENGINE
@@ -20,10 +19,10 @@ open class JsEngine(
     }
 
 
-    protected val pluginJsObject: NativeObject
+    private val pluginJsObject: NativeObject
         get() {
             return SCRIPT_ENGINE.get(OBJ_PLUGIN_JS).run {
-                if (this == null) throw Exception(context.getString(R.string.systts_plugin_no_obj_engine_js))
+                if (this == null) throw Exception("Not found object: $OBJ_PLUGIN_JS")
                 else this as NativeObject
             }
         }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
         android:id="@+id/til"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,5 +19,5 @@
             android:layout_height="match_parent"
             tools:text="Text" />
 
-    </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 </FrameLayout>

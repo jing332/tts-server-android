@@ -7,7 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginParamsEditViewBinding
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
-import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
+import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 
 class PluginTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle) {

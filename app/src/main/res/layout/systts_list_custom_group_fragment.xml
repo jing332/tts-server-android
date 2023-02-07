@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.systts.list.SysTtsListCustomGroupPageFragment">
-    <com.github.jing332.tts_server_android.ui.custom.widget.RecyclerViewAtViewPager2
+    <com.github.jing332.tts_server_android.ui.view.widget.RecyclerViewAtViewPager2
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

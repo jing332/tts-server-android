@@ -27,9 +27,6 @@ import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBindi
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
-import com.github.jing332.tts_server_android.ui.custom.AppDialogs
-import com.github.jing332.tts_server_android.ui.custom.MaterialTextInput
-import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
@@ -38,6 +35,9 @@ import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEdit
 import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportActivity
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
+import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
+import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -378,10 +378,9 @@ class SysTtsListFragment : Fragment() {
         val plugins = appDb.pluginDao.allEnabled
         val pluginItems = plugins.map { "${it.name} (${it.pluginId})" }.toTypedArray()
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("请选择插件")
+            .setTitle(R.string.select_plugin)
             .setItems(pluginItems) { _, which ->
                 val selected = plugins[which]
-
                 startForResult.launch(
                     Intent(
                         requireContext(),
@@ -392,14 +391,24 @@ class SysTtsListFragment : Fragment() {
                             SystemTts(tts = PluginTTS(pluginId = selected.pluginId))
                         )
                     })
+            }.apply {
+                if (plugins.isEmpty()) {
+                    setMessage(R.string.no_plugins)
+                    setPositiveButton(R.string.plugin_manager) { _, _ ->
+                        startActivity(Intent(requireContext(), PluginManagerActivity::class.java))
+                    }
+                }
             }
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
     private fun addGroup() {
         val et = MaterialTextInput(requireContext())
         et.inputLayout.setHint(R.string.name)
-        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.add_group).setView(et)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.add_group)
+            .setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 appDb.systemTtsDao.insertGroup(
                     SystemTtsGroup(name = et.inputEdit.text.toString()

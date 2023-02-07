@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/til_test"
     android:layout_width="match_parent"
@@ -17,4 +17,4 @@
         android:imeOptions="actionGo"
         android:singleLine="true"
         android:text="@string/systts_sample_test_text" />
-</com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+</com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>

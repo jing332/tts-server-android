@@ -40,6 +40,7 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
 
 
     open fun onSave() {
+        AppConfig.testSampleText = binding.testLayout.etTestText.text.toString()
         setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, systemTts) })
         finish()
     }
@@ -75,11 +76,10 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
 
         testInputLayout?.editText?.apply {
             testInputLayout?.setEndIconOnClickListener {
-                if (text.toString() != getString(R.string.systts_sample_test_text))
-                    AppConfig.testSampleText = text.toString()
+                if (text.toString().isBlank()) setText(AppConfig.testSampleText)
                 onTest(text.toString())
             }
-            if (AppConfig.testSampleText.isNotEmpty()) setText(AppConfig.testSampleText)
+            setText(AppConfig.testSampleText)
         }
     }
 

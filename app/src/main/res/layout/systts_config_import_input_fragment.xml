@@ -120,7 +120,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/sv_group_source">
 
-            <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
                 android:id="@+id/til_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -132,9 +132,9 @@
                     android:layout_height="match_parent"
                     android:maxLines="5"
                     android:scrollbars="vertical" />
-            </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+            </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
-            <com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout
+            <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
                 android:id="@+id/til_file_path"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
                     android:editable="false"
                     android:hint="@string/select_file_hint"
                     tools:ignore="Deprecated" />
-            </com.github.jing332.tts_server_android.ui.custom.widget.AppTextInputLayout>
+            </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
         </FrameLayout>
 

@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.custom.widget
+package com.github.jing332.tts_server_android.ui.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -14,7 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SeekbarBinding
-import com.github.jing332.tts_server_android.ui.custom.widget.Seekbar.ValueFormatter
+import com.github.jing332.tts_server_android.ui.view.widget.Seekbar.ValueFormatter
 import com.github.jing332.tts_server_android.util.ThrottleUtil
 
 class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :

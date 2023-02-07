@@ -27,7 +27,7 @@ data class PluginTTS(
     override var volume: Int = 50,
     override var rate: Int = 50,
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
-    override var audioPlayer: AudioPlayer = AudioPlayer(),
+    override var audioPlayer: PlayerParams = PlayerParams(),
 
     @Transient
     var plugin: Plugin? = null,

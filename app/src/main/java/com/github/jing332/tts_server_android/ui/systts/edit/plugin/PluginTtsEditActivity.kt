@@ -6,9 +6,9 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivityBinding
 import com.github.jing332.tts_server_android.help.plugin.EditUiJsEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
-import com.github.jing332.tts_server_android.ui.custom.AppDialogs
-import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
+import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
