@@ -19,6 +19,6 @@
     <item
         android:id="@+id/menu_params"
         android:icon="@drawable/ic_baseline_settings_24"
-        android:title="@string/set_params" />
+        android:title="@string/plugin_preview_ui" />
 
 </menu>

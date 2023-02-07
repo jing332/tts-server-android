@@ -122,15 +122,17 @@ class PluginEditActivity : BackActivity() {
             R.id.menu_debug -> {
                 val tv = displayDebugMessage()
                 val output = LogOutputter.OutputInterface { msg, level ->
-                    synchronized(this) {
-                        val span = SpannableString(msg).apply {
-                            setSpan(
-                                ForegroundColorSpan(LogLevel.toColor(level)),
-                                0, msg.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
+                    runOnUiThread {
+                        synchronized(tv) {
+                            val span = SpannableString(msg).apply {
+                                setSpan(
+                                    ForegroundColorSpan(LogLevel.toColor(level)),
+                                    0, msg.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                )
+                            }
+                            tv.append("\n")
+                            tv.append(span)
                         }
-                        tv.append("\n")
-                        tv.append(span)
                     }
                 }
                 LogOutputter.addTarget(output)

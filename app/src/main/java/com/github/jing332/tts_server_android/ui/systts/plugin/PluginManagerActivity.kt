@@ -1,11 +1,13 @@
 package com.github.jing332.tts_server_android.ui.systts.plugin
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.lifecycle.lifecycleScope
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
@@ -81,8 +83,15 @@ class PluginManagerActivity : BackActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
         menuInflater.inflate(R.menu.plugin_manager, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    @SuppressLint("RestrictedApi")
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

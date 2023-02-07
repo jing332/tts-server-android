@@ -8,19 +8,25 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.CheckBox
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.MenuCompat
 import androidx.fragment.app.Fragment
 import com.drake.brv.BindingAdapter
+import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
+import com.github.jing332.tts_server_android.help.AppConfig
+import com.github.jing332.tts_server_android.help.AudioPlayer
 import com.github.jing332.tts_server_android.help.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.custom.AppDialogs
+import com.github.jing332.tts_server_android.ui.custom.widget.WaitDialog
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
@@ -29,8 +35,12 @@ import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.clone
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-@Suppress("UNCHECKED_CAST", "DEPRECATION")
+@Suppress("DEPRECATION")
 class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = false) {
     val context: Context by lazy { fragment.requireContext() }
 
@@ -63,14 +73,18 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         true
                     }
 
-                    btnDelete.clickWithThrottle { delete(getModel()) }
-                    btnEdit.clickWithThrottle { edit(getModel()) }
-                    btnEdit.setOnLongClickListener {
-                        context.toast(R.string.systts_copied_config)
-                        edit(getModel<SystemTts>().copy(id = System.currentTimeMillis()))
+                    btnListen.clickWithThrottle {
+                        listen(getModel())
+                    }
+
+                    btnListen.setOnLongClickListener {
+                        edit(getModel())
                         true
                     }
 
+                    btnMore.clickWithThrottle {
+                        displayMoreOptions(it, getModel())
+                    }
                     itemView.accessibilityDelegate = object : AccessibilityDelegate() {
                         override fun onInitializeAccessibilityNodeInfo(
                             host: View,
@@ -96,6 +110,65 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                 }
             }
         }
+    }
+
+
+    private val audioPlayer by lazy { AudioPlayer(context) }
+    private val waitDialog by lazy { WaitDialog(context) }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun listen(model: SystemTts) {
+        waitDialog.show()
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val audio = try {
+                withIO {
+                    model.tts.onLoad()
+                    model.tts.getAudio(AppConfig.testSampleText)
+                        ?: throw Exception("Audio is null!")
+                }
+            } catch (e: Exception) {
+                AppDialogs.displayErrorDialog(context, e.stackTraceToString())
+                return@launch
+            } finally {
+                waitDialog.dismiss()
+                model.tts.onDestroy()
+            }
+
+            val dlg = MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.playing)
+                .setMessage(AppConfig.testSampleText)
+                .setPositiveButton(R.string.cancel, null)
+                .setOnDismissListener {
+                    audioPlayer.stop()
+                    model.tts.onDestroy()
+                }.show()
+
+            withIO { audioPlayer.play(audio) }
+            dlg.dismiss()
+        }
+    }
+
+    private fun displayMoreOptions(v: View, model: SystemTts) {
+        PopupMenu(context, v).apply {
+            menuInflater.inflate(R.menu.sysstts_more_options, menu)
+            setForceShowIcon(true)
+            MenuCompat.setGroupDividerEnabled(menu, true)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_edit -> edit(model)
+                    R.id.menu_copy_config -> {
+                        context.toast(R.string.systts_copied_config)
+                        edit(model.copy(id = System.currentTimeMillis()))
+                    }
+
+                    R.id.menu_delete -> delete(model)
+                }
+                true
+            }
+            show()
+        }
+
     }
 
     // 警告 多语音选项未开启

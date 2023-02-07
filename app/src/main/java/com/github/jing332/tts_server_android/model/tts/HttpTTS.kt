@@ -112,7 +112,7 @@ data class HttpTTS(
     override fun getAudio(speakText: String): ByteArray? {
         val resp = getAudioResponse(speakText)
         val body = resp.body?.bytes()
-        if (resp.code != 200) throw Throwable(body?.contentToString())
+        if (resp.code != 200) throw Throwable("${resp.message}, ${body.contentToString()}")
 
         resp.body?.close()
         return body

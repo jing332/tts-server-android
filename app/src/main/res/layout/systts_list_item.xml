@@ -35,31 +35,30 @@
                 android:layout_height="wrap_content">
 
                 <ImageButton
-                    android:id="@+id/btn_edit"
+                    android:id="@+id/btn_listen"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/desc_edit_item"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_baseline_edit_24"
-                    app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
-                    app:layout_constraintEnd_toStartOf="@+id/btn_delete"
-                    app:layout_constraintTop_toTopOf="@+id/btn_delete"
+                    android:src="@drawable/ic_baseline_headset_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_more"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_more"
+                    app:layout_constraintTop_toTopOf="@+id/btn_more"
                     app:tint="?attr/colorOnBackground" />
 
                 <ImageButton
-                    android:id="@+id/btn_delete"
+                    android:id="@+id/btn_more"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginEnd="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/desc_delete_item"
+                    android:contentDescription="@string/more_options"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_baseline_delete_forever_24"
                     app:layout_constraintBottom_toTopOf="@+id/tv_apiType"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_raTarget"
-                    app:tint="?attr/colorError" />
+                    app:srcCompat="@drawable/ic_baseline_more_vert_24"
+                    app:tint="?attr/colorOnBackground" />
 
                 <TextView
                     android:id="@+id/tv_name"
@@ -141,7 +140,7 @@
                     app:autoSizeMaxTextSize="14sp"
                     app:autoSizeTextType="uniform"
                     app:layout_constraintBottom_toTopOf="@+id/tv_bottom_content"
-                    app:layout_constraintEnd_toStartOf="@+id/btn_edit"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_listen"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/tv_name"
                     app:layout_constraintTop_toBottomOf="@+id/tv_name"
