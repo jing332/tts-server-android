@@ -83,12 +83,13 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                         }
                     }
                     itemView.clickWithThrottle {
-                        expandOrCollapse()
                         getModel<SysTtsGroupModel>().let { model ->
+                            val isExpanded = !model.itemExpand
+
                             val enabledCount =
                                 model.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
                             val speakText =
-                                if (model.itemExpand) R.string.group_expanded else R.string.group_collapsed
+                                if (isExpanded) R.string.group_expanded else R.string.group_collapsed
                             itemView.announceForAccessibility(
                                 getString(speakText) + ", ${
                                     getString(
@@ -99,7 +100,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                                 }"
                             )
 
-                            if (model.itemExpand && model.itemSublist.isNullOrEmpty()) {
+                            if (isExpanded && model.itemSublist.isNullOrEmpty()) {
                                 collapse(modelPosition)
                                 MaterialAlertDialogBuilder(requireContext())
                                     .setTitle(R.string.msg_group_is_empty)
@@ -108,7 +109,7 @@ class SysTtsListCustomGroupPageFragment : Fragment() {
                             }
 
                             appDb.systemTtsDao.updateGroup(model.data.apply {
-                                isExpanded = model.itemExpand
+                                this.isExpanded = isExpanded
                             })
                         }
                     }
