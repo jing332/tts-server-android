@@ -141,17 +141,20 @@ dependencies {
 
     // 代码编辑器
     implementation 'io.github.Rosemoe.sora-editor:editor:0.21.0'
+    // https://mvnrepository.com/artifact/io.github.Rosemoe.sora-editor/language-textmate
+    implementation 'io.github.Rosemoe.sora-editor:language-textmate:0.21.0'
+
 
     // https://mvnrepository.com/artifact/cn.hutool/hutool-crypto
     implementation 'cn.hutool:hutool-crypto:5.8.11'
 
-    //Room
+    // Room
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
     androidTestImplementation("androidx.room:room-testing:$room_version")
 
-    //SharedPreference
+    // SharedPreference
     implementation 'com.chibatching.kotpref:kotpref:2.13.2'
 
     // IO & NET

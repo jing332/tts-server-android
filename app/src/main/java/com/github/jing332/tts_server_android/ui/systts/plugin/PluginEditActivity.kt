@@ -30,6 +30,15 @@ import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import io.github.rosemoe.sora.langs.textmate.TextMateColorScheme
+import io.github.rosemoe.sora.langs.textmate.TextMateLanguage
+import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry
+import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry
+import io.github.rosemoe.sora.langs.textmate.registry.ThemeRegistry
+import io.github.rosemoe.sora.langs.textmate.registry.dsl.languages
+import io.github.rosemoe.sora.langs.textmate.registry.model.ThemeModel
+import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver
+import org.eclipse.tm4e.core.registry.IThemeSource
 
 class PluginEditActivity : BackActivity() {
     private val binding by lazy { SysttsPluginEditorActivityBinding.inflate(layoutInflater) }
@@ -49,8 +58,44 @@ class PluginEditActivity : BackActivity() {
         }
         binding.editor.setText(mData.code)
 
+
         vm.setData(mData)
-        PluginTTS(pluginId = mData.pluginId)
+
+
+        FileProviderRegistry.getInstance().addFileProvider(AssetsFileResolver(application.assets))
+
+        val path = "textmate/quietlight.json"
+
+        val themeRegistry = ThemeRegistry.getInstance()
+        themeRegistry.loadTheme(
+            ThemeModel(
+                IThemeSource.fromInputStream(
+                    FileProviderRegistry.getInstance().tryGetInputStream(path), path, null
+                )
+            )
+        )
+        themeRegistry.setTheme("quietlight")
+
+        GrammarRegistry.getInstance().loadGrammars(
+            languages {
+                language("js") {
+                    grammar = "textmate/javascript/syntaxes/JavaScript.tmLanguage.json"
+                    defaultScopeName()
+                    languageConfiguration = "textmate/javascript/language-configuration.json"
+                }
+            }
+        )
+        binding.editor.setEditorLanguage(TextMateLanguage.create("source.js", true))
+        ensureTextmateTheme()
+    }
+
+    private fun ensureTextmateTheme() {
+        val editor = binding.editor
+        var editorColorScheme = editor.colorScheme
+        if (editorColorScheme !is TextMateColorScheme) {
+            editorColorScheme = TextMateColorScheme.create(ThemeRegistry.getInstance())
+            editor.colorScheme = editorColorScheme
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
