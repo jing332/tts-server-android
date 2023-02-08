@@ -3,10 +3,12 @@ package com.github.jing332.tts_server_android.ui.base.import1
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
 import androidx.core.view.setPadding
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
@@ -17,7 +19,6 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseConfigImportActivityBinding
 import com.github.jing332.tts_server_android.databinding.BaseConfigImportItemBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
-import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportInputFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.ClipboardUtils
@@ -35,7 +36,7 @@ abstract class BaseConfigImportActivity : BackActivity() {
         const val SRC_URL = 3
     }
 
-    private val source: Int
+    protected val source: Int
         get() {
             return when (binding.groupSource.checkedButtonId) {
                 R.id.btn_src_clipboard -> SRC_CLIPBOARD
@@ -47,11 +48,16 @@ abstract class BaseConfigImportActivity : BackActivity() {
 
     private val binding by lazy { BaseConfigImportActivityBinding.inflate(layoutInflater) }
 
-    private val waitDialog by lazy { WaitDialog(this) }
+    protected val waitDialog by lazy { WaitDialog(this) }
+
+    override fun setContentView(view: View?) {
+        binding.content.removeAllViews()
+        binding.content.addView(view)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        super.setContentView(binding.root)
 
         binding.apply {
             groupSource.check(R.id.btn_src_clipboard)
@@ -104,11 +110,11 @@ abstract class BaseConfigImportActivity : BackActivity() {
         fileUri: String? = null
     ): String {
         return when (src) {
-            ConfigImportInputFragment.SRC_URL -> withContext(Dispatchers.IO) {
+            SRC_URL -> withContext(Dispatchers.IO) {
                 Net.get(url.toString()).execute()
             }
 
-            ConfigImportInputFragment.SRC_FILE -> withContext(Dispatchers.IO) {
+            SRC_FILE -> withContext(Dispatchers.IO) {
                 val input = contentResolver.openInputStream(Uri.parse(fileUri))
                 val str = input!!.readBytes().decodeToString()
                 input.close()
@@ -148,6 +154,7 @@ abstract class BaseConfigImportActivity : BackActivity() {
         onSelectedList: (list: List<Any>) -> Unit
     ) {
         val rv = RecyclerView(this).apply {
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             linear().setup {
                 addType<ConfigImportItemModel>(R.layout.base_config_import_item)
                 onCreate {
@@ -159,7 +166,7 @@ abstract class BaseConfigImportActivity : BackActivity() {
                 }
             }.models = list
         }
-        rv.setPadding(8.dp)
+        rv.setPadding(64.dp)
 
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.select_import)

@@ -65,6 +65,9 @@
         <activity
             android:name=".ui.systts.list.import1.ConfigImportActivity"
             android:label="@string/config_import" />
+        <activity android:name=".ui.systts.list.ConfigImportActivity"
+            android:label="@string/config_import"
+            />
         <activity
             android:name=".ui.systts.edit.http.HttpTtsEditActivity"
             android:label="@string/systts_http_edit_title" />

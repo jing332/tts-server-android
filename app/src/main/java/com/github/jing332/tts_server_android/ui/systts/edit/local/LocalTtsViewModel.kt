@@ -46,7 +46,7 @@ class LocalTtsViewModel : ViewModel() {
     fun checkAndSetDisplayName(displayName: String) {
         val isAuto = Regex(".*(.*\\..*\\..*)").replace(displayName, "").isBlank()
         mData.displayName = if (isAuto) {
-            ui.engines.selectedItem?.displayText
+            ui.engines.selectedItem?.displayText ?: ""
         } else {
             displayName
         }

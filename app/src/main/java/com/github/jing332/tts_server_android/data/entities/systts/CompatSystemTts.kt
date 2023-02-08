@@ -15,7 +15,7 @@ data class CompatSystemTts(
     var isEnabled: Boolean = false,
 
     // UI显示名称
-    var displayName: String? = null,
+    var displayName: String = "",
 
     // 朗读目标
     @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.ALL,

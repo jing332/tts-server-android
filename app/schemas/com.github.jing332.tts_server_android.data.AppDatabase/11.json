@@ -205,7 +205,7 @@
       },
       {
         "tableName": "Plugin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `isEnabled` INTEGER NOT NULL, `name` TEXT NOT NULL, `pluginId` TEXT NOT NULL, `author` TEXT NOT NULL, `code` TEXT NOT NULL, `version` INTEGER NOT NULL DEFAULT 0)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `isEnabled` INTEGER NOT NULL, `version` INTEGER NOT NULL DEFAULT 0, `name` TEXT NOT NULL, `pluginId` TEXT NOT NULL, `author` TEXT NOT NULL, `code` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -218,6 +218,13 @@
             "columnName": "isEnabled",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
           },
           {
             "fieldPath": "name",
@@ -242,13 +249,6 @@
             "columnName": "code",
             "affinity": "TEXT",
             "notNull": true
-          },
-          {
-            "fieldPath": "version",
-            "columnName": "version",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
           }
         ],
         "primaryKey": {

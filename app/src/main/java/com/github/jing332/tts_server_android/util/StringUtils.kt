@@ -50,6 +50,9 @@ object StringUtils {
     }
 }
 
+/**
+ * json字符串头尾加[ ]
+ */
 fun String.toJsonListString(): String {
     var s = this.trim().removeSuffix(",")
     if (!startsWith("[")) s = "[$s"

@@ -34,7 +34,6 @@ import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActi
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportActivity
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
