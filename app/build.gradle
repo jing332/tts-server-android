@@ -78,8 +78,8 @@ android {
         abi {
             enable true
             reset()
-            //noinspection ChromeOsAbiSupport
-            include 'x86', 'armeabi-v7a', 'arm64-v8a'
+
+            include 'x86_64', 'x86', 'armeabi-v7a', 'arm64-v8a'
             universalApk true
         }
     }

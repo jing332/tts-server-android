@@ -18,10 +18,10 @@ class ReplaceManagerViewModel : ViewModel() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun exportGroup(model: ReplaceRuleGroupModel): String {
+    fun exportGroup(model: GroupModel): String {
         return App.jsonBuilder.encodeToString(
             GroupWithReplaceRule(
-                model.data, (model.itemSublist as List<ReplaceRuleModel>).map { it.data }
+                model.data, (model.itemSublist as List<ItemModel>).map { it.data }
             )
         )
     }

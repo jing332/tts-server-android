@@ -21,12 +21,12 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
-class SysTtsListSimpleGroupPageFragment : Fragment() {
+class ListPageFragment : Fragment() {
     companion object {
         private const val ARG_RA_TARGET = "ARG_RA_TARGET"
 
-        fun newInstance(raTarget: Int = -1): SysTtsListSimpleGroupPageFragment {
-            return SysTtsListSimpleGroupPageFragment().apply {
+        fun newInstance(raTarget: Int = -1): ListPageFragment {
+            return ListPageFragment().apply {
                 arguments = Bundle().apply { putInt(ARG_RA_TARGET, raTarget) }
             }
         }

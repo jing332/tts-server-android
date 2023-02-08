@@ -81,7 +81,7 @@ class SysTtsListFragment : Fragment() {
         if (savedInstanceState != null) return
 
         val fragmentList = listOf(
-            SysTtsListCustomGroupPageFragment(), SysTtsListSimpleGroupPageFragment.newInstance()
+            ListGroupPageFragment(), ListPageFragment.newInstance()
         )
         vpAdapter = GroupPageAdapter(this, fragmentList)
         binding.viewPager.isSaveEnabled = false

@@ -68,17 +68,17 @@ class ReplaceManagerActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { finish() }
 
         brv = binding.recyclerView.linear().setup {
-            addType<ReplaceRuleGroupModel>(R.layout.systts_list_custom_group_item)
-            addType<ReplaceRuleModel>(R.layout.systts_replace_rule_item)
+            addType<GroupModel>(R.layout.base_list_group_item)
+            addType<ItemModel>(R.layout.systts_replace_rule_item)
             onCreate {
                 getBindingOrNull<SysttsListCustomGroupItemBinding>()?.apply {
                     itemView.clickWithThrottle {
-                        val data = getModel<ReplaceRuleGroupModel>().data
+                        val data = getModel<GroupModel>().data
                         val isExpanded = !data.isExpanded
                         appDb.replaceRuleDao.insertGroup(data.copy(isExpanded = isExpanded))
-                        getModel<ReplaceRuleGroupModel>().let { model ->
+                        getModel<GroupModel>().let { model ->
                             val enabledCount =
-                                model.itemSublist?.filter { (it as ReplaceRuleModel).data.isEnabled }?.size
+                                model.itemSublist?.filter { (it as ItemModel).data.isEnabled }?.size
                             val speakText =
                                 if (isExpanded) R.string.group_expanded else R.string.group_collapsed
                             itemView.announceForAccessibility(
@@ -106,9 +106,9 @@ class ReplaceManagerActivity : AppCompatActivity() {
                         )
                     }
                     checkBox.setOnClickListener {
-                        val model = getModel<ReplaceRuleGroupModel>()
+                        val model = getModel<GroupModel>()
                         model.itemSublist?.forEach {
-                            if (it is ReplaceRuleModel) {
+                            if (it is ItemModel) {
                                 appDb.replaceRuleDao.update(it.data.copy(isEnabled = checkBox.isChecked))
                             }
                         }
@@ -132,12 +132,12 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 }
 
                 getBindingOrNull<SysttsReplaceRuleItemBinding>()?.apply {
-                    btnEdit.clickWithThrottle { edit(getModel<ReplaceRuleModel>().data) }
+                    btnEdit.clickWithThrottle { edit(getModel<ItemModel>().data) }
                     btnMore.clickWithThrottle {
-                        displayMoreMenu(it, getModel<ReplaceRuleModel>().data)
+                        displayMoreMenu(it, getModel<ItemModel>().data)
                     }
                     checkBox.setOnClickListener {
-                        appDb.replaceRuleDao.update(getModel<ReplaceRuleModel>().data)
+                        appDb.replaceRuleDao.update(getModel<ItemModel>().data)
                     }
                 }
 
@@ -145,9 +145,9 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return if (oldItem is ReplaceRuleModel && newItem is ReplaceRuleModel)
+                    return if (oldItem is ItemModel && newItem is ItemModel)
                         oldItem.data.id == newItem.data.id
-                    else if (oldItem is ReplaceRuleGroupModel && newItem is ReplaceRuleGroupModel)
+                    else if (oldItem is GroupModel && newItem is GroupModel)
                         oldItem.data.id == newItem.data.id
                     else
                         false
@@ -164,7 +164,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
                     actionState: Int
                 ) {
                     if (viewHolder != null
-                        && getModel<Any>(viewHolder.layoutPosition) is ReplaceRuleGroupModel
+                        && getModel<Any>(viewHolder.layoutPosition) is GroupModel
                         && actionState == ItemTouchHelper.ACTION_STATE_DRAG
                     ) {
                         (viewHolder as BindingAdapter.BindingViewHolder).collapse()
@@ -177,17 +177,17 @@ class ReplaceManagerActivity : AppCompatActivity() {
                     source: BindingAdapter.BindingViewHolder,
                     target: BindingAdapter.BindingViewHolder
                 ) {
-                    if (source.getModel<Any>() is ReplaceRuleGroupModel) {
-                        models?.filterIsInstance<ReplaceRuleGroupModel>()?.let { models ->
+                    if (source.getModel<Any>() is GroupModel) {
+                        models?.filterIsInstance<GroupModel>()?.let { models ->
                             models.forEachIndexed { index, value ->
                                 appDb.replaceRuleDao.updateGroup(value.data.apply { order = index })
                             }
                         }
                     } else {
                         val groupModel =
-                            models?.get(source.findParentPosition()) as ReplaceRuleGroupModel
+                            models?.get(source.findParentPosition()) as GroupModel
                         val listInGroup =
-                            models!!.filter { it is ReplaceRuleModel && groupModel.data.id == it.data.groupId }
+                            models!!.filter { it is ItemModel && groupModel.data.id == it.data.groupId }
                         updateOrder(listInGroup)
                     }
                 }
@@ -262,7 +262,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
         }.show()
     }
 
-    private fun displayGroupMenu(v: View, model: ReplaceRuleGroupModel) {
+    private fun displayGroupMenu(v: View, model: GroupModel) {
         PopupMenu(this, v).apply {
             this.setForceShowIcon(true)
             MenuCompat.setGroupDividerEnabled(menu, true)
@@ -323,9 +323,9 @@ class ReplaceManagerActivity : AppCompatActivity() {
                             else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
                         }
 
-                    ReplaceRuleGroupModel(
+                    GroupModel(
                         data = data.group,
-                        itemSublist = filteredList.map { ReplaceRuleModel(it) },
+                        itemSublist = filteredList.map { ItemModel(it) },
                         itemExpand = filterText.isNotBlank() || data.group.isExpanded,
                         checkedState = checkedState
                     )
@@ -338,7 +338,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
     fun updateOrder(models: List<Any?>?) {
         models?.forEachIndexed { index, value ->
-            val model = value as ReplaceRuleModel
+            val model = value as ItemModel
             appDb.replaceRuleDao.update(model.data.copy(order = index))
         }
     }

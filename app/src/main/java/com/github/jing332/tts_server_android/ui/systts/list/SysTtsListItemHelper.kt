@@ -47,7 +47,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                 getBindingOrNull<SysttsListItemBinding>()?.apply {
                     checkBoxSwitch.setOnClickListener { view ->
                         if (isGroupList) {
-                            getModelOrNull<SysTtsGroupModel>(findParentPosition())?.let { group ->
+                            getModelOrNull<GroupModel>(findParentPosition())?.let { group ->
                                 // 组中的item位置
                                 val subPos = modelPosition - findParentPosition() - 1
                                 switchChanged(view, group.itemSublist!![subPos] as SystemTts)
