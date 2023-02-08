@@ -32,8 +32,10 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
             FUNC_SAMPLE_RATE,
             locale,
             voice
-        )
-            ?.run { (this as Double).toInt() }
+        )?.run {
+            return if (this is Int) this
+            else (this as Double).toInt()
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

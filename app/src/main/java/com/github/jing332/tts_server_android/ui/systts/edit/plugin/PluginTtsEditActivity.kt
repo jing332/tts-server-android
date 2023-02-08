@@ -2,6 +2,8 @@ package com.github.jing332.tts_server_android.ui.systts.edit.plugin
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivityBinding
 import com.github.jing332.tts_server_android.help.plugin.EditUiJsEngine
@@ -9,7 +11,10 @@ import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
+import com.github.jing332.tts_server_android.util.readableString
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
     private val engine: EditUiJsEngine by lazy { EditUiJsEngine(tts.requirePlugin) }
@@ -64,19 +69,25 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
     }
 
     override fun onSave() {
-        systemTts.displayName = vm.checkDisplayName(basicEditView.displayName)
-
-        kotlin.runCatching {
-            tts.audioFormat.sampleRate = engine.getSampleRate(tts.locale, tts.voice) ?: 16000
-        }.onFailure {
-            AppDialogs.displayErrorDialog(
-                this, getString(
-                    R.string.plugin_tts_get_sample_rate_fail_msg,
-                    it.stackTraceToString()
+        lifecycleScope.launch(Dispatchers.Main) {
+            systemTts.displayName = vm.checkDisplayName(basicEditView.displayName)
+            kotlin.runCatching {
+                waitDialog.show()
+                withIO {
+                    tts.audioFormat.sampleRate =
+                        engine.getSampleRate(tts.locale, tts.voice) ?: 16000
+                }
+            }.onFailure {
+                AppDialogs.displayErrorDialog(
+                    this@PluginTtsEditActivity, getString(
+                        R.string.plugin_tts_get_sample_rate_fail_msg,
+                        it.readableString
+                    )
                 )
-            )
-        }.onSuccess {
-            super.onSave()
+            }.onSuccess {
+                super.onSave()
+            }
+            waitDialog.dismiss()
         }
     }
 }

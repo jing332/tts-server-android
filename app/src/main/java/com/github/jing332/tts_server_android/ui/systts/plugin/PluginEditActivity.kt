@@ -27,6 +27,7 @@ import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
+import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -111,7 +112,7 @@ class PluginEditActivity : BackActivity() {
                 val plugin = try {
                     vm.pluginEngine.evalPluginInfo()
                 } catch (e: Exception) {
-                    displayDebugMessage(e.stackTraceToString()).setTextColor(Color.RED)
+                    displayDebugMessage(e.readableString).setTextColor(Color.RED)
                     return true
                 }
 
@@ -140,28 +141,27 @@ class PluginEditActivity : BackActivity() {
                 val plugin = try {
                     vm.pluginEngine.evalPluginInfo()
                 } catch (e: Exception) {
-                    LogOutputter.writeLine(e.stackTraceToString(), LogLevel.ERROR)
+                    LogOutputter.writeLine(e.readableString, LogLevel.ERROR)
                     LogOutputter.removeTarget(output)
                     return true
                 }
                 tv.append("\n" + plugin.toString().replace(", ", "\n"))
 
-
-                val sampleRate = try {
-                    vm.pluginEngine.getSampleRate(mTts.locale, mTts.voice)
-                } catch (e: Exception) {
-                    LogOutputter.writeLine(e.stackTraceToString(), LogLevel.ERROR)
-                }
-                LogOutputter.writeLine("采样率: $sampleRate")
-
                 lifecycleScope.runOnIO {
+                    val sampleRate = try {
+                        vm.pluginEngine.getSampleRate(mTts.locale, mTts.voice)
+                    } catch (e: Exception) {
+                        LogOutputter.writeLine(e.readableString, LogLevel.ERROR)
+                    }
+                    LogOutputter.writeLine("采样率: $sampleRate")
+
                     val audio = try {
                         vm.pluginEngine.getAudio(
                             "测试文本", mTts.locale, mTts.voice, mTts.rate,
                             mTts.volume, mTts.pitch
                         )
                     } catch (e: Exception) {
-                        LogOutputter.writeLine(e.stackTraceToString(), LogLevel.ERROR)
+                        LogOutputter.writeLine(e.readableString, LogLevel.ERROR)
                         LogOutputter.removeTarget(output)
                         return@runOnIO
                     }

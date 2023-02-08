@@ -1,7 +1,13 @@
 package com.github.jing332.tts_server_android.help.plugin.ext
 
+import com.github.jing332.tts_server_android.help.AudioDecoder
+
 @Suppress("unused")
 open class JsExtensions : JsNet(), JsCrypto {
+    fun getAudioSampleRate(audio: ByteArray): Int {
+        return AudioDecoder().getSampleRateAndMime(audio).first
+    }
+
     /* Str转ByteArray */
     fun strToBytes(str: String): ByteArray {
         return str.toByteArray(charset("UTF-8"))

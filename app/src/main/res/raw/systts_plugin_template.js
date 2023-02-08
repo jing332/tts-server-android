@@ -6,6 +6,7 @@ let PluginJS = {
     "version": 1, // 插件版本号
 
     // 获取音频
+    // text: 文本，locale：地区代码，voice：声音key，rate：语速，volume：音量，pitch：音高。(后三者范围都在100内, 当随系统时在200内)
     "getAudio": function(text, locale, voice, rate, volume, pitch){
         // 日志： 错误 logger.e(), 警告 logger.w(), 信息 logger.i()
         // 输出某对象所有属性/方法:  for (v : 某对象) logger.i(v)
@@ -21,6 +22,10 @@ let EditorJS = {
     //音频的采样率 编辑TTS界面保存时调用
     "getAudioSampleRate": function(locale, voice) {
         // 根据voice判断返回的采样率
+        // 也可以动态获取：
+        // let audio = PluginJS.getAudio('test测试', locale, voice, 50, 50, 1)
+        // return ttsrv.getAudioSampleRate(audio)
+
         return 16000
     },
 
