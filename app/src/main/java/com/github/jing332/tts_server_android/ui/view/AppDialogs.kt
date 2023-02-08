@@ -56,7 +56,12 @@ object AppDialogs {
             }
     }
 
-    fun displayExportDialog(context: Context, scope: CoroutineScope, json: String) {
+    fun displayExportDialog(
+        context: Context,
+        scope: CoroutineScope,
+        json: String,
+        onSaveFile: (json:String) -> Unit
+    ) {
         context.apply {
             val scrollview = NestedScrollView(context)
             val tv = TextView(this).apply {
@@ -68,6 +73,9 @@ object AppDialogs {
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.export_config)
                 .setView(scrollview)
+                .setNeutralButton("保存为文件") { _, _ ->
+                    onSaveFile.invoke(json)
+                }
                 .setPositiveButton(R.string.copy) { _, _ ->
                     ClipboardUtils.copyText(json)
                     toast(R.string.copied)

@@ -1,9 +1,11 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -26,6 +28,7 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
+import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.ThrottleUtil
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -72,11 +75,17 @@ class ListGroupPageFragment : Fragment() {
                     SystemTtsService.notifyUpdateConfig()
                 }
 
-                override fun onExport(v: View, model: GroupModel) { exportGroup(model) }
+                override fun onExport(v: View, model: GroupModel) {
+                    exportGroup(model)
+                }
 
-                override fun onDelete(v: View, model: GroupModel) { deleteGroup(model.data) }
+                override fun onDelete(v: View, model: GroupModel) {
+                    deleteGroup(model.data)
+                }
 
-                override fun onRename(v: View, model: GroupModel) { editGroupName(model.data) }
+                override fun onRename(v: View, model: GroupModel) {
+                    editGroupName(model.data)
+                }
             }
 
             onCreate {
@@ -237,6 +246,14 @@ class ListGroupPageFragment : Fragment() {
 
     }
 
+
+    private var savedData: ByteArray? = null
+    private lateinit var getFileUriToSave: ActivityResultLauncher<String>
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        getFileUriToSave = FileUtils.registerResultCreateDocument(this, "application/json") { savedData }
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun exportGroup(model: GroupModel) {
         val obj = GroupWithTtsItem(group = model.data, list = model.itemSublist as List<SystemTts>)
@@ -244,7 +261,10 @@ class ListGroupPageFragment : Fragment() {
             requireContext(),
             lifecycleScope,
             App.jsonBuilder.encodeToString(obj)
-        )
+        ) {
+            savedData = it.toByteArray()
+            getFileUriToSave.launch("ttsrv-${model.name}.json")
+        }
     }
 
     private fun editGroupName(data: SystemTtsGroup) {

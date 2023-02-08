@@ -289,4 +289,6 @@
     <string name="import_replace_rule">导入替换规则</string>
     <string name="select_import">选择导入</string>
     <string name="config_import_success_msg">共导入 %1$d 条配置</string>
+    <string name="file_save_failed">文件保存失败：%1$s</string>
+    <string name="save_success">保存成功</string>
 </resources>

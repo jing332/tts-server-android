@@ -1,10 +1,71 @@
 package com.github.jing332.tts_server_android.util
 
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.github.jing332.tts_server_android.R
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 
 object FileUtils {
+
+
+    fun registerResultCreateDocument(
+        fragment: Fragment,
+        mime: String,
+        onGetData: () -> ByteArray?
+    ): ActivityResultLauncher<String> {
+        fragment.requireContext().apply {
+            return fragment.registerForActivityResult(ActivityResultContracts.CreateDocument(mime)) { uri ->
+                val saveData = onGetData.invoke()
+                if (saveData == null || uri == null)
+                    return@registerForActivityResult
+                fragment.lifecycleScope.runOnIO {
+                    try {
+                        fragment.requireContext().contentResolver?.openOutputStream(uri)?.let {
+                            it.write(saveData)
+                            it.flush()
+                            it.close()
+                        }
+                        toast(R.string.save_success)
+                    } catch (e: IOException) {
+                        longToast(getString(R.string.file_save_failed, e.message))
+                    }
+                }
+            }
+        }
+    }
+
+    fun registerResultCreateDocument(
+        activity: androidx.activity.ComponentActivity,
+        mime: String,
+        onGetData: () -> ByteArray?
+    ): ActivityResultLauncher<String> {
+        activity.apply {
+            return registerForActivityResult(ActivityResultContracts.CreateDocument(mime)) { uri ->
+                val saveData = onGetData.invoke()
+                if (saveData == null || uri == null)
+                    return@registerForActivityResult
+                lifecycleScope.runOnIO {
+                    try {
+                        contentResolver?.openOutputStream(uri)?.let {
+                            it.write(saveData)
+                            it.flush()
+                            it.close()
+                        }
+                        toast(R.string.save_success)
+                    } catch (e: IOException) {
+                        longToast(getString(R.string.file_save_failed, e.message))
+                    }
+                }
+            }
+        }
+
+    }
+
     /**
      * 按行读取txt
      */

@@ -56,6 +56,10 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
     private var currentSearchTarget: SearchTargetFilter = SearchTargetFilter.Name
 
+    private var savedData: ByteArray? = null
+    private val getFileUriToSave =
+        FileUtils.registerResultCreateDocument(this, "application/json") { savedData }
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +93,10 @@ class ReplaceManagerActivity : AppCompatActivity() {
                     override fun onExport(v: View, model: GroupModel) {
                         AppDialogs.displayExportDialog(
                             this@ReplaceManagerActivity, lifecycleScope, vm.exportGroup(model)
-                        )
+                        ) {
+                            savedData = it.toByteArray()
+                            getFileUriToSave.launch("ttsrv-replaces.json")
+                        }
                     }
 
                     override fun onDelete(v: View, model: GroupModel) {
@@ -333,7 +340,10 @@ class ReplaceManagerActivity : AppCompatActivity() {
             }
 
             R.id.menu_export_config -> {
-                AppDialogs.displayExportDialog(this, lifecycleScope, vm.configToJson())
+                AppDialogs.displayExportDialog(this, lifecycleScope, vm.configToJson()) {
+                    savedData = it.toByteArray()
+                    getFileUriToSave.launch("ttsrv-replaces.json")
+                }
             }
         }
 

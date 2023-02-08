@@ -1,12 +1,14 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -45,7 +47,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.flow.conflate
 
 
-@Suppress("DEPRECATION", "UNCHECKED_CAST")
+@Suppress("DEPRECATION")
 class SysTtsListFragment : Fragment() {
     companion object {
         const val TAG = "TtsConfigFragment"
@@ -273,8 +275,24 @@ class SysTtsListFragment : Fragment() {
         startActivity(Intent(requireContext(), ConfigImportActivity::class.java))
     }
 
+
+    private var savedData: ByteArray? = null
+
+    private lateinit var getFileUriToSave: ActivityResultLauncher<String>
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        getFileUriToSave = FileUtils.registerResultCreateDocument(
+            this@SysTtsListFragment,
+            "application/json"
+        ) { savedData }
+    }
+
+
     private fun exportConfig() {
-        AppDialogs.displayExportDialog(requireContext(), lifecycleScope, vm.exportConfig())
+        AppDialogs.displayExportDialog(requireContext(), lifecycleScope, vm.exportConfig()) {
+            savedData = it.toByteArray()
+            getFileUriToSave.launch("ttsrv-list.json")
+        }
     }
 
     @Suppress("DEPRECATION")
