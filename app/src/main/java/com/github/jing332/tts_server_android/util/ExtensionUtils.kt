@@ -1,15 +1,20 @@
 package com.github.jing332.tts_server_android.util
 
+import android.content.res.Resources.getSystem
 import android.os.SystemClock
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 
+val Int.dp: Int get() = (this / getSystem().displayMetrics.density).toInt()
+
+val Int.px: Int get() = (this * getSystem().displayMetrics.density).toInt()
+
 
 /**
  * 点击防抖动
  */
-fun View.clickWithThrottle(throttleTime: Long = 600L, action: (v:View) -> Unit) {
+fun View.clickWithThrottle(throttleTime: Long = 600L, action: (v: View) -> Unit) {
     this.setOnClickListener(object : View.OnClickListener {
         private var lastClickTime: Long = 0
 

@@ -98,7 +98,7 @@ class PluginManagerActivity : BackActivity() {
             }
 
             R.id.menu_import -> {
-                startActivity(Intent(this, PluginConfigImportActivity::class.java))
+                startActivity(Intent(this, ImportActivity::class.java))
             }
         }
         return super.onOptionsItemSelected(item)

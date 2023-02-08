@@ -29,20 +29,12 @@
 
     </group>
 
-    <group android:id="@+id/group2">
-        <item
-            android:icon="@drawable/ic_baseline_import_export_24"
-            android:title="@string/config_import_export">
-            <menu>
-                <item
-                    android:id="@+id/menu_importConfig"
-                    android:icon="@drawable/ic_baseline_input_24"
-                    android:title="@string/import_config" />
-                <item
-                    android:id="@+id/menu_export_config"
-                    android:icon="@drawable/ic_baseline_output_24"
-                    android:title="@string/export_config" />
-            </menu>
-        </item>
-    </group>
+    <item
+        android:id="@+id/menu_importConfig"
+        android:icon="@drawable/ic_baseline_input_24"
+        android:title="@string/import_config" />
+    <item
+        android:id="@+id/menu_export_config"
+        android:icon="@drawable/ic_baseline_output_24"
+        android:title="@string/export_config" />
 </menu>

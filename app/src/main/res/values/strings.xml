@@ -302,6 +302,9 @@
     <string name="no_plugins">No plugins</string>
     <string name="sys_tts_interface_preference">System TTS - Interface</string>
     <string name="pref_swap_listen_and_edit_button">Swap audition and edit button positions</string>
-    <string name="plugin_bad_format">版本(version)格式错误，必须为整数</string>
+    <string name="plugin_bad_format">Version is bad format and must be an integer</string>
+    <string name="import_replace_rule">Import replacement rules</string>
+    <string name="select_import">Select Import</string>
+    <string name="config_import_success_msg">A total of %1d configurations were imported</string>
 
 </resources>

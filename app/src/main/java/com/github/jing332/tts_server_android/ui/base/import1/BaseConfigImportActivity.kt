@@ -15,12 +15,14 @@ import com.drake.net.Net
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseConfigImportActivityBinding
+import com.github.jing332.tts_server_android.databinding.BaseConfigImportItemBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.list.import1.ConfigImportInputFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.github.jing332.tts_server_android.util.dp
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -148,12 +150,19 @@ abstract class BaseConfigImportActivity : BackActivity() {
         val rv = RecyclerView(this).apply {
             linear().setup {
                 addType<ConfigImportItemModel>(R.layout.base_config_import_item)
+                onCreate {
+                    getBinding<BaseConfigImportItemBinding>().apply {
+                        itemView.setOnClickListener {
+                            checkBox.isChecked = !checkBox.isChecked
+                        }
+                    }
+                }
             }.models = list
         }
-        rv.setPadding(30)
+        rv.setPadding(8.dp)
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("选择导入")
+            .setTitle(R.string.select_import)
             .setView(rv)
             .setPositiveButton(R.string.import_config) { _, _ ->
                 onSelectedList.invoke(
@@ -161,10 +170,8 @@ abstract class BaseConfigImportActivity : BackActivity() {
                         .map { (it as ConfigImportItemModel).data }
                 )
             }
+            .setNeutralButton(R.string.cancel, null)
             .show()
     }
-
-
-    data class ListDataItem(var title: String, var subTitle: String)
 
 }

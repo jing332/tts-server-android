@@ -1,10 +1,16 @@
 package com.github.jing332.tts_server_android.util
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.regex.Pattern
 
 object StringUtils {
     private val silentPattern by lazy { Pattern.compile("[\\s\\p{C}\\p{P}\\p{Z}\\p{S}]") }
     private val splitSentencesRegex by lazy { Pattern.compile("[。？?！!;；]") }
+
+    fun formattedDate(): String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+
 
     /**
      *  是否为不发音的字符串
