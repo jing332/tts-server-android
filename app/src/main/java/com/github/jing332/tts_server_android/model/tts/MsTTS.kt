@@ -32,7 +32,7 @@ data class MsTTS(
     var locale: String = DEFAULT_LOCALE,
     // 二级语言（语言技能）仅限en-US-JennyMultilingualNeural
     var secondaryLocale: String? = null,
-    var voiceName: String = "",
+    var voiceName: String = DEFAULT_VOICE,
     var voiceId: String? = null,
     var prosody: Prosody = Prosody(),
     var expressAs: ExpressAs? = null,
