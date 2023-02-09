@@ -5,7 +5,7 @@ import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 @Suppress("unused")
 open class JsExtensions : JsNet(), JsCrypto {
     fun getAudioSampleRate(audio: ByteArray): Int {
-        return AudioDecoder().getSampleRateAndMime(audio).first
+        return AudioDecoder.getSampleRateAndMime(audio).first
     }
 
     /* Str转ByteArray */

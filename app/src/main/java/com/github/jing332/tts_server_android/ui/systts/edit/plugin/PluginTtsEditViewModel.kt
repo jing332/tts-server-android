@@ -95,7 +95,7 @@ class PluginTtsEditViewModel : ViewModel() {
                 withMain { onFailure.invoke(Exception("null")) }
                 return@runOnIO
             }
-            val ret = AudioDecoder().getSampleRateAndMime(audio)
+            val ret = AudioDecoder.getSampleRateAndMime(audio)
 
             withMain { onSuccess(audio, ret.first, ret.second) }
         }

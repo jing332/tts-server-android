@@ -78,19 +78,19 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
 
     override fun onTest(text: String) {
         waitDialog.show()
-        vm.doTest(text, { audio ->
+        vm.doTest(text, { audio, sampleRate, mime ->
             waitDialog.dismiss()
 
 
             val s =
-                if (tts.format == "webm-24khz-16bit-24kbps-mono-opus") getString(R.string.systts_ms_webm_warn_msg) else ""
+                if (tts.format == "webm-24khz-16bit-24kbps-mono-opus") getString(R.string.systts_ms_webm_warn_msg) + "\n" else ""
 
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.systts_test_success)
                 .setMessage(
-                    s + "\n\n" + getString(
+                    s + getString(
                         R.string.systts_test_success_info,
-                        audio.size / 1024
+                        audio.size / 1024, sampleRate, mime
                     )
                 )
                 .setOnDismissListener { stopPlay() }

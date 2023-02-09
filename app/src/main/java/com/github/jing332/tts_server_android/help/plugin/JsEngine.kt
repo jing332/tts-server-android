@@ -27,10 +27,11 @@ open class JsEngine(
             }
         }
 
-    protected fun eval() {
+    protected fun eval(preCode:String = "") {
         SCRIPT_ENGINE.put(OBJ_TTSER, this@JsEngine)
-        SCRIPT_ENGINE.put(OBJ_LOGGER, this@JsEngine as JsLogger)
-        SCRIPT_ENGINE.eval(plugin.code)
+        SCRIPT_ENGINE.put(OBJ_LOGGER, this@JsEngine)
+        val s = SCRIPT_ENGINE.eval(preCode + "\n" + plugin.code)
+
     }
 
     fun evalPluginInfo(): Plugin {

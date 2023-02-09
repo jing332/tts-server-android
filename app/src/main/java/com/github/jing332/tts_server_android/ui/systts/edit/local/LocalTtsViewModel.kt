@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.ui.systts.edit.local
 
-import android.media.MediaFormat
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import androidx.lifecycle.MutableLiveData
@@ -184,11 +183,7 @@ class LocalTtsViewModel : ViewModel() {
             } else {
                 withIO {
                     mTts.getAudio(text)?.let {
-                        val ad = AudioDecoder()
-                        val formats = ad.getFormats(it)
-                        val sampleRate = if (formats.isNotEmpty()) {
-                            formats[0].getInteger(MediaFormat.KEY_SAMPLE_RATE)
-                        } else 0
+                        val sampleRate = AudioDecoder.getSampleRateAndMime(it).first
 
                         withMain { onGetAudioSuccess(it, sampleRate) }
                         return@withIO

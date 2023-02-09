@@ -17,6 +17,45 @@ import java.nio.charset.StandardCharsets
 class AudioDecoder {
     companion object {
         const val TAG = "AudioDecode"
+
+        /**
+         * 获取音频采样率
+         */
+        private fun getFormats(srcData: ByteArray): List<MediaFormat> {
+            kotlin.runCatching {
+                val mediaExtractor = MediaExtractor()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    mediaExtractor.setDataSource(ByteArrayMediaDataSource(srcData))
+                else
+                    mediaExtractor.setDataSource(
+                        "data:" + "" + ";base64," + srcData.toByteString().base64()
+                    )
+
+                val formats = mutableListOf<MediaFormat>()
+                for (i in 0 until mediaExtractor.trackCount) {
+                    formats.add(mediaExtractor.getTrackFormat(i))
+                }
+                return formats
+            }
+            return emptyList()
+        }
+
+        /**
+         * 获取采样率和MIME
+         */
+        fun getSampleRateAndMime(audio: ByteArray): Pair<Int, String> {
+            val formats = getFormats(audio)
+
+            var sampleRate = 0
+            var mime = ""
+            if (formats.isNotEmpty()) {
+                sampleRate = formats[0].getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                mime = formats[0].getString(MediaFormat.KEY_MIME) ?: ""
+            }
+
+            return Pair(sampleRate, mime)
+        }
+
     }
 
     private var isDecoding = false
@@ -48,43 +87,6 @@ class AudioDecoder {
         return mediaCodec as MediaCodec
     }
 
-    /**
-     * 获取采样率和MIME
-     */
-    fun getSampleRateAndMime(audio: ByteArray): Pair<Int, String> {
-        val formats = getFormats(audio)
-
-        var sampleRate = 0
-        var mime = ""
-        if (formats.isNotEmpty()) {
-            sampleRate = formats[0].getInteger(MediaFormat.KEY_SAMPLE_RATE)
-            mime = formats[0].getString(MediaFormat.KEY_MIME) ?: ""
-        }
-
-        return Pair(sampleRate, mime)
-    }
-
-    /**
-     * 获取音频采样率
-     */
-    fun getFormats(srcData: ByteArray): List<MediaFormat> {
-        kotlin.runCatching {
-            val mediaExtractor = MediaExtractor()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                mediaExtractor.setDataSource(ByteArrayMediaDataSource(srcData))
-            else
-                mediaExtractor.setDataSource(
-                    "data:" + currentMime + ";base64," + srcData.toByteString().base64()
-                )
-
-            val formats = mutableListOf<MediaFormat>()
-            for (i in 0 until mediaExtractor.trackCount) {
-                formats.add(mediaExtractor.getTrackFormat(i))
-            }
-            return formats
-        }
-        return emptyList()
-    }
 
     @Synchronized
     fun doDecode(

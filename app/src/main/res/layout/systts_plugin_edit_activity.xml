@@ -38,10 +38,10 @@
 
         <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
             android:id="@+id/til_voice"
-            android:layout_marginTop="4dp"
             style="?attr/textInputOutlinedExposedDropdownMenuStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:hint="@string/label_voice"
             app:hintAnimationEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,6 +57,16 @@
                 app:selectedPosition="@={m.ui.voices.position}" />
         </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
+
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_voice" />
+
         <com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsParamsEditView
             android:id="@+id/params_edit"
             android:layout_width="match_parent"
@@ -64,7 +74,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_voice" />
+            app:layout_constraintTop_toBottomOf="@id/container" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

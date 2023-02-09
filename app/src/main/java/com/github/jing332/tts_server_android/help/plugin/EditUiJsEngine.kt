@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.help.plugin
 
-import android.view.View
+import android.content.Context
+import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import org.mozilla.javascript.NativeObject
 
@@ -17,10 +18,11 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
 
     private val editorJsObject: NativeObject
         get() {
-            eval()
+            val importCode = "importPackage(com.github.jing332.tts_server_android.ui.view)"
+            eval(importCode)
             return JsEngineConfig.SCRIPT_ENGINE.get(OBJ_UI_JS).run {
                 if (this == null) throw Exception("Object not found: $OBJ_UI_JS")
-                else this as NativeObject
+                else (this as NativeObject)
             }
         }
 
@@ -54,10 +56,15 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
         }
     }
 
-    fun onLoadUI(v: View) {
+    fun onLoadUI(context: Context, container: LinearLayout) {
         LogOutputter.writeLine("执行onLoadUI()...")
 
-        JsEngineConfig.SCRIPT_ENGINE.invokeMethod(editorJsObject, FUNC_ON_LOAD_UI, v)
+        JsEngineConfig.SCRIPT_ENGINE.invokeMethod(
+            editorJsObject,
+            FUNC_ON_LOAD_UI,
+            context,
+            container
+        )
     }
 
 

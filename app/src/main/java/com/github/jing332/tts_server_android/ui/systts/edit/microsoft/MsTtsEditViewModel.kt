@@ -9,6 +9,7 @@ import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.model.tts.ExpressAs
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
@@ -285,7 +286,7 @@ class MsTtsEditViewModel : ViewModel() {
 
     fun doTest(
         text: String,
-        onSuccess: suspend (audio: ByteArray) -> Unit,
+        onSuccess: suspend (audio: ByteArray, sampleRate: Int, mime:String) -> Unit,
         onFailure: (Throwable) -> Unit
     ) {
         if (mTts.format.startsWith("raw")) {
@@ -305,9 +306,8 @@ class MsTtsEditViewModel : ViewModel() {
             }
 
             audio?.let {
-                withMain {
-                    onSuccess.invoke(it)
-                }
+                val formats = AudioDecoder.getSampleRateAndMime(audio)
+                withMain { onSuccess.invoke(it, formats.first, formats.second) }
                 return@runOnIO
             }
             withMain { onFailure.invoke(Exception("音频为空")) }

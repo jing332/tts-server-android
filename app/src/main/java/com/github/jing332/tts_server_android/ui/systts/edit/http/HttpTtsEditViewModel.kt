@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.ui.systts.edit.http
 
-import android.media.MediaFormat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withIO
@@ -12,7 +11,7 @@ class HttpTtsEditViewModel : ViewModel() {
     fun doTest(
         tts: HttpTTS,
         text: String,
-        onSuccess: suspend (audio:ByteArray, sampleRate: Int, mime: String, contentType: String) -> Unit,
+        onSuccess: suspend (audio: ByteArray, sampleRate: Int, mime: String, contentType: String) -> Unit,
         onFailure: suspend (reason: Throwable) -> Unit,
     ) {
         viewModelScope.launch {
@@ -29,17 +28,11 @@ class HttpTtsEditViewModel : ViewModel() {
                 val contentType = resp.header("Content-Type", "无") ?: "无"
 
                 data?.let {
-                    val ad = AudioDecoder()
-                    val formats = ad.getFormats(it)
+                    val formats = AudioDecoder.getSampleRateAndMime(it)
                     resp.body?.close()
 
-                    var mSampleRate = 0
-                    var mMime = "无"
-                    if (formats.isNotEmpty()) {
-                        mSampleRate = formats[0].getInteger(MediaFormat.KEY_SAMPLE_RATE)
-                        mMime = formats[0].getString(MediaFormat.KEY_MIME) ?: ""
-                    }
-
+                    val mSampleRate = formats.first
+                    val mMime = formats.second
                     onSuccess(it, mSampleRate, mMime, contentType)
                 }
             }.onFailure {
