@@ -70,8 +70,8 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         true
                     }
 
-                    btnListen.isGone = AppConfig.isSwapListenAndEditButton
-                    btnEdit.isVisible = AppConfig.isSwapListenAndEditButton
+                    btnListen.isVisible = AppConfig.isSwapListenAndEditButton
+                    btnEdit.isGone = AppConfig.isSwapListenAndEditButton
 
                     btnListen.clickWithThrottle {
                         listen(getModel())
@@ -173,8 +173,8 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
             setForceShowIcon(true)
             MenuCompat.setGroupDividerEnabled(menu, true)
 
-            menu.findItem(R.id.menu_listen).isVisible = AppConfig.isSwapListenAndEditButton
-            menu.findItem(R.id.menu_edit).isVisible = !AppConfig.isSwapListenAndEditButton
+            menu.findItem(R.id.menu_edit).isVisible = AppConfig.isSwapListenAndEditButton
+            menu.findItem(R.id.menu_listen).isVisible = !AppConfig.isSwapListenAndEditButton
 
             setOnMenuItemClickListener {
                 when (it.itemId) {
