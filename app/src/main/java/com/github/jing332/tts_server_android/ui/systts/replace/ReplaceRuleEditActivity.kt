@@ -20,6 +20,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivi
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
+import com.github.jing332.tts_server_android.util.dp
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -34,31 +35,31 @@ class ReplaceRuleEditActivity : BackActivity() {
 
     private val pinyinList by lazy {
         arrayOf(
-            "ā- a1",
-            "á - a2",
-            "ǎ - a3",
-            "à - a4",
-            "ê - e?",
-            "ē - e1",
-            "é - e2",
-            "ě - e3",
-            "è - e4",
-            "ī - i1",
-            "í - i2",
-            "ǐ - i3",
-            "ì - i4",
-            "ō - o1",
-            "ó - o2",
-            "ǒ - o3",
-            "ò - o4",
-            "ū - u1",
-            "ú - u2",
-            "ǔ - u3",
-            "ù - u4",
-            "ǖ - v1",
-            "ǘ - u2",
-            "ǚ - u3",
-            "ǜ - u4"
+            "ā-a-1声",
+            "á-a-2声",
+            "ǎ-a-3声",
+            "à-a-4声",
+            "ê-e-?声",
+            "ē-e-1声",
+            "é-e-2声",
+            "ě-e-3声",
+            "è-e-4声",
+            "ī-i-1声",
+            "í-i-2声",
+            "ǐ-i-3声",
+            "ì-i-4声",
+            "ō-o-1声",
+            "ó-o-2声",
+            "ǒ-o-3声",
+            "ò-o-4声",
+            "ū-u-1声",
+            "ú-u-2声",
+            "ǔ-u-3声",
+            "ù-u-4声",
+            "ǖ-v-1声",
+            "ǘ-v-2声",
+            "ǚ-v-3声",
+            "ǜ-v-4声"
         )
     }
     private lateinit var data: ReplaceRule
@@ -110,15 +111,18 @@ class ReplaceRuleEditActivity : BackActivity() {
 
     private fun displayPinyinDialog() {
         val chipGroup = ChipGroup(this).apply {
-            setChipSpacingHorizontalResource(R.dimen.chip)
-            setPadding(32)
+            setPadding(16.dp)
         }
         val dlg = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.systts_replace_insert_pinyin)
             .setView(chipGroup)
+            .setNegativeButton(R.string.cancel, null)
             .show()
         pinyinList.forEach { py ->
+            val ss = py.split("-")
             val chipItem = Chip(this)
-            chipItem.text = py
+            chipItem.text = ss[0]
+            chipItem.contentDescription = "${chipItem.text}:  $ss[1]"
             chipItem.setTypeface(null, Typeface.BOLD)
             chipItem.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge)
             chipGroup.addView(chipItem)

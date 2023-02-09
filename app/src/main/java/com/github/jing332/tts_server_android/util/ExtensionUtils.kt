@@ -1,14 +1,13 @@
 package com.github.jing332.tts_server_android.util
 
-import android.content.res.Resources.getSystem
 import android.os.SystemClock
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 
-val Int.dp: Int get() = (this / getSystem().displayMetrics.density).toInt()
+val Int.dp: Int get() = SizeUtils.dp2px(this.toFloat())
 
-val Int.px: Int get() = (this * getSystem().displayMetrics.density).toInt()
+val Int.px: Int get() = SizeUtils.px2dp(this.toFloat())
 
 
 /**
