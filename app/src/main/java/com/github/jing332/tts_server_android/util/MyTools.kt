@@ -13,6 +13,7 @@ import android.util.Log
 import android.widget.Toast
 import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.GithubReleaseApiBean
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -46,41 +47,25 @@ object MyTools {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun checkVersionFromJson(ctx: Context, s: String, isFromUser: Boolean) {
+        val cpuAbi = Build.SUPPORTED_ABIS[0]
         val bean = json.decodeFromString<GithubReleaseApiBean>(s)
-        var apkUniversalUrl = ""
-        var apkArmV8aUrl = ""
-        var apkArmV7aUrl = ""
-        bean.assets.forEach {
-            if (it.name.contains("arm64-v8a")) {
-                apkArmV8aUrl = it.browserDownloadUrl
-            } else if (it.name.contains("armeabi-v7a")) {
-                apkArmV7aUrl = it.browserDownloadUrl
-            } else {
-                apkUniversalUrl = it.browserDownloadUrl
-            }
-        }
-
-        var downloadUrl = ""
-        if (Build.SUPPORTED_ABIS.contains("arm64-v8a"))
-            downloadUrl = apkArmV8aUrl
-        else if (Build.SUPPORTED_ABIS.contains("armeabi-v7a")) {
-            downloadUrl = apkArmV7aUrl
-        }
-        if (downloadUrl.isEmpty())
-            downloadUrl = apkUniversalUrl
+        // 最大的为全量apk
+        val apkUniversalUrl = bean.assets.sortedByDescending { it.size }[0].browserDownloadUrl
+        // 根据CPU ABI判断精简版apk
+        val liteApk =
+            bean.assets.find { it.name.endsWith("${cpuAbi}.apk") }?.browserDownloadUrl ?: ""
+        val apkUrl = liteApk.ifBlank { apkUniversalUrl }
 
         val tag = bean.tagName
         val body = bean.body
-        /* 远程版本号 */
-        val removeVersion = BigDecimal(tag.split("_")[1].trim())
-        val pi = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
-        val appVersion = /* 本地版本号 */
-            BigDecimal(pi.versionName.split("_").toTypedArray()[1].trim { it <= ' ' })
-        Log.d(TAG, "appVersionName: $appVersion, versionName: $removeVersion")
-        if (removeVersion > appVersion) /* 需要更新 */
-            runOnUI { downLoadAndInstall(ctx, body, downloadUrl, tag) }
+
+        val remoteVersion = BigDecimal(tag.split("_")[1].trim())
+        val appVersion = BigDecimal(BuildConfig.VERSION_NAME.split("_")[1].trim())
+        Log.d(TAG, "appVersionName: $appVersion, versionName: $remoteVersion")
+
+        if (remoteVersion > appVersion) /* 需要更新 */
+            runOnUI { downLoadAndInstall(ctx, body, apkUrl, tag) }
         else if (isFromUser)
             ctx.toast(R.string.current_is_last_version)
     }
@@ -94,24 +79,27 @@ object MyTools {
         MaterialAlertDialogBuilder(ctx)
             .setTitle(ctx.getString(R.string.new_version_available, tag))
             .setMessage(body)
-            .setPositiveButton(
+            .setNeutralButton(
                 "Github"
-            ) { _, _ ->
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(downloadUrl)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                ctx.startActivity(intent)
-            }
+            ) { _, _ -> startDownload(ctx, downloadUrl) }
             .setNegativeButton(
-                "Ghproxy"
-            ) { _, _ ->
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://ghproxy.com/$downloadUrl")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                ctx.startActivity(intent)
+                "GhProxy"
+            ) { _, _ -> startDownload(ctx, "https://ghproxy.com/$downloadUrl") }
+            .setPositiveButton("FastGit") { _, _ ->
+                startDownload(ctx, downloadUrl.replace("github.com", "download.fastgit.org"))
             }
             .show()
     }
+
+    private fun startDownload(context: Context, url: String) {
+        ClipboardUtils.copyText(url)
+        context.toast(R.string.copied)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
+    }
+
 
     /* 添加快捷方式 */
     @SuppressLint("UnspecifiedImmutableFlag")
