@@ -14,7 +14,7 @@
     <string name="start">启动</string>
     <string name="follow">跟随</string>
     <string name="custom">自定义</string>
-    <string name="app_down_again_to_exit">再按一次退出APP</string>
+    <string name="app_down_again_to_exit">再按一次退出程序</string>
     <string name="cannot_empty">不可为空！</string>
 
     <string name="open_web">打开网页版</string>
@@ -92,7 +92,7 @@
     <string name="import_config">导入配置</string>
     <string name="export_config">导出配置</string>
     <string name="copy" tools:ignore="PrivateResource">复制</string>
-    <string name="follow_system_or_read_aloud_app">跟随系统或朗读APP</string>
+    <string name="follow_system_or_read_aloud_app">跟随系统或朗读应用</string>
     <string name="raw_format_is_play_while_downloading">Raw格式为边下边播模式</string>
     <string name="is_confirm_delete">确认删除？</string>
     <string name="delete">删除</string>
@@ -148,7 +148,7 @@
     <string name="systts_multi_voice_option">多语音(旁白/对白)</string>
     <string name="systts_use_internal_audio_player">使用内置播放器</string>
     <string name="systts_in_app_play_info_html"><DATA><![CDATA[
-        打开此选项后，将直接<b>使用本APP内置的音频播放器</b>，而非转由系统TTS组件播放。
+        打开此选项后，将直接<b>使用本程序内置的音频播放器</b>，而非转由系统TTS组件播放。
         <br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。
         <br><br>当然，直接播放也有兼容性问题：
         <br> - 由于并未将原始音频发送到系统TTS组件，所以如果调用TTS者是先缓存后播放机制，即并非由系统播放时，这将会导致缓存时音频为空和意外播放。
@@ -273,7 +273,7 @@
     <string name="systts_ms_webm_warn_msg">⚠️经测试，音频格式 webm..-24kbps-.. 的实际所耗流量是其音频大小的三倍有余，不推荐使用！</string>
     <string name="search_filter">搜索过滤</string>
     <string name="app_language_follow">跟随系统</string>
-    <string name="app_language_desc">APP语言：%1$s</string>
+    <string name="app_language_desc">一语言：%1$s</string>
     <string name="app_language_to_follow_tip_msg">如更新语言失败，请手动结束程序并重启。</string>
     <string name="forwarder_sys_fail_audio_file">合成失败：未找到音频文件</string>
     <string name="forwarder_sys_fail_engine_init_timeout">引擎初始化失败：已超时</string>

@@ -20,6 +20,7 @@ import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuCompat
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -95,9 +96,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             subtitle.text = BuildConfig.VERSION_NAME
         }
 
-        MyTools.checkUpdate(this)
-
-        ShortCuts.buildShortCuts(this)
+        lifecycleScope.runOnIO {
+            ShortCuts.buildShortCuts(this)
+            MyTools.checkUpdate(this)
+        }
     }
 
     @Suppress("DEPRECATION")
@@ -120,7 +122,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             when (menuItem.itemId) {
                 R.id.nav_killBattery -> killBattery()
-                R.id.nav_checkUpdate -> MyTools.checkUpdate(this, isFromUser = true)
+                R.id.nav_checkUpdate -> lifecycleScope.runOnIO { MyTools.checkUpdate(this, isFromUser = true) }
                 R.id.nav_about -> displayAboutDialog()
             }
         }

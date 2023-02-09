@@ -22,6 +22,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActi
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.FileUtils
+import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
@@ -84,7 +85,11 @@ class PluginManagerActivity : BackActivity() {
 
     @SuppressLint("RestrictedApi")
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
+        if (menu is MenuBuilder) {
+            menu.setOptionalIconsVisible(true)
+            menu.setGroupDividerEnabled(true)
+        }
+
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -96,6 +101,16 @@ class PluginManagerActivity : BackActivity() {
         when (item.itemId) {
             R.id.menu_add -> {
                 startForResult.launch(Intent(this, PluginEditActivity::class.java))
+            }
+
+            R.id.menu_shortcut -> {
+                MyTools.addShortcut(
+                    this,
+                    getString(R.string.plugin_manager),
+                    "plugin_manager",
+                    R.drawable.ic_plugin,
+                    Intent(this, PluginManagerActivity::class.java)
+                )
             }
 
             R.id.menu_export -> {

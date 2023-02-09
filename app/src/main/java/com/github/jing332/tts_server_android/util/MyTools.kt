@@ -17,10 +17,6 @@ import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.GithubReleaseApiBean
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import okhttp3.Response
 import java.math.BigDecimal
@@ -33,18 +29,16 @@ object MyTools {
     private val json by lazy { App.jsonBuilder }
 
     /*从Github检查更新*/
-    @OptIn(DelicateCoroutinesApi::class)
-    fun checkUpdate(ctx: Context, isFromUser: Boolean = true) {
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                val resp: Response = Net.get(GITHUB_RELEASES_LATEST_URL).execute()
-                val jsonStr = resp.body?.string()
-                checkVersionFromJson(ctx, jsonStr!!, isFromUser)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                if (isFromUser) ctx.toast(R.string.check_update_failed)
-            }
+    suspend fun checkUpdate(ctx: Context, isFromUser: Boolean = false) {
+        try {
+            val resp: Response = Net.get(GITHUB_RELEASES_LATEST_URL).execute()
+            val jsonStr = resp.body?.string()
+            checkVersionFromJson(ctx, jsonStr!!, isFromUser)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            if (isFromUser) ctx.toast(R.string.check_update_failed)
         }
+
     }
 
     private fun checkVersionFromJson(ctx: Context, s: String, isFromUser: Boolean) {

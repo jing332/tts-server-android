@@ -87,7 +87,7 @@
 
     <item
         android:id="@+id/menu_plugin_manager"
-        android:icon="@drawable/ic_baseline_javascript_24"
+        android:icon="@drawable/ic_plugin"
         android:title="@string/plugin_manager" />
 
     <item

@@ -299,10 +299,12 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
-        MenuCompat.setGroupDividerEnabled(menu, true)
-        menuInflater.inflate(R.menu.systts_replace_manager, menu)
+        if (menu is MenuBuilder) {
+            menu.setOptionalIconsVisible(true)
+            menu.setGroupDividerEnabled(true)
+        }
 
+        menuInflater.inflate(R.menu.systts_replace_manager, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -318,6 +320,16 @@ class ReplaceManagerActivity : AppCompatActivity() {
             R.id.menu_add -> {
                 val intent = Intent(this, ReplaceRuleEditActivity::class.java)
                 startForResult.launch(intent)
+            }
+
+            R.id.menu_shortcut -> {
+                MyTools.addShortcut(
+                    this,
+                    getString(R.string.systts_replace_rule_manager),
+                    "replace_manager",
+                    R.drawable.ic_baseline_find_replace_24,
+                    Intent(this, ReplaceManagerActivity::class.java)
+                )
             }
 
             R.id.menu_add_group -> {
