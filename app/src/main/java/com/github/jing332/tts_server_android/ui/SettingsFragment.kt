@@ -14,10 +14,10 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.R.string
 import com.github.jing332.tts_server_android.R.xml
 import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.help.AppConfig
+import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.util.*
+import java.util.Locale
 
 class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

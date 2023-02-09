@@ -32,7 +32,7 @@ import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceRuleItemBinding
-import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
 import com.github.jing332.tts_server_android.ui.view.AppDialogs

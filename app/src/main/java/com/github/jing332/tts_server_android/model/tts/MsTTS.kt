@@ -12,8 +12,8 @@ import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditBottomSheetBinding
-import com.github.jing332.tts_server_android.help.AppConfig
-import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior

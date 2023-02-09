@@ -9,9 +9,9 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.help.AudioDecoder
-import com.github.jing332.tts_server_android.help.AudioPlayer
-import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.help.audio.AudioDecoder
+import com.github.jing332.tts_server_android.help.audio.AudioPlayer
+import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS

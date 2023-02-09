@@ -10,8 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsBaseEditActivityBinding
-import com.github.jing332.tts_server_android.help.AppConfig
-import com.github.jing332.tts_server_android.help.AudioPlayer
+import com.github.jing332.tts_server_android.help.audio.AudioPlayer
+import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.google.android.material.textfield.TextInputLayout

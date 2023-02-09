@@ -1,6 +1,6 @@
 package com.github.jing332.tts_server_android.help.plugin.ext
 
-import com.github.jing332.tts_server_android.help.AudioDecoder
+import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 
 @Suppress("unused")
 open class JsExtensions : JsNet(), JsCrypto {

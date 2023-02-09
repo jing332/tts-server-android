@@ -20,9 +20,9 @@ import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
-import com.github.jing332.tts_server_android.help.AppConfig
-import com.github.jing332.tts_server_android.help.AudioPlayer
-import com.github.jing332.tts_server_android.help.SysTtsConfig
+import com.github.jing332.tts_server_android.help.audio.AudioPlayer
+import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity

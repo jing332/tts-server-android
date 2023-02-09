@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.help
+package com.github.jing332.tts_server_android.help.audio
 
 import android.media.MediaCodec
 import android.media.MediaExtractor

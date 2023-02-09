@@ -22,7 +22,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.help.LocalTtsEngineHelper
-import com.github.jing332.tts_server_android.help.SysTtsForwarderConfig
+import com.github.jing332.tts_server_android.help.config.SysTtsForwarderConfig
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel

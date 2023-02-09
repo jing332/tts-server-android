@@ -24,7 +24,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.MsTtsForwarderFragmentBinding
-import com.github.jing332.tts_server_android.help.ServerConfig
+import com.github.jing332.tts_server_android.help.config.ServerConfig
 import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
