@@ -38,9 +38,7 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
         mAudioPlayer?.release()
     }
 
-
     open fun onSave() {
-        AppConfig.testSampleText = binding.testLayout.etTestText.text.toString()
         setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, systemTts) })
         finish()
     }
@@ -75,12 +73,19 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
         }
 
         testInputLayout?.editText?.apply {
-            testInputLayout?.setEndIconOnClickListener {
-                if (text.toString().isBlank()) setText(AppConfig.testSampleText)
-                onTest(text.toString())
-            }
             setText(AppConfig.testSampleText)
+
+            testInputLayout?.setEndIconOnClickListener {
+                val textStr = text.toString()
+                if (textStr.isBlank()) setText(AppConfig.testSampleText)
+                onTest(textStr)
+            }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        AppConfig.testSampleText = testInputLayout?.editText?.text?.toString() ?: ""
     }
 
     private var mData: SystemTts? = null
