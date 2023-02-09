@@ -89,6 +89,14 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                     btnMore.clickWithThrottle {
                         displayMoreOptions(it, getModel())
                     }
+
+                    btnMore.setOnLongClickListener {
+                        if (AppConfig.isSwapListenAndEditButton) edit(getModel())
+                        else listen(getModel())
+
+                        true
+                    }
+
                     itemView.accessibilityDelegate = object : AccessibilityDelegate() {
                         override fun onInitializeAccessibilityNodeInfo(
                             host: View,
@@ -129,10 +137,10 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
             val audio = try {
                 withIO {
                     tts.onLoad()
-                    if (tts.isRateFollowSystem()){
+                    if (tts.isRateFollowSystem()) {
                         tts.rate = 50
                     }
-                    if (tts.isPitchFollowSystem()){
+                    if (tts.isPitchFollowSystem()) {
                         tts.pitch = 0
                     }
                     tts.getAudio(AppConfig.testSampleText)
