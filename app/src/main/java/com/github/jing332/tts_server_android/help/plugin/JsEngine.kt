@@ -30,7 +30,7 @@ open class JsEngine(
     protected fun eval(preCode: String = "") {
         SCRIPT_ENGINE.put(OBJ_TTSER, this@JsEngine)
         SCRIPT_ENGINE.put(OBJ_LOGGER, this@JsEngine)
-        val s = SCRIPT_ENGINE.eval(preCode + "\n" + plugin.code)
+        val s = SCRIPT_ENGINE.eval(preCode + ";" + plugin.code)
 
     }
 

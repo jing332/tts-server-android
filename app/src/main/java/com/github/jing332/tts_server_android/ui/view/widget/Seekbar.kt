@@ -26,7 +26,7 @@ open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
         SeekbarBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    private var offset = 0
+
 
     var max: Int = 100
         set(value) {

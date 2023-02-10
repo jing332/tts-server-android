@@ -411,13 +411,13 @@ class SysTtsListFragment : Fragment() {
 
     private fun addGroup() {
         val et = MaterialTextInput(requireContext())
-        et.inputLayout.setHint(R.string.name)
+        et.editLayout.setHint(R.string.name)
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.add_group)
             .setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 appDb.systemTtsDao.insertGroup(
-                    SystemTtsGroup(name = et.inputEdit.text.toString()
+                    SystemTtsGroup(name = et.editText.text.toString()
                         .ifEmpty { getString(R.string.unnamed) })
                 )
             }.show()

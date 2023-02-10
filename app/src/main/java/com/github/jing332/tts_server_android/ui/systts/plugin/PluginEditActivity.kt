@@ -16,6 +16,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginDebugResultBottomsheetBinding
@@ -76,9 +77,9 @@ class PluginEditActivity : BackActivity() {
             mData.code = resources.openRawResource(R.raw.systts_plugin_template).readAllText()
         }
         binding.editor.setText(mData.code)
-
         vm.setData(mData)
 
+        initEditor()
 
         // Debug日志输出
         val output = LogOutputter.OutputInterface { msg, level ->
@@ -207,6 +208,7 @@ class PluginEditActivity : BackActivity() {
         }
 
     private fun displayParamsSettings() {
+        appDb.pluginDao.update(mData.apply { code = binding.editor.text.toString() })
         startForResult.launch(Intent(this, PluginTtsEditActivity::class.java).apply {
             putExtra(BaseTtsEditActivity.KEY_BASIC_VISIBLE, false)
             putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = PluginTTS(plugin = mData)))

@@ -269,14 +269,14 @@ class ListGroupPageFragment : Fragment() {
 
     private fun editGroupName(data: SystemTtsGroup) {
         val et = MaterialTextInput(requireContext())
-        et.inputEdit.setText(data.name)
-        et.inputLayout.setHint(R.string.name)
+        et.editText.setText(data.name)
+        et.editLayout.setHint(R.string.name)
         MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.edit_group_name)
             .setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 appDb.systemTtsDao.updateGroup(
                     data.copy(
-                        name = et.inputEdit.text.toString().ifEmpty { getString(R.string.unnamed) })
+                        name = et.editText.text.toString().ifEmpty { getString(R.string.unnamed) })
                 )
             }
 

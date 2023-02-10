@@ -7,7 +7,7 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.google.android.material.R
 import com.google.android.material.textfield.TextInputLayout
 
-class AppTextInputLayout(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+open class AppTextInputLayout(context: Context, attrs: AttributeSet? = null, defaultStyle: Int = R.attr.textInputStyle) :
     TextInputLayout(context, attrs, defaultStyle) {
     constructor(context: Context, attrs: AttributeSet?) : this(
         context,

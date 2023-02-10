@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
+import com.github.jing332.tts_server_android.util.dp
 import org.mozilla.javascript.NativeObject
 
 class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
@@ -17,9 +18,16 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
         const val OBJ_UI_JS = "EditorJS"
     }
 
+    fun dp(px: Int): Int {
+        return px.dp
+    }
+
     private val editorJsObject: NativeObject
         get() {
-            val importCode = "importPackage(${AppConst.PACKET_NAME}.help.plugin.ui)"
+            val importCode = "importPackage(${AppConst.PACKET_NAME}.help.plugin.ui);" +
+                    "importPackage(android.view);" +
+                    "importPackage(android.widget);"
+
             eval(importCode)
             return JsEngineConfig.SCRIPT_ENGINE.get(OBJ_UI_JS).run {
                 if (this == null) throw Exception("Object not found: $OBJ_UI_JS")

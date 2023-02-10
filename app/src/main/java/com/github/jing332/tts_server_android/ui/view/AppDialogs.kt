@@ -34,13 +34,13 @@ object AppDialogs {
         onSave: (text: String) -> Unit
     ) {
         val et = MaterialTextInput(context)
-        et.inputLayout.hint = hint
-        et.inputEdit.setText(text)
+        et.editLayout.hint = hint
+        et.editText.setText(text)
         MaterialAlertDialogBuilder(context)
             .setTitle(title)
             .setView(et)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                onSave.invoke(et.inputEdit.text.toString())
+                onSave.invoke(et.editText.text.toString())
             }.show()
     }
 
