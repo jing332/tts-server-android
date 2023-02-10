@@ -9,8 +9,8 @@ import com.github.jing332.tts_server_android.help.plugin.ext.JsLogger
 import org.mozilla.javascript.NativeObject
 
 open class JsEngine(
-    private val context: android.content.Context = app, val plugin: Plugin = Plugin()
-) : JsExtensions(), JsLogger {
+    context: android.content.Context = app, val plugin: Plugin = Plugin()
+) : JsExtensions(context), JsLogger {
     companion object {
         const val OBJ_TTSER = "ttsrv"
         const val OBJ_LOGGER = "logger"
@@ -27,7 +27,7 @@ open class JsEngine(
             }
         }
 
-    protected fun eval(preCode:String = "") {
+    protected fun eval(preCode: String = "") {
         SCRIPT_ENGINE.put(OBJ_TTSER, this@JsEngine)
         SCRIPT_ENGINE.put(OBJ_LOGGER, this@JsEngine)
         val s = SCRIPT_ENGINE.eval(preCode + "\n" + plugin.code)

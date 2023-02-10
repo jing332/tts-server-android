@@ -17,7 +17,7 @@ import com.github.jing332.tts_server_android.databinding.SeekbarBinding
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar.ValueFormatter
 import com.github.jing332.tts_server_android.util.ThrottleUtil
 
-class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), OnSeekBarChangeListener {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context) : this(context, null, 0)
