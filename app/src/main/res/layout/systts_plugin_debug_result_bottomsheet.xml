@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_rounded_top_cornets"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="8dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:layout_width="match_parent"
@@ -18,7 +21,9 @@
             android:id="@+id/tv_log"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAppearance="?attr/textAppearanceBody1" />
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:breakStrategy="simple"
+            tools:targetApi="m" />
 
     </androidx.core.widget.NestedScrollView>
 

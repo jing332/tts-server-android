@@ -7,6 +7,8 @@ import com.script.javascript.RhinoScriptEngine
 
 @Suppress("DEPRECATION")
 object AppConst {
+    const val PACKET_NAME = "com.github.jing332.tts_server_android"
+
     // JS引擎
     val SCRIPT_ENGINE: RhinoScriptEngine by lazy { RhinoScriptEngine() }
 

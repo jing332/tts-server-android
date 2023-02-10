@@ -9,9 +9,11 @@ import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpin
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 
-open class WrapperMaterialSpinner(context: Context) : FrameLayout(context) {
-    private val binding by lazy {
-        MaterialSpinnerBinding.inflate(LayoutInflater.from(context), this, true)
+open class AppMaterialSpinner(context: Context) : FrameLayout(context) {
+    private var binding: MaterialSpinnerBinding
+
+    init {
+        binding = MaterialSpinnerBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     var selectedPosition: Int
@@ -25,6 +27,13 @@ open class WrapperMaterialSpinner(context: Context) : FrameLayout(context) {
 
     val spinner: MaterialSpinner
         get() = binding.spinner
+
+    var hint: CharSequence?
+        get() = til.hint
+        set(value) {
+            til.hint = value
+        }
+
 
     fun setListModel(list: List<SpinnerItem>) {
         spinner.setAdapter(MaterialSpinnerAdapter(context, list))

@@ -27,7 +27,9 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         super.onCreate(savedInstanceState)
         setEditContentView(binding.root)
 
-        kotlin.runCatching { engine.onLoadUI(this, binding.container) }.onFailure {
+        kotlin.runCatching {
+            engine.onLoadUI(this, binding.container)
+        }.onFailure {
             AppDialogs.displayErrorDialog(this, it.stackTraceToString())
         }
 

@@ -28,9 +28,11 @@ import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.readableString
+import com.github.jing332.tts_server_android.util.rootCause
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.script.ScriptException
 import io.github.rosemoe.sora.langs.textmate.TextMateColorScheme
 import io.github.rosemoe.sora.langs.textmate.TextMateLanguage
 import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry
@@ -45,8 +47,24 @@ class PluginEditActivity : BackActivity() {
     private val binding by lazy { SysttsPluginEditorActivityBinding.inflate(layoutInflater) }
     private val vm by viewModels<PluginEditViewModel>()
 
+    private val debugViewBinding by lazy {
+        SysttsPluginDebugResultBottomsheetBinding.inflate(
+            LayoutInflater.from(this), null, false
+        )
+    }
+
+    @Suppress("DEPRECATION")
+    private val debugBottomSheetDialog by lazy {
+        BottomSheetDialog(this).apply {
+            debugViewBinding.root.minimumHeight =
+                this@PluginEditActivity.windowManager.defaultDisplay.height
+            setContentView(debugViewBinding.root)
+        }
+    }
+
     private lateinit var mData: Plugin
     private var mTts: PluginTTS = PluginTTS()
+
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,10 +77,29 @@ class PluginEditActivity : BackActivity() {
         }
         binding.editor.setText(mData.code)
 
-
         vm.setData(mData)
 
 
+        // Debug日志输出
+        val output = LogOutputter.OutputInterface { msg, level ->
+            synchronized(this@PluginEditActivity) {
+                val span = SpannableString(msg).apply {
+                    setSpan(
+                        ForegroundColorSpan(LogLevel.toColor(level)),
+                        0, msg.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+                runOnUiThread {
+                    debugViewBinding.tvLog.append("\n")
+                    debugViewBinding.tvLog.append(span)
+                }
+            }
+        }
+
+        LogOutputter.addTarget(output)
+    }
+
+    private fun initEditor() {
         FileProviderRegistry.getInstance().addFileProvider(AssetsFileResolver(application.assets))
 
         val path = "textmate/quietlight.json"
@@ -122,27 +159,11 @@ class PluginEditActivity : BackActivity() {
 
             R.id.menu_debug -> {
                 val tv = displayDebugMessage()
-                val output = LogOutputter.OutputInterface { msg, level ->
-                    runOnUiThread {
-                        synchronized(tv) {
-                            val span = SpannableString(msg).apply {
-                                setSpan(
-                                    ForegroundColorSpan(LogLevel.toColor(level)),
-                                    0, msg.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                                )
-                            }
-                            tv.append("\n")
-                            tv.append(span)
-                        }
-                    }
-                }
-                LogOutputter.addTarget(output)
 
                 val plugin = try {
                     vm.pluginEngine.evalPluginInfo()
                 } catch (e: Exception) {
-                    LogOutputter.writeLine(e.readableString, LogLevel.ERROR)
-                    LogOutputter.removeTarget(output)
+                    writeDebugErrorLine(e)
                     return true
                 }
                 tv.append("\n" + plugin.toString().replace(", ", "\n"))
@@ -151,7 +172,7 @@ class PluginEditActivity : BackActivity() {
                     val sampleRate = try {
                         vm.pluginEngine.getSampleRate(mTts.locale, mTts.voice)
                     } catch (e: Exception) {
-                        LogOutputter.writeLine(e.readableString, LogLevel.ERROR)
+                        writeDebugErrorLine(e)
                     }
                     LogOutputter.writeLine("采样率: $sampleRate")
 
@@ -161,17 +182,14 @@ class PluginEditActivity : BackActivity() {
                             mTts.volume, mTts.pitch
                         )
                     } catch (e: Exception) {
-                        LogOutputter.writeLine(e.readableString, LogLevel.ERROR)
-                        LogOutputter.removeTarget(output)
+                        writeDebugErrorLine(e)
                         return@runOnIO
                     }
                     if (audio == null) {
-                        tv.append("\n音频为空！")
+                        LogOutputter.writeLine("\n音频为空！", LogLevel.ERROR)
                     } else {
-                        tv.append("\n音频大小: ${audio.size / 1024}KiB")
+                        LogOutputter.writeLine("\n音频大小: ${audio.size / 1024}KiB")
                     }
-
-                    LogOutputter.removeTarget(output)
                 }
             }
         }
@@ -179,6 +197,7 @@ class PluginEditActivity : BackActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @Suppress("DEPRECATION")
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             result.data?.getParcelableExtra<SystemTts>(BaseTtsEditActivity.KEY_DATA)?.let {
@@ -194,20 +213,22 @@ class PluginEditActivity : BackActivity() {
         })
     }
 
-    @Suppress("DEPRECATION")
-    private fun displayDebugMessage(msg: String = ""): TextView {
-        val viewBinding = SysttsPluginDebugResultBottomsheetBinding.inflate(
-            LayoutInflater.from(this), null, false
-        )
-        viewBinding.tvLog.text = msg
 
-        BottomSheetDialog(this).apply {
-            viewBinding.root.minimumHeight =
-                this@PluginEditActivity.windowManager.defaultDisplay.height
-            setContentView(viewBinding.root)
-            show()
+    private fun writeDebugErrorLine(e: Exception) {
+        val errStr = if (e is ScriptException) {
+            "第 ${e.lineNumber} 行错误：${e.rootCause?.message ?: e}"
+        } else {
+            e.message + "($e)"
         }
-        return viewBinding.tvLog
+        LogOutputter.writeLine(errStr, LogLevel.ERROR)
+
+    }
+
+    private fun displayDebugMessage(msg: String = "", e: Exception? = null): TextView {
+        debugViewBinding.tvLog.text = msg
+
+        debugBottomSheetDialog.show()
+        return debugViewBinding.tvLog
     }
 
 }
