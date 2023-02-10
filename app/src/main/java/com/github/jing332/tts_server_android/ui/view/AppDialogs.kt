@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Color
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.util.ClipboardUtils
+import com.github.jing332.tts_server_android.util.dp
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.toast
@@ -34,19 +36,23 @@ object AppDialogs {
         onSave: (text: String) -> Unit
     ) {
         val et = MaterialTextInput(context)
-        et.editLayout.hint = hint
-        et.editText.setText(text)
+        et.hint = hint
+        et.editText!!.setText(text)
+        et.setPadding(8.dp)
+
         MaterialAlertDialogBuilder(context)
             .setTitle(title)
             .setView(et)
+            .setNegativeButton(R.string.cancel, null)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                onSave.invoke(et.editText.text.toString())
+                onSave.invoke(et.editText!!.text.toString())
             }.show()
     }
 
     fun displayDeleteDialog(context: Context, message: String, onRemove: () -> Unit) {
         MaterialAlertDialogBuilder(context).setTitle(R.string.is_confirm_delete)
             .setMessage(message)
+            .setNegativeButton(R.string.cancel, null)
             .setPositiveButton(R.string.delete) { _, _ ->
                 onRemove.invoke()
             }
@@ -60,7 +66,7 @@ object AppDialogs {
         context: Context,
         scope: CoroutineScope,
         json: String,
-        onSaveFile: (json:String) -> Unit
+        onSaveFile: (json: String) -> Unit
     ) {
         context.apply {
             val scrollview = NestedScrollView(context)
@@ -73,7 +79,7 @@ object AppDialogs {
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.export_config)
                 .setView(scrollview)
-                .setNeutralButton("保存为文件") { _, _ ->
+                .setNeutralButton(R.string.save_as_file) { _, _ ->
                     onSaveFile.invoke(json)
                 }
                 .setPositiveButton(R.string.copy) { _, _ ->

@@ -27,11 +27,9 @@ import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
-import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.ThrottleUtil
 import com.google.android.material.checkbox.MaterialCheckBox
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.conflate
 import kotlinx.serialization.encodeToString
@@ -91,86 +89,6 @@ class ListGroupPageFragment : Fragment() {
             onCreate {
                 groupHelper.initGroup(this@setup, this@onCreate)
                 itemHelper.init(this@setup, this@onCreate)
-                /*  // 分组Item
-                  getBindingOrNull<SysttsListCustomGroupItemBinding>()?.apply {
-                      itemView.accessibilityDelegate = object : AccessibilityDelegate() {
-                          override fun onInitializeAccessibilityNodeInfo(
-                              host: View,
-                              info: AccessibilityNodeInfo
-                          ) {
-                              super.onInitializeAccessibilityNodeInfo(host, info)
-                              val model = getModel<GroupModel>()
-                              val enabledCount =
-                                  model.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
-
-                              info.text =
-                                  "${ivState.contentDescription}, ${tvName.text}, ${
-                                      getString(
-                                          R.string.systts_desc_list_count_info,
-                                          model.itemSublist?.size,
-                                          enabledCount
-                                      )
-                                  }"
-                          }
-                      }
-                      itemView.clickWithThrottle {
-                          getModel<GroupModel>().let { model ->
-                              val isExpanded = !model.itemExpand
-
-                              val enabledCount =
-                                  model.itemSublist?.filter { (it as SystemTts).isEnabled }?.size
-                              val speakText =
-                                  if (isExpanded) R.string.group_expanded else R.string.group_collapsed
-                              itemView.announceForAccessibility(
-                                  getString(speakText) + ", ${
-                                      getString(
-                                          R.string.systts_desc_list_count_info,
-                                          model.itemSublist?.size,
-                                          enabledCount
-                                      )
-                                  }"
-                              )
-
-                              if (isExpanded && model.itemSublist.isNullOrEmpty()) {
-                                  collapse(modelPosition)
-                                  MaterialAlertDialogBuilder(requireContext())
-                                      .setTitle(R.string.msg_group_is_empty)
-                                      .setMessage(getString(R.string.systts_group_empty_msg))
-                                      .show()
-                              }
-
-                              appDb.systemTtsDao.updateGroup(model.data.copy(isExpanded = isExpanded))
-                          }
-                      }
-
-                      checkBox.accessibilityDelegate = object : AccessibilityDelegate() {
-                          override fun onInitializeAccessibilityNodeInfo(
-                              host: View,
-                              info: AccessibilityNodeInfo
-                          ) {
-                              super.onInitializeAccessibilityNodeInfo(host, info)
-                              val str = when (checkBox.checkedState) {
-                                  MaterialCheckBox.STATE_CHECKED -> getString(R.string.md_checkbox_checked)
-                                  MaterialCheckBox.STATE_UNCHECKED -> getString(R.string.md_checkbox_unchecked)
-                                  MaterialCheckBox.STATE_INDETERMINATE -> getString(R.string.md_checkbox_indeterminate)
-                                  else -> ""
-                              }
-                              info.text = ", $str, "
-                          }
-                      }
-                      checkBox.clickWithThrottle {
-                          val group = getModel<GroupModel>().data
-                          if (!SysTtsConfig.isGroupMultipleEnabled)
-                              appDb.systemTtsDao.setAllTtsEnabled(false)
-
-                          appDb.systemTtsDao.setTtsEnabledInGroup(
-                              groupId = group.id,
-                              checkBox.isChecked
-                          )
-                          SystemTtsService.notifyUpdateConfig()
-                      }
-                      btnMore.clickWithThrottle { displayMoreMenu(btnMore, getModel()) }
-                  }*/
             }
 
             itemDifferCallback = object : ItemDifferCallback {
@@ -251,7 +169,8 @@ class ListGroupPageFragment : Fragment() {
     private lateinit var getFileUriToSave: ActivityResultLauncher<String>
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        getFileUriToSave = FileUtils.registerResultCreateDocument(this, "application/json") { savedData }
+        getFileUriToSave =
+            FileUtils.registerResultCreateDocument(this, "application/json") { savedData }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -268,19 +187,15 @@ class ListGroupPageFragment : Fragment() {
     }
 
     private fun editGroupName(data: SystemTtsGroup) {
-        val et = MaterialTextInput(requireContext())
-        et.editText.setText(data.name)
-        et.editLayout.setHint(R.string.name)
-        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.edit_group_name)
-            .setView(et)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                appDb.systemTtsDao.updateGroup(
-                    data.copy(
-                        name = et.editText.text.toString().ifEmpty { getString(R.string.unnamed) })
-                )
-            }
+        AppDialogs.displayInputDialog(
+            requireContext(), getString(R.string.edit_group_name),
+            getString(R.string.name), data.name
+        ) {
+            appDb.systemTtsDao.updateGroup(
+                data.copy(name = it.ifEmpty { getString(R.string.unnamed) })
+            )
+        }
 
-            .show()
     }
 
     private fun deleteGroup(data: SystemTtsGroup) {

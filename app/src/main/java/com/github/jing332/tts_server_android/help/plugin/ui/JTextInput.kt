@@ -11,29 +11,14 @@ class JTextInput(context: Context, hint: String? = null) : MaterialTextInput(con
     override val marginParams: MarginLayoutParams
         get() = layoutParams as MarginLayoutParams
 
-    var hint: CharSequence?
-        get() = editLayout.hint
-        set(value) {
-            editLayout.hint = value
-        }
-
-    var text: CharSequence?
-        get() = editText.text
-        set(value) {
-            editText.setText(value)
-        }
-
     interface OnTextChangedListener {
         fun onChanged(text: CharSequence)
     }
 
     fun addTextChangedListener(listener: OnTextChangedListener) {
-        editText.addTextChangedListener {
+        editText!!.addTextChangedListener {
             listener.onChanged(it.toString())
         }
     }
 
-    init {
-        super.editLayout.hint = hint
-    }
 }

@@ -37,7 +37,6 @@ import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEdit
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
-import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -142,7 +141,7 @@ class SysTtsListFragment : Fragment() {
                     true
                 }
 
-                R.id.menu_addGroup -> {
+                R.id.menu_add_group -> {
                     addGroup()
                     true
                 }
@@ -410,17 +409,15 @@ class SysTtsListFragment : Fragment() {
     }
 
     private fun addGroup() {
-        val et = MaterialTextInput(requireContext())
-        et.editLayout.setHint(R.string.name)
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.add_group)
-            .setView(et)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                appDb.systemTtsDao.insertGroup(
-                    SystemTtsGroup(name = et.editText.text.toString()
-                        .ifEmpty { getString(R.string.unnamed) })
-                )
-            }.show()
+        AppDialogs.displayInputDialog(
+            requireContext(),
+            getString(R.string.add_group),
+            getString(R.string.name)
+        ) {
+            appDb.systemTtsDao.insertGroup(
+                SystemTtsGroup(name = it.ifEmpty { getString(R.string.unnamed) })
+            )
+        }
     }
 
     private fun displayStandbySettings() {

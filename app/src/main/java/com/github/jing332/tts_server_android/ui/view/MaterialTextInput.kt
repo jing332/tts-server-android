@@ -1,25 +1,25 @@
 package com.github.jing332.tts_server_android.ui.view
 
 import android.content.Context
+import android.text.Editable
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.widget.FrameLayout
-import com.github.jing332.tts_server_android.databinding.MaterialTextInputBinding
+import com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
+import com.google.android.material.R
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 open class MaterialTextInput(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
-    FrameLayout(context, attrs, defaultStyle) {
+    AppTextInputLayout(context, attrs, defaultStyle) {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null, 0)
+    constructor(context: Context) : this(context, null, R.attr.textInputStyle)
 
-    private val binding: MaterialTextInputBinding by lazy {
-        MaterialTextInputBinding.inflate(LayoutInflater.from(context), this, true)
+    var text: Editable
+        get() = editText!!.text
+        set(value) {
+            editText!!.text = value
+        }
+
+    init {
+        @Suppress("LeakingThis")
+        addView(TextInputEditText(getContext()))
     }
-
-    val editText: TextInputEditText
-        get() = binding.et
-
-    val editLayout: TextInputLayout
-        get() = binding.til
 }

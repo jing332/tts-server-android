@@ -21,4 +21,9 @@
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/plugin_preview_ui" />
 
+    <item
+        android:id="@+id/menu_save_as_file"
+        android:icon="@drawable/ic_baseline_insert_drive_file_24"
+        android:title="@string/save_as_file" />
+
 </menu>

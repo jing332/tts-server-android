@@ -1,5 +1,5 @@
 let PluginJS = {
-    "name": "插件名称",
+    "name": "插件UI测试",
     "id": "com.example.tts", //插件的唯一ID 建议以此种方式命名
     "author": "作者名称",
     "description": "插件描述",
@@ -45,4 +45,44 @@ let EditorJS = {
             return {"voiceShanxi1": "方言陕西1","voiceSichuan2": "方言陕西2"}
         }
     },
+
+    "onLoadUI": function(ctx, linerLayout) {
+        //下拉框
+        let spinner = JSpinner(ctx, '下拉框提示')
+        // 必须addView后才能marginParams, 参数依次为 左，上，右，下
+        linerLayout.addView(spinner)
+        spinner.marginParams.setMargins(0, ttsrv.dp(8), 0,0)
+
+        //选择变更时
+        spinner.setOnItemSelected(function(view, pos, key){
+            ttsrv.toast(pos+ key)
+        })
+        spinner.items = {'内部值': '显示名称1'}
+        spinner.selectedPosition = 0
+
+        //文本输入框
+        let tl = JTextInput(ctx, '输入提示')
+        linerLayout.addView(tl)
+        tl.marginParams.setMargins(0, ttsrv.dp(4), 0, 0)
+        //文本变更时调用
+        tl.addTextChangedListener(function(txt){
+            ttsrv.toast(txt)
+        })
+
+        //滑动条
+        let seek = JSeekBar(ctx, '强度: ')
+        // 当停止滑动时调用
+        seek.onSeekBarChangeListener = {
+            onStopTrackingTouch: function(view){
+                ttsrv.toast(view.value)
+
+            }
+
+        }
+
+        linerLayout.addView(seek)
+        seek.marginParams.setMargins(0, ttsrv.dp(4), 0, 0)
+
+    }
+
 }

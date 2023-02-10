@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.plugin
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
@@ -27,6 +29,7 @@ import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
+import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.rootCause
@@ -137,8 +140,14 @@ class PluginEditActivity : BackActivity() {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.systts_plugin_edit, menu)
+        if (menu is MenuBuilder) {
+            menu.setOptionalIconsVisible(true)
+            menu.isGroupDividerEnabled = true
+        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -146,6 +155,7 @@ class PluginEditActivity : BackActivity() {
         mData.code = binding.editor.text.toString()
         when (item.itemId) {
             R.id.menu_params -> displayParamsSettings()
+            R.id.menu_save_as_file -> saveAsFile()
             R.id.menu_save -> {
                 val plugin = try {
                     vm.pluginEngine.evalPluginInfo()
@@ -196,6 +206,16 @@ class PluginEditActivity : BackActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+
+    private var savedData: ByteArray? = null
+    private val getFileUriToSave =
+        FileUtils.registerResultCreateDocument(this, "text/javascript") { savedData }
+
+    private fun saveAsFile() {
+        savedData = binding.editor.text.toString().toByteArray()
+        getFileUriToSave.launch("ttsrv-${mData.name}.js")
     }
 
     @Suppress("DEPRECATION")

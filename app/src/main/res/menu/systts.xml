@@ -31,7 +31,7 @@
                 android:title="@string/systts_add_plugin_tts" />
 
             <item
-                android:id="@+id/menu_addGroup"
+                android:id="@+id/menu_add_group"
                 android:icon="@drawable/ic_baseline_groups_24"
                 android:title="@string/add_group" />
         </menu>

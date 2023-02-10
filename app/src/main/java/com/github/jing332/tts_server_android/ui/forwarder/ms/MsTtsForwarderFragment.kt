@@ -149,14 +149,14 @@ class MsTtsForwarderFragment : Fragment(), MenuProvider {
                 val token = ServerConfig.token
 
                 val et = MaterialTextInput(requireContext())
-                et.editLayout.setHint(R.string.server_set_token)
-                et.editText.setText(token)
+                et.setHint(R.string.server_set_token)
+                et.editText!!.setText(token)
                 MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.server_set_token))
                     .setView(et)
                     .setPositiveButton(
                         android.R.string.ok
                     ) { _, _ ->
-                        val text = et.editText.text.toString()
+                        val text = et.editText!!.text.toString()
                         if (text != token) {
                             toast(getString(R.string.server_token_set_to) + text.ifEmpty {
                                 getString(
