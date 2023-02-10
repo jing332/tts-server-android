@@ -463,12 +463,6 @@ class TtsManager(val context: Context) {
                 // 音频为空时至多重试两次
                 if (e.message == AUDIO_NULL_MESSAGE && retryIndex > 2) return null
 
-                // 为close 1006则直接跳过等待
-                if (e.message.toString().startsWith(CLOSE_1006_PREFIX)) {
-                    event?.onStartRetry(retryIndex, e)
-                    return@onFailure
-                }
-
                 if (onFailure.invoke(retryIndex)) return null
 
                 if (retryIndex > 3) delay(3000)

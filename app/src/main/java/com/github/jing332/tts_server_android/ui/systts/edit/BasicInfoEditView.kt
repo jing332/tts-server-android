@@ -21,6 +21,7 @@ import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.runOnIO
+import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -93,13 +94,12 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             btnSetPlayerParams.clickWithThrottle { displayPlayerParamsSettings() }
             btnHelpStandby.clickWithThrottle {
                 MaterialAlertDialogBuilder(context).setTitle(R.string.systts_as_standby_help)
-                    .setMessage("作为备用后，当请求失败时将会根据 [全部/旁白/对话] 使用此配置朗读。\n也就是说，可以根据朗读目标单独配置备用。\n注意：备用配置无自动重试功能，首次失败后将直接跳过朗读，所以建议使用本地TTS类型作为备用。")
+                    .setMessage(R.string.systts_standby_help_msg)
+                    .setPositiveButton(android.R.string.ok, null)
                     .show()
             }
 
-            cbStandby.setOnClickListener {
-                mData?.isStandby = isStandby
-            }
+            cbStandby.setOnClickListener { mData?.isStandby = isStandby }
 
             etName.addTextChangedListener {
                 mData?.apply { displayName = this@BasicInfoEditView.displayName }
@@ -135,8 +135,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.warning)
                 .setMessage(R.string.please_turn_off_direct_play)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                }
+                .setPositiveButton(android.R.string.ok, null)
                 .show()
         } else if (SysTtsConfig.isInAppPlayAudio) {
             val binding =
@@ -144,31 +143,21 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                     LayoutInflater.from(context), this, false
                 )
             binding.apply {
-                val converter = object : Seekbar.ProgressConverter {
-                    override fun progressToValue(progress: Int): Any {
-                        return (progress * 0.01).toFloat()
-                    }
-
-                    override fun valueToProgress(value: Any): Int {
-                        return ((value as Float) * 100).toInt()
-                    }
-                }
-
                 val formatter = Seekbar.ValueFormatter { value, _ ->
                     if (value == PlayerParams.VALUE_FOLLOW_GLOBAL) context.getString(R.string.follow)
                     else value.toString()
                 }
 
-                seekRate.progressConverter = converter
+                seekRate.setFloatType(2)
                 seekRate.valueFormatter = formatter
 
-                seekPitch.progressConverter = converter
+                seekPitch.setFloatType(2)
                 seekPitch.valueFormatter = formatter
 
                 seekRate.min = 0
                 seekPitch.min = 0
                 switchOnOff.visibility = View.GONE
-                tvTip.text = "启用内置播放器时，使用此处设置覆盖全局。"
+                tvTip.setText(R.string.builtin_player_settings_tip_msg)
 
                 mData?.tts?.audioPlayer?.let {
                     seekRate.value = it.rate
@@ -179,7 +168,15 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.set_built_in_player_params)
                 .setView(binding.root)
-                .setOnDismissListener {
+                .setNeutralButton(R.string.reset) { _, _ ->
+                    mData?.tts?.audioPlayer?.let {
+                        it.rate = 1f
+                        it.pitch = 1f
+                    }
+                    context.toast(R.string.ok_reset)
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
                     mData?.tts?.audioPlayer?.let {
                         it.rate = binding.seekRate.value as Float
                         it.pitch = binding.seekPitch.value as Float
@@ -191,8 +188,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.warning)
                 .setMessage(R.string.built_in_player_not_enabled)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                }
+                .setPositiveButton(android.R.string.ok, null)
                 .show()
         }
     }

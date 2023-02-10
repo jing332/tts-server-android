@@ -38,7 +38,6 @@ import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActiv
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
-import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -286,7 +285,6 @@ class SysTtsListFragment : Fragment() {
         ) { savedData }
     }
 
-
     private fun exportConfig() {
         AppDialogs.displayExportDialog(requireContext(), lifecycleScope, vm.exportConfig()) {
             savedData = it.toByteArray()
@@ -305,18 +303,8 @@ class SysTtsListFragment : Fragment() {
                 tvTip.isGone = isChecked
             }
 
-            val converter = object : Seekbar.ProgressConverter {
-                override fun progressToValue(progress: Int): Any {
-                    return (progress * 0.01).toFloat()
-                }
-
-                override fun valueToProgress(value: Any): Int {
-                    return ((value as Float) * 100).toInt()
-                }
-            }
-
-            seekRate.progressConverter = converter
-            seekPitch.progressConverter = converter
+            seekRate.setFloatType(2)
+            seekPitch.setFloatType(2)
 
             seekRate.value = SysTtsConfig.inAppPlaySpeed
             seekPitch.value = SysTtsConfig.inAppPlayPitch
@@ -334,12 +322,13 @@ class SysTtsListFragment : Fragment() {
             }
         }
 
-        MaterialAlertDialogBuilder(requireContext()).setView(view).setOnDismissListener {
-            SysTtsConfig.isInAppPlayAudio = inAppBinding.switchOnOff.isChecked
-            SysTtsConfig.inAppPlaySpeed = inAppBinding.seekRate.value as Float
-            SysTtsConfig.inAppPlayPitch = inAppBinding.seekPitch.value as Float
-            SystemTtsService.notifyUpdateConfig()
-        }.show()
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(view).setOnDismissListener {
+                SysTtsConfig.isInAppPlayAudio = inAppBinding.switchOnOff.isChecked
+                SysTtsConfig.inAppPlaySpeed = inAppBinding.seekRate.value as Float
+                SysTtsConfig.inAppPlayPitch = inAppBinding.seekPitch.value as Float
+                SystemTtsService.notifyUpdateConfig()
+            }.show()
     }
 
     @SuppressLint("SetTextI18n")

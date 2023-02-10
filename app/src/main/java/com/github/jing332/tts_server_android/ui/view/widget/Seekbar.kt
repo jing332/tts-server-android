@@ -26,7 +26,31 @@ class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
         SeekbarBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
+    private var offset = 0
+
+    var max: Int = 100
+        set(value) {
+            field = value
+
+            binding.seekBar.max = max - min
+        }
+
     var min: Int = 0
+        set(value) {
+            field = value
+
+            if (min < 0) // 负数 实现偏移
+                progressConverter = object : ProgressConverter {
+                    override fun valueToProgress(value: Any): Int {
+                        return (value as Int) - min
+                    }
+
+                    override fun progressToValue(progress: Int): Any {
+                        return progress + min
+                    }
+                }
+        }
+
 
     var progress: Int
         get() = binding.seekBar.progress
@@ -63,8 +87,8 @@ class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
 
         val ta = context.obtainStyledAttributes(attrs, R.styleable.Seekbar)
         binding.seekBar.progress = ta.getInteger(R.styleable.Seekbar_progress, 0)
-        min = ta.getInteger(R.styleable.Seekbar_min, 0)
-        binding.seekBar.max = ta.getInteger(R.styleable.Seekbar_max, 100)
+        min = ta.getInteger(R.styleable.Seekbar_min, min)
+        max = ta.getInteger(R.styleable.Seekbar_max, max)
         binding.tvHint.text = ta.getString(R.styleable.Seekbar_hint)
         ta.recycle()
 
@@ -121,6 +145,29 @@ class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
         }
 
         private val a11yThrottle: ThrottleUtil by lazy { ThrottleUtil(time = 250) }
+    }
+
+    /**
+     * 设为小数显示, n为小数点后几位
+     * @param n 必须是 1 or 2
+     */
+    fun setFloatType(n: Int) {
+        assert(n in 1..2)
+        var x = 1f
+        for (i in 1..n) {
+            x *= 10
+        }
+
+        progressConverter = object : ProgressConverter {
+            override fun valueToProgress(value: Any): Int {
+                return ((value as Float) * x).toInt() - min
+            }
+
+            override fun progressToValue(progress: Int): Any {
+                return (progress + min) / x
+            }
+
+        }
     }
 
     /*

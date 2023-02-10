@@ -56,10 +56,10 @@
 
     <SeekBar
         android:id="@+id/seekBar"
-        android:labelFor="@id/tv_value"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginTop="4dp"
+        android:labelFor="@id/tv_value"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add"
         app:layout_constraintStart_toEndOf="@+id/remove"

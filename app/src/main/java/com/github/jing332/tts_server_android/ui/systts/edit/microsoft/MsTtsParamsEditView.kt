@@ -115,31 +115,15 @@ class MsTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: 
             seekbarRate.onSeekBarChangeListener = this@MsTtsParamsEditView
             seekbarRate.valueFormatter =
                 Seekbar.ValueFormatter { value, progress -> if (progress == 0) strFollow else "${value}%" }
-            seekbarRate.progressConverter = object : Seekbar.ProgressConverter {
-                override fun valueToProgress(value: Any) = (value as Int) + 100
-                override fun progressToValue(progress: Int) = progress - 100
-            }
 
             seekbarVolume.onSeekBarChangeListener = this@MsTtsParamsEditView
             seekbarVolume.valueFormatter = Seekbar.ValueFormatter { value, _ -> "${value}%" }
-            seekbarVolume.progressConverter = object : Seekbar.ProgressConverter {
-                override fun valueToProgress(value: Any) = (value as Int) + 50
-                override fun progressToValue(progress: Int) = progress - 50
-            }
 
             seekbarPitch.onSeekBarChangeListener = this@MsTtsParamsEditView
-            seekbarPitch.valueFormatter =
-                Seekbar.ValueFormatter { value, progress -> if (progress == 0) strFollow else "${value}%" }
-            seekbarPitch.progressConverter = object : Seekbar.ProgressConverter {
-                override fun valueToProgress(value: Any) = (value as Int) + 50
-                override fun progressToValue(progress: Int) = progress - 50
-            }
+            seekbarPitch.valueFormatter = seekbarRate.valueFormatter
 
             seekbarStyleDegree.onSeekBarChangeListener = this@MsTtsParamsEditView
-            seekbarStyleDegree.progressConverter = object : Seekbar.ProgressConverter {
-                override fun valueToProgress(value: Any) = ((value as Float) * 100).toInt()
-                override fun progressToValue(progress: Int) = (progress * 0.01).toFloat()
-            }
+            seekbarStyleDegree.setFloatType(2)
         }
 
 

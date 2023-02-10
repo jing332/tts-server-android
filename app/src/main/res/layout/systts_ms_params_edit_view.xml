@@ -32,8 +32,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/til_format"
-        app:max="200"
-        app:progress="100">
+        app:max="100"
+        app:min="-100"
+        app:progress="0">
 
     </com.github.jing332.tts_server_android.ui.view.widget.Seekbar>
 
@@ -47,8 +48,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekbar_rate"
-        app:max="100"
-        app:progress="50" />
+        app:max="50"
+        app:min="-50"
+        app:progress="1" />
 
     <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
         android:id="@+id/seekbar_pitch"
@@ -59,8 +61,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seekbar_volume"
-        app:max="100"
-        app:progress="50" />
+        app:max="50"
+        app:min="-50"
+        app:progress="1" />
 
     <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
         android:id="@+id/seekbar_style_Degree"
@@ -74,5 +77,5 @@
         app:layout_constraintTop_toBottomOf="@+id/seekbar_pitch"
         app:max="200"
         app:min="1"
-        app:progress="100" />
+        app:progress="1" />
 </androidx.constraintlayout.widget.ConstraintLayout>
