@@ -47,6 +47,7 @@ data class LocalTTS(
 ) : Parcelable, BaseTTS() {
     companion object {
         private const val TAG = "LocalTTS"
+        private const val STOP_MESSAGE = "STOP"
         private const val STATUS_INITIALIZING = -2
 
         private val saveDir by lazy {
@@ -130,6 +131,7 @@ data class LocalTTS(
         Log.i(TAG, "onLoad")
 
         mTtsEngine?.shutdown()
+        mTtsEngine = null
         engineInitStatus = STATUS_INITIALIZING
         mTtsEngine = TextToSpeech(App.context, {
             engineInitStatus = it
@@ -169,12 +171,13 @@ data class LocalTTS(
     override fun onStop() {
         Log.i(TAG, "onStop")
         mTtsEngine?.stop()
-        waitJob?.cancel("onStop")
+        waitJob?.cancel(STOP_MESSAGE)
     }
 
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
         mTtsEngine?.shutdown()
+        mTtsEngine = null
         isInitialized = false
     }
 
@@ -190,7 +193,7 @@ data class LocalTTS(
         return true
     }
 
-    private fun setEnginePlayParams(engine: TextToSpeech): Bundle? {
+    private fun setEnginePlayParams(engine: TextToSpeech): Bundle {
         engine.apply {
             locale?.let { language = Locale.forLanguageTag(it) }
             voiceName?.let { selectedVoice ->
@@ -223,16 +226,15 @@ data class LocalTTS(
         }
     }
 
+
     fun getAudioFile(text: String): File {
         initEngineIf()
-        currentJobId = SystemClock.elapsedRealtime().toString()
+        val currentJobId = SystemClock.elapsedRealtime().toString()
 
         File(saveDir).apply { if (!exists()) mkdirs() }
         val file = File("$saveDir/$engine.wav")
         runBlocking {
-            if (!checkInitAndWait()) {
-                throw Exception("Engine initialize failed")
-            }
+            if (!checkInitAndWait()) throw Exception("Engine initialize failed")
 
             waitJob = launch {
                 mTtsEngine?.apply {
@@ -241,7 +243,7 @@ data class LocalTTS(
                     try {
                         awaitCancellation()
                     } catch (e: CancellationException) {
-                        if (e.message == "onStop")
+                        if (e.message == STOP_MESSAGE) // 用户暂停或超时后 删除文件
                             kotlin.runCatching { file.delete() }
                     }
                 }
@@ -251,8 +253,6 @@ data class LocalTTS(
         return file
     }
 
-    @IgnoredOnParcel
-    private var currentJobId: String? = null
 
     override fun getAudio(speakText: String): ByteArray? {
         return getAudioFile(speakText).run { if (exists()) readBytes() else null }

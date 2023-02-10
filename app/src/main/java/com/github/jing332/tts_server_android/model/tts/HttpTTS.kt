@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.model.tts
 import android.app.Activity
 import android.content.Context
 import android.os.Parcelable
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import com.drake.net.Net
@@ -11,7 +12,6 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditBottomSheetBinding
-import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -23,7 +23,6 @@ import kotlinx.serialization.decodeFromString
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import java.util.concurrent.TimeUnit
 
 @Parcelize
 @Serializable
@@ -78,6 +77,13 @@ data class HttpTTS(
         }
     }
 
+    @IgnoredOnParcel
+    private var requestId: String = ""
+
+    override fun onStop() {
+        Net.cancelId(requestId)
+    }
+
     override fun onLoad() {
         runCatching { parseHeaders() }.onFailure { throw Throwable("解析请求头失败：$it") }
     }
@@ -91,22 +97,20 @@ data class HttpTTS(
         }
     }
 
+    @Synchronized
     fun getAudioResponse(speakText: String): Response {
+        requestId = "HTTP_TTS_${SystemClock.elapsedRealtime()}"
         val a =
             AnalyzeUrl(mUrl = url, speakText = speakText, speakSpeed = rate, speakVolume = volume)
         val urlOption = a.eval()
         return if (urlOption == null) { //GET
             Net.get(a.baseUrl) {
-                setClient {
-                    connectTimeout(SysTtsConfig.requestTimeout.toLong(), TimeUnit.MILLISECONDS)
-                }
+                setId(requestId)
                 setHeaders(httpHeaders.toHeaders())
             }.execute()
         } else {
             Net.post(a.baseUrl) {
-                setClient {
-                    connectTimeout(SysTtsConfig.requestTimeout.toLong(), TimeUnit.MILLISECONDS)
-                }
+                setId(requestId)
                 setHeaders(httpHeaders.toHeaders())
                 body = urlOption.body.toString().toRequestBody(null)
             }.execute()

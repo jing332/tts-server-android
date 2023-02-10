@@ -308,5 +308,6 @@
     <string name="config_import_success_msg">A total of %1d configurations were imported</string>
     <string name="file_save_failed">文件保存失败：%1$s</string>
     <string name="save_success">保存成功</string>
+    <string name="failed_timed_out">已超时：%1$dms</string>
 
 </resources>

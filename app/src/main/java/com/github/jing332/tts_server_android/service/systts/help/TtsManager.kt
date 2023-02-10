@@ -24,6 +24,9 @@ class TtsManager(val context: Context) {
     companion object {
         private const val TAG = "TtsManager"
         private const val CLOSE_1006_PREFIX = "websocket: close 1006"
+
+        private const val AUDIO_NULL_MESSAGE = "AUDIO_NULL_MESSAGE"
+
         const val BAD_HANDSHAKE_PREFIX = "websocket: bad handshake"
 
         const val ERROR_DECODE_FAILED = 0
@@ -38,6 +41,7 @@ class TtsManager(val context: Context) {
             listOf(SystemTtsWithState(SystemTts(tts = MsTTS())))
         }
     }
+
 
     interface EventListener {
         // 开始请求
@@ -429,8 +433,21 @@ class TtsManager(val context: Context) {
         val startTime = SystemClock.elapsedRealtime()
         for (retryIndex in 1..100) {
             kotlin.runCatching {
-                val audio = tts.getAudio(text) ?: throw Exception("audio null")
-                audio
+                var timedOut = false
+                val timeoutJob = mScope.launch {
+                    delay(SysTtsConfig.requestTimeout.toLong())
+                    tts.onStop()
+                    timedOut = true
+                }.job
+                timeoutJob.start()
+
+                val audio = tts.getAudio(text)
+                if (timedOut) throw Exception(
+                    context.getString(R.string.failed_timed_out, SysTtsConfig.requestTimeout)
+                )
+                else timeoutJob.cancelAndJoin()
+
+                audio ?: throw Exception(AUDIO_NULL_MESSAGE) // 抛出空音频异常 以重试
             }.onSuccess {
                 event?.onRequestSuccess(
                     text, it.size,
@@ -444,7 +461,7 @@ class TtsManager(val context: Context) {
                 event?.onError(ERROR_GET_FAILED, shortText, e.message)
 
                 // 音频为空时至多重试两次
-                if (e.message == "audio null" && retryIndex > 2) return null
+                if (e.message == AUDIO_NULL_MESSAGE && retryIndex > 2) return null
 
                 // 为close 1006则直接跳过等待
                 if (e.message.toString().startsWith(CLOSE_1006_PREFIX)) {
