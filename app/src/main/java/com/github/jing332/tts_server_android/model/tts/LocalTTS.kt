@@ -63,6 +63,8 @@ data class LocalTTS(
         }
     }
 
+    override fun isPitchFollowSystem() = pitch == BaseTTS.VALUE_FOLLOW_SYSTEM
+
     init {
         audioFormat.isNeedDecode = true
     }
@@ -72,6 +74,7 @@ data class LocalTTS(
     override fun getType(): String {
         return App.context.getString(R.string.local)
     }
+
 
     override fun getBottomContent(): String {
         return audioFormat.toString()
@@ -83,7 +86,7 @@ data class LocalTTS(
             R.string.systts_play_params_description,
             "$rateStr".toHtmlBold(),
             "<b>0</b>",
-            "<b>0</b>"
+            "${(pitch / 100f)}".toHtmlBold()
         )
     }
 
@@ -197,12 +200,12 @@ data class LocalTTS(
         engine.apply {
             locale?.let { language = Locale.forLanguageTag(it) }
             voiceName?.let { selectedVoice ->
-                voices.toList().find { it.name == selectedVoice }?.let {
+                voices?.toList()?.find { it.name == selectedVoice }?.let {
                     Log.i(TAG, "setVoice: ${it.name}")
                     voice = it
                 }
             }
-
+            setPitch(pitch / 100f)
             setSpeechRate((rate - 40) / 10f)
             return Bundle().apply {
                 extraParams?.forEach { it.putValueFromBundle(this) }
@@ -225,7 +228,6 @@ data class LocalTTS(
             return@runBlocking true
         }
     }
-
 
     fun getAudioFile(text: String): File {
         initEngineIf()

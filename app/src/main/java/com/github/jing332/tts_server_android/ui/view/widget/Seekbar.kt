@@ -128,7 +128,7 @@ open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
             seekBar: Seekbar,
             progress: Int,
             fromUser: Boolean
-        )
+        ){}
 
         fun onStartTrackingTouch(seekBar: Seekbar) {}
         fun onStopTrackingTouch(seekBar: Seekbar) {}

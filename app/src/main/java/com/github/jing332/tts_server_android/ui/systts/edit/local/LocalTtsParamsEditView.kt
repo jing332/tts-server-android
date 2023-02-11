@@ -51,6 +51,7 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
         this.mTts = tts
 
         binding.seekbarRate.progress = tts.rate
+        binding.seekbarPitch.progress = tts.pitch
         binding.cbDirectPlay.isChecked = tts.isDirectPlayMode
         binding.spinnerSampleRate.setText(tts.audioFormat.sampleRate.toString())
 
@@ -59,9 +60,6 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
 
     init {
         binding.seekbarRate.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: Seekbar, progress: Int, fromUser: Boolean) {
-            }
-
             override fun onStopTrackingTouch(seekBar: Seekbar) {
                 mTts?.rate = seekBar.progress
             }
@@ -69,6 +67,22 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
         binding.seekbarRate.valueFormatter = Seekbar.ValueFormatter { value, _ ->
             if (value == BaseTTS.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app)
             else value.toString()
+        }
+
+        binding.seekbarRate.valueFormatter = Seekbar.ValueFormatter { value, _ ->
+            if (value == BaseTTS.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app)
+            else value.toString()
+        }
+
+        binding.seekbarPitch.setFloatType(2)
+        binding.seekbarPitch.valueFormatter = Seekbar.ValueFormatter { value, _ ->
+            if (value == 0f) context.getString(R.string.follow_system_or_read_aloud_app)
+            else value.toString()
+        }
+        binding.seekbarPitch.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: Seekbar) {
+                mTts?.pitch = ((seekBar.value as Float) * 100).toInt()
+            }
         }
 
         binding.btnAddParams.clickWithThrottle {

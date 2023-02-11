@@ -169,6 +169,7 @@ class LocalTtsViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             mTts.onLoad()
+
             mTts.engineListener = null
             if (mTts.isDirectPlayMode) {
                 mTts.engineListener = object : LocalTTS.EngineProgressListener {

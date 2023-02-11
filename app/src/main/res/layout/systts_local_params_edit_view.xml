@@ -29,10 +29,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:visibility="gone"
         app:hint="@string/label_pitch"
-        app:max="100"
-        app:progress="50" />
+        app:max="200"
+        app:progress="100" />
 
 
     <LinearLayout
