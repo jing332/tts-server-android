@@ -312,5 +312,6 @@
     <string name="builtin_player_settings_tip_msg">启用内置播放器时，使用此处设置覆盖全局。</string>
     <string name="systts_standby_help_msg">作为备用后，当请求失败时将会根据 [全部/旁白/对话] 使用此配置朗读。\n也就是说，可以根据朗读目标单独配置备用。\n注意：备用配置无自动重试功能，首次失败后将直接跳过朗读，所以建议使用本地TTS类型作为备用。</string>
     <string name="save_as_file">另存为文件</string>
+    <string name="group_move_a11y_msg">已从 %1$d 移动到 %2$d</string>
 
 </resources>

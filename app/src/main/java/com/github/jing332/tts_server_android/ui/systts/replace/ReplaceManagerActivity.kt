@@ -152,6 +152,22 @@ class ReplaceManagerActivity : AppCompatActivity() {
                     super.onSelectedChanged(viewHolder, actionState)
                 }
 
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    source: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+
+                    recyclerView.announceForAccessibility(
+                        getString(
+                            R.string.group_move_a11y_msg,
+                            source.layoutPosition + 1,
+                            target.layoutPosition + 1
+                        )
+                    )
+                    return super.onMove(recyclerView, source, target)
+                }
+
                 override fun onDrag(
                     source: BindingAdapter.BindingViewHolder,
                     target: BindingAdapter.BindingViewHolder

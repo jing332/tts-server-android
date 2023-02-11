@@ -55,6 +55,7 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
                                         )
                                     }"
                             }
+
                         }
 
                         itemView.clickWithThrottle {
@@ -81,12 +82,6 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
                             }
 
                             callback?.onGroupClick(it, model)
-
-
-//                                appDb.systemTtsDao.updateGroup(model.data.apply {
-//                                    this.isExpanded = isExpanded
-//                                })
-
                         }
 
                         checkBox.accessibilityDelegate = object : View.AccessibilityDelegate() {
