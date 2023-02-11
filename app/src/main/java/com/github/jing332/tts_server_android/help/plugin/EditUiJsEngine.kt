@@ -14,6 +14,7 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
         const val FUNC_VOICES = "getVoices"
 
         const val FUNC_ON_LOAD_UI = "onLoadUI"
+        const val FUNC_ON_LOAD_DATA = "onLoadData"
 
         const val OBJ_UI_JS = "EditorJS"
     }
@@ -22,18 +23,18 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
         return px.dp
     }
 
-    private val editorJsObject: NativeObject
-        get() {
-            val importCode = "importPackage(${AppConst.PACKET_NAME}.help.plugin.ui);" +
-                    "importPackage(android.view);" +
-                    "importPackage(android.widget);"
 
-            eval(importCode)
-            return JsEngineConfig.SCRIPT_ENGINE.get(OBJ_UI_JS).run {
-                if (this == null) throw Exception("Object not found: $OBJ_UI_JS")
-                else (this as NativeObject)
-            }
+    private val editorJsObject: NativeObject by lazy {
+        val importCode = "importPackage(${AppConst.PACKET_NAME}.help.plugin.ui);" +
+                "importPackage(android.view);" +
+                "importPackage(android.widget);"
+
+        eval(importCode)
+        JsEngineConfig.SCRIPT_ENGINE.get(OBJ_UI_JS).run {
+            if (this == null) throw Exception("Object not found: $OBJ_UI_JS")
+            else (this as NativeObject)
         }
+    }
 
     fun getSampleRate(locale: String, voice: String): Int? {
         LogOutputter.writeLine("执行getAudioSampleRate()...")
@@ -65,8 +66,17 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
         }
     }
 
+    fun onLoadData() {
+        LogOutputter.writeLine("onLoadData()...")
+
+        JsEngineConfig.SCRIPT_ENGINE.invokeMethod(
+            editorJsObject,
+            FUNC_ON_LOAD_DATA
+        )
+    }
+
     fun onLoadUI(context: Context, container: LinearLayout) {
-        LogOutputter.writeLine("执行onLoadUI()...")
+        LogOutputter.writeLine("onLoadUI()...")
 
         JsEngineConfig.SCRIPT_ENGINE.invokeMethod(
             editorJsObject,
@@ -75,6 +85,4 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
             container
         )
     }
-
-
 }

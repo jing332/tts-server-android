@@ -16,6 +16,7 @@ interface JsLogger {
 
     fun i(obj: Any) {
         LogOutputter.writeLine(jsObj2String(obj), LogLevel.INFO)
+
     }
 
     fun w(obj: Any) {

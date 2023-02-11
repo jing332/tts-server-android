@@ -2,12 +2,14 @@ package com.github.jing332.tts_server_android.help.plugin.ext
 
 import android.content.Context
 import cn.hutool.core.io.CharsetDetector
+import cn.hutool.core.io.FileUtil
 import cn.hutool.core.lang.UUID
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import java.io.File
 
 @Suppress("unused")
-open class JsExtensions(val context: Context) : JsNet(), JsCrypto, JsUserInterface {
+open class JsExtensions(val context: Context, val pluginId: String) : JsNet(), JsCrypto,
+    JsUserInterface {
     fun getAudioSampleRate(audio: ByteArray): Int {
         return AudioDecoder.getSampleRateAndMime(audio).first
     }
@@ -39,7 +41,8 @@ open class JsExtensions(val context: Context) : JsNet(), JsCrypto, JsUserInterfa
      * @return File
      */
     fun getFile(path: String): File {
-        val cachePath = context.externalCacheDir!!.absolutePath
+        val cachePath = "${context.externalCacheDir!!.absolutePath}/${pluginId}"
+        if (!FileUtil.exist(cachePath)) FileUtil.mkdir(cachePath)
         val aPath = if (path.startsWith(File.separator)) {
             cachePath + path
         } else {
@@ -85,7 +88,11 @@ open class JsExtensions(val context: Context) : JsNet(), JsCrypto, JsUserInterfa
 
     @JvmOverloads
     fun writeTxtFile(path: String, text: String, charset: String = "UTF-8") {
-        getFile(path).writeText(path, charset(charset))
+        getFile(path).writeText(text, charset(charset))
+    }
+
+    fun fileExist(path: String): Boolean {
+        return FileUtil.exist(getFile(path))
     }
 
     /**

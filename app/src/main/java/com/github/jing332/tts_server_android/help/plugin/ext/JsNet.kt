@@ -21,16 +21,13 @@ open class JsNet {
      */
     @JvmOverloads
     fun httpGetString(url: String, headers: Map<String, String>? = null): String? {
-        kotlin.runCatching {
-            return Net.get(url) {
+        return try {
+            Net.get(url) {
                 headers?.let { setHeaders(it.toHeaders()) }
             }.execute<String>()
-        }.onFailure {
-            it.printStackTrace()
-            throw it
+        } catch (e: ConvertException) {
+            throw Exception("Body is not a String, HTTP-${e.response.code}=${e.response.message}")
         }
-
-        return null
     }
 
     @JvmOverloads
@@ -40,7 +37,7 @@ open class JsNet {
                 headers?.let { setHeaders(it.toHeaders()) }
             }.execute<ByteArray>()
         } catch (e: ConvertException) {
-            throw Exception("返回值非Bytes, HTTP-${e.response.code}=${e.response.message}")
+            throw Exception("Body is not a Bytes, HTTP-${e.response.code}=${e.response.message}")
         }
     }
 

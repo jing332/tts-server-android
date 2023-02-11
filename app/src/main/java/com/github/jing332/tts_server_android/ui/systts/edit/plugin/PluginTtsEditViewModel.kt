@@ -19,20 +19,18 @@ class PluginTtsEditViewModel : ViewModel() {
 
     val ui: UiData = UiData()
 
-    private val engine by lazy { EditUiJsEngine(mTts.requirePlugin) }
-    private lateinit var mTts: PluginTTS
+    val engine by lazy { EditUiJsEngine(tts.requirePlugin) }
+    lateinit var tts: PluginTTS
 
     fun checkDisplayName(name: String): String {
         return name.ifBlank { ui.voices.selectedItem?.displayText ?: name }
     }
 
-    fun init(tts: PluginTTS) {
-        mTts = tts
-
+    fun init() {
         ui.locales.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
                 ui.locales.selectedItem?.let {
-                    mTts.locale = it.value.toString()
+                    tts.locale = it.value.toString()
                 }
 
                 updateVoices()
@@ -42,7 +40,7 @@ class PluginTtsEditViewModel : ViewModel() {
         ui.voices.addOnPropertyChangedCallback { _, propertyId ->
             if (propertyId == BR.position) {
                 ui.voices.selectedItem?.let {
-                    mTts.voice = it.value.toString()
+                    tts.voice = it.value.toString()
                 }
             }
         }
@@ -59,13 +57,13 @@ class PluginTtsEditViewModel : ViewModel() {
         }
 
         ui.locales.position =
-            max(0, ui.locales.items.indexOfFirst { it.value.toString() == mTts.locale })
+            max(0, ui.locales.items.indexOfFirst { it.value.toString() == tts.locale })
     }
 
     @Suppress("RemoveSingleExpressionStringTemplate")
     private fun updateVoices() {
         val voices = try {
-            engine.getVoices(mTts.locale).map { it }
+            engine.getVoices(tts.locale).map { it }
         } catch (e: Exception) {
             errMessageLiveData.postValue(e)
             return
@@ -74,7 +72,7 @@ class PluginTtsEditViewModel : ViewModel() {
         ui.voices.apply {
             items = voices.map { SpinnerItem(it.value, it.key) }
             position = //it.key.toString() 不能从Integer转换??
-                max(0, voices.indexOfFirst { "${it.key}" == mTts.voice })
+                max(0, voices.indexOfFirst { "${it.key}" == tts.voice })
         }
     }
 
@@ -85,7 +83,7 @@ class PluginTtsEditViewModel : ViewModel() {
     ) {
         viewModelScope.runOnIO {
             val audio = try {
-                mTts.getAudio(text)
+                tts.getAudio(text)
             } catch (e: Exception) {
                 withMain { onFailure.invoke(e) }
                 return@runOnIO

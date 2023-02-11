@@ -10,7 +10,7 @@ import org.mozilla.javascript.NativeObject
 
 open class JsEngine(
     context: android.content.Context = app, val plugin: Plugin = Plugin()
-) : JsExtensions(context), JsLogger {
+) : JsExtensions(context, plugin.pluginId), JsLogger {
     companion object {
         const val OBJ_TTSER = "ttsrv"
         const val OBJ_LOGGER = "logger"

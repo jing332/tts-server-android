@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
-    private val engine: EditUiJsEngine by lazy { EditUiJsEngine(tts.requirePlugin) }
+    private val engine: EditUiJsEngine by lazy { vm.engine }
     private val vm: PluginTtsEditViewModel by viewModels()
     private val binding by lazy {
         SysttsPluginEditActivityBinding.inflate(layoutInflater).apply { m = vm }
@@ -27,18 +27,27 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         super.onCreate(savedInstanceState)
         setEditContentView(binding.root)
 
-        kotlin.runCatching {
-            engine.onLoadUI(this, binding.container)
-        }.onFailure {
-            AppDialogs.displayErrorDialog(this, it.stackTraceToString())
+        lifecycleScope.launch(Dispatchers.Main) {
+            vm.tts = tts
+            kotlin.runCatching {
+                waitDialog.show()
+                withIO { engine.onLoadData() }
+                engine.onLoadUI(this@PluginTtsEditActivity, binding.container)
+            }.onFailure {
+                if (!this@PluginTtsEditActivity.isFinishing)
+                    AppDialogs.displayErrorDialog(
+                        this@PluginTtsEditActivity,
+                        it.stackTraceToString()
+                    )
+            }
+            binding.paramsEdit.setData(tts)
+            vm.init()
+            waitDialog.dismiss()
         }
 
         vm.errMessageLiveData.observe(this) {
             AppDialogs.displayErrorDialog(this, it.stackTraceToString())
         }
-
-        binding.paramsEdit.setData(tts)
-        vm.init(tts)
     }
 
     private val waitDialog by lazy { WaitDialog(this) }

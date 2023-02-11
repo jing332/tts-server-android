@@ -1,9 +1,12 @@
+@file:Suppress("unused")
+
 package com.github.jing332.tts_server_android.help.plugin.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.AdapterView
+import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppMaterialSpinner
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 
@@ -11,18 +14,18 @@ import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 class JSpinner(context: Context, hint: String) : AppMaterialSpinner(context) {
     init {
         super.hint = hint
+
     }
 
-
-    var items: Map<Any, String> = emptyMap()
+    var items: List<Item> = listOf()
         set(value) {
             field = value
-            setListModel(value.map { SpinnerItem(it.value, it.key) })
+            setListModel(value.map { SpinnerItem(it.name, it.value) })
         }
 
 
     interface OnItemSelectedListener {
-        fun onItemSelected(spinner: JSpinner, position: Int, key: Any?)
+        fun onItemSelected(spinner: JSpinner, position: Int, item: Item)
     }
 
     fun setOnItemSelected(listener: OnItemSelectedListener?) {
@@ -33,13 +36,11 @@ class JSpinner(context: Context, hint: String) : AppMaterialSpinner(context) {
                 position: Int,
                 id: Long
             ) {
-                var key: Any? = null
-                items.onEachIndexed { index, entry ->
-                    if (index == position) {
-                        key = entry.key
-                    }
+                kotlin.runCatching {
+                    listener?.onItemSelected(this@JSpinner, position, items[position])
+                }.onFailure {
+                    AppDialogs.displayErrorDialog(context, it.stackTraceToString())
                 }
-                listener?.onItemSelected(this@JSpinner, position, key)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

@@ -57,7 +57,7 @@ let EditorJS = {
         spinner.setOnItemSelected(function(view, pos, key){
             ttsrv.toast(pos+ key)
         })
-        spinner.items = {'内部值': '显示名称1'}
+        spinner.items = [Item('内部值': '显示名称1')]
         spinner.selectedPosition = 0
 
         //文本输入框
