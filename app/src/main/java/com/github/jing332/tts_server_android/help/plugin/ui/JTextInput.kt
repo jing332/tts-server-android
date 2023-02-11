@@ -6,10 +6,10 @@ import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 
 @SuppressLint("ViewConstructor")
-class JTextInput(context: Context, hint: String? = null) : MaterialTextInput(context),
-    JViewInterface {
-    override val marginParams: MarginLayoutParams
-        get() = layoutParams as MarginLayoutParams
+class JTextInput(context: Context, hint: String? = null) : MaterialTextInput(context) {
+    init {
+        super.setHint(hint)
+    }
 
     interface OnTextChangedListener {
         fun onChanged(text: CharSequence)

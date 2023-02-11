@@ -82,11 +82,13 @@ data class LocalTTS(
 
     override fun getDescription(): String {
         val rateStr = if (isRateFollowSystem()) App.context.getString(R.string.follow) else rate
+        val pitchStr =
+            if (isPitchFollowSystem()) App.context.getString(R.string.follow) else pitch / 100f
         return "${voiceName ?: App.context.getString(R.string.default_str)} <br>" + App.context.getString(
             R.string.systts_play_params_description,
             "$rateStr".toHtmlBold(),
             "<b>0</b>",
-            "${(pitch / 100f)}".toHtmlBold()
+            "$pitchStr".toHtmlBold()
         )
     }
 
@@ -205,7 +207,8 @@ data class LocalTTS(
                     voice = it
                 }
             }
-            setPitch(pitch / 100f)
+
+            setPitch(if (pitch <= 0) 1f else pitch / 100f)
             setSpeechRate((rate - 40) / 10f)
             return Bundle().apply {
                 extraParams?.forEach { it.putValueFromBundle(this) }

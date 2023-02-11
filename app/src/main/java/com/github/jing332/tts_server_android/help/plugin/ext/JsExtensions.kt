@@ -83,6 +83,11 @@ open class JsExtensions(val context: Context) : JsNet(), JsCrypto, JsUserInterfa
         return ""
     }
 
+    @JvmOverloads
+    fun writeTxtFile(path: String, text: String, charset: String = "UTF-8") {
+        getFile(path).writeText(path, charset(charset))
+    }
+
     /**
      * 删除本地文件
      * @return 操作是否成功

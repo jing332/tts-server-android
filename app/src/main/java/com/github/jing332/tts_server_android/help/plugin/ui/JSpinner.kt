@@ -8,16 +8,13 @@ import com.github.jing332.tts_server_android.ui.view.AppMaterialSpinner
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 
 @SuppressLint("ViewConstructor")
-class JSpinner(context: Context, hint: String) : AppMaterialSpinner(context), JViewInterface {
+class JSpinner(context: Context, hint: String) : AppMaterialSpinner(context) {
     init {
         super.hint = hint
     }
 
-    override val marginParams: MarginLayoutParams
-        get() = layoutParams as MarginLayoutParams
 
     var items: Map<Any, String> = emptyMap()
-        get() = field
         set(value) {
             field = value
             setListModel(value.map { SpinnerItem(it.value, it.key) })

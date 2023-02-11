@@ -137,12 +137,9 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
             val audio = try {
                 withIO {
                     tts.onLoad()
-                    if (tts.isRateFollowSystem()) {
-                        tts.rate = 50
-                    }
-                    if (tts.isPitchFollowSystem()) {
-                        tts.pitch = 0
-                    }
+                    if (tts.isRateFollowSystem()) tts.rate = 50
+                    if (tts.isPitchFollowSystem()) tts.pitch = 0
+
                     tts.getAudio(AppConfig.testSampleText)
                 }
             } catch (e: Exception) {
