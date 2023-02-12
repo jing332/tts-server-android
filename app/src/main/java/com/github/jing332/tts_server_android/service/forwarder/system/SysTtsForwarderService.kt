@@ -125,7 +125,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
                 override fun getVoices(engine: String): String {
                     return runBlocking {
                         val ok = mLocalTtsHelper.setEngine(engine)
-                        if (!ok) throw Exception(getString(R.string.forwarder_sys_fail_engine_init_timeout))
+                        if (!ok) throw Exception(getString(R.string.systts_engine_init_failed_timeout))
 
                         val data = mLocalTtsHelper.voices.map {
                             VoiceInfo(

@@ -78,6 +78,7 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
                                 MaterialAlertDialogBuilder(context)
                                     .setTitle(R.string.msg_group_is_empty)
                                     .setMessage(getString(R.string.systts_group_empty_msg))
+                                    .setPositiveButton(android.R.string.ok, null)
                                     .show()
                             }
 

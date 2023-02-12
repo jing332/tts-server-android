@@ -38,7 +38,6 @@ open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     var min: Int = 0
         set(value) {
             field = value
-            println(min)
             if (min < 0) // 负数 实现偏移
                 progressConverter = object : ProgressConverter {
                     override fun valueToProgress(value: Any): Int {

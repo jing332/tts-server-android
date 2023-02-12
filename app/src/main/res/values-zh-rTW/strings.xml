@@ -266,7 +266,7 @@
     <string name="app_language_desc">程式語言：%1$s</string>
     <string name="app_language_to_follow_tip_msg">如果更新語言失敗，請手動結束程式並重啓。</string>
     <string name="forwarder_sys_fail_audio_file">合成失敗：未找到音訊檔案</string>
-    <string name="forwarder_sys_fail_engine_init_timeout">引擎初始化失敗：已逾時</string>
+    <string name="systts_engine_init_failed_timeout">引擎初始化失敗：已逾時</string>
     <string name="forwarder_systts">系統TTS轉發器</string>
     <string name="forwarder_sys_running">系統TTS轉發器運行中</string>
     <string name="language">語言</string>

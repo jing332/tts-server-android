@@ -283,7 +283,7 @@
     <string name="app_language_desc">Application language：%1$s</string>
     <string name="app_language_to_follow_tip_msg">If change fail, Please restart application</string>
     <string name="forwarder_sys_fail_audio_file">Synthesis failed: The audio file was not found</string>
-    <string name="forwarder_sys_fail_engine_init_timeout">Engine initialization failed: Timed out</string>
+    <string name="systts_engine_init_failed_timeout">Engine initialization failed: Timed out</string>
     <string name="forwarder_systts">System TTS forwarder</string>
     <string name="forwarder_sys_running">System TTS forwarder is running</string>
     <string name="language">Language</string>

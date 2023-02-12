@@ -141,7 +141,7 @@ class LocalTtsViewModel : ViewModel() {
             items = voices.filter { it.locale.toLanguageTag() == mTts.locale }
                 .sortedBy { it.name }.map {
                     val featureStr =
-                        if (it.features.isEmpty()) "" else it.features.toString()
+                        if (it.features == null || it.features.isEmpty() == true) "" else it.features.toString()
                     SpinnerItem("${it.name} $featureStr", it)
                 }
 
