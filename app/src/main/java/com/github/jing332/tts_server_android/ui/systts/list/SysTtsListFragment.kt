@@ -147,7 +147,7 @@ class SysTtsListFragment : Fragment() {
                 }
 
                 R.id.menu_isInAppPlayAudio -> {
-                    showInAppSettingsDialog()
+                    showBuiltinPlayerSettingsDialog()
                     true
                 }
 
@@ -292,7 +292,7 @@ class SysTtsListFragment : Fragment() {
     }
 
     @Suppress("DEPRECATION")
-    private fun showInAppSettingsDialog() {
+    private fun showBuiltinPlayerSettingsDialog() {
         val view = FrameLayout(requireContext())
         val inAppBinding = SysttsBuiltinPlayerSettingsBinding.inflate(layoutInflater, view, true)
         inAppBinding.apply {

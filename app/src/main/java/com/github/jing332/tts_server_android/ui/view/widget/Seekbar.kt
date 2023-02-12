@@ -16,6 +16,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SeekbarBinding
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar.ValueFormatter
 import com.github.jing332.tts_server_android.util.ThrottleUtil
+import kotlin.math.roundToInt
 
 open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle), OnSeekBarChangeListener {
@@ -25,7 +26,6 @@ open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     private val binding by lazy {
         SeekbarBinding.inflate(LayoutInflater.from(context), this, true)
     }
-
 
 
     var max: Int = 100
@@ -38,7 +38,7 @@ open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     var min: Int = 0
         set(value) {
             field = value
-
+            println(min)
             if (min < 0) // 负数 实现偏移
                 progressConverter = object : ProgressConverter {
                     override fun valueToProgress(value: Any): Int {
@@ -87,7 +87,7 @@ open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
 
         val ta = context.obtainStyledAttributes(attrs, R.styleable.Seekbar)
         binding.seekBar.progress = ta.getInteger(R.styleable.Seekbar_progress, 0)
-        min = ta.getInteger(R.styleable.Seekbar_min, min)
+        min = ta.getInteger(R.styleable.Seekbar_min, 0)
         max = ta.getInteger(R.styleable.Seekbar_max, max)
         binding.tvHint.text = ta.getString(R.styleable.Seekbar_hint)
         ta.recycle()
@@ -128,7 +128,8 @@ open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
             seekBar: Seekbar,
             progress: Int,
             fromUser: Boolean
-        ){}
+        ) {
+        }
 
         fun onStartTrackingTouch(seekBar: Seekbar) {}
         fun onStopTrackingTouch(seekBar: Seekbar) {}
@@ -160,7 +161,7 @@ open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
 
         progressConverter = object : ProgressConverter {
             override fun valueToProgress(value: Any): Int {
-                return ((value as Float) * x).toInt() - min
+                return ((value as Float) * x).roundToInt() - min
             }
 
             override fun progressToValue(progress: Int): Any {
