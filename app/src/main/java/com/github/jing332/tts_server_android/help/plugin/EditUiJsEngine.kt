@@ -3,11 +3,13 @@ package com.github.jing332.tts_server_android.help.plugin
 import android.content.Context
 import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
+import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.dp
 import org.mozilla.javascript.NativeObject
 
-class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
+class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
+    pluginTTS = pluginTts
+) {
     companion object {
         const val FUNC_SAMPLE_RATE = "getAudioSampleRate"
         const val FUNC_LOCALES = "getLocales"
@@ -25,6 +27,8 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
 
 
     private val editorJsObject: NativeObject by lazy {
+
+
         val importCode = "importPackage(${AppConst.PACKET_NAME}.help.plugin.ui);" +
                 "importPackage(android.view);" +
                 "importPackage(android.widget);"
@@ -37,7 +41,7 @@ class EditUiJsEngine(plugin: Plugin) : JsEngine(plugin = plugin) {
     }
 
     fun getSampleRate(locale: String, voice: String): Int? {
-        LogOutputter.writeLine("执行getAudioSampleRate()...")
+        LogOutputter.writeLine("getAudioSampleRate()...")
 
         return JsEngineConfig.SCRIPT_ENGINE.invokeMethod(
             editorJsObject,

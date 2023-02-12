@@ -19,8 +19,8 @@ class PluginTtsEditViewModel : ViewModel() {
 
     val ui: UiData = UiData()
 
-    val engine by lazy { EditUiJsEngine(tts.requirePlugin) }
     lateinit var tts: PluginTTS
+    val engine by lazy { EditUiJsEngine(tts) }
 
     fun checkDisplayName(name: String): String {
         return name.ifBlank { ui.voices.selectedItem?.displayText ?: name }

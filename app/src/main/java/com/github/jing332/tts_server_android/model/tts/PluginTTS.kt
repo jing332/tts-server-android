@@ -23,6 +23,8 @@ data class PluginTTS(
     val pluginId: String = "",
     var locale: String = "",
     var voice: String = "",
+    // 插件附加数据
+    var data: String = "",
 
     override var pitch: Int = 0,
     override var volume: Int = 50,
@@ -81,7 +83,7 @@ data class PluginTTS(
     }
 
     @IgnoredOnParcel
-    private val engine: JsEngine by lazy { JsEngine(plugin = plugin!!) }
+    private val engine: JsEngine by lazy { JsEngine(pluginTTS = this) }
 
     override fun getAudio(speakText: String): ByteArray? {
         return engine.getAudio(speakText, locale, voice, rate, volume, pitch)

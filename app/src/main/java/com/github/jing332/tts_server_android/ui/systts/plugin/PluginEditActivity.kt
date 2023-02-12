@@ -66,26 +66,8 @@ class PluginEditActivity : BackActivity() {
         }
     }
 
-    private lateinit var mData: Plugin
-    private var mTts: PluginTTS = PluginTTS()
-
-
-    @Suppress("DEPRECATION")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-
-        mData = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: Plugin()
-        if (mData.code.isBlank()) {
-            mData.code = resources.openRawResource(R.raw.systts_plugin_template).readAllText()
-        }
-        binding.editor.setText(mData.code)
-        vm.setData(mData)
-
-        initEditor()
-
-        // Debug日志输出
-        val output = LogOutputter.OutputInterface { msg, level ->
+    private val mLogOutputter by lazy {
+        LogOutputter.OutputInterface { msg, level ->
             synchronized(this@PluginEditActivity) {
                 val span = SpannableString(msg).apply {
                     setSpan(
@@ -99,20 +81,52 @@ class PluginEditActivity : BackActivity() {
                 }
             }
         }
+    }
 
-        LogOutputter.addTarget(output)
+    //    private lateinit var mData: Plugin
+    private var mTts: PluginTTS = PluginTTS()
+    private var mPlugin: Plugin
+        inline get() = mTts.plugin!!
+        inline set(value) {
+            mTts.plugin = value
+        }
+
+    @Suppress("DEPRECATION")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+
+        mTts.plugin = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: Plugin()
+        mTts.plugin?.apply {
+            if (code.isBlank()) {
+                code = resources.openRawResource(R.raw.systts_plugin_template).readAllText()
+            }
+            binding.editor.setText(code)
+        }
+
+        vm.setData(mTts)
+
+        initEditor()
+
+
+
+        LogOutputter.addTarget(mLogOutputter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LogOutputter.removeTarget(mLogOutputter)
     }
 
     private fun initEditor() {
         FileProviderRegistry.getInstance().addFileProvider(AssetsFileResolver(application.assets))
 
-        val path = "textmate/quietlight.json"
-
+        val themePath = "textmate/quietlight.json"
         val themeRegistry = ThemeRegistry.getInstance()
         themeRegistry.loadTheme(
             ThemeModel(
                 IThemeSource.fromInputStream(
-                    FileProviderRegistry.getInstance().tryGetInputStream(path), path, null
+                    FileProviderRegistry.getInstance().tryGetInputStream(themePath), themePath, null
                 )
             )
         )
@@ -152,7 +166,7 @@ class PluginEditActivity : BackActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        mData.code = binding.editor.text.toString()
+        mPlugin.code = binding.editor.text.toString()
         when (item.itemId) {
             R.id.menu_params -> displayParamsSettings()
             R.id.menu_save_as_file -> saveAsFile()
@@ -215,7 +229,7 @@ class PluginEditActivity : BackActivity() {
 
     private fun saveAsFile() {
         savedData = binding.editor.text.toString().toByteArray()
-        getFileUriToSave.launch("ttsrv-${mData.name}.js")
+        getFileUriToSave.launch("ttsrv-${mPlugin.name}.js")
     }
 
     @Suppress("DEPRECATION")
@@ -228,10 +242,10 @@ class PluginEditActivity : BackActivity() {
         }
 
     private fun displayParamsSettings() {
-        appDb.pluginDao.update(mData.apply { code = binding.editor.text.toString() })
+        appDb.pluginDao.update(mPlugin.apply { code = binding.editor.text.toString() })
         startForResult.launch(Intent(this, PluginTtsEditActivity::class.java).apply {
             putExtra(BaseTtsEditActivity.KEY_BASIC_VISIBLE, false)
-            putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = PluginTTS(plugin = mData)))
+            putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = mTts))
         })
     }
 
@@ -246,7 +260,7 @@ class PluginEditActivity : BackActivity() {
 
     }
 
-    private fun displayDebugMessage(msg: String = "", e: Exception? = null): TextView {
+    private fun displayDebugMessage(msg: String = ""): TextView {
         debugViewBinding.tvLog.text = msg
 
         debugBottomSheetDialog.show()
