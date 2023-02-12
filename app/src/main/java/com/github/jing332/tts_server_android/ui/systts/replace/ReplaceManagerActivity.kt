@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.ui.systts.replace
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -35,6 +36,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsReplaceRuleItemBi
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
+import com.github.jing332.tts_server_android.ui.base.group.IGroupModel
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.checkbox.MaterialCheckBox
@@ -157,14 +159,26 @@ class ReplaceManagerActivity : AppCompatActivity() {
                     source: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
                 ): Boolean {
+                    val src = source as BindingAdapter.BindingViewHolder
+                    val tgt = target as BindingAdapter.BindingViewHolder
+                    val isGroup = src.getModelOrNull<IGroupModel>() != null
 
-                    recyclerView.announceForAccessibility(
+                    Log.e(TAG, "${src.findParentPosition()} - ${tgt.findParentPosition()}")
+                    // 禁止越界
+                    if (src.findParentPosition() != tgt.findParentPosition()) return false
+                    val msg = if (isGroup) {
                         getString(
                             R.string.group_move_a11y_msg,
-                            source.layoutPosition + 1,
-                            target.layoutPosition + 1
+                            source.modelPosition + 1,
+                            target.modelPosition + 1
                         )
-                    )
+                    } else { // subItem
+                        val from = source.modelPosition - source.findParentPosition()
+                        val to = tgt.modelPosition - tgt.findParentPosition()
+                        getString(R.string.list_move_a11y_msg, from, to)
+                    }
+                    recyclerView.announceForAccessibility(msg)
+
                     return super.onMove(recyclerView, source, target)
                 }
 
@@ -179,10 +193,14 @@ class ReplaceManagerActivity : AppCompatActivity() {
                             }
                         }
                     } else {
-                        val groupModel = models?.get(source.findParentPosition()) as GroupModel
-                        val listInGroup =
-                            models!!.filter { it is ItemModel && groupModel.data.id == it.data.groupId }
-                        updateOrder(listInGroup)
+                        // 组model
+                        val groupModel = models?.getOrNull(source.findParentPosition())
+                            ?.run { this as GroupModel }
+                        groupModel?.let {
+                            val listInGroup =
+                                models!!.filter { it is ItemModel && it.data.id == it.data.groupId }
+                            updateOrder(listInGroup)
+                        }
                     }
                 }
             })
@@ -317,7 +335,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (menu is MenuBuilder) {
             menu.setOptionalIconsVisible(true)
-            menu.setGroupDividerEnabled(true)
+            MenuCompat.setGroupDividerEnabled(menu, true)
         }
 
         menuInflater.inflate(R.menu.systts_replace_manager, menu)

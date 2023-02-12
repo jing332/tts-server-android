@@ -306,12 +306,13 @@
     <string name="import_replace_rule">Import replacement rules</string>
     <string name="select_import">Select Import</string>
     <string name="config_import_success_msg">A total of %1d configurations were imported</string>
-    <string name="file_save_failed">文件保存失败：%1$s</string>
-    <string name="save_success">保存成功</string>
-    <string name="failed_timed_out">已超时：%1$dms</string>
-    <string name="builtin_player_settings_tip_msg">启用内置播放器时，使用此处设置覆盖全局。</string>
-    <string name="systts_standby_help_msg">作为备用后，当请求失败时将会根据 [全部/旁白/对话] 使用此配置朗读。\n也就是说，可以根据朗读目标单独配置备用。\n注意：备用配置无自动重试功能，首次失败后将直接跳过朗读，所以建议使用本地TTS类型作为备用。</string>
-    <string name="save_as_file">另存为文件</string>
-    <string name="group_move_a11y_msg">已从 %1$d 移动到 %2$d</string>
+    <string name="file_save_failed">File save failed：%1$s</string>
+    <string name="save_success">Save successfully</string>
+    <string name="failed_timed_out">Timed out：%1$dms</string>
+    <string name="builtin_player_settings_tip_msg">When the built-in player is enabled, use the settings here to override the global.</string>
+    <string name="systts_standby_help_msg">As a backup, when a request fails, it will be read aloud using this configuration according to [VoiceOver All Dialog]. \nThat is, standby can be configured separately depending on the read aloud target. Note: The standby configuration does not have the automatic retry function, and the reading will be skipped directly after the first failure, so it is recommended to use the local TTS type as a backup.</string>
+    <string name="save_as_file">Save as a file</string>
+    <string name="group_move_a11y_msg">Group: moved from %1$d to %2$d</string>
+    <string name="list_move_a11y_msg">Moved from %1$d to %2$d</string>
 
 </resources>
