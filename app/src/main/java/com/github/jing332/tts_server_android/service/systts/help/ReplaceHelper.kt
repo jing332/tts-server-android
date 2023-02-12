@@ -8,18 +8,13 @@ class ReplaceHelper {
         const val TAG = "ReplaceHelper"
     }
 
-    private lateinit var rules: List<ReplaceRule>
+    private val rules: MutableList<ReplaceRule> = mutableListOf()
 
-    fun load(): String? {
-        try {
-            rules = appDb.replaceRuleDao.allEnabled
-        } catch (e: Exception) {
-            e.printStackTrace()
-            rules = arrayListOf()
-            return e.message
+    fun load() {
+        rules.clear()
+        appDb.replaceRuleDao.allGroupWithReplaceRules().forEach { groupWithRules ->
+            rules.addAll(groupWithRules.list.sortedBy { it.order })
         }
-
-        return null
     }
 
     /**

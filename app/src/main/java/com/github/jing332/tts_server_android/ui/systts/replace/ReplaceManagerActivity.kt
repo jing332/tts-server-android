@@ -194,13 +194,13 @@ class ReplaceManagerActivity : AppCompatActivity() {
                         }
                     } else {
                         // 组model
-                        val groupModel = models?.getOrNull(source.findParentPosition())
+                        models?.getOrNull(source.findParentPosition())
                             ?.run { this as GroupModel }
-                        groupModel?.let {
-                            val listInGroup =
-                                models!!.filter { it is ItemModel && it.data.id == it.data.groupId }
-                            updateOrder(listInGroup)
-                        }
+                            ?.let { groupModel ->
+                                val listInGroup =
+                                    models!!.filter { it is ItemModel && groupModel.data.id == it.data.groupId }
+                                updateOrder(listInGroup)
+                            }
                     }
                 }
             })
