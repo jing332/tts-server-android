@@ -53,7 +53,9 @@ cd ./app\src\main\java\com\github\jing332\tts_server_android
 > 说明你的IP被微软服务器限制，使用低流量消耗的音频格式(16khz-32bitrate-mp3)可降低发生几率。
 
 ### 如何添加自己的Azure API？ 
-> 内置不支持，但可使用自定义的HTTP配置，见https://github.com/jing332/tts-server-android/issues/43#issuecomment-1405072848
+> 使用自定义HTTP TTS，见https://github.com/jing332/tts-server-android/issues/43#issuecomment-1405072848
+> 
+> (推荐)使用插件: 插件管理->网络导入链接 https://raw.fastgit.org/jing332/tts-server-android/master/plugin-azure-tts.json ,随后编辑插件，设置你的密钥key和区域region即可。
 
 
 
