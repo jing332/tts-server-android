@@ -41,6 +41,12 @@ class PluginTtsEditViewModel : ViewModel() {
             if (propertyId == BR.position) {
                 ui.voices.selectedItem?.let {
                     tts.voice = it.value.toString()
+                    kotlin.runCatching {
+                        engine.onVoiceChanged(tts.locale, tts.voice)
+                    }.onFailure { t ->
+                        t.printStackTrace()
+                    }
+
                 }
             }
         }

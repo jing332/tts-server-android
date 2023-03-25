@@ -17,6 +17,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
 
         const val FUNC_ON_LOAD_UI = "onLoadUI"
         const val FUNC_ON_LOAD_DATA = "onLoadData"
+        const val FUNC_ON_VOICE_CHANGED = "onVoiceChanged"
 
         const val OBJ_UI_JS = "EditorJS"
     }
@@ -26,7 +27,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
     }
 
 
-    private val editorJsObject: NativeObject by lazy {
+    private val editUiJsObject: NativeObject by lazy {
         val importCode = "importPackage(${AppConst.PACKET_NAME}.help.plugin.ui);" +
                 "importPackage(android.view);" +
                 "importPackage(android.widget);"
@@ -42,7 +43,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
         LogOutputter.writeLine("getAudioSampleRate()...")
 
         return scriptEngine.invokeMethod(
-            editorJsObject,
+            editUiJsObject,
             FUNC_SAMPLE_RATE,
             locale,
             voice
@@ -54,7 +55,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
 
     @Suppress("UNCHECKED_CAST")
     fun getLocales(): List<String> {
-        return scriptEngine.invokeMethod(editorJsObject, FUNC_LOCALES).run {
+        return scriptEngine.invokeMethod(editUiJsObject, FUNC_LOCALES).run {
             if (this == null) emptyList()
             else this as List<String>
         }
@@ -62,7 +63,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
 
     @Suppress("UNCHECKED_CAST")
     fun getVoices(locale: String): Map<String, String> {
-        return scriptEngine.invokeMethod(editorJsObject, FUNC_VOICES, locale).run {
+        return scriptEngine.invokeMethod(editUiJsObject, FUNC_VOICES, locale).run {
             if (this == null) emptyMap()
             else this as Map<String, String>
         }
@@ -72,7 +73,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
         LogOutputter.writeLine("onLoadData()...")
 
         scriptEngine.invokeMethod(
-            editorJsObject,
+            editUiJsObject,
             FUNC_ON_LOAD_DATA
         )
     }
@@ -81,10 +82,21 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
         LogOutputter.writeLine("onLoadUI()...")
 
         scriptEngine.invokeMethod(
-            editorJsObject,
+            editUiJsObject,
             FUNC_ON_LOAD_UI,
             context,
             container
+        )
+    }
+
+    fun onVoiceChanged(locale: String, voice: String) {
+        LogOutputter.writeLine("onVoiceChanged()...")
+
+        scriptEngine.invokeMethod(
+            editUiJsObject,
+            FUNC_ON_VOICE_CHANGED,
+            locale,
+            voice
         )
     }
 }
