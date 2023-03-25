@@ -3,15 +3,16 @@ package com.github.jing332.tts_server_android.help.plugin
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.help.plugin.JsEngineConfig.Companion.SCRIPT_ENGINE
 import com.github.jing332.tts_server_android.help.plugin.ext.JsExtensions
 import com.github.jing332.tts_server_android.help.plugin.ext.JsLogger
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
 
 open class JsEngine(
     context: android.content.Context = app,
     private val pluginTTS: PluginTTS,
+    protected val scriptEngine: RhinoScriptEngine = RhinoScriptEngine()
 ) : JsExtensions(context, pluginTTS.pluginId), JsLogger {
     private var mPlugin: Plugin
         inline get() = pluginTTS.plugin!!
@@ -37,16 +38,16 @@ open class JsEngine(
 
     private val pluginJsObject: NativeObject
         get() {
-            return SCRIPT_ENGINE.get(OBJ_PLUGIN_JS).run {
+            return scriptEngine.get(OBJ_PLUGIN_JS).run {
                 if (this == null) throw Exception("Not found object: $OBJ_PLUGIN_JS")
                 else this as NativeObject
             }
         }
 
-    protected fun eval(preCode: String = "") {
-        SCRIPT_ENGINE.put(OBJ_TTSER, this@JsEngine)
-        SCRIPT_ENGINE.put(OBJ_LOGGER, this@JsEngine)
-        SCRIPT_ENGINE.eval(preCode + ";" + mPlugin.code)
+    fun eval(preCode: String = "") {
+        scriptEngine.put(OBJ_TTSER, this@JsEngine)
+        scriptEngine.put(OBJ_LOGGER, this@JsEngine)
+        scriptEngine.eval(preCode + ";" + mPlugin.code)
     }
 
     fun evalPluginInfo(): Plugin {
@@ -76,10 +77,7 @@ open class JsEngine(
                     "\ntext: $text, locale: $locale, voice: $voice, rate: $rate, volume: $volume, pitch: $pitch"
         )
 
-        eval()
-
-
-        return SCRIPT_ENGINE.invokeMethod(
+        return scriptEngine.invokeMethod(
             pluginJsObject,
             FUNC_GET_AUDIO,
             text,

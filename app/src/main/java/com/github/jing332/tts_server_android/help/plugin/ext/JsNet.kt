@@ -45,12 +45,14 @@ open class JsNet {
      * HTTP POST
      */
     @JvmOverloads
-    fun httpPost(url: String, body: String, headers: Map<String, String>? = null): Response {
+    fun httpPost(
+        url: String,
+        body: String? = null,
+        headers: Map<String, String>? = null
+    ): Response {
         return Net.post(url) {
-            this.body = body.toRequestBody()
-            headers?.let {
-                setHeaders(it.toHeaders())
-            }
+            body?.let { this.body = it.toRequestBody() }
+            headers?.let { setHeaders(it.toHeaders()) }
         }.execute()
     }
 }

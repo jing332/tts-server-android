@@ -27,14 +27,12 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
 
 
     private val editorJsObject: NativeObject by lazy {
-
-
         val importCode = "importPackage(${AppConst.PACKET_NAME}.help.plugin.ui);" +
                 "importPackage(android.view);" +
                 "importPackage(android.widget);"
 
         eval(importCode)
-        JsEngineConfig.SCRIPT_ENGINE.get(OBJ_UI_JS).run {
+        scriptEngine.get(OBJ_UI_JS).run {
             if (this == null) throw Exception("Object not found: $OBJ_UI_JS")
             else (this as NativeObject)
         }

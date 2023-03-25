@@ -105,11 +105,7 @@ class PluginEditActivity : BackActivity() {
         }
 
         vm.setData(mTts)
-
         initEditor()
-
-
-
         LogOutputter.addTarget(mLogOutputter)
     }
 
@@ -196,18 +192,19 @@ class PluginEditActivity : BackActivity() {
                 lifecycleScope.runOnIO {
                     val sampleRate = try {
                         vm.pluginEngine.getSampleRate(mTts.locale, mTts.voice)
-                    } catch (e: Exception) {
-                        writeDebugErrorLine(e)
+                    } catch (t: Throwable) {
+                        writeDebugErrorLine(t)
                     }
                     LogOutputter.writeLine("采样率: $sampleRate")
 
                     val audio = try {
+                        vm.pluginEngine.eval()
                         vm.pluginEngine.getAudio(
                             "测试文本", mTts.locale, mTts.voice, mTts.rate,
                             mTts.volume, mTts.pitch
                         )
-                    } catch (e: Exception) {
-                        writeDebugErrorLine(e)
+                    } catch (t: Throwable) {
+                        writeDebugErrorLine(t)
                         return@runOnIO
                     }
                     if (audio == null) {
@@ -221,7 +218,6 @@ class PluginEditActivity : BackActivity() {
 
         return super.onOptionsItemSelected(item)
     }
-
 
     private var savedData: ByteArray? = null
     private val getFileUriToSave =
@@ -249,15 +245,13 @@ class PluginEditActivity : BackActivity() {
         })
     }
 
-
-    private fun writeDebugErrorLine(e: Exception) {
-        val errStr = if (e is ScriptException) {
-            "第 ${e.lineNumber} 行错误：${e.rootCause?.message ?: e}"
+    private fun writeDebugErrorLine(t: Throwable) {
+        val errStr = if (t is ScriptException) {
+            "第 ${t.lineNumber} 行错误：${t.rootCause?.message ?: t}"
         } else {
-            e.message + "($e)"
+            t.message + "($t)"
         }
         LogOutputter.writeLine(errStr, LogLevel.ERROR)
-
     }
 
     private fun displayDebugMessage(msg: String = ""): TextView {

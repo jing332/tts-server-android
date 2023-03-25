@@ -85,6 +85,10 @@ data class PluginTTS(
     @IgnoredOnParcel
     private val engine: JsEngine by lazy { JsEngine(pluginTTS = this) }
 
+    override fun onLoad() {
+        engine.eval()
+    }
+
     override fun getAudio(speakText: String): ByteArray? {
         return engine.getAudio(speakText, locale, voice, rate, volume, pitch)
     }
