@@ -41,7 +41,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
     fun getSampleRate(locale: String, voice: String): Int? {
         LogOutputter.writeLine("getAudioSampleRate()...")
 
-        return JsEngineConfig.SCRIPT_ENGINE.invokeMethod(
+        return scriptEngine.invokeMethod(
             editorJsObject,
             FUNC_SAMPLE_RATE,
             locale,
@@ -54,7 +54,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
 
     @Suppress("UNCHECKED_CAST")
     fun getLocales(): List<String> {
-        return JsEngineConfig.SCRIPT_ENGINE.invokeMethod(editorJsObject, FUNC_LOCALES).run {
+        return scriptEngine.invokeMethod(editorJsObject, FUNC_LOCALES).run {
             if (this == null) emptyList()
             else this as List<String>
         }
@@ -62,7 +62,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
 
     @Suppress("UNCHECKED_CAST")
     fun getVoices(locale: String): Map<String, String> {
-        return JsEngineConfig.SCRIPT_ENGINE.invokeMethod(editorJsObject, FUNC_VOICES, locale).run {
+        return scriptEngine.invokeMethod(editorJsObject, FUNC_VOICES, locale).run {
             if (this == null) emptyMap()
             else this as Map<String, String>
         }
@@ -71,7 +71,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
     fun onLoadData() {
         LogOutputter.writeLine("onLoadData()...")
 
-        JsEngineConfig.SCRIPT_ENGINE.invokeMethod(
+        scriptEngine.invokeMethod(
             editorJsObject,
             FUNC_ON_LOAD_DATA
         )
@@ -80,7 +80,7 @@ class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
     fun onLoadUI(context: Context, container: LinearLayout) {
         LogOutputter.writeLine("onLoadUI()...")
 
-        JsEngineConfig.SCRIPT_ENGINE.invokeMethod(
+        scriptEngine.invokeMethod(
             editorJsObject,
             FUNC_ON_LOAD_UI,
             context,

@@ -83,6 +83,7 @@ class PluginTtsEditViewModel : ViewModel() {
     ) {
         viewModelScope.runOnIO {
             val audio = try {
+                tts.onLoad()
                 tts.getAudio(text)
             } catch (e: Exception) {
                 withMain { onFailure.invoke(e) }

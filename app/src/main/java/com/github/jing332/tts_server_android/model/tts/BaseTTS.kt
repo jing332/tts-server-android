@@ -42,7 +42,7 @@ sealed class BaseTTS(
     /**
      * 音高是否跟随系统
      */
-    open fun isPitchFollowSystem(): Boolean = rate == VALUE_FOLLOW_SYSTEM
+    open fun isPitchFollowSystem(): Boolean = pitch == VALUE_FOLLOW_SYSTEM
 
 
     abstract fun getEditActivity(): Class<out Activity>
@@ -63,7 +63,7 @@ sealed class BaseTTS(
      * UI 显示名称下方的描述，如音量语速等
      */
     open fun getDescription(): String {
-        val followStr = context.getString(R.string.follow)
+        val followStr = context.getString(R.string.follow).toHtmlBold()
         return context.getString(
             R.string.systts_play_params_description,
             if (isRateFollowSystem()) followStr else "$rate".toHtmlBold(),
