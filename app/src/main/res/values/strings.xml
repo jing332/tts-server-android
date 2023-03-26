@@ -314,5 +314,7 @@
     <string name="save_as_file">Save as a file</string>
     <string name="group_move_a11y_msg">Group: moved from %1$d to %2$d</string>
     <string name="list_move_a11y_msg">Moved from %1$d to %2$d</string>
+    <string name="word_wrap">自动换行</string>
+    <string name="theme">主题</string>
 
 </resources>

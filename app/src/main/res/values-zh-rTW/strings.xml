@@ -297,4 +297,6 @@
     <string name="save_as_file">另存为文件</string>
     <string name="group_move_a11y_msg">分组已从 %1$d 移动到 %2$d</string>
     <string name="list_move_a11y_msg">已从 %1$d 移动到 %2$d</string>
+    <string name="word_wrap">自动换行</string>
+    <string name="theme">主题</string>
 </resources>
