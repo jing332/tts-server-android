@@ -62,18 +62,20 @@
         <activity
             android:name=".ui.systts.edit.microsoft.MsTtsEditActivity"
             android:label="@string/title_activity_tts_config_edit" />
+
         <activity
-            android:name=".ui.systts.list.import1.ConfigImportActivity"
+            android:name=".ui.systts.list.ConfigImportActivity"
             android:label="@string/config_import" />
-        <activity android:name=".ui.systts.list.ConfigImportActivity"
-            android:label="@string/config_import"
-            />
         <activity
             android:name=".ui.systts.edit.http.HttpTtsEditActivity"
             android:label="@string/systts_http_edit_title" />
         <activity
             android:name=".ui.systts.edit.local.LocalTtsEditActivity"
             android:label="@string/systts_local_edit_title" />
+
+        <activity
+            android:name=".ui.systts.edit.bgm.BgmTtsEditActivity"
+            android:label="@string/edit_bgm_tts_title" />
         <activity
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:exported="true"

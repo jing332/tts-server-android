@@ -34,10 +34,12 @@ data class SystemTts(
     @ColumnInfo(defaultValue = "0")
     var isStandby: Boolean = false,
 
+    @ColumnInfo(defaultValue = "0")
+    var isBgm: Boolean = false,
+
     //朗读目标
     @ReadAloudTarget
     var readAloudTarget: Int = ReadAloudTarget.ALL,
-
 
     var tts: BaseTTS
 ) : Parcelable {

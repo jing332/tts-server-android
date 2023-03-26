@@ -49,8 +49,8 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
         SysttsBaseEditActivityBinding.inflate(layoutInflater)
     }
 
-    var testInputLayout: TextInputLayout? = null
-    val basicEditView: BasicInfoEditView by lazy { binding.basicEdit }
+    protected var testInputLayout: TextInputLayout? = null
+    protected val basicEditView: BasicInfoEditView by lazy { binding.basicEdit }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +66,8 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
     fun setEditContentView(view: View?, testTil: TextInputLayout? = null) {
         binding.content.removeAllViews()
         binding.content.addView(view)
+        if (basicEditView.liteModeEnabled) return
+
         this.testInputLayout = testTil
         if (this.testInputLayout == null) {
             this.testInputLayout = binding.testLayout.tilTest
@@ -89,7 +91,6 @@ open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : Back
     }
 
     private var mData: SystemTts? = null
-
 
     @Suppress("DEPRECATION")
     val systemTts: SystemTts

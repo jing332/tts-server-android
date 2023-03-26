@@ -30,6 +30,7 @@ import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
@@ -138,6 +139,11 @@ class SysTtsListFragment : Fragment() {
 
                 R.id.menu_add_plugin_tts -> {
                     addPluginTts()
+                    true
+                }
+
+                R.id.menu_add_bgm_tts -> {
+                    addTtsConfig(BgmTtsEditActivity::class.java)
                     true
                 }
 

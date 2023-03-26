@@ -30,6 +30,10 @@
                 android:icon="@drawable/ic_baseline_javascript_24"
                 android:title="@string/systts_add_plugin_tts" />
 
+            <item android:id="@+id/menu_add_bgm_tts"
+                android:title="@string/add_bgm_tts"
+                android:icon="@drawable/baseline_queue_music_24"/>
+
             <item
                 android:id="@+id/menu_add_group"
                 android:icon="@drawable/ic_baseline_groups_24"

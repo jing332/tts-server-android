@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
 @Parcelize
 data class PlayerParams(
     var rate: Float = VALUE_FOLLOW_GLOBAL,
-    var pitch: Float = VALUE_FOLLOW_GLOBAL
+    var pitch: Float = VALUE_FOLLOW_GLOBAL,
+//    var volume: Float = VALUE_FOLLOW_GLOBAL,
 ) : Parcelable {
     companion object {
         const val VALUE_FOLLOW_GLOBAL = 0f

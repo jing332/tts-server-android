@@ -45,32 +45,32 @@ class PluginEditViewModel : ViewModel() {
         pluginEngine = EditUiJsEngine(tts)
     }
 
-   /* // 代码同步服务器
-    fun startSyncServer() {
-        server = tts_server_lib.PluginSyncServer()
-        server?.init(object : PluginCodeSyncServerCallback {
-            override fun log(level: Int, msg: String?) {
-                Log.i(TAG, "$level $msg")
-            }
+    /* // 代码同步服务器
+     fun startSyncServer() {
+         server = tts_server_lib.PluginSyncServer()
+         server?.init(object : PluginCodeSyncServerCallback {
+             override fun log(level: Int, msg: String?) {
+                 Log.i(TAG, "$level $msg")
+             }
 
-            override fun pull(): String {
-                return pluginEngine.pluginTts.plugin?.code!!
-            }
+             override fun pull(): String {
+                 return pluginEngine.pluginTts.plugin?.code!!
+             }
 
-            override fun push(code: String?) {
-                _updateCodeLiveData.postValue(code!!)
-            }
+             override fun push(code: String?) {
+                 _updateCodeLiveData.postValue(code!!)
+             }
 
-        })
-        server?.start(4566)
-    }
+         })
+         server?.start(4566)
+     }
 
-    override fun onCleared() {
-        super.onCleared()
+     override fun onCleared() {
+         super.onCleared()
 
-        server?.close()
-        server = null
-    }*/
+         server?.close()
+         server = null
+     }*/
 
     fun debug() {
         val plugin = try {

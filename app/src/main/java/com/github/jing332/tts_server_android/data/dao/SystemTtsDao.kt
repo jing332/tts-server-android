@@ -19,14 +19,17 @@ interface SystemTtsDao {
     @get:Query("SELECT count(isStandby = '1') FROM sysTts")
     val standbyTtsCount: Int
 
-    @Query("SELECT * FROM sysTts WHERE isStandby = '1' AND isEnabled = '1' AND readAloudTarget = :target")
+    @Query("SELECT * FROM sysTts WHERE isStandby = '1' AND isEnabled = '1' AND readAloudTarget = :target AND isBgm = '0' ")
     fun getAllEnabledStandbyTts(target: Int = ReadAloudTarget.ALL): List<SystemTts>
 
-    @Query("SELECT * FROM sysTts WHERE isEnabled = '1' AND readAloudTarget = :target AND isStandby = :isIncludeStandby")
+    @Query("SELECT * FROM sysTts WHERE isEnabled = '1' AND readAloudTarget = :target AND isStandby = :isIncludeStandby AND isBgm = '0' ")
     fun getAllEnabledByTarget(
         target: Int = ReadAloudTarget.ALL,
         isIncludeStandby: Boolean = false
     ): List<SystemTts>
+
+    @Query("SELECT * FROM sysTts WHERE isEnabled = '1' AND isBgm = '1' ")
+    fun getAllEnabledBgm(): List<SystemTts>
 
     @get:Query("SELECT * FROM sysTts WHERE isEnabled = '1'")
     val allEnabledTts: List<SystemTts>

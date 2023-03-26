@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isGone
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
@@ -66,6 +67,15 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
         get() = binding.groupItems!![binding.groupCurrentPosition].value as SystemTtsGroup
 
     private var mData: SystemTts? = null
+
+    var liteModeEnabled: Boolean = false
+        set(value) {
+            field = value
+            binding.btnGroupRaTarget.isGone = value
+            binding.btnHelpStandby.isGone = value
+            binding.cbStandby.isGone = value
+            binding.btnSetPlayerParams.isGone = value
+        }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun setData(data: SystemTts) {

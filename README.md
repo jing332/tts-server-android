@@ -5,25 +5,6 @@
 ![GitHub release](https://img.shields.io/github/downloads/jing332/tts-server-android/total)
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/jing332/tts-server-android/latest/total)
 
-# 停更通知
-
-## 个人原因，本项目已停更，为了方便后续的维护者快速入手，在此简单介绍下项目结构
-
-### 本项目完全是我初学Android摸索着玩的，总代码量也才1w+, 大多参考自其他开源项目。
-
-开发环境：`Android Studio 2022.2.1 Beta`, `Android SDK33`, `Go1.19`
-```
-cd ./app\src\main\java\com\github\jing332\tts_server_android
-./constant 常量以及微软TTS的角色风格汉化
-./data 数据库相关
-./service Android服务：转发器和系统TTS
-./help 一些帮助类，音频播放/解码, 插件引擎和SharedPreferences配置对象
-./model 各种TTS的具体实现以及与微软TTS的Golang包装
-./ui 整个程序的界面，比较杂，主界面由MainActivity构成，通过抽屉导航切换各个主功能的Fragment。
-```
-
-另外，如果修改了tts-server-go并需要同步到Android，则需要将./tts-server-lib 下的所有.go文件的import改为你的tts-server-go的fork地址，或使用 [go.mod的replace](https://github.com/jing332/tts-server-android/blob/c87f39e5c37a2622bf82c5c1087be8874c0f219c/tts-server-lib/go.mod#L10) 重定向本地目录。
-
 # TTS Server
 本APP起初为阅读APP的网络朗读所用，在原有基础上，现已支持:
 
@@ -49,7 +30,7 @@ cd ./app\src\main\java\com\github\jing332\tts_server_android
 * [Dev - 开发版(Actions 需登陆Github账户)](https://github.com/jing332/tts-server-android/actions)
 
 # FAQ
-### Azure webscoket: bad handshake ？
+### Azure websocket: bad handshake ？
 > 说明你的IP被微软服务器限制，使用低流量消耗的音频格式(16khz-32bitrate-mp3)可降低发生几率。
 
 ### 如何添加自己的Azure API？ 

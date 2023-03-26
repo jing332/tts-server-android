@@ -309,4 +309,8 @@
     <string name="list_move_a11y_msg">已从 %1$d 移动到 %2$d</string>
     <string name="word_wrap">自动换行</string>
     <string name="theme">主题</string>
+    <string name="add_folder">添加文件夹</string>
+    <string name="add_bgm_tts">添加背景音乐TTS</string>
+    <string name="edit_bgm_tts_title">编辑背景音乐TTS</string>
+    <string name="add_bgm_folder_tip">请添加一个含有音频的文件夹以作为BGM使用</string>
 </resources>

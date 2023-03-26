@@ -104,6 +104,9 @@ class TtsManager(val context: Context) {
     // 备用TTS
     private val sbyConfigMap: MutableMap<Int, List<SystemTtsWithState>> = mutableMapOf()
 
+    // BGM TTS
+    private val bgmMap: MutableList<SystemTts> = mutableListOf()
+
     data class SystemTtsWithState(
         val data: SystemTts,
         var isRateFollowSystem: Boolean = false,
@@ -164,15 +167,21 @@ class TtsManager(val context: Context) {
         sbyList.forEach { it.data.tts.onLoad() }
     }
 
+    private fun initBgmTts() {
+        val list = mSysTts.getAllEnabledBgm()
+        bgmMap.clear()
+        bgmMap.addAll(list)
+    }
+
     /**
      * 加载配置
      */
-    @Suppress("ReplaceIsEmptyWithIfEmpty")
     fun loadConfig() {
         mAudioPlayer = mAudioPlayer ?: AudioPlayer(context, mScope)
         mSysTts.apply {
             if (mCfg.isReplaceEnabled) mReplacer.load()
 
+            initBgmTts()
             initSbyConfig(ReadAloudTarget.ALL)
             if (SysTtsConfig.isMultiVoiceEnabled) {
                 configMap.remove(ReadAloudTarget.ALL)
