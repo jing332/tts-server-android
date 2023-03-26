@@ -43,7 +43,6 @@
         <item name="textInputStyle">?attr/textInputOutlinedStyle</item>
         <item name="materialButtonOutlinedStyle">@style/Widget.TtsServer.Button.OutlinedButton
         </item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.TtsServer.BottomSheetDialog</item>
     </style>
 
     <style name="ThemeOverlay.TtsServer.BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog">

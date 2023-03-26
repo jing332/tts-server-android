@@ -7,7 +7,7 @@ import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.dp
 import org.mozilla.javascript.NativeObject
 
-class EditUiJsEngine(pluginTts: PluginTTS) : JsEngine(
+class EditUiJsEngine(val pluginTts: PluginTTS) : JsEngine(
     pluginTTS = pluginTts
 ) {
     companion object {

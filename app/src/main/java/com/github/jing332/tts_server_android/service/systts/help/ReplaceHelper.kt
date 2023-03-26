@@ -13,7 +13,7 @@ class ReplaceHelper {
     fun load() {
         rules.clear()
         appDb.replaceRuleDao.allGroupWithReplaceRules().forEach { groupWithRules ->
-            rules.addAll(groupWithRules.list.sortedBy { it.order })
+            rules.addAll(groupWithRules.list.sortedBy { it.order }.filter { it.isEnabled })
         }
     }
 
