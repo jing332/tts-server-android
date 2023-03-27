@@ -310,7 +310,13 @@
     <string name="word_wrap">自动换行</string>
     <string name="theme">主题</string>
     <string name="add_folder">添加文件夹</string>
-    <string name="add_bgm_tts">添加背景音乐TTS</string>
-    <string name="edit_bgm_tts_title">编辑背景音乐TTS</string>
+    <string name="add_bgm_tts">添加背景音乐</string>
+    <string name="edit_bgm_tts_title">编辑背景音乐</string>
     <string name="add_bgm_folder_tip">请添加一个含有音频的文件夹以作为BGM使用</string>
+    <string name="grant_permission_all_file">请授予【所有文件访问权限】</string>
+    <string name="go_to_settings">前往设置</string>
+    <string name="shuffle">随机播放</string>
+    <string name="bgm_settings">背景音乐设置</string>
+    <string name="bgm_settings_tip">提示：右上角加号添加背景音乐。</string>
+    <string name="bgm">背景音乐</string>
 </resources>

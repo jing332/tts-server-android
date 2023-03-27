@@ -24,6 +24,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
+import com.github.jing332.tts_server_android.databinding.SysttsBgmSettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
@@ -38,6 +39,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEdit
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -153,7 +155,12 @@ class SysTtsListFragment : Fragment() {
                 }
 
                 R.id.menu_isInAppPlayAudio -> {
-                    showBuiltinPlayerSettingsDialog()
+                    displayBuiltinPlayerSettings()
+                    true
+                }
+
+                R.id.menu_bgm_settings -> {
+                    displayBgmSettings()
                     true
                 }
 
@@ -221,6 +228,7 @@ class SysTtsListFragment : Fragment() {
                 else -> false
             }
         }
+
 
         override fun onPrepareMenu(menu: Menu) {
             super.onPrepareMenu(menu)
@@ -297,8 +305,27 @@ class SysTtsListFragment : Fragment() {
         }
     }
 
+    private fun displayBgmSettings() {
+        val view = FrameLayout(requireContext())
+        val viewBinding = SysttsBgmSettingsBinding.inflate(layoutInflater, view, true)
+        viewBinding.apply {
+            seekVolume.value = (SysTtsConfig.bgmVolume * 100f).toInt()
+            switchShuffle.isChecked = SysTtsConfig.isBgmShuffleEnabled
+        }
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.bgm_settings)
+            .setView(view)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                SysTtsConfig.bgmVolume = (viewBinding.seekVolume.value as Int) / 100f
+                SysTtsConfig.isBgmShuffleEnabled = viewBinding.switchShuffle.isChecked
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+
     @Suppress("DEPRECATION")
-    private fun showBuiltinPlayerSettingsDialog() {
+    private fun displayBuiltinPlayerSettings() {
         val view = FrameLayout(requireContext())
         val inAppBinding = SysttsBuiltinPlayerSettingsBinding.inflate(layoutInflater, view, true)
         inAppBinding.apply {

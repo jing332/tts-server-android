@@ -21,6 +21,9 @@ object SysTtsConfig : KotprefModel() {
      */
     var inAppPlayPitch by floatPref(1F)
 
+    var bgmVolume by floatPref(1f)
+    var isBgmShuffleEnabled by booleanPref(false)
+
     /**
      * 多语音
      */

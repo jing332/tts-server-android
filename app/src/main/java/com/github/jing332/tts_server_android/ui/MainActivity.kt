@@ -1,13 +1,17 @@
 package com.github.jing332.tts_server_android.ui
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.Settings
+import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
@@ -17,6 +21,7 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.app.ActivityCompat
 import androidx.core.view.MenuCompat
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
@@ -32,6 +37,7 @@ import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.service.systts.help.BgmPlayer
 import com.github.jing332.tts_server_android.util.*
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -122,7 +128,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             when (menuItem.itemId) {
                 R.id.nav_killBattery -> killBattery()
-                R.id.nav_checkUpdate -> lifecycleScope.runOnIO { MyTools.checkUpdate(this, isFromUser = true) }
+                R.id.nav_checkUpdate -> lifecycleScope.runOnIO {
+                    MyTools.checkUpdate(
+                        this,
+                        isFromUser = true
+                    )
+                }
+
                 R.id.nav_about -> displayAboutDialog()
             }
         }

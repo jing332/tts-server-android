@@ -1,9 +1,16 @@
 package com.github.jing332.tts_server_android.ui.systts.edit.bgm
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.DocumentsContract
+import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.linear
@@ -16,6 +23,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.ASFUriUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
     private lateinit var brv: BindingAdapter
@@ -42,7 +50,6 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
         basicEditView.liteModeEnabled = true
         setEditContentView(binding.root)
 
-
         binding.btnAddFolder.clickWithThrottle {
             mDirSelection.launch(Uri.EMPTY)
         }
@@ -66,6 +73,41 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
         binding.paramsEdit.setData(tts)
         systemTts.isBgm = true
         updateList()
+
+        checkFileReadPermission()
+    }
+
+    private fun checkFileReadPermission() {
+        val permission = ActivityCompat.checkSelfPermission(
+            this,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+        if (permission != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ), 1
+            )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.grant_permission_all_file)
+                    .setMessage("否则将无法读取音乐文件导致无法播放！")
+                    .setPositiveButton(R.string.go_to_settings) { _, _ ->
+                        startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+                            data = Uri.parse("package:$packageName")
+                        })
+                    }
+                    .setCancelable(false)
+                    .setNeutralButton(R.string.exit) { _, _ ->
+                        onSave()
+                    }
+                    .show()
+            }
+        }
+
     }
 
     private fun updateList() {

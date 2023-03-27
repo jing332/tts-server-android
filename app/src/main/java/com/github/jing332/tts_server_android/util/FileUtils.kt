@@ -11,8 +11,6 @@ import java.io.IOException
 import java.io.InputStream
 
 object FileUtils {
-
-
     fun registerResultCreateDocument(
         fragment: Fragment,
         mime: String,
@@ -112,5 +110,19 @@ object FileUtils {
             e.printStackTrace()
         }
         return false
+    }
+
+    fun getAllFilesInFolder(folder: File): List<File> {
+        val fileList = mutableListOf<File>()
+        val files = folder.listFiles() ?: return fileList
+        for (file in files) {
+            if (file.isFile) {
+                fileList.add(file)
+            } else if (file.isDirectory) {
+                // 如果是文件夹，则递归调用该方法
+                fileList.addAll(getAllFilesInFolder(file))
+            }
+        }
+        return fileList
     }
 }

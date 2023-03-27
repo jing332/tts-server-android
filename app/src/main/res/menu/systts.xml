@@ -30,9 +30,10 @@
                 android:icon="@drawable/ic_baseline_javascript_24"
                 android:title="@string/systts_add_plugin_tts" />
 
-            <item android:id="@+id/menu_add_bgm_tts"
-                android:title="@string/add_bgm_tts"
-                android:icon="@drawable/baseline_queue_music_24"/>
+            <item
+                android:id="@+id/menu_add_bgm_tts"
+                android:icon="@drawable/baseline_queue_music_24"
+                android:title="@string/add_bgm_tts" />
 
             <item
                 android:id="@+id/menu_add_group"
@@ -71,6 +72,10 @@
             android:checkable="true"
             android:icon="@drawable/ic_baseline_smart_display_24"
             android:title="@string/systts_use_internal_audio_player" />
+        <item
+            android:id="@+id/menu_bgm_settings"
+            android:icon="@drawable/baseline_queue_music_24"
+            android:title="@string/bgm_settings" />
     </group>
 
     <group android:id="@+id/group3">

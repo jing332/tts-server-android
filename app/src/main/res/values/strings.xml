@@ -314,11 +314,17 @@
     <string name="save_as_file">Save as a file</string>
     <string name="group_move_a11y_msg">Group: moved from %1$d to %2$d</string>
     <string name="list_move_a11y_msg">Moved from %1$d to %2$d</string>
-    <string name="word_wrap">自动换行</string>
-    <string name="theme">主题</string>
-    <string name="add_folder">添加文件夹</string>
-    <string name="add_bgm_tts">添加背景音乐TTS</string>
-    <string name="edit_bgm_tts_title">编辑背景音乐TTS</string>
-    <string name="add_bgm_folder_tip">请添加一个含有音频的文件夹以作为BGM使用</string>
+    <string name="word_wrap">Word wrap</string>
+    <string name="theme">Theme</string>
+    <string name="add_folder">Add folder</string>
+    <string name="add_bgm_tts">Add BGM</string>
+    <string name="edit_bgm_tts_title">Edit BGM</string>
+    <string name="add_bgm_folder_tip">Please add a folder with audio to use as BGM</string>
+    <string name="grant_permission_all_file">Please grant [All file access permissions]</string>
+    <string name="go_to_settings">Go settings</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="bgm_settings">BGM Settings</string>
+    <string name="bgm_settings_tip">Click the plus sign on the top right corner of the homepage to add background music</string>
+    <string name="bgm">BGM</string>
 
 </resources>

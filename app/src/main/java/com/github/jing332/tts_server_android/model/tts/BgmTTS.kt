@@ -3,8 +3,10 @@ package com.github.jing332.tts_server_android.model.tts
 import android.app.Activity
 import android.content.Context
 import android.view.View
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivity
+import com.github.jing332.tts_server_android.util.toHtmlBold
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
@@ -21,14 +23,15 @@ class BgmTTS(
     override var audioPlayer: PlayerParams = PlayerParams()
 ) : BaseTTS() {
     override fun getEditActivity(): Class<out Activity> = BgmTtsEditActivity::class.java
-    override fun getType() = "BGM"
+    override fun getType() = context.getString(R.string.bgm)
 
     override fun getDescription(): String {
-        return "音量:$volume"
+        val volStr = if (volume == 0) context.getString(R.string.follow) else volume.toString()
+        return "音量:${volStr.toHtmlBold()}"
     }
 
     override fun getBottomContent(): String {
-        return "共${musicList.size}个文件夹"
+        return "共${musicList.size.toString()}个文件夹"
     }
 
     override fun onDescriptionClick(

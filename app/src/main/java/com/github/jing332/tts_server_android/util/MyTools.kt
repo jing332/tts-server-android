@@ -35,7 +35,7 @@ object MyTools {
             val jsonStr = resp.body?.string()
             checkVersionFromJson(ctx, jsonStr!!, isFromUser)
         } catch (e: Exception) {
-            e.printStackTrace()
+//            e.printStackTrace()
             if (isFromUser) ctx.toast(R.string.check_update_failed)
         }
 

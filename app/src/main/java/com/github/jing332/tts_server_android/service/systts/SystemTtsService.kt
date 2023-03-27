@@ -139,7 +139,7 @@ class SystemTtsService : TextToSpeechService(),
 
     override fun onStop() {
         Log.d(TAG, "onStop")
-        mTtsManager.stop()
+        mTtsManager.stop(fromUser = true)
         updateNotification(getString(R.string.systts_state_idle), "")
     }
 

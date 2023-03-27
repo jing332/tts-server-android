@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsBgmParamsEditViewBinding
 import com.github.jing332.tts_server_android.model.tts.BgmTTS
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
@@ -22,13 +23,14 @@ class BgmTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle:
     }
 
     fun setData(tts: BgmTTS) {
-        binding.seekVolume.value = tts.volume
         binding.seekVolume.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: Seekbar) {
                 tts.volume = binding.seekVolume.value as Int
             }
         }
+        binding.seekVolume.valueFormatter = Seekbar.ValueFormatter { value, _ ->
+            if (value == 0) context.getString(R.string.follow) else value.toString()
+        }
+        binding.seekVolume.value = tts.volume
     }
-
-
 }

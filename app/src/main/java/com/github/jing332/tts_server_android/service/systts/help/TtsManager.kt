@@ -14,6 +14,7 @@ import com.github.jing332.tts_server_android.help.audio.AudioPlayer
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.tts.BgmTTS
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.*
@@ -33,6 +34,7 @@ class TtsManager(val context: Context) {
         const val ERROR_GET_FAILED = 1
         const val ERROR_AUDIO_NULL = 2
         const val ERROR_REPLACE_FAILED = 3
+        const val ERROR_LOAD_CONFIG_FAILED = 4
 
         // 音频请求间隔
         private const val requestInterval = 100L
@@ -66,6 +68,7 @@ class TtsManager(val context: Context) {
 
         // 取消播放
         fun onPlayCanceled(text: String? = null)
+
     }
 
     // 事件监听
@@ -82,6 +85,8 @@ class TtsManager(val context: Context) {
 
     // 音频播放器
     private var mAudioPlayer: AudioPlayer? = null
+
+    private val mBgmPlayer by lazy { BgmPlayer(context) }
 
     // 归一化，将某个范围值缩小到另一范围 (500-0 -> 200-0)
     private val mNorm by lazy { NormUtil(500F, 0F, 200F, 0F) }
@@ -116,17 +121,21 @@ class TtsManager(val context: Context) {
     /**
      * 停止合成及播放
      */
-    fun stop() {
+    fun stop(fromUser: Boolean = false) {
         isSynthesizing = false
         mAudioDecoder.stop()
         mAudioPlayer?.stop()
 
-        configMap.forEach { (_, v) ->
-            v.forEach { it.data.tts.onStop() }
-        }
+        if (fromUser) {
+            mBgmPlayer.stop()
 
-        sbyConfigMap.forEach { (_, v) ->
-            v.forEach { it.data.tts.onStop() }
+            configMap.forEach { (_, v) ->
+                v.forEach { it.data.tts.onStop() }
+            }
+
+            sbyConfigMap.forEach { (_, v) ->
+                v.forEach { it.data.tts.onStop() }
+            }
         }
     }
 
@@ -134,6 +143,7 @@ class TtsManager(val context: Context) {
     * 销毁时调用
     * */
     fun destroy() {
+        mBgmPlayer.release()
         mScope.cancel()
         if (isSynthesizing) stop()
 
@@ -167,41 +177,55 @@ class TtsManager(val context: Context) {
         sbyList.forEach { it.data.tts.onLoad() }
     }
 
-    private fun initBgmTts() {
-        val list = mSysTts.getAllEnabledBgm()
-        bgmMap.clear()
-        bgmMap.addAll(list)
+    private fun initBgm() {
+        val list = mutableSetOf<Pair<Float, String>>()
+        mSysTts.getAllEnabledBgm().forEach {
+            val tts = (it.tts as BgmTTS)
+            val volume = if (tts.volume == 0) SysTtsConfig.bgmVolume else it.tts.volume / 100f
+            list.addAll(tts.musicList.map { path ->
+                Pair(volume, path)
+            })
+        }
+        mBgmPlayer.setPlayList(SysTtsConfig.isBgmShuffleEnabled, list)
     }
 
     /**
      * 加载配置
      */
     fun loadConfig() {
-        mAudioPlayer = mAudioPlayer ?: AudioPlayer(context, mScope)
-        mSysTts.apply {
-            if (mCfg.isReplaceEnabled) mReplacer.load()
+        kotlin.runCatching {
+            mAudioPlayer = mAudioPlayer ?: AudioPlayer(context, mScope)
+            mSysTts.apply {
+                if (mCfg.isReplaceEnabled) mReplacer.load()
 
-            initBgmTts()
-            initSbyConfig(ReadAloudTarget.ALL)
-            if (SysTtsConfig.isMultiVoiceEnabled) {
-                configMap.remove(ReadAloudTarget.ALL)
+                initBgm()
+                initSbyConfig(ReadAloudTarget.ALL)
+                if (SysTtsConfig.isMultiVoiceEnabled) {
+                    configMap.remove(ReadAloudTarget.ALL)
 
-                if (initConfig(ReadAloudTarget.ASIDE))
-                    context.toast(R.string.systts_warn_no_ra_aside)
+                    if (initConfig(ReadAloudTarget.ASIDE))
+                        context.toast(R.string.systts_warn_no_ra_aside)
 
-                if (initConfig(ReadAloudTarget.DIALOGUE))
-                    context.toast(R.string.systts_warn_no_ra_dialogue)
+                    if (initConfig(ReadAloudTarget.DIALOGUE))
+                        context.toast(R.string.systts_warn_no_ra_dialogue)
 
-                mAudioFormat = configMap[ReadAloudTarget.ASIDE]!![0].data.tts.audioFormat
-            } else {
-                configMap.remove(ReadAloudTarget.ASIDE)
-                configMap.remove(ReadAloudTarget.DIALOGUE)
+                    mAudioFormat = configMap[ReadAloudTarget.ASIDE]!![0].data.tts.audioFormat
+                } else {
+                    configMap.remove(ReadAloudTarget.ASIDE)
+                    configMap.remove(ReadAloudTarget.DIALOGUE)
 
-                if (initConfig(ReadAloudTarget.ALL, isInitSby = false))
-                    context.toast(R.string.systts_warn_no_ra_all)
+                    if (initConfig(ReadAloudTarget.ALL, isInitSby = false))
+                        context.toast(R.string.systts_warn_no_ra_all)
 
-                mAudioFormat = configMap[ReadAloudTarget.ALL]!![0].data.tts.audioFormat
+                    mAudioFormat = configMap[ReadAloudTarget.ALL]!![0].data.tts.audioFormat
+                }
             }
+        }.onFailure {
+            event?.onError(
+                ERROR_LOAD_CONFIG_FAILED,
+                "",
+                it.localizedMessage ?: it.rootCause?.localizedMessage ?: it.stackTraceToString()
+            )
         }
     }
 
@@ -235,6 +259,7 @@ class TtsManager(val context: Context) {
     ) {
         isSynthesizing = true
         callback.start(mAudioFormat.sampleRate, mAudioFormat.bitRate, 1)
+        mBgmPlayer.play(SysTtsConfig.isBgmShuffleEnabled)
 
         val text = if (mCfg.isReplaceEnabled) {
             try {
