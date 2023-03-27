@@ -34,6 +34,7 @@
         tools:ignore="UnusedAttribute">
         <activity
             android:name=".ui.ExoPlayerActivity"
+            android:label="@string/exo_player_title"
             android:exported="false" />
         <activity
             android:name=".ui.base.import1.BaseConfigImportActivity"

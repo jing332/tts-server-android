@@ -319,4 +319,5 @@
     <string name="bgm_settings">背景音乐设置</string>
     <string name="bgm_settings_tip">提示：右上角加号添加背景音乐。</string>
     <string name="bgm">背景音乐</string>
+    <string name="exo_player_title">媒体播放器</string>
 </resources>

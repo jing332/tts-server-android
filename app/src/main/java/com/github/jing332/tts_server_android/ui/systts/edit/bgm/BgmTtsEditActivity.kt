@@ -19,6 +19,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsBgmEditActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBgmListItemBinding
 import com.github.jing332.tts_server_android.model.tts.BgmTTS
+import com.github.jing332.tts_server_android.ui.ExoPlayerActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.ASFUriUtils
@@ -68,10 +69,17 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
 
                     val items = files.map { it.name }.toTypedArray()
                     MaterialAlertDialogBuilder(this@BgmTtsEditActivity)
-                        .setTitle(model.name)
+                        .setTitle("点击播放")
                         .setItems(items) { _, which ->
                             val file = files[which]
                             toast(file.absolutePath)
+                            startActivity(
+                                Intent(
+                                    this@BgmTtsEditActivity,
+                                    ExoPlayerActivity::class.java
+                                ).apply {
+                                    putExtra(ExoPlayerActivity.PARAM_URI, file.absolutePath)
+                                })
                         }
                         .setPositiveButton(android.R.string.ok, null)
                         .show()

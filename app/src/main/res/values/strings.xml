@@ -326,5 +326,6 @@
     <string name="bgm_settings">BGM Settings</string>
     <string name="bgm_settings_tip">Click the plus sign on the top right corner of the homepage to add background music</string>
     <string name="bgm">BGM</string>
+    <string name="exo_player_title">媒体播放器</string>
 
 </resources>
