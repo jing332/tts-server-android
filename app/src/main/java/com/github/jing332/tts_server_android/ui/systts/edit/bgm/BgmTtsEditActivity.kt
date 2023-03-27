@@ -22,8 +22,11 @@ import com.github.jing332.tts_server_android.model.tts.BgmTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.ASFUriUtils
+import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.File
 
 class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
     private lateinit var brv: BindingAdapter
@@ -58,6 +61,22 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
             addType<BgmItemModel>(R.layout.systts_bgm_list_item)
 
             onCreate {
+                itemView.clickWithThrottle {
+                    val model: BgmItemModel = getModel()
+                    val files = FileUtils.getAllFilesInFolder(File(model.name))
+                        .filter { FileUtils.getMimeType(it)?.startsWith("audio") == true }
+
+                    val items = files.map { it.name }.toTypedArray()
+                    MaterialAlertDialogBuilder(this@BgmTtsEditActivity)
+                        .setTitle(model.name)
+                        .setItems(items) { _, which ->
+                            val file = files[which]
+                            toast(file.absolutePath)
+                        }
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show()
+                }
+
                 val binding: SysttsBgmListItemBinding = getBinding()
                 binding.btnDelete.clickWithThrottle {
                     val model: BgmItemModel = getModel()

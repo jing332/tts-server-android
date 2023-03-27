@@ -9,6 +9,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.net.URLConnection
 
 object FileUtils {
     fun registerResultCreateDocument(
@@ -124,5 +125,10 @@ object FileUtils {
             }
         }
         return fileList
+    }
+
+    fun getMimeType(file: File): String? {
+        val fileNameMap = URLConnection.getFileNameMap()
+        return fileNameMap.getContentTypeFor(file.name)
     }
 }

@@ -165,6 +165,7 @@ dependencies {
 
     // Media
     implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
+    implementation 'com.google.android.exoplayer:exoplayer:ui:2.18.5'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

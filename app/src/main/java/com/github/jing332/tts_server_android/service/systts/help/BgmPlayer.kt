@@ -9,8 +9,8 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.upstream.FileDataSource
 import java.io.File
+
 
 class BgmPlayer(val context: Context) {
     companion object {
@@ -68,10 +68,14 @@ class BgmPlayer(val context: Context) {
             if (file.isDirectory) {
                 val allFiles = FileUtils.getAllFilesInFolder(file)
                     .run { if (shuffleMode) this.shuffled() else this }
-                allFiles.forEach {
-                    Log.d(TAG, it.absolutePath)
+                for (subFile in allFiles) {
+                    val mime = FileUtils.getMimeType(subFile)
+                    // 非audio或未知则跳过
+                    if (mime == null || !mime.startsWith("audio")) continue
+
+                    Log.d(TAG, subFile.absolutePath)
                     val item =
-                        MediaItem.Builder().setTag(path.first).setUri(it.absolutePath).build()
+                        MediaItem.Builder().setTag(path.first).setUri(subFile.absolutePath).build()
                     exoPlayer.addMediaItem(item)
                 }
             }
