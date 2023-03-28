@@ -11,10 +11,12 @@ import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivi
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Parcelize
 @Serializable
+@SerialName("bgm")
 class BgmTTS(
     var musicList: MutableSet<String> = mutableSetOf(),
     var isShuffleMode: Boolean = false,
