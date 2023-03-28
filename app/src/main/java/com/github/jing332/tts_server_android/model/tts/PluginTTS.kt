@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.model.tts
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -61,21 +62,22 @@ data class PluginTTS(
         }.toString()
     }
 
+    @Suppress("DEPRECATION")
     override fun onDescriptionClick(
-        context: Context,
+        activity: Activity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
     ) {
         val binding =
-            SysttsPluginEditBottomSheetBinding.inflate(LayoutInflater.from(context), null, false)
-
+            SysttsPluginEditBottomSheetBinding.inflate(activity.layoutInflater, null, false)
         binding.apply {
             basicEdit.setData(data)
             paramsEdit.setData(this@PluginTTS)
+            root.minimumHeight = activity.windowManager.defaultDisplay.height
         }
 
-        BottomSheetDialog(context).apply {
+        BottomSheetDialog(activity).apply {
             setContentView(binding.root)
             setOnDismissListener { done(data) }
             show()

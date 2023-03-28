@@ -57,20 +57,22 @@ data class HttpTTS(
         return audioFormat.toString()
     }
 
+    @Suppress("DEPRECATION")
     override fun onDescriptionClick(
-        context: Context,
+        activity: Activity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
     ) {
         val binding =
-            SysttsHttpEditBottomSheetBinding.inflate(LayoutInflater.from(context), null, false)
+            SysttsHttpEditBottomSheetBinding.inflate(activity.layoutInflater, null, false)
         binding.apply {
-            baseEdit.setData(data)
+            basicEdit.setData(data)
             editView.setData(this@HttpTTS)
+            root.minimumHeight = activity.windowManager.defaultDisplay.height
         }
 
-        BottomSheetDialog(context).apply {
+        BottomSheetDialog(activity).apply {
             setContentView(binding.root)
             setOnDismissListener { done(data) }
             show()

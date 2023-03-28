@@ -1,13 +1,19 @@
 package com.github.jing332.tts_server_android.util
 
+import android.content.Context
 import android.os.SystemClock
+import android.view.LayoutInflater
 import android.view.View
+import androidx.core.view.LayoutInflaterCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 
 val Int.dp: Int get() = SizeUtils.dp2px(this.toFloat())
 
 val Int.px: Int get() = SizeUtils.px2dp(this.toFloat())
+
+val Context.layoutInflater: LayoutInflater
+    get() = LayoutInflater.from(this)
 
 
 /**

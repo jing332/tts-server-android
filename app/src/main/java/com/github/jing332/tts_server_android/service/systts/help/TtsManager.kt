@@ -30,11 +30,11 @@ class TtsManager(val context: Context) {
 
         const val BAD_HANDSHAKE_PREFIX = "websocket: bad handshake"
 
-        const val ERROR_DECODE_FAILED = 0
-        const val ERROR_GET_FAILED = 1
-        const val ERROR_AUDIO_NULL = 2
-        const val ERROR_REPLACE_FAILED = 3
-        const val ERROR_LOAD_CONFIG_FAILED = 4
+        const val ERROR_DECODE = 0
+        const val ERROR_GET = 1
+        const val ERROR_AUDIO = 2
+        const val ERROR_REPLACE = 3
+        const val ERROR_LOAD_CONFIG = 4
 
         // 音频请求间隔
         private const val requestInterval = 100L
@@ -222,7 +222,7 @@ class TtsManager(val context: Context) {
             }
         }.onFailure {
             event?.onError(
-                ERROR_LOAD_CONFIG_FAILED,
+                ERROR_LOAD_CONFIG,
                 "",
                 it.localizedMessage ?: it.rootCause?.localizedMessage ?: it.stackTraceToString()
             )
@@ -259,13 +259,13 @@ class TtsManager(val context: Context) {
     ) {
         isSynthesizing = true
         callback.start(mAudioFormat.sampleRate, mAudioFormat.bitRate, 1)
-        mBgmPlayer.play(SysTtsConfig.isBgmShuffleEnabled)
+        mBgmPlayer.play()
 
         val text = if (mCfg.isReplaceEnabled) {
             try {
                 mReplacer.doReplace(aText)
             } catch (e: Exception) {
-                event?.onError(ERROR_REPLACE_FAILED, aText, e.message ?: e.cause?.message)
+                event?.onError(ERROR_REPLACE, aText, e.message ?: e.cause?.message)
                 aText
             }
         } else {
@@ -321,7 +321,7 @@ class TtsManager(val context: Context) {
                         event?.onStartRequest(data.text.toString(), data.tts)
                         event?.onRequestSuccess()
                         if (!data.tts.directPlay(data.text.toString())) {
-                            event?.onError(ERROR_GET_FAILED, data.text)
+                            event?.onError(ERROR_GET, data.text)
                             return@launch
                         }
                     } else if (data.audio == null) {
@@ -452,7 +452,7 @@ class TtsManager(val context: Context) {
                     }
                 }
                 .onFailure {
-                    event?.onError(ERROR_GET_FAILED, text, it.message ?: it.cause?.message)
+                    event?.onError(ERROR_GET, text, it.message ?: it.cause?.message)
                 }
             audio
         }
@@ -492,7 +492,7 @@ class TtsManager(val context: Context) {
                 if (!isSynthesizing) return null
 
                 val shortText = text.limitLength(20)
-                event?.onError(ERROR_GET_FAILED, shortText, e.message)
+                event?.onError(ERROR_GET, shortText, e.message)
 
                 // 音频为空时至多重试两次
                 if (e.message == AUDIO_NULL_MESSAGE && retryIndex > 2) return null
@@ -541,7 +541,7 @@ class TtsManager(val context: Context) {
                 event?.onRequestSuccess(text, audioSize, -1)
                 return
             }.onFailure { e ->
-                event?.onError(ERROR_GET_FAILED, text, e.message)
+                event?.onError(ERROR_GET, text, e.message)
                 // 是否断点
                 lastFailLength = if (breakPoint) currentLength else -1
                 // 1006则跳过等待
@@ -580,7 +580,7 @@ class TtsManager(val context: Context) {
             mAudioDecoder.doDecode(audio,
                 mAudioFormat.sampleRate,
                 onRead = { writeToCallBack(callback, it) },
-                error = { event?.onError(ERROR_DECODE_FAILED, it) })
+                error = { event?.onError(ERROR_DECODE, it) })
         }
     }
 

@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -118,25 +119,24 @@ data class MsTTS(
         )
     }
 
+    @Suppress("DEPRECATION")
     @SuppressLint("RestrictedApi")
     override fun onDescriptionClick(
-        context: Context,
+        activity: Activity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
     ) {
         val binding =
-            SysttsMsEditBottomSheetBinding.inflate(LayoutInflater.from(context), null, false)
-        binding.baseEdit.setData(data)
-        binding.editView.setData(this@MsTTS)
+            SysttsMsEditBottomSheetBinding.inflate(activity.layoutInflater, null, false)
+        binding.apply {
+            basicEdit.setData(data)
+            editView.setData(this@MsTTS)
+            root.minimumHeight = activity.windowManager.defaultDisplay.height
+        }
 
-        BottomSheetDialog(context).apply {
+        BottomSheetDialog(activity).apply {
             setContentView(binding.root)
-            findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.let {
-                BottomSheetBehavior.from(it).apply {
-                    skipCollapsed
-                }
-            }
             setOnDismissListener { done(data) }
             show()
         }

@@ -323,7 +323,7 @@ class SystemTtsService : TextToSpeechService(),
     override fun onError(errCode: Int, speakText: String?, reason: String?) {
         if (!App.isSysTtsLogEnabled) return
         val msg = when (errCode) {
-            TtsManager.ERROR_GET_FAILED -> {
+            TtsManager.ERROR_GET -> {
                 val str = reason.toString()
                 if (str.contains(TtsManager.BAD_HANDSHAKE_PREFIX)) {
                     str + "<br>" + getString(R.string.systts_log_ip_is_restricted)
@@ -331,11 +331,11 @@ class SystemTtsService : TextToSpeechService(),
                 getString(R.string.systts_log_failed, "${speakText?.toHtmlBold()} <br>${str}")
             }
 
-            TtsManager.ERROR_AUDIO_NULL -> getString(R.string.systts_log_audio_empty, speakText)
-            TtsManager.ERROR_DECODE_FAILED ->
+            TtsManager.ERROR_AUDIO -> getString(R.string.systts_log_audio_empty, speakText)
+            TtsManager.ERROR_DECODE ->
                 getString(R.string.systts_log_decode_failed, "$speakText <br>${reason}")
 
-            TtsManager.ERROR_REPLACE_FAILED ->
+            TtsManager.ERROR_REPLACE ->
                 getString(R.string.systts_log_replace_failed, "$speakText <br>${reason}")
 
             else -> ""

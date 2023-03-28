@@ -92,25 +92,22 @@ data class LocalTTS(
         )
     }
 
+    @Suppress("DEPRECATION")
     override fun onDescriptionClick(
-        context: Context,
+        activity: Activity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
     ) {
         val binding =
-            SysttsLocalEditBottomSheetBinding.inflate(LayoutInflater.from(context), null, false)
+            SysttsLocalEditBottomSheetBinding.inflate(activity.layoutInflater, null, false)
                 .apply {
                     basicEdit.setData(data)
                     paramsEdit.setData(this@LocalTTS)
+                    root.minimumHeight = activity.windowManager.defaultDisplay.height
                 }
-        BottomSheetDialog(context).apply {
+        BottomSheetDialog(activity).apply {
             setContentView(binding.root)
-            findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.let {
-                BottomSheetBehavior.from(it).apply {
-                    skipCollapsed
-                }
-            }
             setOnDismissListener { done(data) }
             show()
         }

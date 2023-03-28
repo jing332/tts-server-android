@@ -76,7 +76,7 @@ sealed class BaseTTS(
      * UI 当点击 描述TextView
      */
     abstract fun onDescriptionClick(
-        context: Context,
+        activity: Activity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
