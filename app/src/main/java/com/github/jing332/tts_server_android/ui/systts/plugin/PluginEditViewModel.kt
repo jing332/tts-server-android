@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.help.plugin.EditUiJsEngine
+import com.github.jing332.tts_server_android.help.plugin.PlguinUiEngine
 import com.github.jing332.tts_server_android.help.plugin.LogOutputter
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.LogLevel
@@ -21,7 +21,7 @@ class PluginEditViewModel : ViewModel() {
         private const val TAG = "PluginEditViewModel"
     }
 
-    lateinit var pluginEngine: EditUiJsEngine
+    lateinit var pluginEngine: PlguinUiEngine
     internal lateinit var pluginInfo: Plugin private set
     internal lateinit var pluginTTS: PluginTTS private set
 
@@ -41,8 +41,8 @@ class PluginEditViewModel : ViewModel() {
     }
 
     fun updateTTS(tts: PluginTTS) {
-        pluginTTS = tts
-        pluginEngine = EditUiJsEngine(tts)
+        pluginTTS = tts.apply { plugin = pluginInfo }
+        pluginEngine = PlguinUiEngine(tts)
     }
 
     /* // 代码同步服务器

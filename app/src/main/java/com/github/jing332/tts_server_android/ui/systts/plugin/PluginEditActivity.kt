@@ -248,6 +248,7 @@ class PluginEditActivity : BackActivity() {
             result.data?.getParcelableExtra<SystemTts>(BaseTtsEditActivity.KEY_DATA)?.let {
                 toast("参数仅本次编辑生效")
                 vm.updateTTS(it.tts as PluginTTS)
+
             }
         }
 

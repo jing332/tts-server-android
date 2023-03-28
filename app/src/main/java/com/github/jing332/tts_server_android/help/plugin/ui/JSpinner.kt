@@ -14,7 +14,6 @@ import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 class JSpinner(context: Context, hint: String) : AppMaterialSpinner(context) {
     init {
         super.hint = hint
-
     }
 
     var items: List<Item> = listOf()

@@ -60,6 +60,7 @@ data class SystemTts(
                 Json {
                     ignoreUnknownKeys = true //忽略未知
                     explicitNulls = false //忽略为null的字段
+                    allowStructuredMapKeys = true
                 }
             }
 

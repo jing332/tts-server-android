@@ -1,15 +1,13 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.app.Activity
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditBottomSheetBinding
-import com.github.jing332.tts_server_android.help.plugin.JsEngine
+import com.github.jing332.tts_server_android.help.plugin.PluginEngine
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
@@ -24,8 +22,9 @@ data class PluginTTS(
     val pluginId: String = "",
     var locale: String = "",
     var voice: String = "",
+//    var data: String = "",
     // 插件附加数据
-    var data: String = "",
+    var data: MutableMap<String, String> = mutableMapOf(),
 
     override var pitch: Int = 0,
     override var volume: Int = 50,
@@ -85,7 +84,7 @@ data class PluginTTS(
     }
 
     @IgnoredOnParcel
-    private val engine: JsEngine by lazy { JsEngine(pluginTTS = this) }
+    private val engine: PluginEngine by lazy { PluginEngine(pluginTTS = this) }
 
     override fun onLoad() {
         engine.eval()

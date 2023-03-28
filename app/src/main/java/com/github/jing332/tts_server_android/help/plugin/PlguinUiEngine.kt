@@ -7,7 +7,7 @@ import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.dp
 import org.mozilla.javascript.NativeObject
 
-class EditUiJsEngine(val pluginTts: PluginTTS) : JsEngine(
+class PlguinUiEngine(val pluginTts: PluginTTS) : PluginEngine(
     pluginTTS = pluginTts
 ) {
     companion object {
@@ -25,7 +25,6 @@ class EditUiJsEngine(val pluginTts: PluginTTS) : JsEngine(
     fun dp(px: Int): Int {
         return px.dp
     }
-
 
     private val editUiJsObject: NativeObject by lazy {
         val importCode = "importPackage(${AppConst.PACKET_NAME}.help.plugin.ui);" +

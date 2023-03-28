@@ -6,6 +6,7 @@ import androidx.annotation.Keep
 import com.github.jing332.tts_server_android.help.plugin.LogOutputter
 import com.github.jing332.tts_server_android.ui.LogLevel
 import org.mozilla.javascript.NativeArray
+import org.mozilla.javascript.NativeMap
 import org.mozilla.javascript.NativeObject
 
 @Keep
@@ -30,6 +31,7 @@ interface JsLogger {
     fun jsObj2String(obj: Any): String {
         return when (obj) {
             is NativeArray -> obj.show
+            is NativeMap -> obj.toString()
             is NativeObject -> obj.show()
             is ByteArray -> obj.contentToString()
             else -> obj.toString()

@@ -9,7 +9,7 @@ import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
 
-open class JsEngine(
+open class PluginEngine(
     context: android.content.Context = app,
     private val pluginTTS: PluginTTS,
     protected val scriptEngine: RhinoScriptEngine = RhinoScriptEngine()
@@ -21,20 +21,20 @@ open class JsEngine(
         }
 
     companion object {
-        const val OBJ_TTSER = "ttsrv"
+        const val OBJ_TTSRV = "ttsrv"
         const val OBJ_LOGGER = "logger"
         const val OBJ_PLUGIN_JS = "PluginJS"
+        const val OBJ_TTS_DATA = "ttsData"
 
         const val FUNC_GET_AUDIO = "getAudio"
     }
 
-    // 在JS中使用, 用于保存自定义数据
+    // 已弃用, 占位
     @Suppress("unused")
-    var extraData: String
-        get() = pluginTTS.data
-        set(value) {
-            pluginTTS.data = value
-        }
+    var extraData: String = ""
+
+    val tts: PluginTTS
+        get() = pluginTTS
 
     private val pluginJsObject: NativeObject
         get() {
@@ -45,8 +45,8 @@ open class JsEngine(
         }
 
     fun eval(preCode: String = "") {
-        scriptEngine.put(OBJ_TTSER, this@JsEngine)
-        scriptEngine.put(OBJ_LOGGER, this@JsEngine)
+        scriptEngine.put(OBJ_TTSRV, this@PluginEngine)
+        scriptEngine.put(OBJ_LOGGER, this@PluginEngine)
         scriptEngine.eval(preCode + ";" + mPlugin.code)
     }
 

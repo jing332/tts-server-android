@@ -8,7 +8,7 @@ import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import java.io.File
 
 @Suppress("unused")
-open class JsExtensions(val context: Context, val pluginId: String) : JsNet(), JsCrypto,
+open class JsExtensions(val context: Context, private val pluginId: String) : JsNet(), JsCrypto,
     JsUserInterface {
     fun getAudioSampleRate(audio: ByteArray): Int {
         return AudioDecoder.getSampleRateAndMime(audio).first

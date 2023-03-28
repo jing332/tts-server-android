@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivityBinding
-import com.github.jing332.tts_server_android.help.plugin.EditUiJsEngine
+import com.github.jing332.tts_server_android.help.plugin.PlguinUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -17,12 +17,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
-    private val engine: EditUiJsEngine by lazy { vm.engine }
+    private val engine: PlguinUiEngine by lazy { vm.engine }
     private val vm: PluginTtsEditViewModel by viewModels()
     private val binding by lazy {
         SysttsPluginEditActivityBinding.inflate(layoutInflater).apply { m = vm }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setEditContentView(binding.root)
