@@ -20,7 +20,6 @@ class BgmPlayer(val context: Context) {
     private val exoPlayer by lazy {
         ExoPlayer.Builder(context).build().apply {
             addListener(object : Player.Listener {
-
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                     super.onMediaItemTransition(mediaItem, reason)
                     val volume = mediaItem?.localConfiguration?.tag
@@ -50,7 +49,7 @@ class BgmPlayer(val context: Context) {
         runOnUI { exoPlayer.pause() }
     }
 
-    fun play(shuffleMode: Boolean = false, volume: Float = 1f) {
+    fun play() {
         Log.d(TAG, "play()...")
         runOnUI {
             if (!exoPlayer.isPlaying) exoPlayer.play()
@@ -71,7 +70,7 @@ class BgmPlayer(val context: Context) {
                 for (subFile in allFiles) {
                     val mime = FileUtils.getMimeType(subFile)
                     // 非audio或未知则跳过
-                    if (mime == null || !mime.startsWith("audio")) continue
+                    if (mime?.startsWith("audio") == true) continue
 
                     Log.d(TAG, subFile.absolutePath)
                     val item =
