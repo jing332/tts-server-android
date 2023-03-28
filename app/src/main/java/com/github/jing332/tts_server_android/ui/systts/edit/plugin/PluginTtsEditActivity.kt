@@ -1,12 +1,17 @@
 package com.github.jing332.tts_server_android.ui.systts.edit.plugin
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withIO
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivityBinding
-import com.github.jing332.tts_server_android.help.plugin.PlguinUiEngine
+import com.github.jing332.tts_server_android.help.plugin.PluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -17,11 +22,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
-    private val engine: PlguinUiEngine by lazy { vm.engine }
+    companion object {
+        const val ACTION_FINISH = "ACTION_FINISH"
+    }
+
+    private val engine: PluginUiEngine by lazy { vm.engine }
     private val vm: PluginTtsEditViewModel by viewModels()
     private val binding by lazy {
         SysttsPluginEditActivityBinding.inflate(layoutInflater).apply { m = vm }
     }
+    private val mReceiver by lazy { MyReceiver() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setEditContentView(binding.root)
@@ -47,6 +58,13 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         vm.errMessageLiveData.observe(this) {
             AppDialogs.displayErrorDialog(this, it.stackTraceToString())
         }
+
+        App.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_FINISH))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        App.localBroadcast.unregisterReceiver(mReceiver)
     }
 
     private val waitDialog by lazy { WaitDialog(this) }
@@ -98,6 +116,12 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
                 super.onSave()
             }
             waitDialog.dismiss()
+        }
+    }
+
+    inner class MyReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            finish()
         }
     }
 }

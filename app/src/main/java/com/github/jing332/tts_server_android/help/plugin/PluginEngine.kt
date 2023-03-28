@@ -13,7 +13,7 @@ open class PluginEngine(
     context: android.content.Context = app,
     private val pluginTTS: PluginTTS,
     protected val scriptEngine: RhinoScriptEngine = RhinoScriptEngine()
-) : JsExtensions(context, pluginTTS.pluginId), JsLogger {
+) : JsExtensions(context, pluginTTS.plugin!!.pluginId), JsLogger {
     private var mPlugin: Plugin
         inline get() = pluginTTS.plugin!!
         inline set(value) {

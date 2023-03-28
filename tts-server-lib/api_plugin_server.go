@@ -12,6 +12,8 @@ type PluginCodeSyncServerCallback interface {
 	Log(level int32, msg string)
 	Push(code string)
 	Pull() (string, error)
+	Debug()
+	UI()
 }
 
 type PluginSyncServer struct {
@@ -31,6 +33,8 @@ func (p *PluginSyncServer) Init(cb PluginCodeSyncServerCallback) {
 
 	p.server.OnPush = cb.Push
 	p.server.OnPull = cb.Pull
+	p.server.OnDebug = cb.Debug
+	p.server.OnUi = cb.UI
 }
 
 func (p *PluginSyncServer) Start(port int64) error {

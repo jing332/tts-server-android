@@ -3,19 +3,24 @@ package com.github.jing332.tts_server_android.ui.systts.plugin
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.FrameLayout
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.lifecycle.lifecycleScope
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
-import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditorActivityBinding
+import com.github.jing332.tts_server_android.databinding.SysttsPluginSyncSettingsBinding
 import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.help.config.PluginConfig.EditorTheme
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
@@ -26,6 +31,7 @@ import com.github.jing332.tts_server_android.ui.systts.plugin.debug.PluginLogger
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
+import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -37,7 +43,10 @@ import io.github.rosemoe.sora.langs.textmate.registry.ThemeRegistry
 import io.github.rosemoe.sora.langs.textmate.registry.dsl.languages
 import io.github.rosemoe.sora.langs.textmate.registry.model.ThemeModel
 import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.eclipse.tm4e.core.registry.IThemeSource
+
 
 class PluginEditActivity : BackActivity() {
     private val binding by lazy { SysttsPluginEditorActivityBinding.inflate(layoutInflater) }
@@ -58,9 +67,26 @@ class PluginEditActivity : BackActivity() {
         }
 
         initEditor()
-        /*        lifecycleScope.launch(Dispatchers.IO) {
-                    vm.startSyncServer()
-                }*/
+
+        if (PluginConfig.isRemoteSyncEnabled) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                vm.startSyncServer(
+                    onPush = {
+                        App.localBroadcast.sendBroadcast(Intent(PluginTtsEditActivity.ACTION_FINISH))
+                        binding.editor.setText(it)
+                    },
+                    onPull = {
+                        binding.editor.text.toString()
+                    },
+                    onDebug = {
+                        debug()
+                    },
+                    onUI = {
+                        previewUi()
+                    }
+                )
+            }
+        }
     }
 
     private fun initEditor() {
@@ -165,13 +191,51 @@ class PluginEditActivity : BackActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.findItem(R.id.menu_word_wrap)?.isChecked = PluginConfig.editorWordWrapEnabled
+        menu?.apply {
+            findItem(R.id.menu_word_wrap)?.isChecked = PluginConfig.editorWordWrapEnabled
+            findItem(R.id.menu_remote_sync)?.isChecked = PluginConfig.isRemoteSyncEnabled
+        }
         return super.onPrepareOptionsMenu(menu)
     }
 
+    @Suppress("DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         vm.pluginInfo.code = binding.editor.text.toString()
         when (item.itemId) {
+            R.id.menu_clear_cache -> {
+                vm.clearPluginCache()
+                longToast(R.string.cleared)
+            }
+
+            R.id.menu_remote_sync -> {
+                val view = FrameLayout(this)
+                val viewBinding =
+                    SysttsPluginSyncSettingsBinding.inflate(layoutInflater, view, true)
+                viewBinding.apply {
+                    tvTip.text =
+                        Html.fromHtml(getString(R.string.plugin_sync_service_tip))
+
+                    sw.isChecked = PluginConfig.isRemoteSyncEnabled
+                    tilPort.editText!!.setText(PluginConfig.remoteSyncPort.toString())
+                }
+                if (PluginConfig.isRemoteSyncEnabled) {
+                    MaterialAlertDialogBuilder(this)
+                        .setView(view)
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                            PluginConfig.isRemoteSyncEnabled = viewBinding.sw.isChecked
+                            PluginConfig.remoteSyncPort =
+                                viewBinding.tilPort.editText!!.text.toString().toInt()
+                        }
+                        .setNegativeButton(R.string.cancel, null)
+                        .setNeutralButton(R.string.learn_more) { _, _ ->
+                            val url = "https://github.com/jing332/tts-server-psc"
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            startActivity(intent)
+                        }
+                        .show()
+                }
+            }
+
             R.id.menu_word_wrap -> {
                 PluginConfig.editorWordWrapEnabled = !PluginConfig.editorWordWrapEnabled
                 binding.editor.isWordwrap = PluginConfig.editorWordWrapEnabled
@@ -184,10 +248,6 @@ class PluginEditActivity : BackActivity() {
                     EditorTheme.SOLARIZED_DRAK to "Solarized-Dark",
                     EditorTheme.DARCULA to "Darcula",
                     EditorTheme.ABYSS to "Abyss"
-//                    EditorTheme.GITHUB to "Github",
-//                    EditorTheme.VS2019 to "VS2019",
-//                    EditorTheme.ECLIPSE to "Eclipse",
-//                    EditorTheme.NOTEPADXX to "NotepadXX"
                 )
                 val items = maps.values
                 MaterialAlertDialogBuilder(this)
@@ -203,7 +263,7 @@ class PluginEditActivity : BackActivity() {
                     .show()
             }
 
-            R.id.menu_params -> displayParamsSettings()
+            R.id.menu_params -> previewUi()
             R.id.menu_save_as_file -> saveAsFile()
             R.id.menu_save -> {
                 val plugin = try {
@@ -226,12 +286,26 @@ class PluginEditActivity : BackActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+
     private fun debug() {
-        val bottomSheet = PluginLoggerBottomSheetFragment()
-        bottomSheet.show(supportFragmentManager, "PluginLoggerBottomSheetFragment")
+        val fragment = supportFragmentManager.findFragmentByTag("PluginLoggerBottomSheetFragment")
+        if (fragment != null && fragment is PluginLoggerBottomSheetFragment) {
+            fragment.clearLog()
+        } else {
+            val bottomSheetFragment = PluginLoggerBottomSheetFragment()
+            bottomSheetFragment.show(supportFragmentManager, "PluginLoggerBottomSheetFragment")
+        }
+
         vm.debug()
     }
 
+    private fun previewUi() {
+        vm.updatePluginCodeAndSave(binding.editor.text.toString())
+        startForResult.launch(Intent(this, PluginTtsEditActivity::class.java).apply {
+            putExtra(BaseTtsEditActivity.KEY_BASIC_VISIBLE, false)
+            putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = vm.pluginTTS))
+        })
+    }
 
     private var savedData: ByteArray? = null
     private val getFileUriToSave =
@@ -248,15 +322,8 @@ class PluginEditActivity : BackActivity() {
             result.data?.getParcelableExtra<SystemTts>(BaseTtsEditActivity.KEY_DATA)?.let {
                 toast("参数仅本次编辑生效")
                 vm.updateTTS(it.tts as PluginTTS)
-
             }
         }
 
-    private fun displayParamsSettings() {
-        appDb.pluginDao.update(vm.pluginInfo.apply { code = binding.editor.text.toString() })
-        startForResult.launch(Intent(this, PluginTtsEditActivity::class.java).apply {
-            putExtra(BaseTtsEditActivity.KEY_BASIC_VISIBLE, false)
-            putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = vm.pluginTTS))
-        })
-    }
+
 }

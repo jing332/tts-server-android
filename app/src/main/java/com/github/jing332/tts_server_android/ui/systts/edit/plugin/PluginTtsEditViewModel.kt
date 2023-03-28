@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
-import com.github.jing332.tts_server_android.help.plugin.PlguinUiEngine
+import com.github.jing332.tts_server_android.help.plugin.PluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
@@ -20,7 +20,7 @@ class PluginTtsEditViewModel : ViewModel() {
     val ui: UiData = UiData()
 
     lateinit var tts: PluginTTS
-    val engine by lazy { PlguinUiEngine(tts) }
+    val engine by lazy { PluginUiEngine(tts) }
 
     fun checkDisplayName(name: String): String {
         return name.ifBlank { ui.voices.selectedItem?.displayText ?: name }

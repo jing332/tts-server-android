@@ -50,6 +50,7 @@ class PluginLoggerBottomSheetFragment : BottomSheetDialogFragment(), LogOutputte
     override fun onDestroy() {
         super.onDestroy()
         LogOutputter.removeTarget(this)
+        channel.close()
     }
 
     override fun appendLog(text: CharSequence, level: Int) {
@@ -64,5 +65,8 @@ class PluginLoggerBottomSheetFragment : BottomSheetDialogFragment(), LogOutputte
         }
     }
 
-
+    fun clearLog() {
+        if (isAdded)
+            binding.tv.editableText.clear()
+    }
 }

@@ -320,4 +320,9 @@
     <string name="bgm_settings_tip">提示：右上角加号添加背景音乐。</string>
     <string name="bgm">背景音乐</string>
     <string name="exo_player_title">媒体播放器</string>
+    <string name="remote_sync_service">远程同步</string>
+    <string name="clear_plugin_cache">清空插件缓存</string>
+    <string name="listen_port">监听端口</string>
+    <string name="plugin_sync_service_tip">代码同步服务，方便在PC端编辑、更新插件代码进行调试。\n设置在重启编辑器后生效</string>
+    <string name="learn_more">了解详情</string>
 </resources>

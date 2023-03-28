@@ -326,6 +326,11 @@
     <string name="bgm_settings">BGM Settings</string>
     <string name="bgm_settings_tip">Click the plus sign on the top right corner of the homepage to add background music</string>
     <string name="bgm">BGM</string>
-    <string name="exo_player_title">媒体播放器</string>
+    <string name="exo_player_title">Media player</string>
+    <string name="remote_sync_service">Remote sync service</string>
+    <string name="clear_plugin_cache">Clear plugin cache</string>
+    <string name="listen_port">Listen port</string>
+    <string name="plugin_sync_service_tip">代码同步服务，方便在PC端编辑、更新插件代码进行调试。\n设置在重启编辑器后生效</string>
+    <string name="learn_more">Learn more</string>
 
 </resources>

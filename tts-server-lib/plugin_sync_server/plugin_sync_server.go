@@ -14,6 +14,10 @@ type PluginCodeSyncServer struct {
 	OnPush func(code string)
 	// OnPull 发送代码到客户端
 	OnPull func() (string, error)
+	// OnDebug 执行debug操作
+	OnDebug func()
+	// OnUi 执行预览UI操作
+	OnUi func()
 
 	serveMux *http.ServeMux
 	server   *http.Server
@@ -28,6 +32,8 @@ func (p *PluginCodeSyncServer) handleFunc() {
 
 	p.serveMux.Handle("/api/plugin/push", http.TimeoutHandler(http.HandlerFunc(p.pluginPushHandler), 15*time.Second, "timeout"))
 	p.serveMux.Handle("/api/plugin/pull", http.TimeoutHandler(http.HandlerFunc(p.pluginPullHandler), 15*time.Second, "timeout"))
+	p.serveMux.Handle("/api/plugin/action-debug", http.TimeoutHandler(http.HandlerFunc(p.pluginDebugHandler), 15*time.Second, "timeout"))
+	p.serveMux.Handle("/api/plugin/action-ui", http.TimeoutHandler(http.HandlerFunc(p.pluginUiHandler), 15*time.Second, "timeout"))
 }
 
 func (p *PluginCodeSyncServer) Start(port int64) error {
@@ -84,4 +90,12 @@ func (p *PluginCodeSyncServer) pluginPullHandler(w http.ResponseWriter, r *http.
 		p.Log.Warnln(err)
 		return
 	}
+}
+
+func (p *PluginCodeSyncServer) pluginUiHandler(w http.ResponseWriter, r *http.Request) {
+	p.OnUi()
+}
+
+func (p *PluginCodeSyncServer) pluginDebugHandler(w http.ResponseWriter, r *http.Request) {
+	p.OnDebug()
 }

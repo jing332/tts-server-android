@@ -1,27 +1,33 @@
 package com.github.jing332.tts_server_android.ui.systts.plugin
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.help.plugin.PlguinUiEngine
 import com.github.jing332.tts_server_android.help.plugin.LogOutputter
+import com.github.jing332.tts_server_android.help.plugin.PluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.rootCause
+import com.github.jing332.tts_server_android.util.runOnUI
 import com.script.ScriptException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import tts_server_lib.PluginCodeSyncServerCallback
 import tts_server_lib.PluginSyncServer
+import java.io.File
 
 class PluginEditViewModel : ViewModel() {
     companion object {
         private const val TAG = "PluginEditViewModel"
     }
 
-    lateinit var pluginEngine: PlguinUiEngine
+    lateinit var pluginEngine: PluginUiEngine
     internal lateinit var pluginInfo: Plugin private set
     internal lateinit var pluginTTS: PluginTTS private set
 
@@ -42,35 +48,63 @@ class PluginEditViewModel : ViewModel() {
 
     fun updateTTS(tts: PluginTTS) {
         pluginTTS = tts.apply { plugin = pluginInfo }
-        pluginEngine = PlguinUiEngine(tts)
+        pluginEngine = PluginUiEngine(tts)
     }
 
-    /* // 代码同步服务器
-     fun startSyncServer() {
-         server = tts_server_lib.PluginSyncServer()
-         server?.init(object : PluginCodeSyncServerCallback {
-             override fun log(level: Int, msg: String?) {
-                 Log.i(TAG, "$level $msg")
-             }
 
-             override fun pull(): String {
-                 return pluginEngine.pluginTts.plugin?.code!!
-             }
+    // 代码同步服务器
+    fun startSyncServer(
+        onPush: (code: String) -> Unit,
+        onPull: () -> String,
+        onDebug: () -> Unit,
+        onUI: () -> Unit
+    ) {
+        server = tts_server_lib.PluginSyncServer()
+        server?.init(object : PluginCodeSyncServerCallback {
+            override fun log(level: Int, msg: String?) {
+                Log.i(TAG, "$level $msg")
+            }
 
-             override fun push(code: String?) {
-                 _updateCodeLiveData.postValue(code!!)
-             }
+            override fun debug() {
+                runOnUI(onDebug)
+            }
 
-         })
-         server?.start(4566)
-     }
+            override fun ui() {
+                runOnUI(onUI)
+            }
 
-     override fun onCleared() {
-         super.onCleared()
+            override fun pull(): String {
+                return onPull.invoke()
+            }
 
-         server?.close()
-         server = null
-     }*/
+            override fun push(code: String) {
+                runOnUI {
+                    pluginInfo.code = code
+                    onPush.invoke(code)
+                }
+            }
+
+
+        })
+        server?.start(4566)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        server?.close()
+        server = null
+    }
+
+    fun updatePluginCodeAndSave(code: String) {
+        appDb.pluginDao.update(pluginInfo.also { it.code = code })
+
+    }
+
+    fun clearPluginCache() {
+        val file = File("${app.externalCacheDir!!.absolutePath}/${pluginInfo.pluginId}")
+        file.deleteRecursively()
+    }
 
     fun debug() {
         val plugin = try {

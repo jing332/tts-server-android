@@ -10,6 +10,10 @@ object PluginConfig : KotprefModel() {
 
     var editorWordWrapEnabled by booleanPref(false)
 
+    var isRemoteSyncEnabled by booleanPref(false)
+
+    var remoteSyncPort by intPref(4566)
+
     object EditorTheme {
         const val AUTO = 0
         const val QUIET_LIGHT = 1
