@@ -323,4 +323,6 @@
     <string name="choos_an_upload_target">选择一个上传目标</string>
     <string name="copied_url">已复制链接</string>
     <string name="direct_link_settings">直链设置</string>
+    <string name="code_editor_theme">代码编辑器主题</string>
+    <string name="code_editor_word_wrap">代码编辑器自动换行</string>
 </resources>

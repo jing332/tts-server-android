@@ -21,6 +21,7 @@ import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditorActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginSyncSettingsBinding
+import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.base.BackActivity
@@ -59,7 +60,7 @@ class PluginEditActivity : BackActivity() {
         }
 
         mEditorHelper.initEditor()
-        mEditorHelper.setTheme(PluginConfig.editorTheme)
+        mEditorHelper.setTheme(AppConfig.codeEditorTheme)
 
         if (PluginConfig.isRemoteSyncEnabled) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -95,7 +96,7 @@ class PluginEditActivity : BackActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.apply {
-            findItem(R.id.menu_word_wrap)?.isChecked = PluginConfig.editorWordWrapEnabled
+            findItem(R.id.menu_word_wrap)?.isChecked = AppConfig.isCodeEditorWordWrapEnabled
             findItem(R.id.menu_remote_sync)?.isChecked = PluginConfig.isRemoteSyncEnabled
         }
         return super.onPrepareOptionsMenu(menu)
@@ -140,8 +141,8 @@ class PluginEditActivity : BackActivity() {
             }
 
             R.id.menu_word_wrap -> {
-                PluginConfig.editorWordWrapEnabled = !PluginConfig.editorWordWrapEnabled
-                binding.editor.isWordwrap = PluginConfig.editorWordWrapEnabled
+                AppConfig.isCodeEditorWordWrapEnabled = !AppConfig.isCodeEditorWordWrapEnabled
+                binding.editor.isWordwrap = AppConfig.isCodeEditorWordWrapEnabled
             }
 
             R.id.menu_theme -> {
@@ -157,8 +158,9 @@ class PluginEditActivity : BackActivity() {
                     .setTitle(R.string.theme)
                     .setSingleChoiceItems(
                         items.toTypedArray(),
-                        PluginConfig.editorTheme
+                        AppConfig.codeEditorTheme
                     ) { dlg, which ->
+                        AppConfig.codeEditorTheme = which
                         mEditorHelper.setTheme(which)
                         dlg.dismiss()
                     }

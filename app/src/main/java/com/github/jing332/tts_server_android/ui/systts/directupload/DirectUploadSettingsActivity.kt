@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.databinding.SysttsDirectUploadSettingsActivityBinding
+import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.DirectUploadConfig
 import com.github.jing332.tts_server_android.help.plugin.directupload.DirectUploadEngine
 import com.github.jing332.tts_server_android.ui.base.BackActivity
@@ -29,9 +30,10 @@ class DirectUploadSettingsActivity : BackActivity() {
         setContentView(binding.root)
 
         binding.editor.setText(DirectUploadConfig.code)
+        binding.editor.isWordwrap = AppConfig.isCodeEditorWordWrapEnabled
         val editorHelper = CodeEditorHelper(this, binding.editor)
         editorHelper.initEditor()
-        editorHelper.setTheme(CodeEditorTheme.AUTO)
+        editorHelper.setTheme(AppConfig.codeEditorTheme)
     }
 
     @SuppressLint("RestrictedApi")

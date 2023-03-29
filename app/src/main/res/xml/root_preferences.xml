@@ -43,6 +43,18 @@
             android:summary="@string/systts_groups_multiple_hint"
             android:title="@string/systts_groups_multiple" />
 
+        <ListPreference
+            android:icon="@drawable/baseline_color_lens_24"
+            android:key="codeEditorTheme"
+            android:persistent="false"
+            android:title="@string/code_editor_theme" />
+
+        <SwitchPreferenceCompat
+            android:icon="@drawable/baseline_subdirectory_arrow_left_24"
+            android:key="isCodeEditorWordWrapEnabled"
+            android:title="@string/code_editor_word_wrap" />
+
+
     </PreferenceCategory>
 
 

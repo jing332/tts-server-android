@@ -112,9 +112,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 MyTools.checkUpdate(this)
             }
         }
-
-        val mime = FileUtils.getMimeType(File("/storage/emulated/0/Music/咒语/libencrypt.so"))
-        println(mime)
     }
 
     @Suppress("DEPRECATION")

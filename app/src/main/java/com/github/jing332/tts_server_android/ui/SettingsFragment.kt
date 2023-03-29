@@ -16,6 +16,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.R.string
 import com.github.jing332.tts_server_android.R.xml
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.util.longToast
@@ -45,6 +46,26 @@ class SettingsFragment : PreferenceFragmentCompat() {
         groupMultipleSwitch.isChecked = SysTtsConfig.isGroupMultipleEnabled
         groupMultipleSwitch.setOnPreferenceChangeListener { _, newValue ->
             SysTtsConfig.isGroupMultipleEnabled = newValue as Boolean
+            true
+        }
+
+        // 代码编辑器主题
+        val editorTheme: ListPreference = findPreference("codeEditorTheme")!!
+        val themes = linkedMapOf(
+            CodeEditorTheme.AUTO to requireContext().getString(R.string.app_language_follow),
+            CodeEditorTheme.QUIET_LIGHT to "Quiet-Light",
+            CodeEditorTheme.SOLARIZED_DRAK to "Solarized-Dark",
+            CodeEditorTheme.DARCULA to "Darcula",
+            CodeEditorTheme.ABYSS to "Abyss"
+        )
+        editorTheme.entries = themes.values.toTypedArray()
+        editorTheme.entryValues = themes.keys.map { it.toString() }.toTypedArray()
+        editorTheme.setValueIndex(AppConfig.codeEditorTheme)
+        editorTheme.summary = themes[AppConfig.codeEditorTheme]
+        editorTheme.setOnPreferenceChangeListener { _, newValue ->
+            AppConfig.codeEditorTheme = newValue.toString().toInt()
+            editorTheme.setValueIndex(AppConfig.codeEditorTheme)
+            editorTheme.summary = themes[AppConfig.codeEditorTheme]
             true
         }
 
