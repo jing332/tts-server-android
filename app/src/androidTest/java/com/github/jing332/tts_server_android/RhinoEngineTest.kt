@@ -10,15 +10,6 @@ import org.mozilla.javascript.NativeObject
 @RunWith(AndroidJUnit4::class)
 class RhinoEngineTest {
     @Test
-    fun Aes() {
-        val aesKey = """G%.g7"Y&Nf^40Ee<""".toByteArray()
-        val c = SymmetricCrypto("AES/ECB/PKCS5Padding", aesKey)
-
-        val text = "qwq123"
-        println(c.encryptBase64(text))
-    }
-
-    @Test
     fun script() {
         val jsCode = """
            

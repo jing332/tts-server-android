@@ -2,7 +2,6 @@ package com.github.jing332.tts_server_android.ui.systts.plugin
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
@@ -16,41 +15,34 @@ import androidx.appcompat.view.menu.MenuBuilder
 import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditorActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginSyncSettingsBinding
 import com.github.jing332.tts_server_android.help.config.PluginConfig
-import com.github.jing332.tts_server_android.help.config.PluginConfig.EditorTheme
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.plugin.debug.PluginLoggerBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.github.rosemoe.sora.langs.textmate.TextMateColorScheme
-import io.github.rosemoe.sora.langs.textmate.TextMateLanguage
-import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry
-import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry
-import io.github.rosemoe.sora.langs.textmate.registry.ThemeRegistry
-import io.github.rosemoe.sora.langs.textmate.registry.dsl.languages
-import io.github.rosemoe.sora.langs.textmate.registry.model.ThemeModel
-import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.eclipse.tm4e.core.registry.IThemeSource
 
 
 class PluginEditActivity : BackActivity() {
     private val binding by lazy { SysttsPluginEditorActivityBinding.inflate(layoutInflater) }
     private val vm by viewModels<PluginEditViewModel>()
+    private val mEditorHelper by lazy { CodeEditorHelper(this, binding.editor) }
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +58,8 @@ class PluginEditActivity : BackActivity() {
             binding.editor.setText(it)
         }
 
-        initEditor()
+        mEditorHelper.initEditor()
+        mEditorHelper.setTheme(PluginConfig.editorTheme)
 
         if (PluginConfig.isRemoteSyncEnabled) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -86,96 +79,6 @@ class PluginEditActivity : BackActivity() {
                     }
                 )
             }
-        }
-    }
-
-    private fun initEditor() {
-        FileProviderRegistry.getInstance().addFileProvider(AssetsFileResolver(application.assets))
-
-        val themes = arrayOf(
-            "textmate/quietlight.json",
-            "textmate/solarized_drak.json",
-            "textmate/darcula.json",
-            "textmate/abyss.json"
-        )
-        val themeRegistry = ThemeRegistry.getInstance()
-        for (theme in themes) {
-            themeRegistry.loadTheme(
-                ThemeModel(
-                    IThemeSource.fromInputStream(
-                        FileProviderRegistry.getInstance().tryGetInputStream(theme), theme, null
-                    )
-                )
-            )
-        }
-
-        GrammarRegistry.getInstance().loadGrammars(languages {
-            language("js") {
-                grammar = "textmate/javascript/syntaxes/JavaScript.tmLanguage.json"
-                defaultScopeName()
-                languageConfiguration = "textmate/javascript/language-configuration.json"
-            }
-        })
-        binding.editor.setEditorLanguage(TextMateLanguage.create("source.js", true))
-        binding.editor.isWordwrap = PluginConfig.editorWordWrapEnabled
-        setEditorTheme(PluginConfig.editorTheme)
-    }
-
-    private fun setEditorTheme(theme: Int) {
-        PluginConfig.editorTheme = theme
-        val themeRegistry = ThemeRegistry.getInstance()
-        when (theme) {
-            EditorTheme.AUTO -> {
-                val isNight =
-                    (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-                setEditorTheme(if (isNight) EditorTheme.DARCULA else EditorTheme.QUIET_LIGHT)
-                PluginConfig.editorTheme = EditorTheme.AUTO
-                return
-            }
-
-            EditorTheme.QUIET_LIGHT -> {
-                themeRegistry.setTheme("quietlight")
-                ensureTextmateTheme()
-                return
-            }
-
-            EditorTheme.SOLARIZED_DRAK -> {
-                themeRegistry.setTheme("solarized_drak")
-                ensureTextmateTheme()
-                return
-            }
-
-            EditorTheme.DARCULA -> {
-                themeRegistry.setTheme("darcula")
-                ensureTextmateTheme()
-                return
-            }
-
-            EditorTheme.ABYSS -> {
-                themeRegistry.setTheme("abyss")
-                ensureTextmateTheme()
-                return
-            }
-//            EditorTheme.DARCULA
-//            EditorTheme.GITHUB -> binding.editor.colorScheme = SchemeGitHub()
-//            EditorTheme.ECLIPSE -> binding.editor.colorScheme = SchemeEclipse()
-//            EditorTheme.VS2019 -> binding.editor.colorScheme = SchemeVS2019()
-//            EditorTheme.NOTEPADXX -> binding.editor.colorScheme = SchemeNotepadXX()
-//            EditorTheme.DARCULA -> binding.editor.colorScheme = SchemeDarcula()
-        }
-
-//        binding.editor.apply {
-//            val colorScheme = this.colorScheme
-//            this.colorScheme = colorScheme
-//        }
-    }
-
-    private fun ensureTextmateTheme() {
-        val editor = binding.editor
-        var editorColorScheme = editor.colorScheme
-        if (editorColorScheme !is TextMateColorScheme) {
-            editorColorScheme = TextMateColorScheme.create(ThemeRegistry.getInstance())
-            editor.colorScheme = editorColorScheme
         }
     }
 
@@ -243,11 +146,11 @@ class PluginEditActivity : BackActivity() {
 
             R.id.menu_theme -> {
                 val maps = linkedMapOf(
-                    EditorTheme.AUTO to "自动",
-                    EditorTheme.QUIET_LIGHT to "Quiet-Light",
-                    EditorTheme.SOLARIZED_DRAK to "Solarized-Dark",
-                    EditorTheme.DARCULA to "Darcula",
-                    EditorTheme.ABYSS to "Abyss"
+                    CodeEditorTheme.AUTO to "自动",
+                    CodeEditorTheme.QUIET_LIGHT to "Quiet-Light",
+                    CodeEditorTheme.SOLARIZED_DRAK to "Solarized-Dark",
+                    CodeEditorTheme.DARCULA to "Darcula",
+                    CodeEditorTheme.ABYSS to "Abyss"
                 )
                 val items = maps.values
                 MaterialAlertDialogBuilder(this)
@@ -256,7 +159,7 @@ class PluginEditActivity : BackActivity() {
                         items.toTypedArray(),
                         PluginConfig.editorTheme
                     ) { dlg, which ->
-                        setEditorTheme(which)
+                        mEditorHelper.setTheme(which)
                         dlg.dismiss()
                     }
                     .setPositiveButton(R.string.cancel, null)

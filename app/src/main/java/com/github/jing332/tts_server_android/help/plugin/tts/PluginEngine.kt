@@ -1,10 +1,11 @@
-package com.github.jing332.tts_server_android.help.plugin
+package com.github.jing332.tts_server_android.help.plugin.tts
 
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.help.plugin.ext.JsExtensions
-import com.github.jing332.tts_server_android.help.plugin.ext.JsLogger
+import com.github.jing332.tts_server_android.help.plugin.core.LogOutputter
+import com.github.jing332.tts_server_android.help.plugin.core.ext.JsExtensions
+import com.github.jing332.tts_server_android.help.plugin.core.ext.JsLogger
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject

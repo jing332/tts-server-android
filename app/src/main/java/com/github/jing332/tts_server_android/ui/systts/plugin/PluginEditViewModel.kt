@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.help.plugin.LogOutputter
-import com.github.jing332.tts_server_android.help.plugin.PluginUiEngine
+import com.github.jing332.tts_server_android.help.plugin.core.LogOutputter
+import com.github.jing332.tts_server_android.help.plugin.tts.PluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.util.readableString

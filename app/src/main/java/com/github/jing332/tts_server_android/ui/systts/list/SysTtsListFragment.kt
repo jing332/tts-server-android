@@ -30,6 +30,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBindi
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.ui.systts.directupload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
@@ -198,6 +199,13 @@ class SysTtsListFragment : Fragment() {
 
                 R.id.menu_replace_manager -> {
                     startActivity(Intent(requireContext(), ReplaceManagerActivity::class.java))
+                    true
+                }
+
+                R.id.menu_direct_upload_settings -> {
+                    startActivity(
+                        Intent(requireContext(), DirectUploadSettingsActivity::class.java)
+                    )
                     true
                 }
 

@@ -336,5 +336,6 @@
     <string name="systts_bgm_description">Volume:%1$s</string>
     <string name="total_n_folders">Total %1$s folders</string>
     <string name="auto_check_update">自动检查更新</string>
+    <string name="direct_upload_settings">直链上传设置</string>
 
 </resources>

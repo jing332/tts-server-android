@@ -328,4 +328,5 @@
     <string name="systts_bgm_description">音量:%1$s</string>
     <string name="total_n_folders">共 %1$s 个文件夹</string>
     <string name="auto_check_update">自动检查更新</string>
+    <string name="direct_upload_settings">直链上传设置</string>
 </resources>

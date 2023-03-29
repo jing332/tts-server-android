@@ -1,4 +1,5 @@
-package com.github.jing332.tts_server_android.ui.systts.plugin.debug
+package com.github.jing332.tts_server_android.ui.systts.directupload
+
 
 import android.os.Bundle
 import android.text.Spannable
@@ -11,15 +12,21 @@ import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.databinding.SysttsPluginLoggerBottomSheetBinding
 import com.github.jing332.tts_server_android.help.plugin.core.LogOutputter
+import com.github.jing332.tts_server_android.help.plugin.core.Logger
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class PluginLoggerBottomSheetFragment : BottomSheetDialogFragment(), LogOutputter.OutputInterface {
+class LoggerBottomSheetFragment(private val logger: Logger) : BottomSheetDialogFragment(),
+    Logger.LogListener {
+    companion object {
+        const val TAG = "LoggerBottomSheetFragment"
+    }
+
     init {
-        LogOutputter.addTarget(this)
+        logger.addListener(this)
     }
 
     private val binding by lazy { SysttsPluginLoggerBottomSheetBinding.inflate(layoutInflater) }
@@ -34,7 +41,7 @@ class PluginLoggerBottomSheetFragment : BottomSheetDialogFragment(), LogOutputte
     @Suppress("DEPRECATION")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        LogOutputter.addTarget(this)
+
         binding.root.minimumHeight = requireActivity().windowManager.defaultDisplay.height
 
         lifecycleScope.launch {
@@ -49,11 +56,16 @@ class PluginLoggerBottomSheetFragment : BottomSheetDialogFragment(), LogOutputte
 
     override fun onDestroy() {
         super.onDestroy()
-        LogOutputter.removeTarget(this)
+        logger.removeListener(this)
         channel.close()
     }
 
-    override fun appendLog(text: CharSequence, level: Int) {
+    fun clearLog() {
+        if (isAdded)
+            binding.tv.editableText.clear()
+    }
+
+    override fun log(text: CharSequence, level: Int) {
         synchronized(this) {
             val span = SpannableString(text).apply {
                 setSpan(
@@ -63,10 +75,5 @@ class PluginLoggerBottomSheetFragment : BottomSheetDialogFragment(), LogOutputte
             }
             runBlocking { channel.send(span) }
         }
-    }
-
-    fun clearLog() {
-        if (isAdded)
-            binding.tv.editableText.clear()
     }
 }

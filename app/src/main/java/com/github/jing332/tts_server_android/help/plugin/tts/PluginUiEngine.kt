@@ -1,8 +1,9 @@
-package com.github.jing332.tts_server_android.help.plugin
+package com.github.jing332.tts_server_android.help.plugin.tts
 
 import android.content.Context
 import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.help.plugin.core.LogOutputter
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.dp
 import org.mozilla.javascript.NativeObject

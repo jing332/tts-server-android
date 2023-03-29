@@ -33,9 +33,12 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
-            android:name=".ui.ExoPlayerActivity"
-            android:label="@string/exo_player_title"
+            android:name=".ui.systts.directupload.DirectUploadSettingsActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.ExoPlayerActivity"
+            android:exported="false"
+            android:label="@string/exo_player_title" />
         <activity
             android:name=".ui.base.import1.BaseConfigImportActivity"
             android:exported="false" />

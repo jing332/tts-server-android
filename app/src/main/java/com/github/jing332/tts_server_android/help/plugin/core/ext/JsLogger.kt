@@ -1,9 +1,9 @@
 @file:Suppress("unused")
 
-package com.github.jing332.tts_server_android.help.plugin.ext
+package com.github.jing332.tts_server_android.help.plugin.core.ext
 
 import androidx.annotation.Keep
-import com.github.jing332.tts_server_android.help.plugin.LogOutputter
+import com.github.jing332.tts_server_android.help.plugin.core.LogOutputter
 import com.github.jing332.tts_server_android.ui.LogLevel
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.NativeMap
