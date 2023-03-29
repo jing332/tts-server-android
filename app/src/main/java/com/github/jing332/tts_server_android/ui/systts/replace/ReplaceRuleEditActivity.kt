@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.activity.viewModels
 import androidx.core.view.setPadding
+import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
@@ -110,12 +111,14 @@ class ReplaceRuleEditActivity : BackActivity() {
     }
 
     private fun displayPinyinDialog() {
+        val scrollView = NestedScrollView(this)
         val chipGroup = ChipGroup(this).apply {
             setPadding(16.dp)
         }
+        scrollView.addView(chipGroup)
         val dlg = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.systts_replace_insert_pinyin)
-            .setView(chipGroup)
+            .setView(scrollView)
             .setNegativeButton(R.string.cancel, null)
             .show()
         pinyinList.forEach { py ->
