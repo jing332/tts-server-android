@@ -109,9 +109,6 @@ class TtsManager(val context: Context) {
     // 备用TTS
     private val sbyConfigMap: MutableMap<Int, List<SystemTtsWithState>> = mutableMapOf()
 
-    // BGM TTS
-    private val bgmMap: MutableList<SystemTts> = mutableListOf()
-
     data class SystemTtsWithState(
         val data: SystemTts,
         var isRateFollowSystem: Boolean = false,

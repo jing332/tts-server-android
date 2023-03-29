@@ -70,7 +70,7 @@ class BgmPlayer(val context: Context) {
                 for (subFile in allFiles) {
                     val mime = FileUtils.getMimeType(subFile)
                     // 非audio或未知则跳过
-                    if (mime?.startsWith("audio") == true) continue
+                    if (mime == null || !mime.startsWith("audio")) continue
 
                     Log.d(TAG, subFile.absolutePath)
                     val item =

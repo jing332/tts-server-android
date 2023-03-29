@@ -313,6 +313,7 @@ class SysTtsListFragment : Fragment() {
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 SysTtsConfig.bgmVolume = (viewBinding.seekVolume.value as Int) / 100f
                 SysTtsConfig.isBgmShuffleEnabled = viewBinding.switchShuffle.isChecked
+                notifyTtsUpdate()
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
