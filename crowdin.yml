@@ -1,3 +1,3 @@
 files:
   - source: /app/src/main/res/values-*/strings.xml
-    translation: '*strings.xml'
+    translation: '%locale_with_underscore%'
