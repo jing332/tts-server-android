@@ -28,16 +28,15 @@ class BgmTTS(
     override var audioPlayer: PlayerParams = PlayerParams()
 ) : BaseTTS() {
     override fun getEditActivity(): Class<out Activity> = BgmTtsEditActivity::class.java
-    override fun getType() = context.getString(R.string.bgm)
+    override fun getType() = context.getString(R.string.local)
 
     override fun getDescription(): String {
         val volStr = if (volume == 0) context.getString(R.string.follow) else volume.toString()
-        return "音量:${volStr.toHtmlBold()}"
+        return context.getString(R.string.systts_bgm_description, volStr.toHtmlBold())
     }
 
-    override fun getBottomContent(): String {
-        return "共${musicList.size.toString()}个文件夹"
-    }
+    override fun getBottomContent(): String =
+        context.getString(R.string.total_n_folders, musicList.size.toString())
 
     @Suppress("DEPRECATION")
     override fun onDescriptionClick(
@@ -49,8 +48,8 @@ class BgmTTS(
         val binding =
             SysttsBgmEditBottomSheetBinding.inflate(activity.layoutInflater, null, false)
         binding.apply {
-            basicEdit.setData(data)
             basicEdit.liteModeEnabled = true
+            basicEdit.setData(data)
             editView.setData(this@BgmTTS)
             root.minimumHeight = activity.windowManager.defaultDisplay.height
         }

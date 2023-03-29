@@ -135,8 +135,6 @@
             android:layout_marginTop="4dp"
             android:hint="@string/display_name"
             app:endIconMode="clear_text"
-            app:hintAnimationEnabled="false"
-
             app:startIconDrawable="@drawable/ic_baseline_text_fields_24">
 
             <com.google.android.material.textfield.TextInputEditText

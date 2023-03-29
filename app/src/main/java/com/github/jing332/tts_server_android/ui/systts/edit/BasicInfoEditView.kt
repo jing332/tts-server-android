@@ -109,14 +109,16 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                     .show()
             }
 
-            cbStandby.setOnClickListener { mData?.isStandby = isStandby }
+            cbStandby.setOnClickListener {
+                if (!liteModeEnabled) mData?.isStandby = isStandby
+            }
 
             etName.addTextChangedListener {
                 mData?.apply { displayName = this@BasicInfoEditView.displayName }
             }
 
             btnGroupRaTarget.addOnButtonCheckedListener { _, checkedId, isChecked ->
-                if (isChecked) {
+                if (!liteModeEnabled && isChecked) {
                     val raTarget = when (checkedId) {
                         R.id.btn_aside -> ReadAloudTarget.ASIDE
                         R.id.btn_dialogue -> ReadAloudTarget.DIALOGUE

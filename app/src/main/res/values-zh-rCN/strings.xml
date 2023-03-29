@@ -323,6 +323,8 @@
     <string name="remote_sync_service">远程同步</string>
     <string name="clear_plugin_cache">清空插件缓存</string>
     <string name="listen_port">监听端口</string>
-    <string name="plugin_sync_service_tip">代码同步服务，方便在PC端编辑、更新插件代码进行调试。\n设置在重启编辑器后生效</string>
+    <string name="plugin_sync_service_tip">代码同步服务，方便在PC端编辑、更新插件代码进行调试。\n⚠️设置在重启编辑器后生效</string>
     <string name="learn_more">了解详情</string>
+    <string name="systts_bgm_description">音量:%1$s</string>
+    <string name="total_n_folders">共 %1$s 个文件夹</string>
 </resources>
