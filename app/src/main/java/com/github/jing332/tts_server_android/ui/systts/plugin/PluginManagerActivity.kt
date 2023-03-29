@@ -20,6 +20,7 @@ import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
+import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.MyTools
@@ -93,10 +94,6 @@ class PluginManagerActivity : BackActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
-    private var savedData: ByteArray? = null
-    private val getFileUriToSave =
-        FileUtils.registerResultCreateDocument(this, "application/json") { savedData }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_add -> {
@@ -114,10 +111,9 @@ class PluginManagerActivity : BackActivity() {
             }
 
             R.id.menu_export -> {
-                AppDialogs.displayExportDialog(this, lifecycleScope, vm.exportConfig()) {
-                    savedData = it.toByteArray()
-                    getFileUriToSave.launch("ttsrv-plugins.json")
-                }
+                val fragment =
+                    ConfigExportBottomSheetFragment({ vm.exportConfig() }, { "ttsrv-plugins.json" })
+                fragment.show(supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
             }
 
             R.id.menu_import -> {

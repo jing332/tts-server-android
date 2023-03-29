@@ -329,4 +329,8 @@
     <string name="total_n_folders">共 %1$s 个文件夹</string>
     <string name="auto_check_update">自动检查更新</string>
     <string name="direct_upload_settings">直链上传设置</string>
+    <string name="warn_returned_url_is_empty">⚠️返回的链接为空！</string>
+    <string name="choos_an_upload_target">选择一个上传目标</string>
+    <string name="copied_url">已复制链接</string>
+    <string name="direct_link_settings">直链设置</string>
 </resources>

@@ -3,9 +3,7 @@ package com.github.jing332.tts_server_android.help.plugin.core.ext
 import androidx.annotation.Keep
 import com.drake.net.Net
 import com.drake.net.exception.ConvertException
-import kotlinx.serialization.json.Json
 import okhttp3.Headers.Companion.toHeaders
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -62,15 +60,21 @@ open class JsNet {
         }.execute()
     }
 
-    private fun postMultipart(form: Map<String, Any>): MultipartBody.Builder {
+    private fun postMultipart(type: String, form: Map<String, Any>): MultipartBody.Builder {
         val multipartBody = MultipartBody.Builder()
-        multipartBody.setType(MultipartBody.FORM)
-
+        multipartBody.setType(type.toMediaType())
         form.forEach {
             when (val value = it.value) {
                 is Map<*, *> -> {
                     val fileName = value["fileName"] as String
-                    val file = value["file"]
+                    var file = value["file"]
+                    var partName = it.key
+                    if (file is Map<*, *>) {
+                        val ent = file.entries.last()
+                        file = ent.value
+                        partName = ent.key as String
+                    }
+
                     val mediaType = (value["contentType"] as? String)?.toMediaType()
                     val requestBody = when (file) {
                         is File -> file.asRequestBody(mediaType)
@@ -78,7 +82,8 @@ open class JsNet {
                         is String -> file.toRequestBody(mediaType)
                         else -> file.toString().toRequestBody()
                     }
-                    multipartBody.addFormDataPart(it.key, fileName, requestBody)
+
+                    multipartBody.addFormDataPart(partName, fileName, requestBody)
                 }
 
                 else -> multipartBody.addFormDataPart(it.key, it.value.toString())
@@ -91,11 +96,12 @@ open class JsNet {
     fun httpPostMultipart(
         url: String,
         form: Map<String, Any>,
+        type: String = "multipart/form-data",
         headers: Map<String, String>? = null
     ): Response {
         return Net.post(url) {
             headers?.let { setHeaders(it.toHeaders()) }
-            body = postMultipart(form).build()
+            body = postMultipart(type, form).build()
         }.execute()
     }
 }

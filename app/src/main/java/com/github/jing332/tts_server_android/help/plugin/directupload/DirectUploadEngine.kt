@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.help.plugin.directupload
 
 import android.content.Context
+import com.github.jing332.tts_server_android.help.config.DirectUploadConfig
 import com.github.jing332.tts_server_android.help.plugin.core.BaseScriptEngine
 import com.github.jing332.tts_server_android.help.plugin.core.Logger
 import com.github.jing332.tts_server_android.help.plugin.core.ext.JsLogger
@@ -12,7 +13,7 @@ class DirectUploadEngine(
     override val rhino: RhinoScriptEngine = RhinoScriptEngine(),
     override val context: Context,
     override val logger: Logger = Logger(),
-    override var code: String = "",
+    override var code: String = DirectUploadConfig.code,
     override val id: String = "DirectUpload",
 ) : BaseScriptEngine(rhino, context, code, id, logger) {
     companion object {

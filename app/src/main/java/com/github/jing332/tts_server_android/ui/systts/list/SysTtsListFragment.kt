@@ -30,6 +30,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBindi
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.directupload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivity
@@ -292,10 +293,11 @@ class SysTtsListFragment : Fragment() {
     }
 
     private fun exportConfig() {
-        AppDialogs.displayExportDialog(requireContext(), lifecycleScope, vm.exportConfig()) {
-            savedData = it.toByteArray()
-            getFileUriToSave.launch("ttsrv-list.json")
-        }
+        val fragment = ConfigExportBottomSheetFragment(
+            onGetConfig = { vm.exportConfig() },
+            onGetName = { "ttsrv-list.json" }
+        )
+        fragment.show(requireActivity().supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
     }
 
     private fun displayBgmSettings() {

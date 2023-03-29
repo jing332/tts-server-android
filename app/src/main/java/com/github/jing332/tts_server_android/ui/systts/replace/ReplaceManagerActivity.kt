@@ -37,6 +37,7 @@ import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
 import com.github.jing332.tts_server_android.ui.base.group.IGroupModel
+import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.checkbox.MaterialCheckBox
@@ -57,10 +58,6 @@ class ReplaceManagerActivity : AppCompatActivity() {
     private lateinit var brv: BindingAdapter
 
     private var currentSearchTarget: SearchTargetFilter = SearchTargetFilter.Name
-
-    private var savedData: ByteArray? = null
-    private val getFileUriToSave =
-        FileUtils.registerResultCreateDocument(this, "application/json") { savedData }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,12 +90,10 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
 
                     override fun onExport(v: View, model: GroupModel) {
-                        AppDialogs.displayExportDialog(
-                            this@ReplaceManagerActivity, lifecycleScope, vm.exportGroup(model)
-                        ) {
-                            savedData = it.toByteArray()
-                            getFileUriToSave.launch("ttsrv-replaces.json")
-                        }
+                        displayExport(
+                            "ttsrv-replaces-${model.data.name}.json",
+                            vm.exportGroup(model)
+                        )
                     }
 
                     override fun onDelete(v: View, model: GroupModel) {
@@ -386,14 +381,16 @@ class ReplaceManagerActivity : AppCompatActivity() {
             }
 
             R.id.menu_export_config -> {
-                AppDialogs.displayExportDialog(this, lifecycleScope, vm.configToJson()) {
-                    savedData = it.toByteArray()
-                    getFileUriToSave.launch("ttsrv-replaces.json")
-                }
+                displayExport("ttsrv-replaces.json", vm.configToJson())
             }
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun displayExport(name: String, config: String) {
+        val fragment = ConfigExportBottomSheetFragment({ config }, { name })
+        fragment.show(supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
     }
 
     sealed class SearchTargetFilter(val strId: Int, val index: Int) {

@@ -94,7 +94,7 @@
     <string name="config_import_export">Import and export</string>
     <string name="import_config">Import</string>
     <string name="export_config">Export</string>
-    <string name="copy" tools:ignore="PrivateResource">Copy</string>
+    <string name="copy" tools:override="true">Copy</string>
     <string name="follow_system_or_read_aloud_app">Follow system or caller</string>
     <string name="raw_format_is_play_while_downloading">Format `raw` is streaming mode</string>
     <string name="is_confirm_delete">Confirm deletion?</string>
@@ -337,5 +337,9 @@
     <string name="total_n_folders">Total %1$s folders</string>
     <string name="auto_check_update">自动检查更新</string>
     <string name="direct_upload_settings">直链上传设置</string>
+    <string name="warn_returned_url_is_empty">⚠️返回的链接为空！</string>
+    <string name="choos_an_upload_target">选择一个上传目标</string>
+    <string name="copied_url">已复制链接</string>
+    <string name="direct_link_settings">直链设置</string>
 
 </resources>

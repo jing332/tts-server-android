@@ -11,6 +11,7 @@ import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.dp
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.runOnIO
+import com.github.jing332.tts_server_android.util.runOnUI
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -21,11 +22,13 @@ object AppDialogs {
         context: Context,
         message: String,
     ) {
-        MaterialAlertDialogBuilder(context)
-            .setTitle(R.string.error)
-            .setMessage(message)
-            .setPositiveButton(android.R.string.ok, null)
-            .show()
+        runOnUI {
+            MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.error)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .show()
+        }
     }
 
     fun displayInputDialog(

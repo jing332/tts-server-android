@@ -80,10 +80,11 @@ class DirectUploadSettingsActivity : BackActivity() {
                 val function = funcList[index]
                 lifecycleScope.runOnIO {
                     kotlin.runCatching {
+                        directUploadEngine.logger.d(function.funcName + "...")
                         val result = function.invoke(
                             """ {"a":1, "b":2} """.trimIndent()
                         ) ?: throw Exception("返回值为空")
-                        directUploadEngine.logger.d("执行成功: $result")
+                        directUploadEngine.logger.d("执行成功，返回值: $result")
                     }.onFailure {
                         directUploadEngine.logger.e(it.readableString)
                     }
