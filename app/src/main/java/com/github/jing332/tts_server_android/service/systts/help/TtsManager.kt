@@ -157,7 +157,7 @@ class TtsManager(val context: Context) {
 
     @Suppress("ReplaceIsEmptyWithIfEmpty")
     private fun initConfig(@ReadAloudTarget target: Int, isInitSby: Boolean = true): Boolean {
-        val list = mSysTts.getAllEnabledByTarget(target).map { SystemTtsWithState(it) }
+        val list = mSysTts.getEnabledList(target).map { SystemTtsWithState(it) }
 
         var isMissing = false
         configMap[target] = if (list.isEmpty()) {
@@ -172,14 +172,14 @@ class TtsManager(val context: Context) {
     }
 
     private fun initSbyConfig(target: Int) {
-        val sbyList = mSysTts.getAllEnabledStandbyTts(target).map { SystemTtsWithState(it) }
+        val sbyList = mSysTts.getEnabledStandbyList(target).map { SystemTtsWithState(it) }
         sbyConfigMap[target] = sbyList
         sbyList.forEach { it.data.tts.onLoad() }
     }
 
     private fun initBgm() {
         val list = mutableSetOf<Pair<Float, String>>()
-        mSysTts.getAllEnabledBgm().forEach {
+        mSysTts.getEnabledList(ReadAloudTarget.BGM).forEach {
             val tts = (it.tts as BgmTTS)
             val volume = if (tts.volume == 0) SysTtsConfig.bgmVolume else it.tts.volume / 100f
             list.addAll(tts.musicList.map { path ->

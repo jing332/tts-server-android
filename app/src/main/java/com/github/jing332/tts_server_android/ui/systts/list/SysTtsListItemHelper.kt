@@ -59,7 +59,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                     cardView.clickWithThrottle { displayLiteEditDialog(itemView, getModel()) }
                     cardView.setOnLongClickListener {
                         val model = getModel<SystemTts>().copy()
-                        if (model.isBgm) return@setOnLongClickListener false
+                        if (model.readAloudTarget == ReadAloudTarget.BGM) return@setOnLongClickListener false
 
                         if (model.readAloudTarget == ReadAloudTarget.ASIDE)
                             model.readAloudTarget = ReadAloudTarget.DIALOGUE

@@ -16,6 +16,7 @@ import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.databinding.SysttsBgmEditActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBgmListItemBinding
 import com.github.jing332.tts_server_android.model.tts.BgmTTS
@@ -98,7 +99,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
         }.apply { models = mutableListOf<BgmItemModel>() }
 
         binding.paramsEdit.setData(tts)
-        systemTts.isBgm = true
+        systemTts.readAloudTarget = ReadAloudTarget.BGM
         updateList()
 
         checkFileReadPermission()

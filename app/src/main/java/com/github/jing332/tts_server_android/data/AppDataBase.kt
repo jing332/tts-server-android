@@ -3,8 +3,10 @@ package com.github.jing332.tts_server_android.data
 import android.content.Context
 import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.AutoMigrationSpec
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.data.dao.PluginDao
 import com.github.jing332.tts_server_android.data.dao.ReplaceRuleDao
@@ -18,7 +20,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 val appDb by lazy { AppDatabase.createDatabase(App.context) }
 
 @Database(
-    version = 12,
+    version = 13,
     entities = [
         SystemTts::class, SystemTtsGroup::class,
         ReplaceRule::class, ReplaceRuleGroup::class,
@@ -29,7 +31,8 @@ val appDb by lazy { AppDatabase.createDatabase(App.context) }
         AutoMigration(from = 8, to = 9),
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 10, to = 11),
-        AutoMigration(from = 11, to = 12)
+        AutoMigration(from = 11, to = 12),
+        AutoMigration(from = 12, to = 13, AppDatabase.DeleteSystemTtsColumn::class)
     ]
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -44,5 +47,9 @@ abstract class AppDatabase : RoomDatabase() {
             .databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
             .allowMainThreadQueries()
             .build()
+
     }
+
+    @DeleteColumn(tableName = "sysTts", columnName = "isBgm")
+    class DeleteSystemTtsColumn : AutoMigrationSpec
 }
