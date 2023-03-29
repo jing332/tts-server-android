@@ -9,12 +9,15 @@ import androidx.core.view.updatePadding
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
+import androidx.preference.SwitchPreferenceCompat
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.R.string
 import com.github.jing332.tts_server_android.R.xml
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Locale
@@ -22,36 +25,53 @@ import java.util.Locale
 class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.sharedPreferencesName = AppConfig.kotprefName
-
         setPreferencesFromResource(xml.root_preferences, rootKey)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val listPre: ListPreference = findPreference("language")!!
+
+        // 朗读目标多选开关
+        val voiceMultipleSwitch: SwitchPreferenceCompat = findPreference("isVoiceMultiple")!!
+        voiceMultipleSwitch.isChecked = SysTtsConfig.isVoiceMultipleEnabled
+        voiceMultipleSwitch.setOnPreferenceChangeListener { _, newValue ->
+            SysTtsConfig.isVoiceMultipleEnabled = newValue as Boolean
+            true
+        }
+
+        // 分组多选开关
+        val groupMultipleSwitch: SwitchPreferenceCompat = findPreference("groupMultiple")!!
+        groupMultipleSwitch.isChecked = SysTtsConfig.isGroupMultipleEnabled
+        groupMultipleSwitch.setOnPreferenceChangeListener { _, newValue ->
+            SysTtsConfig.isGroupMultipleEnabled = newValue as Boolean
+            true
+        }
+
+        // 语言
+        val langPre: ListPreference = findPreference("language")!!
 
         val appLocales = BuildConfig.TRANSLATION_ARRAY.map { Locale.forLanguageTag(it) }
         val entries = appLocales.map { it.getDisplayName(it) }.toMutableList()
             .apply { add(0, getString(string.app_language_follow)) }
 
-        listPre.entries = entries.toTypedArray()
-        listPre.entryValues =
+        langPre.entries = entries.toTypedArray()
+        langPre.entryValues =
             mutableListOf("").apply { addAll(BuildConfig.TRANSLATION_ARRAY) }.toTypedArray()
 
         val currentLocale = AppCompatDelegate.getApplicationLocales().get(0)
-        listPre.setValueIndex(
+        langPre.setValueIndex(
             if (currentLocale == null) 0
             else {
                 val languageTag = currentLocale.toLanguageTag()
                 appLocales.indexOfFirst { it.toLanguageTag() == languageTag } + 1
             }
         )
-        listPre.summary =
+        langPre.summary =
             if (currentLocale == null) getString(R.string.app_language_follow)
             else currentLocale.getDisplayName(currentLocale)
-        listPre.setDialogMessage(R.string.app_language_to_follow_tip_msg)
-        listPre.setOnPreferenceChangeListener { _, newValue ->
+        langPre.setDialogMessage(R.string.app_language_to_follow_tip_msg)
+        langPre.setOnPreferenceChangeListener { _, newValue ->
             val locale = if (newValue == null || newValue.toString().isEmpty()) { //随系统
                 longToast(string.app_language_to_follow_tip_msg)
                 app.updateLocale(Locale.getDefault())

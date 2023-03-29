@@ -335,5 +335,6 @@
     <string name="learn_more">Learn more</string>
     <string name="systts_bgm_description">Volume:%1$s</string>
     <string name="total_n_folders">Total %1$s folders</string>
+    <string name="auto_check_update">自动检查更新</string>
 
 </resources>

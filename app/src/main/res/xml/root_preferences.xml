@@ -1,4 +1,19 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/app_name">
+        <ListPreference
+            app:icon="@drawable/ic_web"
+            app:key="language"
+            app:title="@string/language" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:icon="@drawable/baseline_arrow_circle_up_24"
+            android:key="isAutoCheckUpdateEnabled"
+            android:title="@string/auto_check_update" />
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/pref_title_global_edge">
         <SwitchPreferenceCompat
             app:icon="@drawable/ic_baseline_dns_24"
@@ -8,17 +23,27 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/sys_tts_interface_preference">
+
         <SwitchPreferenceCompat
             app:icon="@drawable/ic_baseline_headset_24"
             app:key="isSwapListenAndEditButton"
             app:title="@string/pref_swap_listen_and_edit_button" />
+
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_baseline_select_all_24"
+            android:key="isVoiceMultiple"
+            android:persistent="false"
+            android:summary="@string/systts_voice_multiple_hint"
+            android:title="@string/systts_voice_multiple_option" />
+
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_baseline_groups_24"
+            android:key="groupMultiple"
+            android:persistent="false"
+            android:summary="@string/systts_groups_multiple_hint"
+            android:title="@string/systts_groups_multiple" />
+
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/other">
-        <ListPreference
-            app:icon="@drawable/ic_web"
-            app:key="language"
-            app:title="@string/language" />
-    </PreferenceCategory>
 
 </PreferenceScreen>

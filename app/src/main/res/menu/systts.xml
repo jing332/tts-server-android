@@ -58,16 +58,6 @@
 
     <group android:id="@+id/group2">
         <item
-            android:id="@+id/menu_voiceMultiple"
-            android:checkable="true"
-            android:icon="@drawable/ic_baseline_select_all_24"
-            android:title="@string/systts_voice_multiple_option" />
-        <item
-            android:id="@+id/menu_groupMultiple"
-            android:checkable="true"
-            android:icon="@drawable/ic_baseline_groups_24"
-            android:title="@string/systts_groups_multiple" />
-        <item
             android:id="@+id/menu_isInAppPlayAudio"
             android:checkable="true"
             android:icon="@drawable/ic_baseline_smart_display_24"

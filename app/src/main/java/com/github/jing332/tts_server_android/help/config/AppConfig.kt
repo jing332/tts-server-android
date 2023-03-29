@@ -7,6 +7,8 @@ object AppConfig : KotprefModel() {
     override val kotprefName: String
         get() = "app"
 
+    var isAutoCheckUpdateEnabled by booleanPref(true)
+
     /**
      * 是否 Edge接口使用DNS解析IP
      */

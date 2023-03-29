@@ -191,19 +191,6 @@ class SysTtsListFragment : Fragment() {
                     true
                 }
 
-                R.id.menu_voiceMultiple -> {
-                    SysTtsConfig.isVoiceMultipleEnabled = !SysTtsConfig.isVoiceMultipleEnabled
-                    SystemTtsService.notifyUpdateConfig()
-                    if (SysTtsConfig.isVoiceMultipleEnabled) longToast(R.string.systts_voice_multiple_hint)
-                    true
-                }
-
-                R.id.menu_groupMultiple -> {
-                    SysTtsConfig.isGroupMultipleEnabled = !SysTtsConfig.isGroupMultipleEnabled
-                    if (SysTtsConfig.isGroupMultipleEnabled) longToast(getString(R.string.systts_groups_multiple_hint))
-                    true
-                }
-
                 R.id.menu_plugin_manager -> {
                     startActivity(Intent(requireContext(), PluginManagerActivity::class.java))
                     true
@@ -238,8 +225,6 @@ class SysTtsListFragment : Fragment() {
                     findItem(R.id.menu_doSplit)?.isChecked = isSplitEnabled
                     findItem(R.id.menu_replace_manager)?.isChecked = isReplaceEnabled
                     findItem(R.id.menu_isInAppPlayAudio)?.isChecked = isInAppPlayAudio
-                    findItem(R.id.menu_voiceMultiple)?.isChecked = isVoiceMultipleEnabled
-                    findItem(R.id.menu_groupMultiple)?.isChecked = isGroupMultipleEnabled
                 }
             }
         }

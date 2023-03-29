@@ -14,6 +14,7 @@ import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import android.text.Html
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.Menu
@@ -47,6 +48,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object {
+        const val TAG = "MainActivity"
         const val ACTION_BACK_KEY_DOWN = "ACTION_BACK_KEY_DOWN"
         const val KEY_FRAGMENT_INDEX = "KEY_INDEX"
 
@@ -104,7 +106,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         lifecycleScope.runOnIO {
             ShortCuts.buildShortCuts(this)
-            MyTools.checkUpdate(this)
+            if (AppConfig.isAutoCheckUpdateEnabled) {
+                Log.d(TAG, "check for update...")
+                MyTools.checkUpdate(this)
+            }
         }
     }
 

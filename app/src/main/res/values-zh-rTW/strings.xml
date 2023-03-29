@@ -155,7 +155,7 @@
     <string name="systts_voice_data_load_failed">語音數據載入失敗</string>
     <string name="systts_help_sample_rate">系統TTS在開始播放時需指定取樣速率，如已啟用【內置播放器】、【直接播放】則可忽略此選項。</string>
     <string name="systts_voice_multiple_option">相同朗讀目標可多選</string>
-    <string name="systts_voice_multiple_hint">⚠️ 相同朗讀目標將不再排斥，並使用隨機輪播。 （單語音不支持此功能）</string>
+    <string name="systts_voice_multiple_hint">相同朗讀目標將不再排斥，並使用隨機輪播。 （單語音不支持此功能）</string>
     <string name="systts_groups_multiple">分組可多選</string>
     <string name="systts_groups_multiple_hint">⚠ ️勾選分組時將不再互相排斥。</string>
 
@@ -317,4 +317,5 @@
     <string name="learn_more">了解详情</string>
     <string name="systts_bgm_description">音量:%1$s</string>
     <string name="total_n_folders">共 %1$s 个文件夹</string>
+    <string name="auto_check_update">自动检查更新</string>
 </resources>
