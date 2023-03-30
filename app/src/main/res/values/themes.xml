@@ -39,14 +39,15 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-
         <item name="textInputStyle">?attr/textInputOutlinedStyle</item>
         <item name="materialButtonOutlinedStyle">@style/Widget.TtsServer.Button.OutlinedButton
         </item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.TtsServer.BottomSheetDialog</item>
     </style>
 
     <style name="ThemeOverlay.TtsServer.BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/Widget.TtsServer.BottomSheet.Modal</item>
+        <!--        <item name="bottomSheetStyle">@style/Widget.TtsServer.BottomSheet.Modal</item>-->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Widget.TtsServer.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">

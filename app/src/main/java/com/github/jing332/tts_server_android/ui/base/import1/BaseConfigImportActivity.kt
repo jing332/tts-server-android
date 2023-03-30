@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.ui.base.import1
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -126,28 +125,15 @@ abstract class BaseConfigImportActivity : BackActivity() {
     }
 
 
-    private val activityForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            waitDialog.dismiss()
-            waitDialog.setCancelable(true)
-            if (it.resultCode == RESULT_OK) {
-                it.data?.data?.let { uri ->
-                    binding.tilFilePath.editText!!.setText(uri.toString())
-
-                }
-            }
+    private val fileSelection =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+            if (it != null)
+                binding.tilFilePath.editText!!.setText(it.toString())
         }
 
     private fun filePicker() {
-        waitDialog.show()
-        waitDialog.setCancelable(false)
-        Intent(Intent.ACTION_GET_CONTENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
-            activityForResult.launch(Intent.createChooser(this, "Choose a file"))
-        }
+        fileSelection.launch(arrayOf("*/*"))
     }
-
 
     fun displayListSelectDialog(
         list: List<ConfigImportItemModel>,
@@ -166,7 +152,7 @@ abstract class BaseConfigImportActivity : BackActivity() {
                 }
             }.models = list
         }
-        rv.setPadding(64.dp)
+        rv.setPadding(16.dp)
 
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.select_import)
