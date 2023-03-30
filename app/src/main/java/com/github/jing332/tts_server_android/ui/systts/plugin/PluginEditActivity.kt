@@ -52,7 +52,7 @@ class PluginEditActivity : BackActivity() {
 
         vm.init(
             plugin = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: Plugin(),
-            defaultCode = resources.openRawResource(R.raw.systts_plugin_template).readAllText()
+            defaultCode = resources.assets.open("defaultData/plugin-azure.js").readAllText()
         )
 
         vm.codeLiveData.observe(this) {
