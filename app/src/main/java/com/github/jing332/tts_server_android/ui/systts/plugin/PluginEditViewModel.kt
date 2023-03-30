@@ -5,15 +5,13 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.model.script.core.LogOutputter
+import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.model.script.tts.PluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
-import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.rootCause
 import com.github.jing332.tts_server_android.util.runOnUI
@@ -41,18 +39,26 @@ class PluginEditViewModel(application: Application) : AndroidViewModel(applicati
         get() = _updateCodeLiveData
 
     fun init(plugin: Plugin, defaultCode: String) {
-        pluginInfo = plugin
+        pluginInfo = plugin.apply { if (code.isEmpty()) code = defaultCode }
         pluginTTS = PluginTTS(plugin = pluginInfo)
         updateTTS(pluginTTS)
 
-        _updateCodeLiveData.postValue(pluginInfo.code.ifBlank { defaultCode })
+        _updateCodeLiveData.postValue(pluginInfo.code)
     }
 
     fun updateTTS(tts: PluginTTS) {
-        pluginTTS = tts.apply { plugin = pluginInfo }
         pluginEngine = PluginUiEngine(tts, getApplication())
+        pluginTTS = tts.also {
+            it.pluginEngine = pluginEngine
+            it.plugin = pluginInfo
+        }
     }
 
+    fun updatePluginCode(code: String, isSave: Boolean = false) {
+        pluginInfo.code = code
+        pluginEngine.code = code
+        if (isSave) appDb.pluginDao.update()
+    }
 
     // 代码同步服务器
     fun startSyncServer(
@@ -98,11 +104,6 @@ class PluginEditViewModel(application: Application) : AndroidViewModel(applicati
         server = null
     }
 
-    fun updatePluginCodeAndSave(code: String) {
-        appDb.pluginDao.update(pluginInfo.also { it.code = code })
-
-    }
-
     fun clearPluginCache() {
         val file = File("${app.externalCacheDir!!.absolutePath}/${pluginInfo.pluginId}")
         file.deleteRecursively()
@@ -126,11 +127,8 @@ class PluginEditViewModel(application: Application) : AndroidViewModel(applicati
             }
 
             kotlin.runCatching {
-                pluginEngine.eval()
-                val audio = pluginEngine.getAudio(
-                    "测试文本", pluginTTS.locale, pluginTTS.voice, pluginTTS.rate,
-                    pluginTTS.volume, pluginTTS.pitch
-                )
+                pluginTTS.onLoad()
+                val audio = pluginTTS.getAudio(PluginConfig.sampleText)
                 if (audio == null)
                     pluginEngine.logger.w("音频为空！")
                 else

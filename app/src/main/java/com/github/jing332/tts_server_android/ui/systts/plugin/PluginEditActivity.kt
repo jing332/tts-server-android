@@ -172,6 +172,7 @@ class PluginEditActivity : BackActivity() {
             R.id.menu_save_as_file -> saveAsFile()
             R.id.menu_save -> {
                 val plugin = try {
+                    vm.updatePluginCode(binding.editor.text.toString())
                     vm.pluginEngine.evalPluginInfo()
                 } catch (e: Exception) {
                     AppDialogs.displayErrorDialog(this, e.readableString)
@@ -200,12 +201,12 @@ class PluginEditActivity : BackActivity() {
             val bottomSheetFragment = LoggerBottomSheetFragment(vm.pluginEngine.logger)
             bottomSheetFragment.show(supportFragmentManager, "PluginLoggerBottomSheetFragment")
         }
-
+        vm.updatePluginCode(binding.editor.text.toString())
         vm.debug()
     }
 
     private fun previewUi() {
-        vm.updatePluginCodeAndSave(binding.editor.text.toString())
+        vm.updatePluginCode(binding.editor.text.toString(), isSave = true)
         startForResult.launch(Intent(this, PluginTtsEditActivity::class.java).apply {
             putExtra(BaseTtsEditActivity.KEY_BASIC_VISIBLE, false)
             putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = vm.pluginTTS))

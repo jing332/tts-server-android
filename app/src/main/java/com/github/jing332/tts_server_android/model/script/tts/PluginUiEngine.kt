@@ -31,7 +31,7 @@ class PluginUiEngine(
     }
 
     private val editUiJsObject: NativeObject by lazy {
-        val importCode = "importPackage(${AppConst.PACKET_NAME}.help.script.core.ui);" +
+        val importCode = "importPackage(${AppConst.PACKET_NAME}.model.script.core.type.ui);" +
                 "importPackage(android.view);" +
                 "importPackage(android.widget);"
 

@@ -25,10 +25,11 @@ open class BaseScriptEngine(
         }
     }
 
-    fun eval(): Any? {
+    open fun eval(prefixCode: String = ""): Any? {
         rhino.put(OBJ_TTSRV, this)
         rhino.put(OBJ_LOGGER, logger)
-        return rhino.eval(code)
+
+        return rhino.eval("${prefixCode.removePrefix(";").removeSuffix(";")};$code")
     }
 
 }

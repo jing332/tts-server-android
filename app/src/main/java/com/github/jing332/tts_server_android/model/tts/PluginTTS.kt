@@ -84,13 +84,20 @@ data class PluginTTS(
     }
 
     @IgnoredOnParcel
-    private val engine: PluginEngine by lazy { PluginEngine(pluginTTS = this, context = context) }
+    @Transient
+    lateinit var pluginEngine: PluginEngine
 
     override fun onLoad() {
-        engine.eval()
+        if (!this::pluginEngine.isInitialized)
+            pluginEngine = PluginEngine(pluginTTS = this, context = context)
+        pluginEngine.onLoad()
+    }
+
+    override fun onStop() {
+        pluginEngine.onStop()
     }
 
     override fun getAudio(speakText: String): ByteArray? {
-        return engine.getAudio(speakText, locale, voice, rate, volume, pitch)
+        return pluginEngine.getAudio(speakText, locale, voice, rate, volume, pitch)
     }
 }
