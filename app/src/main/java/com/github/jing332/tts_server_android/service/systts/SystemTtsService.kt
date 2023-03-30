@@ -157,9 +157,17 @@ class SystemTtsService : TextToSpeechService(),
             callback?.done()
             return
         }
-        runBlocking { mTtsManager.synthesizeText(text, request!!, callback!!) }
 
-        callback?.done()
+        callback!!.start(mTtsManager.audioFormat.sampleRate, mTtsManager.audioFormat.bitRate, 1)
+        runBlocking {
+            mTtsManager.synthesizeText(
+                text,
+                request!!.pitch,
+                request.speechRate,
+                callback
+            )
+        }
+        callback.done()
     }
 
     private fun reNewWakeLock() {
@@ -343,10 +351,10 @@ class SystemTtsService : TextToSpeechService(),
         sendLog(LogLevel.ERROR, msg)
     }
 
-    override fun onStartRetry(retryNum: Int, message: Throwable) {
+    override fun onStartRetry(retryNum: Int, t: Throwable) {
         val retryStr = getString(R.string.systts_log_start_retry, retryNum)
         sendLog(LogLevel.WARN, retryStr)
-        updateNotification(getString(R.string.systts_log_failed, retryStr), message.message)
+        updateNotification(getString(R.string.systts_log_failed, retryStr), t.message)
     }
 
     override fun onPlayDone(text: String?) {

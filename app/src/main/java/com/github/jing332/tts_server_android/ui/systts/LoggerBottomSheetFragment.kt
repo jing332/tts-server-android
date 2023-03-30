@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withMain
-import com.github.jing332.tts_server_android.databinding.SysttsPluginLoggerBottomSheetBinding
+import com.github.jing332.tts_server_android.databinding.SysttsLoggerBottomSheetBinding
 import com.github.jing332.tts_server_android.model.script.core.Logger
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -28,7 +28,7 @@ class LoggerBottomSheetFragment(private val logger: Logger) : BottomSheetDialogF
         logger.addListener(this)
     }
 
-    private val binding by lazy { SysttsPluginLoggerBottomSheetBinding.inflate(layoutInflater) }
+    private val binding by lazy { SysttsLoggerBottomSheetBinding.inflate(layoutInflater) }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

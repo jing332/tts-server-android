@@ -3,7 +3,6 @@ package com.github.jing332.tts_server_android.service.systts.help
 import android.content.Context
 import android.os.SystemClock
 import android.speech.tts.SynthesisCallback
-import android.speech.tts.SynthesisRequest
 import android.util.Log
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
@@ -61,7 +60,7 @@ class TtsManager(val context: Context) {
         fun onError(errCode: Int, speakText: String? = null, reason: String? = null)
 
         // 开始重试
-        fun onStartRetry(retryNum: Int, message: Throwable)
+        fun onStartRetry(retryNum: Int, t: Throwable)
 
         // 播放完毕
         fun onPlayDone(text: String? = null)
@@ -96,6 +95,7 @@ class TtsManager(val context: Context) {
 
     // 音频格式 合成开始前和解码时使用
     private lateinit var mAudioFormat: BaseAudioFormat
+    val audioFormat: BaseAudioFormat get() = mAudioFormat
 
     // Room数据库
     private val mSysTts by lazy { appDb.systemTtsDao }
@@ -109,14 +109,9 @@ class TtsManager(val context: Context) {
     // 备用TTS
     private val sbyConfigMap: MutableMap<Int, List<SystemTtsWithState>> = mutableMapOf()
 
-    data class SystemTtsWithState(
-        val data: SystemTts,
-        var isRateFollowSystem: Boolean = false,
-        var isPitchFollowSystem: Boolean = false
-    )
-
     /**
      * 停止合成及播放
+     * @param fromUser 为用户暂停还是callback.done()后的暂停
      */
     fun stop(fromUser: Boolean = false) {
         isSynthesizing = false
@@ -186,9 +181,7 @@ class TtsManager(val context: Context) {
         mBgmPlayer.setPlayList(SysTtsConfig.isBgmShuffleEnabled, list)
     }
 
-    /**
-     * 加载配置
-     */
+    // 加载配置
     fun loadConfig() {
         kotlin.runCatching {
             mAudioPlayer = mAudioPlayer ?: AudioPlayer(context, mScope)
@@ -252,7 +245,7 @@ class TtsManager(val context: Context) {
     }
 
     suspend fun synthesizeText(
-        aText: String, request: SynthesisRequest, callback: SynthesisCallback
+        aText: String, pitch: Int, speechRate: Int, callback: SynthesisCallback
     ) {
         isSynthesizing = true
         callback.start(mAudioFormat.sampleRate, mAudioFormat.bitRate, 1)
@@ -269,8 +262,8 @@ class TtsManager(val context: Context) {
             aText
         }
 
-        val sysPitch = request.pitch - 100
-        val sysRate = (mNorm.normalize(request.speechRate.toFloat()) - 100).toInt()
+        val sysPitch = pitch - 100
+        val sysRate = (mNorm.normalize(speechRate.toFloat()) - 100).toInt()
 
         val sby =
             handleTtsAndConvert(sbyConfigMap[ReadAloudTarget.ALL], sysRate, sysPitch).getOrNull(0)
