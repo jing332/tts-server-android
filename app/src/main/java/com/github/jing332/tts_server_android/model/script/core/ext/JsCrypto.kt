@@ -5,6 +5,7 @@ package com.github.jing332.tts_server_android.model.script.core.ext
 import cn.hutool.core.codec.Base64
 import cn.hutool.crypto.symmetric.SymmetricCrypto
 import com.github.jing332.tts_server_android.util.MD5Utils
+import okio.ByteString
 
 interface JsCrypto {
     fun md5Encode(str: String): String {
@@ -55,9 +56,6 @@ interface JsCrypto {
         createSymmetricCrypto(transformation, key.encodeToByteArray(), iv?.encodeToByteArray())
 
 
-    /**
-     * js实现base64解码,不能删
-     */
     fun base64Decode(str: String?): String {
         return Base64.decodeStr(str)
     }
@@ -66,30 +64,42 @@ interface JsCrypto {
         return Base64.decodeStr(str, charset(charset))
     }
 
-  /*  fun base64Decode(str: String, flags: Int): String {
-        return EncoderUtils.base64Decode(str, flags)
+    fun base64DecodeToBytes(str: String): ByteArray {
+        return Base64.decode(str)
     }
 
-    fun base64DecodeToByteArray(str: String?): ByteArray? {
-        if (str.isNullOrBlank()) {
-            return null
-        }
-        return EncoderUtils.base64DecodeToByteArray(str, 0)
+    fun base64DecodeToBytes(bytes: ByteArray): ByteArray {
+        return Base64.decode(bytes)
     }
 
-    fun base64DecodeToByteArray(str: String?, flags: Int): ByteArray? {
-        if (str.isNullOrBlank()) {
-            return null
-        }
-        return EncoderUtils.base64DecodeToByteArray(str, flags)
+    fun base64Encode(str: String): String {
+        return Base64.encode(str)
     }
 
-    fun base64Encode(str: String): String? {
-        return EncoderUtils.base64Encode(str, 2)
-    }
+    /*  fun base64Decode(str: String, flags: Int): String {
+          return EncoderUtils.base64Decode(str, flags)
+      }
 
-    fun base64Encode(str: String, flags: Int): String? {
-        return EncoderUtils.base64Encode(str, flags)
-    }*/
+      fun base64DecodeToByteArray(str: String?): ByteArray? {
+          if (str.isNullOrBlank()) {
+              return null
+          }
+          return EncoderUtils.base64DecodeToByteArray(str, 0)
+      }
+
+      fun base64DecodeToByteArray(str: String?, flags: Int): ByteArray? {
+          if (str.isNullOrBlank()) {
+              return null
+          }
+          return EncoderUtils.base64DecodeToByteArray(str, flags)
+      }
+
+      fun base64Encode(str: String): String? {
+          return EncoderUtils.base64Encode(str, 2)
+      }
+
+      fun base64Encode(str: String, flags: Int): String? {
+          return EncoderUtils.base64Encode(str, flags)
+      }*/
 
 }

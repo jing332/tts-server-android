@@ -26,27 +26,27 @@ class JWebSocket(@JvmField val url: String, @JvmField val headers: Map<String, S
         ws.connect(req.build())
         ws.event = object : IWebSocketEvent {
             override fun onOpen(response: Response) {
-                runCatching { onOpen?.invoke(response) }
+                tryBlock { onOpen?.invoke(response) }
             }
 
             override fun onMessage(text: String) {
-                runCatching { onTextMessage?.invoke(text) }
+                tryBlock { onTextMessage?.invoke(text) }
             }
 
             override fun onMessage(bytes: ByteString) {
-                runCatching { onByteMessage?.invoke(bytes) }
+                tryBlock { onByteMessage?.invoke(bytes) }
             }
 
             override fun onClosed(code: Int, reason: String) {
-                runCatching { onClosed?.invoke(code, reason) }
+                tryBlock { onClosed?.invoke(code, reason) }
             }
 
             override fun onClosing(code: Int, reason: String) {
-                runCatching { onClosing?.invoke(code, reason) }
+                tryBlock { onClosing?.invoke(code, reason) }
             }
 
             override fun onFailure(t: Throwable) {
-                runCatching { onFailure?.invoke(t) }
+                tryBlock { onFailure?.invoke(t) }
             }
         }
     }
