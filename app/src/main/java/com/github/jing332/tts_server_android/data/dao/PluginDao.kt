@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PluginDao {
-    @get:Query("SELECT * FROM plugin")
+    @get:Query("SELECT * FROM plugin ORDER BY `order` ASC")
     val all: List<Plugin>
 
     @get:Query("SELECT * FROM plugin WHERE isEnabled = '1'")
     val allEnabled: List<Plugin>
 
-    @Query("SELECT * FROM plugin  ")
+    @Query("SELECT * FROM plugin ORDER BY `order` ASC")
     fun flowAll(): Flow<List<Plugin>>
 
     @get:Query("SELECT count(*) FROM plugin")

@@ -26,7 +26,11 @@ data class Plugin(
     var pluginId: String = "",
     var author: String = "",
     var code: String = "",
-    ) : Parcelable {
+
+    // 索引 排序用
+    @ColumnInfo(name = "order", defaultValue = "0")
+    var order: Int = 0,
+) : Parcelable {
     override fun toString(): String {
         return "name: $name, pluginId: $pluginId, author: $author, version: $version, isEnabled: $isEnabled"
     }

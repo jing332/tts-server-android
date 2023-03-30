@@ -64,21 +64,18 @@ class PluginEditActivity : BackActivity() {
 
         if (PluginConfig.isRemoteSyncEnabled) {
             lifecycleScope.launch(Dispatchers.IO) {
-                vm.startSyncServer(
-                    onPush = {
-                        App.localBroadcast.sendBroadcast(Intent(PluginTtsEditActivity.ACTION_FINISH))
-                        binding.editor.setText(it)
-                    },
-                    onPull = {
-                        binding.editor.text.toString()
-                    },
-                    onDebug = {
-                        debug()
-                    },
-                    onUI = {
-                        previewUi()
-                    }
-                )
+                kotlin.runCatching {
+                    vm.startSyncServer(
+                        onPush = {
+                            App.localBroadcast.sendBroadcast(Intent(PluginTtsEditActivity.ACTION_FINISH))
+                            binding.editor.setText(it)
+                        },
+                        onPull = { binding.editor.text.toString() }, onDebug = { debug() },
+                        onUI = { previewUi() }
+                    )
+                }.onFailure {
+                    AppDialogs.displayErrorDialog(this@PluginEditActivity, it.stackTraceToString())
+                }
             }
         }
     }
@@ -168,6 +165,17 @@ class PluginEditActivity : BackActivity() {
                     .show()
             }
 
+            R.id.menu_set_sample_text -> {
+                AppDialogs.displayInputDialog(
+                    this,
+                    getString(R.string.set_sample_text_param),
+                    getString(R.string.sample_text),
+                    PluginConfig.sampleText
+                ) {
+                    PluginConfig.sampleText = it
+                }
+            }
+
             R.id.menu_params -> previewUi()
             R.id.menu_save_as_file -> saveAsFile()
             R.id.menu_save -> {
@@ -194,7 +202,8 @@ class PluginEditActivity : BackActivity() {
 
 
     private fun debug() {
-        val fragment = supportFragmentManager.findFragmentByTag("PluginLoggerBottomSheetFragment")
+        val fragment =
+            supportFragmentManager.findFragmentByTag("PluginLoggerBottomSheetFragment")
         if (fragment != null && fragment is LoggerBottomSheetFragment) {
             fragment.clearLog()
         } else {

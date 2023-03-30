@@ -9,6 +9,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
+import com.drake.brv.BindingAdapter
+import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.drake.net.utils.withDefault
@@ -21,6 +24,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBin
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
+import com.github.jing332.tts_server_android.ui.systts.replace.GroupModel
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.MyTools
@@ -68,13 +72,29 @@ class PluginManagerActivity : BackActivity() {
                     }
                 }
             }
+
+            itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
+                override fun onDrag(
+                    source: BindingAdapter.BindingViewHolder,
+                    target: BindingAdapter.BindingViewHolder
+                ) {
+                    models?.filterIsInstance<PluginModel>()?.let { models ->
+                        appDb.pluginDao.update(*models.mapIndexed { index, t ->
+                            t.data.apply { order = index }
+                        }.toTypedArray())
+                    }
+                }
+            })
+
         }
 
         lifecycleScope.launch {
             appDb.pluginDao.flowAll().conflate().collect { list ->
                 val models = list.map { PluginModel(it) }
-                if (brv.models == null) withMain { brv.models = models }
-                else withDefault { brv.setDifferModels(models) }
+                withMain {
+                    if (brv.models == null) brv.models = models
+                    else withDefault { brv.setDifferModels(models) }
+                }
             }
         }
     }

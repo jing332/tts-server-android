@@ -13,7 +13,7 @@ class ImportActivity : BaseConfigImportActivity() {
     override fun onImport(json: String) {
         val list: List<Plugin> = App.jsonBuilder.decodeFromString(json)
         displayListSelectDialog(list.map { ConfigImportItemModel(true, it.name, it.author, it) }) {
-            it.forEach { plugin -> appDb.pluginDao.insert(plugin as Plugin) }
+            appDb.pluginDao.insert(*it.map { plugin -> plugin as Plugin }.toTypedArray())
             finish()
             toast(getString(R.string.config_import_success_msg, it.size))
         }
