@@ -1,7 +1,6 @@
-package com.github.jing332.tts_server_android.help.plugin.directupload
+package com.github.jing332.tts_server_android.help.script.directupload
 
 import com.script.javascript.RhinoScriptEngine
-import org.mozilla.javascript.NativeFunction
 import org.mozilla.javascript.NativeObject
 
 data class DirectUploadFunction(

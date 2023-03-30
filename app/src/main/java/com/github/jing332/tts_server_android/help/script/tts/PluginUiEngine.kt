@@ -1,14 +1,19 @@
-package com.github.jing332.tts_server_android.help.plugin.tts
+package com.github.jing332.tts_server_android.help.script.tts
 
 import android.content.Context
 import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.help.plugin.core.LogOutputter
+import com.github.jing332.tts_server_android.help.script.core.LogOutputter
+import com.github.jing332.tts_server_android.help.script.core.Logger
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.dp
 import org.mozilla.javascript.NativeObject
 
-class PluginUiEngine(private val pluginTts: PluginTTS) : PluginEngine(pluginTTS = pluginTts) {
+class PluginUiEngine(
+    private val pluginTts: PluginTTS,
+    override val context: Context,
+) :
+    PluginEngine(pluginTTS = pluginTts, context = context) {
     companion object {
         const val FUNC_SAMPLE_RATE = "getAudioSampleRate"
         const val FUNC_LOCALES = "getLocales"
@@ -26,21 +31,19 @@ class PluginUiEngine(private val pluginTts: PluginTTS) : PluginEngine(pluginTTS 
     }
 
     private val editUiJsObject: NativeObject by lazy {
-        val importCode = "importPackage(${AppConst.PACKET_NAME}.help.plugin.ui);" +
+        val importCode = "importPackage(${AppConst.PACKET_NAME}.help.script.core.ui);" +
                 "importPackage(android.view);" +
                 "importPackage(android.widget);"
 
         eval(importCode)
-        scriptEngine.get(OBJ_UI_JS).run {
-            if (this == null) throw Exception("Object not found: $OBJ_UI_JS")
-            else (this as NativeObject)
-        }
+        findObject(OBJ_UI_JS)
     }
 
-    fun getSampleRate(locale: String, voice: String): Int? {
-        LogOutputter.writeLine("getAudioSampleRate()...")
 
-        return scriptEngine.invokeMethod(
+    fun getSampleRate(locale: String, voice: String): Int? {
+        logger.d("getSampleRate()...")
+
+        return rhino.invokeMethod(
             editUiJsObject,
             FUNC_SAMPLE_RATE,
             locale,
@@ -53,7 +56,7 @@ class PluginUiEngine(private val pluginTts: PluginTTS) : PluginEngine(pluginTTS 
 
     @Suppress("UNCHECKED_CAST")
     fun getLocales(): List<String> {
-        return scriptEngine.invokeMethod(editUiJsObject, FUNC_LOCALES).run {
+        return rhino.invokeMethod(editUiJsObject, FUNC_LOCALES).run {
             if (this == null) emptyList()
             else this as List<String>
         }
@@ -61,25 +64,25 @@ class PluginUiEngine(private val pluginTts: PluginTTS) : PluginEngine(pluginTTS 
 
     @Suppress("UNCHECKED_CAST")
     fun getVoices(locale: String): Map<String, String> {
-        return scriptEngine.invokeMethod(editUiJsObject, FUNC_VOICES, locale).run {
+        return rhino.invokeMethod(editUiJsObject, FUNC_VOICES, locale).run {
             if (this == null) emptyMap()
             else this as Map<String, String>
         }
     }
 
     fun onLoadData() {
-        LogOutputter.writeLine("onLoadData()...")
+        logger.d("onLoadData()...")
 
-        scriptEngine.invokeMethod(
+        rhino.invokeMethod(
             editUiJsObject,
             FUNC_ON_LOAD_DATA
         )
     }
 
     fun onLoadUI(context: Context, container: LinearLayout) {
-        LogOutputter.writeLine("onLoadUI()...")
+        logger.d("onLoadUI()...")
 
-        scriptEngine.invokeMethod(
+        rhino.invokeMethod(
             editUiJsObject,
             FUNC_ON_LOAD_UI,
             context,
@@ -88,9 +91,9 @@ class PluginUiEngine(private val pluginTts: PluginTTS) : PluginEngine(pluginTTS 
     }
 
     fun onVoiceChanged(locale: String, voice: String) {
-        LogOutputter.writeLine("onVoiceChanged()...")
+        logger.d("onVoiceChanged()...")
 
-        scriptEngine.invokeMethod(
+        rhino.invokeMethod(
             editUiJsObject,
             FUNC_ON_VOICE_CHANGED,
             locale,

@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.github.jing332.tts_server_android.help.plugin.ui
+package com.github.jing332.tts_server_android.help.script.core.ui
 
 import android.annotation.SuppressLint
 import android.content.Context

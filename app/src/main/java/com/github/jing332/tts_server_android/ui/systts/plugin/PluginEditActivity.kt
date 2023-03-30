@@ -25,9 +25,9 @@ import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.base.BackActivity
+import com.github.jing332.tts_server_android.ui.systts.LoggerBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.plugin.debug.PluginLoggerBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
 import com.github.jing332.tts_server_android.util.FileUtils
@@ -194,10 +194,10 @@ class PluginEditActivity : BackActivity() {
 
     private fun debug() {
         val fragment = supportFragmentManager.findFragmentByTag("PluginLoggerBottomSheetFragment")
-        if (fragment != null && fragment is PluginLoggerBottomSheetFragment) {
+        if (fragment != null && fragment is LoggerBottomSheetFragment) {
             fragment.clearLog()
         } else {
-            val bottomSheetFragment = PluginLoggerBottomSheetFragment()
+            val bottomSheetFragment = LoggerBottomSheetFragment(vm.pluginEngine.logger)
             bottomSheetFragment.show(supportFragmentManager, "PluginLoggerBottomSheetFragment")
         }
 

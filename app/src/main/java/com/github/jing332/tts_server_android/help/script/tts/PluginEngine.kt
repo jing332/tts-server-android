@@ -1,20 +1,27 @@
-package com.github.jing332.tts_server_android.help.plugin.tts
+package com.github.jing332.tts_server_android.help.script.tts
 
+import android.content.Context
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.help.plugin.core.LogOutputter
-import com.github.jing332.tts_server_android.help.plugin.core.ext.JsExtensions
-import com.github.jing332.tts_server_android.help.plugin.core.ext.JsLogger
+import com.github.jing332.tts_server_android.help.script.core.BaseScriptEngine
+import com.github.jing332.tts_server_android.help.script.core.LogOutputter
+import com.github.jing332.tts_server_android.help.script.core.Logger
+import com.github.jing332.tts_server_android.help.script.core.ext.JsExtensions
+import com.github.jing332.tts_server_android.help.script.core.ext.JsLogger
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
 
 open class PluginEngine(
-    context: android.content.Context = app,
     private val pluginTTS: PluginTTS,
-    protected val scriptEngine: RhinoScriptEngine = RhinoScriptEngine()
-) : JsExtensions(context, pluginTTS.plugin!!.pluginId), JsLogger {
+    override val context: Context,
+    override val rhino: RhinoScriptEngine = RhinoScriptEngine(),
+    override val logger: Logger = Logger(),
+) : BaseScriptEngine(
+    rhino = rhino, context = context, id = pluginTTS.pluginId, logger = logger,
+    code = pluginTTS.requirePlugin.code
+) {
     private var mPlugin: Plugin
         inline get() = pluginTTS.plugin!!
         inline set(value) {
@@ -38,21 +45,16 @@ open class PluginEngine(
         get() = pluginTTS
 
     private val pluginJsObject: NativeObject
-        get() {
-            return scriptEngine.get(OBJ_PLUGIN_JS).run {
-                if (this == null) throw Exception("Not found object: $OBJ_PLUGIN_JS")
-                else this as NativeObject
-            }
-        }
+        get() = findObject(OBJ_PLUGIN_JS)
 
     fun eval(preCode: String = "") {
-        scriptEngine.put(OBJ_TTSRV, this@PluginEngine)
-        scriptEngine.put(OBJ_LOGGER, this@PluginEngine)
-        scriptEngine.eval(preCode + ";" + mPlugin.code)
+        rhino.put(OBJ_TTSRV, this@PluginEngine)
+        rhino.put(OBJ_LOGGER, this@PluginEngine)
+        rhino.eval(preCode + ";" + mPlugin.code)
     }
 
     fun evalPluginInfo(): Plugin {
-        LogOutputter.writeLine("\n获取插件信息...")
+        logger.d("evalPluginInfo()...")
         eval()
 
         pluginJsObject.apply {
@@ -73,12 +75,12 @@ open class PluginEngine(
     fun getAudio(
         text: String, locale: String, voice: String, rate: Int = 1, volume: Int = 1, pitch: Int = 1
     ): ByteArray? {
-        LogOutputter.writeLine(
-            "\n执行getAudio()..." +
+        logger.d(
+            "getAudio()..." +
                     "\ntext: $text, locale: $locale, voice: $voice, rate: $rate, volume: $volume, pitch: $pitch"
         )
 
-        return scriptEngine.invokeMethod(
+        return rhino.invokeMethod(
             pluginJsObject,
             FUNC_GET_AUDIO,
             text,

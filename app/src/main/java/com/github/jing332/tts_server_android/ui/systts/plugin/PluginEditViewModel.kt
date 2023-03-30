@@ -1,6 +1,8 @@
 package com.github.jing332.tts_server_android.ui.systts.plugin
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,8 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.help.plugin.core.LogOutputter
-import com.github.jing332.tts_server_android.help.plugin.tts.PluginUiEngine
+import com.github.jing332.tts_server_android.help.script.core.LogOutputter
+import com.github.jing332.tts_server_android.help.script.tts.PluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.util.readableString
@@ -22,7 +24,7 @@ import tts_server_lib.PluginCodeSyncServerCallback
 import tts_server_lib.PluginSyncServer
 import java.io.File
 
-class PluginEditViewModel : ViewModel() {
+class PluginEditViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         private const val TAG = "PluginEditViewModel"
     }
@@ -48,7 +50,7 @@ class PluginEditViewModel : ViewModel() {
 
     fun updateTTS(tts: PluginTTS) {
         pluginTTS = tts.apply { plugin = pluginInfo }
-        pluginEngine = PluginUiEngine(tts)
+        pluginEngine = PluginUiEngine(tts, getApplication())
     }
 
 
@@ -113,12 +115,12 @@ class PluginEditViewModel : ViewModel() {
             writeErrorLog(e)
             return
         }
-        LogOutputter.writeLine(plugin.toString().replace(", ", "\n"))
+        pluginEngine.logger.d(plugin.toString().replace(", ", "\n"))
 
         viewModelScope.launch(Dispatchers.IO) {
             kotlin.runCatching {
                 val sampleRate = pluginEngine.getSampleRate(pluginTTS.locale, pluginTTS.voice)
-                LogOutputter.writeLine("采样率: $sampleRate")
+                pluginEngine.logger.d("采样率: $sampleRate")
             }.onFailure {
                 writeErrorLog(it)
             }
@@ -130,9 +132,9 @@ class PluginEditViewModel : ViewModel() {
                     pluginTTS.volume, pluginTTS.pitch
                 )
                 if (audio == null)
-                    LogOutputter.writeLine("\n音频为空！", LogLevel.ERROR)
+                    pluginEngine.logger.w("音频为空！")
                 else
-                    LogOutputter.writeLine("\n音频大小: ${bytesToHumanReadable(audio.size.toLong())}")
+                    pluginEngine.logger.i("音频大小: ${bytesToHumanReadable(audio.size.toLong())}")
 
             }.onFailure {
                 writeErrorLog(it)
@@ -147,10 +149,10 @@ class PluginEditViewModel : ViewModel() {
         } else {
             t.message + "(${t.readableString})"
         }
-        LogOutputter.writeLine(errStr, LogLevel.ERROR)
+        pluginEngine.logger.e(errStr)
     }
 
-    fun bytesToHumanReadable(bytes: Long): String {
+    private fun bytesToHumanReadable(bytes: Long): String {
         val kb = 1024
         val mb = kb * 1024
         val gb = mb * 1024

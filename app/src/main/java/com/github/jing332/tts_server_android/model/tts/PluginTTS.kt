@@ -7,7 +7,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditBottomSheetBinding
-import com.github.jing332.tts_server_android.help.plugin.tts.PluginEngine
+import com.github.jing332.tts_server_android.help.script.tts.PluginEngine
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
@@ -84,7 +84,7 @@ data class PluginTTS(
     }
 
     @IgnoredOnParcel
-    private val engine: PluginEngine by lazy { PluginEngine(pluginTTS = this) }
+    private val engine: PluginEngine by lazy { PluginEngine(pluginTTS = this, context = context) }
 
     override fun onLoad() {
         engine.eval()

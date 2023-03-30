@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.help.plugin.core
+package com.github.jing332.tts_server_android.help.script.core
 
 import android.util.Log
 import com.github.jing332.tts_server_android.BuildConfig

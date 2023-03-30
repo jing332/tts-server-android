@@ -1,9 +1,7 @@
-package com.github.jing332.tts_server_android.help.plugin.ui
+package com.github.jing332.tts_server_android.help.script.core.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.view.View
-import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 

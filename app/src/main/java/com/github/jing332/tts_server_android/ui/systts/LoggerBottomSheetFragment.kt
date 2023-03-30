@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.directupload
+package com.github.jing332.tts_server_android.ui.systts
 
 
 import android.os.Bundle
@@ -11,8 +11,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.databinding.SysttsPluginLoggerBottomSheetBinding
-import com.github.jing332.tts_server_android.help.plugin.core.LogOutputter
-import com.github.jing332.tts_server_android.help.plugin.core.Logger
+import com.github.jing332.tts_server_android.help.script.core.Logger
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.channels.Channel

@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.help.plugin.core.ext
+package com.github.jing332.tts_server_android.help.script.core.ext
 
 import android.content.Context
 import cn.hutool.core.io.CharsetDetector

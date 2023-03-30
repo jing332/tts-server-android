@@ -11,7 +11,7 @@ import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivityBinding
-import com.github.jing332.tts_server_android.help.plugin.tts.PluginUiEngine
+import com.github.jing332.tts_server_android.help.script.tts.PluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
