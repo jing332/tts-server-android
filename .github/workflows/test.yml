@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - "README.md"
       - "CHANGELOG.md"
+      - "crowdin.yml"
   workflow_dispatch:
 
 jobs:
