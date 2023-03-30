@@ -262,7 +262,7 @@
     <string name="systts_sby_settings_msg">備用配置在第幾次重試時觸發？ 預設為1，即備用配置在首次失敗重試時使用。</string>
     <string name="systts_ms_webm_warn_msg">⚠️ 經測試，音訊格式webm..- 24kbps-.. 的實際所耗流量是其它音訊大小的三倍多，不推薦使用！</string>
     <string name="search_filter">搜索過濾</string>
-    <string name="app_language_follow">跟隨系統</string>
+    <string name="follow_system">跟隨系統</string>
     <string name="app_language_desc">程式語言：%1$s</string>
     <string name="app_language_to_follow_tip_msg">如果更新語言失敗，請手動結束程式並重啓。</string>
     <string name="forwarder_sys_fail_audio_file">合成失敗：未找到音訊檔案</string>

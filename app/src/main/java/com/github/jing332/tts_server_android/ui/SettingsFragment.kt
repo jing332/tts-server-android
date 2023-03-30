@@ -5,20 +5,17 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
-import androidx.core.view.updatePadding
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
 import androidx.preference.SwitchPreferenceCompat
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.R.string
-import com.github.jing332.tts_server_android.R.xml
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
+import com.github.jing332.tts_server_android.util.dp
 import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Locale
@@ -26,13 +23,11 @@ import java.util.Locale
 class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.sharedPreferencesName = AppConfig.kotprefName
-        setPreferencesFromResource(xml.root_preferences, rootKey)
+        setPreferencesFromResource(R.xml.root_preferences, rootKey)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         // 朗读目标多选开关
         val voiceMultipleSwitch: SwitchPreferenceCompat = findPreference("isVoiceMultiple")!!
         voiceMultipleSwitch.isChecked = SysTtsConfig.isVoiceMultipleEnabled
@@ -52,7 +47,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // 代码编辑器主题
         val editorTheme: ListPreference = findPreference("codeEditorTheme")!!
         val themes = linkedMapOf(
-            CodeEditorTheme.AUTO to requireContext().getString(R.string.app_language_follow),
+            CodeEditorTheme.AUTO to requireContext().getString(R.string.follow_system),
             CodeEditorTheme.QUIET_LIGHT to "Quiet-Light",
             CodeEditorTheme.SOLARIZED_DRAK to "Solarized-Dark",
             CodeEditorTheme.DARCULA to "Darcula",
@@ -74,7 +69,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val appLocales = BuildConfig.TRANSLATION_ARRAY.map { Locale.forLanguageTag(it) }
         val entries = appLocales.map { it.getDisplayName(it) }.toMutableList()
-            .apply { add(0, getString(string.app_language_follow)) }
+            .apply { add(0, getString(R.string.follow_system)) }
 
         langPre.entries = entries.toTypedArray()
         langPre.entryValues =
@@ -89,12 +84,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         )
         langPre.summary =
-            if (currentLocale == null) getString(R.string.app_language_follow)
+            if (currentLocale == null) getString(R.string.follow_system)
             else currentLocale.getDisplayName(currentLocale)
         langPre.setDialogMessage(R.string.app_language_to_follow_tip_msg)
         langPre.setOnPreferenceChangeListener { _, newValue ->
             val locale = if (newValue == null || newValue.toString().isEmpty()) { //随系统
-                longToast(string.app_language_to_follow_tip_msg)
+                longToast(R.string.app_language_to_follow_tip_msg)
                 app.updateLocale(Locale.getDefault())
                 LocaleListCompat.getEmptyLocaleList()
             } else {
@@ -109,15 +104,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
         if (preference is ListPreference) {
-            val tvMsg = TextView(requireContext()).apply {
-                setTypeface(null, Typeface.BOLD)
-                text = preference.dialogMessage
-                textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-                updatePadding(left = 12, right = 12, top = 20)
-            }
+            val tvMsg =
+                if (preference.dialogMessage.isNullOrEmpty()) null
+                else TextView(requireContext()).apply {
+                    setTypeface(null, Typeface.BOLD)
+                    text = preference.dialogMessage
+                    textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+                    setPadding(/* left = */ 8.dp, /* top = */16.dp,
+                        /* right = */8.dp, /* bottom = */8.dp
+                    )
+                }
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(preference.dialogTitle)
-                .setView(tvMsg)
+                .apply { tvMsg?.let { setView(it) } }
                 .setSingleChoiceItems(
                     preference.entries,
                     preference.findIndexOfValue(preference.value)
