@@ -9,7 +9,7 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
-import com.github.jing332.tts_server_android.help.script.tts.PluginUiEngine
+import com.github.jing332.tts_server_android.model.script.tts.PluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem

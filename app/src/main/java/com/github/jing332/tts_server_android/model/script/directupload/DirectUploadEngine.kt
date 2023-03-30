@@ -1,9 +1,9 @@
-package com.github.jing332.tts_server_android.help.script.directupload
+package com.github.jing332.tts_server_android.model.script.directupload
 
 import android.content.Context
 import com.github.jing332.tts_server_android.help.config.DirectUploadConfig
-import com.github.jing332.tts_server_android.help.script.core.BaseScriptEngine
-import com.github.jing332.tts_server_android.help.script.core.Logger
+import com.github.jing332.tts_server_android.model.script.core.BaseScriptEngine
+import com.github.jing332.tts_server_android.model.script.core.Logger
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
 

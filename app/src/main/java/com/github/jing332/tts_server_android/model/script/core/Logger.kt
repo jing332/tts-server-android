@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.help.script.core
+package com.github.jing332.tts_server_android.model.script.core
 
 import com.github.jing332.tts_server_android.ui.LogLevel
 import org.mozilla.javascript.NativeArray

@@ -1,7 +1,7 @@
 package com.github.jing332.tts_server_android
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.jing332.tts_server_android.help.script.directupload.DirectUploadEngine
+import com.github.jing332.tts_server_android.model.script.directupload.DirectUploadEngine
 import org.junit.Test
 import org.junit.runner.RunWith
 

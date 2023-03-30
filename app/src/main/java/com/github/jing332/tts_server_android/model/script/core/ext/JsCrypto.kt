@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.github.jing332.tts_server_android.help.script.core.ext
+package com.github.jing332.tts_server_android.model.script.core.ext
 
 import cn.hutool.core.codec.Base64
 import cn.hutool.crypto.symmetric.SymmetricCrypto

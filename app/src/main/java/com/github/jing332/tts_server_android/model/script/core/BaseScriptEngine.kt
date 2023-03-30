@@ -1,7 +1,7 @@
-package com.github.jing332.tts_server_android.help.script.core
+package com.github.jing332.tts_server_android.model.script.core
 
 import android.content.Context
-import com.github.jing332.tts_server_android.help.script.core.ext.JsExtensions
+import com.github.jing332.tts_server_android.model.script.core.ext.JsExtensions
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
 
