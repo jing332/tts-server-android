@@ -39,12 +39,16 @@ jobs:
     strategy:
       matrix:
         product: [ app, dev ]
+        product_name: ["App原版", "Dev共存版"]
         
       fail-fast: false
     runs-on: ubuntu-latest
     env:
       product: ${{ matrix.product }}
-      type: ${{ matrix.type }}
+      product_name: ${{matrix.product_name}}
+      outputs_dir: "${{ github.workspace }}/app/build/outputs"
+      ver_name: ""
+
     steps:
       - uses: actions/checkout@v3
 
@@ -76,18 +80,18 @@ jobs:
           chmod +x gradlew
           ./gradlew assemble${{ env.product }}release --build-cache --parallel --daemon --warning-mode all
 
-      - name: Get VerName
+      - name: Init environment variable
         run: |
-          echo "ver_name=$(grep -m 1 'versionName' ${{ github.workspace }}/app/build/output/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
+          echo "ver_name=$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
         
       - name: Upload Mappings to Artifact
         uses: actions/upload-artifact@v3
         with:
           name: mappings_${{ env.product }}_${{ env.ver_name }}
-          path: ${{ github.workspace }}/app/build/outputs/mapping/*.txt
+          path: ${{ env.outputs_dir }}/mapping/*/.txt
 
       - name: Upload App To Artifact
         uses: actions/upload-artifact@v3
         with:
           name: "TTS-Server_${{ env.product }}_${{ env.ver_name }}"
-          path: ${{ github.workspace }}/app/build/outputs/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk
+          path: ${{env.outputs_dir}}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk
