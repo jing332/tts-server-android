@@ -344,5 +344,6 @@
     <string name="code_editor_theme">代码编辑器主题</string>
     <string name="code_editor_word_wrap">代码编辑器自动换行</string>
     <string name="set_sample_text_param">设置文本参数</string>
+    <string name="import_plugin">导入插件</string>
 
 </resources>

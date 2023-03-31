@@ -137,7 +137,8 @@ class PluginManagerActivity : BackActivity() {
             }
 
             R.id.menu_import -> {
-                startActivity(Intent(this, ImportActivity::class.java))
+                val fragment = ImportConfigBottomSheetFragment()
+                fragment.show(supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
             }
         }
         return super.onOptionsItemSelected(item)

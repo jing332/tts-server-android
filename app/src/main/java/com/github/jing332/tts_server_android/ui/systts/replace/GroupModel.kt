@@ -21,7 +21,7 @@ data class GroupModel(
         get() = data.name
 
     override val subItemEnabledCount: Int
-        get() = itemSublist?.filter { (it as ItemModel).data.isEnabled }?.size ?: 0
+        get() = itemSublist?.filter { (it as ReplaceRuleModel).data.isEnabled }?.size ?: 0
 
 }
 

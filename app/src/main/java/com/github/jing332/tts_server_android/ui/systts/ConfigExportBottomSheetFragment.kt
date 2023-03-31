@@ -54,9 +54,9 @@ class ConfigExportBottomSheetFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sheetContainer = requireView().parent as? ViewGroup ?: return
+        val sheetContainer = requireView().parent as ViewGroup
         sheetContainer.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-//        binding.root.minimumHeight = requireActivity().windowManager.defaultDisplay.height
+
         val config = onGetConfig.invoke()
         binding.tvConfig.text = config
 

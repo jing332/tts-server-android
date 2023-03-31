@@ -65,48 +65,4 @@ object AppDialogs {
             }
     }
 
-    fun displayExportDialog(
-        context: Context,
-        scope: CoroutineScope,
-        json: String,
-        onSaveFile: (json: String) -> Unit
-    ) {
-        context.apply {
-            val scrollview = NestedScrollView(context)
-            val tv = TextView(this).apply {
-                text = json
-                setTextIsSelectable(true)
-                setPadding(50, 50, 50, 0)
-            }
-            scrollview.addView(tv)
-            MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.export_config)
-                .setView(scrollview)
-                .setNeutralButton(R.string.save_as_file) { _, _ ->
-                    onSaveFile.invoke(json)
-                }
-                .setPositiveButton(R.string.copy) { _, _ ->
-                    ClipboardUtils.copyText(json)
-                    toast(R.string.copied)
-                }
-                .setNegativeButton(getString(R.string.upload_to_url)) { _, _ ->
-                    scope.runOnIO {
-                        kotlin.runCatching {
-                            val url = updateToUrl(json)
-                            ClipboardUtils.copyText(url)
-                            longToast("${getString(R.string.copied)}: $url")
-                        }.onFailure {
-                            longToast(getString(R.string.upload_failed, it.message))
-                        }
-                    }
-                }
-
-                .show()
-        }
-    }
-
-    private fun updateToUrl(json: String): String {
-        return Tts_server_lib.uploadConfig(json)
-    }
-
 }

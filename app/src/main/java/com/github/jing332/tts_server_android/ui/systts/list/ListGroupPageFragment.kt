@@ -26,6 +26,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsListCustomGroupFr
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
+import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.ThrottleUtil
@@ -191,14 +192,11 @@ class ListGroupPageFragment : Fragment() {
     @Suppress("UNCHECKED_CAST")
     private fun exportGroup(model: GroupModel) {
         val obj = GroupWithTtsItem(group = model.data, list = model.itemSublist as List<SystemTts>)
-        AppDialogs.displayExportDialog(
-            requireContext(),
-            lifecycleScope,
-            App.jsonBuilder.encodeToString(obj)
-        ) {
-            savedData = it.toByteArray()
-            getFileUriToSave.launch("ttsrv-${model.name}.json")
-        }
+        val fragment = ConfigExportBottomSheetFragment(
+            { App.jsonBuilder.encodeToString(obj) },
+            { "ttsrv-${model.name}.json" }
+        )
+        fragment.show(requireActivity().supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
     }
 
     private fun editGroupName(data: SystemTtsGroup) {

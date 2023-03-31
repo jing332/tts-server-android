@@ -41,9 +41,6 @@
             android:exported="false"
             android:label="@string/exo_player_title" />
         <activity
-            android:name=".ui.base.import1.BaseConfigImportActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.systts.plugin.PluginEditActivity"
             android:exported="false"
             android:label=""
@@ -52,10 +49,7 @@
             android:name=".ui.systts.plugin.PluginManagerActivity"
             android:exported="true"
             android:label="@string/plugin_manager" />
-        <activity
-            android:name=".ui.systts.plugin.ImportActivity"
-            android:exported="true"
-            android:label="插件导入" />
+
         <activity
             android:name=".ui.systts.edit.plugin.PluginTtsEditActivity"
             android:exported="false"
@@ -76,9 +70,7 @@
         <activity
             android:name=".ui.systts.edit.microsoft.MsTtsEditActivity"
             android:label="@string/title_activity_tts_config_edit" />
-        <activity
-            android:name=".ui.systts.list.ConfigImportActivity"
-            android:label="@string/config_import" />
+
         <activity
             android:name=".ui.systts.edit.http.HttpTtsEditActivity"
             android:label="@string/systts_http_edit_title" />
@@ -96,9 +88,7 @@
         <activity
             android:name=".ui.systts.replace.ReplaceRuleEditActivity"
             android:label="@string/title_activity_replace_edit" />
-        <activity
-            android:name=".ui.systts.replace.ConfigImportActivity"
-            android:label="@string/import_replace_rule" />
+
         <activity
             android:name=".ui.forwarder.ms.ScSwitchActivity"
             android:taskAffinity="sc.switch"

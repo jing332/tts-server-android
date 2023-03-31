@@ -102,12 +102,11 @@
                 android:id="@+id/til_file_path"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/local_file"
                 android:visibility="gone"
                 app:endIconContentDescription="@string/select_file"
                 app:endIconDrawable="@drawable/ic_baseline_file_open_24"
                 app:endIconMode="custom"
-                app:endIconTint="?attr/colorControlNormal"
-                app:hintEnabled="false"
                 tools:visibility="visible">
 
                 <com.google.android.material.textfield.TextInputEditText

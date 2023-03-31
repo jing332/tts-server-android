@@ -12,18 +12,23 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsListImportBinding
 import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
-import com.github.jing332.tts_server_android.ui.base.import1.BaseConfigImportActivity
-import com.github.jing332.tts_server_android.ui.base.import1.ConfigImportItemModel
+import com.github.jing332.tts_server_android.ui.base.import1.BaseImportConfigBottomSheetFragment
+import com.github.jing332.tts_server_android.ui.base.import1.ConfigItemModel
 import com.github.jing332.tts_server_android.util.StringUtils
+import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.toJsonListString
 import com.github.jing332.tts_server_android.util.toast
 import kotlinx.serialization.decodeFromString
 
-class ConfigImportActivity : BaseConfigImportActivity() {
+class ConfigImportBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
+    companion object {
+        const val TAG = "ConfigImportBottomSheetFragment"
+    }
+
     private val binding by lazy { SysttsListImportBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setTopContentView(binding.root)
         binding.groupType.check(binding.btnTypeApp.id)
     }
 
@@ -33,12 +38,12 @@ class ConfigImportActivity : BaseConfigImportActivity() {
 
     @Suppress("UNCHECKED_CAST")
     override fun onImport(json: String) {
-        val allList = mutableListOf<ConfigImportItemModel>()
+        val allList = mutableListOf<ConfigItemModel>()
         getImportList(json.toJsonListString(), isLegado)?.forEach { groupWithTts ->
             val group = groupWithTts.group
             groupWithTts.list.forEach { sysTts ->
                 allList.add(
-                    ConfigImportItemModel(
+                    ConfigItemModel(
                         true, sysTts.displayName.toString(),
                         group.name, Pair(group, sysTts)
                     )
@@ -53,8 +58,8 @@ class ConfigImportActivity : BaseConfigImportActivity() {
                     appDb.systemTtsDao.insertGroup(group)
                     appDb.systemTtsDao.insertTts(tts)
                 }
-            finish()
-            toast(getString(R.string.config_import_success_msg, list.size))
+
+            longToast(getString(R.string.config_import_success_msg, list.size))
         }
     }
 
@@ -104,4 +109,6 @@ class ConfigImportActivity : BaseConfigImportActivity() {
             }
         }
     }
+
+
 }

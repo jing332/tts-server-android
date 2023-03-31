@@ -49,7 +49,7 @@
 -keep class com.script.javascript.** { *; }
 
 ## 插件相关
--keep class com.github.jing332.tts_server_android.help.script.ext.** { *; }
+-keep class com.github.jing332.tts_server_android.model.script.core.** { *; }
 -keep class cn.hutool.crypto.** { *; }
 -keep class cn.hutool.core.** { *; }
 

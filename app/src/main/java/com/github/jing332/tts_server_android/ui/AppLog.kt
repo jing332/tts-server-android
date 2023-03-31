@@ -9,7 +9,6 @@ class AppLog(var level: Int, var msg: String) : Parcelable {
     fun toColor(): Int {
         return LogLevel.toColor(level)
     }
-
 }
 
 object LogLevel {

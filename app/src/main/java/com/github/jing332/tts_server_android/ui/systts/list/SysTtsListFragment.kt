@@ -41,7 +41,6 @@ import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEdit
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
-import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -277,7 +276,8 @@ class SysTtsListFragment : Fragment() {
     }
 
     private fun importConfig() {
-        startActivity(Intent(requireContext(), ConfigImportActivity::class.java))
+        val fragment = ConfigImportBottomSheetFragment()
+        fragment.show(requireActivity().supportFragmentManager, ConfigImportBottomSheetFragment.TAG)
     }
 
 

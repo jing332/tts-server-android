@@ -68,7 +68,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { finish() }
 
         brv = binding.recyclerView.linear().setup {
-            addType<ItemModel>(R.layout.systts_replace_rule_item)
+            addType<ReplaceRuleModel>(R.layout.systts_replace_rule_item)
             addType<GroupModel>(R.layout.base_list_group_item)
 
             onCreate {
@@ -82,7 +82,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
                     override fun onCheckedChange(v: MaterialCheckBox, model: GroupModel) {
                         model.itemSublist?.forEach {
-                            if (it is ItemModel) {
+                            if (it is ReplaceRuleModel) {
                                 appDb.replaceRuleDao.update(it.data.copy(isEnabled = v.isChecked))
                             }
                         }
@@ -117,12 +117,12 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 groupHelper.initGroup(this@setup, this)
 
                 getBindingOrNull<SysttsReplaceRuleItemBinding>()?.apply {
-                    btnEdit.clickWithThrottle { edit(getModel<ItemModel>().data) }
+                    btnEdit.clickWithThrottle { edit(getModel<ReplaceRuleModel>().data) }
                     btnMore.clickWithThrottle {
-                        displayMoreMenu(it, getModel<ItemModel>().data)
+                        displayMoreMenu(it, getModel<ReplaceRuleModel>().data)
                     }
                     checkBox.setOnClickListener {
-                        appDb.replaceRuleDao.update(getModel<ItemModel>().data)
+                        appDb.replaceRuleDao.update(getModel<ReplaceRuleModel>().data)
                     }
                 }
             }
@@ -130,7 +130,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return if (oldItem is ItemModel && newItem is ItemModel) oldItem.data.id == newItem.data.id
+                    return if (oldItem is ReplaceRuleModel && newItem is ReplaceRuleModel) oldItem.data.id == newItem.data.id
                     else if (oldItem is GroupModel && newItem is GroupModel) oldItem.data.id == newItem.data.id
                     else false
                 }
@@ -193,7 +193,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
                             ?.run { this as GroupModel }
                             ?.let { groupModel ->
                                 val listInGroup =
-                                    models!!.filter { it is ItemModel && groupModel.data.id == it.data.groupId }
+                                    models!!.filter { it is ReplaceRuleModel && groupModel.data.id == it.data.groupId }
                                 updateOrder(listInGroup)
                             }
                     }
@@ -293,7 +293,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
                 GroupModel(
                     data = data.group,
-                    itemSublist = filteredList.map { ItemModel(it) },
+                    itemSublist = filteredList.map { ReplaceRuleModel(it) },
                     itemExpand = filterText.isNotBlank() || data.group.isExpanded,
                     checkedState = checkedState
                 )
@@ -306,7 +306,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
     fun updateOrder(models: List<Any?>?) {
         models?.forEachIndexed { index, value ->
-            val model = value as ItemModel
+            val model = value as ReplaceRuleModel
             appDb.replaceRuleDao.update(model.data.copy(order = index))
         }
     }
@@ -377,7 +377,8 @@ class ReplaceManagerActivity : AppCompatActivity() {
             }
 
             R.id.menu_importConfig -> {
-                startActivity(Intent(this, ConfigImportActivity::class.java))
+                val fragment = ImportConfigBottomSheetFragment()
+                fragment.show(supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
             }
 
             R.id.menu_export_config -> {
