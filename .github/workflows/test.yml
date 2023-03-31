@@ -6,8 +6,7 @@ on:
       - "master"
       - "dev"
     paths-ignore:
-      - "README.md"
-      - "CHANGELOG.md"
+      - "**.md"
       - "crowdin.yml"
   workflow_dispatch:
 
