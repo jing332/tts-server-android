@@ -29,20 +29,29 @@ jobs:
           gomobile bind -ldflags "-s -w" -v -androidapi=19
           cp -f *.aar $GITHUB_WORKSPACE/app/libs
 
-        uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v3.1.0
         with:
           name: tts-server-lib
           path: tts-server-lib/*.aar
 
   build:
     needs: prepare
+    strategy:
+      matrix:
+        product: [ app, dev ]
+        
+      fail-fast: false
     runs-on: ubuntu-latest
+    env:
+      product: ${{ matrix.product }}
+      type: ${{ matrix.type }}
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/download-artifact@v3
-        name: tts-server-lib
-        path: ${{ github.workspace }}/app/libs
+        with:
+            name: tts-server-lib
+            path: ${{ github.workspace }}/app/libs
 
       - uses: actions/setup-java@v3
         with:
@@ -65,38 +74,20 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --build-cache --parallel --daemon --warning-mode all
-
-      - name: Organize the Files
-        run: |
-          mkdir -p ${{ github.workspace }}/output/app
-          mkdir -p ${{ github.workspace }}/output/dev
-          rm -f ${{ github.workspace }}/output/app/*
-          rm -f ${{ github.workspace }}/output/dev/*
-          
-          cp ${{ github.workspace }}/app/build/outputs/apk/app/release/*.apk ${{ github.workspace }}/output/app
-          cp ${{ github.workspace }}/app/build/outputs/apk/app/release/*.json ${{ github.workspace }}/output/app
-          cp ${{ github.workspace }}/app/build/outputs/apk/dev/release/*.apk ${{ github.workspace }}/output/dev
-          cp -r ${{ github.workspace }}/app/build/outputs/mapping ${{ github.workspace }}/output/
+          ./gradlew assemble${{ env.product }}release --build-cache --parallel --daemon --warning-mode all
 
       - name: Get VerName
         run: |
-          echo "ver_name=$(grep -m 1 'versionName' output/app/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
-
+          echo "ver_name=$(grep -m 1 'versionName' ${{ github.workspace }}/app/build/output/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
+        
       - name: Upload Mappings to Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: mappings_${{ env.ver_name }}
-          path: ${{ github.workspace }}/output/mapping
+          name: mappings_${{ env.product }}_${{ env.ver_name }}
+          path: ${{ github.workspace }}/app/build/outputs/mapping/*.txt
 
       - name: Upload App To Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: "TTS-Server_原版_${{ env.ver_name }}"
-          path: ${{ github.workspace }}/output/app/*${{ env.ver_name }}.apk
-
-      - name: Upload Dev App To Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: "TTS-Server_Dev共存版_${{ env.ver_name }}"
-          path: ${{ github.workspace }}/output/dev/*${{ env.ver_name }}.apk
+          name: "TTS-Server_${{ env.product }}_${{ env.ver_name }}"
+          path: ${{ github.workspace }}/app/build/outputs/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk
