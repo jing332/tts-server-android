@@ -30,7 +30,7 @@ jobs:
           gomobile bind -ldflags "-s -w" -v -androidapi=19
           cp -f *.aar $GITHUB_WORKSPACE/app/libs
 
-        uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v3.1.0
         with:
           name: tts-server-lib
           path: tts-server-lib/*.aar
