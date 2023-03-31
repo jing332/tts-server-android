@@ -14,6 +14,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsConfigExportBotto
 import com.github.jing332.tts_server_android.model.script.directupload.DirectUploadEngine
 import com.github.jing332.tts_server_android.ui.systts.directupload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.FileUtils
@@ -50,7 +51,6 @@ class ConfigExportBottomSheetFragment(
     ): View = binding.root
 
 
-    @Suppress("DEPRECATION")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -81,7 +81,7 @@ class ConfigExportBottomSheetFragment(
         val list = try {
             uploadEngine.obtainFunctionList()
         } catch (t: Throwable) {
-            AppDialogs.displayErrorDialog(requireContext(), t.stackTraceToString())
+            requireContext().displayErrorDialog(t)
             return
         }
         MaterialAlertDialogBuilder(requireContext())
@@ -101,7 +101,7 @@ class ConfigExportBottomSheetFragment(
                         }
 
                     }.onFailure {
-                        AppDialogs.displayErrorDialog(requireContext(), it.stackTraceToString())
+                        context?.displayErrorDialog(it)
                     }
 
                     waitDialog.dismiss()

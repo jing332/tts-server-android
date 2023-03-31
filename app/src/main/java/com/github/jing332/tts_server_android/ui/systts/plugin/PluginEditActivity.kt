@@ -29,6 +29,7 @@ import com.github.jing332.tts_server_android.ui.systts.LoggerBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
@@ -74,7 +75,7 @@ class PluginEditActivity : BackActivity() {
                         onUI = { previewUi() }
                     )
                 }.onFailure {
-                    AppDialogs.displayErrorDialog(this@PluginEditActivity, it.stackTraceToString())
+                    this@PluginEditActivity.displayErrorDialog(it)
                 }
             }
         }
@@ -119,22 +120,22 @@ class PluginEditActivity : BackActivity() {
                     sw.isChecked = PluginConfig.isRemoteSyncEnabled
                     tilPort.editText!!.setText(PluginConfig.remoteSyncPort.toString())
                 }
-                if (PluginConfig.isRemoteSyncEnabled) {
-                    MaterialAlertDialogBuilder(this)
-                        .setView(view)
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            PluginConfig.isRemoteSyncEnabled = viewBinding.sw.isChecked
-                            PluginConfig.remoteSyncPort =
-                                viewBinding.tilPort.editText!!.text.toString().toInt()
-                        }
-                        .setNegativeButton(R.string.cancel, null)
-                        .setNeutralButton(R.string.learn_more) { _, _ ->
-                            val url = "https://github.com/jing332/tts-server-psc"
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            startActivity(intent)
-                        }
-                        .show()
-                }
+
+                MaterialAlertDialogBuilder(this)
+                    .setView(view)
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        PluginConfig.isRemoteSyncEnabled = viewBinding.sw.isChecked
+                        PluginConfig.remoteSyncPort =
+                            viewBinding.tilPort.editText!!.text.toString().toInt()
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .setNeutralButton(R.string.learn_more) { _, _ ->
+                        val url = "https://github.com/jing332/tts-server-psc"
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        startActivity(intent)
+                    }
+                    .show()
+
             }
 
             R.id.menu_word_wrap -> {
@@ -183,7 +184,7 @@ class PluginEditActivity : BackActivity() {
                     vm.updatePluginCode(binding.editor.text.toString())
                     vm.pluginEngine.evalPluginInfo()
                 } catch (e: Exception) {
-                    AppDialogs.displayErrorDialog(this, e.readableString)
+                    displayErrorDialog(e)
                     return true
                 }
 

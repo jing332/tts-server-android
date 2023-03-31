@@ -37,9 +37,7 @@ open class JsNet {
     @JvmOverloads
     fun httpGetBytes(url: String, headers: Map<String, String>? = null): ByteArray? {
         return try {
-            Net.get(url) {
-                headers?.let { setHeaders(it.toHeaders()) }
-            }.execute<ByteArray>()
+            httpGet(url, headers).body?.bytes()
         } catch (e: ConvertException) {
             throw Exception("Body is not a Bytes, HTTP-${e.response.code}=${e.response.message}")
         }

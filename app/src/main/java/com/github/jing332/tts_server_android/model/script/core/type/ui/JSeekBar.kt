@@ -2,7 +2,7 @@ package com.github.jing332.tts_server_android.model.script.core.type.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 
 @SuppressLint("ViewConstructor")
@@ -17,7 +17,7 @@ class JSeekBar(context: Context, hint: String) : Seekbar(context), Seekbar.OnSee
                 kotlin.runCatching {
                     listener?.onStartTrackingTouch(seekBar)
                 }.onFailure {
-                    AppDialogs.displayErrorDialog(context, it.stackTraceToString())
+                    context.displayErrorDialog(it)
                 }
             }
 
@@ -25,7 +25,7 @@ class JSeekBar(context: Context, hint: String) : Seekbar(context), Seekbar.OnSee
                 kotlin.runCatching {
                     listener?.onProgressChanged(seekBar, progress, fromUser)
                 }.onFailure {
-                    AppDialogs.displayErrorDialog(context, it.stackTraceToString())
+                    context.displayErrorDialog(it)
                 }
             }
 
@@ -33,7 +33,7 @@ class JSeekBar(context: Context, hint: String) : Seekbar(context), Seekbar.OnSee
                 kotlin.runCatching {
                     listener?.onStopTrackingTouch(seekBar)
                 }.onFailure {
-                    AppDialogs.displayErrorDialog(context, it.stackTraceToString())
+                    context.displayErrorDialog(it)
                 }
             }
         }

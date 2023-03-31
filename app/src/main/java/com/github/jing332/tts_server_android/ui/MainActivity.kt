@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import com.drake.net.Net
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ShortCuts
@@ -39,10 +40,12 @@ import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.service.systts.help.BgmPlayer
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.util.*
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
+import okhttp3.Response
 import java.io.File
 import java.util.*
 

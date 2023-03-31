@@ -16,6 +16,7 @@ import com.github.jing332.tts_server_android.model.script.directupload.DirectUpl
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.LoggerBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
 import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.runOnIO
@@ -66,7 +67,7 @@ class DirectUploadSettingsActivity : BackActivity() {
         val funcList = try {
             directUploadEngine.obtainFunctionList()
         } catch (t: Throwable) {
-            AppDialogs.displayErrorDialog(this, t.stackTraceToString())
+            displayErrorDialog(t)
             return
         }
 

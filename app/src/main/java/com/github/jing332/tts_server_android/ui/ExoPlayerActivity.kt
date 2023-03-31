@@ -7,6 +7,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ExoPlayerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
@@ -45,6 +46,6 @@ class ExoPlayerActivity : BackActivity(), Player.Listener {
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        AppDialogs.displayErrorDialog(this, error.stackTraceToString())
+        displayErrorDialog(error)
     }
 }

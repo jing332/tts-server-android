@@ -22,6 +22,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseConfigImportItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBaseImportConfigBottomSheetBinding
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
@@ -108,20 +109,14 @@ open class BaseImportConfigBottomSheetFragment(
                             )
                         }
                     } catch (e: Exception) {
-                        AppDialogs.displayErrorDialog(
-                            requireContext(),
-                            e.message ?: e.cause?.message ?: e.stackTraceToString()
-                        )
+                        requireContext().displayErrorDialog(e)
                         return@launch
                     } finally {
                         waitDialog.dismiss()
                     }
 
                     kotlin.runCatching { onImport(json) }.onFailure {
-                        AppDialogs.displayErrorDialog(
-                            requireContext(),
-                            it.stackTraceToString()
-                        )
+                        requireContext().displayErrorDialog(it)
                     }
                 }
             }

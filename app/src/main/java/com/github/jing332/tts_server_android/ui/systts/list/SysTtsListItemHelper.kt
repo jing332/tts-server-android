@@ -27,6 +27,7 @@ import com.github.jing332.tts_server_android.model.tts.BaseTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.clone
@@ -158,7 +159,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                     tts.getAudio(AppConfig.testSampleText)
                 }
             } catch (e: Exception) {
-                AppDialogs.displayErrorDialog(context, e.stackTraceToString())
+                context.displayErrorDialog(e)
                 return@launch
             } finally {
                 waitDialog.dismiss()
@@ -166,9 +167,10 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
             }
 
             if (audio == null) {
-                AppDialogs.displayErrorDialog(
-                    context,
-                    context.getString(R.string.systts_log_audio_empty, AppConfig.testSampleText)
+                context.displayErrorDialog(
+                    Exception(
+                        context.getString(R.string.systts_log_audio_empty, AppConfig.testSampleText)
+                    )
                 )
                 return@launch
             }

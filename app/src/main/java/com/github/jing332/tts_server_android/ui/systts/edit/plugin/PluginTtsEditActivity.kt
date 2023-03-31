@@ -15,6 +15,7 @@ import com.github.jing332.tts_server_android.model.script.tts.PluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.readableString
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -45,10 +46,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
                 engine.onLoadUI(this@PluginTtsEditActivity, binding.container)
             }.onFailure {
                 if (!this@PluginTtsEditActivity.isFinishing)
-                    AppDialogs.displayErrorDialog(
-                        this@PluginTtsEditActivity,
-                        it.stackTraceToString()
-                    )
+                    displayErrorDialog(it)
             }
             binding.paramsEdit.setData(tts)
             vm.init()
@@ -56,7 +54,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         }
 
         vm.errMessageLiveData.observe(this) {
-            AppDialogs.displayErrorDialog(this, it.stackTraceToString())
+            displayErrorDialog(it)
         }
 
         App.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_FINISH))
@@ -106,12 +104,13 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
                         engine.getSampleRate(tts.locale, tts.voice) ?: 16000
                 }
             }.onFailure {
-                AppDialogs.displayErrorDialog(
-                    this@PluginTtsEditActivity, getString(
+                displayErrorDialog(
+                    it, getString(
                         R.string.plugin_tts_get_sample_rate_fail_msg,
-                        it.readableString
+                        ""
                     )
                 )
+
             }.onSuccess {
                 super.onSave()
             }

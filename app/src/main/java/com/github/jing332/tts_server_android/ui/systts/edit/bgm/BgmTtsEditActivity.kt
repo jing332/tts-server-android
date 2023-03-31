@@ -23,6 +23,7 @@ import com.github.jing332.tts_server_android.model.tts.BgmTTS
 import com.github.jing332.tts_server_android.ui.ExoPlayerActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.util.ASFUriUtils
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
@@ -37,6 +38,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
 
     private val mDirSelection =
         registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+            if (it == null) return@registerForActivityResult
             kotlin.runCatching {
                 val docUri = DocumentsContract.buildDocumentUriUsingTree(
                     it, DocumentsContract.getTreeDocumentId(it)
@@ -45,7 +47,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
                 tts.musicList.add(path)
                 updateList()
             }.onFailure {
-                AppDialogs.displayErrorDialog(this, "文件目录选择失败：${it.stackTraceToString()}")
+                displayErrorDialog(it, "目录选择失败")
             }
         }
 

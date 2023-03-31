@@ -7,6 +7,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsLocalEditActivity
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -70,10 +71,7 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
         }, { //onDone
             waitDialog.dismiss()
             if (!it) {
-                AppDialogs.displayErrorDialog(
-                    this,
-                    getString(R.string.systts_engine_init_failed_timeout)
-                )
+                displayErrorDialog(Throwable(getString(R.string.systts_engine_init_failed_timeout)))
             }
         })
     }

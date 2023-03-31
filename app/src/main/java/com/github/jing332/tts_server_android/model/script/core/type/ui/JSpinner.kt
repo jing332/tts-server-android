@@ -6,7 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.AdapterView
-import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.AppMaterialSpinner
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 
@@ -21,7 +21,6 @@ class JSpinner(context: Context, hint: String) : AppMaterialSpinner(context) {
             field = value
             setListModel(value.map { SpinnerItem(it.name, it.value) })
         }
-
 
     interface OnItemSelectedListener {
         fun onItemSelected(spinner: JSpinner, position: Int, item: Item)
@@ -38,7 +37,7 @@ class JSpinner(context: Context, hint: String) : AppMaterialSpinner(context) {
                 kotlin.runCatching {
                     listener?.onItemSelected(this@JSpinner, position, items[position])
                 }.onFailure {
-                    AppDialogs.displayErrorDialog(context, it.stackTraceToString())
+                    context.displayErrorDialog(it)
                 }
             }
 
