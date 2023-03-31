@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 @kotlinx.serialization.Serializable
-data class GroupWithTtsItem(
+data class GroupWithSystemTts(
     @Embedded
     val group: SystemTtsGroup,
 

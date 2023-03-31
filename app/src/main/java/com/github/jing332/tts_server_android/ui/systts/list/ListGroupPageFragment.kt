@@ -16,16 +16,18 @@ import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.drake.net.utils.withDefault
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
+import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsListCustomGroupFragmentBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
+import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.FileUtils
@@ -40,7 +42,8 @@ class ListGroupPageFragment : Fragment() {
         SysttsListCustomGroupFragmentBinding.inflate(layoutInflater)
     }
 
-    private val itemHelper = SysTtsListItemHelper(this, isGroupList = true)
+    private lateinit var brv: BindingAdapter
+    private val itemHelper = SysTtsListItemHelper(this, hasGroup = true)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -51,12 +54,11 @@ class ListGroupPageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val brv = binding.recyclerView.linear().setup {
+        brv = binding.recyclerView.linear().setup {
             addType<GroupModel>(R.layout.base_list_group_item)
-            addType<SystemTts>(R.layout.systts_list_item)
+            addType<ItemModel>(R.layout.systts_list_item)
 
             val groupHelper = GroupListHelper<GroupModel>(requireContext())
-
             groupHelper.callback = object : GroupListHelper.Callback<GroupModel> {
                 override fun onGroupClick(v: View, model: GroupModel) {
                     val isExpanded = !model.itemExpand
@@ -96,8 +98,8 @@ class ListGroupPageFragment : Fragment() {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
                     if (oldItem is GroupModel && newItem is GroupModel)
                         return oldItem.data.id == newItem.data.id
-                    if (oldItem is SystemTts && newItem is SystemTts)
-                        return oldItem.id == newItem.id
+                    if (oldItem is ItemModel && newItem is ItemModel)
+                        return oldItem.data.id == newItem.data.id
 
                     return false
                 }
@@ -106,12 +108,16 @@ class ListGroupPageFragment : Fragment() {
             }
 
             itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
+                override fun isLongPressDragEnabled() = false
+
                 override fun onSelectedChanged(
                     viewHolder: RecyclerView.ViewHolder?,
                     actionState: Int
                 ) {
-                    if (actionState == ItemTouchHelper.ACTION_STATE_DRAG)
-                        (viewHolder as BindingAdapter.BindingViewHolder).collapse()
+                    viewHolder?.also { getModelOrNull<GroupModel>(it.layoutPosition) }?.let {
+                        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG)
+                            (viewHolder as BindingAdapter.BindingViewHolder).collapse()
+                    }
 
                     super.onSelectedChanged(viewHolder, actionState)
                 }
@@ -121,25 +127,36 @@ class ListGroupPageFragment : Fragment() {
                     source: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
                 ): Boolean {
-                    recyclerView.announceForAccessibility(
-                        getString(
-                            R.string.group_move_a11y_msg,
-                            source.layoutPosition + 1,
-                            target.layoutPosition + 1
-                        )
-                    )
-                    return super.onMove(recyclerView, source, target)
+                    if (BrvItemTouchHelper.onMove<GroupModel>(recyclerView, source, target))
+                        return super.onMove(recyclerView, source, target)
+
+                    return false
                 }
 
                 override fun onDrag(
                     source: BindingAdapter.BindingViewHolder,
                     target: BindingAdapter.BindingViewHolder
                 ) {
-                    models?.filterIsInstance<GroupModel>()?.let { models ->
-                        models.forEachIndexed { index, value ->
-                            appDb.systemTtsDao.updateGroup(value.data.apply { order = index })
+                    if (source.getModel<Any>() is GroupModel) { //分组做拽
+                        models?.filterIsInstance<GroupModel>()?.let { models ->
+                            models.forEachIndexed { index, value ->
+                                appDb.systemTtsDao.updateGroup(value.data.apply { order = index })
+                            }
                         }
+                    } else { // Item拖拽
+                        // 查找到组model
+                        models?.getOrNull(source.findParentPosition())
+                            ?.run { this as GroupModel }
+                            ?.let { groupModel ->
+                                val listInGroup =
+                                    models?.filterIsInstance<ItemModel>()
+                                        ?.filter { groupModel.data.id == it.data.groupId }
+                                listInGroup?.forEachIndexed { index, v ->
+                                    appDb.systemTtsDao.updateTts(v.data.copy(order = index))
+                                }
+                            }
                     }
+
                 }
             })
         }
@@ -147,37 +164,42 @@ class ListGroupPageFragment : Fragment() {
         lifecycleScope.launch {
             val throttleUtil = ThrottleUtil(time = 10L)
             appDb.systemTtsDao.getFlowAllGroupWithTts().conflate().collect { list ->
-                throttleUtil.runAction {
-                    val models = withDefault {
-                        list.mapIndexed { i, v ->
-                            val checkState =
-                                when (v.list.filter { it.isEnabled }.size) {
-                                    0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
-                                    v.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
-                                    else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
-                                }
-
-                            GroupModel(
-                                data = v.group,
-                                itemSublist = v.list,
-                            ).apply {
-                                itemGroupPosition = i
-                                checkedState = checkState
-                                itemExpand = v.group.isExpanded
-                            }
-                        }
-                    }
-
-                    if (brv.models == null)
-                        brv.models = models
-                    else {
-                        brv.setDifferModels(models)
-                    }
-                }
-
+                updateModels(list)
             }
         }
 
+    }
+
+    private var mLastDataSet: List<GroupWithSystemTts>? = null
+    private suspend fun updateModels(list: List<GroupWithSystemTts>? = mLastDataSet) {
+        mLastDataSet = list
+        mLastDataSet?.let { dataSet ->
+            val models = withDefault {
+                dataSet.mapIndexed { i, v ->
+                    val checkState =
+                        when (v.list.filter { it.isEnabled }.size) {
+                            0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
+                            v.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
+                            else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
+                        }
+
+                    GroupModel(
+                        data = v.group,
+                        itemSublist = v.list.sortedBy { it.order }.map { ItemModel(data = it) },
+                    ).apply {
+                        itemGroupPosition = i
+                        checkedState = checkState
+                        itemExpand = v.group.isExpanded
+                    }
+                }
+            }
+
+            if (brv.models == null)
+                withMain { brv.models = models }
+            else {
+                withDefault { brv.setDifferModels(models) }
+            }
+        }
     }
 
 
@@ -191,7 +213,8 @@ class ListGroupPageFragment : Fragment() {
 
     @Suppress("UNCHECKED_CAST")
     private fun exportGroup(model: GroupModel) {
-        val obj = GroupWithTtsItem(group = model.data, list = model.itemSublist as List<SystemTts>)
+        val obj =
+            GroupWithSystemTts(group = model.data, list = model.itemSublist as List<SystemTts>)
         val fragment = ConfigExportBottomSheetFragment(
             { App.jsonBuilder.encodeToString(obj) },
             { "ttsrv-${model.name}.json" }

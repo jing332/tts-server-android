@@ -3,7 +3,7 @@ package com.github.jing332.tts_server_android.data.dao
 import androidx.room.*
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
-import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
+import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import kotlinx.coroutines.flow.Flow
@@ -39,7 +39,7 @@ interface SystemTtsDao {
 
     @Transaction
     @Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")
-    fun getFlowAllGroupWithTts(): Flow<List<GroupWithTtsItem>>
+    fun getFlowAllGroupWithTts(): Flow<List<GroupWithSystemTts>>
 
     @Query("SELECT * FROM SystemTtsGroup WHERE groupId = :id")
     fun getGroup(id: Long = DEFAULT_GROUP_ID): SystemTtsGroup?
@@ -82,7 +82,7 @@ interface SystemTtsDao {
 
     @Transaction
     @Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")
-    fun getSysTtsWithGroups(): List<GroupWithTtsItem>
+    fun getSysTtsWithGroups(): List<GroupWithSystemTts>
 
     /**
      * 删除组以及TTS

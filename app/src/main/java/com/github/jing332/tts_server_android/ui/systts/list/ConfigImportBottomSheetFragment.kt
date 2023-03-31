@@ -6,7 +6,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.LegadoHttpTts
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.CompatSystemTts
-import com.github.jing332.tts_server_android.data.entities.systts.GroupWithTtsItem
+import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsListImportBinding
@@ -17,7 +17,6 @@ import com.github.jing332.tts_server_android.ui.base.import1.ConfigItemModel
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.toJsonListString
-import com.github.jing332.tts_server_android.util.toast
 import kotlinx.serialization.decodeFromString
 
 class ConfigImportBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
@@ -63,14 +62,14 @@ class ConfigImportBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
         }
     }
 
-    private fun getImportList(json: String, fromLegado: Boolean): List<GroupWithTtsItem>? {
+    private fun getImportList(json: String, fromLegado: Boolean): List<GroupWithSystemTts>? {
         val groupName = StringUtils.formattedDate()
         val groupId = System.currentTimeMillis()
         val groupCount = appDb.systemTtsDao.groupCount
         if (fromLegado) {
             App.jsonBuilder.decodeFromString<List<LegadoHttpTts>>(json).ifEmpty { return null }
                 .let { list ->
-                    return listOf(GroupWithTtsItem(
+                    return listOf(GroupWithSystemTts(
                         group =
                         SystemTtsGroup(id = groupId, name = groupName, order = groupCount),
                         list = list.map {
@@ -91,11 +90,11 @@ class ConfigImportBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
 
         } else {
             return if (json.contains("\"group\"")) { // 新版数据结构
-                App.jsonBuilder.decodeFromString<List<GroupWithTtsItem>>(json)
+                App.jsonBuilder.decodeFromString<List<GroupWithSystemTts>>(json)
             } else {
                 val list = App.jsonBuilder.decodeFromString<List<CompatSystemTts>>(json)
                 listOf(
-                    GroupWithTtsItem(
+                    GroupWithSystemTts(
                         group = appDb.systemTtsDao.getGroup()!!,
                         list = list.mapIndexed { index, value ->
                             SystemTts(

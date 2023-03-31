@@ -37,6 +37,7 @@ import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
 import com.github.jing332.tts_server_android.ui.base.group.IGroupModel
+import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.*
@@ -68,7 +69,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { finish() }
 
         brv = binding.recyclerView.linear().setup {
-            addType<ReplaceRuleModel>(R.layout.systts_replace_rule_item)
+            addType<ItemModel>(R.layout.systts_replace_rule_item)
             addType<GroupModel>(R.layout.base_list_group_item)
 
             onCreate {
@@ -82,7 +83,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
                     override fun onCheckedChange(v: MaterialCheckBox, model: GroupModel) {
                         model.itemSublist?.forEach {
-                            if (it is ReplaceRuleModel) {
+                            if (it is ItemModel) {
                                 appDb.replaceRuleDao.update(it.data.copy(isEnabled = v.isChecked))
                             }
                         }
@@ -117,12 +118,12 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 groupHelper.initGroup(this@setup, this)
 
                 getBindingOrNull<SysttsReplaceRuleItemBinding>()?.apply {
-                    btnEdit.clickWithThrottle { edit(getModel<ReplaceRuleModel>().data) }
+                    btnEdit.clickWithThrottle { edit(getModel<ItemModel>().data) }
                     btnMore.clickWithThrottle {
-                        displayMoreMenu(it, getModel<ReplaceRuleModel>().data)
+                        displayMoreMenu(it, getModel<ItemModel>().data)
                     }
                     checkBox.setOnClickListener {
-                        appDb.replaceRuleDao.update(getModel<ReplaceRuleModel>().data)
+                        appDb.replaceRuleDao.update(getModel<ItemModel>().data)
                     }
                 }
             }
@@ -130,7 +131,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return if (oldItem is ReplaceRuleModel && newItem is ReplaceRuleModel) oldItem.data.id == newItem.data.id
+                    return if (oldItem is ItemModel && newItem is ItemModel) oldItem.data.id == newItem.data.id
                     else if (oldItem is GroupModel && newItem is GroupModel) oldItem.data.id == newItem.data.id
                     else false
                 }
@@ -142,8 +143,9 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 override fun onSelectedChanged(
                     viewHolder: RecyclerView.ViewHolder?, actionState: Int
                 ) {
-                    if (viewHolder != null && getModel<Any>(viewHolder.layoutPosition) is GroupModel && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                        (viewHolder as BindingAdapter.BindingViewHolder).collapse()
+                    viewHolder?.also { getModelOrNull<GroupModel>(it.layoutPosition) }?.let {
+                        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG)
+                            (viewHolder as BindingAdapter.BindingViewHolder).collapse()
                     }
 
                     super.onSelectedChanged(viewHolder, actionState)
@@ -154,27 +156,12 @@ class ReplaceManagerActivity : AppCompatActivity() {
                     source: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
                 ): Boolean {
-                    val src = source as BindingAdapter.BindingViewHolder
-                    val tgt = target as BindingAdapter.BindingViewHolder
-                    val isGroup = src.getModelOrNull<IGroupModel>() != null
-
-                    Log.e(TAG, "${src.findParentPosition()} - ${tgt.findParentPosition()}")
-                    // 禁止越界
-                    if (src.findParentPosition() != tgt.findParentPosition()) return false
-                    val msg = if (isGroup) {
-                        getString(
-                            R.string.group_move_a11y_msg,
-                            source.modelPosition + 1,
-                            target.modelPosition + 1
+                    return if (BrvItemTouchHelper.onMove<GroupModel>(
+                            recyclerView, source, target
                         )
-                    } else { // subItem
-                        val from = source.modelPosition - source.findParentPosition()
-                        val to = tgt.modelPosition - tgt.findParentPosition()
-                        getString(R.string.list_move_a11y_msg, from, to)
-                    }
-                    recyclerView.announceForAccessibility(msg)
-
-                    return super.onMove(recyclerView, source, target)
+                    ) {
+                        super.onMove(recyclerView, source, target)
+                    } else false
                 }
 
                 override fun onDrag(
@@ -193,7 +180,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
                             ?.run { this as GroupModel }
                             ?.let { groupModel ->
                                 val listInGroup =
-                                    models!!.filter { it is ReplaceRuleModel && groupModel.data.id == it.data.groupId }
+                                    models!!.filter { it is ItemModel && groupModel.data.id == it.data.groupId }
                                 updateOrder(listInGroup)
                             }
                     }
@@ -293,7 +280,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
                 GroupModel(
                     data = data.group,
-                    itemSublist = filteredList.map { ReplaceRuleModel(it) },
+                    itemSublist = filteredList.map { ItemModel(it) },
                     itemExpand = filterText.isNotBlank() || data.group.isExpanded,
                     checkedState = checkedState
                 )
@@ -306,7 +293,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
     fun updateOrder(models: List<Any?>?) {
         models?.forEachIndexed { index, value ->
-            val model = value as ReplaceRuleModel
+            val model = value as ItemModel
             appDb.replaceRuleDao.update(model.data.copy(order = index))
         }
     }

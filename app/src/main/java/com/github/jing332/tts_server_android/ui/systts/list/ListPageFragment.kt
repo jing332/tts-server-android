@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.drake.brv.annotaion.ItemOrientation
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
@@ -46,21 +47,20 @@ class ListPageFragment : Fragment() {
         return binding.root
     }
 
-    @Suppress("UNCHECKED_CAST")
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) return
 
         val brv = binding.rv.linear().setup {
-            addType<SystemTts>(R.layout.systts_list_item)
+            addType<ItemModel>(R.layout.systts_list_item)
             onCreate {
                 itemHelper.init(this@setup, this)
             }
 
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return (oldItem as SystemTts).id == (newItem as SystemTts).id
+                    return (oldItem as ItemModel).data.id == (newItem as ItemModel).data.id
                 }
 
                 override fun getChangePayload(oldItem: Any, newItem: Any) = true
@@ -72,7 +72,9 @@ class ListPageFragment : Fragment() {
             appDb.systemTtsDao.flowAllTts.conflate().collect { list ->
                 val filteredList =
                     if (raTarget == -1) list else list.filter { it.readAloudTarget == raTarget }
-                val handledList = filteredList.sortedBy { it.readAloudTarget }
+                val handledList =
+                    filteredList.sortedBy { it.readAloudTarget }
+                        .map { ItemModel(data = it, ItemOrientation.NONE) }
 
                 if (brv.models == null) withMain { brv.models = handledList }
                 else brv.setDifferModels(handledList)

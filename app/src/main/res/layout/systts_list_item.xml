@@ -11,7 +11,7 @@
 
         <variable
             name="m"
-            type="com.github.jing332.tts_server_android.data.entities.systts.SystemTts" />
+            type="com.github.jing332.tts_server_android.ui.systts.list.ItemModel" />
     </data>
 
     <FrameLayout
@@ -86,7 +86,7 @@
                     android:importantForAccessibility="no"
                     android:scrollbars="none"
                     android:singleLine="true"
-                    android:text="@{m.displayName}"
+                    android:text="@{m.data.displayName}"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toStartOf="@+id/tv_raTarget"
                     app:layout_constraintStart_toEndOf="@+id/checkBox_switch"
@@ -103,7 +103,7 @@
                     android:focusable="false"
                     android:importantForAccessibility="no"
                     android:singleLine="true"
-                    android:text="@{m.tts.bottomContent}"
+                    android:text="@{m.data.tts.bottomContent}"
                     android:textStyle="italic"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tv_apiType"
@@ -118,7 +118,7 @@
                     android:layout_marginBottom="4dp"
                     android:focusable="false"
                     android:importantForAccessibility="no"
-                    android:text="@{m.typeString}"
+                    android:text="@{m.data.typeString}"
                     android:textColor="@android:color/holo_orange_dark"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -133,10 +133,10 @@
                     android:background="@drawable/textview_border"
                     android:focusable="false"
                     android:importantForAccessibility="no"
-                    android:text="@{m.raTargetString}"
+                    android:text="@{m.data.raTargetString}"
                     android:textColor="@color/teal_700"
                     android:textStyle="bold"
-                    android:visibility="@{m.raTargetString.empty ? View.INVISIBLE : View.VISIBLE}"
+                    android:visibility="@{m.data.raTargetString.empty ? View.INVISIBLE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="旁白" />
@@ -149,7 +149,7 @@
                     android:focusable="false"
                     android:importantForAccessibility="no"
                     android:scrollbars="none"
-                    android:text="@{Html.fromHtml(m.tts.description)}"
+                    android:text="@{Html.fromHtml(m.data.tts.description)}"
                     android:textSize="14sp"
                     app:autoSizeMaxTextSize="14sp"
                     app:autoSizeTextType="uniform"
@@ -165,7 +165,7 @@
                     android:id="@+id/checkBox_switch"
                     android:layout_width="40dp"
                     android:layout_height="0dp"
-                    android:checked="@{m.enabled}"
+                    android:checked="@{m.data.enabled}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

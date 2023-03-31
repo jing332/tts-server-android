@@ -8,7 +8,6 @@ import com.google.android.material.checkbox.MaterialCheckBox
 interface IGroupModel : ItemExpand, ItemDrag, ItemHover {
     val name: String
 
-    //    var data: Any
     @MaterialCheckBox.CheckedState
     var checkedState: Int
 

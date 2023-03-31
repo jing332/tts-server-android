@@ -38,7 +38,11 @@ data class SystemTts(
     @ReadAloudTarget
     var readAloudTarget: Int = ReadAloudTarget.ALL,
 
-    var tts: BaseTTS
+    var tts: BaseTTS,
+
+    // 索引 排序用
+    @ColumnInfo(defaultValue = "0")
+    var order: Int = 0,
 ) : Parcelable {
     val raTargetString: String
         get() = ReadAloudTarget.toText(readAloudTarget)

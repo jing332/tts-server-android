@@ -30,6 +30,7 @@ import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.clone
+import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -38,28 +39,45 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
-class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = false) {
+class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false) {
     val context: Context by lazy { fragment.requireContext() }
+
+    private var hasShownTip = false
 
     fun init(adapter: BindingAdapter, holder: BindingAdapter.BindingViewHolder) {
         adapter.apply {
             holder.apply {
                 getBindingOrNull<SysttsListItemBinding>()?.apply {
                     checkBoxSwitch.setOnClickListener { view ->
-                        if (isGroupList) {
+                        if (hasGroup) {
                             getModelOrNull<GroupModel>(findParentPosition())?.let { group ->
                                 // 组中的item位置
                                 val subPos = modelPosition - findParentPosition() - 1
-                                switchChanged(view, group.itemSublist!![subPos] as SystemTts)
+                                switchChanged(view, (group.itemSublist!![subPos] as ItemModel).data)
                             }
                         } else
-                            switchChanged(view, getModel())
+                            switchChanged(view, getModel<ItemModel>().data)
                     }
+                    if (hasGroup)
+                        checkBoxSwitch.setOnLongClickListener {
+                            itemTouchHelper?.startDrag(holder)
+                            true
+                        }
 
-                    cardView.clickWithThrottle { displayLiteEditDialog(itemView, getModel()) }
+                    cardView.clickWithThrottle {
+                        displayLiteEditDialog(
+                            itemView,
+                            getModel<ItemModel>().data
+                        )
+                    }
                     cardView.setOnLongClickListener {
-                        val model = getModel<SystemTts>().copy()
-                        if (model.readAloudTarget == ReadAloudTarget.BGM) return@setOnLongClickListener false
+                        if (hasGroup && !hasShownTip) {
+                            hasShownTip = true
+                            context.longToast(R.string.systts_drag_tip_msg)
+                        }
+
+                        val model = getModel<ItemModel>().data.copy()
+                        if (model.readAloudTarget == ReadAloudTarget.BGM) return@setOnLongClickListener true
 
                         if (model.readAloudTarget == ReadAloudTarget.ASIDE)
                             model.readAloudTarget = ReadAloudTarget.DIALOGUE
@@ -72,29 +90,22 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                         true
                     }
 
+
                     btnListen.isVisible = AppConfig.isSwapListenAndEditButton
                     btnEdit.isGone = AppConfig.isSwapListenAndEditButton
 
-                    btnListen.clickWithThrottle {
-                        listen(getModel())
-                    }
-
-                    btnEdit.clickWithThrottle {
-                        edit(getModel())
-                    }
-
+                    btnListen.clickWithThrottle { listen(getModel<ItemModel>().data) }
+                    btnEdit.clickWithThrottle { edit(getModel<ItemModel>().data) }
                     btnListen.setOnLongClickListener {
-                        edit(getModel())
+                        edit(getModel<ItemModel>().data)
                         true
                     }
 
-                    btnMore.clickWithThrottle {
-                        displayMoreOptions(it, getModel())
-                    }
+                    btnMore.clickWithThrottle { displayMoreOptions(it, getModel<ItemModel>().data) }
 
                     btnMore.setOnLongClickListener {
-                        if (AppConfig.isSwapListenAndEditButton) edit(getModel())
-                        else listen(getModel())
+                        if (AppConfig.isSwapListenAndEditButton) edit(getModel<ItemModel>().data)
+                        else listen(getModel<ItemModel>().data)
 
                         true
                     }
@@ -105,19 +116,18 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
                             info: AccessibilityNodeInfo
                         ) {
                             super.onInitializeAccessibilityNodeInfo(host, info)
-                            (getModel() as SystemTts).let {
-                                var str =
-                                    if (it.isEnabled) context.getString(R.string.enabled) else ""
 
-                                if (it.isStandby) str += ", " + context.getString(R.string.as_standby)
-                                info.text = "$str, ${tvName.text}, " + context.getString(
-                                    R.string.systts_list_item_desc,
-                                    tvRaTarget.text,
-                                    tvApiType.text,
-                                    tvDescription.text,
-                                    tvBottomContent.text,
-                                )
-                            }
+                            val data = getSystemTTS(holder)
+                            var str =
+                                if (data.isEnabled) context.getString(R.string.enabled) else ""
+                            if (data.isStandby) str += ", " + context.getString(R.string.as_standby)
+                            info.text = "$str, ${tvName.text}, " + context.getString(
+                                R.string.systts_list_item_desc,
+                                tvRaTarget.text,
+                                tvApiType.text,
+                                tvDescription.text,
+                                tvBottomContent.text,
+                            )
                         }
                     }
 
@@ -126,6 +136,9 @@ class SysTtsListItemHelper(val fragment: Fragment, val isGroupList: Boolean = fa
         }
     }
 
+    fun getSystemTTS(holder: BindingAdapter.BindingViewHolder): SystemTts {
+        return holder.getModelOrNull<SystemTts>() ?: holder.getModel<ItemModel>().data
+    }
 
     private val audioPlayer by lazy { AudioPlayer(context) }
     private val waitDialog by lazy { WaitDialog(context) }

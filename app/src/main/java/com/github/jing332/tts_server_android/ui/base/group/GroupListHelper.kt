@@ -8,6 +8,7 @@ import androidx.core.view.MenuCompat
 import com.drake.brv.BindingAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseListGroupItemBinding
+import com.github.jing332.tts_server_android.ui.systts.list.GroupModel
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -33,12 +34,16 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
         context.apply {
             // setup()
             adapter.apply {
-                // addType<IGroupModel>(R.layout.base_list_group_item)
 
                 // onCreate()
                 holder.apply {
+                    // 分组条目
                     getBindingOrNull<BaseListGroupItemBinding>()?.apply {
-                        // 分组条目无障碍
+                        itemView.setOnLongClickListener {
+                            itemTouchHelper?.startDrag(holder)
+                            true
+                        }
+
                         itemView.accessibilityDelegate = object : View.AccessibilityDelegate() {
                             override fun onInitializeAccessibilityNodeInfo(
                                 host: View,
@@ -55,7 +60,6 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
                                         )
                                     }"
                             }
-
                         }
 
                         itemView.clickWithThrottle {
