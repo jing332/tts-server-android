@@ -87,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: mappings_${{ env.product }}_${{ env.ver_name }}
-          path: ${{ env.outputs_dir }}/mapping/*/.txt
+          path: ${{ env.outputs_dir }}/mapping/*/*.txt
 
       - name: Upload App To Artifact
         uses: actions/upload-artifact@v3
