@@ -12,26 +12,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v3
+      - uses: actions/setup-go@v4
         with:
           go-version: 1.19.1
 
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - name: Build Go Lib
+      - name: Build tts-server-lib
         run: |
           cd tts-server-lib
           go install golang.org/x/mobile/cmd/gomobile@latest
@@ -40,13 +30,20 @@ jobs:
           gomobile bind -ldflags "-s -w" -v -androidapi=19
           cp -f *.aar $GITHUB_WORKSPACE/app/libs
 
-      - name: Upload to Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
           name: tts-server-lib
-          path: |
-            tts-server-lib/*.aar
-            tts-server-lib/*.jar
+          path: tts-server-lib/*.aar
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        name: tts-server-lib
+        path: ${{ github.workspace }}/app/libs
 
       - uses: actions/setup-java@v3
         with:
@@ -56,7 +53,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Init Sign
+      - name: Init Signature
         run: |
           touch local.properties
           echo ALIAS_NAME='${{ secrets.ALIAS_NAME }}' >> local.properties
@@ -65,10 +62,11 @@ jobs:
           echo KEY_PATH='./key.jks' >> local.properties
           # 从Secrets读取无换行符Base64解码, 然后保存到到app/key.jks
           echo ${{ secrets.KEY_STORE }} | base64 --decode > $GITHUB_WORKSPACE/app/key.jks
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+
       - name: Build with Gradle
-        run: ./gradlew assembleRelease --build-cache --parallel --daemon --warning-mode all
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --build-cache --parallel --daemon --warning-mode all
 
       - name: Organize the Files
         run: |

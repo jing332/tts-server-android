@@ -17,7 +17,6 @@ open class BaseScriptEngine(
         const val OBJ_LOGGER = "logger"
     }
 
-
     fun findObject(name: String): NativeObject {
         return rhino.get(name).run {
             if (this == null) throw Exception("Not found object: $name")
