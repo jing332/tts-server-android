@@ -38,14 +38,13 @@ jobs:
     needs: prepare
     strategy:
       matrix:
-        product: [ app, dev ]
-        product_name: ["App原版", "Dev共存版"]
+        product: [ {name: "App原版", value: app}, {name: "Dev共存版", value: dev} ]
         
       fail-fast: false
     runs-on: ubuntu-latest
     env:
-      product: ${{ matrix.product }}
-      product_name: ${{matrix.product_name}}
+      product: ${{ matrix.product.value }}
+      product_name: ${{matrix.product.value}}
       outputs_dir: "${{ github.workspace }}/app/build/outputs"
       ver_name: ""
 
