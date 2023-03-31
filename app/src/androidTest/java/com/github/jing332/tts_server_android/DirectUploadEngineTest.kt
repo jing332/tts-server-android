@@ -1,12 +1,40 @@
 package com.github.jing332.tts_server_android
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.jing332.tts_server_android.model.script.core.ext.JsExtensions
 import com.github.jing332.tts_server_android.model.script.directupload.DirectUploadEngine
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class DirectUploadEngineTest {
+
+    @Test
+    fun catBox() {
+        val ext = JsExtensions(app, "")
+
+        val form = mutableMapOf<String, Any>()
+
+        form["reqtype"] = "fileupload"
+        form["fileToUpload"] = mutableMapOf<String, Any>().also {
+            it["fileName"] = "ccc.json"
+            it["body"] = """ {"1":"1", "2":"2"} """
+            it["contentType"] = "application/json"
+        }
+//        form["file"] = mutableMapOf<String, Any>().apply {
+//            put("file", mutableMapOf<String, String>().apply {
+//                put("fileToUpload", """ {"1":"1", "2":"2"} """)
+//            })
+//            put("fileName", "config.json")
+//            put("contentType", "application/json")
+//        }
+
+        val resp = ext.httpPostMultipart(
+            "https://catbox.moe/user/api.php",
+            form
+        )
+        println(resp.body?.string())
+    }
 
     @Test
     fun testJS() {

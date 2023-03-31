@@ -60,35 +60,36 @@ open class JsNet {
         }.execute()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun postMultipart(type: String, form: Map<String, Any>): MultipartBody.Builder {
         val multipartBody = MultipartBody.Builder()
         multipartBody.setType(type.toMediaType())
-        form.forEach {
-            when (val value = it.value) {
+
+        form.forEach { entry ->
+            when (entry.value) {
+                // 文件表单
                 is Map<*, *> -> {
-                    val fileName = value["fileName"] as String
-                    var file = value["file"]
-                    var partName = it.key
-                    if (file is Map<*, *>) {
-                        val ent = file.entries.last()
-                        file = ent.value
-                        partName = ent.key as String
+                    val filePartMap = entry.value as Map<String, Any>
+                    val fileName = filePartMap["fileName"] as? String
+                    val body = filePartMap["body"]
+                    val contentType = filePartMap["contentType"] as? String
+
+                    val mediaType = contentType?.toMediaType()
+                    val requestBody = when (body) {
+                        is File -> body.asRequestBody(mediaType)
+                        is ByteArray -> body.toRequestBody(mediaType)
+                        is String -> body.toRequestBody(mediaType)
+                        else -> body.toString().toRequestBody()
                     }
 
-                    val mediaType = (value["contentType"] as? String)?.toMediaType()
-                    val requestBody = when (file) {
-                        is File -> file.asRequestBody(mediaType)
-                        is ByteArray -> file.toRequestBody(mediaType)
-                        is String -> file.toRequestBody(mediaType)
-                        else -> file.toString().toRequestBody()
-                    }
-
-                    multipartBody.addFormDataPart(partName, fileName, requestBody)
+                    multipartBody.addFormDataPart(entry.key, fileName, requestBody)
                 }
 
-                else -> multipartBody.addFormDataPart(it.key, it.value.toString())
+                // 常规表单
+                else -> multipartBody.addFormDataPart(entry.key, entry.value as String)
             }
         }
+
         return multipartBody
     }
 

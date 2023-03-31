@@ -213,8 +213,9 @@ class ListGroupPageFragment : Fragment() {
 
     @Suppress("UNCHECKED_CAST")
     private fun exportGroup(model: GroupModel) {
+        val subList = (model.itemSublist as List<ItemModel>).map { it.data }
         val obj =
-            GroupWithSystemTts(group = model.data, list = model.itemSublist as List<SystemTts>)
+            GroupWithSystemTts(group = model.data, list = subList)
         val fragment = ConfigExportBottomSheetFragment(
             { App.jsonBuilder.encodeToString(obj) },
             { "ttsrv-${model.name}.json" }

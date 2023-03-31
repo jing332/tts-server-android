@@ -23,10 +23,8 @@ let DirectUploadJS = {
 
     "Catbox (有效期未知)": function(config) {
         let form = {
-            'file': {
-                'file': {// fileToUpload 为此网站上传文件的表单key
-                    'fileToUpload': config
-                },
+            'fileToUpload': {
+                'body': config,
                 'fileName': "config.json",
                 'contentType': "application/json"
             },
@@ -43,11 +41,11 @@ let DirectUploadJS = {
 
 function upload(url, config, extra) {
     let form = {
-        "file": { // 嵌套的子Map, file为表单名
-            'file': config, //上传内容
-            'fileName': "config.json", // 文件名
-            'contentType': "application/json" // 文件的mime
-        },
+        "file":{
+            'body': config,
+            'fileName': 'config.json',
+            'contentType': 'application/json',
+          }
     }
 
     return ttsrv.httpPostMultipart(url, form)
