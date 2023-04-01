@@ -11,7 +11,7 @@
                 android:id="@+id/nav_systts"
                 android:checkable="true"
                 android:icon="@drawable/ic_tts"
-                android:title="@string/systts_settings" />
+                android:title="@string/system_tts" />
             <item
                 android:id="@+id/nav_systts_forwarder"
                 android:checkable="true"

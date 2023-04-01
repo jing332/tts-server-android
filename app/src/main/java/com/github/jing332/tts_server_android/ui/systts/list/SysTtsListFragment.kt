@@ -155,7 +155,7 @@ class SysTtsListFragment : Fragment() {
                     true
                 }
 
-                R.id.menu_isInAppPlayAudio -> {
+                R.id.menu_builtin_player_settings -> {
                     displayBuiltinPlayerSettings()
                     true
                 }
@@ -165,28 +165,13 @@ class SysTtsListFragment : Fragment() {
                     true
                 }
 
-                R.id.menu_setAudioRequestTimeout -> {
-                    showSetAudioRequestTimeoutDialog()
-                    true
-                }
-
-                R.id.menu_setMinDialogueLen -> {
-                    showSetMinDialogueLengthDialog()
-                    true
-                }
-
-                R.id.menu_set_sby_use_conditions -> {
-                    displayStandbySettings()
-                    true
-                }
-
-                R.id.menu_doSplit -> {
+                R.id.menu_do_split -> {
                     SysTtsConfig.isSplitEnabled = !SysTtsConfig.isSplitEnabled
                     SystemTtsService.notifyUpdateConfig()
                     true
                 }
 
-                R.id.menu_isMultiVoice -> {
+                R.id.menu_switch_multi_voice -> {
                     SysTtsConfig.isMultiVoiceEnabled = !SysTtsConfig.isMultiVoiceEnabled
                     SystemTtsService.notifyUpdateConfig()
                     true
@@ -229,10 +214,10 @@ class SysTtsListFragment : Fragment() {
             super.onPrepareMenu(menu)
             SysTtsConfig.apply {
                 menu.apply {
-                    findItem(R.id.menu_isMultiVoice)?.isChecked = isMultiVoiceEnabled
-                    findItem(R.id.menu_doSplit)?.isChecked = isSplitEnabled
+                    findItem(R.id.menu_switch_multi_voice)?.isChecked = isMultiVoiceEnabled
+                    findItem(R.id.menu_do_split)?.isChecked = isSplitEnabled
                     findItem(R.id.menu_replace_manager)?.isChecked = isReplaceEnabled
-                    findItem(R.id.menu_isInAppPlayAudio)?.isChecked = isInAppPlayAudio
+                    findItem(R.id.menu_builtin_player_settings)?.isChecked = isInAppPlayAudio
                 }
             }
         }

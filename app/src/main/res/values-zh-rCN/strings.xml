@@ -67,7 +67,7 @@
     <string name="server_set_token">设置Token</string>
     <string name="server_token_set_to">Token已设为：</string>
 
-    <string name="systts_settings">系统TTS</string>
+    <string name="system_tts">系统TTS</string>
     <string name="settings">设置</string>
     <string name="global_settings">全局设置</string>
     <string name="copy_address">复制地址</string>
@@ -333,9 +333,9 @@
     <string name="choos_an_upload_target">选择一个上传目标</string>
     <string name="copied_url">已复制链接</string>
     <string name="direct_link_settings">直链设置</string>
-    <string name="code_editor_theme">代码编辑器主题</string>
-    <string name="code_editor_word_wrap">代码编辑器自动换行</string>
     <string name="set_sample_text_param">设置文本参数</string>
     <string name="import_plugin">导入插件</string>
     <string name="systts_drag_tip_msg">长按勾选框即可拖拽</string>
+    <string name="code_editor">代码编辑器</string>
+    <string name="check_update_summary">打开主界面时检查更新</string>
 </resources>

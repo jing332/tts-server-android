@@ -9,6 +9,7 @@
 
         <SwitchPreferenceCompat
             android:defaultValue="true"
+            android:summary="@string/check_update_summary"
             android:icon="@drawable/baseline_arrow_circle_up_24"
             android:key="isAutoCheckUpdateEnabled"
             android:title="@string/auto_check_update" />
@@ -20,6 +21,30 @@
             app:key="isEdgeDnsEnabled"
             app:summary="@string/pref_edge_dns_summary"
             app:title="@string/use_dns_lookup_ip" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/system_tts">
+        <ListPreference
+            android:dialogMessage="@string/systts_set_dialogue_min_info"
+            android:icon="@drawable/ic_baseline_textsms_24"
+            android:key="minDialogueLength"
+            android:persistent="false"
+            android:title="@string/systts_set_dialogue_min_match_word_count" />
+
+        <ListPreference
+            android:dialogMessage="@string/systts_set_request_timeout_msg"
+            android:icon="@drawable/ic_baseline_access_time_24"
+            android:key="requestTimeout"
+            android:persistent="false"
+            android:title="@string/systts_set_request_timeout" />
+
+        <ListPreference
+            android:dialogMessage="@string/systts_sby_settings_msg"
+            android:icon="@drawable/ic_baseline_mode_standby_24"
+            android:key="standbyTriggeredRetryIndex"
+            android:persistent="false"
+            android:title="@string/systts_sby_conditions_for_use" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/sys_tts_interface_preference">
@@ -43,17 +68,19 @@
             android:summary="@string/systts_groups_multiple_hint"
             android:title="@string/systts_groups_multiple" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/code_editor">
         <ListPreference
             android:icon="@drawable/baseline_color_lens_24"
             android:key="codeEditorTheme"
             android:persistent="false"
-            android:title="@string/code_editor_theme" />
+            android:title="@string/theme" />
 
         <SwitchPreferenceCompat
             android:icon="@drawable/baseline_subdirectory_arrow_left_24"
             android:key="isCodeEditorWordWrapEnabled"
-            android:title="@string/code_editor_word_wrap" />
-
+            android:title="@string/word_wrap" />
 
     </PreferenceCategory>
 

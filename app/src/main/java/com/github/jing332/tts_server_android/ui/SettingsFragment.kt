@@ -2,6 +2,9 @@ package com.github.jing332.tts_server_android.ui
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -20,6 +23,7 @@ import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Locale
 
+
 class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.sharedPreferencesName = AppConfig.kotprefName
@@ -28,6 +32,48 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 最小对话汉字数量
+        findPreference<ListPreference>("minDialogueLength")!!.apply {
+            entries = (0..20).mapIndexed { i, v ->
+                if (i == 0) getString(R.string.unlimited)
+                else v.toString()
+            }.toTypedArray()
+            entryValues = (0..20).map { "$it" }.toTypedArray()
+
+            setValueIndexNoException(SysTtsConfig.minDialogueLength)
+            summary = entry
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.minDialogueLength = (newValue as String).toInt()
+                setValueIndexNoException(SysTtsConfig.minDialogueLength)
+                true
+            }
+        }
+
+        // 备用配置使用条件
+        findPreference<ListPreference>("standbyTriggeredRetryIndex")!!.apply {
+            entries = (1..10).map { "$it" }.toTypedArray()
+            entryValues = entries
+            setValueIndexNoException(SysTtsConfig.standbyTriggeredRetryIndex)
+            summary = entry
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.standbyTriggeredRetryIndex = (newValue as String).toInt()
+                true
+            }
+        }
+
+        // 请求超时
+        findPreference<ListPreference>("requestTimeout")!!.apply {
+            entries = (2..30).map { "${it}s" }.toTypedArray()
+            entryValues = (2..30).map { "$it" }.toTypedArray()
+            setValueIndexNoException((SysTtsConfig.requestTimeout / 1000) - 2)
+            summary = entry
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.requestTimeout = (newValue as String).toInt() * 1000
+                true
+            }
+        }
+
         // 朗读目标多选开关
         val voiceMultipleSwitch: SwitchPreferenceCompat = findPreference("isVoiceMultiple")!!
         voiceMultipleSwitch.isChecked = SysTtsConfig.isVoiceMultipleEnabled
@@ -55,12 +101,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         )
         editorTheme.entries = themes.values.toTypedArray()
         editorTheme.entryValues = themes.keys.map { it.toString() }.toTypedArray()
-        editorTheme.setValueIndex(AppConfig.codeEditorTheme)
+        editorTheme.setValueIndexNoException(AppConfig.codeEditorTheme)
         editorTheme.summary = themes[AppConfig.codeEditorTheme]
         editorTheme.setOnPreferenceChangeListener { _, newValue ->
             AppConfig.codeEditorTheme = newValue.toString().toInt()
-            editorTheme.setValueIndex(AppConfig.codeEditorTheme)
-            editorTheme.summary = themes[AppConfig.codeEditorTheme]
+            editorTheme.setValueIndexNoException(AppConfig.codeEditorTheme)
             true
         }
 
@@ -76,7 +121,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             mutableListOf("").apply { addAll(BuildConfig.TRANSLATION_ARRAY) }.toTypedArray()
 
         val currentLocale = AppCompatDelegate.getApplicationLocales().get(0)
-        langPre.setValueIndex(
+        langPre.setValueIndexNoException(
             if (currentLocale == null) 0
             else {
                 val languageTag = currentLocale.toLanguageTag()
@@ -114,20 +159,55 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         /* right = */8.dp, /* bottom = */8.dp
                     )
                 }
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(preference.dialogTitle)
-                .apply { tvMsg?.let { setView(it) } }
-                .setSingleChoiceItems(
-                    preference.entries,
-                    preference.findIndexOfValue(preference.value)
-                ) { dlg, which ->
-                    preference.callChangeListener(preference.entryValues[which].toString())
-                    dlg.dismiss()
+
+            val listView = ListView(preference.context).apply {
+                adapter = ArrayAdapter(
+                    listView.context,
+                    android.R.layout.simple_list_item_single_choice,
+                    preference.entries
+                )
+                divider = null
+
+                choiceMode = ListView.CHOICE_MODE_SINGLE
+                val i = preference.findIndexOfValue(preference.value)
+                setItemChecked(i, true)
+                setSelection(i)
+            }
+
+            val layout =
+                LinearLayout(preference.context).apply {
+                    orientation = LinearLayout.VERTICAL
+                    tvMsg?.let { addView(it) }
+                    addView(listView)
                 }
+
+            val dlg = MaterialAlertDialogBuilder(requireContext())
+                .setTitle(preference.dialogTitle)
+                .setView(layout)
                 .setPositiveButton(android.R.string.cancel) { _, _ -> }
                 .show()
 
+            listView.setOnItemClickListener { _, _, position, _ ->
+                val value = preference.entryValues[position].toString()
+                if (preference.callChangeListener(value)) {
+                    preference.setValueIndexNoException(preference.findIndexOfValue(value))
+                    preference.summary = preference.entries[position]
+                }
+
+                dlg.dismiss()
+            }
+
         } else
             super.onDisplayPreferenceDialog(preference)
+    }
+
+    // 不抛异常
+    private fun ListPreference.setValueIndexNoException(index: Int): Boolean {
+        kotlin.runCatching {
+            this.setValueIndex(index)
+            return true
+        }
+
+        return false
     }
 }

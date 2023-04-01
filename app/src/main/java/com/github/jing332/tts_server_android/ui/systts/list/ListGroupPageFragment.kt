@@ -162,7 +162,6 @@ class ListGroupPageFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            val throttleUtil = ThrottleUtil(time = 10L)
             appDb.systemTtsDao.getFlowAllGroupWithTts().conflate().collect { list ->
                 updateModels(list)
             }

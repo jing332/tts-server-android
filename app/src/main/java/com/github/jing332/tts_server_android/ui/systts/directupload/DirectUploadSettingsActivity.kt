@@ -15,7 +15,6 @@ import com.github.jing332.tts_server_android.help.config.DirectUploadConfig
 import com.github.jing332.tts_server_android.model.rhino.directupload.DirectUploadEngine
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.LoggerBottomSheetFragment
-import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
 import com.github.jing332.tts_server_android.util.readableString

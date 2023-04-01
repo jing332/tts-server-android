@@ -36,15 +36,14 @@ object ASFUriUtils {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":").toTypedArray()
                 val type = split[0]
-                var contentUri: Uri? = null
-                if ("image" == type) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                val contentUri: Uri? = if ("image" == type) {
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 } else if ("video" == type) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 } else if ("audio" == type) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                 } else
-                    contentUri = MediaStore.Files.getContentUri("external")
+                    MediaStore.Files.getContentUri("external")
 
                 val selection = "_id=?"
                 val selectionArgs = arrayOf(

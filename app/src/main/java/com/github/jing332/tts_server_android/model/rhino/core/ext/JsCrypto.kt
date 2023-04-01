@@ -5,7 +5,6 @@ package com.github.jing332.tts_server_android.model.rhino.core.ext
 import cn.hutool.core.codec.Base64
 import cn.hutool.crypto.symmetric.SymmetricCrypto
 import com.github.jing332.tts_server_android.util.MD5Utils
-import okio.ByteString
 
 interface JsCrypto {
     fun md5Encode(str: String): String {

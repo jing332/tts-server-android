@@ -70,7 +70,7 @@
     <string name="server_set_token">Set Token</string>
     <string name="server_token_set_to">Token is set to: </string>
 
-    <string name="systts_settings">System TTS</string>
+    <string name="system_tts">System TTS</string>
     <string name="settings">Settings</string>
     <string name="global_settings">Global Settings</string>
     <string name="copy_address">copy address</string>
@@ -153,15 +153,13 @@
     <string name="systts_use_internal_audio_player">Use built-in player</string>
     <string name="systts_in_app_play_info_html"><DATA><![CDATA[
         After the option is turned on, the <b>audio player built into the application</b> will be used directly instead of being played by the system TTS component.
-        <br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。
-        <br><br>当然，直接播放也有兼容性问题：
-        <br> - 由于并未将原始音频发送到系统TTS组件，所以如果调用TTS者是先缓存后播放机制，即并非由系统播放时，这将会导致缓存时音频为空和意外播放。
-        <br> - raw格式依旧不支持，由系统播放。
-        <br> - 性能方面相较系统播放略低。
-        <br> - 由于内置播放器无音频缓冲，故<b>段落</b>与<b>句子(如已启用分割长句)</b>之间的间隔时间相较系统播放会<b>多出几百毫秒的延迟</b>。
-        ]]>
-    </DATA>
-    </string>
+<br>As there is no need for manual decoding and the sampling rate can also be changed during playback, this solution can solve issues with <b>multiple speech sampling rates</b> and <b>some devices webm format</b> playback problems.
+<br><br>However, there are compatibility issues with direct playback:
+<br> - Because the original audio is not sent to the system is TTS component, if the caller of the TTS uses a caching and then playback mechanism, rather than system playback, it will result in an empty audio cache and unexpected playback.
+<br> - Raw format is still not supported and must use system playback.
+<br> - Performance is slightly lower compared to system playback.
+<br> - Due to the internal player having no audio buffer, there will be a delay of several hundred milliseconds between <b>paragraphs</b> and <b>sentences (if long sentence segmentation is enabled)</b> compared to system playback.
+]]></DATA></string>
     <string name="systts_help_secondary_locale">Select the secondary language, that is, use this language when reading aloud.</string>
     <string name="systts_sample_rate">Sample rate（hz）</string>
     <string name="systts_secondaryLocale">Language secondary（language skill）</string>
@@ -335,16 +333,16 @@
     <string name="learn_more">Learn more</string>
     <string name="systts_bgm_description">Volume:%1$s</string>
     <string name="total_n_folders">Total %1$s folders</string>
-    <string name="auto_check_update">自动检查更新</string>
-    <string name="direct_upload_settings">直链上传设置</string>
-    <string name="warn_returned_url_is_empty">⚠️返回的链接为空！</string>
-    <string name="choos_an_upload_target">选择一个上传目标</string>
-    <string name="copied_url">已复制链接</string>
-    <string name="direct_link_settings">直链设置</string>
-    <string name="code_editor_theme">代码编辑器主题</string>
-    <string name="code_editor_word_wrap">代码编辑器自动换行</string>
-    <string name="set_sample_text_param">设置文本参数</string>
-    <string name="import_plugin">导入插件</string>
-    <string name="systts_drag_tip_msg">长按勾选框即可拖拽</string>
+    <string name="auto_check_update">Auto check for updates</string>
+    <string name="direct_upload_settings">Direct link upload</string>
+    <string name="warn_returned_url_is_empty">⚠️The returned URL is empty!</string>
+    <string name="choos_an_upload_target">Choose an upload target</string>
+    <string name="copied_url">url_copied</string>
+    <string name="direct_link_settings">Direct link settings</string>
+    <string name="set_sample_text_param">Set text parameters</string>
+    <string name="import_plugin">Import plugin</string>
+    <string name="systts_drag_tip_msg">Long press the checkbox to drag and drop</string>
+    <string name="code_editor">Code editor</string>
+    <string name="check_update_summary">Check for updates when you open the main interface</string>
 
 </resources>
