@@ -4,10 +4,8 @@ on:
   push:
     branches:
       - "master"
-      - "dev"
-    paths-ignore:
-      - "**.md"
-      - "crowdin.yml"
+    paths:
+      - "CHANGELOG.md"
   workflow_dispatch:
 
 jobs:

@@ -42,12 +42,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepattributes *Annotation*
--keep @androidx.annotation.Keep class **{
-    @androidx.annotation.Keep <fields>;
-    @androidx.annotation.Keep <methods>;
-}
-
 ## Rhino
 -keep class javax.script.** { *; }
 -keep class com.sun.script.javascript.** { *; }

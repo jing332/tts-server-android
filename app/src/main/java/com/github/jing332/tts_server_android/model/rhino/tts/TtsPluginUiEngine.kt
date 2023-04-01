@@ -29,7 +29,7 @@ class TtsPluginUiEngine(
     }
 
     private val editUiJsObject: NativeObject by lazy {
-        val importCode = "importPackage(${AppConst.PACKET_NAME}.model.script.core.type.ui);" +
+        val importCode = "importPackage(${AppConst.PACKET_NAME}.model.rhino.core.type.ui);" +
                 "importPackage(android.view);" +
                 "importPackage(android.widget);"
 
