@@ -3,13 +3,11 @@ package com.github.jing332.tts_server_android.ui.systts.edit.plugin
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.BR
-import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
-import com.github.jing332.tts_server_android.model.script.tts.PluginUiEngine
+import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
@@ -23,7 +21,7 @@ class PluginTtsEditViewModel(application: Application) : AndroidViewModel(applic
     val ui: UiData = UiData()
 
     lateinit var tts: PluginTTS
-    val engine by lazy { PluginUiEngine(tts, getApplication()) }
+    val engine by lazy { TtsPluginUiEngine(tts, getApplication()) }
 
     fun checkDisplayName(name: String): String {
         return name.ifBlank { ui.voices.selectedItem?.displayText ?: name }

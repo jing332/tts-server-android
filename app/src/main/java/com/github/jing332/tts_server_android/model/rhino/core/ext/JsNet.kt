@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.model.script.core.ext
+package com.github.jing332.tts_server_android.model.rhino.core.ext
 
 import androidx.annotation.Keep
 import com.drake.net.Net

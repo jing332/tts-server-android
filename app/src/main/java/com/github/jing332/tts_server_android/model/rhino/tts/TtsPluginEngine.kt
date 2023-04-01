@@ -1,27 +1,24 @@
-package com.github.jing332.tts_server_android.model.script.tts
+package com.github.jing332.tts_server_android.model.rhino.tts
 
 import android.content.Context
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.model.script.core.BaseScriptEngine
-import com.github.jing332.tts_server_android.model.script.core.LogOutputter
-import com.github.jing332.tts_server_android.model.script.core.Logger
-import com.github.jing332.tts_server_android.model.script.core.ext.JsExtensions
-import com.github.jing332.tts_server_android.model.script.core.ext.JsLogger
+import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngine
+import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
 
-open class PluginEngine(
+open class TtsPluginEngine(
     private val pluginTTS: PluginTTS,
-    override val context: Context,
+    private val context: Context,
     override val rhino: RhinoScriptEngine = RhinoScriptEngine(),
     override val logger: Logger = Logger(),
 ) : BaseScriptEngine(
-    rhino = rhino, context = context, id = pluginTTS.pluginId, logger = logger,
-    code = pluginTTS.requirePlugin.code
+    rhino = rhino, logger = logger,
+    code = pluginTTS.requirePlugin.code,
+    ttsrvObject = EngineContext(pluginTTS, context, pluginTTS.pluginId)
 ) {
     private var mPlugin: Plugin
         inline get() = pluginTTS.plugin!!
@@ -47,9 +44,6 @@ open class PluginEngine(
     // 已弃用, 占位
     @Suppress("unused")
     var extraData: String = ""
-
-    val tts: PluginTTS
-        get() = pluginTTS
 
     private val pluginJsObject: NativeObject
         get() = findObject(OBJ_PLUGIN_JS)

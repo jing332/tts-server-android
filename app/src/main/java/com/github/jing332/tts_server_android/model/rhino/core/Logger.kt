@@ -1,31 +1,50 @@
-@file:Suppress("unused")
+package com.github.jing332.tts_server_android.model.rhino.core
 
-package com.github.jing332.tts_server_android.model.script.core.ext
-
-import androidx.annotation.Keep
-import com.github.jing332.tts_server_android.model.script.core.LogOutputter
 import com.github.jing332.tts_server_android.ui.LogLevel
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.NativeMap
 import org.mozilla.javascript.NativeObject
 
-@Keep
-interface JsLogger {
+class Logger {
+    companion object {
+        val global: Logger by lazy { Logger() }
+    }
+
+    private val listenerSet = mutableSetOf<LogListener>()
+
+    fun interface LogListener {
+        fun log(text: CharSequence, level: Int)
+    }
+
+    fun addListener(listener: LogListener) {
+        listenerSet.add(listener)
+    }
+
+    fun removeListener(listener: LogListener) {
+        listenerSet.remove(listener)
+    }
+
+    private fun write(text: CharSequence, level: Int) {
+        for (listener in listenerSet) {
+            listener.log(text, level)
+        }
+    }
+
     fun d(obj: Any) {
-        LogOutputter.writeLine(jsObj2String(obj), LogLevel.DEBUG)
+        write(jsObj2String(obj), LogLevel.DEBUG)
     }
 
     fun i(obj: Any) {
-        LogOutputter.writeLine(jsObj2String(obj), LogLevel.INFO)
+        write(jsObj2String(obj), LogLevel.INFO)
 
     }
 
     fun w(obj: Any) {
-        LogOutputter.writeLine(jsObj2String(obj), LogLevel.WARN)
+        write(jsObj2String(obj), LogLevel.WARN)
     }
 
     fun e(obj: Any) {
-        LogOutputter.writeLine(jsObj2String(obj), LogLevel.ERROR)
+        write(jsObj2String(obj), LogLevel.ERROR)
     }
 
     fun jsObj2String(obj: Any): String {
@@ -63,4 +82,5 @@ interface JsLogger {
         stringBuilder.append("}")
         return stringBuilder.toString()
     }
+
 }

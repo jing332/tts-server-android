@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsConfigExportBottomSheetBinding
-import com.github.jing332.tts_server_android.model.script.directupload.DirectUploadEngine
+import com.github.jing332.tts_server_android.model.rhino.directupload.DirectUploadEngine
 import com.github.jing332.tts_server_android.ui.systts.directupload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog

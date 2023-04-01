@@ -10,7 +10,7 @@ import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.help.config.PluginConfig
-import com.github.jing332.tts_server_android.model.script.tts.PluginUiEngine
+import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.rootCause
@@ -27,7 +27,7 @@ class PluginEditViewModel(application: Application) : AndroidViewModel(applicati
         private const val TAG = "PluginEditViewModel"
     }
 
-    lateinit var pluginEngine: PluginUiEngine
+    lateinit var pluginEngine: TtsPluginUiEngine
     internal lateinit var pluginInfo: Plugin private set
     internal lateinit var pluginTTS: PluginTTS private set
 
@@ -47,7 +47,7 @@ class PluginEditViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun updateTTS(tts: PluginTTS) {
-        pluginEngine = PluginUiEngine(tts, getApplication())
+        pluginEngine = TtsPluginUiEngine(tts, getApplication())
         pluginTTS = tts.also {
             it.pluginEngine = pluginEngine
             it.plugin = pluginInfo

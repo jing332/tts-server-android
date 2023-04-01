@@ -1,19 +1,17 @@
-package com.github.jing332.tts_server_android.model.script.tts
+package com.github.jing332.tts_server_android.model.rhino.tts
 
 import android.content.Context
 import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.model.script.core.LogOutputter
-import com.github.jing332.tts_server_android.model.script.core.Logger
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.dp
 import org.mozilla.javascript.NativeObject
 
-class PluginUiEngine(
+class TtsPluginUiEngine(
     private val pluginTts: PluginTTS,
-    override val context: Context,
+    val context: Context,
 ) :
-    PluginEngine(pluginTTS = pluginTts, context = context) {
+    TtsPluginEngine(pluginTTS = pluginTts, context = context) {
     companion object {
         const val FUNC_SAMPLE_RATE = "getAudioSampleRate"
         const val FUNC_LOCALES = "getLocales"

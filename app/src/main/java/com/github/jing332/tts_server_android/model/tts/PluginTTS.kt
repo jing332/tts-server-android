@@ -7,7 +7,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditBottomSheetBinding
-import com.github.jing332.tts_server_android.model.script.tts.PluginEngine
+import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginEngine
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
@@ -26,7 +26,7 @@ data class PluginTTS(
     // 插件附加数据
     var data: MutableMap<String, String> = mutableMapOf(),
 
-    override var pitch: Int = 0,
+    override var pitch: Int = 50,
     override var volume: Int = 50,
     override var rate: Int = 50,
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
@@ -85,11 +85,11 @@ data class PluginTTS(
 
     @IgnoredOnParcel
     @Transient
-    lateinit var pluginEngine: PluginEngine
+    lateinit var pluginEngine: TtsPluginEngine
 
     override fun onLoad() {
         if (!this::pluginEngine.isInitialized)
-            pluginEngine = PluginEngine(pluginTTS = this, context = context)
+            pluginEngine = TtsPluginEngine(pluginTTS = this, context = context)
         pluginEngine.onLoad()
     }
 

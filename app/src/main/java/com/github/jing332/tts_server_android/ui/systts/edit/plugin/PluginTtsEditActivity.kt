@@ -11,13 +11,11 @@ import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivityBinding
-import com.github.jing332.tts_server_android.model.script.tts.PluginUiEngine
+import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
-import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
-import com.github.jing332.tts_server_android.util.readableString
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,7 +25,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         const val ACTION_FINISH = "ACTION_FINISH"
     }
 
-    private val engine: PluginUiEngine by lazy { vm.engine }
+    private val engine: TtsPluginUiEngine by lazy { vm.engine }
     private val vm: PluginTtsEditViewModel by viewModels()
     private val binding by lazy {
         SysttsPluginEditActivityBinding.inflate(layoutInflater).apply { m = vm }

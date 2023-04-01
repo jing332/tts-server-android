@@ -1,19 +1,19 @@
-package com.github.jing332.tts_server_android.model.script.directupload
+package com.github.jing332.tts_server_android.model.rhino.directupload
 
 import android.content.Context
 import com.github.jing332.tts_server_android.help.config.DirectUploadConfig
-import com.github.jing332.tts_server_android.model.script.core.BaseScriptEngine
-import com.github.jing332.tts_server_android.model.script.core.Logger
+import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngine
+import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngineContext
+import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
 
 class DirectUploadEngine(
     override val rhino: RhinoScriptEngine = RhinoScriptEngine(),
-    override val context: Context,
+    private val context: Context,
     override val logger: Logger = Logger(),
     override var code: String = DirectUploadConfig.code,
-    override val id: String = "DirectUpload",
-) : BaseScriptEngine(rhino, context, code, id, logger) {
+) : BaseScriptEngine(rhino, BaseScriptEngineContext(context, "DirectUpload"), code, logger) {
     companion object {
         private const val TAG = "DirectUploadEngine"
         const val OBJ_DIRECT_UPLOAD = "DirectUploadJS"

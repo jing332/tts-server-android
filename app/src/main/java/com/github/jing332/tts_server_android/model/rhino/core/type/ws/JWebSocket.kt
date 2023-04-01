@@ -1,9 +1,9 @@
-package com.github.jing332.tts_server_android.model.script.core.type.ws
+package com.github.jing332.tts_server_android.model.rhino.core.type.ws
 
-import com.github.jing332.tts_server_android.model.script.core.type.JClass
-import com.github.jing332.tts_server_android.model.script.core.type.ws.internal.IWebSocketEvent
-import com.github.jing332.tts_server_android.model.script.core.type.ws.internal.WebSocketClient
-import com.github.jing332.tts_server_android.model.script.core.type.ws.internal.WebSocketClient.*
+import com.github.jing332.tts_server_android.model.rhino.core.type.JClass
+import com.github.jing332.tts_server_android.model.rhino.core.type.ws.internal.IWebSocketEvent
+import com.github.jing332.tts_server_android.model.rhino.core.type.ws.internal.WebSocketClient
+import com.github.jing332.tts_server_android.model.rhino.core.type.ws.internal.WebSocketClient.*
 import okhttp3.Request
 import okhttp3.Response
 import okio.ByteString

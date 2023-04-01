@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.model.script.directupload
+package com.github.jing332.tts_server_android.model.rhino.directupload
 
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject

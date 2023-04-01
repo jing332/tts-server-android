@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.model.script.core.type.ws.internal
+package com.github.jing332.tts_server_android.model.rhino.core.type.ws.internal
 
 import android.util.Log
 import com.drake.net.utils.withIO

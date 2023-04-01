@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.model.script.core.ext
+package com.github.jing332.tts_server_android.model.rhino.core.ext
 
 import android.content.Context
 import cn.hutool.core.io.CharsetDetector
@@ -8,7 +8,7 @@ import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import java.io.File
 
 @Suppress("unused")
-open class JsExtensions(open val context: Context, private val pluginId: String) : JsNet(),
+open class JsExtensions(open val context: Context, open val pluginId: String) : JsNet(),
     JsCrypto,
     JsUserInterface {
     fun getAudioSampleRate(audio: ByteArray): Int {
