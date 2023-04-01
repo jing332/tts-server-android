@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  prepare:
+  golib:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: 1.19.1
+          cache-dependency-path: ${{ github.workspace }}/tts-server-lib
 
       - name: Build tts-server-lib
         run: |
@@ -35,7 +36,7 @@ jobs:
           path: tts-server-lib/*.aar
 
   build:
-    needs: prepare
+    needs: golib
     strategy:
       matrix:
         product: [ {name: "App原版", value: app}, {name: "Dev共存版", value: dev} ]
@@ -89,7 +90,7 @@ jobs:
           name: mappings_${{ env.product }}_${{ env.ver_name }}
           path: ${{ env.outputs_dir }}/mapping/*/*.txt
 
-      - name: Upload App To Artifact
+      - name: Upload APK To Artifact
         uses: actions/upload-artifact@v3
         with:
           name: "TTS-Server_${{ env.product }}_${{ env.ver_name }}"
