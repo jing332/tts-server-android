@@ -248,7 +248,6 @@ class TtsManager(val context: Context) {
         aText: String, pitch: Int, speechRate: Int, callback: SynthesisCallback
     ) {
         isSynthesizing = true
-        callback.start(mAudioFormat.sampleRate, mAudioFormat.bitRate, 1)
         mBgmPlayer.play()
 
         val text = if (mCfg.isReplaceEnabled) {

@@ -17,6 +17,7 @@ import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.drake.net.Net
+import com.drake.net.okhttp.trustSSLCertificate
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseConfigImportItemBinding
@@ -134,7 +135,9 @@ open class BaseImportConfigBottomSheetFragment(
     ): String {
         return when (src) {
             SRC_URL -> withContext(Dispatchers.IO) {
-                val resp: Response = Net.get(url.toString()).execute()
+                val resp: Response = Net.get(url.toString()) {
+                    setClient { trustSSLCertificate() }
+                }.execute()
                 val str = resp.body?.string()
                 if (resp.isSuccessful && !str.isNullOrBlank()) {
                     return@withContext str
