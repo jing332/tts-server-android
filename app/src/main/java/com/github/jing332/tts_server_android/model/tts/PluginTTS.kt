@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.model.tts
 
 import android.app.Activity
 import android.view.View
+import androidx.annotation.Keep
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
@@ -15,6 +16,7 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Transient
 
+@Keep
 @Parcelize
 @kotlinx.serialization.Serializable
 @SerialName("plugin")
