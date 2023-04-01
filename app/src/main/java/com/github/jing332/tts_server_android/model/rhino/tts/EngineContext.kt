@@ -8,8 +8,9 @@ import com.github.jing332.tts_server_android.model.tts.PluginTTS
 /**
  * @param tts 在JS中用 `ttsrv.tts` 访问
  */
+@Keep
 data class EngineContext(
-    @Keep val tts: PluginTTS,
+    val tts: PluginTTS,
     override val context: Context,
     override val pluginId: String
 ) :
