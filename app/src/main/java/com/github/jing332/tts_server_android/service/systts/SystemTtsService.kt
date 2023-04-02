@@ -343,11 +343,9 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             is RequestException -> {
                 when (e.errorCode) {
                     RequestException.ERROR_CODE_REQUEST -> {
-                        val rootCause = e.rootCause
                         logE(
                             getString(
-                                R.string.systts_log_failed,
-                                "(${e.times}) $rootCause ${rootCause?.message ?: ""}"
+                                R.string.systts_log_failed, "(${e.times}) $e.rootCause"
                             )
                         )
                     }

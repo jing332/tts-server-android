@@ -17,7 +17,13 @@ import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
 import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.util.toast
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 import kotlin.coroutines.coroutineContext
 import kotlin.system.measureTimeMillis
 
@@ -127,11 +133,33 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         return@retry
                     }
 
-                    audioResult = tts.getAudio(text, sysRate, sysPitch)
-                        ?: throw RequestException(
-                            errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
-                            tts = tts, text = text
-                        )
+                    coroutineScope {
+                        try {
+                            var hasTimeout = false
+                            val timeoutJob = launch {
+                                delay(SysTtsConfig.requestTimeout.toLong())
+                                tts.onStop()
+                                hasTimeout = true
+                            }.job
+                            timeoutJob.start()
+
+                            audioResult =
+                                tts.getAudio(text, sysRate, sysPitch) ?: throw RequestException(
+                                    errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
+                                    tts = tts, text = text
+                                )
+                            if (hasTimeout) throw Exception(
+                                context.getString(
+                                    R.string.failed_timed_out,
+                                    SysTtsConfig.requestTimeout
+                                )
+                            )
+
+                            else timeoutJob.cancelAndJoin()
+                        } catch (e: TimeoutCancellationException) {
+                            TODO("Not yet implemented")
+                        }
+                    }
                 }
                 listener?.onRequestSuccess(text, tts, audioResult?.size ?: 0, costTime, retryTimes)
             })
