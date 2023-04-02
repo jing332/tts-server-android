@@ -5,7 +5,7 @@
 ![GitHub release](https://img.shields.io/github/downloads/jing332/tts-server-android/total)
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/jing332/tts-server-android/latest/total)
 
-# TTS Server
+# TTS Server [![](https://img.shields.io/badge/Q%E7%BE%A4-124841768-blue)](https://jq.qq.com/?_wv=1027&k=y7WCDjEA)
 
 本APP起初为阅读APP的网络朗读所用，在原有基础上，现已支持:
 
