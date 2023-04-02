@@ -2,9 +2,7 @@ package com.github.jing332.tts_server_android.model.tts
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
@@ -17,12 +15,12 @@ import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Parcelize
 @Serializable
@@ -38,10 +36,12 @@ data class MsTTS(
     var prosody: Prosody = Prosody(),
     var expressAs: ExpressAs? = null,
 
-    @kotlinx.serialization.Transient
-    override var audioFormat: BaseAudioFormat = MsTtsFormatManger.getFormatOrDefault(format),
     override var audioPlayer: PlayerParams = PlayerParams(),
-) : Parcelable, BaseTTS() {
+    @Transient
+    override var audioFormat: BaseAudioFormat = MsTtsFormatManger.getFormatOrDefault(format),
+    @Transient
+    override var info: TtsInfo = TtsInfo(),
+) : Parcelable, ITextToSpeechEngine() {
     companion object {
         const val RATE_FOLLOW_SYSTEM = -100
         const val PITCH_FOLLOW_SYSTEM = -50
@@ -171,11 +171,11 @@ data class MsTTS(
         return s
     }
 
-    override fun getAudio(speakText: String): ByteArray? {
+    override suspend fun getAudio(speakText: String, sysRate: Int, sysPitch: Int): ByteArray? {
         return SysTtsLib.getAudio(speakText, this, format)
     }
 
-    override fun getAudioStream(
+    override suspend fun getAudioStream(
         speakText: String,
         chunkSize: Int,
         onData: (ByteArray?) -> Unit

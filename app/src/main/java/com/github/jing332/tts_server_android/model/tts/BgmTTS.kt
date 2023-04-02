@@ -1,8 +1,6 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.app.Activity
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -13,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Parcelize
 @Serializable
@@ -25,8 +24,10 @@ class BgmTTS(
     override var volume: Int = 0,
     override var rate: Int = 0,
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
-    override var audioPlayer: PlayerParams = PlayerParams()
-) : BaseTTS() {
+    override var audioPlayer: PlayerParams = PlayerParams(),
+    @Transient
+    override var info: TtsInfo = TtsInfo()
+) : ITextToSpeechEngine() {
     override fun getEditActivity(): Class<out Activity> = BgmTtsEditActivity::class.java
     override fun getType() = context.getString(R.string.local)
 

@@ -169,7 +169,7 @@
     <string name="systts_groups_multiple_hint">勾选分组时将不再互相排斥。</string>
 
     <string name="systts_warn_no_ra_dialogue">⚠️缺少{对话}，使用默认！\n请启用对话配置。</string>
-    <string name="systts_warn_no_ra_all">⚠️缺少{全部}，使用默认！\n请确保关闭多语音选项。</string>
+    <string name="systts_warn_no_ra_all">⚠️缺少TTS配置，使用默认！\n请确保关闭多语音选项。</string>
     <string name="systts_warn_no_ra_aside">⚠️缺少{旁白}，使用默认！\n请启用旁白配置。</string>
 
     <string name="systts_test_success">测试成功</string>

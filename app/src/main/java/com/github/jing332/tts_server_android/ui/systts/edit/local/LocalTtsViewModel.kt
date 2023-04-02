@@ -182,7 +182,7 @@ class LocalTtsViewModel : ViewModel() {
                     override fun onDone() {
                     }
                 }
-                withIO { mTts.directPlay(text) }
+                withIO { mTts.startPlay(text) }
             } else {
                 withIO {
                     mTts.getAudio(text)?.let {

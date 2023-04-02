@@ -1,7 +1,7 @@
 package com.github.jing332.tts_server_android.data.entities.systts
 
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
-import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import kotlinx.serialization.Serializable
 
 
@@ -21,6 +21,6 @@ data class CompatSystemTts(
     @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.ALL,
 
     // TTS属性
-    var tts: BaseTTS,
+    var tts: ITextToSpeechEngine,
 ) {
 }

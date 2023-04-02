@@ -5,7 +5,7 @@ import com.github.jing332.tts_server_android.constant.MsTtsApiType
 
 object MsTtsFormatManger {
     private val formats = arrayListOf<MsTtsAudioFormat>(
-        MsTtsAudioFormat(
+      /*  MsTtsAudioFormat(
             "raw-8khz-16bit-mono-pcm",
             8000,
             AudioFormat.ENCODING_PCM_16BIT,
@@ -32,7 +32,7 @@ object MsTtsFormatManger {
             AudioFormat.ENCODING_PCM_16BIT,
             MsTtsAudioFormat.SupportedApi.AZURE,
             false
-        ),
+        ),*/
         MsTtsAudioFormat(
             "webm-16khz-16bit-mono-opus",
             24000 * 2,

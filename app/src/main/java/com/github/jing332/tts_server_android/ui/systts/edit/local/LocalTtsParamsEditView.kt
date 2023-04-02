@@ -21,7 +21,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsLocalExtraParamsItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsLocalParamsEditViewBinding
 import com.github.jing332.tts_server_android.databinding.SysttsLocalParamsExtraEditViewBinding
-import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.tts.LocalTtsParameter
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -65,12 +65,12 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
             }
         }
         binding.seekbarRate.valueFormatter = Seekbar.ValueFormatter { value, _ ->
-            if (value == BaseTTS.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app)
+            if (value == ITextToSpeechEngine.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app)
             else value.toString()
         }
 
         binding.seekbarRate.valueFormatter = Seekbar.ValueFormatter { value, _ ->
-            if (value == BaseTTS.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app)
+            if (value == ITextToSpeechEngine.VALUE_FOLLOW_SYSTEM) context.getString(R.string.follow_system_or_read_aloud_app)
             else value.toString()
         }
 

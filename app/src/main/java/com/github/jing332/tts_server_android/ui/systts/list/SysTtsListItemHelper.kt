@@ -23,7 +23,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
-import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -149,7 +149,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         waitDialog.show()
 
         GlobalScope.launch(Dispatchers.Main) {
-            val tts = model.tts.clone<BaseTTS>()!!
+            val tts = model.tts.clone<ITextToSpeechEngine>()!!
             val audio = try {
                 withIO {
                     tts.onLoad()

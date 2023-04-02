@@ -22,8 +22,10 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
-import com.github.jing332.tts_server_android.model.tts.BaseTTS
-import com.github.jing332.tts_server_android.service.systts.help.TtsManager
+import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
+import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
+import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
@@ -32,15 +34,17 @@ import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGM
 import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.limitLength
+import com.github.jing332.tts_server_android.util.rootCause
 import com.github.jing332.tts_server_android.util.toHtmlBold
+import com.github.jing332.tts_server_android.util.toHtmlItalic
+import com.github.jing332.tts_server_android.util.toHtmlSmall
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
 
 
 @Suppress("DEPRECATION")
-class SystemTtsService : TextToSpeechService(),
-    TtsManager.EventListener {
+class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     companion object {
         const val TAG = "SysTtsService"
         const val ACTION_ON_LOG = "SYS_TTS_ON_LOG"
@@ -59,7 +63,11 @@ class SystemTtsService : TextToSpeechService(),
 
     private val mCurrentLanguage: MutableList<String> = mutableListOf("zho", "CHN", "")
 
-    private val mTtsManager: TtsManager by lazy { TtsManager(this) }
+
+    private val mTtsManager: TextToSpeechManager by lazy {
+        TextToSpeechManager(this).also { it.listener = this }
+    }
+
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
     private val mLocalReceiver: LocalReceiver by lazy { LocalReceiver() }
 
@@ -96,8 +104,8 @@ class SystemTtsService : TextToSpeechService(),
         mWakeLock.acquire(60 * 20 * 100)
         mWifiLock.acquire()
 
-        mTtsManager.event = this
-        mTtsManager.loadConfig()
+//        mTtsManager.event = this
+        mTtsManager.load()
     }
 
     override fun onDestroy() {
@@ -139,11 +147,13 @@ class SystemTtsService : TextToSpeechService(),
 
     override fun onStop() {
         Log.d(TAG, "onStop")
-        mTtsManager.stop(fromUser = true)
+        mTtsManager.stop()
+        synthesizerJob?.cancel()
         updateNotification(getString(R.string.systts_state_idle), "")
     }
 
     private lateinit var mCurrentText: String
+    private var synthesizerJob: Job? = null
 
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         reNewWakeLock()
@@ -160,14 +170,33 @@ class SystemTtsService : TextToSpeechService(),
 
         callback!!.start(mTtsManager.audioFormat.sampleRate, mTtsManager.audioFormat.bitRate, 1)
         runBlocking {
-            mTtsManager.synthesizeText(
-                text,
-                request!!.pitch,
-                request.speechRate,
-                callback
-            )
+            synthesizerJob = launch {
+                mTtsManager.textToAudio(
+                    text = text,
+                    sysRate = (request!!.speechRate * 100) / 500,
+                    sysPitch = request.pitch,
+                ) {
+                    writeToCallBack(callback, it)
+                }
+            }.job
+            synthesizerJob!!.join()
         }
         callback.done()
+        println("done...................")
+    }
+
+    private fun writeToCallBack(callback: SynthesisCallback, pcmData: ByteArray) {
+        try {
+            val maxBufferSize: Int = callback.maxBufferSize
+            var offset = 0
+            while (offset < pcmData.size && mTtsManager.isSynthesizing) {
+                val bytesToWrite = maxBufferSize.coerceAtMost(pcmData.size - offset)
+                callback.audioAvailable(pcmData, offset, bytesToWrite)
+                offset += bytesToWrite
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun reNewWakeLock() {
@@ -294,94 +323,120 @@ class SystemTtsService : TextToSpeechService(),
     inner class LocalReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_REQUEST_UPDATE_CONFIG -> mTtsManager.loadConfig()
+                ACTION_REQUEST_UPDATE_CONFIG -> mTtsManager.load()
             }
         }
     }
 
-    override fun onStartRequest(text: String, tts: BaseTTS) {
-        if (App.isSysTtsLogEnabled)
-            sendLog(
-                LogLevel.INFO, "<br>" + getString(
-                    R.string.systts_log_request_audio,
-                    "<b>${text}</b> <br><small><i>${tts}</small></i>"
-                )
-            )
-    }
 
-    override fun onRequestSuccess(text: String?, size: Int, costTime: Int, retryNum: Int) {
-        if (App.isSysTtsLogEnabled)
-            text?.let {
-                sendLog(
-                    LogLevel.INFO,
-                    getString(
-                        R.string.systts_log_success,
-                        "<b>${(size / 1024)}kb</b>",
-                        "<b>${costTime}ms</b>"
-                    )
-                )
-            }
-        // 重试成功
-        if (retryNum > 1) updateNotification(
-            getString(R.string.systts_state_synthesizing),
-            mCurrentText
+    override fun onStartRequest(text: String, tts: ITextToSpeechEngine) {
+        logD(
+            "<br>" + getString(
+                R.string.systts_log_request_audio,
+                "${text.toHtmlBold()}<br> ${tts.toString().toHtmlSmall().toHtmlItalic()}"
+            )
         )
     }
 
-    override fun onError(errCode: Int, speakText: String?, reason: String?) {
-        if (!App.isSysTtsLogEnabled) return
-        val msg = when (errCode) {
-            TtsManager.ERROR_GET -> {
-                val str = reason.toString()
-                if (str.contains(TtsManager.BAD_HANDSHAKE_PREFIX)) {
-                    str + "<br>" + getString(R.string.systts_log_ip_is_restricted)
+    override fun onError(e: TtsManagerException) {
+        when (e) {
+            is RequestException -> {
+                when (e.errorCode) {
+                    RequestException.ERROR_CODE_REQUEST -> {
+                        val rootCause = e.rootCause
+                        logE(
+                            getString(
+                                R.string.systts_log_failed,
+                                "(${e.times}) $rootCause ${rootCause?.message ?: ""}"
+                            )
+                        )
+                    }
+
+                    RequestException.ERROR_CODE_AUDIO_NULL -> {
+                        logE(getString(R.string.systts_log_audio_empty, e.text))
+                    }
                 }
-                getString(R.string.systts_log_failed, "${speakText?.toHtmlBold()} <br>${str}")
             }
-
-            TtsManager.ERROR_AUDIO -> getString(R.string.systts_log_audio_empty, speakText)
-            TtsManager.ERROR_DECODE ->
-                getString(R.string.systts_log_decode_failed, "$speakText <br>${reason}")
-
-            TtsManager.ERROR_REPLACE ->
-                getString(R.string.systts_log_replace_failed, "$speakText <br>${reason}")
-
-            else -> ""
         }
-        sendLog(LogLevel.ERROR, msg)
     }
 
-    override fun onStartRetry(retryNum: Int, t: Throwable) {
-        val retryStr = getString(R.string.systts_log_start_retry, retryNum)
-        sendLog(LogLevel.WARN, retryStr)
-        updateNotification(getString(R.string.systts_log_failed, retryStr), t.message)
-    }
+//
+//    override fun onRequestSuccess(text: String?, size: Int, costTime: Int, retryNum: Int) {
+//        if (App.isSysTtsLogEnabled)
+//            text?.let {
+//                sendLog(
+//                    LogLevel.INFO,
+//                    getString(
+//                        R.string.systts_log_success,
+//                        "<b>${(size / 1024)}kb</b>",
+//                        "<b>${costTime}ms</b>"
+//                    )
+//                )
+//            }
+//        // 重试成功
+//        if (retryNum > 1) updateNotification(
+//            getString(R.string.systts_state_synthesizing),
+//            mCurrentText
+//        )
+//    }
+//
+//    override fun onError(errCode: Int, speakText: String?, reason: String?) {
+//        if (!App.isSysTtsLogEnabled) return
+//        val msg = when (errCode) {
+//            TtsManager.ERROR_GET -> {
+//                val str = reason.toString()
+//                if (str.contains(TtsManager.BAD_HANDSHAKE_PREFIX)) {
+//                    str + "<br>" + getString(R.string.systts_log_ip_is_restricted)
+//                }
+//                getString(R.string.systts_log_failed, "${speakText?.toHtmlBold()} <br>${str}")
+//            }
+//
+//            TtsManager.ERROR_AUDIO -> getString(R.string.systts_log_audio_empty, speakText)
+//            TtsManager.ERROR_DECODE ->
+//                getString(R.string.systts_log_decode_failed, "$speakText <br>${reason}")
+//
+//            TtsManager.ERROR_REPLACE ->
+//                getString(R.string.systts_log_replace_failed, "$speakText <br>${reason}")
+//
+//            else -> ""
+//        }
+//        sendLog(LogLevel.ERROR, msg)
+//    }
+//
+//    override fun onStartRetry(retryNum: Int, t: Throwable) {
+//        val retryStr = getString(R.string.systts_log_start_retry, retryNum)
+//        sendLog(LogLevel.WARN, retryStr)
+//        updateNotification(getString(R.string.systts_log_failed, retryStr), t.message)
+//    }
+//
+//    override fun onPlayDone(text: String?) {
+//        if (App.isSysTtsLogEnabled)
+//            sendLog(
+//                LogLevel.INFO,
+//                getString(R.string.systts_log_finished_playing, text?.limitLength()?.toHtmlBold())
+//            )
+//    }
+//
+//    override fun onPlayCanceled(text: String?) {
+//        if (App.isSysTtsLogEnabled)
+//            sendLog(
+//                LogLevel.WARN,
+//                getString(
+//                    R.string.systts_log_canceled, text?.limitLength()?.toHtmlBold()
+//                )
+//            )
+//    }
+//
 
-    override fun onPlayDone(text: String?) {
-        if (App.isSysTtsLogEnabled)
-            sendLog(
-                LogLevel.INFO,
-                getString(R.string.systts_log_finished_playing, text?.limitLength()?.toHtmlBold())
-            )
-    }
-
-    override fun onPlayCanceled(text: String?) {
-        if (App.isSysTtsLogEnabled)
-            sendLog(
-                LogLevel.WARN,
-                getString(
-                    R.string.systts_log_canceled, text?.limitLength()?.toHtmlBold()
-                )
-            )
-    }
+    private fun logD(msg: String) = sendLog(LogLevel.DEBUG, msg)
+    private fun logI(msg: String) = sendLog(LogLevel.INFO, msg)
+    private fun logW(msg: String) = sendLog(LogLevel.WARN, msg)
+    private fun logE(msg: String) = sendLog(LogLevel.ERROR, msg)
 
     private fun sendLog(level: Int, msg: String) {
         Log.d(TAG, "$level, $msg")
         val intent =
-            Intent(ACTION_ON_LOG).putExtra(
-                KeyConst.KEY_DATA,
-                AppLog(level, msg)
-            )
+            Intent(ACTION_ON_LOG).putExtra(KeyConst.KEY_DATA, AppLog(level, msg))
         App.localBroadcast.sendBroadcast(intent)
     }
 

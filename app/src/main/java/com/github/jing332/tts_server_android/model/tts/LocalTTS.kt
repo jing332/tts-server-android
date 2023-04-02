@@ -1,14 +1,12 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.os.SystemClock
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
@@ -16,7 +14,6 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsLocalEditBottomSheetBinding
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.util.toHtmlBold
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.*
 import kotlinx.parcelize.IgnoredOnParcel
@@ -42,9 +39,12 @@ data class LocalTTS(
     override var pitch: Int = 0,
     override var volume: Int = 0,
     override var rate: Int = 0,
+
     override var audioPlayer: PlayerParams = PlayerParams(),
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(isNeedDecode = true),
-) : Parcelable, BaseTTS() {
+    @Transient
+    override var info: TtsInfo = TtsInfo(),
+) : Parcelable, ITextToSpeechEngine() {
     companion object {
         private const val TAG = "LocalTTS"
         private const val STOP_MESSAGE = "STOP"
@@ -63,7 +63,7 @@ data class LocalTTS(
         }
     }
 
-    override fun isPitchFollowSystem() = pitch == BaseTTS.VALUE_FOLLOW_SYSTEM
+    override fun isPitchFollowSystem() = pitch == ITextToSpeechEngine.VALUE_FOLLOW_SYSTEM
 
     init {
         audioFormat.isNeedDecode = true
@@ -213,10 +213,10 @@ data class LocalTTS(
         }
     }
 
-    override fun directPlay(text: String): Boolean {
+    override suspend fun startPlay(text: String, sysRate: Int, sysPitch: Int): Boolean {
         initEngineIf()
-        return runBlocking {
-            if (!checkInitAndWait()) return@runBlocking false
+        return coroutineScope {
+            if (!checkInitAndWait()) return@coroutineScope false
 
             waitJob = launch {
                 mTtsEngine?.apply {
@@ -225,7 +225,7 @@ data class LocalTTS(
                 awaitCancellation()
             }.job
             waitJob?.start()
-            return@runBlocking true
+            return@coroutineScope true
         }
     }
 
@@ -256,7 +256,7 @@ data class LocalTTS(
     }
 
 
-    override fun getAudio(speakText: String): ByteArray? {
+    override suspend fun getAudio(speakText: String, sysRate: Int, sysPitch: Int): ByteArray? {
         return getAudioFile(speakText).run { if (exists()) readBytes() else null }
     }
 

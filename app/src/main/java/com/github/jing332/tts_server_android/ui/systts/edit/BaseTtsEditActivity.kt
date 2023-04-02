@@ -12,11 +12,11 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsBaseEditActivityBinding
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
 import com.github.jing332.tts_server_android.help.config.AppConfig
-import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.google.android.material.textfield.TextInputLayout
 
-open class BaseTtsEditActivity<T : BaseTTS>(private val factory: () -> T) : BackActivity() {
+open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () -> T) : BackActivity() {
     companion object {
         const val KEY_DATA = "KEY_DATA"
         const val KEY_BASIC_VISIBLE = "KEY_BASIC_VISIBLE"

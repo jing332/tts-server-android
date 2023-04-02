@@ -19,7 +19,7 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 @Parcelize
 @Serializable
 @JsonClassDiscriminator("#type")
-sealed class BaseTTS(
+sealed class ITextToSpeechEngine(
     @Transient
     @IgnoredOnParcel
     protected val context: Context = app
@@ -31,6 +31,8 @@ sealed class BaseTTS(
     abstract var pitch: Int
     abstract var volume: Int
     abstract var rate: Int
+
+    abstract var info: TtsInfo
     abstract var audioFormat: BaseAudioFormat
     abstract var audioPlayer: PlayerParams
 
@@ -94,19 +96,28 @@ sealed class BaseTTS(
     open fun isDirectPlay(): Boolean = false
 
     /**
-     * 直接播放并等待完毕
+     * 开始播放 用于本地TTS的直接播放
      */
-    open fun directPlay(text: String): Boolean = false
+    open suspend fun startPlay(text: String, sysRate: Int = 0, sysPitch: Int = 0): Boolean = false
 
     /**
      * 完整获取音频
      */
-    open fun getAudio(speakText: String): ByteArray? = null
+    open suspend fun getAudio(speakText: String, sysRate: Int = 0, sysPitch: Int = 0): ByteArray? =
+        null
+
+    fun rateWithFollow(sysRate: Int): Int {
+        return if (isRateFollowSystem()) sysRate else rate
+    }
+
+    fun pitchWithFollow(sysPitch: Int): Int {
+        return if (isPitchFollowSystem()) sysPitch else pitch
+    }
 
     /**
      * 获取PCM音频流
      */
-    open fun getAudioStream(
+    open suspend fun getAudioStream(
         speakText: String,
         chunkSize: Int = 0,
         onData: (ByteArray?) -> Unit

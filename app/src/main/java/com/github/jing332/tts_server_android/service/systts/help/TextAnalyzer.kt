@@ -1,6 +1,6 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
-import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.lengthOfChinese
 import kotlin.random.Random
@@ -42,8 +42,8 @@ object VoiceTools {
      */
     fun splitMultiVoice(
         text: String,
-        asideProperty: List<BaseTTS>,
-        dialogueProperty: List<BaseTTS>,
+        asideProperty: List<ITextToSpeechEngine>,
+        dialogueProperty: List<ITextToSpeechEngine>,
         minDialogueLen: Int
     ): List<ResultMultiVoiceData> {
         val random = Random(System.currentTimeMillis())
@@ -69,5 +69,5 @@ object VoiceTools {
 
 data class ResultTextTag(val text: String, val isDialogue: Boolean)
 data class ResultMultiVoiceData(
-    val tts: BaseTTS, val speakText: String, val isDialogue: Boolean,
+    val tts: ITextToSpeechEngine, val speakText: String, val isDialogue: Boolean,
 )

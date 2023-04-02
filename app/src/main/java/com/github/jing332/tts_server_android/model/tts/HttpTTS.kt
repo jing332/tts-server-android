@@ -1,10 +1,8 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.app.Activity
-import android.content.Context
 import android.os.Parcelable
 import android.os.SystemClock
-import android.view.LayoutInflater
 import android.view.View
 import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
@@ -19,6 +17,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -37,8 +36,10 @@ data class HttpTTS(
 
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
     override var audioPlayer: PlayerParams = PlayerParams(),
+    @Transient
+    override var info: TtsInfo = TtsInfo(),
 
-    ) : Parcelable, BaseTTS() {
+    ) : Parcelable, ITextToSpeechEngine() {
     override fun isRateFollowSystem(): Boolean {
         return VALUE_FOLLOW_SYSTEM == rate
     }
@@ -119,7 +120,7 @@ data class HttpTTS(
         }
     }
 
-    override fun getAudio(speakText: String): ByteArray? {
+    override suspend fun getAudio(speakText: String, sysRate: Int, sysPitch: Int): ByteArray? {
         val resp = getAudioResponse(speakText)
         val body = resp.body?.bytes()
         if (resp.code != 200) throw Throwable("${resp.message}, ${body.contentToString()}")
@@ -128,7 +129,7 @@ data class HttpTTS(
         return body
     }
 
-    override fun getAudioStream(
+    override suspend fun getAudioStream(
         speakText: String,
         chunkSize: Int,
         onData: (ByteArray?) -> Unit

@@ -23,7 +23,6 @@ object SysTtsLib {
 
         return ResultProperty(libPro, libProsody, libExp)
     }
-
     private val mEdgeApi: EdgeApi by lazy { EdgeApi() }
     private val mAzureApi: AzureApi by lazy { AzureApi() }
     private val mCreationApi: CreationApi by lazy { CreationApi() }

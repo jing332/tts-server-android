@@ -87,12 +87,9 @@ open class TtsPluginEngine(
     }
 
     fun getAudio(
-        text: String, locale: String, voice: String, rate: Int = 1, volume: Int = 1, pitch: Int = 1
+        text: String, rate: Int = 1, pitch: Int = 1
     ): ByteArray? {
-        logger.d(
-            "getAudio()..." +
-                    "\ntext: $text, locale: $locale, voice: $voice, rate: $rate, volume: $volume, pitch: $pitch"
-        )
+        logger.d("getAudio()... $pluginTTS")
 
         return rhino.invokeMethod(
             pluginJsObject,
@@ -100,9 +97,9 @@ open class TtsPluginEngine(
             text,
             pluginTTS.locale,
             pluginTTS.voice,
-            pluginTTS.rate,
+            rate,
             pluginTTS.volume,
-            pluginTTS.pitch
+            pitch
         )?.run { this as ByteArray }
     }
 }

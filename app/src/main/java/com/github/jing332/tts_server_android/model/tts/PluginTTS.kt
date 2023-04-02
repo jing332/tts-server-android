@@ -24,19 +24,20 @@ data class PluginTTS(
     val pluginId: String = "",
     var locale: String = "",
     var voice: String = "",
-//    var data: String = "",
     // 插件附加数据
     var data: MutableMap<String, String> = mutableMapOf(),
 
     override var pitch: Int = 50,
     override var volume: Int = 50,
     override var rate: Int = 50,
+
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
     override var audioPlayer: PlayerParams = PlayerParams(),
-
+    @Transient
+    override var info: TtsInfo = TtsInfo(),
     @Transient
     var plugin: Plugin? = null,
-) : BaseTTS() {
+) : ITextToSpeechEngine() {
     init {
         if (pluginId.isNotEmpty())
             plugin = appDb.pluginDao.getByPluginId(pluginId)
@@ -99,7 +100,11 @@ data class PluginTTS(
         pluginEngine.onStop()
     }
 
-    override fun getAudio(speakText: String): ByteArray? {
-        return pluginEngine.getAudio(speakText, locale, voice, rate, volume, pitch)
+    override suspend fun getAudio(speakText: String, sysRate: Int, sysPitch: Int): ByteArray? {
+        return pluginEngine.getAudio(
+            speakText,
+            rateWithFollow(sysRate),
+            pitchWithFollow(sysPitch)
+        )
     }
 }

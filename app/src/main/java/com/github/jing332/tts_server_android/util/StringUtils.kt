@@ -9,7 +9,8 @@ object StringUtils {
     private val silentPattern by lazy { Pattern.compile("[\\s\\p{C}\\p{P}\\p{Z}\\p{S}]") }
     private val splitSentencesRegex by lazy { Pattern.compile("[。？?！!;；]") }
 
-    fun formattedDate(): String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+    fun formattedDate(): String =
+        SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
 
 
     /**
@@ -85,4 +86,20 @@ fun String.lengthOfChinese(): Int {
  */
 fun String.toHtmlBold(): String {
     return "<b>$this</b>"
+}
+
+fun String.toHtmlItalic(): String {
+    return "<i>$this</i>"
+}
+
+fun String.toHtmlSmall(): String {
+    return "<small>$this</small>"
+}
+
+fun String.appendHtmlBr(count: Int = 1): String {
+    val strBuilder = StringBuilder(this)
+    for (i in (1..count)) {
+        strBuilder.append("<br>")
+    }
+    return strBuilder.toString()
 }

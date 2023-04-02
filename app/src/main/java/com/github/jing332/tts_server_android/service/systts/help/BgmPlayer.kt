@@ -29,6 +29,7 @@ class BgmPlayer(val context: Context) {
 
                 override fun onPlayerError(error: PlaybackException) {
                     super.onPlayerError(error)
+
                     removeMediaItem(currentMediaItemIndex)
                     seekToNextMediaItem()
                     prepare()
@@ -44,7 +45,7 @@ class BgmPlayer(val context: Context) {
         exoPlayer.release()
     }
 
-    fun stop() {
+    fun pause() {
         Log.d(TAG, "stop()...")
         runOnUI { exoPlayer.pause() }
     }
@@ -52,6 +53,10 @@ class BgmPlayer(val context: Context) {
     fun play() {
         Log.d(TAG, "play()...")
         runOnUI {
+//            exoPlayer.currentMediaItem?.localConfiguration?.tag?.let { tag ->
+//                if (tag is Float)
+//                    exoPlayer.volume = tag
+//            }
             if (!exoPlayer.isPlaying) exoPlayer.play()
         }
     }

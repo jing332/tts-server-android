@@ -6,7 +6,7 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup
-import com.github.jing332.tts_server_android.model.tts.BaseTTS
+import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
@@ -34,11 +34,11 @@ data class SystemTts(
     @ColumnInfo(defaultValue = "0")
     var isStandby: Boolean = false,
 
-    //朗读目标
+    // 朗读目标
     @ReadAloudTarget
     var readAloudTarget: Int = ReadAloudTarget.ALL,
 
-    var tts: BaseTTS,
+    var tts: ITextToSpeechEngine,
 
     // 索引 排序用
     @ColumnInfo(defaultValue = "0")
@@ -77,13 +77,13 @@ data class SystemTts(
         }
 
         @TypeConverter
-        fun ttsToString(tts: BaseTTS): String {
+        fun ttsToString(tts: ITextToSpeechEngine): String {
             return json.encodeToString(tts)
         }
 
         @TypeConverter
-        fun stringToTts(json: String?): BaseTTS {
-            return decodeFromString<BaseTTS>(json).run { this ?: MsTTS() }
+        fun stringToTts(json: String?): ITextToSpeechEngine {
+            return decodeFromString<ITextToSpeechEngine>(json).run { this ?: MsTTS() }
         }
     }
 }
