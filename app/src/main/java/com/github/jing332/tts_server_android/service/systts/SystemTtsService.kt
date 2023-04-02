@@ -329,7 +329,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     }
 
 
-    override fun onStartRequest(text: String, tts: ITextToSpeechEngine) {
+    override fun onRequestStarted(text: String, tts: ITextToSpeechEngine) {
         logD(
             "<br>" + getString(
                 R.string.systts_log_request_audio,
@@ -360,25 +360,26 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         }
     }
 
-//
-//    override fun onRequestSuccess(text: String?, size: Int, costTime: Int, retryNum: Int) {
-//        if (App.isSysTtsLogEnabled)
-//            text?.let {
-//                sendLog(
-//                    LogLevel.INFO,
-//                    getString(
-//                        R.string.systts_log_success,
-//                        "<b>${(size / 1024)}kb</b>",
-//                        "<b>${costTime}ms</b>"
-//                    )
-//                )
-//            }
-//        // 重试成功
-//        if (retryNum > 1) updateNotification(
-//            getString(R.string.systts_state_synthesizing),
-//            mCurrentText
-//        )
-//    }
+    override fun onRequestSuccess(
+        text: String,
+        tts: ITextToSpeechEngine,
+        size: Int,
+        costTime: Long,
+        retryTimes: Int
+    ) {
+        logI(
+            getString(
+                R.string.systts_log_success,
+                "<b>${(size / 1024)}kb</b>",
+                "<b>${costTime}ms</b>"
+            )
+        )
+        // 重试成功
+        if (retryTimes > 0) updateNotification(
+            getString(R.string.systts_state_synthesizing),
+            mCurrentText
+        )
+    }
 //
 //    override fun onError(errCode: Int, speakText: String?, reason: String?) {
 //        if (!App.isSysTtsLogEnabled) return

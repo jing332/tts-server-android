@@ -1,3 +1,4 @@
+/*
 package com.github.jing332.tts_server_android.model.speech
 
 import kotlinx.coroutines.Dispatchers
@@ -9,9 +10,11 @@ import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
 
 abstract class ITextToSpeechAdapter<T> {
-    /**
+    */
+/**
      * @param onCatch return 是否继续重试
-     */
+     *//*
+
     suspend fun <T> retry(
         times: Int = 3,
         initialDelayMillis: Long = 500,
@@ -75,4 +78,4 @@ abstract class ITextToSpeechAdapter<T> {
     )
 
     data class TextWithTTS<T>(val tts: T, val text: String)
-}
+}*/
