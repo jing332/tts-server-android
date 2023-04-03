@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.readrule
+package com.github.jing332.tts_server_android.ui.systts.read_rule
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -7,10 +7,6 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuCompat
-import androidx.core.view.MenuItemCompat
-import androidx.core.view.forEach
-import androidx.core.view.forEachIndexed
-import androidx.core.view.size
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.ReadRule

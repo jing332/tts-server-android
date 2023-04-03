@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.readrule
+package com.github.jing332.tts_server_android.ui.systts.read_rule
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.registerForActivityResult
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.lifecycle.lifecycleScope
 import com.drake.brv.BindingAdapter
@@ -19,7 +18,6 @@ import com.github.jing332.tts_server_android.data.entities.ReadRule
 import com.github.jing332.tts_server_android.databinding.SysttsReadRuleItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsReadRuleManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
-import com.github.jing332.tts_server_android.ui.systts.plugin.PluginModel
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import kotlinx.coroutines.flow.conflate

@@ -205,13 +205,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         audioFormat = if (isMultiVoice) {
             mReadRuleHelper.init(context, appDb.readRuleDao.all[0])
 
-//            if (initConfig(ReadAloudTarget.ASIDE))
-//                context.toast(R.string.systts_warn_no_ra_aside)
-//            if (initConfig(ReadAloudTarget.DIALOGUE))
-//                context.toast(R.string.systts_warn_no_ra_dialogue)
-
             initConfig(ReadAloudTarget.CUSTOM_TAG)
-
             configMap[ReadAloudTarget.CUSTOM_TAG]!![0].audioFormat
         } else {
             if (initConfig(ReadAloudTarget.ALL))

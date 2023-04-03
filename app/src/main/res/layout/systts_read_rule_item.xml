@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.github.jing332.tts_server_android.ui.systts.readrule.ReadRuleModel" />
+            type="com.github.jing332.tts_server_android.ui.systts.read_rule.ReadRuleModel" />
     </data>
 
     <FrameLayout

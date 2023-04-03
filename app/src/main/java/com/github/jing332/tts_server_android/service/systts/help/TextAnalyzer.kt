@@ -67,7 +67,7 @@ object TextAnalyzer {
     }
 }
 
-data class ResultTextTag(val text: String, val isDialogue: Boolean)
+data class ResultTextTag(var text: String, var isDialogue: Boolean)
 data class ResultMultiVoiceData(
     val tts: ITextToSpeechEngine, val speakText: String, val isDialogue: Boolean,
 )

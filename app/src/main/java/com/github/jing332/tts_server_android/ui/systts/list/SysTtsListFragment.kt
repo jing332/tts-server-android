@@ -31,7 +31,7 @@ import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
-import com.github.jing332.tts_server_android.ui.systts.directupload.DirectUploadSettingsActivity
+import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
@@ -39,8 +39,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditAc
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
-import com.github.jing332.tts_server_android.ui.systts.readrule.ReadRuleManagerActivity
-import com.github.jing332.tts_server_android.ui.systts.readrule.ReadRuleModel
+import com.github.jing332.tts_server_android.ui.systts.read_rule.ReadRuleManagerActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.*

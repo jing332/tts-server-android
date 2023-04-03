@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.readrule
+package com.github.jing332.tts_server_android.ui.systts.read_rule
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
