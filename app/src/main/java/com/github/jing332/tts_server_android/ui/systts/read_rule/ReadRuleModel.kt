@@ -8,6 +8,8 @@ data class ReadRuleModel(
     val data: ReadRule,
     override var itemOrientationDrag: Int = ItemOrientation.VERTICAL
 ) : ItemDrag {
+    val isEnabled: Boolean get() = data.isEnabled
+
     val title: String
         get() = data.name
 

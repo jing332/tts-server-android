@@ -4,58 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <group android:id="@+id/group1">
-        <item
-            android:id="@+id/menu_debug"
-            android:icon="@drawable/ic_baseline_bug_report_24"
-            android:title="@string/debug"
-            app:showAsAction="always" />
 
         <item
-            android:id="@+id/menu_save"
-            android:icon="@drawable/ic_baseline_save_24"
-            android:title="@string/save"
-            app:showAsAction="always"
-            tools:ignore="AlwaysShowAction" />
-
-        <item
-            android:id="@+id/menu_params"
+            android:id="@+id/menu_preview_ui"
             android:icon="@drawable/ic_baseline_settings_24"
             android:title="@string/plugin_preview_ui" />
 
         <item
             android:id="@+id/menu_set_sample_text"
-            android:title="@string/set_sample_text_param"
             android:icon="@drawable/ic_baseline_text_fields_24"
+            android:title="@string/set_sample_text_param"
             app:iconTint="?attr/colorOnBackground" />
 
-        <item
-            android:id="@+id/menu_save_as_file"
-            android:icon="@drawable/ic_baseline_insert_drive_file_24"
-            android:title="@string/save_as_file" />
-
-        <item
-            android:id="@+id/menu_remote_sync"
-            android:checkable="true"
-            android:icon="@drawable/baseline_settings_remote_24"
-            android:title="@string/remote_sync_service" />
-
-        <item
-            android:id="@+id/menu_clear_cache"
-            android:icon="@drawable/ic_clear"
-            android:title="@string/clear_plugin_cache"
-            app:iconTint="?attr/colorOnBackground" />
     </group>
 
-    <group android:id="@id/group2">
-        <item
-            android:id="@+id/menu_theme"
-            android:icon="@drawable/baseline_color_lens_24"
-            android:title="@string/theme" />
-        <item
-            android:id="@+id/menu_word_wrap"
-            android:checkable="true"
-            android:icon="@drawable/baseline_subdirectory_arrow_left_24"
-            android:title="@string/word_wrap" />
 
-    </group>
 </menu>

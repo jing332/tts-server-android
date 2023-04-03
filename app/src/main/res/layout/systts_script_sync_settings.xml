@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.systts.plugin.PluginEditActivity">
+    tools:context=".ui.systts.plugin.PluginEditorActivity">
 
     <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/sw"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
-        android:text="@string/plugin_sync_service_tip"
+        android:text="@string/script_sync_service_tip"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceSubtitle2" />
 

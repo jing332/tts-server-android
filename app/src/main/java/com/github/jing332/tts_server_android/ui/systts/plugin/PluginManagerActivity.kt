@@ -24,9 +24,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBin
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
-import com.github.jing332.tts_server_android.ui.systts.replace.GroupModel
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
-import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import kotlinx.coroutines.flow.conflate
@@ -64,7 +62,7 @@ class PluginManagerActivity : BackActivity() {
                         startForResult.launch(
                             Intent(
                                 this@PluginManagerActivity,
-                                PluginEditActivity::class.java
+                                PluginEditorActivity::class.java
                             ).apply { putExtra(KeyConst.KEY_DATA, getModel<PluginModel>().data) })
                     }
                     cbSwitch.setOnClickListener {
@@ -117,7 +115,7 @@ class PluginManagerActivity : BackActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_add -> {
-                startForResult.launch(Intent(this, PluginEditActivity::class.java))
+                startForResult.launch(Intent(this, PluginEditorActivity::class.java))
             }
 
             R.id.menu_shortcut -> {

@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.ui.systts.read_rule
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -11,7 +12,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.ReadRule
 import com.github.jing332.tts_server_android.help.config.ReadRuleConfig
-import com.github.jing332.tts_server_android.ui.systts.BaseScriptEditorActivity
+import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
@@ -20,6 +21,7 @@ import com.github.jing332.tts_server_android.util.observeNoSticky
 class ReadRuleEditorActivity : BaseScriptEditorActivity() {
     private val vm: ReadRuleEditorViewModel by viewModels()
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,7 +36,7 @@ class ReadRuleEditorActivity : BaseScriptEditorActivity() {
             editor.setText(it)
         }
 
-        val rule = intent.getParcelableExtra<ReadRule>(KeyConst.KEY_DATA) ?: ReadRule()
+        val rule = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: ReadRule()
         vm.init(rule, assets.open("defaultData/read_rule.js").readAllText())
     }
 
@@ -42,34 +44,36 @@ class ReadRuleEditorActivity : BaseScriptEditorActivity() {
         vm.code = code
     }
 
-    override fun clearPluginCache(): Boolean = true
+    override fun clearCacheFile(): Boolean = true
 
     override fun onSaveAsFile(): String = ""
 
-
-    override fun onSave(): Boolean {
-        return vm.evalRuleInfo()
+    override fun onSave(): Parcelable? {
+        return if (vm.evalRuleInfo())
+            vm.readRule
+        else null
     }
-
-    override fun getResultData() = vm.readRule
 
     override fun getLogger() = vm.logger
     override fun onDebug() {
         vm.debug(ReadRuleConfig.textParam)
     }
 
+
+    override fun onScriptSyncAction(name: String, body: ByteArray?) {}
+    override fun onScriptSyncPush() {}
+
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         return super.onCreateOptionsMenu(menu).apply {
-            (menu as MenuBuilder).setOptionalIconsVisible(true)
-            MenuCompat.setGroupDividerEnabled(menu, true)
             menuInflater.inflate(R.menu.systts_read_rule_editor, menu)
         }
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_params -> {
+            R.id.menu_preview_ui -> {
                 AppDialogs.displayInputDialog(
                     this,
                     getString(R.string.set_sample_text_param),

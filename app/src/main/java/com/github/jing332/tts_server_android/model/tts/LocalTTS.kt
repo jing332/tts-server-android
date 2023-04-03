@@ -259,7 +259,7 @@ data class LocalTTS(
     }
 
 
-    override suspend fun getAudio(speakText: String, sysRate: Int, sysPitch: Int): ByteArray? {
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
         return getAudioFile(speakText).run { if (exists()) readBytes() else null }
     }
 

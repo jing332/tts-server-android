@@ -49,7 +49,7 @@
             android:exported="false"
             android:label="@string/exo_player_title" />
         <activity
-            android:name=".ui.systts.plugin.PluginEditActivity"
+            android:name=".ui.systts.plugin.PluginEditorActivity"
             android:exported="false"
             android:label=""
             android:theme="@style/Theme.TtsServer.NoActionBar" />

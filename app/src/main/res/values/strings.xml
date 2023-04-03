@@ -328,7 +328,7 @@
     <string name="remote_sync_service">Remote sync service</string>
     <string name="clear_plugin_cache">Clear plugin cache</string>
     <string name="listen_port">Listen port</string>
-    <string name="plugin_sync_service_tip">Code synchronization service makes it easy to edit and update plugin code on the PC side for debugging purposes. \n⚠️The settings will take effect after the editor is restarted.
+    <string name="script_sync_service_tip">Code synchronization service makes it easy to edit and update plugin code on the PC side for debugging purposes. \n⚠️The settings will take effect after the editor is restarted.
 </string>
     <string name="learn_more">Learn more</string>
     <string name="systts_bgm_description">Volume:%1$s</string>

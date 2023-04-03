@@ -1,16 +1,26 @@
-package com.github.jing332.tts_server_android.ui.systts
+package com.github.jing332.tts_server_android.ui.systts.base
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.FrameLayout
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.viewModels
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.view.MenuCompat
+import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.databinding.SysttsBaseScriptEditorActivityBinding
-import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.databinding.SysttsScriptSyncSettingsBinding
 import com.github.jing332.tts_server_android.help.config.PluginConfig
+import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -20,11 +30,16 @@ import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.rosemoe.sora.widget.CodeEditor
-import kotlinx.parcelize.Parcelize
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 abstract class BaseScriptEditorActivity : BackActivity() {
     private lateinit var mEditorHelper: CodeEditorHelper
     private val baseBinding by lazy { SysttsBaseScriptEditorActivityBinding.inflate(layoutInflater) }
+    private val vm: BaseScriptEditorViewModel by viewModels()
+
+    private var savedData: ByteArray? = null
+    private lateinit var fileSaver: ActivityResultLauncher<String>
 
     val editor: CodeEditor by lazy { baseBinding.editor }
 
@@ -32,43 +47,59 @@ abstract class BaseScriptEditorActivity : BackActivity() {
         super.onCreate(savedInstanceState)
         setContentView(baseBinding.root)
 
+        fileSaver = FileUtils.registerResultCreateDocument(this, "text/javascript") { savedData }
+
         mEditorHelper = CodeEditorHelper(this, baseBinding.editor)
         mEditorHelper.initEditor()
-        mEditorHelper.setTheme(AppConfig.codeEditorTheme)
+        mEditorHelper.setTheme(ScriptEditorConfig.codeEditorTheme)
 
-        /*  if (PluginConfig.isRemoteSyncEnabled) {
-              lifecycleScope.launch(Dispatchers.IO) {
-                  kotlin.runCatching {
-                      vm.startSyncServer(
-                          onPush = {
-                              App.localBroadcast.sendBroadcast(Intent(PluginTtsEditActivity.ACTION_FINISH))
-                              baseBinding.editor.setText(it)
-                          },
-                          onPull = { baseBinding.editor.text.toString() }, onDebug = { debug() },
-                          onUI = { previewUi() }
-                      )
-                  }.onFailure {
-                      this@PluginEditActivity.displayErrorDialog(it)
-                  }
-              }
-          }*/
+        if (ScriptEditorConfig.isRemoteSyncEnabled) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                kotlin.runCatching {
+                    vm.startSyncServer(
+                        ScriptEditorConfig.remoteSyncPort,
+                        onPush = {
+                            baseBinding.editor.setText(it)
+                            updateCode(it)
+                            onScriptSyncPush()
+                        },
+                        onPull = { baseBinding.editor.text.toString() },
+                        onDebug = { onDebug() },
+                        onAction = { name, body -> onScriptSyncAction(name, body) }
+                    )
+                }.onFailure {
+                    displayErrorDialog(it)
+                }
+            }
+        }
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.systts_base_script_editor, menu)
+        (menu as MenuBuilder).setOptionalIconsVisible(true)
+        MenuCompat.setGroupDividerEnabled(menu, true)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.apply {
-            findItem(R.id.menu_word_wrap)?.isChecked = AppConfig.isCodeEditorWordWrapEnabled
-            findItem(R.id.menu_remote_sync)?.isChecked = PluginConfig.isRemoteSyncEnabled
+            findItem(R.id.menu_word_wrap)?.isChecked =
+                ScriptEditorConfig.isCodeEditorWordWrapEnabled
+            findItem(R.id.menu_remote_sync)?.isChecked = ScriptEditorConfig.isRemoteSyncEnabled
         }
         return super.onPrepareOptionsMenu(menu)
     }
 
+    abstract fun onScriptSyncAction(name: String, body: ByteArray?)
+    abstract fun onScriptSyncPush()
+
+    /**
+     * 保存和Debug前调用
+     * @param code 编辑器View的代码文本
+     */
     abstract fun updateCode(code: String)
-    abstract fun clearPluginCache(): Boolean
+    abstract fun clearCacheFile(): Boolean
 
     /**
      * @return 文件名
@@ -76,58 +107,55 @@ abstract class BaseScriptEditorActivity : BackActivity() {
     abstract fun onSaveAsFile(): String
 
     /**
-     * @return 是否保存
+     * 保存按钮
      */
-    abstract fun onSave(): Boolean
-
-    private var savedData: ByteArray? = null
-    private val fileSaver =
-        FileUtils.registerResultCreateDocument(this, "text/javascript") { savedData }
+    abstract fun onSave(): Parcelable?
 
     private fun saveAsFile() {
         savedData = editor.text.toString().toByteArray()
         fileSaver.launch(onSaveAsFile())
     }
 
+    @Suppress("DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        updateCode(baseBinding.editor.text.toString())
         when (item.itemId) {
             R.id.menu_clear_cache -> {
-                if (clearPluginCache()) longToast(R.string.cleared)
+                if (clearCacheFile()) longToast(R.string.cleared)
             }
 
-            /* R.id.menu_remote_sync -> {
-                 val view = FrameLayout(this)
-                 val viewbaseBinding =
-                     SysttsPluginSyncSettingsbaseBinding.inflate(layoutInflater, view, true)
-                 viewbaseBinding.apply {
-                     tvTip.text =
-                         Html.fromHtml(getString(R.string.plugin_sync_service_tip))
+            R.id.menu_remote_sync -> {
+                val view = FrameLayout(this)
+                val syncBinding =
+                    SysttsScriptSyncSettingsBinding.inflate(layoutInflater, view, true)
+                syncBinding.apply {
+                    tvTip.text =
+                        Html.fromHtml(getString(R.string.script_sync_service_tip))
 
-                     sw.isChecked = PluginConfig.isRemoteSyncEnabled
-                     tilPort.editText!!.setText(PluginConfig.remoteSyncPort.toString())
-                 }
+                    sw.isChecked = ScriptEditorConfig.isRemoteSyncEnabled
+                    tilPort.editText!!.setText(ScriptEditorConfig.remoteSyncPort.toString())
+                }
 
-                 MaterialAlertDialogBuilder(this)
-                     .setView(view)
-                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                         PluginConfig.isRemoteSyncEnabled = viewbaseBinding.sw.isChecked
-                         PluginConfig.remoteSyncPort =
-                             viewbaseBinding.tilPort.editText!!.text.toString().toInt()
-                     }
-                     .setNegativeButton(R.string.cancel, null)
-                     .setNeutralButton(R.string.learn_more) { _, _ ->
-                         val url = "https://github.com/jing332/tts-server-psc"
-                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                         startActivity(intent)
-                     }
-                     .show()
+                MaterialAlertDialogBuilder(this)
+                    .setView(view)
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        ScriptEditorConfig.isRemoteSyncEnabled = syncBinding.sw.isChecked
+                        ScriptEditorConfig.remoteSyncPort =
+                            syncBinding.tilPort.editText!!.text.toString().toInt()
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .setNeutralButton(R.string.learn_more) { _, _ ->
+                        val url = "https://github.com/jing332/tts-server-psc"
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        startActivity(intent)
+                    }
+                    .show()
 
-             }*/
+            }
 
             R.id.menu_word_wrap -> {
-                AppConfig.isCodeEditorWordWrapEnabled = !AppConfig.isCodeEditorWordWrapEnabled
-                baseBinding.editor.isWordwrap = AppConfig.isCodeEditorWordWrapEnabled
+                ScriptEditorConfig.isCodeEditorWordWrapEnabled =
+                    !ScriptEditorConfig.isCodeEditorWordWrapEnabled
+                baseBinding.editor.isWordwrap = ScriptEditorConfig.isCodeEditorWordWrapEnabled
             }
 
             R.id.menu_theme -> {
@@ -143,9 +171,9 @@ abstract class BaseScriptEditorActivity : BackActivity() {
                     .setTitle(R.string.theme)
                     .setSingleChoiceItems(
                         items.toTypedArray(),
-                        AppConfig.codeEditorTheme
+                        ScriptEditorConfig.codeEditorTheme
                     ) { dlg, which ->
-                        AppConfig.codeEditorTheme = which
+                        ScriptEditorConfig.codeEditorTheme = which
                         mEditorHelper.setTheme(which)
                         dlg.dismiss()
                     }
@@ -166,11 +194,12 @@ abstract class BaseScriptEditorActivity : BackActivity() {
 
             R.id.menu_save_as_file -> saveAsFile()
             R.id.menu_save -> {
+                updateCode(baseBinding.editor.text.toString())
                 kotlin.runCatching {
-                    if (onSave()) {
+                    onSave()?.let { data ->
                         setResult(
                             RESULT_OK,
-                            Intent().apply { putExtra(KeyConst.KEY_DATA, getResultData()) })
+                            Intent().apply { putExtra(KeyConst.KEY_DATA, data) })
                         finish()
                     }
                 }.onFailure {
@@ -179,6 +208,7 @@ abstract class BaseScriptEditorActivity : BackActivity() {
             }
 
             R.id.menu_debug -> {
+                updateCode(baseBinding.editor.text.toString())
                 onDebug()
                 return true
             }
@@ -187,7 +217,6 @@ abstract class BaseScriptEditorActivity : BackActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    abstract fun getResultData(): Parcelable
     abstract fun getLogger(): Logger
     abstract fun onDebug()
 

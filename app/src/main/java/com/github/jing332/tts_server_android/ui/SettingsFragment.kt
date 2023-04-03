@@ -17,6 +17,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.util.dp
 import com.github.jing332.tts_server_android.util.longToast
@@ -101,11 +102,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         )
         editorTheme.entries = themes.values.toTypedArray()
         editorTheme.entryValues = themes.keys.map { it.toString() }.toTypedArray()
-        editorTheme.setValueIndexNoException(AppConfig.codeEditorTheme)
-        editorTheme.summary = themes[AppConfig.codeEditorTheme]
+        editorTheme.setValueIndexNoException(ScriptEditorConfig.codeEditorTheme)
+        editorTheme.summary = themes[ScriptEditorConfig.codeEditorTheme]
         editorTheme.setOnPreferenceChangeListener { _, newValue ->
-            AppConfig.codeEditorTheme = newValue.toString().toInt()
-            editorTheme.setValueIndexNoException(AppConfig.codeEditorTheme)
+            ScriptEditorConfig.codeEditorTheme = newValue.toString().toInt()
+            editorTheme.setValueIndexNoException(ScriptEditorConfig.codeEditorTheme)
             true
         }
 

@@ -2,67 +2,58 @@ package com.github.jing332.tts_server_android.ui.systts.direct_upload
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.SysttsDirectUploadSettingsActivityBinding
-import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.DirectUploadConfig
+import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.rhino.directupload.DirectUploadEngine
-import com.github.jing332.tts_server_android.ui.base.BackActivity
-import com.github.jing332.tts_server_android.ui.systts.LoggerBottomSheetFragment
+import com.github.jing332.tts_server_android.ui.systts.base.LoggerBottomSheetFragment
+import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
-import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
 import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.runOnIO
 
-class DirectUploadSettingsActivity : BackActivity() {
-    private val binding by lazy { SysttsDirectUploadSettingsActivityBinding.inflate(layoutInflater) }
-
+class DirectUploadSettingsActivity : BaseScriptEditorActivity() {
     private val directUploadEngine by lazy { DirectUploadEngine(context = this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
 
-        binding.editor.setText(DirectUploadConfig.code)
-        binding.editor.isWordwrap = AppConfig.isCodeEditorWordWrapEnabled
-        val editorHelper = CodeEditorHelper(this, binding.editor)
-        editorHelper.initEditor()
-        editorHelper.setTheme(AppConfig.codeEditorTheme)
+        editor.setText(DirectUploadConfig.code)
     }
 
-    @SuppressLint("RestrictedApi")
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.direct_upload_settings, menu)
-        if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
-        return super.onCreateOptionsMenu(menu)
+    override fun onScriptSyncAction(name: String, body: ByteArray?) {
+
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_save -> {
-                DirectUploadConfig.code = binding.editor.text.toString()
-                finish()
-                true
-            }
+    override fun onScriptSyncPush() {
 
-            R.id.menu_debug -> {
-                debug()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
-    private fun debug() {
-        directUploadEngine.code = binding.editor.text.toString()
+    override fun updateCode(code: String) {
+        directUploadEngine.code = code
+    }
 
+    override fun clearCacheFile(): Boolean {
+        return false
+    }
+
+    override fun onSaveAsFile(): String = "ttsrv-directLinkUpload.js"
+
+    override fun onSave(): Parcelable? {
+        DirectUploadConfig.code = editor.text.toString()
+        finish()
+        return null
+    }
+
+    override fun getLogger(): Logger = directUploadEngine.logger
+
+    override fun onDebug() {
         val funcList = try {
             directUploadEngine.obtainFunctionList()
         } catch (t: Throwable) {
@@ -95,5 +86,7 @@ class DirectUploadSettingsActivity : BackActivity() {
             }
             show()
         }
+
     }
+
 }

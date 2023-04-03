@@ -33,7 +33,4 @@ object AppConfig : KotprefModel() {
         }
 
     var fragmentIndex by intPref(0)
-
-    var codeEditorTheme by intPref(CodeEditorTheme.AUTO)
-    var isCodeEditorWordWrapEnabled by booleanPref(false)
 }

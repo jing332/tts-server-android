@@ -4,24 +4,24 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io"
 	"time"
-	"tts-server-lib/plugin_sync_server"
+	"tts-server-lib/sync_server"
 	"tts-server-lib/wrapper"
 )
 
-type PluginCodeSyncServerCallback interface {
+type ScriptCodeSyncServerCallback interface {
 	Log(level int32, msg string)
 	Push(code string)
 	Pull() (string, error)
-	Debug()
-	UI()
+
+	Action(name string, body []byte)
 }
 
-type PluginSyncServer struct {
-	server   plugin_sync_server.PluginCodeSyncServer
-	callback PluginCodeSyncServerCallback
+type ScriptSyncServer struct {
+	server   sync_server.ScriptCodeSyncServer
+	callback ScriptCodeSyncServerCallback
 }
 
-func (p *PluginSyncServer) Init(cb PluginCodeSyncServerCallback) {
+func (p *ScriptSyncServer) Init(cb ScriptCodeSyncServerCallback) {
 	p.callback = cb
 	p.server.Log = log.New()
 	p.server.Log.Out = io.Discard
@@ -33,14 +33,14 @@ func (p *PluginSyncServer) Init(cb PluginCodeSyncServerCallback) {
 
 	p.server.OnPush = cb.Push
 	p.server.OnPull = cb.Pull
-	p.server.OnDebug = cb.Debug
-	p.server.OnUi = cb.UI
+
+	p.server.OnAction = cb.Action
 }
 
-func (p *PluginSyncServer) Start(port int64) error {
+func (p *ScriptSyncServer) Start(port int64) error {
 	return p.server.Start(port)
 }
 
-func (p *PluginSyncServer) Close() error {
+func (p *ScriptSyncServer) Close() error {
 	return p.server.Close(time.Second * 5)
 }

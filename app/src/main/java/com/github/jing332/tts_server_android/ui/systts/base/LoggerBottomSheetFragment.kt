@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts
+package com.github.jing332.tts_server_android.ui.systts.base
 
 
 import android.os.Bundle
