@@ -39,6 +39,8 @@ import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditAc
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
+import com.github.jing332.tts_server_android.ui.systts.readrule.ReadRuleManagerActivity
+import com.github.jing332.tts_server_android.ui.systts.readrule.ReadRuleModel
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.*
@@ -174,6 +176,11 @@ class SysTtsListFragment : Fragment() {
                 R.id.menu_switch_multi_voice -> {
                     SysTtsConfig.isMultiVoiceEnabled = !SysTtsConfig.isMultiVoiceEnabled
                     SystemTtsService.notifyUpdateConfig()
+                    true
+                }
+
+                R.id.menu_read_rule_manager -> {
+                    startActivity(Intent(requireContext(), ReadRuleManagerActivity::class.java))
                     true
                 }
 

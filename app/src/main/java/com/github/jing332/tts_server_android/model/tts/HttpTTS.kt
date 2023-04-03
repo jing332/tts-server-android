@@ -120,7 +120,7 @@ data class HttpTTS(
         }
     }
 
-    override suspend fun getAudio(speakText: String, sysRate: Int, sysPitch: Int): ByteArray? {
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
         val resp = getAudioResponse(speakText)
         val body = resp.body?.bytes()
         if (resp.code != 200) throw Throwable("${resp.message}, ${body.contentToString()}")

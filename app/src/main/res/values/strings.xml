@@ -344,5 +344,8 @@
     <string name="systts_drag_tip_msg">Long press the checkbox to drag and drop</string>
     <string name="code_editor">Code editor</string>
     <string name="check_update_summary">Check for updates when you open the main interface</string>
+    <string name="edit_read_rule">编辑朗读规则</string>
+    <string name="read_rule_manager">朗读规则管理</string>
+    <string name="tag">标签</string>
 
 </resources>

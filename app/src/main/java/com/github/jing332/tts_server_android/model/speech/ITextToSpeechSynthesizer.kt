@@ -29,20 +29,11 @@ abstract class ITextToSpeechSynthesizer<T> {
         return null
     }
 
-    open fun load() {
+    open fun load() {}
+    open fun stop() {}
+    open fun destroy() {}
 
-    }
-
-    open fun stop() {
-
-    }
-
-    open fun destroy() {
-    }
-
-    open suspend fun handleText(text: String): List<TtsText<T>> {
-        return emptyList()
-    }
+    open suspend fun handleText(text: String): List<TtsText<T>> = emptyList()
 
     open suspend fun getAudio(tts: T, text: String, sysRate: Int, sysPitch: Int): ByteArray? = null
 
@@ -88,5 +79,4 @@ abstract class ITextToSpeechSynthesizer<T> {
         val isCancelled: Boolean = false
     )
 
-    data class TtsText<T>(val tts: T, val text: String)
 }

@@ -5,7 +5,13 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 
-@IntDef(ReadAloudTarget.ALL, ReadAloudTarget.ASIDE, ReadAloudTarget.DIALOGUE, ReadAloudTarget.BGM)
+@IntDef(
+    ReadAloudTarget.ALL,
+    ReadAloudTarget.ASIDE,
+    ReadAloudTarget.DIALOGUE,
+    ReadAloudTarget.BGM,
+    ReadAloudTarget.CUSTOM_TAG
+)
 @Retention(AnnotationRetention.SOURCE)
 annotation class ReadAloudTarget {
     companion object {
@@ -13,6 +19,7 @@ annotation class ReadAloudTarget {
         const val ASIDE = 1 //旁白
         const val DIALOGUE = 2 //对话
         const val BGM = 3 //背景音乐
+        const val CUSTOM_TAG = 4 // 自定义Tag
 
         fun toText(@ReadAloudTarget target: Int): String {
             return when (target) {

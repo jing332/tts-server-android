@@ -4,14 +4,16 @@ import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
 
 open class BaseScriptEngine(
-    open val rhino: RhinoScriptEngine,
+    open val rhino: RhinoScriptEngine = RhinoScriptEngine(),
     open val ttsrvObject: BaseScriptEngineContext,
-    open var code: String,
+    open var code: String = "",
     open val logger: Logger = Logger.global,
 ) {
     companion object {
         const val OBJ_TTSRV = "ttsrv"
         const val OBJ_LOGGER = "logger"
+
+
     }
 
     open fun findObject(name: String): NativeObject {

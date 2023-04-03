@@ -98,21 +98,15 @@ sealed class ITextToSpeechEngine(
     /**
      * 开始播放 用于本地TTS的直接播放
      */
-    open suspend fun startPlay(text: String, sysRate: Int = 0, sysPitch: Int = 0): Boolean = false
+    open suspend fun startPlay(text: String, rate: Int = 0, pitch: Int = 0): Boolean = false
 
     /**
      * 完整获取音频
+     * @param rate 语速 已经根据是否随系统
+     * @param pitch 音高 已经根据是否随系统
      */
-    open suspend fun getAudio(speakText: String, sysRate: Int = 0, sysPitch: Int = 0): ByteArray? =
+    open suspend fun getAudio(speakText: String, rate: Int = 0, pitch: Int = 0): ByteArray? =
         null
-
-    fun rateWithFollow(sysRate: Int): Int {
-        return if (isRateFollowSystem()) sysRate else rate
-    }
-
-    fun pitchWithFollow(sysPitch: Int): Int {
-        return if (isPitchFollowSystem()) sysPitch else pitch
-    }
 
     /**
      * 获取PCM音频流

@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
@@ -24,6 +26,7 @@ import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 
@@ -48,10 +51,12 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             field = value
             mData?.apply { readAloudTarget = field }
 
+            binding.tilCustomTag.isVisible = value == ReadAloudTarget.CUSTOM_TAG
             binding.btnGroupRaTarget.check(
                 when (value) {
                     ReadAloudTarget.ASIDE -> R.id.btn_aside
                     ReadAloudTarget.DIALOGUE -> R.id.btn_dialogue
+                    ReadAloudTarget.CUSTOM_TAG -> R.id.btn_custom_tag
                     else -> R.id.btn_ra_all
                 }
             )
@@ -63,8 +68,17 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             binding.displayName = value
         }
 
+
     val currentGroup: SystemTtsGroup
         get() = binding.groupItems!![binding.groupCurrentPosition].value as SystemTtsGroup
+
+    @Suppress("UNCHECKED_CAST")
+    val currentTag: Map.Entry<String, String>
+        get() {
+            binding.tagItems!![binding.tagCurrentPosition].let {
+                return it.value as Map.Entry<String, String>
+            }
+        }
 
     private var mData: SystemTts? = null
 
@@ -77,12 +91,18 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             binding.btnSetPlayerParams.isGone = value
         }
 
+
     @OptIn(DelicateCoroutinesApi::class)
     fun setData(data: SystemTts) {
         GlobalScope.runOnIO {
             val groupList = appDb.systemTtsDao.allGroup
             binding.groupItems = groupList.map { SpinnerItem(it.name, it) }
             binding.groupCurrentPosition = groupList.indexOfFirst { it.id == data.groupId }
+
+            appDb.readRuleDao.allEnabled.getOrNull(0)?.tags?.let { tags ->
+                binding.tagItems = tags.map { SpinnerItem("${it.value} (${it.key})", it) }
+                binding.tagCurrentPosition = tags.keys.indexOf(data.customTag)
+            }
         }
 
         this.mData = data
@@ -98,6 +118,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
         }
         return false
     }
+
 
     init {
         binding.apply {
@@ -122,6 +143,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                     val raTarget = when (checkedId) {
                         R.id.btn_aside -> ReadAloudTarget.ASIDE
                         R.id.btn_dialogue -> ReadAloudTarget.DIALOGUE
+                        R.id.btn_custom_tag -> ReadAloudTarget.CUSTOM_TAG
                         else -> ReadAloudTarget.ALL
                     }
                     if (this@BasicInfoEditView.raTarget != raTarget)
@@ -137,6 +159,25 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+            spinnerTag.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    mData?.apply {
+                        customTag = currentTag.key
+                        customTagDisplay = currentTag.value
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    TODO("Not yet implemented")
+                }
+
             }
         }
 

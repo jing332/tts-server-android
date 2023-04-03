@@ -5,7 +5,7 @@ import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.lengthOfChinese
 import kotlin.random.Random
 
-object VoiceTools {
+object TextAnalyzer {
     /* 分割旁白和对白 */
     private fun splitMultiVoice(s: String): List<ResultTextTag> {
         val voiceTagList = mutableListOf<ResultTextTag>()

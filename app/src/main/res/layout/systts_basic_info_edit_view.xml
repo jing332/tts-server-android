@@ -18,6 +18,14 @@
             type="List&lt;SpinnerItem>" />
 
         <variable
+            name="tagCurrentPosition"
+            type="int" />
+
+        <variable
+            name="tagItems"
+            type="List&lt;SpinnerItem>" />
+
+        <variable
             name="displayName"
             type="java.lang.String" />
     </data>
@@ -106,8 +114,34 @@
                     app:icon="@drawable/ic_baseline_supervisor_account_24"
                     tools:ignore="TextContrastCheck" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_custom_tag"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="标签"
+                    app:icon="@drawable/baseline_tag_24"
+                    tools:ignore="TextContrastCheck" />
+
             </com.google.android.material.button.MaterialButtonToggleGroup>
         </HorizontalScrollView>
+
+        <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
+            android:id="@+id/til_custom_tag"
+            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/tag"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinner
+                android:id="@+id/spinner_tag"
+                items="@{tagItems}"
+                selectedPosition="@={tagCurrentPosition}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
         <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
             android:id="@+id/til_group"

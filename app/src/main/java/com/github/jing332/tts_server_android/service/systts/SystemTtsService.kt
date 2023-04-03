@@ -173,8 +173,8 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             synthesizerJob = launch {
                 mTtsManager.textToAudio(
                     text = text,
-                    sysRate = (request!!.speechRate * 100) / 500,
-                    sysPitch = request.pitch,
+                    sysRate = (request!!.speechRate * 100) / 500, // < 100
+                    sysPitch = request.pitch - 100, // 默认0
                 ) {
                     writeToCallBack(callback, it)
                 }

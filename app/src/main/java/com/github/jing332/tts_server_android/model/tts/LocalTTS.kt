@@ -195,7 +195,7 @@ data class LocalTTS(
         return true
     }
 
-    private fun setEnginePlayParams(engine: TextToSpeech): Bundle {
+    private fun setEnginePlayParams(engine: TextToSpeech, rate: Int, pitch: Int): Bundle {
         engine.apply {
             locale?.let { language = Locale.forLanguageTag(it) }
             voiceName?.let { selectedVoice ->
@@ -205,22 +205,25 @@ data class LocalTTS(
                 }
             }
 
-            setPitch(if (pitch <= 0) 1f else pitch / 100f)
             setSpeechRate((rate - 40) / 10f)
+            setPitch(if (pitch <= 0) 1f else pitch / 100f)
             return Bundle().apply {
                 extraParams?.forEach { it.putValueFromBundle(this) }
             }
         }
     }
 
-    override suspend fun startPlay(text: String, sysRate: Int, sysPitch: Int): Boolean {
+    override suspend fun startPlay(text: String, rate: Int, pitch: Int): Boolean {
         initEngineIf()
         return coroutineScope {
             if (!checkInitAndWait()) return@coroutineScope false
 
             waitJob = launch {
                 mTtsEngine?.apply {
-                    speak(text, TextToSpeech.QUEUE_FLUSH, setEnginePlayParams(this), "")
+                    speak(
+                        text, TextToSpeech.QUEUE_FLUSH, setEnginePlayParams(this, rate, pitch),
+                        ""
+                    )
                 }
                 awaitCancellation()
             }.job
@@ -240,7 +243,7 @@ data class LocalTTS(
 
             waitJob = launch {
                 mTtsEngine?.apply {
-                    synthesizeToFile(text, setEnginePlayParams(this), file, currentJobId)
+                    synthesizeToFile(text, setEnginePlayParams(this, rate, pitch), file, currentJobId)
                     // 等待完毕
                     try {
                         awaitCancellation()

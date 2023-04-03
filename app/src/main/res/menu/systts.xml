@@ -69,6 +69,10 @@
     </group>
 
     <item
+        android:id="@+id/menu_read_rule_manager"
+        android:title="朗读规则管理" />
+
+    <item
         android:id="@+id/menu_plugin_manager"
         android:icon="@drawable/ic_plugin"
         android:title="@string/plugin_manager" />

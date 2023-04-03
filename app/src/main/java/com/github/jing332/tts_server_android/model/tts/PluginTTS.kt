@@ -102,11 +102,11 @@ data class PluginTTS(
         pluginEngine.onStop()
     }
 
-    override suspend fun getAudio(speakText: String, sysRate: Int, sysPitch: Int): ByteArray? {
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
         return pluginEngine.getAudio(
             speakText,
-            rateWithFollow(sysRate),
-            pitchWithFollow(sysPitch)
+            rate,
+            pitch
         )
     }
 }

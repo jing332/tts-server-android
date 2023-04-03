@@ -171,19 +171,23 @@ data class MsTTS(
         return s
     }
 
-    override suspend fun getAudio(speakText: String, sysRate: Int, sysPitch: Int): ByteArray? {
-        return SysTtsLib.getAudio(speakText, this, format)
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
+        return SysTtsLib.getAudio(
+            speakText,
+            this.copy(prosody = prosody.copy(rate = rate, pitch = pitch)),
+            format
+        )
     }
 
-    override suspend fun getAudioStream(
-        speakText: String,
-        chunkSize: Int,
-        onData: (ByteArray?) -> Unit
-    ) {
-        SysTtsLib.getAudioStream(speakText, this@MsTTS) {
-            onData(it)
-        }
-    }
+//    override suspend fun getAudioStream(
+//        speakText: String,
+//        chunkSize: Int,
+//        onData: (ByteArray?) -> Unit
+//    ) {
+//        SysTtsLib.getAudioStream(speakText, this@MsTTS) {
+//            onData(it)
+//        }
+//    }
 }
 
 @Serializable

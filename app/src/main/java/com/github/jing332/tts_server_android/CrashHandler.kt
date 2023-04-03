@@ -28,7 +28,10 @@ class CrashHandler(var context: Context) : Thread.UncaughtExceptionHandler {
                 "\n版本代码：${AppConst.appInfo.versionCode}， 版本名称：${AppConst.appInfo.versionName}\n" +
                 "崩溃详情：\n${e.stackTraceToString()}"
         val copyContent: String = try {
-            Tts_server_lib.uploadLog(log)
+            if (BuildConfig.DEBUG)
+                log
+            else
+                Tts_server_lib.uploadLog(log)
         } catch (e: Exception) {
             e.printStackTrace()
             log

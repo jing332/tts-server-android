@@ -33,6 +33,14 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".ui.systts.readrule.ReadRuleManagerActivity"
+            android:label="@string/read_rule_manager"
+            android:exported="true" />
+        <activity
+            android:name=".ui.systts.readrule.ReadRuleEditorActivity"
+            android:label="@string/edit_read_rule"
+            android:exported="false" />
+        <activity
             android:name=".ui.systts.directupload.DirectUploadSettingsActivity"
             android:exported="false"
             android:label="@string/direct_link_settings" />
@@ -49,7 +57,6 @@
             android:name=".ui.systts.plugin.PluginManagerActivity"
             android:exported="true"
             android:label="@string/plugin_manager" />
-
         <activity
             android:name=".ui.systts.edit.plugin.PluginTtsEditActivity"
             android:exported="false"
@@ -70,7 +77,6 @@
         <activity
             android:name=".ui.systts.edit.microsoft.MsTtsEditActivity"
             android:label="@string/title_activity_tts_config_edit" />
-
         <activity
             android:name=".ui.systts.edit.http.HttpTtsEditActivity"
             android:label="@string/systts_http_edit_title" />
@@ -88,7 +94,6 @@
         <activity
             android:name=".ui.systts.replace.ReplaceRuleEditActivity"
             android:label="@string/title_activity_replace_edit" />
-
         <activity
             android:name=".ui.forwarder.ms.ScSwitchActivity"
             android:taskAffinity="sc.switch"

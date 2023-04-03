@@ -9,6 +9,7 @@ import com.github.jing332.tts_server_android.data.entities.AbstractListGroup
 import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -37,6 +38,13 @@ data class SystemTts(
     // 朗读目标
     @ReadAloudTarget
     var readAloudTarget: Int = ReadAloudTarget.ALL,
+
+    @ColumnInfo(defaultValue = "")
+    var customTag: String = "",
+
+    @Transient
+    @ColumnInfo(defaultValue = "")
+    var customTagDisplay: String = "",
 
     var tts: ITextToSpeechEngine,
 

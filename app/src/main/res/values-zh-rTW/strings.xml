@@ -328,4 +328,6 @@
     <string name="systts_drag_tip_msg">长按勾选框即可拖拽</string>
     <string name="code_editor">代码编辑器</string>
     <string name="check_update_summary">打开主界面时检查更新</string>
+    <string name="edit_read_rule">编辑朗读规则</string>
+    <string name="read_rule_manager">朗读规则管理</string>
 </resources>

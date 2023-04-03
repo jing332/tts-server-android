@@ -47,6 +47,15 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
 
     fun init(adapter: BindingAdapter, holder: BindingAdapter.BindingViewHolder) {
         adapter.apply {
+            /*onBind {
+                getModelOrNull<ItemModel>()?.let { model ->
+                    getBindingOrNull<SysttsListItemBinding>().let { binding ->
+                        if (model.data.customTag.isNotEmpty())
+                            binding.tvApiType.setText()
+                    }
+                }
+            }*/
+
             holder.apply {
                 getBindingOrNull<SysttsListItemBinding>()?.apply {
                     checkBoxSwitch.setOnClickListener { view ->
@@ -103,7 +112,6 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                     }
 
                     btnMore.clickWithThrottle { displayMoreOptions(it, getModel<ItemModel>().data) }
-
                     btnMore.setOnLongClickListener {
                         if (AppConfig.isSwapListenAndEditButton) edit(getModel<ItemModel>().data)
                         else listen(getModel<ItemModel>().data)
