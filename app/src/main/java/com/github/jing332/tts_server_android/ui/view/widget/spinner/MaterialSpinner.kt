@@ -54,7 +54,12 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
             updateCurrentPositionText()
         }
 
-    private val listDialog by lazy { MaterialAlertDialogBuilder(context) }
+    private val listDialog by lazy {
+        MaterialAlertDialogBuilder(context).setPositiveButton(
+            R.string.cancel,
+            null
+        )
+    }
 
     override fun showDropDown() {
         requestFocus()
@@ -62,9 +67,10 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
             val adapter =
                 ArrayAdapter<String>(context, android.R.layout.simple_list_item_single_choice)
 
-            val items = getAdapter()!!.items
+            val items = getAdapter()?.items ?: emptyList()
             adapter.addAll(items.map { (it as SpinnerItem).displayText })
             listDialog.setTitle(context.getString(R.string.choice_item, hint))
+            if (items.isEmpty()) listDialog.setMessage(R.string.empty_list)
             listDialog.setSingleChoiceItems(adapter, selectedPosition) { dlg, which ->
                 selectedPosition = which
                 super.getOnItemClickListener()?.onItemClick(null, this, which, -1)

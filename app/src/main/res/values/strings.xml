@@ -348,4 +348,5 @@
     <string name="read_rule_manager">朗读规则管理</string>
     <string name="tag">标签</string>
     <string name="speech_rule_script">规则脚本</string>
+    <string name="empty_list">列表为空</string>
 </resources>

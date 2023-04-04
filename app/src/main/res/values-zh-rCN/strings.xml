@@ -341,4 +341,5 @@
     <string name="edit_read_rule">编辑朗读规则</string>
     <string name="read_rule_manager">朗读规则管理</string>
     <string name="speech_rule_script">规则脚本</string>
+    <string name="empty_list">列表为空</string>
 </resources>
