@@ -2,11 +2,9 @@ package com.github.jing332.tts_server_android.ui.systts.edit.microsoft
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
@@ -14,15 +12,18 @@ import com.github.jing332.tts_server_android.databinding.SysttsMsParamsEditViewB
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
 import com.github.jing332.tts_server_android.model.tts.MsTtsFormatManger
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import kotlin.math.max
 
-class MsTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
-    ConstraintLayout(context, attrs, defaultStyle), Seekbar.OnSeekBarChangeListener {
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null, 0)
+class MsTtsParamsEditView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defaultStyle: Int = 0
+) : BaseParamsEditView<SysttsMsParamsEditViewBinding, MsTTS>(context, attrs, defaultStyle),
+    Seekbar.OnSeekBarChangeListener {
 
     interface Callback {
         fun onRateChanged(rate: Int) {}
@@ -36,14 +37,10 @@ class MsTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: 
         set(value) {
             field = value
             binding.seekbarStyleDegree.isVisible = value
-            binding.seekbarStyleDegree.value = mTts?.expressAs?.styleDegree ?: 1F
+            binding.seekbarStyleDegree.value = tts?.expressAs?.styleDegree ?: 1F
         }
 
     var callback: Callback? = null
-
-    private val binding: SysttsMsParamsEditViewBinding by lazy {
-        SysttsMsParamsEditViewBinding.inflate(LayoutInflater.from(context), this, true)
-    }
 
     private val strFollow: String by lazy { context.getString(R.string.follow_system_or_read_aloud_app) }
 
@@ -53,21 +50,21 @@ class MsTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: 
         mFormatItems = MsTtsFormatManger.getFormatsByApiType(api).map { SpinnerItem(it, it) }
         binding.spinnerFormat.setAdapter(MaterialSpinnerAdapter(context, mFormatItems))
 
-        val format = currentFormat ?: mTts?.format
+        val format = currentFormat ?: tts?.format
         binding.spinnerFormat.selectedPosition =
             max(mFormatItems.indexOfFirst { it.value == format }, 0)
-        mTts?.format = mFormatItems[binding.spinnerFormat.selectedPosition].value.toString()
+        tts?.format = mFormatItems[binding.spinnerFormat.selectedPosition].value.toString()
     }
 
-    private var mTts: MsTTS? = null
+    override var tts: MsTTS? = null
 
     lateinit var mFormatItems: List<SpinnerItem>
 
     /**
      * 设置TTS数据 会自动同步值
      */
-    fun setData(tts: MsTTS) {
-        mTts = tts
+    override fun setData(tts: MsTTS) {
+        super.setData(tts)
         setFormatByApi(tts.api)
         binding.apply {
             seekbarRate.value = tts.rate
@@ -89,22 +86,25 @@ class MsTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: 
             R.id.seekbar_rate -> {
                 val v = seekBar.value as Int
                 callback?.onRateChanged(v)
-                mTts?.rate = v
+                tts?.rate = v
             }
+
             R.id.seekbar_volume -> {
                 val v = seekBar.value as Int
                 callback?.onVolumeChanged(v)
-                mTts?.volume = v
+                tts?.volume = v
             }
+
             R.id.seekbar_pitch -> {
                 val v = seekBar.value as Int
                 callback?.onPitchChanged(v)
-                mTts?.prosody?.pitch = v
+                tts?.prosody?.pitch = v
             }
+
             R.id.seekbar_style_Degree -> {
                 val v = seekBar.value as Float
                 callback?.onStyleDegreeChanged(v)
-                mTts?.expressAs?.styleDegree = v
+                tts?.expressAs?.styleDegree = v
             }
         }
     }
@@ -138,7 +138,7 @@ class MsTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: 
                 id: Long
             ) {
                 formatValue = mFormatItems[position].value.toString()
-                mTts?.format = formatValue
+                tts?.format = formatValue
                 callback?.onFormatChanged(formatValue)
             }
 

@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.os.SystemClock
@@ -8,12 +9,15 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsLocalEditBottomSheetBinding
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsParamsEditView
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.*
@@ -76,7 +80,6 @@ data class LocalTTS(
         return App.context.getString(R.string.local)
     }
 
-
     override fun getBottomContent(): String {
         return audioFormat.toString()
     }
@@ -95,7 +98,7 @@ data class LocalTTS(
 
     @Suppress("DEPRECATION")
     override fun onDescriptionClick(
-        activity: Activity,
+        activity: FragmentActivity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
@@ -113,6 +116,8 @@ data class LocalTTS(
             show()
         }
     }
+
+    override fun getParamsEditView(context: Context) = LocalTtsParamsEditView(context)
 
     @IgnoredOnParcel
     @Transient

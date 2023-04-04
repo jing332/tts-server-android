@@ -7,22 +7,18 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsBgmParamsEditViewBinding
 import com.github.jing332.tts_server_android.model.tts.BgmTTS
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 
-class BgmTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
-    ConstraintLayout(context, attrs, defaultStyle), Seekbar.OnSeekBarChangeListener {
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null, 0)
+class BgmTtsParamsEditView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defaultStyle: Int = 0
+) :
+    BaseParamsEditView<SysttsBgmParamsEditViewBinding, BgmTTS>(context, attrs, defaultStyle),
+    Seekbar.OnSeekBarChangeListener {
 
-    private val binding by lazy {
-        SysttsBgmParamsEditViewBinding.inflate(
-            LayoutInflater.from(context),
-            this,
-            true
-        )
-    }
+    override fun setData(tts: BgmTTS) {
+        super.setData(tts)
 
-    fun setData(tts: BgmTTS) {
         binding.seekVolume.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: Seekbar) {
                 tts.volume = binding.seekVolume.value as Int

@@ -1,8 +1,9 @@
 package com.github.jing332.tts_server_android.model.tts
 
-import android.app.Activity
+import android.content.Context
 import android.view.View
 import androidx.annotation.Keep
+import androidx.fragment.app.FragmentActivity
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
@@ -10,10 +11,10 @@ import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditBottomSheetBinding
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginEngine
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsParamsEditView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.yield
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -69,7 +70,7 @@ data class PluginTTS(
 
     @Suppress("DEPRECATION")
     override fun onDescriptionClick(
-        activity: Activity,
+        activity: FragmentActivity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
@@ -88,6 +89,8 @@ data class PluginTTS(
             show()
         }
     }
+
+    override fun getParamsEditView(context: Context) = PluginTtsParamsEditView(context)
 
     @IgnoredOnParcel
     @Transient

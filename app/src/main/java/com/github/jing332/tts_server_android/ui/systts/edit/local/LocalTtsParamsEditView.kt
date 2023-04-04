@@ -11,7 +11,6 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.drake.brv.BindingAdapter
@@ -24,6 +23,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsLocalParamsExtraE
 import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.model.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.tts.LocalTtsParameter
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
@@ -34,21 +34,17 @@ import java.lang.Integer.max
 
 @Suppress("DEPRECATION")
 @SuppressLint("SetTextI18n")
-class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
-    ConstraintLayout(context, attrs, defaultStyle) {
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null, 0)
-
-    private val binding: SysttsLocalParamsEditViewBinding by lazy {
-        SysttsLocalParamsEditViewBinding.inflate(LayoutInflater.from(context), this, true)
-    }
-
+class LocalTtsParamsEditView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defaultStyle: Int = 0
+) : BaseParamsEditView<SysttsLocalParamsEditViewBinding, LocalTTS>(context, attrs, defaultStyle) {
     private lateinit var mBrv: BindingAdapter
 
-    private var mTts: LocalTTS? = null
+    override var tts: LocalTTS? = null
 
-    fun setData(tts: LocalTTS) {
-        this.mTts = tts
+    override fun setData(tts: LocalTTS) {
+        super.setData(tts)
 
         binding.seekbarRate.progress = tts.rate
         binding.seekbarPitch.progress = tts.pitch
@@ -61,7 +57,7 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
     init {
         binding.seekbarRate.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: Seekbar) {
-                mTts?.rate = seekBar.progress
+                tts?.rate = seekBar.progress
             }
         }
         binding.seekbarRate.valueFormatter = Seekbar.ValueFormatter { value, _ ->
@@ -81,16 +77,16 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
         }
         binding.seekbarPitch.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: Seekbar) {
-                mTts?.pitch = ((seekBar.value as Float) * 100).toInt()
+                tts?.pitch = ((seekBar.value as Float) * 100).toInt()
             }
         }
 
         binding.btnAddParams.clickWithThrottle {
             displayExtraParamsEditDialog {
-                mTts?.extraParams = mTts?.extraParams ?: mutableListOf()
+                tts?.extraParams = tts?.extraParams ?: mutableListOf()
 
-                mTts?.extraParams?.add(it)
-                mBrv.models = mTts?.extraParams
+                tts?.extraParams?.add(it)
+                mBrv.models = tts?.extraParams
             }
         }
 
@@ -109,7 +105,7 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
         }
 
         binding.spinnerSampleRate.addTextChangedListener {
-            mTts?.audioFormat?.sampleRate = it.toString().toInt()
+            tts?.audioFormat?.sampleRate = it.toString().toInt()
         }
 
         // 采样率
@@ -120,7 +116,7 @@ class LocalTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyl
         binding.spinnerSampleRate.threshold = Int.MAX_VALUE
 
         binding.cbDirectPlay.setOnClickListener {
-            mTts?.isDirectPlayMode = binding.cbDirectPlay.isChecked
+            tts?.isDirectPlayMode = binding.cbDirectPlay.isChecked
         }
 
         binding.rvExtraParams.addItemDecoration(

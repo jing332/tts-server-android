@@ -13,6 +13,8 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.databinding.SysttsLoggerBottomSheetBinding
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.ui.LogLevel
+import com.github.jing332.tts_server_android.util.displayHeight
+import com.github.jing332.tts_server_android.util.setMarginMatchParent
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -41,7 +43,7 @@ class LoggerBottomSheetFragment(private val logger: Logger) : BottomSheetDialogF
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.root.minimumHeight = requireActivity().windowManager.defaultDisplay.height
+        (view.parent as ViewGroup).setMarginMatchParent()
 
         lifecycleScope.launch {
             for (span in channel) {

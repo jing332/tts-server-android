@@ -28,6 +28,7 @@ import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.dp
+import com.github.jing332.tts_server_android.util.setMarginMatchParent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -83,9 +84,7 @@ open class BaseImportConfigBottomSheetFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.tvTitle.setText(title)
-
-        val sheetContainer = view.parent as ViewGroup
-        sheetContainer.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        (view.parent as ViewGroup).setMarginMatchParent()
 
         binding.apply {
             groupSource.check(R.id.btn_src_clipboard)

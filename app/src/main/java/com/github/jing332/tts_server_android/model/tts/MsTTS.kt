@@ -1,9 +1,9 @@
 package com.github.jing332.tts_server_android.model.tts
 
-import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.Context
 import android.os.Parcelable
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
@@ -11,12 +11,13 @@ import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.databinding.SysttsMsEditBottomSheetBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
+import com.github.jing332.tts_server_android.ui.systts.base.QuickEditBottomSheet
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsParamsEditView
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -116,29 +117,26 @@ data class MsTTS(
         )
     }
 
-    @Suppress("DEPRECATION")
-    @SuppressLint("RestrictedApi")
     override fun onDescriptionClick(
-        activity: Activity,
+        activity: FragmentActivity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
     ) {
-        val binding =
-            SysttsMsEditBottomSheetBinding.inflate(activity.layoutInflater, null, false)
-        binding.apply {
-            basicEdit.setData(data)
-            editView.setData(this@MsTTS)
-            root.minimumHeight = activity.windowManager.defaultDisplay.height
-        }
-
-        BottomSheetDialog(activity).apply {
-            setContentView(binding.root)
-            setOnDismissListener { done(data) }
-            show()
-        }
+        val fragment =
+            QuickEditBottomSheet(
+                data,
+                MsTtsParamsEditView(activity).apply { setData(this@MsTTS) }
+            ) {
+                done(data)
+                true
+            }
+        fragment.show(activity.supportFragmentManager, QuickEditBottomSheet.TAG)
     }
 
+    override fun getParamsEditView(context: Context): BaseParamsEditView<*, *> {
+        return MsTtsParamsEditView(context)
+    }
 
     @IgnoredOnParcel
     private var lastLoadTime: Long = 0

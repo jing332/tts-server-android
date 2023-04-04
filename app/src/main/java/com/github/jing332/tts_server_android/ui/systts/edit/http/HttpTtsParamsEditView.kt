@@ -2,23 +2,18 @@ package com.github.jing332.tts_server_android.ui.systts.edit.http
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsHttpParamsEditViewBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
 import com.github.jing332.tts_server_android.model.tts.HttpTTS
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 
-class HttpTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
-    ConstraintLayout(context, attrs, defaultStyle), Seekbar.OnSeekBarChangeListener {
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null, 0)
-
-    private val binding: SysttsHttpParamsEditViewBinding by lazy {
-        SysttsHttpParamsEditViewBinding.inflate(LayoutInflater.from(context), this, true)
-    }
-
+class HttpTtsParamsEditView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defaultStyle: Int = 0
+) :
+    BaseParamsEditView<SysttsHttpParamsEditViewBinding, HttpTTS>(context, attrs, defaultStyle),
+    Seekbar.OnSeekBarChangeListener {
     init {
         binding.seekBarRate.onSeekBarChangeListener = this
         binding.seekBarVolume.onSeekBarChangeListener = this
@@ -43,10 +38,11 @@ class HttpTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle
         }
 
 
-    private var mTts: HttpTTS? = null
+    override var tts: HttpTTS? = null
 
-    fun setData(tts: HttpTTS) {
-        mTts = tts
+    override fun setData(tts: HttpTTS) {
+        super.setData(tts)
+        this.tts = tts
         rate = tts.rate
         volume = tts.volume
     }
@@ -58,7 +54,7 @@ class HttpTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle
 
     override fun onStopTrackingTouch(seekBar: Seekbar) {
         binding.tvPreviewUrl.text = doAnalyzeUrl()
-        mTts?.let {
+        tts?.let {
             it.rate = rate
             it.volume = volume
         }
@@ -67,7 +63,7 @@ class HttpTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle
     private fun doAnalyzeUrl(): String {
         kotlin.runCatching {
             val a = AnalyzeUrl(
-                mUrl = this.mTts!!.url,
+                mUrl = this.tts!!.url,
                 speakSpeed = rate,
                 speakVolume = volume
             )

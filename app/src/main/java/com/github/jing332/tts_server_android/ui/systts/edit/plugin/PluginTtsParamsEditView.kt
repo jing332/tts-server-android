@@ -3,24 +3,20 @@ package com.github.jing332.tts_server_android.ui.systts.edit.plugin
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginParamsEditViewBinding
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 
-class PluginTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
-    ConstraintLayout(context, attrs, defaultStyle) {
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null, 0)
+class PluginTtsParamsEditView
+@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defaultStyle: Int = 0) :
+    BaseParamsEditView<SysttsPluginParamsEditViewBinding, PluginTTS>(context, attrs, defaultStyle) {
 
-    private lateinit var mTts: PluginTTS
-    private val binding by lazy {
-        SysttsPluginParamsEditViewBinding.inflate(LayoutInflater.from(context), this, true)
-    }
+    override var tts: PluginTTS? = null
 
-    fun setData(tts: PluginTTS) {
-        mTts = tts
+    override fun setData(tts: PluginTTS) {
+        super.setData(tts)
 
         binding.apply {
             seekRate.valueFormatter = Seekbar.ValueFormatter { _, progress ->

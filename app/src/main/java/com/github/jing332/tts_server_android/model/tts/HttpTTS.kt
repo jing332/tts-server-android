@@ -1,9 +1,11 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.app.Activity
+import android.content.Context
 import android.os.Parcelable
 import android.os.SystemClock
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
@@ -12,7 +14,9 @@ import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditBottomSheetBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsParamsEditView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -61,7 +65,7 @@ data class HttpTTS(
 
     @Suppress("DEPRECATION")
     override fun onDescriptionClick(
-        activity: Activity,
+        activity: FragmentActivity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
@@ -80,6 +84,8 @@ data class HttpTTS(
             show()
         }
     }
+
+    override fun getParamsEditView(context: Context) = HttpTtsParamsEditView(context)
 
     @IgnoredOnParcel
     private var requestId: String = ""

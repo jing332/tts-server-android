@@ -4,10 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
+import androidx.fragment.app.FragmentActivity
+import androidx.viewbinding.ViewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.ui.systts.base.QuickEditBottomSheet
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -79,11 +83,13 @@ sealed class ITextToSpeechEngine(
      * UI 当点击 描述TextView
      */
     abstract fun onDescriptionClick(
-        activity: Activity,
+        activity: FragmentActivity,
         view: View?,
         data: SystemTts,
         done: (modifiedData: SystemTts?) -> Unit
     )
+
+    abstract fun getParamsEditView(context: Context): BaseParamsEditView<*, *>
 
     open fun onLoad() {}
 

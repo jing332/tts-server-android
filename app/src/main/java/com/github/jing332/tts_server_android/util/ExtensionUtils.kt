@@ -1,12 +1,17 @@
 package com.github.jing332.tts_server_android.util
 
+import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.LayoutInflaterCompat
+import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
+import java.lang.reflect.ParameterizedType
 
 val Int.dp: Int get() = SizeUtils.dp2px(this.toFloat())
 
@@ -15,6 +20,32 @@ val Int.px: Int get() = SizeUtils.px2dp(this.toFloat())
 val Context.layoutInflater: LayoutInflater
     get() = LayoutInflater.from(this)
 
+fun ViewGroup.setMarginMatchParent() {
+    this.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+}
+
+@Suppress("UNCHECKED_CAST")
+internal fun <T : ViewBinding> Any.inflateBinding(inflater: LayoutInflater): T {
+    return (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments
+        .filterIsInstance<Class<T>>()
+        .first()
+        .getDeclaredMethod("inflate", LayoutInflater::class.java)
+        .also { it.isAccessible = true }
+        .invoke(null, inflater) as T
+}
+
+@Suppress("DEPRECATION")
+val Activity.displayHeight: Int
+    get() {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = windowManager.currentWindowMetrics
+            val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(
+                WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()
+            )
+            windowMetrics.bounds.height() - insets.bottom - insets.top
+        } else
+            windowManager.defaultDisplay.height
+    }
 
 /**
  * 点击防抖动
