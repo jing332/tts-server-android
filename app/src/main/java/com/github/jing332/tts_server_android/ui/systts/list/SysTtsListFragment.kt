@@ -373,26 +373,6 @@ class SysTtsListFragment : Fragment() {
             }.show()
     }
 
-    private fun showSetMinDialogueLengthDialog() {
-        val numList = arrayListOf(getString(R.string.unlimited))
-        for (i in 1..10) numList.add(" ≥ $i")
-
-        val picker = NumberPicker(requireContext()).apply {
-            maxValue = numList.size - 1
-            displayedValues = numList.toTypedArray()
-            value = SysTtsConfig.minDialogueLength
-        }
-        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.systts_set_dialogue_min_match_word_count)
-            .setMessage(R.string.systts_set_dialogue_min_info).setView(picker)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                SysTtsConfig.minDialogueLength = picker.value
-                SystemTtsService.notifyUpdateConfig()
-            }.setNegativeButton(R.string.reset) { _, _ ->
-                SysTtsConfig.minDialogueLength = 0
-                SystemTtsService.notifyUpdateConfig()
-            }.show()
-    }
-
     private fun addTtsConfig(cls: Class<*>) {
         val intent = Intent(requireContext(), cls)
         startForResult.launch(intent)

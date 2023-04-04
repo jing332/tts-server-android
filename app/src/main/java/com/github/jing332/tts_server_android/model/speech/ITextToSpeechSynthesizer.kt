@@ -9,9 +9,9 @@ import kotlinx.coroutines.launch
 abstract class ITextToSpeechSynthesizer<T> {
     suspend fun <T> retry(
         times: Int = 3,
-        initialDelayMillis: Long = 500,
-        factor: Double = 2.0,
-        maxDelayMillis: Long = 3000,
+        initialDelayMillis: Long = 200,
+        factor: Float = 1.25F,
+        maxDelayMillis: Long = 5000,
         onCatch: suspend (times: Int, e: Exception) -> Boolean,
         block: suspend () -> T?,
     ): T? {

@@ -2,6 +2,8 @@ package com.github.jing332.tts_server_android.ui.systts.list
 
 import com.drake.brv.annotaion.ItemOrientation
 import com.drake.brv.item.ItemDrag
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -18,5 +20,10 @@ data class ItemModel(
         }
 
     val api: String
-        get() = data.tts.getType()
+        get() {
+            val typeStr = data.tts.getType()
+            return if (data.speechRule.isStandby)
+                app.getString(R.string.systts_standby) + " - " + typeStr
+            else typeStr
+        }
 }

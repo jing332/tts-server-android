@@ -25,13 +25,6 @@
 
     <PreferenceCategory android:title="@string/system_tts">
         <ListPreference
-            android:dialogMessage="@string/systts_set_dialogue_min_info"
-            android:icon="@drawable/ic_baseline_textsms_24"
-            android:key="minDialogueLength"
-            android:persistent="false"
-            android:title="@string/systts_set_dialogue_min_match_word_count" />
-
-        <ListPreference
             android:dialogMessage="@string/systts_set_request_timeout_msg"
             android:icon="@drawable/ic_baseline_access_time_24"
             android:key="requestTimeout"

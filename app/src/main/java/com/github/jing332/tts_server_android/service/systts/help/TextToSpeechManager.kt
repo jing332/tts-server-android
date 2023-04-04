@@ -99,12 +99,14 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 listener?.onError(
                     RequestException(text = text, tts = tts, cause = e, times = times)
                 )
+
                 // 备用TTS
-                tts.speechRule.standbyTts?.let { sbyTts ->
-                    Log.i(TAG, "使用备用TTS：$sbyTts")
-                    audioResult = getAudio(sbyTts, text, rate, pitch)
-                    return@retry false // 取消重试
-                }
+                if (SysTtsConfig.standbyTriggeredRetryIndex == times)
+                    tts.speechRule.standbyTts?.let { sbyTts ->
+                        Log.i(TAG, "使用备用TTS：$sbyTts")
+                        audioResult = getAudio(sbyTts, text, rate, pitch)
+                        return@retry false // 取消重试
+                    }
                 // 空音频三次后跳过
                 return@retry !(e is RequestException && e.errorCode == RequestException.ERROR_CODE_AUDIO_NULL && times > 3)
             },
@@ -160,7 +162,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     private val mAudioDecoder = AudioDecoder()
     private var mAudioPlayer: AudioPlayer? = null
     private var mBgmPlayer: BgmPlayer? = null
-
 
     private fun initConfig(target: Int): Boolean {
         Log.i(TAG, "initConfig: $target")

@@ -34,28 +34,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 最小对话汉字数量
-        findPreference<ListPreference>("minDialogueLength")!!.apply {
-            entries = (0..20).mapIndexed { i, v ->
-                if (i == 0) getString(R.string.unlimited)
-                else v.toString()
-            }.toTypedArray()
-            entryValues = (0..20).map { "$it" }.toTypedArray()
-
-            setValueIndexNoException(SysTtsConfig.minDialogueLength)
-            summary = entry
-            setOnPreferenceChangeListener { _, newValue ->
-                SysTtsConfig.minDialogueLength = (newValue as String).toInt()
-                setValueIndexNoException(SysTtsConfig.minDialogueLength)
-                true
-            }
-        }
-
         // 备用配置使用条件
         findPreference<ListPreference>("standbyTriggeredRetryIndex")!!.apply {
             entries = (1..10).map { "$it" }.toTypedArray()
             entryValues = entries
-            setValueIndexNoException(SysTtsConfig.standbyTriggeredRetryIndex)
+            kotlin.runCatching {
+                value = SysTtsConfig.standbyTriggeredRetryIndex.toString()
+            }.onFailure {
+                value = "1"
+            }
             summary = entry
             setOnPreferenceChangeListener { _, newValue ->
                 SysTtsConfig.standbyTriggeredRetryIndex = (newValue as String).toInt()
@@ -97,7 +84,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             CodeEditorTheme.AUTO to requireContext().getString(R.string.follow_system),
             CodeEditorTheme.QUIET_LIGHT to "Quiet-Light",
             CodeEditorTheme.SOLARIZED_DRAK to "Solarized-Dark",
-            CodeEditorTheme.DARCULA to "Darcula",
+            CodeEditorTheme.DARCULA to "Dracula",
             CodeEditorTheme.ABYSS to "Abyss"
         )
         editorTheme.entries = themes.values.toTypedArray()

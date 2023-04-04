@@ -47,15 +47,6 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
 
     fun init(adapter: BindingAdapter, holder: BindingAdapter.BindingViewHolder) {
         adapter.apply {
-            /*onBind {
-                getModelOrNull<ItemModel>()?.let { model ->
-                    getBindingOrNull<SysttsListItemBinding>().let { binding ->
-                        if (model.data.customTag.isNotEmpty())
-                            binding.tvApiType.setText()
-                    }
-                }
-            }*/
-
             holder.apply {
                 getBindingOrNull<SysttsListItemBinding>()?.apply {
                     checkBoxSwitch.setOnClickListener { view ->
@@ -129,7 +120,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                             val data = getSystemTTS(holder)
                             var str =
                                 if (data.isEnabled) context.getString(R.string.enabled) else ""
-                            if (data.isStandby) str += ", " + context.getString(R.string.as_standby)
+                            if (data.speechRule.isStandby) str += ", " + context.getString(R.string.as_standby)
                             info.text = "$str, ${tvName.text}, " + context.getString(
                                 R.string.systts_list_item_desc,
                                 tvRaTarget.text,
@@ -259,12 +250,15 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
 
             if (current.isStandby) {
                 list.forEach {
-                    if (it.isStandby && it.readAloudTarget == current.readAloudTarget)
-                        appDb.systemTtsDao.updateTts(it.copy(isEnabled = false))
+                    if (it.speechRule.isStandby) {
+                        if (it.speechRule.target == current.speechRule.target && it.speechRule.tag == current.speechRule.tag) {
+                            appDb.systemTtsDao.updateTts(it.copy(isEnabled = false))
+                        }
+                    }
                 }
             } else if (!SysTtsConfig.isVoiceMultipleEnabled) { // 多选关闭下 确保同目标只可单选
                 list.forEach {
-                    if (!it.isStandby && it.readAloudTarget == current.readAloudTarget)
+                    if (!it.isStandby && it.readAloudTarget == current.readAloudTarget && it.speechRule.tag == current.speechRule.tag)
                         appDb.systemTtsDao.updateTts(it.copy(isEnabled = false))
                 }
             }

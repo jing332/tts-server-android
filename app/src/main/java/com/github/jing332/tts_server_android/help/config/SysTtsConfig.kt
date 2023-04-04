@@ -55,11 +55,6 @@ object SysTtsConfig : KotprefModel() {
     var requestTimeout by intPref(5000)
 
     /**
-     * 最小对话文本长度
-     */
-    var minDialogueLength by intPref()
-
-    /**
      * 备用配置在第几次重试时触发
      */
     var standbyTriggeredRetryIndex by intPref(1)
