@@ -247,14 +247,16 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
     /* 更新通知 */
     private fun updateNotification(title: String, content: String? = null) {
-        content?.let {
-            val bigTextStyle = Notification.BigTextStyle().bigText(it).setSummaryText("TTS")
-            mNotificationBuilder.style = bigTextStyle
-            mNotificationBuilder.setContentText(it)
-        }
+        synchronized(this) {
+            content?.let {
+                val bigTextStyle = Notification.BigTextStyle().bigText(it).setSummaryText("TTS")
+                mNotificationBuilder.style = bigTextStyle
+                mNotificationBuilder.setContentText(it)
+            }
 
-        mNotificationBuilder.setContentTitle(title)
-        startForeground(SystemNotificationConst.ID_SYSTEM_TTS, mNotificationBuilder.build())
+            mNotificationBuilder.setContentTitle(title)
+            startForeground(SystemNotificationConst.ID_SYSTEM_TTS, mNotificationBuilder.build())
+        }
     }
 
     /* 获取通知 */
@@ -345,7 +347,8 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                     RequestException.ERROR_CODE_REQUEST -> {
                         logE(
                             getString(
-                                R.string.systts_log_failed, "(${e.times}) $e.rootCause"
+                                R.string.systts_log_failed,
+                                "(${e.times}) ${e.rootCause ?: e.toString()}"
                             )
                         )
                     }
