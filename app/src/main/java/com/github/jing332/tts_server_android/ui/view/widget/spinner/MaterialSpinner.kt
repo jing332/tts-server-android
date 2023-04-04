@@ -30,7 +30,6 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         }
     }
 
-
     init {
         super.setOnItemClickListener { parent, view, position, id ->
             mSelectedPosition = position
@@ -93,6 +92,10 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     // 供DataBindingAdapter使用
     override fun setOnItemClickListener(l: AdapterView.OnItemClickListener?) {
         wrappedItemClickListener = l
+    }
+
+    fun callItemSelected(pos: Int = mSelectedPosition) {
+        onItemSelectedListener?.onItemSelected(null, null, pos, 0)
     }
 
     private fun updateCurrentPositionText() {

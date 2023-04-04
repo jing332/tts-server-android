@@ -21,7 +21,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBgmSettingsBinding
@@ -39,7 +38,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditAc
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
-import com.github.jing332.tts_server_android.ui.systts.read_rule.ReadRuleManagerActivity
+import com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleManagerActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.*
@@ -179,7 +178,7 @@ class SysTtsListFragment : Fragment() {
                 }
 
                 R.id.menu_read_rule_manager -> {
-                    startActivity(Intent(requireContext(), ReadRuleManagerActivity::class.java))
+                    startActivity(Intent(requireContext(), SpeechRuleManagerActivity::class.java))
                     true
                 }
 

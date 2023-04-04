@@ -84,7 +84,7 @@ class ConfigExportBottomSheetFragment(
             return
         }
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.choos_an_upload_target)
+            .setTitle(R.string.choose_an_upload_target)
             .setItems(list.map { it.funcName }.toTypedArray()) { dlg, which ->
                 dlg.dismiss()
                 val selected = list[which]

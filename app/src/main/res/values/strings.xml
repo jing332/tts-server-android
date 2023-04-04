@@ -336,7 +336,7 @@
     <string name="auto_check_update">Auto check for updates</string>
     <string name="direct_upload_settings">Direct link upload</string>
     <string name="warn_returned_url_is_empty">⚠️The returned URL is empty!</string>
-    <string name="choos_an_upload_target">Choose an upload target</string>
+    <string name="choose_an_upload_target">Choose an upload target</string>
     <string name="copied_url">url_copied</string>
     <string name="direct_link_settings">Direct link settings</string>
     <string name="set_sample_text_param">Set text parameters</string>
@@ -347,5 +347,5 @@
     <string name="edit_read_rule">编辑朗读规则</string>
     <string name="read_rule_manager">朗读规则管理</string>
     <string name="tag">标签</string>
-
+    <string name="speech_rule_script">规则脚本</string>
 </resources>

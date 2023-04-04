@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.github.jing332.tts_server_android.ui.systts.read_rule.ReadRuleModel" />
+            type="com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleModel" />
     </data>
 
     <FrameLayout
@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp">
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/cb_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

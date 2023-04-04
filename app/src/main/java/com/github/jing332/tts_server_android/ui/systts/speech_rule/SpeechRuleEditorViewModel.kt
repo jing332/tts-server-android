@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.read_rule
+package com.github.jing332.tts_server_android.ui.systts.speech_rule
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -10,7 +10,7 @@ import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.rhino.readrule.ReadRuleEngine
 import com.script.ScriptException
 
-class ReadRuleEditorViewModel(application: Application) : AndroidViewModel(application) {
+class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(application) {
     private val _errorLiveData: MutableLiveData<Throwable> = MutableLiveData()
     val errorLiveData: LiveData<Throwable>
         get() = _errorLiveData

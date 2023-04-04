@@ -18,6 +18,14 @@
             type="List&lt;SpinnerItem>" />
 
         <variable
+            name="ruleCurrentPosition"
+            type="int" />
+
+        <variable
+            name="ruleItems"
+            type="List&lt;SpinnerItem>" />
+
+        <variable
             name="tagCurrentPosition"
             type="int" />
 
@@ -129,22 +137,48 @@
             </com.google.android.material.button.MaterialButtonToggleGroup>
         </HorizontalScrollView>
 
-        <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
-            android:id="@+id/til_custom_tag"
-            style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+
+        <LinearLayout
+            android:id="@+id/layout_speech_rule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/tag"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinner
-                android:id="@+id/spinner_tag"
-                items="@{tagItems}"
-                selectedPosition="@={tagCurrentPosition}"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
+            <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
+                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/speech_rule_script">
+
+                <com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinner
+                    android:id="@+id/spinner_speech_rule"
+                    items="@{ruleItems}"
+                    selectedPosition="@={ruleCurrentPosition}"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
+
+
+            <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
+                android:id="@+id/til_custom_tag"
+                style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:hint="@string/tag">
+
+                <com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinner
+                    android:id="@+id/spinner_tag"
+                    items="@{tagItems}"
+                    selectedPosition="@={tagCurrentPosition}"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
+
+        </LinearLayout>
 
         <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
             android:id="@+id/til_group"

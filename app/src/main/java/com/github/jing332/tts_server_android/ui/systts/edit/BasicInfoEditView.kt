@@ -10,9 +10,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
@@ -22,11 +24,13 @@ import com.github.jing332.tts_server_android.model.tts.PlayerParams
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.github.jing332.tts_server_android.util.layoutInflater
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import java.lang.Integer.max
 
 class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
     ConstraintLayout(context, attrs, defaultStyle) {
@@ -34,7 +38,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
     constructor(context: Context) : this(context, null, 0)
 
     private val binding: SysttsBasicInfoEditViewBinding by lazy {
-        SysttsBasicInfoEditViewBinding.inflate(LayoutInflater.from(context), this, true)
+        SysttsBasicInfoEditViewBinding.inflate(context.layoutInflater, this, true)
     }
 
     var isStandby: Boolean
@@ -49,7 +53,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             field = value
             mData?.apply { readAloudTarget = field }
 
-            binding.tilCustomTag.isVisible = value == ReadAloudTarget.CUSTOM_TAG
+            binding.layoutSpeechRule.isVisible = value == ReadAloudTarget.CUSTOM_TAG
             binding.btnGroupRaTarget.check(
                 when (value) {
                     ReadAloudTarget.ASIDE -> R.id.btn_aside
@@ -69,6 +73,13 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
 
     val currentGroup: SystemTtsGroup
         get() = binding.groupItems!![binding.groupCurrentPosition].value as SystemTtsGroup
+
+    val currentRule: SpeechRule?
+        get() {
+            return binding.ruleItems?.get(binding.ruleCurrentPosition)?.let {
+                return it.value as SpeechRule
+            }
+        }
 
     @Suppress("UNCHECKED_CAST")
     val currentTag: Map.Entry<String, String>
@@ -97,10 +108,13 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             binding.groupItems = groupList.map { SpinnerItem(it.name, it) }
             binding.groupCurrentPosition = groupList.indexOfFirst { it.id == data.groupId }
 
-//            appDb.readRuleDao.allEnabled.getOrNull(0)?.tags?.let { tags ->
-//                binding.tagItems = tags.map { SpinnerItem("${it.value} (${it.key})", it) }
-//                binding.tagCurrentPosition = tags.keys.indexOf(data.speechRule.tag)
-//            }
+            val ruleList = appDb.speechRule.allEnabled
+            withMain {
+                binding.ruleItems = ruleList.map { SpinnerItem(it.name, it) }
+                binding.ruleCurrentPosition =
+                    max(0, ruleList.indexOfFirst { it.ruleId == data.speechRule.tagRuleId })
+                binding.spinnerSpeechRule.callItemSelected()
+            }
         }
 
         this.mData = data
@@ -116,7 +130,6 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
         }
         return false
     }
-
 
     init {
         binding.apply {
@@ -157,6 +170,26 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+            spinnerSpeechRule.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    currentRule?.tags?.let { tags ->
+                        binding.tagItems = tags.map { SpinnerItem("${it.value} (${it.key})", it) }
+                        binding.tagCurrentPosition =
+                            max(0, tags.keys.indexOf(mData?.speechRule?.tag))
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
             }
 
             spinnerTag.onItemSelectedListener = object : OnItemSelectedListener {

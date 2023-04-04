@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.read_rule
+package com.github.jing332.tts_server_android.ui.systts.speech_rule
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -16,8 +16,8 @@ import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDial
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.observeNoSticky
 
-class ReadRuleEditorActivity : BaseScriptEditorActivity() {
-    private val vm: ReadRuleEditorViewModel by viewModels()
+class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
+    private val vm: SpeechRuleEditorViewModel by viewModels()
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {

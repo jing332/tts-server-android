@@ -33,11 +33,11 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
-            android:name=".ui.systts.read_rule.ReadRuleManagerActivity"
+            android:name=".ui.systts.speech_rule.SpeechRuleManagerActivity"
             android:label="@string/read_rule_manager"
             android:exported="true" />
         <activity
-            android:name=".ui.systts.read_rule.ReadRuleEditorActivity"
+            android:name=".ui.systts.speech_rule.SpeechRuleEditorActivity"
             android:label="@string/edit_read_rule"
             android:exported="false" />
         <activity

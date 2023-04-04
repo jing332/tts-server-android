@@ -330,7 +330,7 @@
     <string name="auto_check_update">自动检查更新</string>
     <string name="direct_upload_settings">直链上传设置</string>
     <string name="warn_returned_url_is_empty">⚠️返回的链接为空！</string>
-    <string name="choos_an_upload_target">选择一个上传目标</string>
+    <string name="choose_an_upload_target">选择一个上传目标</string>
     <string name="copied_url">已复制链接</string>
     <string name="direct_link_settings">直链设置</string>
     <string name="set_sample_text_param">设置文本参数</string>
@@ -340,4 +340,5 @@
     <string name="check_update_summary">打开主界面时检查更新</string>
     <string name="edit_read_rule">编辑朗读规则</string>
     <string name="read_rule_manager">朗读规则管理</string>
+    <string name="speech_rule_script">规则脚本</string>
 </resources>
