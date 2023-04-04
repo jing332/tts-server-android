@@ -12,13 +12,9 @@ data class ItemModel(
 ) : ItemDrag {
     val target: String
         get() {
-            return if (data.readAloudTarget == ReadAloudTarget.CUSTOM_TAG) {
-                appDb.speechRule.getByReadRuleId(data.speechRule.tagRuleId)?.run {
-                    tags[data.speechRule.tag] // tag的显示名称
-                } ?: data.speechRule.tag
-                ""
-            } else
-                ReadAloudTarget.toText(data.readAloudTarget)
+            return appDb.speechRule.getByReadRuleId(data.speechRule.tagRuleId)?.run {
+                tags[data.speechRule.tag] // tag的显示名称
+            } ?: data.speechRule.tag
         }
 
     val api: String

@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.model.rhino.ExceptionExt.lineMessage
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
-import com.github.jing332.tts_server_android.model.rhino.readrule.ReadRuleEngine
+import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
 import com.script.ScriptException
 
 class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(application) {
@@ -24,7 +24,7 @@ class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(app
         get() = _codeLiveData
 
     private lateinit var mSpeechRule: SpeechRule
-    private lateinit var mRuleEngine: ReadRuleEngine
+    private lateinit var mRuleEngine: SpeechRuleEngine
 
     val logger: Logger
         get() = mRuleEngine.logger
@@ -41,7 +41,7 @@ class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(app
     fun init(speechRule: SpeechRule, defaultCode: String) {
         mSpeechRule = speechRule
         if (speechRule.code.isBlank()) mSpeechRule.code = defaultCode
-        mRuleEngine = ReadRuleEngine(getApplication(), mSpeechRule, "", Logger())
+        mRuleEngine = SpeechRuleEngine(getApplication(), mSpeechRule, "", Logger())
 
         _codeLiveData.value = mSpeechRule.code
     }

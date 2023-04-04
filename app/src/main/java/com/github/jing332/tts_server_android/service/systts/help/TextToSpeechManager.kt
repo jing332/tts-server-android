@@ -49,39 +49,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     private val mConfigMap: MutableMap<Int, List<ITextToSpeechEngine>> = mutableMapOf()
     private val mLoadedTtsMap = mutableSetOf<ITextToSpeechEngine>()
-    private val mReadRuleHelper = ReadRuleHelper()
+    private val mSpeechRuleHelper = SpeechRuleHelper()
 
     private val isMultiVoice: Boolean
         get() = SysTtsConfig.isMultiVoiceEnabled
 
-    private fun initConfig(target: Int): Boolean {
-        var isMissing = false
-        mConfigMap[target] =
-            appDb.systemTtsDao.getEnabledList(target, false).map {
-                it.tts.apply {
-                    speechRule.target = it.readAloudTarget
-                    speechRule.tag = it.speechRule.tag
-                }
-            }
-        if (mConfigMap[target]?.isEmpty() == true) {
-            isMissing = true
-            Log.w(TAG, "缺少朗读目标$target, 使用内置MsTTS！")
-            mConfigMap[target] = listOf(MsTTS())
-        }
-
-        val standby =
-            appDb.systemTtsDao.getEnabledList(target, true).map {
-                it.tts.apply {
-                    speechRule.target = it.readAloudTarget
-                    speechRule.tag = it.speechRule.tag
-                }
-            }.getOrNull(0)
-        mConfigMap[target]?.forEach {
-            it.speechRule.standbyTts = standby
-        }
-
-        return isMissing
-    }
 
     override suspend fun handleText(text: String): List<TtsText<ITextToSpeechEngine>> {
         return if (isMultiVoice) {
@@ -90,7 +62,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 tagTtsMap[it.speechRule.tag] = it
             }
 
-            mReadRuleHelper.handleText(text, tagTtsMap, MsTTS())
+            mSpeechRuleHelper.handleText(text, tagTtsMap, MsTTS())
         } else {
             listOf(TtsText(mConfigMap[ReadAloudTarget.ALL]!![0], text))
         }.run {
@@ -189,6 +161,34 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     private var mAudioPlayer: AudioPlayer? = null
     private var mBgmPlayer: BgmPlayer? = null
 
+
+    private fun initConfig(target: Int): Boolean {
+        Log.i(TAG, "initConfig: $target")
+        var isOk = true
+        mConfigMap[target] =
+            appDb.systemTtsDao.getEnabledList(target, false).map {
+                println(it)
+                it.tts.speechRule = it.speechRule
+                return@map it.tts
+            }
+        if (mConfigMap[target]?.isEmpty() == true) {
+            isOk = false
+            Log.w(TAG, "缺少朗读目标$target, 使用内置MsTTS！")
+            mConfigMap[target] = listOf(MsTTS())
+        }
+
+        val standby =
+            appDb.systemTtsDao.getEnabledList(target, true).map {
+                it.tts.speechRule = it.speechRule
+                return@map it.tts
+            }.getOrNull(0)
+        mConfigMap[target]?.forEach {
+            it.speechRule.standbyTts = standby
+        }
+
+        return isOk
+    }
+
     private fun initBgm() {
         val list = mutableSetOf<Pair<Float, String>>()
         appDb.systemTtsDao.getEnabledList(ReadAloudTarget.BGM).forEach {
@@ -206,12 +206,17 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     override fun load() {
         audioFormat = if (isMultiVoice) {
-//            mReadRuleHelper.init(context, appDb.readRuleDao.all[0])
+            if (initConfig(ReadAloudTarget.CUSTOM_TAG)) {
+                mConfigMap[ReadAloudTarget.CUSTOM_TAG]?.getOrNull(0)?.let {
+                    appDb.speechRule.getByReadRuleId(it.speechRule.tagRuleId)?.let { rule ->
+                        mSpeechRuleHelper.init(context, rule)
+                    }
+                }
+            }
 
-            initConfig(ReadAloudTarget.CUSTOM_TAG)
             mConfigMap[ReadAloudTarget.CUSTOM_TAG]!![0].audioFormat
         } else {
-            if (initConfig(ReadAloudTarget.ALL))
+            if (!initConfig(ReadAloudTarget.ALL))
                 context.toast(R.string.systts_warn_no_ra_all)
             mConfigMap[ReadAloudTarget.ALL]!![0].audioFormat
         }

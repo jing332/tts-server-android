@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.model.rhino.readrule
+package com.github.jing332.tts_server_android.model.rhino.speech_rule
 
 import android.content.Context
 import com.github.jing332.tts_server_android.R
@@ -7,7 +7,7 @@ import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngine
 import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngineContext
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 
-class ReadRuleEngine(
+class SpeechRuleEngine(
     val context: Context,
     private val rule: SpeechRule,
     override var code: String = rule.code,
@@ -15,7 +15,7 @@ class ReadRuleEngine(
 ) :
     BaseScriptEngine(ttsrvObject = BaseScriptEngineContext(context = context, "ReadRule")) {
     companion object {
-        const val OBJ_JS = "ReadRuleJS"
+        const val OBJ_JS = "SpeechRuleJS"
 
         const val FUNC_HANDLE_TEXT = "handleText"
     }

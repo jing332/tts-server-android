@@ -21,7 +21,7 @@ data class SpeechRuleInfo(
     @ColumnInfo(defaultValue = "")
     var tag: String = "",
     @ColumnInfo(defaultValue = "")
-    val tagRuleId: String = "",
+    var tagRuleId: String = "",
 ) :
     Parcelable {
 

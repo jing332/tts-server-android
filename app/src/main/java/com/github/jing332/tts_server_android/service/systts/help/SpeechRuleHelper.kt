@@ -2,15 +2,15 @@ package com.github.jing332.tts_server_android.service.systts.help
 
 import android.content.Context
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
-import com.github.jing332.tts_server_android.model.rhino.readrule.ReadRuleEngine
+import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
 import com.github.jing332.tts_server_android.model.speech.TtsText
 import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 
-class ReadRuleHelper {
-    lateinit var engine: ReadRuleEngine
+class SpeechRuleHelper {
+    lateinit var engine: SpeechRuleEngine
 
     fun init(context: Context, rule: SpeechRule) {
-        engine = ReadRuleEngine(context, rule)
+        engine = SpeechRuleEngine(context, rule)
         engine.eval()
     }
 

@@ -35,7 +35,7 @@ class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
         }
 
         val rule = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: SpeechRule()
-        vm.init(rule, assets.open("defaultData/read_rule.js").readAllText())
+        vm.init(rule, assets.open("defaultData/speech_rule.js").readAllText())
     }
 
     override fun updateCode(code: String) {

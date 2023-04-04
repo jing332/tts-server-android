@@ -15,6 +15,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
@@ -76,7 +77,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
 
     val currentRule: SpeechRule?
         get() {
-            return binding.ruleItems?.get(binding.ruleCurrentPosition)?.let {
+            return binding.ruleItems?.getOrNull(binding.ruleCurrentPosition)?.let {
                 return it.value as SpeechRule
             }
         }
@@ -152,8 +153,6 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             btnGroupRaTarget.addOnButtonCheckedListener { _, checkedId, isChecked ->
                 if (!liteModeEnabled && isChecked) {
                     val raTarget = when (checkedId) {
-                        R.id.btn_aside -> ReadAloudTarget.ASIDE
-                        R.id.btn_dialogue -> ReadAloudTarget.DIALOGUE
                         R.id.btn_custom_tag -> ReadAloudTarget.CUSTOM_TAG
                         else -> ReadAloudTarget.ALL
                     }
@@ -179,10 +178,12 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                     position: Int,
                     id: Long
                 ) {
-                    currentRule?.tags?.let { tags ->
-                        binding.tagItems = tags.map { SpinnerItem("${it.value} (${it.key})", it) }
+                    currentRule?.let { rule ->
+                        binding.tagItems =
+                            rule.tags.map { SpinnerItem("${it.value} (${it.key})", it) }
                         binding.tagCurrentPosition =
-                            max(0, tags.keys.indexOf(mData?.speechRule?.tag))
+                            max(0, rule.tags.keys.indexOf(mData?.speechRule?.tag))
+                        binding.spinnerTag.callItemSelected()
                     }
                 }
 
@@ -200,7 +201,10 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                     id: Long
                 ) {
                     mData?.apply {
-                        tag = currentTag.key
+                        currentRule?.let {
+                            speechRule.tagRuleId = it.ruleId
+                            speechRule.tag = currentTag.key
+                        }
                     }
                 }
 
