@@ -36,12 +36,14 @@ class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(app
         get() = mRuleEngine.code
         set(value) {
             mRuleEngine.code = value
+            mSpeechRule.code = value
         }
 
     fun init(speechRule: SpeechRule, defaultCode: String) {
         mSpeechRule = speechRule
-        if (speechRule.code.isBlank()) mSpeechRule.code = defaultCode
-        mRuleEngine = SpeechRuleEngine(getApplication(), mSpeechRule, "", Logger())
+
+        if (mSpeechRule.code.isBlank()) mSpeechRule.code = defaultCode
+        mRuleEngine = SpeechRuleEngine(getApplication(), mSpeechRule, mSpeechRule.code, Logger())
 
         _codeLiveData.value = mSpeechRule.code
     }
