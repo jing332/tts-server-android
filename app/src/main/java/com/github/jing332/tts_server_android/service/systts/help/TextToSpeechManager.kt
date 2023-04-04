@@ -157,6 +157,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         return audioResult
     }
 
+    private val mTextReplacer = TextReplacer()
     private val mAudioDecoder = AudioDecoder()
     private var mAudioPlayer: AudioPlayer? = null
     private var mBgmPlayer: BgmPlayer? = null
@@ -204,6 +205,9 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     }
 
     override fun load() {
+        if (SysTtsConfig.isReplaceEnabled)
+            mTextReplacer.load()
+
         audioFormat = if (isMultiVoice) {
             if (initConfig(SpeechTarget.CUSTOM_TAG)) {
                 mConfigMap[SpeechTarget.CUSTOM_TAG]?.getOrNull(0)?.let {
@@ -244,7 +248,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         isSynthesizing = true
         mBgmPlayer?.play()
 
-        synthesizeText(text, sysRate, sysPitch) { audio, txtTts -> // 音频获取完毕
+        val replaced = if (SysTtsConfig.isReplaceEnabled) mTextReplacer.replace(text) else text
+        synthesizeText(replaced, sysRate, sysPitch) { audio, txtTts -> // 音频获取完毕
             if (!coroutineContext.isActive) return@synthesizeText
 
             if (txtTts.tts.isDirectPlay())
