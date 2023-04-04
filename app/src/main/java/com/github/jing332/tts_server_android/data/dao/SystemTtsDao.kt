@@ -16,13 +16,10 @@ interface SystemTtsDao {
     @get:Query("SELECT * FROM sysTts")
     val flowAllTts: Flow<List<SystemTts>>
 
-    @get:Query("SELECT count(isStandby = '1') FROM sysTts")
+    @get:Query("SELECT count(speechRule_isStandby = '1') FROM sysTts")
     val standbyTtsCount: Int
 
-    @Query("SELECT * FROM sysTts WHERE isStandby = '1' AND isEnabled = '1' AND readAloudTarget = :target")
-    fun getEnabledStandbyList(target: Int = ReadAloudTarget.ALL): List<SystemTts>
-
-    @Query("SELECT * FROM sysTts WHERE isEnabled = '1' AND readAloudTarget = :target AND isStandby = :isStandbyType")
+    @Query("SELECT * FROM sysTts WHERE isEnabled = '1' AND  speechRule_target = :target AND speechRule_isStandby = :isStandbyType")
     fun getEnabledList(
         target: Int = ReadAloudTarget.ALL,
         isStandbyType: Boolean = false

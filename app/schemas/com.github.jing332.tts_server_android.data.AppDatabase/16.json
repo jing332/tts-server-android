@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 16,
-    "identityHash": "9642746ee8a52c1a5e443cbc7b0660f2",
+    "identityHash": "a41d35ae3e4adcc466d0bdf126b300f1",
     "entities": [
       {
         "tableName": "sysTts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `groupId` INTEGER NOT NULL DEFAULT 1, `displayName` TEXT, `isEnabled` INTEGER NOT NULL, `isStandby` INTEGER NOT NULL DEFAULT 0, `readAloudTarget` INTEGER NOT NULL, `tts` TEXT NOT NULL, `order` INTEGER NOT NULL DEFAULT 0)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `groupId` INTEGER NOT NULL DEFAULT 1, `displayName` TEXT, `isEnabled` INTEGER NOT NULL, `tts` TEXT NOT NULL, `order` INTEGER NOT NULL DEFAULT 0, `speechRule_target` INTEGER NOT NULL, `speechRule_isStandby` INTEGER NOT NULL, `speechRule_tag` TEXT NOT NULL DEFAULT '', `speechRule_tagRuleId` TEXT NOT NULL DEFAULT '')",
         "fields": [
           {
             "fieldPath": "id",
@@ -34,19 +34,6 @@
             "notNull": true
           },
           {
-            "fieldPath": "isStandby",
-            "columnName": "isStandby",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
-          },
-          {
-            "fieldPath": "readAloudTarget",
-            "columnName": "readAloudTarget",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "tts",
             "columnName": "tts",
             "affinity": "TEXT",
@@ -58,6 +45,32 @@
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "0"
+          },
+          {
+            "fieldPath": "speechRule.target",
+            "columnName": "speechRule_target",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "speechRule.isStandby",
+            "columnName": "speechRule_isStandby",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "speechRule.tag",
+            "columnName": "speechRule_tag",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "speechRule.tagRuleId",
+            "columnName": "speechRule_tagRuleId",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
           }
         ],
         "primaryKey": {
@@ -273,75 +286,12 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "readRules",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `isEnabled` INTEGER NOT NULL, `name` TEXT NOT NULL, `version` INTEGER NOT NULL, `ruleId` TEXT NOT NULL, `author` TEXT NOT NULL, `code` TEXT NOT NULL, `order` INTEGER NOT NULL DEFAULT 0)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isEnabled",
-            "columnName": "isEnabled",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "version",
-            "columnName": "version",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "ruleId",
-            "columnName": "ruleId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "author",
-            "columnName": "author",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "code",
-            "columnName": "code",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "order",
-            "columnName": "order",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9642746ee8a52c1a5e443cbc7b0660f2')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a41d35ae3e4adcc466d0bdf126b300f1')"
     ]
   }
 }

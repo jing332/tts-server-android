@@ -17,6 +17,7 @@ import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
 import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
+import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.toast
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
@@ -43,10 +44,10 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
 
     init {
-        SysTtsLib.setTimeout(5000)
+        SysTtsLib.setTimeout(SysTtsConfig.requestTimeout)
     }
 
-    val configMap: MutableMap<Int, List<ITextToSpeechEngine>> = mutableMapOf()
+    private val mConfigMap: MutableMap<Int, List<ITextToSpeechEngine>> = mutableMapOf()
     private val mLoadedTtsMap = mutableSetOf<ITextToSpeechEngine>()
     private val mReadRuleHelper = ReadRuleHelper()
 
@@ -55,28 +56,28 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     private fun initConfig(target: Int): Boolean {
         var isMissing = false
-        configMap[target] =
+        mConfigMap[target] =
             appDb.systemTtsDao.getEnabledList(target, false).map {
                 it.tts.apply {
-                    info.target = it.readAloudTarget
-                    info.tag = it.customTag
+                    speechRule.target = it.readAloudTarget
+                    speechRule.tag = it.speechRule.tag
                 }
             }
-        if (configMap[target]?.isEmpty() == true) {
+        if (mConfigMap[target]?.isEmpty() == true) {
             isMissing = true
             Log.w(TAG, "缺少朗读目标$target, 使用内置MsTTS！")
-            configMap[target] = listOf(MsTTS())
+            mConfigMap[target] = listOf(MsTTS())
         }
 
         val standby =
             appDb.systemTtsDao.getEnabledList(target, true).map {
                 it.tts.apply {
-                    info.target = it.readAloudTarget
-                    info.tag = it.customTag
+                    speechRule.target = it.readAloudTarget
+                    speechRule.tag = it.speechRule.tag
                 }
             }.getOrNull(0)
-        configMap[target]?.forEach {
-            it.info.standbyTts = standby
+        mConfigMap[target]?.forEach {
+            it.speechRule.standbyTts = standby
         }
 
         return isMissing
@@ -85,21 +86,23 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     override suspend fun handleText(text: String): List<TtsText<ITextToSpeechEngine>> {
         return if (isMultiVoice) {
             val tagTtsMap = mutableMapOf<String, ITextToSpeechEngine>()
-            configMap[ReadAloudTarget.CUSTOM_TAG]?.forEach {
-                tagTtsMap[it.info.tag] = it
+            mConfigMap[ReadAloudTarget.CUSTOM_TAG]?.forEach {
+                tagTtsMap[it.speechRule.tag] = it
             }
-            return mReadRuleHelper.handleText(text, tagTtsMap, MsTTS())
 
-            /* TextAnalyzer.splitMultiVoice(
-                 text,
-                 configMap[ReadAloudTarget.ASIDE]!!,
-                 configMap[ReadAloudTarget.DIALOGUE]!!,
-                 0
-             ).map {
-                 TtsText(it.tts, it.speakText)
-             }*/
+            mReadRuleHelper.handleText(text, tagTtsMap, MsTTS())
         } else {
-            listOf(TtsText(configMap[ReadAloudTarget.ALL]!![0], text))
+            listOf(TtsText(mConfigMap[ReadAloudTarget.ALL]!![0], text))
+        }.run {
+            if (SysTtsConfig.isSplitEnabled) {
+                val list = mutableListOf<TtsText<ITextToSpeechEngine>>()
+                forEach { ttsText ->
+                    StringUtils.splitSentences(ttsText.text).forEach {
+                        list.add(TtsText(ttsText.tts, it))
+                    }
+                }
+                list
+            } else this
         }
     }
 
@@ -125,7 +128,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     RequestException(text = text, tts = tts, cause = e, times = times)
                 )
                 // 备用TTS
-                tts.info.standbyTts?.let { sbyTts ->
+                tts.speechRule.standbyTts?.let { sbyTts ->
                     Log.i(TAG, "使用备用TTS：$sbyTts")
                     audioResult = getAudio(sbyTts, text, rate, pitch)
                     return@retry false // 取消重试
@@ -203,14 +206,14 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     override fun load() {
         audioFormat = if (isMultiVoice) {
-            mReadRuleHelper.init(context, appDb.readRuleDao.all[0])
+//            mReadRuleHelper.init(context, appDb.readRuleDao.all[0])
 
             initConfig(ReadAloudTarget.CUSTOM_TAG)
-            configMap[ReadAloudTarget.CUSTOM_TAG]!![0].audioFormat
+            mConfigMap[ReadAloudTarget.CUSTOM_TAG]!![0].audioFormat
         } else {
             if (initConfig(ReadAloudTarget.ALL))
                 context.toast(R.string.systts_warn_no_ra_all)
-            configMap[ReadAloudTarget.ALL]!![0].audioFormat
+            mConfigMap[ReadAloudTarget.ALL]!![0].audioFormat
         }
 
         initBgm()
@@ -244,7 +247,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 txtTts.tts.startPlay(txtTts.text, sysRate, sysPitch)
             else if (audio == null) {
                 Log.w(TAG, "音频为空！ $txtTts")
-                txtTts.tts.info.standbyTts?.startPlay(txtTts.text, sysRate, sysPitch)
+                txtTts.tts.speechRule.standbyTts?.startPlay(txtTts.text, sysRate, sysPitch)
             } else {
                 if (txtTts.tts.audioFormat.isNeedDecode)
                     if (SysTtsConfig.isInAppPlayAudio) {

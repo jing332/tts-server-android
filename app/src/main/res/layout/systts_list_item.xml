@@ -118,7 +118,7 @@
                     android:layout_marginBottom="4dp"
                     android:focusable="false"
                     android:importantForAccessibility="no"
-                    android:text="@{m.data.typeString}"
+                    android:text="@{m.api}"
                     android:textColor="@android:color/holo_orange_dark"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -9,10 +9,10 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.data.dao.PluginDao
-import com.github.jing332.tts_server_android.data.dao.ReadRuleDao
+import com.github.jing332.tts_server_android.data.dao.SpeechRuleDao
 import com.github.jing332.tts_server_android.data.dao.ReplaceRuleDao
 import com.github.jing332.tts_server_android.data.dao.SystemTtsDao
-import com.github.jing332.tts_server_android.data.entities.ReadRule
+import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
@@ -26,7 +26,7 @@ val appDb by lazy { AppDatabase.createDatabase(App.context) }
     entities = [
         SystemTts::class, SystemTtsGroup::class,
         ReplaceRule::class, ReplaceRuleGroup::class,
-        Plugin::class, ReadRule::class
+        Plugin::class, SpeechRule::class
     ],
     autoMigrations = [
         AutoMigration(from = 7, to = 8),
@@ -37,9 +37,8 @@ val appDb by lazy { AppDatabase.createDatabase(App.context) }
         AutoMigration(from = 12, to = 13, AppDatabase.DeleteSystemTtsColumn::class),
         AutoMigration(from = 13, to = 14),
         AutoMigration(from = 14, to = 15),
-        AutoMigration(from = 15, to = 16),
+        // 15-16
         AutoMigration(from = 16, to = 17),
-//        AutoMigration(from = 17, to = 18),
 //        AutoMigration(from = 18, to = 19),
 //        AutoMigration(from = 19, to = 20),
     ]
@@ -48,7 +47,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val replaceRuleDao: ReplaceRuleDao
     abstract val systemTtsDao: SystemTtsDao
     abstract val pluginDao: PluginDao
-    abstract val readRuleDao: ReadRuleDao
+    abstract val speechRule: SpeechRuleDao
 
     companion object {
         private const val DATABASE_NAME = "systts.db"
@@ -56,10 +55,8 @@ abstract class AppDatabase : RoomDatabase() {
         fun createDatabase(context: Context) = Room
             .databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
             .allowMainThreadQueries()
-            .fallbackToDestructiveMigrationOnDowngrade()
-            .fallbackToDestructiveMigration()
+            .addMigrations(*DataBaseMigration.migrations)
             .build()
-
     }
 
     @DeleteColumn(tableName = "sysTts", columnName = "isBgm")

@@ -12,7 +12,6 @@ object StringUtils {
     fun formattedDate(): String =
         SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
 
-
     /**
      *  是否为不发音的字符串
      */

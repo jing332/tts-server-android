@@ -14,7 +14,7 @@ import com.drake.brv.utils.setup
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.ReadRule
+import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.databinding.SysttsReadRuleItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsReadRuleManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
@@ -31,8 +31,8 @@ class ReadRuleManagerActivity : AppBackActivity<SysttsReadRuleManagerActivityBin
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             result?.data?.let { intent ->
-                intent.getParcelableExtra<ReadRule>(KeyConst.KEY_DATA)?.let {
-                    appDb.readRuleDao.insert(it)
+                intent.getParcelableExtra<SpeechRule>(KeyConst.KEY_DATA)?.let {
+                    appDb.speechRule.insert(it)
                 }
             }
         }
@@ -46,7 +46,7 @@ class ReadRuleManagerActivity : AppBackActivity<SysttsReadRuleManagerActivityBin
             onCreate {
                 itemView.clickWithThrottle {
                     val model = getModel<ReadRuleModel>()
-                    appDb.readRuleDao.update(*appDb.readRuleDao.all.map {
+                    appDb.speechRule.update(*appDb.speechRule.all.map {
                         it.isEnabled = model.data.id == it.id
                         it
                     }.toTypedArray())
@@ -56,7 +56,7 @@ class ReadRuleManagerActivity : AppBackActivity<SysttsReadRuleManagerActivityBin
                         val model = getModel<ReadRuleModel>()
                         AppDialogs.displayDeleteDialog(
                             this@ReadRuleManagerActivity, model.title
-                        ) { appDb.readRuleDao.delete(model.data) }
+                        ) { appDb.speechRule.delete(model.data) }
                     }
                     btnEdit.clickWithThrottle {
                         val model = getModel<ReadRuleModel>()
@@ -68,14 +68,14 @@ class ReadRuleManagerActivity : AppBackActivity<SysttsReadRuleManagerActivityBin
                         })
                     }
                     cbSwitch.setOnClickListener {
-                        appDb.readRuleDao.update(getModel<ReadRuleModel>().data.copy(isEnabled = cbSwitch.isChecked))
+                        appDb.speechRule.update(getModel<ReadRuleModel>().data.copy(isEnabled = cbSwitch.isChecked))
                     }
                 }
             }
         }
 
         lifecycleScope.launch {
-            appDb.readRuleDao.flowAll().conflate().collect { list ->
+            appDb.speechRule.flowAll().conflate().collect { list ->
                 brv.models = list.map { ReadRuleModel(it) }
             }
 

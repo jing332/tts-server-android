@@ -9,16 +9,15 @@ import androidx.room.TypeConverters
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import kotlinx.serialization.json.Json
 
-@Entity(tableName = "readRules")
+@Entity(tableName = "speech_rules")
 @Parcelize
-@TypeConverters(ReadRule.Converters::class)
+@TypeConverters(SpeechRule.Converters::class)
 @Serializable
-data class ReadRule(
+data class SpeechRule(
     @Transient
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    val id: Long = System.currentTimeMillis(),
 
     @Transient
     var isEnabled: Boolean = false,

@@ -33,6 +33,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:orientation="vertical">
 
         <LinearLayout
@@ -42,7 +43,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_set_player_params"
+                android:id="@+id/btn_player_settings"
                 style="?attr/materialIconButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,7 +61,7 @@
                 android:text="@string/as_standby" />
 
             <ImageButton
-                android:id="@+id/btn_help_standby"
+                android:id="@+id/btn_standby_help"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_gravity="center_vertical"
@@ -100,19 +101,19 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_aside"
                     style="?attr/materialButtonOutlinedStyle"
-                    visible="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ra_aside"
+                    android:visibility="gone"
                     app:icon="@drawable/ic_baseline_menu_book_24" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_dialogue"
                     style="?attr/materialButtonOutlinedStyle"
-                    visible="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ra_dialogue"
+                    android:visibility="gone"
                     app:icon="@drawable/ic_baseline_supervisor_account_24"
                     tools:ignore="TextContrastCheck" />
 
@@ -121,7 +122,7 @@
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="标签"
+                    android:text="@string/tag"
                     app:icon="@drawable/baseline_tag_24"
                     tools:ignore="TextContrastCheck" />
 

@@ -8,6 +8,7 @@ import com.drake.net.Net
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditBottomSheetBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
@@ -37,7 +38,7 @@ data class HttpTTS(
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
     override var audioPlayer: PlayerParams = PlayerParams(),
     @Transient
-    override var info: TtsInfo = TtsInfo(),
+    override var speechRule: SpeechRuleInfo = SpeechRuleInfo(),
 
     ) : Parcelable, ITextToSpeechEngine() {
     override fun isRateFollowSystem(): Boolean {

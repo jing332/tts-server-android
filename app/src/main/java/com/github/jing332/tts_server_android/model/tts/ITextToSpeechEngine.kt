@@ -6,6 +6,7 @@ import android.os.Parcelable
 import android.view.View
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import kotlinx.parcelize.IgnoredOnParcel
@@ -32,7 +33,7 @@ sealed class ITextToSpeechEngine(
     abstract var volume: Int
     abstract var rate: Int
 
-    abstract var info: TtsInfo
+    abstract var speechRule: SpeechRuleInfo
     abstract var audioFormat: BaseAudioFormat
     abstract var audioPlayer: PlayerParams
 

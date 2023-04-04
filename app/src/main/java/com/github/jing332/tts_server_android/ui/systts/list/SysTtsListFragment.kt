@@ -108,11 +108,11 @@ class SysTtsListFragment : Fragment() {
         }
 
         // 插入默认分组
-        if (appDb.systemTtsDao.getGroup() == null) {
-            appDb.systemTtsDao.insertGroup(
-                SystemTtsGroup(id = DEFAULT_GROUP_ID, name = getString(R.string.default_group))
-            )
-        }
+//        if (appDb.systemTtsDao.getGroup() == null) {
+//            appDb.systemTtsDao.insertGroup(
+//                SystemTtsGroup(id = DEFAULT_GROUP_ID, name = getString(R.string.default_group))
+//            )
+//        }
 
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(MyMenuProvider(), viewLifecycleOwner, Lifecycle.State.RESUMED)

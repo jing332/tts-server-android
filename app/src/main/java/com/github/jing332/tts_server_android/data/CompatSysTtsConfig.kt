@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.data
 
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.MsTTS
@@ -44,7 +45,7 @@ data class CompatSysTtsConfig(
                 list.forEach {
                     appDb.systemTtsDao.insertTts(
                         SystemTts(
-                            readAloudTarget = it.readAloudTarget,
+                            speechRule = SpeechRuleInfo(target = it.readAloudTarget),
                             tts = it.voiceProperty,
                             displayName = it.uiData.displayName,
                             isEnabled = it.isEnabled

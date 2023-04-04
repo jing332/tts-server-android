@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsLocalEditBottomSheetBinding
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
@@ -43,7 +44,7 @@ data class LocalTTS(
     override var audioPlayer: PlayerParams = PlayerParams(),
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(isNeedDecode = true),
     @Transient
-    override var info: TtsInfo = TtsInfo(),
+    override var speechRule: SpeechRuleInfo = SpeechRuleInfo(),
 ) : Parcelable, ITextToSpeechEngine() {
     companion object {
         private const val TAG = "LocalTTS"
@@ -243,7 +244,12 @@ data class LocalTTS(
 
             waitJob = launch {
                 mTtsEngine?.apply {
-                    synthesizeToFile(text, setEnginePlayParams(this, rate, pitch), file, currentJobId)
+                    synthesizeToFile(
+                        text,
+                        setEnginePlayParams(this, rate, pitch),
+                        file,
+                        currentJobId
+                    )
                     // 等待完毕
                     try {
                         awaitCancellation()

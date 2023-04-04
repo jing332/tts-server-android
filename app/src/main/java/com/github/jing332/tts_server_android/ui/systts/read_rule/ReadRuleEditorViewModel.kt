@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.github.jing332.tts_server_android.data.entities.ReadRule
+import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.model.rhino.ExceptionExt.lineMessage
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.rhino.readrule.ReadRuleEngine
@@ -23,14 +23,14 @@ class ReadRuleEditorViewModel(application: Application) : AndroidViewModel(appli
     val codeLiveData: LiveData<String>
         get() = _codeLiveData
 
-    private lateinit var mReadRule: ReadRule
+    private lateinit var mSpeechRule: SpeechRule
     private lateinit var mRuleEngine: ReadRuleEngine
 
     val logger: Logger
         get() = mRuleEngine.logger
 
-    val readRule: ReadRule
-        get() = mReadRule
+    val speechRule: SpeechRule
+        get() = mSpeechRule
 
     var code: String
         get() = mRuleEngine.code
@@ -38,12 +38,12 @@ class ReadRuleEditorViewModel(application: Application) : AndroidViewModel(appli
             mRuleEngine.code = value
         }
 
-    fun init(readRule: ReadRule, defaultCode: String) {
-        mReadRule = readRule
-        if (readRule.code.isBlank()) mReadRule.code = defaultCode
-        mRuleEngine = ReadRuleEngine(getApplication(), mReadRule, "", Logger())
+    fun init(speechRule: SpeechRule, defaultCode: String) {
+        mSpeechRule = speechRule
+        if (speechRule.code.isBlank()) mSpeechRule.code = defaultCode
+        mRuleEngine = ReadRuleEngine(getApplication(), mSpeechRule, "", Logger())
 
-        _codeLiveData.value = mReadRule.code
+        _codeLiveData.value = mSpeechRule.code
     }
 
     fun evalRuleInfo(): Boolean {

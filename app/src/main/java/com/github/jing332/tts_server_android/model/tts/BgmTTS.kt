@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.model.tts
 import android.app.Activity
 import android.view.View
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsBgmEditBottomSheetBinding
 import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivity
@@ -18,7 +19,6 @@ import kotlinx.serialization.Transient
 @SerialName("bgm")
 class BgmTTS(
     var musicList: MutableSet<String> = mutableSetOf(),
-    var isShuffleMode: Boolean = false,
 
     override var pitch: Int = 0,
     override var volume: Int = 0,
@@ -26,7 +26,7 @@ class BgmTTS(
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
     override var audioPlayer: PlayerParams = PlayerParams(),
     @Transient
-    override var info: TtsInfo = TtsInfo()
+    override var speechRule: SpeechRuleInfo = SpeechRuleInfo()
 ) : ITextToSpeechEngine() {
     override fun getEditActivity(): Class<out Activity> = BgmTtsEditActivity::class.java
     override fun getType() = context.getString(R.string.local)

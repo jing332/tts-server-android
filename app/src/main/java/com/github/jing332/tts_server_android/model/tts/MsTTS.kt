@@ -9,6 +9,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsMsEditBottomSheetBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
@@ -40,7 +41,7 @@ data class MsTTS(
     @Transient
     override var audioFormat: BaseAudioFormat = MsTtsFormatManger.getFormatOrDefault(format),
     @Transient
-    override var info: TtsInfo = TtsInfo(),
+    override var speechRule: SpeechRuleInfo = SpeechRuleInfo(),
 ) : Parcelable, ITextToSpeechEngine() {
     companion object {
         const val RATE_FOLLOW_SYSTEM = -100
@@ -48,8 +49,6 @@ data class MsTTS(
 
         const val DEFAULT_LOCALE = "zh-CN"
         const val DEFAULT_VOICE = "zh-CN-XiaoxiaoNeural"
-
-        //        const val DEFAULT_VOICE_ID = "5f55541d-c844-4e04-a7f8-1723ffbea4a9"
     }
 
     @IgnoredOnParcel

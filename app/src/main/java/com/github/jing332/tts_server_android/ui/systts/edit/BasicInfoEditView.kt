@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -26,7 +25,6 @@ import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 
@@ -86,9 +84,9 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
         set(value) {
             field = value
             binding.btnGroupRaTarget.isGone = value
-            binding.btnHelpStandby.isGone = value
+            binding.btnStandbyHelp.isGone = value
             binding.cbStandby.isGone = value
-            binding.btnSetPlayerParams.isGone = value
+            binding.btnPlayerSettings.isGone = value
         }
 
 
@@ -99,10 +97,10 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             binding.groupItems = groupList.map { SpinnerItem(it.name, it) }
             binding.groupCurrentPosition = groupList.indexOfFirst { it.id == data.groupId }
 
-            appDb.readRuleDao.allEnabled.getOrNull(0)?.tags?.let { tags ->
-                binding.tagItems = tags.map { SpinnerItem("${it.value} (${it.key})", it) }
-                binding.tagCurrentPosition = tags.keys.indexOf(data.customTag)
-            }
+//            appDb.readRuleDao.allEnabled.getOrNull(0)?.tags?.let { tags ->
+//                binding.tagItems = tags.map { SpinnerItem("${it.value} (${it.key})", it) }
+//                binding.tagCurrentPosition = tags.keys.indexOf(data.speechRule.tag)
+//            }
         }
 
         this.mData = data
@@ -122,8 +120,8 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
 
     init {
         binding.apply {
-            btnSetPlayerParams.clickWithThrottle { displayPlayerParamsSettings() }
-            btnHelpStandby.clickWithThrottle {
+            btnPlayerSettings.clickWithThrottle { displayPlayerParamsSettings() }
+            btnStandbyHelp.clickWithThrottle {
                 MaterialAlertDialogBuilder(context).setTitle(R.string.systts_as_standby_help)
                     .setMessage(R.string.systts_standby_help_msg)
                     .setPositiveButton(android.R.string.ok, null)
@@ -169,8 +167,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                     id: Long
                 ) {
                     mData?.apply {
-                        customTag = currentTag.key
-                        customTagDisplay = currentTag.value
+                        tag = currentTag.key
                     }
                 }
 

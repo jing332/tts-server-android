@@ -9,6 +9,7 @@ import com.github.jing332.tts_server_android.data.entities.AbstractListGroup
 import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.model.tts.MsTTS
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -25,26 +26,14 @@ data class SystemTts(
     // 所属组的ID
     @ColumnInfo(defaultValue = AbstractListGroup.DEFAULT_GROUP_ID.toString())
     var groupId: Long = AbstractListGroup.DEFAULT_GROUP_ID,
-    // 名称
+
     var displayName: String? = null,
 
-    // 是否启用
-    @kotlinx.serialization.Transient
+    @Transient
     var isEnabled: Boolean = false,
 
-    @ColumnInfo(defaultValue = "0")
-    var isStandby: Boolean = false,
-
-    // 朗读目标
-    @ReadAloudTarget
-    var readAloudTarget: Int = ReadAloudTarget.ALL,
-
-    @ColumnInfo(defaultValue = "")
-    var customTag: String = "",
-
-    @Transient
-    @ColumnInfo(defaultValue = "")
-    var customTagDisplay: String = "",
+    @Embedded("speechRule_")
+    var speechRule: SpeechRuleInfo = SpeechRuleInfo(),
 
     var tts: ITextToSpeechEngine,
 
@@ -52,13 +41,25 @@ data class SystemTts(
     @ColumnInfo(defaultValue = "0")
     var order: Int = 0,
 ) : Parcelable {
-    val raTargetString: String
-        get() = ReadAloudTarget.toText(readAloudTarget)
+    // 朗读目标
+    @Deprecated("")
+    @ReadAloudTarget
+    @SerialName("readAloudTarget")
+    @get:Ignore
+    var readAloudTarget: Int
+        get() = speechRule.target
+        set(value) {
+            speechRule.target = value
+        }
 
-    val typeString: String
-        get() {
-            return if (isStandby) App.context.getString(R.string.systts_standby) + " - " + tts.getType()
-            else tts.getType()
+    @Deprecated("")
+    @ReadAloudTarget
+    @SerialName("isStandby")
+    @get:Ignore
+    var isStandby: Boolean
+        get() = speechRule.isStandby
+        set(value) {
+            speechRule.isStandby = value
         }
 
     // 转换器

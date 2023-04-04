@@ -6,11 +6,9 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.view.menu.MenuBuilder
-import androidx.core.view.MenuCompat
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
-import com.github.jing332.tts_server_android.data.entities.ReadRule
+import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.help.config.ReadRuleConfig
 import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -36,7 +34,7 @@ class ReadRuleEditorActivity : BaseScriptEditorActivity() {
             editor.setText(it)
         }
 
-        val rule = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: ReadRule()
+        val rule = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: SpeechRule()
         vm.init(rule, assets.open("defaultData/read_rule.js").readAllText())
     }
 
@@ -50,7 +48,7 @@ class ReadRuleEditorActivity : BaseScriptEditorActivity() {
 
     override fun onSave(): Parcelable? {
         return if (vm.evalRuleInfo())
-            vm.readRule
+            vm.speechRule
         else null
     }
 

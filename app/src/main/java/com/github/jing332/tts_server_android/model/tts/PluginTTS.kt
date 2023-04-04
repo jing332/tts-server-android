@@ -6,6 +6,7 @@ import androidx.annotation.Keep
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditBottomSheetBinding
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginEngine
@@ -36,7 +37,7 @@ data class PluginTTS(
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
     override var audioPlayer: PlayerParams = PlayerParams(),
     @Transient
-    override var info: TtsInfo = TtsInfo(),
+    override var speechRule: SpeechRuleInfo = SpeechRuleInfo(),
     @Transient
     var plugin: Plugin? = null,
 ) : ITextToSpeechEngine() {
