@@ -233,7 +233,7 @@ data class LocalTTS(
         }
     }
 
-    fun getAudioFile(text: String): File {
+    fun getAudioFile(text: String, rate: Int, pitch: Int = 0): File {
         initEngineIf()
         val currentJobId = SystemClock.elapsedRealtime().toString()
 
@@ -266,7 +266,7 @@ data class LocalTTS(
 
 
     override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
-        return getAudioFile(speakText).run { if (exists()) readBytes() else null }
+        return getAudioFile(speakText, rate, pitch).run { if (exists()) readBytes() else null }
     }
 
     override fun isDirectPlay() = isDirectPlayMode

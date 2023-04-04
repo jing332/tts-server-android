@@ -52,7 +52,6 @@ class HttpTtsParamsEditView(context: Context, attrs: AttributeSet?, defaultStyle
     }
 
     override fun onProgressChanged(seekBar: Seekbar, progress: Int, fromUser: Boolean) {
-
     }
 
     override fun onStartTrackingTouch(seekBar: Seekbar) {}

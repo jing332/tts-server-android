@@ -71,9 +71,7 @@ data class MsTTS(
 
     @IgnoredOnParcel
     override var rate: Int
-        get() {
-            return prosody.rate
-        }
+        get() = prosody.rate
         set(value) {
             prosody.rate = value
         }

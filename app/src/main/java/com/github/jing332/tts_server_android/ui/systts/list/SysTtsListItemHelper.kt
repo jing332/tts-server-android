@@ -148,14 +148,11 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         waitDialog.show()
 
         GlobalScope.launch(Dispatchers.Main) {
-            val tts = model.tts.clone<ITextToSpeechEngine>()!!
+            val tts = model.tts
             val audio = try {
                 withIO {
                     tts.onLoad()
-                    if (tts.isRateFollowSystem()) tts.rate = 50
-                    if (tts.isPitchFollowSystem()) tts.pitch = 0
-
-                    tts.getAudio(AppConfig.testSampleText)
+                    tts.getAudioBytes(AppConfig.testSampleText)
                 }
             } catch (e: Exception) {
                 context.displayErrorDialog(e)

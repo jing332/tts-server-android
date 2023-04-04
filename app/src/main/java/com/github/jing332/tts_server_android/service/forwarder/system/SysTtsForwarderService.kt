@@ -110,8 +110,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
                     }
 
                     mLocalTTS?.let {
-                        it.rate = rate
-                        val file = it.getAudioFile(text)
+                        val file = it.getAudioFile(text, rate)
                         if (file.exists()) return file.absolutePath
                     }
                     throw Exception(getString(R.string.forwarder_sys_fail_audio_file))
@@ -250,6 +249,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
                     ClipboardUtils.copyText(listenAddress)
                     toast(R.string.copied)
                 }
+
                 ACTION_NOTIFICATION_EXIT -> {
                     App.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_CLOSE_SERVER))
                 }

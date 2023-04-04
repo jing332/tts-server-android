@@ -286,7 +286,7 @@ class MsTtsEditViewModel : ViewModel() {
 
     fun doTest(
         text: String,
-        onSuccess: suspend (audio: ByteArray, sampleRate: Int, mime:String) -> Unit,
+        onSuccess: suspend (audio: ByteArray, sampleRate: Int, mime: String) -> Unit,
         onFailure: (Throwable) -> Unit
     ) {
         if (mTts.format.startsWith("raw")) {
@@ -297,9 +297,7 @@ class MsTtsEditViewModel : ViewModel() {
         viewModelScope.runOnIO {
             val audio = try {
                 mTts.onLoad()
-                if (mTts.isRateFollowSystem()) mTts.rate = 0
-                if (mTts.isPitchFollowSystem()) mTts.pitch = 0
-                mTts.getAudio(text)
+                mTts.getAudioBytes(text, sysRate = 0)
             } catch (e: Exception) {
                 withMain { onFailure.invoke(e) }
                 return@runOnIO

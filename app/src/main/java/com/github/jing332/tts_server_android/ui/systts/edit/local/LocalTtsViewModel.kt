@@ -169,8 +169,6 @@ class LocalTtsViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             mTts.onLoad()
-            if (mTts.isRateFollowSystem()) mTts.rate = 50
-            if (mTts.isPitchFollowSystem()) mTts.pitch = 0
 
             mTts.engineListener = null
             if (mTts.isDirectPlayMode) {
@@ -185,7 +183,7 @@ class LocalTtsViewModel : ViewModel() {
                 withIO { mTts.startPlay(text) }
             } else {
                 withIO {
-                    mTts.getAudio(text)?.let {
+                    mTts.getAudioBytes(text)?.let {
                         val sampleRate = AudioDecoder.getSampleRateAndMime(it).first
 
                         withMain { onGetAudioSuccess(it, sampleRate) }

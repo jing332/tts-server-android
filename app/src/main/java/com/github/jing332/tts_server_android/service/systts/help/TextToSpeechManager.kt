@@ -87,9 +87,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         Log.i(TAG, "请求音频：$tts, $text")
         if (!coroutineContext.isActive) return null
 
-        val rate = if (tts.isRateFollowSystem()) sysRate else tts.rate
-        val pitch = if (tts.isPitchFollowSystem()) sysPitch else tts.pitch
-
         var audioResult: ByteArray? = null
         var retryTimes = 0
         retry(times = 20,
@@ -104,7 +101,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 if (SysTtsConfig.standbyTriggeredRetryIndex == times)
                     tts.speechRule.standbyTts?.let { sbyTts ->
                         Log.i(TAG, "使用备用TTS：$sbyTts")
-                        audioResult = getAudio(sbyTts, text, rate, pitch)
+                        audioResult = getAudio(sbyTts, text, sysRate, sysPitch)
                         return@retry false // 取消重试
                     }
                 // 空音频三次后跳过
@@ -137,10 +134,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                             timeoutJob.start()
 
                             audioResult =
-                                tts.getAudio(text, rate, pitch) ?: throw RequestException(
-                                    errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
-                                    tts = tts, text = text
-                                )
+                                tts.getAudioBytes(text, sysRate, sysPitch)
+                                    ?: throw RequestException(
+                                        errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
+                                        tts = tts, text = text
+                                    )
                             if (hasTimeout) throw Exception(
                                 context.getString(
                                     R.string.failed_timed_out,

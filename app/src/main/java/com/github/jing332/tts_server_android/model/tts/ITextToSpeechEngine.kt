@@ -31,7 +31,7 @@ sealed class ITextToSpeechEngine(
 
     abstract var pitch: Int
     abstract var volume: Int
-    abstract var rate: Int
+    abstract val rate: Int
 
     abstract var speechRule: SpeechRuleInfo
     abstract var audioFormat: BaseAudioFormat
@@ -106,8 +106,18 @@ sealed class ITextToSpeechEngine(
      * @param rate 语速 已经根据是否随系统
      * @param pitch 音高 已经根据是否随系统
      */
-    open suspend fun getAudio(speakText: String, rate: Int = 0, pitch: Int = 0): ByteArray? {
+    protected open suspend fun getAudio(
+        speakText: String,
+        rate: Int = 50,
+        pitch: Int = 0
+    ): ByteArray? {
         throw Exception("请在编辑界面点击文件夹进行播放")
+    }
+
+    suspend fun getAudioBytes(text: String, sysRate: Int = 50, sysPitch: Int = 0): ByteArray? {
+        val r = if (isRateFollowSystem()) sysRate else this.rate
+        val p = if (isPitchFollowSystem()) sysPitch else this.pitch
+        return getAudio(text, r, p)
     }
 
     /**
