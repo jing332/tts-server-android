@@ -10,12 +10,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
-import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
@@ -48,18 +46,18 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             binding.cbStandby.isChecked = value
         }
 
-    @ReadAloudTarget
-    var raTarget: Int = ReadAloudTarget.ALL
+    @SpeechTarget
+    var raTarget: Int = SpeechTarget.ALL
         set(value) {
             field = value
-            mData?.apply { readAloudTarget = field }
+            mData?.apply { speechTarget = field }
 
-            binding.layoutSpeechRule.isVisible = value == ReadAloudTarget.CUSTOM_TAG
+            binding.layoutSpeechRule.isVisible = value == SpeechTarget.CUSTOM_TAG
             binding.btnGroupRaTarget.check(
                 when (value) {
-                    ReadAloudTarget.ASIDE -> R.id.btn_aside
-                    ReadAloudTarget.DIALOGUE -> R.id.btn_dialogue
-                    ReadAloudTarget.CUSTOM_TAG -> R.id.btn_custom_tag
+                    SpeechTarget.ASIDE -> R.id.btn_aside
+                    SpeechTarget.DIALOGUE -> R.id.btn_dialogue
+                    SpeechTarget.CUSTOM_TAG -> R.id.btn_custom_tag
                     else -> R.id.btn_ra_all
                 }
             )
@@ -109,8 +107,8 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             binding.groupItems = groupList.map { SpinnerItem(it.name, it) }
             binding.groupCurrentPosition = groupList.indexOfFirst { it.id == data.groupId }
 
-            val ruleList = appDb.speechRule.allEnabled
-            withMain {
+            if (!liteModeEnabled) {
+                val ruleList = appDb.speechRule.allEnabled
                 binding.ruleItems = ruleList.map { SpinnerItem(it.name, it) }
                 binding.ruleCurrentPosition =
                     max(0, ruleList.indexOfFirst { it.ruleId == data.speechRule.tagRuleId })
@@ -120,7 +118,7 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
 
         this.mData = data
         this.displayName = data.displayName ?: ""
-        raTarget = data.readAloudTarget
+        raTarget = data.speechTarget
         isStandby = data.isStandby
     }
 
@@ -153,8 +151,8 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             btnGroupRaTarget.addOnButtonCheckedListener { _, checkedId, isChecked ->
                 if (!liteModeEnabled && isChecked) {
                     val raTarget = when (checkedId) {
-                        R.id.btn_custom_tag -> ReadAloudTarget.CUSTOM_TAG
-                        else -> ReadAloudTarget.ALL
+                        R.id.btn_custom_tag -> SpeechTarget.CUSTOM_TAG
+                        else -> SpeechTarget.ALL
                     }
                     if (this@BasicInfoEditView.raTarget != raTarget)
                         this@BasicInfoEditView.raTarget = raTarget

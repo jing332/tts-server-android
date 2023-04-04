@@ -53,6 +53,11 @@
 -keep class cn.hutool.crypto.** { *; }
 -keep class cn.hutool.core.** { *; }
 
+# ViewBinding
+-keepclassmembers class * implements androidx.viewbinding.ViewBinding {
+    *** inflate(android.view.LayoutInflater);
+}
+
 #-------------- 去掉所有打印 -------------
 
 -assumenosideeffects class android.util.Log {

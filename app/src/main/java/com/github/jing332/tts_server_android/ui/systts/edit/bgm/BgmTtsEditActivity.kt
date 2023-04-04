@@ -4,11 +4,8 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.DocumentsContract
-import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
@@ -16,7 +13,7 @@ import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.databinding.SysttsBgmEditActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBgmListItemBinding
 import com.github.jing332.tts_server_android.model.tts.BgmTTS
@@ -50,6 +47,13 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
                 displayErrorDialog(it, "目录选择失败")
             }
         }
+
+    override fun onSave() {
+        systemTts.speechRule.tagRuleId = ""
+        systemTts.speechRule.tag = ""
+        systemTts.speechRule.target = SpeechTarget.BGM
+        super.onSave()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +105,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
         }.apply { models = mutableListOf<BgmItemModel>() }
 
         binding.paramsEdit.setData(tts)
-        systemTts.readAloudTarget = ReadAloudTarget.BGM
+        systemTts.speechTarget = SpeechTarget.BGM
         updateList()
 
         checkFileReadPermission()
@@ -120,7 +124,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
                 ), 1
             )
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (!Environment.isExternalStorageManager()) {
                 MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.grant_permission_all_file)
@@ -136,8 +140,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
                     }
                     .show()
             }
-        }
-
+        }*/
     }
 
     private fun updateList() {

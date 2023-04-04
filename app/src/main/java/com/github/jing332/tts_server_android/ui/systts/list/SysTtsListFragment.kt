@@ -21,6 +21,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBgmSettingsBinding
@@ -102,16 +103,16 @@ class SysTtsListFragment : Fragment() {
 
         lifecycleScope.runOnIO {
             appDb.systemTtsDao.flowAllTts.conflate().collect {
-                checkFormatAndShowDialog(it)
+                checkSampleRate(it)
             }
         }
 
         // 插入默认分组
-//        if (appDb.systemTtsDao.getGroup() == null) {
-//            appDb.systemTtsDao.insertGroup(
-//                SystemTtsGroup(id = DEFAULT_GROUP_ID, name = getString(R.string.default_group))
-//            )
-//        }
+        if (appDb.systemTtsDao.getGroup() == null) {
+            appDb.systemTtsDao.insertGroup(
+                SystemTtsGroup(id = DEFAULT_GROUP_ID, name = getString(R.string.default_group))
+            )
+        }
 
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(MyMenuProvider(), viewLifecycleOwner, Lifecycle.State.RESUMED)
@@ -254,7 +255,7 @@ class SysTtsListFragment : Fragment() {
     }
 
     /* 检查格式 如不同则显示对话框 */
-    private fun checkFormatAndShowDialog(list: List<SystemTts>) {
+    private fun checkSampleRate(list: List<SystemTts>) {
         SysTtsConfig.apply {
             if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat(list))
                 runOnUI { formatWarnDialog.show() }

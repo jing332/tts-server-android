@@ -6,14 +6,14 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 
 @IntDef(
-    ReadAloudTarget.ALL,
-    ReadAloudTarget.ASIDE,
-    ReadAloudTarget.DIALOGUE,
-    ReadAloudTarget.BGM,
-    ReadAloudTarget.CUSTOM_TAG
+    SpeechTarget.ALL,
+    SpeechTarget.ASIDE,
+    SpeechTarget.DIALOGUE,
+    SpeechTarget.BGM,
+    SpeechTarget.CUSTOM_TAG
 )
 @Retention(AnnotationRetention.SOURCE)
-annotation class ReadAloudTarget {
+annotation class SpeechTarget {
     companion object {
         const val ALL = 0
 
@@ -26,16 +26,8 @@ annotation class ReadAloudTarget {
         const val BGM = 3 //背景音乐
         const val CUSTOM_TAG = 4 // 自定义Tag
 
-        fun toText(@ReadAloudTarget target: Int): String {
+        fun toText(@SpeechTarget target: Int): String {
             return when (target) {
-                ASIDE -> {
-                    App.context.getString(R.string.aside)
-                }
-
-                DIALOGUE -> {
-                    App.context.getString(R.string.dialogue)
-                }
-
                 BGM -> {
                     app.getString(R.string.bgm)
                 }

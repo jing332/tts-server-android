@@ -97,6 +97,7 @@ object AppDialogs {
             MaterialAlertDialogBuilder(this).apply {
                 setTitle(title ?: getString(R.string.error))
             }
+                .setIcon(R.drawable.baseline_error_24)
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)
                 .setNeutralButton(R.string.copy) { _, _ ->

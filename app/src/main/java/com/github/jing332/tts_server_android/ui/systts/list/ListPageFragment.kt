@@ -14,7 +14,6 @@ import com.drake.brv.utils.setup
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsListSimpleGroupFragmentBinding
 import com.github.jing332.tts_server_android.util.*
 import kotlinx.coroutines.Dispatchers
@@ -71,9 +70,9 @@ class ListPageFragment : Fragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             appDb.systemTtsDao.flowAllTts.conflate().collect { list ->
                 val filteredList =
-                    if (raTarget == -1) list else list.filter { it.readAloudTarget == raTarget }
+                    if (raTarget == -1) list else list.filter { it.speechTarget == raTarget }
                 val handledList =
-                    filteredList.sortedBy { it.readAloudTarget }
+                    filteredList.sortedBy { it.speechTarget }
                         .map { ItemModel(data = it, ItemOrientation.NONE) }
 
                 if (brv.models == null) withMain { brv.models = handledList }

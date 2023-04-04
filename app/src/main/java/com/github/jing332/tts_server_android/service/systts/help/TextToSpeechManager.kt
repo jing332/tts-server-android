@@ -3,7 +3,7 @@ package com.github.jing332.tts_server_android.service.systts.help
 import android.content.Context
 import android.util.Log
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
@@ -58,13 +58,13 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     override suspend fun handleText(text: String): List<TtsText<ITextToSpeechEngine>> {
         return if (isMultiVoice) {
             val tagTtsMap = mutableMapOf<String, ITextToSpeechEngine>()
-            mConfigMap[ReadAloudTarget.CUSTOM_TAG]?.forEach {
+            mConfigMap[SpeechTarget.CUSTOM_TAG]?.forEach {
                 tagTtsMap[it.speechRule.tag] = it
             }
 
             mSpeechRuleHelper.handleText(text, tagTtsMap, MsTTS())
         } else {
-            listOf(TtsText(mConfigMap[ReadAloudTarget.ALL]!![0], text))
+            listOf(TtsText(mConfigMap[SpeechTarget.ALL]!![0], text))
         }.run {
             if (SysTtsConfig.isSplitEnabled) {
                 val list = mutableListOf<TtsText<ITextToSpeechEngine>>()
@@ -192,7 +192,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     private fun initBgm() {
         val list = mutableSetOf<Pair<Float, String>>()
-        appDb.systemTtsDao.getEnabledList(ReadAloudTarget.BGM).forEach {
+        appDb.systemTtsDao.getEnabledList(SpeechTarget.BGM).forEach {
             val tts = (it.tts as BgmTTS)
             val volume = if (tts.volume == 0) SysTtsConfig.bgmVolume else it.tts.volume / 100f
             list.addAll(tts.musicList.map { path ->
@@ -207,19 +207,19 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     override fun load() {
         audioFormat = if (isMultiVoice) {
-            if (initConfig(ReadAloudTarget.CUSTOM_TAG)) {
-                mConfigMap[ReadAloudTarget.CUSTOM_TAG]?.getOrNull(0)?.let {
+            if (initConfig(SpeechTarget.CUSTOM_TAG)) {
+                mConfigMap[SpeechTarget.CUSTOM_TAG]?.getOrNull(0)?.let {
                     appDb.speechRule.getByReadRuleId(it.speechRule.tagRuleId)?.let { rule ->
                         mSpeechRuleHelper.init(context, rule)
                     }
                 }
             }
 
-            mConfigMap[ReadAloudTarget.CUSTOM_TAG]!![0].audioFormat
+            mConfigMap[SpeechTarget.CUSTOM_TAG]!![0].audioFormat
         } else {
-            if (!initConfig(ReadAloudTarget.ALL))
+            if (!initConfig(SpeechTarget.ALL))
                 context.toast(R.string.systts_warn_no_ra_all)
-            mConfigMap[ReadAloudTarget.ALL]!![0].audioFormat
+            mConfigMap[SpeechTarget.ALL]!![0].audioFormat
         }
 
         initBgm()

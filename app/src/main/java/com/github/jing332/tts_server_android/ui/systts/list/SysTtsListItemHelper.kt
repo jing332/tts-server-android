@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment
 import com.drake.brv.BindingAdapter
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
@@ -78,12 +78,12 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                         }
 
                         val model = getModel<ItemModel>().data.copy()
-                        if (model.readAloudTarget == ReadAloudTarget.BGM) return@setOnLongClickListener true
+                        if (model.speechTarget == SpeechTarget.BGM) return@setOnLongClickListener true
 
-                        if (model.readAloudTarget == ReadAloudTarget.ASIDE)
-                            model.readAloudTarget = ReadAloudTarget.DIALOGUE
+                        if (model.speechTarget == SpeechTarget.ASIDE)
+                            model.speechTarget = SpeechTarget.DIALOGUE
                         else
-                            model.readAloudTarget = ReadAloudTarget.ASIDE
+                            model.speechTarget = SpeechTarget.ASIDE
 
                         appDb.systemTtsDao.updateTts(model)
                         notifyTtsUpdate(model.isEnabled)
@@ -243,8 +243,8 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         if (checked) {
             //检测多语音是否开启
             if (!SysTtsConfig.isMultiVoiceEnabled) {
-                val target = current.readAloudTarget
-                if (target == ReadAloudTarget.ASIDE || target == ReadAloudTarget.DIALOGUE)
+                val target = current.speechTarget
+                if (target == SpeechTarget.ASIDE || target == SpeechTarget.DIALOGUE)
                     return false
             }
 
@@ -258,7 +258,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                 }
             } else if (!SysTtsConfig.isVoiceMultipleEnabled) { // 多选关闭下 确保同目标只可单选
                 list.forEach {
-                    if (!it.isStandby && it.readAloudTarget == current.readAloudTarget && it.speechRule.tag == current.speechRule.tag)
+                    if (!it.isStandby && it.speechTarget == current.speechTarget && it.speechRule.tag == current.speechRule.tag)
                         appDb.systemTtsDao.updateTts(it.copy(isEnabled = false))
                 }
             }

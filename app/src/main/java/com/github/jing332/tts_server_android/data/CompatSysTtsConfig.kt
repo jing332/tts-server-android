@@ -1,7 +1,7 @@
 package com.github.jing332.tts_server_android.data
 
 import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
@@ -45,7 +45,7 @@ data class CompatSysTtsConfig(
                 list.forEach {
                     appDb.systemTtsDao.insertTts(
                         SystemTts(
-                            speechRule = SpeechRuleInfo(target = it.readAloudTarget),
+                            speechRule = SpeechRuleInfo(target = it.speechTarget),
                             tts = it.voiceProperty,
                             displayName = it.uiData.displayName,
                             isEnabled = it.isEnabled
@@ -79,7 +79,7 @@ data class CompatSysTtsConfig(
 data class CompatSysTtsConfigItem(
     var uiData: UiData, /* UI显示数据 */
     var isEnabled: Boolean = false,  /* 是否启用 */
-    @ReadAloudTarget var readAloudTarget: Int = ReadAloudTarget.ALL,
+    @SpeechTarget var speechTarget: Int = SpeechTarget.ALL,
     var voiceProperty: MsTTS, /* 朗读属性 */
 ) : Serializable {
     @kotlinx.serialization.Serializable

@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.ui.systts.list
 
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import kotlinx.serialization.encodeToString
@@ -15,7 +16,8 @@ class SysTtsListViewModel : ViewModel() {
      * 检查多语音采样率是否相等
      */
     fun checkMultiVoiceFormat(list: List<SystemTts>): Boolean {
-        list.filter { it.isEnabled && !it.tts.isDirectPlay() }.ifEmpty { return true }
+        list.filter { it.isEnabled && !it.tts.isDirectPlay() && it.speechRule.target != SpeechTarget.BGM }
+            .ifEmpty { return true }
             .let { enabledList ->
                 val sampleRate = enabledList[0].tts.audioFormat.sampleRate
                 val size = enabledList.filter { it.tts.audioFormat.sampleRate == sampleRate }.size

@@ -2,9 +2,7 @@ package com.github.jing332.tts_server_android.data.entities.systts
 
 import android.os.Parcelable
 import androidx.room.*
-import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.ReadAloudTarget
+import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup
 import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.model.tts.MsTTS
@@ -43,17 +41,17 @@ data class SystemTts(
 ) : Parcelable {
     // 朗读目标
     @Deprecated("")
-    @ReadAloudTarget
+    @SpeechTarget
     @SerialName("readAloudTarget")
     @get:Ignore
-    var readAloudTarget: Int
+    var speechTarget: Int
         get() = speechRule.target
         set(value) {
             speechRule.target = value
         }
 
     @Deprecated("")
-    @ReadAloudTarget
+    @SpeechTarget
     @SerialName("isStandby")
     @get:Ignore
     var isStandby: Boolean

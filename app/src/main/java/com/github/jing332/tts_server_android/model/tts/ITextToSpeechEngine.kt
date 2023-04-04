@@ -106,8 +106,9 @@ sealed class ITextToSpeechEngine(
      * @param rate 语速 已经根据是否随系统
      * @param pitch 音高 已经根据是否随系统
      */
-    open suspend fun getAudio(speakText: String, rate: Int = 0, pitch: Int = 0): ByteArray? =
-        null
+    open suspend fun getAudio(speakText: String, rate: Int = 0, pitch: Int = 0): ByteArray? {
+        throw Exception("请在编辑界面点击文件夹进行播放")
+    }
 
     /**
      * 获取PCM音频流
