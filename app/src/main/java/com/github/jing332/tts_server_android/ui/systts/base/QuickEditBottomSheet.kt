@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.base
 
+import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.BasicInfoEditView
 import com.github.jing332.tts_server_android.util.setMarginMatchParent
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class QuickEditBottomSheet(
@@ -37,13 +40,21 @@ class QuickEditBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         basicEdit.liteModeEnabled = isLiteMode
         basicEdit.setData(data)
+
         setContent(editView)
         editView.setData(data.tts)
 
         (view.parent as ViewGroup).setMarginMatchParent()
     }
+
+//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+//        return BottomSheetDialog(requireContext(), theme).apply {
+//            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+//        }
+//    }
 
     private fun setContent(view: View) {
         binding.content.removeAllViews()

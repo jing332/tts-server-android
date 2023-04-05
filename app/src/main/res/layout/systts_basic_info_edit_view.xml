@@ -140,6 +140,7 @@
 
         <LinearLayout
             android:id="@+id/layout_speech_rule"
+            visible="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"

@@ -31,10 +31,12 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import java.lang.Integer.max
 
-class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
+class BasicInfoEditView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defaultStyle: Int = 0
+) :
     ConstraintLayout(context, attrs, defaultStyle) {
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null, 0)
 
     private val binding: SysttsBasicInfoEditViewBinding by lazy {
         SysttsBasicInfoEditViewBinding.inflate(context.layoutInflater, this, true)
@@ -53,10 +55,17 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             mData?.apply { speechTarget = field }
 
             binding.layoutSpeechRule.isVisible = value == SpeechTarget.CUSTOM_TAG
+
+            if (binding.layoutSpeechRule.isVisible)
+                binding.spinnerTag.callItemSelected()
+            else
+                mData?.apply {
+                    speechRule.tag = ""
+                    speechRule.tagRuleId = ""
+                }
+
             binding.btnGroupRaTarget.check(
                 when (value) {
-                    SpeechTarget.ASIDE -> R.id.btn_aside
-                    SpeechTarget.DIALOGUE -> R.id.btn_dialogue
                     SpeechTarget.CUSTOM_TAG -> R.id.btn_custom_tag
                     else -> R.id.btn_ra_all
                 }
@@ -99,7 +108,6 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
             binding.btnPlayerSettings.isGone = value
         }
 
-
     @OptIn(DelicateCoroutinesApi::class)
     fun setData(data: SystemTts) {
         GlobalScope.runOnIO {
@@ -118,7 +126,8 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
 
         this.mData = data
         this.displayName = data.displayName ?: ""
-        raTarget = data.speechTarget
+        raTarget = data.speechRule.target
+
         isStandby = data.isStandby
     }
 
@@ -199,15 +208,16 @@ class BasicInfoEditView(context: Context, attrs: AttributeSet?, defaultStyle: In
                     id: Long
                 ) {
                     mData?.apply {
-                        currentRule?.let {
-                            speechRule.tagRuleId = it.ruleId
-                            speechRule.tag = currentTag.key
-                        }
+                        if (raTarget == SpeechTarget.CUSTOM_TAG)
+                            currentRule?.let {
+                                speechRule.tagRuleId = it.ruleId
+                                speechRule.tag = currentTag.key
+                            }
                     }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    TODO("Not yet implemented")
+
                 }
 
             }

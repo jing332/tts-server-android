@@ -11,9 +11,7 @@ let SpeechRuleJS = {
         let endTag = "narration";
 
         text.split("").forEach((char, index) => {
-            if (char !== '“' && char !== '”'){
-                tmpStr += char;
-            }
+            tmpStr += char;
 
             if (char === '“') {
                 endTag = "dialogue";
