@@ -53,6 +53,9 @@
 -keep class cn.hutool.crypto.** { *; }
 -keep class cn.hutool.core.** { *; }
 
+# OKIO
+-keep class okio.* { *; }
+
 # 保持 ViewBinding 实现类中的所有名称以 “inflate” 开头的方法不被混淆
 -keepclassmembers class * implements androidx.viewbinding.ViewBinding {
     public static ** inflate(...);
