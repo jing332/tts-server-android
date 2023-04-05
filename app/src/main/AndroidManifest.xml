@@ -33,13 +33,16 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".ui.FilePickerActivity"
+            android:theme="@style/TranslucentTheme" />
+        <activity
             android:name=".ui.systts.speech_rule.SpeechRuleManagerActivity"
-            android:label="@string/read_rule_manager"
-            android:exported="true" />
+            android:exported="true"
+            android:label="@string/read_rule_manager" />
         <activity
             android:name=".ui.systts.speech_rule.SpeechRuleEditorActivity"
-            android:label="@string/edit_read_rule"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/edit_read_rule" />
         <activity
             android:name=".ui.systts.direct_upload.DirectUploadSettingsActivity"
             android:exported="false"

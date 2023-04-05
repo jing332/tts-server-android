@@ -5,4 +5,10 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="TranslucentTheme" parent="Theme.TtsServer.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+
 </resources>

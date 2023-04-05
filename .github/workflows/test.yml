@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  golib:
+  go-lib:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -36,10 +36,10 @@ jobs:
           path: tts-server-lib/*.aar
 
   build:
-    needs: golib
+    needs: go-lib
     strategy:
       matrix:
-        product: [ {name: "App原版", value: app}, {name: "Dev共存版", value: dev}, {noMinify: "无混淆", value: noMinify} ]
+        product: [ {name: "App原版", value: app}, {name: "Dev共存版", value: dev}]
         
       fail-fast: false
     runs-on: ubuntu-latest

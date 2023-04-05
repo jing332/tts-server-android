@@ -350,4 +350,5 @@
     <string name="speech_rule_script">规则脚本</string>
     <string name="empty_list">列表为空</string>
     <string name="max_retry_count">最大重试次数</string>
+    <string name="sys_doc_picker_error">打开系统文件选择器失败，自动使用内置选择器。</string>
 </resources>

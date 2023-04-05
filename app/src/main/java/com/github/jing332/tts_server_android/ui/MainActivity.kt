@@ -1,17 +1,13 @@
 package com.github.jing332.tts_server_android.ui
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.Settings
-import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -22,7 +18,6 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
-import androidx.core.app.ActivityCompat
 import androidx.core.view.MenuCompat
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
@@ -31,7 +26,6 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
-import com.drake.net.Net
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ShortCuts
@@ -39,14 +33,10 @@ import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
-import com.github.jing332.tts_server_android.service.systts.help.BgmPlayer
-import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.util.*
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
-import okhttp3.Response
-import java.io.File
 import java.util.*
 
 
@@ -115,6 +105,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 MyTools.checkUpdate(this)
             }
         }
+
     }
 
     @Suppress("DEPRECATION")

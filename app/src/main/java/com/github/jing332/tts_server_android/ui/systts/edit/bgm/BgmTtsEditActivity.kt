@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.linear
@@ -17,7 +18,9 @@ import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.databinding.SysttsBgmEditActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBgmListItemBinding
 import com.github.jing332.tts_server_android.model.tts.BgmTTS
+import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.ExoPlayerActivity
+import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
@@ -33,18 +36,23 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
 
     private val binding by lazy { SysttsBgmEditActivityBinding.inflate(layoutInflater) }
 
-    private val mDirSelection =
-        registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+    private val mFilePicker =
+        registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
             if (it == null) return@registerForActivityResult
             kotlin.runCatching {
-                val docUri = DocumentsContract.buildDocumentUriUsingTree(
-                    it, DocumentsContract.getTreeDocumentId(it)
-                )
-                val path = ASFUriUtils.getPath(this, docUri)!!
+                val path = if (it.toString().startsWith("/")) {
+                    it.toString() // 真实目录
+                } else {
+                    val docUri = DocumentsContract.buildDocumentUriUsingTree(
+                        it, DocumentsContract.getTreeDocumentId(it)
+                    )
+                    ASFUriUtils.getPath(this, docUri)!!
+                }
+
                 tts.musicList.add(path)
                 updateList()
             }.onFailure {
-                displayErrorDialog(it, "目录选择失败")
+                displayErrorDialog(it)
             }
         }
 
@@ -62,7 +70,12 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
         setEditContentView(binding.root)
 
         binding.btnAddFolder.clickWithThrottle {
-            mDirSelection.launch(Uri.EMPTY)
+            mFilePicker.launch(
+                FilePickerActivity.RequestData(
+                    false,
+                    FilePickerActivity.TYPE_SELECT_DIR
+                )
+            )
         }
 
         brv = binding.rv.linear().setup {

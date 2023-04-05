@@ -67,29 +67,10 @@ android {
     productFlavors {
         app {
             dimension = "version"
-            buildTypes.release {
-                minifyEnabled true
-                shrinkResources true
-                zipAlignEnabled true
-            }
         }
         dev {
             dimension = "version"
             applicationIdSuffix ".dev"
-            buildTypes.release {
-                minifyEnabled true
-                shrinkResources true
-                zipAlignEnabled true
-            }
-        }
-        noMinify {
-            dimension = "version"
-            applicationIdSuffix ".noMinify"
-            buildTypes.release {
-                minifyEnabled false
-                shrinkResources false
-                zipAlignEnabled false
-            }
         }
     }
 
