@@ -31,7 +31,7 @@ object AppDialogs {
     fun displayInputDialog(
         context: Context,
         title: String,
-        hint: String,
+        hint: String = "",
         text: String = "",
         onSave: (text: String) -> Unit
     ) {

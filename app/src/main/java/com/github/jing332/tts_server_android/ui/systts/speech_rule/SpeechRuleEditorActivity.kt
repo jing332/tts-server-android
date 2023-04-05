@@ -64,18 +64,18 @@ class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         return super.onCreateOptionsMenu(menu).apply {
-            menuInflater.inflate(R.menu.systts_read_rule_editor, menu)
+            menuInflater.inflate(R.menu.systts_speech_rule_editor, menu)
         }
     }
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_preview_ui -> {
+            R.id.menu_text_params -> {
                 AppDialogs.displayInputDialog(
                     this,
                     getString(R.string.set_sample_text_param),
-                    ReadRuleConfig.textParam
+                    text = ReadRuleConfig.textParam
                 ) {
                     ReadRuleConfig.textParam = it
                 }

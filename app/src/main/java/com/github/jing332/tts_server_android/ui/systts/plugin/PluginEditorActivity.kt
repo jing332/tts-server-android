@@ -14,7 +14,6 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.databinding.SysttsPluginEditorActivityBinding
 import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.tts.PluginTTS
@@ -78,7 +77,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
                 }
             }
 
-            R.id.menu_preview_ui -> previewUi()
+            R.id.menu_text_params -> previewUi()
         }
 
         return super.onOptionsItemSelected(item)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_preview_ui"
-        android:title="设置参数" />
+        android:id="@+id/menu_text_params"
+        android:title="@string/set_sample_text_param" />
 </menu>

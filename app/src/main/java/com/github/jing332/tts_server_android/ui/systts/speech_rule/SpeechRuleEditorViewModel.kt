@@ -4,11 +4,14 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.model.rhino.ExceptionExt.lineMessage
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
 import com.script.ScriptException
+import kotlinx.serialization.encodeToString
 
 class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(application) {
     private val _errorLiveData: MutableLiveData<Throwable> = MutableLiveData()
@@ -64,7 +67,9 @@ class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(app
         if (evalRuleInfo()) {
             kotlin.runCatching {
                 val list = mRuleEngine.handleText(text)
-                logger.i(list)
+                list.forEach {
+                    logger.i("${it.tag}=${it.text}\n")
+                }
             }.onFailure {
                 if (it is ScriptException) {
                     logger.e(it.lineMessage())

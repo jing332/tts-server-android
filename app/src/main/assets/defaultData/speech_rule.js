@@ -11,25 +11,23 @@ let SpeechRuleJS = {
         let endTag = "narration";
 
         text.split("").forEach((char, index) => {
-            tmpStr += char;
+            if (char !== '“' && char !== '”'){
+                tmpStr += char;
+            }
+
             if (char === '“') {
                 endTag = "dialogue";
-                pushText(tmpStr, "narration")
+                list.push({text: tmpStr, tag: "narration"});
                 tmpStr = "";
             } else if (char === '”') {
                 endTag = "narration";
                 tmpStr = tmpStr.slice(0, -1);
-                pushText(tmpStr, "dialogue")
+                list.push({text: tmpStr, tag: "dialogue"});
                 tmpStr = "";
             } else if (index === text.length - 1) {
-                pushText(tmpStr, endTag)
+                list.push({text: tmpStr, tag: endTag});
             }
         });
-
-        function pushText(str, tag){
-            if (/^(\s|\p{C}|\p{P}|\p{Z}|\p{S})+$/.test(str) == false)
-                list.push({text: str, tag: tag})
-        }
 
         return list;
     },

@@ -13,6 +13,7 @@ import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.drake.net.utils.withDefault
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
@@ -20,10 +21,12 @@ import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.databinding.SysttsSpeechRuleItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsSpeechRuleManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
+import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
 
 class SpeechRuleManagerActivity : AppBackActivity<SysttsSpeechRuleManagerActivityBinding>() {
     private lateinit var brv: BindingAdapter
@@ -110,6 +113,18 @@ class SpeechRuleManagerActivity : AppBackActivity<SysttsSpeechRuleManagerActivit
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.menu_export -> {
+                val exportFragment = ConfigExportBottomSheetFragment({
+                    App.jsonBuilder.encodeToString(appDb.speechRule.allEnabled)
+                }, { "ttsrv-speechRules" })
+                exportFragment.show(supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
+            }
+
+            R.id.menu_import -> {
+                val importFragment = ImportConfigBottomSheetFragment()
+                importFragment.show(supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
+            }
+
             R.id.menu_add -> {
                 startForResult.launch(Intent(this, SpeechRuleEditorActivity::class.java))
             }

@@ -6,7 +6,7 @@
     <group android:id="@+id/group1">
 
         <item
-            android:id="@+id/menu_preview_ui"
+            android:id="@+id/menu_text_params"
             android:icon="@drawable/ic_baseline_settings_24"
             android:title="@string/plugin_preview_ui" />
 
