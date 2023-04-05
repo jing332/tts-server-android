@@ -39,7 +39,7 @@ jobs:
     needs: golib
     strategy:
       matrix:
-        product: [ {name: "App原版", value: app}, {name: "Dev共存版", value: dev}, {nomini: "不混淆", value: nomini} ]
+        product: [ {name: "App原版", value: app}, {name: "Dev共存版", value: dev}, {noMinify: "无混淆", value: noMinify} ]
         
       fail-fast: false
     runs-on: ubuntu-latest

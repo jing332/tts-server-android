@@ -72,14 +72,14 @@ android {
             dimension = "version"
             applicationIdSuffix ".dev"
         }
-        nomini {
+        noMinify {
             dimension = "version"
-            applicationIdSuffix ".nomini"
-            minifyEnabled false
-
-            shrinkResources false
-
-            zipAlignEnabled false
+            applicationIdSuffix ".noMinify"
+            buildTypes.release {
+                minifyEnabled false
+                shrinkResources false
+                zipAlignEnabled false
+            }
         }
     }
 
