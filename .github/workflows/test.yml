@@ -39,7 +39,7 @@ jobs:
     needs: golib
     strategy:
       matrix:
-        product: [ {name: "App原版", value: app}, {name: "Dev共存版", value: dev} ]
+        product: [ {name: "App原版", value: app}, {name: "Dev共存版", value: dev}, {debug: "Debug", value: debug} ]
         
       fail-fast: false
     runs-on: ubuntu-latest
@@ -78,7 +78,11 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x gradlew
+          if [ "${{ env.product }}" = "debug" ]; then
+            ./gradlew assembleAppDebug --build-cache --parallel --daemon --warning-mode all
+          else
           ./gradlew assemble${{ env.product }}release --build-cache --parallel --daemon --warning-mode all
+          fi
 
       - name: Init environment variable
         run: |
