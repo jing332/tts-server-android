@@ -72,6 +72,15 @@ android {
             dimension = "version"
             applicationIdSuffix ".dev"
         }
+        nomini {
+            dimension = "version"
+            applicationIdSuffix ".nomini"
+            minifyEnabled false
+
+            shrinkResources false
+
+            zipAlignEnabled false
+        }
     }
 
     splits {
