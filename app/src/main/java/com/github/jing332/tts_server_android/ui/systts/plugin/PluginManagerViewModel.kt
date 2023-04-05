@@ -21,17 +21,7 @@ class PluginManagerViewModel : ViewModel() {
         return null
     }
 
-    fun importConfigFromUrl(url: String): String? {
-        kotlin.runCatching {
-            val json = Net.get(url).execute<String>()
-            importConfig(json)
-        }.onFailure {
-            return it.message ?: it.cause?.message
-        }
-        return null
-    }
-
     fun exportConfig(): String {
-        return App.jsonBuilder.encodeToString(appDb.pluginDao.all)
+        return App.jsonBuilder.encodeToString(appDb.pluginDao.allEnabled)
     }
 }

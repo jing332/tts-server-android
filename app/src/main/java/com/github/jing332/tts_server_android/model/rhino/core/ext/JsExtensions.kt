@@ -11,6 +11,9 @@ import java.io.File
 open class JsExtensions(open val context: Context, open val engineId: String) : JsNet(),
     JsCrypto,
     JsUserInterface {
+
+    fun newByteArrayList() = arrayListOf<Byte>()
+
     fun getAudioSampleRate(audio: ByteArray): Int {
         return AudioDecoder.getSampleRateAndMime(audio).first
     }
@@ -106,6 +109,4 @@ open class JsExtensions(open val context: Context, open val engineId: String) : 
     }
 
     fun randomUUID(): String = UUID.randomUUID().toString()
-
-
 }

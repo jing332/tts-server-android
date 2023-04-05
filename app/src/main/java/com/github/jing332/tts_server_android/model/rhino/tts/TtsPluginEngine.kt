@@ -38,7 +38,7 @@ open class TtsPluginEngine(
     }
 
     override fun eval(prefixCode: String): Any? {
-        return super.eval("$prefixCode ;importPackage(${AppConst.PACKET_NAME}.model.script.core.type.ws)")
+        return super.eval("$prefixCode ;importPackage(${AppConst.PACKET_NAME}.model.rhino.core.type.ws)")
     }
 
     // 已弃用, 占位
@@ -100,6 +100,10 @@ open class TtsPluginEngine(
             rate,
             pluginTTS.volume,
             pitch
-        )?.run { this as ByteArray }
+        )?.run {
+            if (this is ArrayList<*>) {
+                this.map { (it as Double).toInt().toByte() }.toByteArray()
+            } else this as ByteArray
+        }
     }
 }

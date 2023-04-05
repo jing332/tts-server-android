@@ -85,7 +85,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
 
     override fun onScriptSyncAction(name: String, body: ByteArray?) {
         when (name) {
-            "UI" -> previewUi()
+            "ui" -> previewUi()
         }
     }
 
