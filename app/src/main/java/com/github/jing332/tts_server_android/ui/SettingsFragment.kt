@@ -34,6 +34,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+        findPreference<ListPreference>("maxRetryCount")!!.apply {
+            entries = buildList<String> {
+                add("不重试")
+                addAll((1..50).map { "$it" })
+            }.toTypedArray()
+
+            entryValues = (0..50).map { "$it" }.toTypedArray()
+            kotlin.runCatching {
+                value = SysTtsConfig.maxRetryCount.toString()
+            }.onFailure { value = "1" }
+            summary = entry
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.maxRetryCount = (newValue as String).toInt()
+                true
+            }
+        }
+
         // 备用配置使用条件
         findPreference<ListPreference>("standbyTriggeredRetryIndex")!!.apply {
             entries = (1..10).map { "$it" }.toTypedArray()

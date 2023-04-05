@@ -93,6 +93,9 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             onCatch = { times, e ->
                 retryTimes = times
                 Log.i(TAG, "请求失败: times=$times, $text, $tts")
+
+                if (SysTtsConfig.maxRetryCount >= times) return@retry false
+
                 listener?.onError(
                     RequestException(text = text, tts = tts, cause = e, times = times)
                 )

@@ -54,6 +54,8 @@ object SysTtsConfig : KotprefModel() {
      */
     var requestTimeout by intPref(5000)
 
+    var maxRetryCount by intPref(3)
+
     /**
      * 备用配置在第几次重试时触发
      */

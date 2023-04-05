@@ -25,6 +25,12 @@
 
     <PreferenceCategory android:title="@string/system_tts">
         <ListPreference
+            android:icon="@drawable/baseline_123_24"
+            android:key="maxRetryCount"
+            android:persistent="false"
+            android:title="@string/max_retry_count" />
+
+        <ListPreference
             android:dialogMessage="@string/systts_set_request_timeout_msg"
             android:icon="@drawable/ic_baseline_access_time_24"
             android:key="requestTimeout"
