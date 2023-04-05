@@ -3,12 +3,9 @@ package com.github.jing332.tts_server_android.ui.systts.edit.bgm
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.DocumentsContract
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
-import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.linear
@@ -25,32 +22,34 @@ import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.util.ASFUriUtils
-import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.io.File
 
 class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
     private lateinit var brv: BindingAdapter
 
     private val binding by lazy { SysttsBgmEditActivityBinding.inflate(layoutInflater) }
+    private val vm: BgmTtsEditViewModel by viewModels()
 
     private val mFilePicker =
         registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
             if (it == null) return@registerForActivityResult
             kotlin.runCatching {
-                val path = if (it.toString().startsWith("/")) {
-                    it.toString() // 真实目录
+                val path = if (it.second.toString().startsWith("/")) {
+                    it.second.toString() // 真实目录
                 } else {
-                    val docUri = DocumentsContract.buildDocumentUriUsingTree(
-                        it, DocumentsContract.getTreeDocumentId(it)
-                    )
-                    ASFUriUtils.getPath(this, docUri)!!
+                    if (it.first?.action == FilePickerActivity.ACTION_SELECT_FILE)
+                        ASFUriUtils.getPath(this, it.second)
+                    else
+                        ASFUriUtils.getPathFromTree(this, it.second)
                 }
 
-                tts.musicList.add(path)
-                updateList()
+                if (path.isNullOrBlank()) toast(R.string.path_is_empty)
+                else {
+                    tts.musicList.add(path)
+                    updateList()
+                }
             }.onFailure {
                 displayErrorDialog(it)
             }
@@ -72,8 +71,16 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
         binding.btnAddFolder.clickWithThrottle {
             mFilePicker.launch(
                 FilePickerActivity.RequestData(
-                    false,
-                    FilePickerActivity.TYPE_SELECT_DIR
+                    FilePickerActivity.ACTION_SELECT_DIR
+                )
+            )
+        }
+
+        binding.btnAddFile.clickWithThrottle {
+            mFilePicker.launch(
+                FilePickerActivity.RequestData(
+                    FilePickerActivity.ACTION_SELECT_FILE,
+                    fileMime = "audio/*"
                 )
             )
         }
@@ -84,9 +91,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
             onCreate {
                 itemView.clickWithThrottle {
                     val model: BgmItemModel = getModel()
-                    val files = FileUtils.getAllFilesInFolder(File(model.name))
-                        .filter { FileUtils.getMimeType(it)?.startsWith("audio") == true }
-
+                    val files = vm.getFiles(model.name)
                     val items = files.map { it.name }.toTypedArray()
                     MaterialAlertDialogBuilder(this@BgmTtsEditActivity)
                         .setTitle("点击播放")

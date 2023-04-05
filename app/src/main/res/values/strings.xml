@@ -317,7 +317,7 @@
     <string name="add_folder">Add folder</string>
     <string name="add_bgm_tts">Add BGM</string>
     <string name="edit_bgm_tts_title">Edit BGM</string>
-    <string name="add_bgm_folder_tip">Please add a folder with audio to use as BGM</string>
+    <string name="add_bgm_tip">Please add a folder with audio to use as BGM</string>
     <string name="grant_permission_all_file">Please grant [All file access permissions]</string>
     <string name="go_to_settings">Go settings</string>
     <string name="shuffle">Shuffle</string>
@@ -351,4 +351,6 @@
     <string name="empty_list">列表为空</string>
     <string name="max_retry_count">最大重试次数</string>
     <string name="sys_doc_picker_error">打开系统文件选择器失败，自动使用内置选择器。</string>
+    <string name="add_file">添加文件</string>
+    <string name="path_is_empty">路径为空</string>
 </resources>

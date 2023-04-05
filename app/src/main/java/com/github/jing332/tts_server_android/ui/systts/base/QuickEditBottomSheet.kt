@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class QuickEditBottomSheet(
     val data: SystemTts,
+    private val isLiteMode: Boolean = false,
     private val editView: BaseParamsEditView<*, ITextToSpeechEngine>,
     private val dismissCallback: (dialog: DialogInterface) -> Boolean
 ) :
@@ -36,6 +37,7 @@ class QuickEditBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        basicEdit.liteModeEnabled = isLiteMode
         basicEdit.setData(data)
         setContent(editView)
         editView.setData(data.tts)

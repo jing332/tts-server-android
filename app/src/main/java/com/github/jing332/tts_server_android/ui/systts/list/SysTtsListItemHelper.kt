@@ -272,9 +272,11 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
     private fun displayLiteEditDialog(v: View, data: SystemTts) {
         // 修改数据要clone，不然对比时数据相同导致UI不更新
         data.clone<SystemTts>()?.let { clonedData ->
+            val paramsEdit = data.tts.getParamsEditView(context)
             val quickEdit = QuickEditBottomSheet(
                 clonedData,
-                data.tts.getParamsEditView(context) as BaseParamsEditView<*, ITextToSpeechEngine>
+                paramsEdit.second,
+                paramsEdit.first as BaseParamsEditView<*, ITextToSpeechEngine>
             ) {
                 appDb.systemTtsDao.updateTts(clonedData)
                 notifyTtsUpdate(clonedData.isEnabled)

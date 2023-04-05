@@ -117,7 +117,7 @@ data class MsTTS(
         )
     }
 
-    override fun getParamsEditView(context: Context) = MsTtsParamsEditView(context)
+    override fun getParamsEditView(context: Context) = MsTtsParamsEditView(context) to false
 
     @IgnoredOnParcel
     private var lastLoadTime: Long = 0

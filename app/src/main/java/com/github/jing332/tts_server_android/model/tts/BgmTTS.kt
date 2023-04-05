@@ -33,7 +33,7 @@ class BgmTTS(
     override var speechRule: SpeechRuleInfo = SpeechRuleInfo()
 ) : ITextToSpeechEngine() {
     override fun getEditActivity(): Class<out Activity> = BgmTtsEditActivity::class.java
-    override fun getType() = context.getString(R.string.local)
+    override fun getType() = "BGM"
 
     override fun getDescription(): String {
         val volStr = if (volume == 0) context.getString(R.string.follow) else volume.toString()
@@ -43,7 +43,5 @@ class BgmTTS(
     override fun getBottomContent(): String =
         context.getString(R.string.total_n_folders, musicList.size.toString())
 
-
-
-    override fun getParamsEditView(context: Context) = BgmTtsParamsEditView(context)
+    override fun getParamsEditView(context: Context) = BgmTtsParamsEditView(context) to true
 }

@@ -73,18 +73,26 @@ class BgmPlayer(val context: Context) {
                 val allFiles = FileUtils.getAllFilesInFolder(file)
                     .run { if (shuffleMode) this.shuffled() else this }
                 for (subFile in allFiles) {
-                    val mime = FileUtils.getMimeType(subFile)
-                    // 非audio或未知则跳过
-                    if (mime == null || !mime.startsWith("audio")) continue
-
-                    Log.d(TAG, subFile.absolutePath)
-                    val item =
-                        MediaItem.Builder().setTag(path.first).setUri(subFile.absolutePath).build()
-                    exoPlayer.addMediaItem(item)
+                    if (!addMediaItem(path.first, file)) continue
                 }
+            } else if (file.isFile) {
+                addMediaItem(path.first, file)
             }
         }
         exoPlayer.prepare()
+    }
+
+    private fun addMediaItem(tag: Any, file: File): Boolean {
+        val mime = FileUtils.getMimeType(file)
+        // 非audio或未知则跳过
+        if (mime == null || !mime.startsWith("audio")) false
+
+        Log.d(TAG, file.absolutePath)
+        val item =
+            MediaItem.Builder().setTag(tag).setUri(file.absolutePath).build()
+        exoPlayer.addMediaItem(item)
+
+        return true
     }
 
 }

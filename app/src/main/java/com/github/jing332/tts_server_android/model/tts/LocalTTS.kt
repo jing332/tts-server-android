@@ -96,7 +96,7 @@ data class LocalTTS(
         )
     }
 
-    override fun getParamsEditView(context: Context) = LocalTtsParamsEditView(context)
+    override fun getParamsEditView(context: Context) = LocalTtsParamsEditView(context) to false
 
     @IgnoredOnParcel
     @Transient

@@ -312,7 +312,7 @@
     <string name="add_folder">添加文件夹</string>
     <string name="add_bgm_tts">添加背景音乐</string>
     <string name="edit_bgm_tts_title">编辑背景音乐</string>
-    <string name="add_bgm_folder_tip">请添加一个含有音频的文件夹以作为BGM使用</string>
+    <string name="add_bgm_tip">请添加文件/文件夹以作为BGM使用</string>
     <string name="grant_permission_all_file">请授予【所有文件访问权限】</string>
     <string name="go_to_settings">前往设置</string>
     <string name="shuffle">随机播放</string>
@@ -344,4 +344,6 @@
     <string name="empty_list">列表为空</string>
     <string name="max_retry_count">最大重试次数</string>
     <string name="sys_doc_picker_error">打开系统文件选择器失败，自动使用内置选择器。</string>
+    <string name="add_file">添加文件</string>
+    <string name="path_is_empty">路径为空</string>
 </resources>

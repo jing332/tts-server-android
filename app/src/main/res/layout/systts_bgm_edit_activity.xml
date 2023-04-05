@@ -27,20 +27,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/add_bgm_folder_tip"
+                android:text="@string/add_bgm_tip"
                 android:textAlignment="center"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
                 android:textStyle="bold" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_folder"
-                style="?attr/materialIconButtonStyle"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/add_folder"
-                app:icon="@drawable/baseline_create_new_folder_24"
-                app:iconGravity="textStart" />
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_file"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:text="@string/add_file"
+                    app:icon="@drawable/ic_baseline_file_open_24"
+                    app:iconGravity="textStart" />
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="4dp"
+                    android:layout_marginStart="4dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_folder"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:text="@string/add_folder"
+                    app:icon="@drawable/baseline_create_new_folder_24"
+                    app:iconGravity="textStart" />
+
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv"

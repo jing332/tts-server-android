@@ -63,7 +63,7 @@ data class HttpTTS(
         return audioFormat.toString()
     }
 
-    override fun getParamsEditView(context: Context) = HttpTtsParamsEditView(context)
+    override fun getParamsEditView(context: Context) = HttpTtsParamsEditView(context) to false
 
     @IgnoredOnParcel
     private var requestId: String = ""

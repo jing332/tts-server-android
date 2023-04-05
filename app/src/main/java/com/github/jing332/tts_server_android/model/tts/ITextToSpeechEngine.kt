@@ -79,7 +79,7 @@ sealed class ITextToSpeechEngine(
         )
     }
 
-    abstract fun getParamsEditView(context: Context): BaseParamsEditView<*, *>
+    abstract fun getParamsEditView(context: Context): Pair<BaseParamsEditView<*, *>, Boolean>
 
     open fun onLoad() {}
 

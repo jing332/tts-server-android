@@ -11,9 +11,19 @@ import android.provider.MediaStore
 
 @Suppress("MemberVisibilityCanBePrivate")
 object ASFUriUtils {
-    fun getPath(context: Context, uri: Uri): String? {
-        val isKitKat = true
+    fun getPathFromTree(context: Context, uri: Uri?): String? {
+        if (uri == null) return null
 
+        val docUri = DocumentsContract.buildDocumentUriUsingTree(
+            uri, DocumentsContract.getTreeDocumentId(uri)
+        )
+        return getPath(context, docUri)
+    }
+
+    fun getPath(context: Context, uri: Uri?): String? {
+        if (uri == null) return null
+
+        val isKitKat = true
         // DocumentProvider
         if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
             // ExternalStorageProvider

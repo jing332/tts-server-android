@@ -68,8 +68,7 @@ data class PluginTTS(
         }.toString()
     }
 
-    override fun getParamsEditView(context: Context): BaseParamsEditView<*, *> =
-        PluginTtsParamsEditView(context)
+    override fun getParamsEditView(context: Context) = PluginTtsParamsEditView(context) to false
 
     @IgnoredOnParcel
     @Transient
