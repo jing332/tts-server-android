@@ -336,4 +336,10 @@
     <string name="sys_doc_picker_error">打开系统文件选择器失败，自动使用内置选择器。</string>
     <string name="add_file">添加文件</string>
     <string name="path_is_empty">路径为空</string>
+    <string name="file_picker_mode">文件选择器模式</string>
+    <string name="file_picker">文件选择器</string>
+    <string name="file_picker_mode_system">系统文件选择器</string>
+    <string name="file_picker_mode_builtin">内置文件选择器</string>
+    <string name="file_picker_mode_prompt">弹出选择提示</string>
+    <string name="no_retries">不重试</string>
 </resources>

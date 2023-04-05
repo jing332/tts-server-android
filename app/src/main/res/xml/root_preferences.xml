@@ -9,10 +9,16 @@
 
         <SwitchPreferenceCompat
             android:defaultValue="true"
-            android:summary="@string/check_update_summary"
             android:icon="@drawable/baseline_arrow_circle_up_24"
             android:key="isAutoCheckUpdateEnabled"
+            android:summary="@string/check_update_summary"
             android:title="@string/auto_check_update" />
+
+        <ListPreference
+            android:key="filePickerMode"
+            android:persistent="false"
+            android:icon="@drawable/ic_baseline_file_open_24"
+            android:title="@string/file_picker_mode" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_title_global_edge">

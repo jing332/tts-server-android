@@ -8,6 +8,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import androidx.core.view.setPadding
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -33,18 +34,29 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        findPreference<ListPreference>("filePickerMode")!!.apply {
+            entryValues = (0..2).map { "$it" }.toTypedArray()
+            entries = arrayOf(
+                getString(R.string.file_picker_mode_prompt),
+                getString(R.string.file_picker_mode_system),
+                getString(R.string.file_picker_mode_builtin)
+            )
+            setValue(AppConfig.filePickerMode.toString(), "0")
+            summary = entry
+            setOnPreferenceChangeListener { _, newValue ->
+                AppConfig.filePickerMode = newValue.toString().toInt()
+                true
+            }
+        }
 
         findPreference<ListPreference>("maxRetryCount")!!.apply {
             entries = buildList<String> {
-                add("不重试")
+                add(getString(R.string.no_retries))
                 addAll((1..50).map { "$it" })
             }.toTypedArray()
 
             entryValues = (0..50).map { "$it" }.toTypedArray()
-            kotlin.runCatching {
-                value = SysTtsConfig.maxRetryCount.toString()
-            }.onFailure { value = "1" }
+            setValue(SysTtsConfig.maxRetryCount.toString(), "1")
             summary = entry
             setOnPreferenceChangeListener { _, newValue ->
                 SysTtsConfig.maxRetryCount = (newValue as String).toInt()
@@ -56,11 +68,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<ListPreference>("standbyTriggeredRetryIndex")!!.apply {
             entries = (1..10).map { "$it" }.toTypedArray()
             entryValues = entries
-            kotlin.runCatching {
-                value = SysTtsConfig.standbyTriggeredRetryIndex.toString()
-            }.onFailure {
-                value = "1"
-            }
+            setValue(SysTtsConfig.standbyTriggeredRetryIndex.toString(), "1")
             summary = entry
             setOnPreferenceChangeListener { _, newValue ->
                 SysTtsConfig.standbyTriggeredRetryIndex = (newValue as String).toInt()
@@ -178,6 +186,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val i = preference.findIndexOfValue(preference.value)
                 setItemChecked(i, true)
                 setSelection(i)
+                setPadding(8.dp)
             }
 
             val layout =
@@ -215,5 +224,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         return false
+    }
+
+    private fun ListPreference.setValue(value: String, default: String) {
+        kotlin.runCatching {
+            this.value = value
+        }.onFailure {
+            this.value = default
+        }
     }
 }

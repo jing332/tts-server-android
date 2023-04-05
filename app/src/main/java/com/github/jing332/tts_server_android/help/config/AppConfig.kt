@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.help.config
 import com.chibatching.kotpref.KotprefModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
+import com.github.jing332.tts_server_android.constant.FilePickerMode
 
 object AppConfig : KotprefModel() {
     override val kotprefName: String
@@ -33,4 +34,6 @@ object AppConfig : KotprefModel() {
         }
 
     var fragmentIndex by intPref(0)
+
+    var filePickerMode by intPref(FilePickerMode.PROMPT)
 }

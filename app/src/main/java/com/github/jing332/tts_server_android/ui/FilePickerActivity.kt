@@ -9,7 +9,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -61,8 +63,8 @@ class FilePickerActivity : AppCompatActivity() {
                         putExtra(KeyConst.KEY_DATA, requestCode)
                         setData(list.component1().toUri())
                     })
-                    finish()
                 }
+                finish()
             }
 
             REQUEST_CODE_SAVE_FILE -> {
@@ -99,27 +101,51 @@ class FilePickerActivity : AppCompatActivity() {
 
         requestData = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: RequestData()
 
-        MaterialAlertDialogBuilder(this)
-            .setIcon(R.drawable.ic_baseline_file_open_24)
-            .setTitle("文件选择器")
-            .setItems(arrayOf("系统文件选择器", "内置文件选择器")) { _, which ->
-                useSystem = which == 0
-                when (requestData.action) {
-                    ACTION_SAVE_FILE -> {
-                        saveFile()
+        when (AppConfig.filePickerMode) {
+            FilePickerMode.PROMPT -> {
+                MaterialAlertDialogBuilder(this)
+                    .setIcon(R.drawable.ic_baseline_file_open_24)
+                    .setTitle(R.string.file_picker)
+                    .setItems(
+                        arrayOf(
+                            getString(R.string.file_picker_mode_system),
+                            getString(R.string.file_picker_mode_builtin)
+                        )
+                    ) { _, which ->
+                        useSystem = which == 0
+                        doAction()
                     }
+                    .setPositiveButton(R.string.cancel) { _, _ ->
+                        finish()
+                    }
+                    .setOnCancelListener {
+                        finish()
+                    }
+                    .show()
+            }
 
-                    ACTION_SELECT_FILE -> selectFile()
-                    ACTION_SELECT_DIR -> selectDir()
-                }
+            FilePickerMode.SYSTEM -> {
+                useSystem = true
+                doAction()
             }
-            .setPositiveButton(R.string.cancel) { _, _ ->
-                finish()
+
+            FilePickerMode.Builtin -> {
+                useSystem = false
+                doAction()
             }
-            .setOnCancelListener {
-                finish()
+
+        }
+    }
+
+    private fun doAction() {
+        when (requestData.action) {
+            ACTION_SAVE_FILE -> {
+                saveFile()
             }
-            .show()
+
+            ACTION_SELECT_FILE -> selectFile()
+            ACTION_SELECT_DIR -> selectDir()
+        }
     }
 
     private fun saveFile() {
