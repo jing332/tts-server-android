@@ -96,27 +96,6 @@ data class LocalTTS(
         )
     }
 
-    @Suppress("DEPRECATION")
-    override fun onDescriptionClick(
-        activity: FragmentActivity,
-        view: View?,
-        data: SystemTts,
-        done: (modifiedData: SystemTts?) -> Unit
-    ) {
-        val binding =
-            SysttsLocalEditBottomSheetBinding.inflate(activity.layoutInflater, null, false)
-                .apply {
-                    basicEdit.setData(data)
-                    paramsEdit.setData(this@LocalTTS)
-                    root.minimumHeight = activity.windowManager.defaultDisplay.height
-                }
-        BottomSheetDialog(activity).apply {
-            setContentView(binding.root)
-            setOnDismissListener { done(data) }
-            show()
-        }
-    }
-
     override fun getParamsEditView(context: Context) = LocalTtsParamsEditView(context)
 
     @IgnoredOnParcel

@@ -23,7 +23,10 @@ import com.github.jing332.tts_server_android.databinding.SysttsListItemBinding
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
+import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.ui.systts.base.QuickEditBottomSheet
+import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
@@ -42,6 +45,7 @@ import kotlinx.coroutines.launch
 class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false) {
     val context: Context by lazy { fragment.requireContext() }
 
+    // 已经显示长按时的拖拽提示
     private var hasShownTip = false
 
     fun init(adapter: BindingAdapter, holder: BindingAdapter.BindingViewHolder) {
@@ -264,15 +268,22 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         return true
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun displayLiteEditDialog(v: View, data: SystemTts) {
         // 修改数据要clone，不然对比时数据相同导致UI不更新
         data.clone<SystemTts>()?.let { clonedData ->
-            clonedData.tts.onDescriptionClick(fragment.requireActivity(), v, clonedData) {
-                it?.let {
-                    appDb.systemTtsDao.updateTts(it)
-                    notifyTtsUpdate(clonedData.isEnabled)
-                }
+            val quickEdit = QuickEditBottomSheet(
+                clonedData,
+                data.tts.getParamsEditView(context) as BaseParamsEditView<*, ITextToSpeechEngine>
+            ) {
+                appDb.systemTtsDao.updateTts(clonedData)
+                notifyTtsUpdate(clonedData.isEnabled)
+                true
             }
+            quickEdit.show(
+                fragment.requireActivity().supportFragmentManager,
+                QuickEditBottomSheet.TAG
+            )
         }
     }
 

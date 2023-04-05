@@ -68,29 +68,8 @@ data class PluginTTS(
         }.toString()
     }
 
-    @Suppress("DEPRECATION")
-    override fun onDescriptionClick(
-        activity: FragmentActivity,
-        view: View?,
-        data: SystemTts,
-        done: (modifiedData: SystemTts?) -> Unit
-    ) {
-        val binding =
-            SysttsPluginEditBottomSheetBinding.inflate(activity.layoutInflater, null, false)
-        binding.apply {
-            basicEdit.setData(data)
-            paramsEdit.setData(this@PluginTTS)
-            root.minimumHeight = activity.windowManager.defaultDisplay.height
-        }
-
-        BottomSheetDialog(activity).apply {
-            setContentView(binding.root)
-            setOnDismissListener { done(data) }
-            show()
-        }
-    }
-
-    override fun getParamsEditView(context: Context) = PluginTtsParamsEditView(context)
+    override fun getParamsEditView(context: Context): BaseParamsEditView<*, *> =
+        PluginTtsParamsEditView(context)
 
     @IgnoredOnParcel
     @Transient

@@ -43,28 +43,7 @@ class BgmTTS(
     override fun getBottomContent(): String =
         context.getString(R.string.total_n_folders, musicList.size.toString())
 
-    @Suppress("DEPRECATION")
-    override fun onDescriptionClick(
-        activity: FragmentActivity,
-        view: View?,
-        data: SystemTts,
-        done: (modifiedData: SystemTts?) -> Unit
-    ) {
-        val binding =
-            SysttsBgmEditBottomSheetBinding.inflate(activity.layoutInflater, null, false)
-        binding.apply {
-            basicEdit.liteModeEnabled = true
-            basicEdit.setData(data)
-            editView.setData(this@BgmTTS)
-            root.minimumHeight = activity.windowManager.defaultDisplay.height
-        }
 
-        BottomSheetDialog(activity).apply {
-            setContentView(binding.root)
-            setOnDismissListener { done(data) }
-            show()
-        }
-    }
 
     override fun getParamsEditView(context: Context) = BgmTtsParamsEditView(context)
 }

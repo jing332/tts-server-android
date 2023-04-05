@@ -79,16 +79,6 @@ sealed class ITextToSpeechEngine(
         )
     }
 
-    /**
-     * UI 当点击 描述TextView
-     */
-    abstract fun onDescriptionClick(
-        activity: FragmentActivity,
-        view: View?,
-        data: SystemTts,
-        done: (modifiedData: SystemTts?) -> Unit
-    )
-
     abstract fun getParamsEditView(context: Context): BaseParamsEditView<*, *>
 
     open fun onLoad() {}

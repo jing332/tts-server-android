@@ -10,8 +10,6 @@ object DataBaseMigration {
 
     private val migration_15_16 = object : Migration(15, 16) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            println("migration_15_16")
-
             //language=RoomSql
             database.apply {
                 execSQL("ALTER TABLE sysTts ADD COLUMN speechRule_tagRuleId TEXT NOT NULL DEFAULT ''")

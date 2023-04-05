@@ -25,13 +25,19 @@ fun ViewGroup.setMarginMatchParent() {
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : ViewBinding> Any.inflateBinding(inflater: LayoutInflater): T {
+fun <T : ViewBinding> Any.inflateBinding(
+    inflater: LayoutInflater,
+    root: ViewGroup? = null,
+    attachToParent: Boolean = false
+): T {
     return (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments
         .filterIsInstance<Class<T>>()
         .first()
-        .getDeclaredMethod("inflate", LayoutInflater::class.java)
+        .getDeclaredMethod(
+            "inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java
+        )
         .also { it.isAccessible = true }
-        .invoke(null, inflater) as T
+        .invoke(null, inflater, root, attachToParent) as T
 }
 
 @Suppress("DEPRECATION")

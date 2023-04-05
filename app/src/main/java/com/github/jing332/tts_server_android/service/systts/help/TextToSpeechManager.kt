@@ -167,7 +167,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         var isOk = true
         mConfigMap[target] =
             appDb.systemTtsDao.getEnabledList(target, false).map {
-                println(it)
                 it.tts.speechRule = it.speechRule
                 return@map it.tts
             }

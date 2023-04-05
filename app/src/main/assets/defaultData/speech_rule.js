@@ -12,20 +12,24 @@ let SpeechRuleJS = {
 
         text.split("").forEach((char, index) => {
             tmpStr += char;
-
             if (char === '“') {
                 endTag = "dialogue";
-                list.push({text: tmpStr, tag: "narration"});
+                pushText(tmpStr, "narration")
                 tmpStr = "";
             } else if (char === '”') {
                 endTag = "narration";
                 tmpStr = tmpStr.slice(0, -1);
-                list.push({text: tmpStr, tag: "dialogue"});
+                pushText(tmpStr, "dialogue")
                 tmpStr = "";
             } else if (index === text.length - 1) {
-                list.push({text: tmpStr, tag: endTag});
+                pushText(tmpStr, endTag)
             }
         });
+
+        function pushText(str, tag){
+            if (/^(\s|\p{C}|\p{P}|\p{Z}|\p{S})+$/.test(str) == false)
+                list.push({text: str, tag: tag})
+        }
 
         return list;
     },

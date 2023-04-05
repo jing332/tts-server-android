@@ -117,26 +117,7 @@ data class MsTTS(
         )
     }
 
-    override fun onDescriptionClick(
-        activity: FragmentActivity,
-        view: View?,
-        data: SystemTts,
-        done: (modifiedData: SystemTts?) -> Unit
-    ) {
-        val fragment =
-            QuickEditBottomSheet(
-                data,
-                MsTtsParamsEditView(activity).apply { setData(this@MsTTS) }
-            ) {
-                done(data)
-                true
-            }
-        fragment.show(activity.supportFragmentManager, QuickEditBottomSheet.TAG)
-    }
-
-    override fun getParamsEditView(context: Context): BaseParamsEditView<*, *> {
-        return MsTtsParamsEditView(context)
-    }
+    override fun getParamsEditView(context: Context) = MsTtsParamsEditView(context)
 
     @IgnoredOnParcel
     private var lastLoadTime: Long = 0
