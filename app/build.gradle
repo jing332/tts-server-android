@@ -67,10 +67,20 @@ android {
     productFlavors {
         app {
             dimension = "version"
+            buildTypes.release {
+                minifyEnabled true
+                shrinkResources true
+                zipAlignEnabled true
+            }
         }
         dev {
             dimension = "version"
             applicationIdSuffix ".dev"
+            buildTypes.release {
+                minifyEnabled true
+                shrinkResources true
+                zipAlignEnabled true
+            }
         }
         noMinify {
             dimension = "version"
@@ -173,6 +183,9 @@ dependencies {
     implementation 'com.squareup.okio:okio:3.3.0'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.github.liangjingkanji:Net:3.5.7'
+
+    implementation 'me.rosuh:AndroidFilePicker:0.8.3'
+
 
     // Media
     implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
