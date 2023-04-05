@@ -19,6 +19,8 @@ class SpeechRuleHelper {
         config: Map<String, ITextToSpeechEngine>,
         defaultConfig: ITextToSpeechEngine,
     ): List<TtsText<ITextToSpeechEngine>> {
+        if (!this::engine.isInitialized) return listOf(TtsText(defaultConfig, text))
+
         val resultList = mutableListOf<TtsText<ITextToSpeechEngine>>()
         engine.handleText(text).forEach {
             val tts = config[it.tag] ?: defaultConfig

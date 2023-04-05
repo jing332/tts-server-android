@@ -51,12 +51,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     private val mLoadedTtsMap = mutableSetOf<ITextToSpeechEngine>()
     private val mSpeechRuleHelper = SpeechRuleHelper()
 
-    private val isMultiVoice: Boolean
-        get() = SysTtsConfig.isMultiVoiceEnabled
-
-
     override suspend fun handleText(text: String): List<TtsText<ITextToSpeechEngine>> {
-        return if (isMultiVoice) {
+        return if (SysTtsConfig.isMultiVoiceEnabled) {
             val tagTtsMap = mutableMapOf<String, ITextToSpeechEngine>()
             mConfigMap[SpeechTarget.CUSTOM_TAG]?.forEach {
                 tagTtsMap[it.speechRule.tag] = it
@@ -210,13 +206,15 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         if (SysTtsConfig.isReplaceEnabled)
             mTextReplacer.load()
 
-        audioFormat = if (isMultiVoice) {
+        audioFormat = if (SysTtsConfig.isMultiVoiceEnabled) {
             if (initConfig(SpeechTarget.CUSTOM_TAG)) {
                 mConfigMap[SpeechTarget.CUSTOM_TAG]?.getOrNull(0)?.let {
                     appDb.speechRule.getByReadRuleId(it.speechRule.tagRuleId)?.let { rule ->
                         mSpeechRuleHelper.init(context, rule)
                     }
                 }
+            } else {
+                context.toast("⚠️无标签配置，请添加配置或关闭多语音选项！")
             }
 
             mConfigMap[SpeechTarget.CUSTOM_TAG]!![0].audioFormat
