@@ -18,7 +18,7 @@ open class TtsPluginEngine(
 ) : BaseScriptEngine(
     rhino = rhino, logger = logger,
     code = pluginTTS.requirePlugin.code,
-    ttsrvObject = EngineContext(pluginTTS, context, pluginTTS.pluginId)
+    ttsrvObject = EngineContext(pluginTTS, context, pluginTTS.requirePlugin.pluginId)
 ) {
     private var mPlugin: Plugin
         inline get() = pluginTTS.plugin!!
