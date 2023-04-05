@@ -55,7 +55,7 @@
 
 # ViewBinding
 -keepclassmembers class * implements androidx.viewbinding.ViewBinding {
-    *** inflate(android.view.LayoutInflater);
+    *** inflate(***);
 }
 
 #-------------- 去掉所有打印 -------------
