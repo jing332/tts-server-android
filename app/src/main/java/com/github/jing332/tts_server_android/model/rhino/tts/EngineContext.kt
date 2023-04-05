@@ -12,7 +12,7 @@ import com.github.jing332.tts_server_android.model.tts.PluginTTS
 data class EngineContext(
     val tts: PluginTTS,
     override val context: Context,
-    override val pluginId: String
+    override val engineId: String
 ) :
-    BaseScriptEngineContext(context, pluginId) {
+    BaseScriptEngineContext(context, engineId) {
 }

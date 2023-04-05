@@ -75,9 +75,16 @@ data class PluginTTS(
     @Transient
     lateinit var pluginEngine: TtsPluginEngine
 
+    companion object {
+        private val ttsEngines: MutableMap<String, TtsPluginEngine> = mutableMapOf()
+    }
+
     override fun onLoad() {
-        if (!this::pluginEngine.isInitialized)
-            pluginEngine = TtsPluginEngine(pluginTTS = this, context = context)
+        if (!this::pluginEngine.isInitialized) {
+            pluginEngine = ttsEngines[pluginId] ?: TtsPluginEngine(
+                pluginTTS = this, context = context
+            ).also { ttsEngines[pluginId] = it }
+        }
         pluginEngine.onLoad()
     }
 

@@ -8,7 +8,7 @@ import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import java.io.File
 
 @Suppress("unused")
-open class JsExtensions(open val context: Context, open val pluginId: String) : JsNet(),
+open class JsExtensions(open val context: Context, open val engineId: String) : JsNet(),
     JsCrypto,
     JsUserInterface {
     fun getAudioSampleRate(audio: ByteArray): Int {
@@ -42,7 +42,7 @@ open class JsExtensions(open val context: Context, open val pluginId: String) : 
      * @return File
      */
     fun getFile(path: String): File {
-        val cachePath = "${context.externalCacheDir!!.absolutePath}/${pluginId}"
+        val cachePath = "${context.externalCacheDir!!.absolutePath}/${engineId}"
         if (!FileUtil.exist(cachePath)) FileUtil.mkdir(cachePath)
         val aPath = if (path.startsWith(File.separator)) {
             cachePath + path

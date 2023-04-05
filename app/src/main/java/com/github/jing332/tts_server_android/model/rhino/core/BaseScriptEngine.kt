@@ -12,8 +12,6 @@ open class BaseScriptEngine(
     companion object {
         const val OBJ_TTSRV = "ttsrv"
         const val OBJ_LOGGER = "logger"
-
-
     }
 
     open fun findObject(name: String): NativeObject {
