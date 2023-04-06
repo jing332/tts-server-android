@@ -13,6 +13,7 @@ import androidx.core.view.MenuCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.drake.brv.BindingAdapter
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
@@ -146,11 +147,10 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
     private val audioPlayer by lazy { AudioPlayer(context) }
     private val waitDialog by lazy { WaitDialog(context) }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun listen(model: SystemTts) {
         waitDialog.show()
 
-        GlobalScope.launch(Dispatchers.Main) {
+        fragment.lifecycleScope.launch(Dispatchers.Main) {
             val tts = model.tts
             val audio = try {
                 withIO {

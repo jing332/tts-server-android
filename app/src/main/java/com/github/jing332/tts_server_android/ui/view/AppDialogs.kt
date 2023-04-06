@@ -8,25 +8,25 @@ import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setPadding
+import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withIO
-import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ErrorDialogBinding
 import com.github.jing332.tts_server_android.util.ClipboardUtils
 import com.github.jing332.tts_server_android.util.dp
 import com.github.jing332.tts_server_android.util.layoutInflater
 import com.github.jing332.tts_server_android.util.longToast
-import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.runOnUI
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import tts_server_lib.Tts_server_lib
 
+@Suppress("OPT_IN_USAGE")
 object AppDialogs {
     fun displayInputDialog(
         context: Context,
@@ -62,11 +62,14 @@ object AppDialogs {
             }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+
     fun Context.displayErrorDialog(t: Throwable, title: String? = null) {
         runOnUI {
             val view = FrameLayout(this)
             val binding = ErrorDialogBinding.inflate(layoutInflater, view, true)
+
+            if (!t.localizedMessage.isNullOrBlank())
+                binding.tvMsg.text = t.localizedMessage
 
             val str = t.stackTraceToString()
             str.lines().forEach {
@@ -90,8 +93,8 @@ object AppDialogs {
                     }
                 }
 
-                binding.tvMessage.append(span)
-                binding.tvMessage.append("\n")
+                binding.tvLog.append(span)
+                binding.tvLog.append("\n")
             }
 
             MaterialAlertDialogBuilder(this).apply {
@@ -105,13 +108,18 @@ object AppDialogs {
                     toast(R.string.copied)
                 }
                 .setNegativeButton(R.string.upload_to_url) { _, _ ->
-                    GlobalScope.launch(Dispatchers.Main) {
+                    val scope = when (this) {
+                        is AppCompatActivity -> this.lifecycleScope
+                        else -> GlobalScope
+                    }
+
+                    scope.launch(Dispatchers.Main) {
                         kotlin.runCatching {
                             val url = withIO { Tts_server_lib.uploadLog(str) }
                             ClipboardUtils.copyText(url)
                             longToast(R.string.copied)
                         }.onFailure {
-                            longToast("上传失败：" + it.message)
+                            longToast(getString(R.string.upload_failed, it.message))
                         }
                     }
                 }
