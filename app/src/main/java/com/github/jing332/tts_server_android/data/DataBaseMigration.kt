@@ -15,8 +15,8 @@ object DataBaseMigration {
                 execSQL("ALTER TABLE sysTts ADD COLUMN speechRule_tagRuleId TEXT NOT NULL DEFAULT ''")
                 execSQL("ALTER TABLE sysTts ADD COLUMN speechRule_tag TEXT NOT NULL DEFAULT ''")
                 // 移动到嵌套对象
-                execSQL("ALTER TABLE sysTts RENAME COLUMN readAloudTarget TO speechRule_target")
-                execSQL("ALTER TABLE sysTts RENAME COLUMN isStandby TO speechRule_isStandby")
+                execSQL("ALTER TABLE sysTts RENAME readAloudTarget TO speechRule_target")
+                execSQL("ALTER TABLE sysTts RENAME isStandby TO speechRule_isStandby")
             }
         }
     }
