@@ -28,7 +28,7 @@ import com.github.jing332.tts_server_android.util.toast
 
 
 class PluginEditorActivity : BaseScriptEditorActivity() {
-    private val vm: PluginEditViewModel by viewModels()
+    private val vm: PluginEditorViewModel by viewModels()
 
     @Suppress("DEPRECATION")
     private val startForResult =

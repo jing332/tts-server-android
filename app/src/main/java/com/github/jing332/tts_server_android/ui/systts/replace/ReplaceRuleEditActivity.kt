@@ -138,7 +138,7 @@ class ReplaceRuleEditActivity : BackActivity() {
                     }
                 } else if (binding.etReplacement.hasFocus()) {
                     binding.etReplacement.apply {
-                        text.insert(selectionStart, char)
+                        text?.insert(selectionStart, char)
                     }
                 }
             }

@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
-class PluginEditViewModel(application: Application) : AndroidViewModel(application) {
+class PluginEditorViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         private const val TAG = "PluginEditViewModel"
     }

@@ -96,6 +96,7 @@
             android:theme="@style/Theme.TtsServer.NoActionBar" />
         <activity
             android:name=".ui.systts.replace.ReplaceRuleEditActivity"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_replace_edit" />
         <activity
             android:name=".ui.forwarder.ms.ScSwitchActivity"

@@ -73,7 +73,7 @@ class BgmPlayer(val context: Context) {
                 val allFiles = FileUtils.getAllFilesInFolder(file)
                     .run { if (shuffleMode) this.shuffled() else this }
                 for (subFile in allFiles) {
-                    if (!addMediaItem(path.first, file)) continue
+                    if (!addMediaItem(path.first, subFile)) continue
                 }
             } else if (file.isFile) {
                 addMediaItem(path.first, file)
@@ -85,7 +85,7 @@ class BgmPlayer(val context: Context) {
     private fun addMediaItem(tag: Any, file: File): Boolean {
         val mime = FileUtils.getMimeType(file)
         // 非audio或未知则跳过
-        if (mime == null || !mime.startsWith("audio")) false
+        if (mime == null || !mime.startsWith("audio")) return false
 
         Log.d(TAG, file.absolutePath)
         val item =

@@ -66,7 +66,7 @@ data class PluginTTS(
 
     @IgnoredOnParcel
     @Transient
-    private var pluginEngine: TtsPluginEngine? = null
+    var pluginEngine: TtsPluginEngine? = null
 
     override fun onLoad() {
         pluginEngine = pluginEngine ?: TtsPluginEngine(pluginTTS = this, context = context)

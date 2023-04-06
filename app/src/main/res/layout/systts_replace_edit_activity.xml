@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -85,13 +85,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_pattern">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_replacement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start|top"
                 android:hint="@string/systts_replace_as"
                 android:importantForAutofill="no"
-                android:inputType="text" />
+                android:inputType="textMultiLine" />
         </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
         <androidx.appcompat.widget.AppCompatCheckBox
@@ -157,4 +158,4 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
