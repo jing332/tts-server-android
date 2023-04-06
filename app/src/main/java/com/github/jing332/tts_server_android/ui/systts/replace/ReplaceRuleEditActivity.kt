@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.ui.systts.replace
 
 import android.content.Intent
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Menu
@@ -26,6 +27,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.lang.Integer.max
+
 
 @Suppress("DEPRECATION")
 class ReplaceRuleEditActivity : BackActivity() {
@@ -94,7 +96,9 @@ class ReplaceRuleEditActivity : BackActivity() {
 
         binding.etPattern.addTextChangedListener {
             if (!binding.switchIsRegex.isChecked) {
-                binding.etTestText.text?.ifEmpty { binding.etTestText.text = binding.etPattern.text }
+                binding.etTestText.text?.ifEmpty {
+                    binding.etTestText.text = binding.etPattern.text
+                }
             }
             doTest()
         }
