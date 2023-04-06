@@ -1,20 +1,14 @@
 package com.github.jing332.tts_server_android.model.tts
 
 import android.content.Context
-import android.view.View
 import androidx.annotation.Keep
-import androidx.fragment.app.FragmentActivity
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.databinding.SysttsPluginEditBottomSheetBinding
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginEngine
-import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsParamsEditView
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -72,30 +66,21 @@ data class PluginTTS(
 
     @IgnoredOnParcel
     @Transient
-    lateinit var pluginEngine: TtsPluginEngine
-
-    companion object {
-        private val ttsEngines: MutableMap<String, TtsPluginEngine> = mutableMapOf()
-    }
+    private var pluginEngine: TtsPluginEngine? = null
 
     override fun onLoad() {
-        if (!this::pluginEngine.isInitialized) {
-            pluginEngine = ttsEngines[pluginId] ?: TtsPluginEngine(
-                pluginTTS = this, context = context
-            ).also { ttsEngines[pluginId] = it }
-        }
-        pluginEngine.onLoad()
+        pluginEngine = pluginEngine ?: TtsPluginEngine(pluginTTS = this, context = context)
+        pluginEngine?.onLoad()
     }
 
     override fun onStop() {
-        pluginEngine.onStop()
+        pluginEngine?.onStop()
     }
 
     override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
-        return pluginEngine.getAudio(
-            speakText,
-            rate,
-            pitch
+        return pluginEngine?.getAudio(
+            speakText, rate, pitch
         )
+
     }
 }
