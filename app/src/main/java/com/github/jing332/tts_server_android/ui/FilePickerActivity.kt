@@ -51,11 +51,7 @@ class FilePickerActivity : AppCompatActivity() {
 
     private val docTreeSelector =
         registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
-            setResult(RESULT_OK, Intent().apply {
-                data = it
-                putExtra(KeyConst.KEY_DATA, requestData)
-            })
-            finish()
+            resultAndFinish(it)
         }
 
     private val docSelector =
@@ -65,7 +61,7 @@ class FilePickerActivity : AppCompatActivity() {
 
     private fun resultAndFinish(uri: Uri?) {
         setResult(RESULT_OK, Intent().apply {
-            putExtra(KeyConst.KEY_DATA, requestData)
+            putExtra(KEY_REQUEST_DATA, requestData)
             data = uri
         })
         finish()

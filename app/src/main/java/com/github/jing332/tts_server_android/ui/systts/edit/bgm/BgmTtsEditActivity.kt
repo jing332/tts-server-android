@@ -21,7 +21,6 @@ import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
-import com.github.jing332.tts_server_android.util.ASFUriUtils
 import com.github.jing332.tts_server_android.util.ASFUriUtils.getPath
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.toast
@@ -37,7 +36,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
         registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
             if (it == null) return@registerForActivityResult
             kotlin.runCatching {
-                val path = this.getPath(it.second, it.first is FilePickerActivity.RequestSelectFile)
+                val path = this.getPath(it.second, it.first is FilePickerActivity.RequestSelectDir)
                 if (path.isNullOrBlank()) toast(R.string.path_is_empty)
                 else {
                     tts.musicList.add(path)
@@ -83,8 +82,12 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
                     val model: BgmItemModel = getModel()
                     val files = vm.getFiles(model.name)
                     val items = files.map { it.name }.toTypedArray()
+                    if (items.isEmpty()) {
+                        toast(R.string.no_files_in_dir)
+                        return@clickWithThrottle
+                    }
                     MaterialAlertDialogBuilder(this@BgmTtsEditActivity)
-                        .setTitle("点击播放")
+                        .setTitle(R.string.click_play)
                         .setItems(items) { _, which ->
                             val file = files[which]
                             toast(file.absolutePath)
