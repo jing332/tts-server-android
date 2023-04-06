@@ -47,6 +47,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.flow.conflate
+import kotlin.math.min
 
 
 @Suppress("DEPRECATION")
@@ -302,14 +303,16 @@ class SysTtsListFragment : Fragment() {
         val view = FrameLayout(requireContext())
         val viewBinding = SysttsBgmSettingsBinding.inflate(layoutInflater, view, true)
         viewBinding.apply {
-            seekVolume.value = (SysTtsConfig.bgmVolume * 100f).toInt()
+            seekVolume.value = min(1000, (SysTtsConfig.bgmVolume * 1000f).toInt())
             switchShuffle.isChecked = SysTtsConfig.isBgmShuffleEnabled
         }
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.bgm_settings)
             .setView(view)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                SysTtsConfig.bgmVolume = (viewBinding.seekVolume.value as Int) / 100f
+                SysTtsConfig.bgmVolume = (viewBinding.seekVolume.value as Int) / 1000f
+                if (SysTtsConfig.bgmVolume < 0) SysTtsConfig.bgmVolume = 1f
+
                 SysTtsConfig.isBgmShuffleEnabled = viewBinding.switchShuffle.isChecked
                 notifyTtsUpdate()
             }

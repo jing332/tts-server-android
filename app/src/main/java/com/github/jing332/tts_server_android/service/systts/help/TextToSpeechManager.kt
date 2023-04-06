@@ -211,7 +211,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         val list = mutableSetOf<Pair<Float, String>>()
         appDb.systemTtsDao.getEnabledList(SpeechTarget.BGM).forEach {
             val tts = (it.tts as BgmTTS)
-            val volume = if (tts.volume == 0) SysTtsConfig.bgmVolume else it.tts.volume / 100f
+            val volume = if (tts.volume == 0) SysTtsConfig.bgmVolume else it.tts.volume / 1000f
+            println(volume)
             list.addAll(tts.musicList.map { path ->
                 Pair(volume, path)
             })

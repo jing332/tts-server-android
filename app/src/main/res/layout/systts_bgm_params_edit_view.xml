@@ -10,6 +10,7 @@
         android:id="@+id/seek_volume"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:hint="@string/label_volume" />
+        app:hint="@string/label_volume"
+        app:max="1000" />
 
 </LinearLayout>

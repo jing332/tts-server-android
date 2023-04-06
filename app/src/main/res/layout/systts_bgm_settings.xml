@@ -18,8 +18,8 @@
         android:id="@+id/seek_volume"
         android:layout_width="match_parent"
         app:min="1"
-        app:max="101"
-        app:progress="101"
+        app:max="1001"
+        app:progress="1001"
         android:layout_height="wrap_content"
         app:hint="@string/label_volume" />
 
