@@ -19,7 +19,6 @@ import com.github.jing332.tts_server_android.service.systts.help.exception.Reque
 import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.toast
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -123,31 +122,27 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     }
 
                     coroutineScope {
-                        try {
-                            var hasTimeout = false
-                            val timeoutJob = launch {
-                                delay(SysTtsConfig.requestTimeout.toLong())
-                                tts.onStop()
-                                hasTimeout = true
-                            }.job
-                            timeoutJob.start()
+                        var hasTimeout = false
+                        val timeoutJob = launch {
+                            delay(SysTtsConfig.requestTimeout.toLong())
+                            tts.onStop()
+                            hasTimeout = true
+                        }.job
+                        timeoutJob.start()
 
-                            audioResult =
-                                tts.getAudioBytes(text, sysRate, sysPitch)
-                                    ?: throw RequestException(
-                                        errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
-                                        tts = tts, text = text
-                                    )
-                            if (hasTimeout) throw Exception(
-                                context.getString(
-                                    R.string.failed_timed_out,
-                                    SysTtsConfig.requestTimeout
+                        audioResult =
+                            tts.getAudioBytes(text, sysRate, sysPitch)
+                                ?: throw RequestException(
+                                    errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
+                                    tts = tts, text = text
                                 )
+                        if (hasTimeout) throw Exception(
+                            context.getString(
+                                R.string.failed_timed_out,
+                                SysTtsConfig.requestTimeout
                             )
-                            else timeoutJob.cancelAndJoin()
-                        } catch (e: TimeoutCancellationException) {
-                            TODO("Not yet implemented")
-                        }
+                        )
+                        else timeoutJob.cancelAndJoin()
                     }
                 }
                 listener?.onRequestSuccess(text, tts, audioResult?.size ?: 0, costTime, retryTimes)
@@ -175,13 +170,18 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             mConfigMap[target] = listOf(MsTTS())
         }
 
-        val standby =
+        val sbyList =
             appDb.systemTtsDao.getEnabledList(target, true).map {
                 it.tts.speechRule = it.speechRule
                 return@map it.tts
-            }.getOrNull(0)
-        mConfigMap[target]?.forEach {
-            it.speechRule.standbyTts = standby
+            }
+
+        mConfigMap[target]?.forEach { tts ->
+            sbyList.find { it.speechRule.isTagSame(tts.speechRule).apply { println(this) } }
+                ?.let { sbyTts ->
+                    Log.i(TAG, "找到备用TTS：$sbyTts")
+                    tts.speechRule.standbyTts = sbyTts
+                }
         }
 
         return isOk

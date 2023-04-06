@@ -26,4 +26,12 @@ data class SpeechRuleInfo(
     @Ignore
     @Transient
     var standbyTts: ITextToSpeechEngine? = null
+
+    /**
+     * 判断tag是否相同
+     * @return 相同
+     */
+    fun isTagSame(rule: SpeechRuleInfo): Boolean {
+        return tag == rule.tag && tagRuleId == rule.tagRuleId
+    }
 }
