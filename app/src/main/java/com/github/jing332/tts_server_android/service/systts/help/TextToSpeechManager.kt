@@ -54,12 +54,15 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     override suspend fun handleText(text: String): List<TtsText<ITextToSpeechEngine>> {
         return if (SysTtsConfig.isMultiVoiceEnabled) {
-            val tagTtsMap = mutableMapOf<String, ITextToSpeechEngine>()
-            mConfigMap[SpeechTarget.CUSTOM_TAG]?.forEach {
-                tagTtsMap[it.speechRule.tag] = it
+            val tagTtsMap = mutableMapOf<String, MutableList<ITextToSpeechEngine>>()
+            mConfigMap[SpeechTarget.CUSTOM_TAG]?.forEach { tts ->
+                if (tagTtsMap[tts.speechRule.tag] == null)
+                    tagTtsMap[tts.speechRule.tag] = mutableListOf()
+
+                tagTtsMap[tts.speechRule.tag]?.add(tts)
             }
 
-            mSpeechRuleHelper.handleText(text, tagTtsMap, MsTTS())
+            mSpeechRuleHelper.handleText(text, tagTtsMap, defaultTtsConfig)
         } else {
             listOf(TtsText(mConfigMap[SpeechTarget.ALL]?.get(0) ?: defaultTtsConfig, text))
         }.run {
@@ -278,7 +281,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 txtTts.tts.startPlayWithSystemParams(txtTts.text, sysRate, sysPitch)
             else if (audio == null) {
                 Log.w(TAG, "音频为空！ $txtTts")
-                txtTts.tts.speechRule.standbyTts?.startPlayWithSystemParams(txtTts.text, sysRate, sysPitch)
+                txtTts.tts.speechRule.standbyTts?.startPlayWithSystemParams(
+                    txtTts.text,
+                    sysRate,
+                    sysPitch
+                )
             } else {
                 if (txtTts.tts.audioFormat.isNeedDecode)
                     if (SysTtsConfig.isInAppPlayAudio) {
