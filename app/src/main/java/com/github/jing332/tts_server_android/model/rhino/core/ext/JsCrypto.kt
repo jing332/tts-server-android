@@ -3,8 +3,15 @@
 package com.github.jing332.tts_server_android.model.rhino.core.ext
 
 import cn.hutool.core.codec.Base64
+import cn.hutool.core.util.HexUtil
 import cn.hutool.crypto.symmetric.SymmetricCrypto
+import com.github.jing332.tts_server_android.constant.AppConst.dateFormat
+import com.github.jing332.tts_server_android.util.EncoderUtils
 import com.github.jing332.tts_server_android.util.MD5Utils
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.SimpleTimeZone
 
 interface JsCrypto {
     fun md5Encode(str: String): String {
@@ -55,14 +62,6 @@ interface JsCrypto {
         createSymmetricCrypto(transformation, key.encodeToByteArray(), iv?.encodeToByteArray())
 
 
-    fun base64Decode(str: String?): String {
-        return Base64.decodeStr(str)
-    }
-
-    fun base64Decode(str: String?, charset: String): String {
-        return Base64.decodeStr(str, charset(charset))
-    }
-
     fun base64DecodeToBytes(str: String): ByteArray {
         return Base64.decode(str)
     }
@@ -71,8 +70,73 @@ interface JsCrypto {
         return Base64.decode(bytes)
     }
 
-    fun base64Encode(str: String): String {
-        return Base64.encode(str)
+
+    fun base64Decode(str: String, flags: Int): String {
+        return EncoderUtils.base64Decode(str, flags)
+    }
+
+    fun base64DecodeToByteArray(str: String?): ByteArray? {
+        if (str.isNullOrBlank()) {
+            return null
+        }
+        return EncoderUtils.base64DecodeToByteArray(str, 0)
+    }
+
+    fun base64DecodeToByteArray(str: String?, flags: Int): ByteArray? {
+        if (str.isNullOrBlank()) {
+            return null
+        }
+        return EncoderUtils.base64DecodeToByteArray(str, flags)
+    }
+
+    fun base64Encode(str: String): String? {
+        return EncoderUtils.base64Encode(str, 2)
+    }
+
+    fun base64Encode(str: String, flags: Int): String? {
+        return EncoderUtils.base64Encode(str, flags)
+    }
+
+    /* HexString 解码为字节数组 */
+    fun hexDecodeToByteArray(hex: String): ByteArray? {
+        return HexUtil.decodeHex(hex)
+    }
+
+    /* hexString 解码为utf8String*/
+    fun hexDecodeToString(hex: String): String? {
+        return HexUtil.decodeHexStr(hex)
+    }
+
+    /* utf8 编码为hexString */
+    fun hexEncodeToString(utf8: String): String? {
+        return HexUtil.encodeHexStr(utf8)
+    }
+
+    /**
+     * 格式化时间
+     */
+    fun timeFormatUTC(time: Long, format: String, sh: Int): String? {
+        val utc = SimpleTimeZone(sh, "UTC")
+        return SimpleDateFormat(format, Locale.getDefault()).run {
+            timeZone = utc
+            format(Date(time))
+        }
+    }
+
+    /**
+     * 时间格式化
+     */
+    fun timeFormat(time: Long): String {
+        return dateFormat.format(Date(time))
+    }
+
+    /**
+     * utf8编码转gbk编码
+     */
+    fun utf8ToGbk(str: String): String {
+        val utf8 = String(str.toByteArray(charset("UTF-8")))
+        val unicode = String(utf8.toByteArray(), charset("UTF-8"))
+        return String(unicode.toByteArray(charset("GBK")))
     }
 
     /*  fun base64Decode(str: String, flags: Int): String {
