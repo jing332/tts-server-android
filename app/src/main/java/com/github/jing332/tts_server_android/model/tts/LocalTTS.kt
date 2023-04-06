@@ -8,18 +8,12 @@ import android.os.SystemClock
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
-import android.view.View
-import androidx.fragment.app.FragmentActivity
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.databinding.SysttsLocalEditBottomSheetBinding
-import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsParamsEditView
 import com.github.jing332.tts_server_android.util.toHtmlBold
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.*
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -68,21 +62,15 @@ data class LocalTTS(
         }
     }
 
-    override fun isPitchFollowSystem() = pitch == ITextToSpeechEngine.VALUE_FOLLOW_SYSTEM
-
     init {
         audioFormat.isNeedDecode = true
     }
 
     override fun getEditActivity(): Class<out Activity> = LocalTtsEditActivity::class.java
 
-    override fun getType(): String {
-        return App.context.getString(R.string.local)
-    }
+    override fun getType() = App.context.getString(R.string.local)
 
-    override fun getBottomContent(): String {
-        return audioFormat.toString()
-    }
+    override fun getBottomContent() = audioFormat.toString()
 
     override fun getDescription(): String {
         val rateStr = if (isRateFollowSystem()) App.context.getString(R.string.follow) else rate
@@ -185,13 +173,16 @@ data class LocalTTS(
             locale?.let { language = Locale.forLanguageTag(it) }
             voiceName?.let { selectedVoice ->
                 voices?.toList()?.find { it.name == selectedVoice }?.let {
-                    Log.i(TAG, "setVoice: ${it.name}")
+                    Log.d(TAG, "setVoice: ${it.name}")
                     voice = it
                 }
             }
 
-            setSpeechRate((rate - 40) / 10f)
-            setPitch(if (pitch <= 0) 1f else pitch / 100f)
+            val r = rate / 10f - 5f // r = -5 ~ +5
+            val p = if (pitch <= 0) 1f else pitch / 100f // normal = 1.0
+            Log.d(TAG, "setSpeechRate: $r, setPitch: $p")
+            setSpeechRate(r)
+            setPitch(p)
             return Bundle().apply {
                 extraParams?.forEach { it.putValueFromBundle(this) }
             }

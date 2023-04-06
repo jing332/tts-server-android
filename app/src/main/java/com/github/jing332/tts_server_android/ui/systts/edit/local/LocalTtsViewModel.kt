@@ -180,10 +180,10 @@ class LocalTtsViewModel : ViewModel() {
                     override fun onDone() {
                     }
                 }
-                withIO { mTts.startPlay(text) }
+                withIO { mTts.startPlayWithSystemParams(text) }
             } else {
                 withIO {
-                    mTts.getAudioBytes(text)?.let {
+                    mTts.getAudioWithSystemParams(text)?.let {
                         val sampleRate = AudioDecoder.getSampleRateAndMime(it).first
 
                         withMain { onGetAudioSuccess(it, sampleRate) }

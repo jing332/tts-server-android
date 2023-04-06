@@ -151,7 +151,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         timeoutJob.start()
 
                         audioResult =
-                            tts.getAudioBytes(text, sysRate, sysPitch)
+                            tts.getAudioWithSystemParams(text, sysRate, sysPitch)
                                 ?: throw RequestException(
                                     errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
                                     tts = tts, text = text
@@ -275,10 +275,10 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             if (!coroutineContext.isActive) return@synthesizeText
 
             if (txtTts.tts.isDirectPlay())
-                txtTts.tts.startPlay(txtTts.text, sysRate, sysPitch)
+                txtTts.tts.startPlayWithSystemParams(txtTts.text, sysRate, sysPitch)
             else if (audio == null) {
                 Log.w(TAG, "音频为空！ $txtTts")
-                txtTts.tts.speechRule.standbyTts?.startPlay(txtTts.text, sysRate, sysPitch)
+                txtTts.tts.speechRule.standbyTts?.startPlayWithSystemParams(txtTts.text, sysRate, sysPitch)
             } else {
                 if (txtTts.tts.audioFormat.isNeedDecode)
                     if (SysTtsConfig.isInAppPlayAudio) {

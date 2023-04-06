@@ -3,14 +3,9 @@ package com.github.jing332.tts_server_android.model.tts
 import android.app.Activity
 import android.content.Context
 import android.os.Parcelable
-import android.view.View
-import androidx.fragment.app.FragmentActivity
-import androidx.viewbinding.ViewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.ui.systts.base.QuickEditBottomSheet
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import kotlinx.parcelize.IgnoredOnParcel
@@ -92,25 +87,34 @@ sealed class ITextToSpeechEngine(
      */
     open fun isDirectPlay(): Boolean = false
 
-    /**
-     * 开始播放 用于本地TTS的直接播放
-     */
-    open suspend fun startPlay(text: String, rate: Int = 0, pitch: Int = 0): Boolean = false
+    protected open suspend fun startPlay(text: String, rate: Int = 0, pitch: Int = 0): Boolean =
+        false
 
     /**
-     * 完整获取音频
-     * @param rate 语速 已经根据是否随系统
-     * @param pitch 音高 已经根据是否随系统
+     * 播放音频 参数自动判断是否随系统
      */
-    protected open suspend fun getAudio(
+    open suspend fun startPlayWithSystemParams(
+        text: String,
+        sysRate: Int = 0,
+        sysPitch: Int = 0
+    ): Boolean {
+        val r = if (isRateFollowSystem()) sysRate else this.rate
+        val p = if (isPitchFollowSystem()) sysPitch else this.pitch
+        return startPlay(text, r, p)
+    }
+
+
+    open suspend fun getAudio(
         speakText: String,
         rate: Int = 50,
         pitch: Int = 0
-    ): ByteArray? {
-        throw Exception("请在编辑界面点击文件夹进行播放")
-    }
+    ): ByteArray? = null
 
-    suspend fun getAudioBytes(text: String, sysRate: Int = 50, sysPitch: Int = 0): ByteArray? {
+    suspend fun getAudioWithSystemParams(
+        text: String,
+        sysRate: Int = 50,
+        sysPitch: Int = 0
+    ): ByteArray? {
         val r = if (isRateFollowSystem()) sysRate else this.rate
         val p = if (isPitchFollowSystem()) sysPitch else this.pitch
         return getAudio(text, r, p)
@@ -119,6 +123,7 @@ sealed class ITextToSpeechEngine(
     /**
      * 获取PCM音频流
      */
+    @Deprecated("暂时不用")
     open suspend fun getAudioStream(
         speakText: String,
         chunkSize: Int = 0,

@@ -297,7 +297,7 @@ class MsTtsEditViewModel : ViewModel() {
         viewModelScope.runOnIO {
             val audio = try {
                 mTts.onLoad()
-                mTts.getAudioBytes(text, sysRate = 0)
+                mTts.getAudioWithSystemParams(text, sysRate = 0)
             } catch (e: Exception) {
                 withMain { onFailure.invoke(e) }
                 return@runOnIO

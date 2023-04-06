@@ -37,9 +37,7 @@ import com.github.jing332.tts_server_android.util.clone
 import com.github.jing332.tts_server_android.util.longToast
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
@@ -155,7 +153,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
             val audio = try {
                 withIO {
                     tts.onLoad()
-                    tts.getAudioBytes(AppConfig.testSampleText)
+                    tts.getAudioWithSystemParams(AppConfig.testSampleText)
                 }
             } catch (e: Exception) {
                 context.displayErrorDialog(e)
@@ -168,7 +166,10 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
             if (audio == null) {
                 context.displayErrorDialog(
                     Exception(
-                        context.getString(R.string.systts_log_audio_empty, AppConfig.testSampleText)
+                        context.getString(
+                            R.string.systts_log_audio_empty,
+                            AppConfig.testSampleText
+                        )
                     )
                 )
                 return@launch

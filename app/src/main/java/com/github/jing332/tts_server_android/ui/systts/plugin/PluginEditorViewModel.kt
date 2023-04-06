@@ -87,7 +87,7 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
 
             kotlin.runCatching {
                 pluginTTS.onLoad()
-                val audio = pluginTTS.getAudioBytes(PluginConfig.sampleText)
+                val audio = pluginTTS.getAudioWithSystemParams(PluginConfig.sampleText)
                 if (audio == null)
                     pluginEngine.logger.w("音频为空！")
                 else
