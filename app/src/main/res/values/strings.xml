@@ -360,4 +360,5 @@
     <string name="file_picker_mode_builtin">Built-in File Picker</string>
     <string name="file_picker_mode_prompt">Prompt for File Picker</string>
     <string name="no_retries">No Retries</string>
+    <string name="systts_no_custom_tag_confg_warn">⚠️无标签配置，请添加配置或关闭多语音选项！</string>
 </resources>

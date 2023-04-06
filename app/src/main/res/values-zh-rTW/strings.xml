@@ -342,4 +342,5 @@
     <string name="file_picker_mode_builtin">内置文件选择器</string>
     <string name="file_picker_mode_prompt">弹出选择提示</string>
     <string name="no_retries">不重试</string>
+    <string name="systts_no_custom_tag_confg_warn">⚠️无标签配置，请添加配置或关闭多语音选项！</string>
 </resources>

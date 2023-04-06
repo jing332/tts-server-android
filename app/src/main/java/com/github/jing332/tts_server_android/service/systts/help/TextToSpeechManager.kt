@@ -213,9 +213,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         mSpeechRuleHelper.init(context, rule)
                     }
                 }
-            } else {
-                context.toast("⚠️无标签配置，请添加配置或关闭多语音选项！")
-            }
+            } else
+                context.toast(R.string.systts_no_custom_tag_confg_warn)
 
             mConfigMap[SpeechTarget.CUSTOM_TAG]!![0].audioFormat
         } else {
@@ -248,7 +247,9 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         isSynthesizing = true
         mBgmPlayer?.play()
 
-        val replaced = if (SysTtsConfig.isReplaceEnabled) mTextReplacer.replace(text) else text
+        val replaced = if (SysTtsConfig.isReplaceEnabled)
+            mTextReplacer.replace(text) { listener?.onError(it) } else text
+
         synthesizeText(replaced, sysRate, sysPitch) { audio, txtTts -> // 音频获取完毕
             if (!coroutineContext.isActive) return@synthesizeText
 
