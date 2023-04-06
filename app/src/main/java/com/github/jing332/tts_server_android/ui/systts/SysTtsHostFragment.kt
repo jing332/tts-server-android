@@ -13,7 +13,7 @@ import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListFragment
 import com.github.jing332.tts_server_android.util.reduceDragSensitivity
 
 
-class SysTtsFragment : Fragment() {
+class SysTtsHostFragment : Fragment() {
     private val binding: SysttsFragmentBinding by lazy {
         SysttsFragmentBinding.inflate(layoutInflater)
     }
@@ -48,7 +48,7 @@ class SysTtsFragment : Fragment() {
     }
 
     val listFragment = SysTtsListFragment()
-    val logFragment = SysTtsLogFragment()
+    val logFragment = SysTtsLogPageFragment()
 
     inner class FragmentAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
         private val fragmentList = listOf(listFragment, logFragment)

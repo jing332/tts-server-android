@@ -31,6 +31,8 @@ import kotlin.system.measureTimeMillis
 class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<ITextToSpeechEngine>() {
     companion object {
         const val TAG = "TtsSynthesizer"
+
+        private val defaultTtsConfig by lazy { MsTTS() }
     }
 
     var listener: Listener? = null
@@ -59,18 +61,36 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
             mSpeechRuleHelper.handleText(text, tagTtsMap, MsTTS())
         } else {
-            listOf(TtsText(mConfigMap[SpeechTarget.ALL]!![0], text))
+            listOf(TtsText(mConfigMap[SpeechTarget.ALL]?.get(0) ?: defaultTtsConfig, text))
         }.run {
             if (SysTtsConfig.isSplitEnabled) {
                 val list = mutableListOf<TtsText<ITextToSpeechEngine>>()
                 forEach { ttsText ->
-                    StringUtils.splitSentences(ttsText.text).forEach {
-                        list.add(TtsText(ttsText.tts, it))
-                    }
+                    splitText(list, ttsText.text, ttsText.tts, SysTtsConfig.isMultiVoiceEnabled)
                 }
                 list
-            } else this
+            } else
+                this
         }
+    }
+
+    private fun splitText(
+        list: MutableList<TtsText<ITextToSpeechEngine>>,
+        text: String,
+        tts: ITextToSpeechEngine,
+        isMultiVoice: Boolean
+    ) {
+        if (isMultiVoice) {
+            val texts = mSpeechRuleHelper.splitText(text)
+            if (texts.isEmpty()) return splitText(list, text, tts, false)
+
+            texts.forEach {
+                list.add(TtsText(tts, it))
+            }
+        } else
+            StringUtils.splitSentences(text).forEach {
+                list.add(TtsText(tts, it))
+            }
     }
 
     override suspend fun getAudio(

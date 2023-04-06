@@ -168,6 +168,13 @@ class SysTtsListFragment : Fragment() {
 
                 R.id.menu_do_split -> {
                     SysTtsConfig.isSplitEnabled = !SysTtsConfig.isSplitEnabled
+                    if (SysTtsConfig.isSplitEnabled)
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.tip)
+                            .setMessage(R.string.systts_split_text_tip_msg)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show()
+
                     SystemTtsService.notifyUpdateConfig()
                     true
                 }

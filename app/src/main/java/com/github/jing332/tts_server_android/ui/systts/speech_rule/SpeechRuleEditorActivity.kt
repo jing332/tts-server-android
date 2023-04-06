@@ -6,10 +6,11 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.widget.PopupMenu
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
-import com.github.jing332.tts_server_android.help.config.ReadRuleConfig
+import com.github.jing332.tts_server_android.help.config.SpeechRuleConfig
 import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
@@ -54,7 +55,7 @@ class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
 
     override fun getLogger() = vm.logger
     override fun onDebug() {
-        vm.debug(ReadRuleConfig.textParam)
+        vm.debug(SpeechRuleConfig.textParam)
     }
 
 
@@ -68,16 +69,15 @@ class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
         }
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_text_params -> {
                 AppDialogs.displayInputDialog(
                     this,
                     getString(R.string.set_sample_text_param),
-                    text = ReadRuleConfig.textParam
+                    text = SpeechRuleConfig.textParam
                 ) {
-                    ReadRuleConfig.textParam = it
+                    SpeechRuleConfig.textParam = it
                 }
             }
         }

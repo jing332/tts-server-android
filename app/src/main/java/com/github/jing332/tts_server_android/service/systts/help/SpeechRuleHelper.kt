@@ -14,6 +14,10 @@ class SpeechRuleHelper {
         engine.eval()
     }
 
+    fun splitText(text: String): List<String> {
+        return engine.splitText(text)
+    }
+
     fun handleText(
         text: String,
         config: Map<String, ITextToSpeechEngine>,

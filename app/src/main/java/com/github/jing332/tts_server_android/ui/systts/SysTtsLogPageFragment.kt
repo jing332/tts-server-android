@@ -17,7 +17,7 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService.Com
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.view.adapter.LogListItemAdapter
 
-class SysTtsLogFragment : Fragment() {
+class SysTtsLogPageFragment : Fragment() {
     companion object {
         const val TAG = "TtsLogFragment"
     }

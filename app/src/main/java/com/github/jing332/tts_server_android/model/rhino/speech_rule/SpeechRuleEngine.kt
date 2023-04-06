@@ -18,6 +18,7 @@ class SpeechRuleEngine(
         const val OBJ_JS = "SpeechRuleJS"
 
         const val FUNC_HANDLE_TEXT = "handleText"
+        const val FUNC_SPLIT_TEXT = "splitText"
     }
 
     private val objJS
@@ -54,6 +55,15 @@ class SpeechRuleEngine(
 
             }
         return resultList
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun splitText(text: String): List<String> {
+        return try {
+            (rhino.invokeMethod(objJS, FUNC_SPLIT_TEXT, text) as List<CharSequence>).map { it.toString() }
+        } catch (_: NoSuchMethodException) {
+            emptyList()
+        }
     }
 
     data class TextWithTag(val text: String, val tag: String)
