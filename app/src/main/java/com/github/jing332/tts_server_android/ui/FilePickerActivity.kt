@@ -5,16 +5,20 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.help.ByteArrayBinder
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.util.FileUtils
+import com.github.jing332.tts_server_android.util.getBinder
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.AbstractFileFilter
@@ -28,8 +32,22 @@ class FilePickerActivity : AppCompatActivity() {
         const val ACTION_SELECT_FILE = 1
         const val ACTION_SELECT_DIR = 2
 
+        const val KEY_REQUEST_DATA = "KEY_REQUEST_DATA"
         private const val REQUEST_CODE_SAVE_FILE = 123321
     }
+
+    private lateinit var requestData: IRequestData
+
+    private val reqSaveFile: RequestSaveFile
+        get() = requestData as RequestSaveFile
+
+    private val reqSelectDir: RequestSelectDir
+        get() = requestData as RequestSelectDir
+
+    private val reqSelectFile: RequestSelectFile
+        get() = requestData as RequestSelectFile
+
+    private lateinit var docCreate: ActivityResultLauncher<String>
 
     private val docTreeSelector =
         registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
@@ -42,16 +60,16 @@ class FilePickerActivity : AppCompatActivity() {
 
     private val docSelector =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) {
-            setResult(RESULT_OK, Intent().apply {
-                data = it
-                putExtra(KeyConst.KEY_DATA, requestData)
-            })
-            finish()
+            resultAndFinish(it)
         }
 
-    private lateinit var requestData: RequestData
-    private val docCreate =
-        FileUtils.registerResultCreateDocument(this, "text/*") { requestData.fileData }
+    private fun resultAndFinish(uri: Uri?) {
+        setResult(RESULT_OK, Intent().apply {
+            putExtra(KeyConst.KEY_DATA, requestData)
+            data = uri
+        })
+        finish()
+    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -59,12 +77,8 @@ class FilePickerActivity : AppCompatActivity() {
             FilePickerManager.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val list = FilePickerManager.obtainData()
-                    setResult(RESULT_OK, Intent().apply {
-                        putExtra(KeyConst.KEY_DATA, requestCode)
-                        setData(list.component1().toUri())
-                    })
+                    resultAndFinish(list.getOrNull(0)?.toUri())
                 }
-                finish()
             }
 
             REQUEST_CODE_SAVE_FILE -> {
@@ -73,12 +87,14 @@ class FilePickerActivity : AppCompatActivity() {
                     if (fileDir == null) {
                         toast(R.string.path_is_empty)
                     } else {
-                        if (requestData.fileData == null) toast("文件数据为空")
-                        else
-                            FileUtils.saveFile(
-                                fileDir + "/${requestData.fileName}",
-                                requestData.fileData!!
+                        if (FileUtils.saveFile(
+                                fileDir + "/${reqSaveFile.fileName}",
+                                reqSaveFile.fileBytes!!
                             )
+                        ) toast(R.string.save_success)
+                        else
+                            toast(getString(R.string.file_save_failed, ""))
+
                     }
                 }
                 finish()
@@ -94,12 +110,21 @@ class FilePickerActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val lp = window.attributes
         lp.alpha = 0.0f
         window.attributes = lp
 
-        requestData = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: RequestData()
+
+        requestData = intent.getParcelableExtra(KEY_REQUEST_DATA)!!
+
+        if (requestData is RequestSaveFile) {
+            docCreate = FileUtils.registerResultCreateDocument(
+                this,
+                reqSaveFile.fileMime
+            ) {
+                reqSaveFile.fileBytes
+            }
+        }
 
         when (AppConfig.filePickerMode) {
             FilePickerMode.PROMPT -> {
@@ -138,23 +163,28 @@ class FilePickerActivity : AppCompatActivity() {
     }
 
     private fun doAction() {
-        when (requestData.action) {
-            ACTION_SAVE_FILE -> {
-                saveFile()
+        when (requestData) {
+            is RequestSaveFile -> {
+                val binder = intent.getBinder()
+                if (binder is ByteArrayBinder) {
+                    reqSaveFile.fileBytes = binder.data
+                    saveFile()
+                }
             }
 
-            ACTION_SELECT_FILE -> selectFile()
-            ACTION_SELECT_DIR -> selectDir()
+            is RequestSelectFile -> selectFile()
+            is RequestSelectDir -> selectDir()
         }
     }
 
     private fun saveFile() {
         if (useSystem)
             kotlin.runCatching {
-                docCreate.launch(requestData.fileName)
+                docCreate.launch(reqSaveFile.fileName)
             }.onFailure {
+                it.printStackTrace()
                 toast(R.string.sys_doc_picker_error)
-                useSystem = true
+                useSystem = false
                 return saveFile()
             }
         else {
@@ -165,7 +195,7 @@ class FilePickerActivity : AppCompatActivity() {
     private fun selectFile() {
         if (useSystem) {
             kotlin.runCatching {
-                docSelector.launch(arrayOf("*/*"))
+                docSelector.launch(reqSelectFile.fileMimes.toTypedArray())
             }.onFailure {
                 toast(R.string.sys_doc_picker_error)
                 useSystem = true
@@ -212,13 +242,22 @@ class FilePickerActivity : AppCompatActivity() {
     }
 
 
-    @Parcelize
-    @Suppress("ArrayInDataClass")
-    data class RequestData(
-        val action: Int = ACTION_SELECT_FILE,
+    interface IRequestData : Parcelable {}
 
-        val fileName: String? = null,
-        val fileMime: String? = null,
-        val fileData: ByteArray? = null
-    ) : Parcelable
+    @Parcelize
+    data class RequestSaveFile(
+        val fileName: String = "ttsrv-file.json",
+        val fileMime: String = "text/*",
+
+        // 大数据使用Binder传递 这里只是方便客户调用
+        @IgnoredOnParcel
+        @Suppress("ArrayInDataClass")
+        var fileBytes: ByteArray? = null
+    ) : IRequestData
+
+    @Parcelize
+    data class RequestSelectDir(val rootUri: Uri = Uri.EMPTY) : IRequestData
+
+    @Parcelize
+    data class RequestSelectFile(val fileMimes: List<String> = listOf("")) : IRequestData
 }

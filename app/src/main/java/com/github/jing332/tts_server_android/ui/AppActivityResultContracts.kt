@@ -5,17 +5,22 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.help.ByteArrayBinder
+import com.github.jing332.tts_server_android.util.setBinder
 
 object AppActivityResultContracts {
     fun filePickerActivity() =
         object :
-            ActivityResultContract<FilePickerActivity.RequestData, Pair<FilePickerActivity.RequestData?, Uri?>>() {
+            ActivityResultContract<FilePickerActivity.IRequestData, Pair<FilePickerActivity.IRequestData?, Uri?>>() {
             override fun createIntent(
                 context: Context,
-                input: FilePickerActivity.RequestData
+                input: FilePickerActivity.IRequestData
             ): Intent {
                 return Intent(context, FilePickerActivity::class.java).apply {
-                    putExtra(KeyConst.KEY_DATA, input)
+                    if (input is FilePickerActivity.RequestSaveFile)
+                        setBinder(ByteArrayBinder(input.fileBytes!!))
+
+                    putExtra(FilePickerActivity.KEY_REQUEST_DATA, input)
                 }
             }
 
@@ -23,8 +28,10 @@ object AppActivityResultContracts {
             override fun parseResult(
                 resultCode: Int,
                 intent: Intent?
-            ): Pair<FilePickerActivity.RequestData?, Uri?> {
-                return intent?.getParcelableExtra<FilePickerActivity.RequestData>(KeyConst.KEY_DATA) to intent?.data
+            ): Pair<FilePickerActivity.IRequestData?, Uri?> {
+                return intent?.getParcelableExtra<FilePickerActivity.IRequestData>(
+                    FilePickerActivity.KEY_REQUEST_DATA
+                ) to intent?.data
             }
 
         }

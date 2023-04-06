@@ -45,7 +45,7 @@ class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
 
     override fun clearCacheFile(): Boolean = true
 
-    override fun onSaveAsFile(): String = ""
+    override fun onGetSaveFileName(): String = "ttsrv-${vm.speechRule.name}.json"
 
     override fun onSave(): Parcelable? {
         return if (vm.evalRuleInfo())

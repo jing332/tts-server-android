@@ -2,7 +2,10 @@ package com.github.jing332.tts_server_android.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.os.Bundle
+import android.os.IBinder
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +14,22 @@ import android.view.WindowInsets
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
+import com.github.jing332.tts_server_android.constant.KeyConst
 import java.lang.reflect.ParameterizedType
+
+
+fun Intent.getBinder(): IBinder? {
+    val bundle = getBundleExtra(KeyConst.KEY_BUNDLE)
+    return bundle?.getBinder(KeyConst.KEY_LARGE_DATA_BINDER)
+}
+
+fun Intent.setBinder(binder: IBinder) {
+    putExtra(
+        KeyConst.KEY_BUNDLE,
+        Bundle().apply {
+            putBinder(KeyConst.KEY_LARGE_DATA_BINDER, binder)
+        })
+}
 
 val Int.dp: Int get() = SizeUtils.dp2px(this.toFloat())
 

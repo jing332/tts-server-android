@@ -22,11 +22,12 @@ import com.github.jing332.tts_server_android.databinding.SysttsScriptSyncSetting
 import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
+import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
+import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
-import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.rosemoe.sora.widget.CodeEditor
@@ -34,12 +35,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class BaseScriptEditorActivity : BackActivity() {
+    private lateinit var fileSaver: ActivityResultLauncher<FilePickerActivity.IRequestData>
     private lateinit var mEditorHelper: CodeEditorHelper
     private val baseBinding by lazy { SysttsBaseScriptEditorActivityBinding.inflate(layoutInflater) }
     private val vm: BaseScriptEditorViewModel by viewModels()
 
     private var savedData: ByteArray? = null
-    private lateinit var fileSaver: ActivityResultLauncher<String>
 
     val editor: CodeEditor by lazy { baseBinding.editor }
 
@@ -47,7 +48,9 @@ abstract class BaseScriptEditorActivity : BackActivity() {
         super.onCreate(savedInstanceState)
         setContentView(baseBinding.root)
 
-        fileSaver = FileUtils.registerResultCreateDocument(this, "text/javascript") { savedData }
+        fileSaver = registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
+
+        }
 
         mEditorHelper = CodeEditorHelper(this, baseBinding.editor)
         mEditorHelper.initEditor()
@@ -104,7 +107,7 @@ abstract class BaseScriptEditorActivity : BackActivity() {
     /**
      * @return 文件名
      */
-    abstract fun onSaveAsFile(): String
+    abstract fun onGetSaveFileName(): String
 
     /**
      * 保存按钮
@@ -113,7 +116,12 @@ abstract class BaseScriptEditorActivity : BackActivity() {
 
     private fun saveAsFile() {
         savedData = editor.text.toString().toByteArray()
-        fileSaver.launch(onSaveAsFile())
+        fileSaver.launch(
+            FilePickerActivity.RequestSaveFile(
+                onGetSaveFileName(), "text/javascript",
+                editor.text.toString().toByteArray()
+            )
+        )
     }
 
     @Suppress("DEPRECATION")

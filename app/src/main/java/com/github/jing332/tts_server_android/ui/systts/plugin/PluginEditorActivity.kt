@@ -103,7 +103,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
         return true
     }
 
-    override fun onSaveAsFile(): String = "ttsrv-${vm.pluginInfo.name}.js"
+    override fun onGetSaveFileName(): String = "ttsrv-${vm.pluginInfo.name}.js"
 
     override fun onSave(): Parcelable? {
         val plugin = try {

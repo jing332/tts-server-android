@@ -11,6 +11,16 @@ import android.provider.MediaStore
 
 @Suppress("MemberVisibilityCanBePrivate")
 object ASFUriUtils {
+    fun Context.getPath(uri: Uri?, isTree: Boolean = false): String? {
+        if (uri == null) return null
+
+        if (uri.toString().startsWith("/")) return uri.toString()
+        return if (isTree)
+            getPathFromTree(this, uri)
+        else
+            ASFUriUtils.getPath(this, uri)
+    }
+
     fun getPathFromTree(context: Context, uri: Uri?): String? {
         if (uri == null) return null
 

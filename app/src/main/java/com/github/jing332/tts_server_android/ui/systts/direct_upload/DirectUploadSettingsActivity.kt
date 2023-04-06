@@ -43,7 +43,7 @@ class DirectUploadSettingsActivity : BaseScriptEditorActivity() {
         return false
     }
 
-    override fun onSaveAsFile(): String = "ttsrv-directLinkUpload.js"
+    override fun onGetSaveFileName(): String = "ttsrv-directLinkUpload.js"
 
     override fun onSave(): Parcelable? {
         DirectUploadConfig.code = editor.text.toString()

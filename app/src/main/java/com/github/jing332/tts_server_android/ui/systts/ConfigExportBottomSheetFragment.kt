@@ -12,6 +12,8 @@ import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsConfigExportBottomSheetBinding
 import com.github.jing332.tts_server_android.model.rhino.directupload.DirectUploadEngine
+import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
+import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
@@ -33,13 +35,15 @@ class ConfigExportBottomSheetFragment(
         const val TAG = "ConfigExportBottomSheetFragment"
     }
 
+    private lateinit var fileSaver: ActivityResultLauncher<FilePickerActivity.IRequestData>
     private val binding by lazy { SysttsConfigExportBottomSheetBinding.inflate(layoutInflater) }
-    private lateinit var fileSaver: ActivityResultLauncher<String>
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        fileSaver = FileUtils.registerResultCreateDocument(this, "application/json") {
-            binding.tvConfig.text.toString().toByteArray()
+
+        fileSaver = registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
+
         }
     }
 
@@ -65,7 +69,12 @@ class ConfigExportBottomSheetFragment(
         }
 
         binding.btnSave.clickWithThrottle {
-            fileSaver.launch(onGetName.invoke())
+            fileSaver.launch(
+                FilePickerActivity.RequestSaveFile(
+                    fileName = onGetName(),
+                    fileBytes = onGetConfig().toByteArray()
+                )
+            )
         }
 
         binding.btnUpload.clickWithThrottle {

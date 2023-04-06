@@ -22,6 +22,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.util.ASFUriUtils
+import com.github.jing332.tts_server_android.util.ASFUriUtils.getPath
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -36,15 +37,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
         registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
             if (it == null) return@registerForActivityResult
             kotlin.runCatching {
-                val path = if (it.second.toString().startsWith("/")) {
-                    it.second.toString() // 真实目录
-                } else {
-                    if (it.first?.action == FilePickerActivity.ACTION_SELECT_FILE)
-                        ASFUriUtils.getPath(this, it.second)
-                    else
-                        ASFUriUtils.getPathFromTree(this, it.second)
-                }
-
+                val path = this.getPath(it.second, it.first is FilePickerActivity.RequestSelectFile)
                 if (path.isNullOrBlank()) toast(R.string.path_is_empty)
                 else {
                     tts.musicList.add(path)
@@ -70,17 +63,14 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
 
         binding.btnAddFolder.clickWithThrottle {
             mFilePicker.launch(
-                FilePickerActivity.RequestData(
-                    FilePickerActivity.ACTION_SELECT_DIR
-                )
+                FilePickerActivity.RequestSelectDir()
             )
         }
 
         binding.btnAddFile.clickWithThrottle {
             mFilePicker.launch(
-                FilePickerActivity.RequestData(
-                    FilePickerActivity.ACTION_SELECT_FILE,
-                    fileMime = "audio/*"
+                FilePickerActivity.RequestSelectFile(
+                    fileMimes = listOf("audio/*")
                 )
             )
         }
