@@ -19,11 +19,10 @@
 <details>
   <summary>点击展开查看截图</summary>
 
-> 左图为服务转发日志界面，用于阅读APP的网络朗读。<br>
-> 右图为系统TTS配置界面，可被使用系统TTS的APP调用。
-
-  <img src="./images/Screenshot_Main.png" height="150px">
-  <img src="./images/Screenshot_SysTTS.png" height="150px">
+  <img src="./images/1.jpg" height="150px">
+  <img src="./images/2.jpg" height="150px">
+  <img src="./images/3.jpg" height="150px">
+  <img src="./images/4.jpg" height="150px">
 
 </details>
 
@@ -77,4 +76,4 @@
 
 * [阿里巴巴IconFont](https://www.iconfont.cn/)
 
-* [酷安@沉默_9527](https://www.coolapk.com/u/230844) 本APP图标作者
+* [酷安@沉默_9520](http://www.coolapk.com/u/25956307) 本APP图标作者
