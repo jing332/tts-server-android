@@ -42,11 +42,9 @@
 ### 如何添加自己的Azure API？
 
 > 使用自定义HTTP TTS，见https:
-> //github.com/jing332/tts-server-android/issues/43#issuecomment-1405072848
+> https//github.com/jing332/tts-server-android/issues/43#issuecomment-1405072848
 >
-> (推荐)使用插件: 插件管理->
-> 网络导入链接 [plugin-azure.js](https://raw.githubusercontent.com/jing332/tts-server-android/master/plugin-azure-tts.json)
-> ,随后编辑插件，设置你的密钥key和区域region即可。
+> (推荐)使用插件: 插件管理 -> 右上角添加 -> 填入Key与Region -> 保存并启用即可。
 
 # Grateful
 

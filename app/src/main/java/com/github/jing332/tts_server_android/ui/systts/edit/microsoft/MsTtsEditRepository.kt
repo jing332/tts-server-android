@@ -31,11 +31,7 @@ class MsTtsEditRepository() {
      */
     suspend fun voicesByApi(@MsTtsApiType api: Int): List<GeneralVoiceData> {
         return withDefault {
-            return@withDefault when (api) {
-                MsTtsApiType.EDGE -> edgeVoices()
-                MsTtsApiType.AZURE -> azureVoices()
-                else -> creationVoices()
-            }
+            edgeVoices()
         }
     }
 
@@ -70,51 +66,12 @@ class MsTtsEditRepository() {
             )
         }.apply { mDataCacheMap[EDGE_CACHE_PATH] = this }
     }
-
-    private suspend fun azureVoices(): List<GeneralVoiceData> {
-        mDataCacheMap[AZURE_CACHE_PATH]?.let { return it }
-
-        val list = getVoicesHelper<AzureVoiceBean>(AZURE_CACHE_PATH) {
-            Tts_server_lib.getAzureVoice()
-        }
-        return list.map {
-            GeneralVoiceData(
-                gender = it.gender,
-                locale = it.locale, voiceName = it.shortName,
-                _styles = it.styleList, _roles = it.rolePlayList,
-                _secondaryLocales = it.secondaryLocaleList,
-                _localeName = it.localeName
-            )
-        }.also { mDataCacheMap[AZURE_CACHE_PATH] = it }
-    }
-
-    private suspend fun creationVoices(): List<GeneralVoiceData> {
-        mDataCacheMap[CREATION_CACHE_PATH]?.let { return it }
-
-        val list = getVoicesHelper<CreationVoiceBean>(CREATION_CACHE_PATH) {
-            Tts_server_lib.getCreationVoices()
-        }
-        return list.map {
-            GeneralVoiceData(
-                gender = it.properties.gender,
-                voiceId = it.id,
-                voiceName = it.shortName,
-                locale = it.locale,
-                _localVoiceName = it.properties.localName,
-                _styles = it.properties.voiceStyleNames,
-                _roles = it.properties.voiceRoleNames,
-                _secondaryLocales = it.properties.SecondaryLocales
-            )
-        }.also { mDataCacheMap[CREATION_CACHE_PATH] = it }
-    }
-
 }
 
 // 通用数据
-@Suppress("DEPRECATION")
 data class GeneralVoiceData(
     /**
-     * 性别 Male:男, Female:女
+    //     * 性别 Male:男, Female:女
      */
     val gender: String,
     /**

@@ -345,4 +345,5 @@
     <string name="systts_no_custom_tag_confg_warn">⚠️无标签配置，请添加配置或关闭多语音选项！</string>
     <string name="tip">提示</string>
     <string name="systts_split_text_tip_msg">多语音选项开启时优先使用朗读规则中的分割脚本；关闭时使用内置分割规则。</string>
+    <string name="systts_not_found_speech_rule_tag">⚠️未找到朗读规则</string>
 </resources>

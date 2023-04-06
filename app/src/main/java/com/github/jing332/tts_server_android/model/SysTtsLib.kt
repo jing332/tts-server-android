@@ -23,42 +23,18 @@ object SysTtsLib {
 
         return ResultProperty(libPro, libProsody, libExp)
     }
+
     private val mEdgeApi: EdgeApi by lazy { EdgeApi() }
-    private val mAzureApi: AzureApi by lazy { AzureApi() }
-    private val mCreationApi: CreationApi by lazy { CreationApi() }
 
     /**
      * 设置超时
      */
     fun setTimeout(ms: Int) {
         mEdgeApi.timeout = ms
-        mAzureApi.timeout = ms
-        mCreationApi.timeout = ms
     }
 
     fun setUseDnsLookup(isEnabled: Boolean) {
         mEdgeApi.useDnsLookup = isEnabled
-    }
-
-    /**
-     * 获取音频流 仅支持Azure
-     */
-    fun getAudioStream(
-        text: String,
-        pro: MsTTS,
-        onRead: (ByteArray) -> Unit
-    ) {
-        val libPro = toLibProperty(pro)
-        mAzureApi.getAudioStream(
-            text,
-            pro.format,
-            libPro.voiceProperty,
-            libPro.voiceProsody,
-            libPro.voiceExpressAs
-        ) { data ->
-            if (data != null)
-                onRead(data)
-        }
     }
 
     /**
@@ -79,23 +55,13 @@ object SysTtsLib {
                     libPro.voiceProsody
                 )
             }
+
             MsTtsApiType.AZURE -> {
-                return mAzureApi.getAudio(
-                    text,
-                    format,
-                    libPro.voiceProperty,
-                    libPro.voiceProsody,
-                    libPro.voiceExpressAs
-                )
+                throw Exception("Azure 已失效！")
             }
+
             MsTtsApiType.CREATION -> {
-                return mCreationApi.getCreationAudio(
-                    text,
-                    format,
-                    libPro.voiceProperty,
-                    libPro.voiceProsody,
-                    libPro.voiceExpressAs
-                )
+                throw Exception("Creation 已失效！")
             }
         }
         return null

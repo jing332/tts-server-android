@@ -28,7 +28,6 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
     private val waitDialog by lazy { WaitDialog(this) }
 
     @SuppressLint("ClickableViewAccessibility")
-    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setEditContentView(binding.root, binding.testLayout.tilTest)
@@ -67,8 +66,6 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
         vm.init(
             listOf(
                 Pair(getString(R.string.systts_api_edge), R.drawable.ic_ms_edge),
-                Pair(getString(R.string.systts_api_azure), R.drawable.ic_microsoft),
-                Pair(getString(R.string.systts_api_creation), R.drawable.ic_ms_speech_studio)
             )
         )
 

@@ -1,13 +1,10 @@
 package tts_server_lib
 
 import (
-	"context"
 	"crypto/tls"
 	"fmt"
 	core "github.com/jing332/tts-server-go"
 	"github.com/jing332/tts-server-go/tts"
-	"github.com/jing332/tts-server-go/tts/azure"
-	"github.com/jing332/tts-server-go/tts/creation"
 	"github.com/jing332/tts-server-go/tts/edge"
 	"io"
 	"net/http"
@@ -81,135 +78,6 @@ func GetEdgeVoices() ([]byte, error) {
 	}
 	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
-}
-
-type ReadCallBack interface {
-	OnRead([]byte)
-}
-
-type AzureApi struct {
-	Timeout int32
-	tts     *azure.TTS
-}
-
-func (a *AzureApi) GetAudio(text, format string, property *VoiceProperty,
-	prosody *VoiceProsody, expressAS *VoiceExpressAs) ([]byte, error) {
-	if a.tts == nil {
-		a.tts = &azure.TTS{}
-	}
-	property.Api = tts.ApiAzure
-	proto := property.Proto(prosody, expressAS)
-
-	text = core.SpecialCharReplace(text)
-	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
-		proto.ElementString(text) + `</speak > `
-
-	succeed := make(chan []byte)
-	failed := make(chan error)
-	go func() {
-		audio, err := a.tts.GetAudio(ssml, format)
-		if err != nil {
-			a.tts = nil
-			failed <- err
-			return
-		}
-		succeed <- audio
-	}()
-
-	select {
-	case audio := <-succeed:
-		return audio, nil
-	case err := <-failed:
-		return nil, err
-	case <-time.After(time.Duration(a.Timeout) * time.Millisecond):
-		a.tts.CloseConn()
-		a.tts = nil
-		return nil, fmt.Errorf("timed out：%dms", a.Timeout)
-	}
-}
-
-func (a *AzureApi) GetAudioStream(text, format string, property *VoiceProperty,
-	prosody *VoiceProsody, expressAS *VoiceExpressAs, readCb ReadCallBack) error {
-	if a.tts == nil {
-		a.tts = &azure.TTS{}
-	}
-	property.Api = tts.ApiAzure
-	proto := property.Proto(prosody, expressAS)
-
-	text = core.SpecialCharReplace(text)
-	ssml := `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-US">` +
-		proto.ElementString(text) + `</speak > `
-
-	succeed := make(chan []byte)
-	failed := make(chan error)
-	go func() {
-		err := a.tts.GetAudioStream(ssml, format, func(data []byte) {
-			readCb.OnRead(data)
-		})
-		if err != nil {
-			a.tts = nil
-			failed <- err
-			return
-		}
-		succeed <- nil
-	}()
-	select {
-	case <-succeed:
-		return nil
-	case err := <-failed:
-		return err
-	}
-}
-
-func GetAzureVoice() ([]byte, error) {
-	return azure.GetVoices()
-}
-
-type CreationApi struct {
-	Timeout int32
-	tts     *creation.TTS
-	cancel  context.CancelFunc
-}
-
-func (c *CreationApi) Cancel() {
-	if c.cancel != nil {
-		c.cancel()
-	}
-}
-
-func (c *CreationApi) GetCreationAudio(text, format string, property *VoiceProperty,
-	prosody *VoiceProsody, expressAS *VoiceExpressAs) ([]byte, error) {
-	if c.tts == nil {
-		c.tts = creation.New()
-	}
-
-	var ctx context.Context
-	ctx, c.cancel = context.WithTimeout(context.Background(), time.Duration(c.Timeout)*time.Millisecond)
-
-	property.Api = tts.ApiCreation
-	proto := property.Proto(prosody, expressAS)
-
-	text = core.SpecialCharReplace(text)
-
-	audio, err := c.tts.GetAudioUseContext(ctx, text, format, proto)
-	if err != nil {
-		return nil, err
-	}
-
-	c.cancel = nil
-	return audio, nil
-}
-
-func GetCreationVoices() ([]byte, error) {
-	token, err := creation.GetToken()
-	if err != nil {
-		return nil, err
-	}
-	data, err := creation.GetVoices(token)
 	if err != nil {
 		return nil, err
 	}
