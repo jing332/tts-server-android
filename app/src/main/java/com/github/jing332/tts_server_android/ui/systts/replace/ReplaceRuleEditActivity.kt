@@ -94,7 +94,7 @@ class ReplaceRuleEditActivity : BackActivity() {
 
         binding.etPattern.addTextChangedListener {
             if (!binding.switchIsRegex.isChecked) {
-                binding.etTestText.text.ifEmpty { binding.etTestText.text = binding.etPattern.text }
+                binding.etTestText.text?.ifEmpty { binding.etTestText.text = binding.etPattern.text }
             }
             doTest()
         }
@@ -134,7 +134,7 @@ class ReplaceRuleEditActivity : BackActivity() {
                 val char = py[0].toString()
                 if (binding.etPattern.hasFocus()) {
                     binding.etPattern.apply {
-                        text.insert(selectionStart, char)
+                        text?.insert(selectionStart, char)
                     }
                 } else if (binding.etReplacement.hasFocus()) {
                     binding.etReplacement.apply {
