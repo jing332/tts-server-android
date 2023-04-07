@@ -366,4 +366,7 @@
     <string name="systts_not_found_speech_rule_tag">⚠️未找到朗读规则</string>
     <string name="no_files_in_dir">此目录下无文件</string>
     <string name="click_play">点击播放</string>
+    <string name="wake_lock_summary">开启唤醒锁可防止锁屏后CPU休眠，但部分系统可能会导致杀后台。</string>
+    <string name="foreground_service_summary">设置为前台服务并显示通知以提高进程优先级。</string>
+    <string name="foreground_service_and_notification">前台服务与通知</string>
 </resources>

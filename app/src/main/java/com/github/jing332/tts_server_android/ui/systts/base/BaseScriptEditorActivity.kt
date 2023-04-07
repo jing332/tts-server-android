@@ -55,6 +55,7 @@ abstract class BaseScriptEditorActivity : BackActivity() {
         mEditorHelper = CodeEditorHelper(this, baseBinding.editor)
         mEditorHelper.initEditor()
         mEditorHelper.setTheme(ScriptEditorConfig.codeEditorTheme)
+        editor.isWordwrap = ScriptEditorConfig.isCodeEditorWordWrapEnabled
 
         if (ScriptEditorConfig.isRemoteSyncEnabled) {
             lifecycleScope.launch(Dispatchers.IO) {

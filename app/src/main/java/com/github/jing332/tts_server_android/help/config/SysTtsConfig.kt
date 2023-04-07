@@ -39,6 +39,11 @@ object SysTtsConfig : KotprefModel() {
      */
     var isGroupMultipleEnabled by booleanPref()
 
+    var isWakeLockEnabled by booleanPref(true)
+
+
+    var isForegroundServiceEnabled by booleanPref(true)
+
     /**
      * 替换
      */

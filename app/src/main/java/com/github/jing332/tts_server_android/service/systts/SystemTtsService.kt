@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
+import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
 import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
@@ -82,13 +83,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     }
 
     // 唤醒锁
-    private val mWakeLock by lazy {
-        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
-        powerManager.newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE,
-            "tts-server:wake_lock"
-        )
-    }
+    private var mWakeLock: PowerManager.WakeLock? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -103,10 +98,15 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             IntentFilter(ACTION_REQUEST_UPDATE_CONFIG)
         )
 
-        mWakeLock.acquire(60 * 20 * 100)
+        if (SysTtsConfig.isWakeLockEnabled)
+            mWakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE,
+                "tts-server:wake_lock"
+            )
+
+        mWakeLock?.acquire(60 * 20 * 100)
         mWifiLock.acquire()
 
-//        mTtsManager.event = this
         mTtsManager.load()
     }
 
@@ -117,7 +117,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         unregisterReceiver(mReceiver)
         App.localBroadcast.unregisterReceiver(mLocalReceiver)
 
-        mWakeLock.release()
+        mWakeLock?.release()
         mWifiLock.release()
 
         stopForeground(/* removeNotification = */ true)
@@ -202,11 +202,11 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     }
 
     private fun reNewWakeLock() {
-        if (!mWakeLock.isHeld) {
-            mWakeLock.acquire(60 * 20 * 1000)
-            GcManager.doGC()
+        if (mWakeLock != null && mWakeLock?.isHeld == false) {
             Log.i(TAG, "刷新WakeLock 20分钟")
+            mWakeLock?.acquire(60 * 20 * 1000)
         }
+        GcManager.doGC()
     }
 
     private lateinit var mNotificationBuilder: Notification.Builder
@@ -217,7 +217,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
     /* 启动前台服务通知 */
     private fun startForegroundService() {
-        if (!mNotificationDisplayed) {
+        if (SysTtsConfig.isForegroundServiceEnabled && !mNotificationDisplayed) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val chan = NotificationChannel(
                     NOTIFICATION_CHAN_ID,
@@ -249,16 +249,17 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
     /* 更新通知 */
     private fun updateNotification(title: String, content: String? = null) {
-        synchronized(this) {
-            content?.let {
-                val bigTextStyle = Notification.BigTextStyle().bigText(it).setSummaryText("TTS")
-                mNotificationBuilder.style = bigTextStyle
-                mNotificationBuilder.setContentText(it)
-            }
+        if (SysTtsConfig.isForegroundServiceEnabled)
+            synchronized(this) {
+                content?.let {
+                    val bigTextStyle = Notification.BigTextStyle().bigText(it).setSummaryText("TTS")
+                    mNotificationBuilder.style = bigTextStyle
+                    mNotificationBuilder.setContentText(it)
+                }
 
-            mNotificationBuilder.setContentTitle(title)
-            startForeground(SystemNotificationConst.ID_SYSTEM_TTS, mNotificationBuilder.build())
-        }
+                mNotificationBuilder.setContentTitle(title)
+                startForeground(SystemNotificationConst.ID_SYSTEM_TTS, mNotificationBuilder.build())
+            }
     }
 
     /* 获取通知 */

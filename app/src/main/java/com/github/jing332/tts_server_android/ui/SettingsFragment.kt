@@ -101,6 +101,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        // 唤醒或开关
+        val wakeLockSwitch: SwitchPreferenceCompat = findPreference("isWakeLockEnabled")!!
+        wakeLockSwitch.apply {
+            wakeLockSwitch.isChecked = SysTtsConfig.isWakeLockEnabled
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.isWakeLockEnabled = newValue.toString().toBoolean()
+                true
+            }
+        }
+
+        // 前台服务开关
+        val foregroundServiceSwitch: SwitchPreferenceCompat =
+            findPreference("isForegroundServiceEnabled")!!
+        foregroundServiceSwitch.apply {
+            isChecked = SysTtsConfig.isForegroundServiceEnabled
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.isForegroundServiceEnabled = newValue.toString().toBoolean()
+                true
+            }
+        }
+
         // 代码编辑器主题
         val editorTheme: ListPreference = findPreference("codeEditorTheme")!!
         val themes = linkedMapOf(
@@ -123,8 +144,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // 语言
         val langPre: ListPreference = findPreference("language")!!
         langPre.apply {
-            entries = AppLocale.localeMap.map { it.value.getDisplayName(it.value) }.toMutableList()
-                .apply { add(0, getString(R.string.follow_system)) }.toTypedArray()
+            entries =
+                AppLocale.localeMap.map { it.value.getDisplayName(it.value) }.toMutableList()
+                    .apply { add(0, getString(R.string.follow_system)) }.toTypedArray()
             entryValues =
                 mutableListOf("").apply { addAll(AppLocale.localeMap.keys) }.toTypedArray()
             setValue(AppLocale.getLocaleCodeFromFile(requireContext()), "")

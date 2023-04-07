@@ -3,10 +3,10 @@
 
     <PreferenceCategory app:title="@string/app_name">
         <ListPreference
+            android:dialogMessage="@string/app_languge_update_warn"
             android:persistent="false"
             app:icon="@drawable/ic_web"
             app:key="language"
-            android:dialogMessage="@string/app_languge_update_warn"
             app:title="@string/language" />
 
         <SwitchPreferenceCompat
@@ -51,6 +51,19 @@
             android:key="standbyTriggeredRetryIndex"
             android:persistent="false"
             android:title="@string/systts_sby_conditions_for_use" />
+
+        <SwitchPreferenceCompat
+            android:icon="@drawable/baseline_notifications_none_24"
+            android:key="isForegroundServiceEnabled"
+            android:summary="@string/foreground_service_summary"
+            android:title="@string/foreground_service_and_notification" />
+
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_baseline_lock_24_2"
+            android:key="isWakeLockEnabled"
+            android:persistent="false"
+            android:summary="@string/wake_lock_summary"
+            android:title="@string/wake_lock" />
 
     </PreferenceCategory>
 

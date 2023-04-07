@@ -43,6 +43,7 @@ class CodeEditorHelper(val context: Context, val editor: CodeEditor) {
             }
         })
         editor.setEditorLanguage(TextMateLanguage.create("source.js", true))
+
     }
 
     fun setTheme(theme: Int) {
