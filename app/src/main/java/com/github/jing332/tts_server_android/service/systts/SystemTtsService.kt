@@ -39,6 +39,7 @@ import com.github.jing332.tts_server_android.util.rootCause
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import com.github.jing332.tts_server_android.util.toHtmlItalic
 import com.github.jing332.tts_server_android.util.toHtmlSmall
+import com.github.jing332.tts_server_android.util.toast
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
@@ -331,8 +332,8 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         }
     }
 
-
     override fun onRequestStarted(text: String, tts: ITextToSpeechEngine) {
+        if (!App.isSysTtsLogEnabled) return
         logD(
             "<br>" + getString(
                 R.string.systts_log_request_audio,
@@ -342,6 +343,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     }
 
     override fun onError(e: TtsManagerException) {
+        if (!App.isSysTtsLogEnabled) return
         when (e) {
             is RequestException -> {
                 when (e.errorCode) {
@@ -358,12 +360,22 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                         logE(getString(R.string.systts_log_audio_empty, e.text))
                     }
                 }
+
+                updateNotification(
+                    getString(R.string.systts_log_failed, ""),
+                    e.rootCause?.toString() ?: e.toString()
+                )
             }
 
             is TextReplacerException -> {
                 logE(getString(R.string.systts_log_replace_failed, e.toString()))
             }
         }
+
+    }
+
+    override fun onStartRetry(times: Int) {
+
     }
 
     override fun onRequestSuccess(
@@ -373,6 +385,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         costTime: Long,
         retryTimes: Int
     ) {
+        if (!App.isSysTtsLogEnabled) return
         logI(
             getString(
                 R.string.systts_log_success,
@@ -386,54 +399,12 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             mCurrentText
         )
     }
-//
-//    override fun onError(errCode: Int, speakText: String?, reason: String?) {
-//        if (!App.isSysTtsLogEnabled) return
-//        val msg = when (errCode) {
-//            TtsManager.ERROR_GET -> {
-//                val str = reason.toString()
-//                if (str.contains(TtsManager.BAD_HANDSHAKE_PREFIX)) {
-//                    str + "<br>" + getString(R.string.systts_log_ip_is_restricted)
-//                }
-//                getString(R.string.systts_log_failed, "${speakText?.toHtmlBold()} <br>${str}")
-//            }
-//
-//            TtsManager.ERROR_AUDIO -> getString(R.string.systts_log_audio_empty, speakText)
-//            TtsManager.ERROR_DECODE ->
-//                getString(R.string.systts_log_decode_failed, "$speakText <br>${reason}")
-//
-//            TtsManager.ERROR_REPLACE ->
-//                getString(R.string.systts_log_replace_failed, "$speakText <br>${reason}")
-//
-//            else -> ""
-//        }
-//        sendLog(LogLevel.ERROR, msg)
-//    }
-//
-//    override fun onStartRetry(retryNum: Int, t: Throwable) {
-//        val retryStr = getString(R.string.systts_log_start_retry, retryNum)
-//        sendLog(LogLevel.WARN, retryStr)
-//        updateNotification(getString(R.string.systts_log_failed, retryStr), t.message)
-//    }
-//
-//    override fun onPlayDone(text: String?) {
-//        if (App.isSysTtsLogEnabled)
-//            sendLog(
-//                LogLevel.INFO,
-//                getString(R.string.systts_log_finished_playing, text?.limitLength()?.toHtmlBold())
-//            )
-//    }
-//
-//    override fun onPlayCanceled(text: String?) {
-//        if (App.isSysTtsLogEnabled)
-//            sendLog(
-//                LogLevel.WARN,
-//                getString(
-//                    R.string.systts_log_canceled, text?.limitLength()?.toHtmlBold()
-//                )
-//            )
-//    }
-//
+
+    override fun onPlayFinished(text: String, tts: ITextToSpeechEngine) {
+        if (!App.isSysTtsLogEnabled) return
+        logI(getString(R.string.systts_log_finished_playing, text.limitLength().toHtmlBold()))
+    }
+
 
     private fun logD(msg: String) = sendLog(LogLevel.DEBUG, msg)
     private fun logI(msg: String) = sendLog(LogLevel.INFO, msg)

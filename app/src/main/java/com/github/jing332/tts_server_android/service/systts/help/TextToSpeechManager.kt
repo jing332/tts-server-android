@@ -110,13 +110,15 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         retry(times = 20,
             onCatch = { times, e ->
                 retryTimes = times
-                Log.i(TAG, "请求失败: times=$times, $text, $tts")
-
-                if (SysTtsConfig.maxRetryCount >= times) return@retry false
-
+                Log.w(TAG, "请求失败: times=$times, $text, $tts")
                 listener?.onError(
                     RequestException(text = text, tts = tts, cause = e, times = times)
                 )
+
+                if (times > SysTtsConfig.maxRetryCount) {
+                    Log.d(TAG, "超过最大重试次数 ${SysTtsConfig.maxRetryCount} >= times，跳过")
+                    return@retry false
+                }
 
                 // 备用TTS
                 if (SysTtsConfig.standbyTriggeredRetryIndex == times)
@@ -125,8 +127,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         audioResult = getAudio(sbyTts, text, sysRate, sysPitch)
                         return@retry false // 取消重试
                     }
-                // 空音频三次后跳过
-                return@retry !(e is RequestException && e.errorCode == RequestException.ERROR_CODE_AUDIO_NULL && times > 3)
+                val canContinue =
+                    !(e is RequestException && e.errorCode == RequestException.ERROR_CODE_AUDIO_NULL && times > 3)
+                if (canContinue) listener?.onStartRetry(times)
+                // 空音频三次后跳过(return false)
+                return@retry canContinue
             },
             block = {
                 if (!coroutineContext.isActive) return@retry
@@ -143,30 +148,33 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         audioResult = null
                         return@retry
                     }
+                    runCatching {
+                        coroutineScope {
+                            var hasTimeout = false
+                            val timeoutJob = launch {
+                                delay(SysTtsConfig.requestTimeout.toLong())
+                                tts.onStop()
+                                hasTimeout = true
+                            }.job
+                            timeoutJob.start()
 
-                    coroutineScope {
-                        var hasTimeout = false
-                        val timeoutJob = launch {
-                            delay(SysTtsConfig.requestTimeout.toLong())
-                            tts.onStop()
-                            hasTimeout = true
-                        }.job
-                        timeoutJob.start()
-
-                        audioResult =
-                            tts.getAudioWithSystemParams(text, sysRate, sysPitch)
-                                ?: throw RequestException(
-                                    errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
-                                    tts = tts, text = text
-                                )
-                        if (hasTimeout) throw Exception(
-                            context.getString(
-                                R.string.failed_timed_out,
-                                SysTtsConfig.requestTimeout
+                            audioResult =
+                                tts.getAudioWithSystemParams(text, sysRate, sysPitch)
+                                    ?: throw RequestException(
+                                        errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
+                                        tts = tts, text = text
+                                    )
+                            if (hasTimeout) throw RequestException(
+                                tts = tts,
+                                text = text,
+                                errorCode = RequestException.ERROR_CODE_TIMEOUT
                             )
-                        )
-                        else timeoutJob.cancelAndJoin()
+                            else timeoutJob.cancelAndJoin()
+                        }
+                    }.onFailure {
+                        throw it
                     }
+
                 }
                 listener?.onRequestSuccess(text, tts, audioResult?.size ?: 0, costTime, retryTimes)
             })
@@ -300,6 +308,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         }, { reason -> Log.e(TAG, "解码失败！$reason, $txtTts") })
                 else
                     onPcmAudio.invoke(audio)
+
+                listener?.onPlayFinished(txtTts.text, txtTts.tts)
             }
 
         }
@@ -309,7 +319,9 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     interface Listener {
         fun onError(e: TtsManagerException)
+        fun onStartRetry(times: Int)
         fun onRequestStarted(text: String, tts: ITextToSpeechEngine)
+        fun onPlayFinished(text: String, tts: ITextToSpeechEngine)
 
         /**
          * @param size 音频字节数

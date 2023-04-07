@@ -97,6 +97,15 @@ interface JsCrypto {
         return EncoderUtils.base64Encode(str, flags)
     }
 
+    fun base64Encode(src: ByteArray): String? {
+        return EncoderUtils.base64Encode(src)
+    }
+
+    fun base64Encode(src: ByteArray, flags: Int = android.util.Base64.NO_WRAP): String? {
+        return EncoderUtils.base64Encode(src, flags)
+    }
+
+
     /* HexString 解码为字节数组 */
     fun hexDecodeToByteArray(hex: String): ByteArray? {
         return HexUtil.decodeHex(hex)

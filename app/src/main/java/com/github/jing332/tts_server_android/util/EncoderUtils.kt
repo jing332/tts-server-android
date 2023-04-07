@@ -35,9 +35,13 @@ object EncoderUtils {
 
     @JvmOverloads
     fun base64Encode(str: String, flags: Int = Base64.NO_WRAP): String? {
-        return Base64.encodeToString(str.toByteArray(), flags)
+        return base64Encode(str.toByteArray(), flags)
     }
-    
+
+    fun base64Encode(src: ByteArray, flags: Int = Base64.NO_WRAP): String? {
+        return Base64.encodeToString(src, flags)
+    }
+
     @JvmOverloads
     fun base64DecodeToByteArray(str: String, flags: Int = Base64.DEFAULT): ByteArray {
         return Base64.decode(str, flags)

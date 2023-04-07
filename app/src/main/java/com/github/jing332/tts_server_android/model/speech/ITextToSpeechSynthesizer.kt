@@ -10,19 +10,19 @@ abstract class ITextToSpeechSynthesizer<T> {
     suspend fun <T> retry(
         times: Int = 3,
         initialDelayMillis: Long = 200,
-        factor: Float = 1.25F,
+        factor: Float = 2F,
         maxDelayMillis: Long = 5000,
-        onCatch: suspend (times: Int, e: Exception) -> Boolean,
+        onCatch: suspend (times: Int, t: Throwable) -> Boolean,
         block: suspend () -> T?,
     ): T? {
         var currentDelay = initialDelayMillis
         for (i in 1..times) {
             return try {
                 block()
-            } catch (e: Exception) {
+            } catch (t: Throwable) {
                 delay(currentDelay)
                 currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelayMillis)
-                if (onCatch.invoke(i, e)) continue
+                if (onCatch.invoke(i, t)) continue
                 else null
             }
         }

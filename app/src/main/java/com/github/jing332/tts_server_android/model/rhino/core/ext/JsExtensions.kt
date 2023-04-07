@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.model.rhino.core.ext
 
 import android.content.Context
+import android.util.Base64
 import cn.hutool.core.io.CharsetDetector
 import cn.hutool.core.io.FileUtil
 import cn.hutool.core.lang.UUID

@@ -14,6 +14,7 @@ class RequestException(
     companion object {
         const val ERROR_CODE_REQUEST = 0
         const val ERROR_CODE_AUDIO_NULL = 1
+        const val ERROR_CODE_TIMEOUT = 2
     }
 
 }
