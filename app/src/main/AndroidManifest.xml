@@ -123,7 +123,7 @@
             android:exported="false">
             <meta-data
                 android:name="autoStoreLocales"
-                android:value="true" />
+                android:value="false" /> <!--禁用Android自动存储语言-->
         </service>
         <service
             android:name=".service.systts.SystemTtsService"

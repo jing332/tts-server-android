@@ -246,7 +246,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     }
                 }
             } else
-                context.toast(R.string.systts_no_custom_tag_confg_warn)
+                context.toast(R.string.systts_no_custom_tag_config_warn)
 
             mConfigMap[SpeechTarget.CUSTOM_TAG]!![0].audioFormat
         } else {

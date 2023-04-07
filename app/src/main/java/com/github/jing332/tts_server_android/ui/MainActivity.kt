@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onStart()
 
         // 更新Application语言
-        app.updateLocale(resources.configuration.locale)
+//        app.updateLocale(resources.configuration.locale)
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {

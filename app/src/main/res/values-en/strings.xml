@@ -1,0 +1,369 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" translatable="false">TTS Server</string>
+    <string name="app_name_dev" translatable="false">D·TTS Server</string>
+
+    <string name="app_switch">Switch</string>
+    <string name="help">Help</string>
+    <string name="warning">Warning</string>
+    <string name="reset">Reset</string>
+    <string name="exit">Exit</string>
+    <string name="copied">copied</string>
+    <string name="ok_reset">Reset OK</string>
+    <string name="loading">Loading</string>
+
+    <string name="selected">Selected</string>
+
+    <string name="close">Close</string>
+    <string name="start">Start</string>
+    <string name="follow">Follow</string>
+    <string name="custom">Customize</string>
+    <string name="app_down_again_to_exit">Press again to exit application</string>
+    <string name="cannot_empty">Not nullable！</string>
+
+    <string name="open_web">Open Web</string>
+    <string name="check_update">Check for updates</string>
+    <string name="wake_lock">Wake lock</string>
+    <string name="about">About</string>
+    <string name="config">Configuration</string>
+    <string name="log">Log</string>
+    <string name="background_whitelist">Battery optimization whitelist</string>
+    <string name="desktop_shortcut">desktop shortcuts</string>
+    <string name="added_background_whitelist">Added to background whitelist</string>
+
+    <string name="kill_process">Kill process</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="label_read_aloud_target">Read aloud target</string>
+    <string name="label_api">API: </string>
+    <string name="label_language">Locale: </string>
+    <string name="label_voice">Voice: </string>
+    <string name="label_voice_role">Role: </string>
+    <string name="label_voice_style">Style: </string>
+    <string name="label_styleDegree">Style degree: </string>
+    <string name="label_audio_format">Audio format: </string>
+    <string name="label_volume">Volume: </string>
+    <string name="label_rate">Rate: </string>
+    <string name="label_pitch">Pitch: </string>
+    <string name="label_play_speed">Play speed: </string>
+    <string name="label_play_pitch">Play pitch: </string>
+    <string name="label_result">Result: </string>
+    <string name="label_audio_sample_rate">Audio sample rate(hz): </string>
+    <string name="label_port">Port: </string>
+
+    <string name="systts_api_edge">Microsoft Edge - Read aloud API</string>
+    <string name="systts_api_azure">Microsoft Azure - Web demo API</string>
+    <string name="systts_api_creation">(⚠️ Invalid)Microsoft Creation - Web demo API</string>
+
+    <string name="systts_state_idle">TTS Idle</string>
+    <string name="systts_state_synthesizing">TTS synthesizing</string>
+    <string name="systts_service">System TTS Service</string>
+
+    <string name="systts_split_long_sentences">Split long sentences (Only Chinese)</string>
+    <string name="system_not_support_please_manual_set">The system does not support it, please do it manually</string>
+
+    <string name="service_started">Service started</string>
+    <string name="service_closed">Service closed</string>
+    <string name="forwarder_ms">Microsoft TTS forwarder</string>
+    <string name="server_listen_address_local">Listen address：%s</string>
+    <string name="server_please_start_service">Please start the service first</string>
+    <string name="server_restart_service_to_update">Restart the service to take effect</string>
+    <string name="server_set_token">Set Token</string>
+    <string name="server_token_set_to">Token is set to: </string>
+
+    <string name="system_tts">System TTS</string>
+    <string name="settings">Settings</string>
+    <string name="global_settings">Global Settings</string>
+    <string name="copy_address">copy address</string>
+    <string name="check_update_failed">Check for updates failed</string>
+    <string name="current_is_last_version">Currently the latest version</string>
+
+    <string name="title_activity_tts_config_edit">Edit built-in TTS</string>
+    <string name="title_activity_replace_edit">Edit replace rule</string>
+    <string name="title_activity_replace_manager">Replace manager</string>
+
+    <string name="display_name">Display name</string>
+    <string name="save">Save</string>
+    <string name="desc_switch_item">Enabled or disable this item</string>
+    <string name="desc_add_config">Add Configuration</string>
+    <string name="desc_edit_item">Edit item</string>
+    <string name="desc_delete_item">Delete item</string>
+    <string name="desc_seekbar_add">Slider +1</string>
+    <string name="desc_seekbar_remove">Slider -1</string>
+
+    <string name="add_config">Add Configuration</string>
+    <string name="config_import_export">Import and export</string>
+    <string name="import_config">Import</string>
+    <string name="export_config">Export</string>
+    <string name="copy" tools:override="true">Copy</string>
+    <string name="follow_system_or_read_aloud_app">Follow system or caller</string>
+    <string name="raw_format_is_play_while_downloading">Format `raw` is streaming mode</string>
+    <string name="is_confirm_delete">Confirm deletion?</string>
+    <string name="delete">Delete</string>
+    <string name="ra_all">All</string>
+    <string name="ra_aside">Only aside</string>
+    <string name="ra_dialogue">Only dialogue</string>
+
+    <string name="all">All</string>
+    <string name="aside">Aside</string>
+    <string name="dialogue">Dialogue</string>
+    <string name="none">None</string>
+    <string name="default_str">Default</string>
+
+    <string name="web">Web</string>
+    <string name="clear_web_data">Clear web data</string>
+    <string name="cleared">Cleared</string>
+
+    <string name="import_from_clipboard">import from clipboard</string>
+    <string name="url_net">URL</string>
+    <string name="import_from_url">import from URL</string>
+    <string name="retry">Retry</string>
+    <string name="test">Test</string>
+    <string name="sample_text">Sample text</string>
+
+    <!-- 替换管理 -->
+    <string name="systts_replace_rule_manager">Replace rule manager</string>
+    <string name="systts_replace_add_rule">Add replace rule</string>
+    <string name="systts_replace_rule">Replace rule</string>
+    <string name="systts_replace_as">Replace with</string>
+    <string name="systts_replace_insert_pinyin">Insert pinyin tone</string>
+    <string name="systts_replace_use_regex">Use regular expressions</string>
+
+    <!-- 系统TTS 设置 -->
+    <string name="systts_set_dialogue_min_match_word_count">Set Chinese length for dialogue</string>
+    <string name="systts_set_dialogue_min_info">The number of Chinese characters (including Chinese symbols) in the character\'s dialogue,
+        that is, only when it is greater than or equal to this value, it will be read as a dialogue, otherwise the narration will be used.</string>
+    <string name="systts_set_request_timeout">Set request timeout</string>
+    <string name="systts_set_request_timeout_msg">After the waiting time for requesting audio exceeds the set value, the request will be canceled and retried automatically.</string>
+
+    <string name="systts_http_edit_title">Edit custom TTS</string>
+    <string name="systts_http_request_header">Http Request header</string>
+
+    <string name="systts_sample_test_text">click the button on the right to test and play</string>
+
+    <string name="systts_decode_audio">Decode audio</string>
+    <string name="systts_add_internal_tts">Add built-in TTS</string>
+    <string name="systts_add_custom_tts">Add custom TTS</string>
+    <string name="off_multi_voice_use_global">Please turn off the multi-voice option to use single-voice model</string>
+
+    <string name="use_dns_lookup_ip">Use DNS to resolve the API IP</string>
+    <string name="pref_edge_dns_summary">Instead of the built-in Beijing(China) Microsoft cloud node</string>
+    <string name="pref_title_global_edge">Edge API</string>
+
+    <string name="systts_multi_voice_option">Multi-Voice(aside/dialogue)</string>
+    <string name="systts_use_internal_audio_player">Use built-in player</string>
+    <string name="systts_in_app_play_info_html"><DATA><![CDATA[
+        After the option is turned on, the <b>audio player built into the application</b> will be used directly instead of being played by the system TTS component.
+<br>As there is no need for manual decoding and the sampling rate can also be changed during playback, this solution can solve issues with <b>multiple speech sampling rates</b> and <b>some devices webm format</b> playback problems.
+<br><br>However, there are compatibility issues with direct playback:
+<br> - Because the original audio is not sent to the system is TTS component, if the caller of the TTS uses a caching and then playback mechanism, rather than system playback, it will result in an empty audio cache and unexpected playback.
+<br> - Raw format is still not supported and must use system playback.
+<br> - Performance is slightly lower compared to system playback.
+<br> - Due to the internal player having no audio buffer, there will be a delay of several hundred milliseconds between <b>paragraphs</b> and <b>sentences (if long sentence segmentation is enabled)</b> compared to system playback.
+]]></DATA></string>
+    <string name="systts_help_secondary_locale">Select the secondary language, that is, use this language when reading aloud.</string>
+    <string name="systts_sample_rate">Sample rate（hz）</string>
+    <string name="systts_secondaryLocale">Language secondary（language skill）</string>
+    <string name="systts_voice_data_load_failed">Voice failed to load</string>
+    <string name="systts_help_sample_rate">The system TTS needs to specify the sample rate when starting to play. If [built-in player] is turned on, this option can be ignored.</string>
+    <string name="systts_voice_multiple_option">Config can multiple</string>
+    <string name="systts_voice_multiple_hint">⚠️The same reading target will no longer be excluded, and a random rotation will be used. (Single voice does not support this function)</string>
+    <string name="systts_groups_multiple">Group can multiple</string>
+    <string name="systts_groups_multiple_hint">⚠️Checking groups will no longer be mutually exclusive</string>
+
+    <string name="systts_warn_no_ra_dialogue">⚠️Missing {dialogue}，use default configuration!</string>
+    <string name="systts_warn_no_ra_all">⚠️Missing {all}，use default configuration!</string>
+    <string name="systts_warn_no_ra_aside">⚠️Missing {aside}，use default configuration!</string>
+
+    <string name="systts_test_success">Test was successful</string>
+    <string name="systts_test_success_info">Size: %1$dKiB \nSample rate: %2$d \nMime: %3$s</string>
+    <string name="systts_http_test_msg">Audio size：%1$d KiB \nFormat：%2$s \nSample rate：%3$d hz \nContent-Type：%4$s</string>
+
+    <string name="systts_please_check_multi_voice_option">Please Enable multi-voice</string>
+    <string name="systts_sample_rate_different_in_enabled_list">A different format/sample rate was detected in the enabled configuration,
+        This will cause abnormal pitch (thick or thin sound), please manually change to the same format/sampling rate or turn on the [Use built-in player] option in the upper right corner.</string>
+
+    <string name="group_expanded">Group expanded</string>
+    <string name="group_collapsed">Group collapsed</string>
+    <string name="systts_desc_list_count_info">%1$d items in total, ，%2$d items enabled</string>
+    <string name="systts_list_item_desc">Target %1$s，API %2$s，Property：%3$s，Format：%4$s</string>
+
+    <string name="add_group">Add group</string>
+    <string name="more_options">More options</string>
+
+    <string name="group">Group</string>
+    <string name="belonging_group">Belonging group</string>
+    <string name="msg_group_is_empty">Group is empty, please add configuration</string>
+    <string name="default_group">Default group</string>
+    <string name="content">Content</string>
+    <string name="name">Name</string>
+    <string name="edit_group_name">Edit group name</string>
+    <string name="unnamed">unnamed</string>
+    <string name="rename">Rename</string>
+    <string name="test_failed">Test failed</string>
+    <string name="enabled">Enabled</string>
+    <string name="choice_item">Select %1$s</string>
+    <string name="import_failed">Import failed</string>
+
+    <string name="clipboard">Clipboard</string>
+    <string name="type">Type</string>
+    <string name="source">Source</string>
+    <string name="legado">Legado</string>
+    <string name="str_import">Import</string>
+    <string name="please_choose">Please choose</string>
+    <string name="config_import">Configuration import</string>
+
+    <string name="systts_play_params_description">Rate: %1$s, Volume: %2$s, Pitch: %3$s</string>
+    <string name="systts_ms_express_as_description">%1$s - %2$s | degree: %3$s</string>
+    <string name="server_log_service_running">The service is already running, listening address: %1$s</string>
+    <string name="server_log_tips">1. Click the Start button
+        \n2. Open the webpage and select Configuration
+        \n3. Finally, generate a link and import it to the Legado APP
+        \n\n⚠️Note: The service needs to run in the background permanently when reading aloud!</string>
+    <string name="systts_log_request_audio">Request audio: %1$s</string>
+    <string name="systts_log_success">Success, size: %1$s, time: %2$s</string>
+    <string name="systts_log_failed">Failed: %1$s</string>
+    <string name="systts_log_audio_empty">Audio is empty: %1$s</string>
+    <string name="systts_log_decode_failed">Decode failed: %1$s</string>
+    <string name="systts_log_canceled">Canceled: %1$s</string>
+    <string name="systts_log_finished_playing">Finished playing: %1$s</string>
+    <string name="systts_log_start_retry">Start the %1$dth retry</string>
+    <string name="unlimited">Unlimited</string>
+    <string name="systts_log_ip_is_restricted">Your IP may have been restricted by the Microsoft server. Switching to an audio format with low traffic consumption can largely avoid this situation.</string>
+    <string name="local_file">File</string>
+    <string name="select_file">Select the file</string>
+    <string name="select_file_hint">Click the button on the right to select the file➡️</string>
+    <string name="systts_group_empty_msg"><![CDATA[Click the ➕ button on the right side of the top application bar -> Add TTS, and set the group to which it belongs in the editing interface.]]></string>
+    <string name="new_version_available">New version available：%1$s</string>
+    <string name="master_switch">Master switch</string>
+    <string name="upload_to_url">Upload to URL</string>
+    <string name="upload_failed">Upload failed: %1$s</string>
+    <string name="systts_copied_config">Copied configuration</string>
+    <string name="search">Search</string>
+    <string name="replace_rule_search">Replace rule - Search</string>
+    <string name="drawer_interface">Interface</string>
+    <string name="other">Other</string>
+    <string name="nav_back">Back</string>
+    <string name="move_to_top">Move to top</string>
+    <string name="move_to_bottom">Move to bottom</string>
+    <string name="local_tts_engine">Local TTS engine</string>
+    <string name="add_local_tts">Add local TTS</string>
+    <string name="local">Local</string>
+    <string name="systts_local_edit_title">Edit local TTS</string>
+    <string name="label_tts_engine">TTS Engine:</string>
+    <string name="type_of_data">Data type</string>
+    <string name="str_key">Key</string>
+    <string name="str_value">Value</string>
+    <string name="add_extra_params">Add extra params</string>
+    <string name="edit_extra_parameter">Edit extra parameter</string>
+    <string name="as_standby">As standby</string>
+    <string name="direct_play">Direct play</string>
+    <string name="systts_direct_play_help">Help [direct play]</string>
+    <string name="systts_direct_play_help_msg">When the option is turned on, it will be directly streamed play by its TTS engine;\nWhen the option is turned off, the audio will be transferred through the TTS Server, which will cause some performance loss (cache read and write), but for multi-voice situations, it can be reduced Initialization delay  when switching between voice.</string>
+    <string name="systts_replace_please_on_switch">⚠️Master switch not turned on</string>
+    <string name="md_checkbox_checked">Checked</string>
+    <string name="md_checkbox_unchecked">Unchecked</string>
+    <string name="md_checkbox_indeterminate">Indeterminate</string>
+    <string name="systts_local_test_msg">Direct-Play is off \nSize: %1$d Kib \nSample rate: %2$d</string>
+    <string name="systts_set_standby">Set standby TTS</string>
+    <string name="systts_local_params_int_must">Must be true or 1, false or 0</string>
+    <string name="set_built_in_player_params">Built-in player settings</string>
+    <string name="built_in_player_not_enabled">⚠️[Built-in player] is not enabled</string>
+    <string name="please_turn_off_direct_play">⚠️Please turn off the [Direct Play] option</string>
+    <string name="systts_as_standby_help">About [as standby]</string>
+    <string name="systts_standby">Standby</string>
+    <string name="decode">decode</string>
+    <string name="systts_log_replace_failed">Failed to execute replace: %1$s</string>
+    <string name="systts_sby_conditions_for_use">Standby Settings</string>
+    <string name="systts_sby_settings_msg">Standby configuration fires on how many retries? Defaults to 1, i.e. the alternate configuration is used on the first failed retry.</string>
+    <string name="systts_ms_webm_warn_msg">After testing, the actual traffic consumption of webm…-24kbps… is more than three times its audio size, so it is not recommended!</string>
+    <string name="search_filter">Filter search</string>
+    <string name="follow_system">Follow system</string>
+    <string name="app_language_desc">Application language：%1$s</string>
+    <string name="app_language_to_follow_tip_msg">If change fail, Please restart application</string>
+    <string name="forwarder_sys_fail_audio_file">Synthesis failed: The audio file was not found</string>
+    <string name="systts_engine_init_failed_timeout">Engine initialization failed: Timed out</string>
+    <string name="forwarder_systts">System TTS forwarder</string>
+    <string name="forwarder_sys_running">System TTS forwarder is running</string>
+    <string name="language">Language</string>
+    <string name="plugin_manager">Plugin Manager</string>
+    <string name="error">Error</string>
+    <string name="systts_add_plugin_tts">Add plugin TTS</string>
+    <string name="debug">Debug</string>
+    <string name="plugin_preview_ui">Preview and set it</string>
+    <string name="edit_plugin_tts">Edit the plugin TTS</string>
+    <string name="not_found_plugin">⚠Plugin not found: %1$s</string>
+    <string name="plugin_tts_get_sample_rate_fail_msg">Failed to get audio sample rate: %1$s</string>
+    <string name="edit">Edit</string>
+    <string name="playing">playing</string>
+    <string name="select_plugin">Select the plugin</string>
+    <string name="audition">Audition</string>
+    <string name="no_plugins">No plugins</string>
+    <string name="sys_tts_interface_preference">System TTS - Interface</string>
+    <string name="pref_swap_listen_and_edit_button">Swap audition and edit button positions</string>
+    <string name="plugin_bad_format">Version is bad format and must be an integer</string>
+    <string name="import_replace_rule">Import replacement rules</string>
+    <string name="select_import">Select Import</string>
+    <string name="config_import_success_msg">A total of %1d configurations were imported</string>
+    <string name="file_save_failed">File save failed：%1$s</string>
+    <string name="save_success">Save successfully</string>
+    <string name="failed_timed_out">Timed out：%1$dms</string>
+    <string name="builtin_player_settings_tip_msg">When the built-in player is enabled, use the settings here to override the global.</string>
+    <string name="systts_standby_help_msg">As a backup, when a request fails, it will be read aloud using this configuration according to [VoiceOver All Dialog]. \nThat is, standby can be configured separately depending on the read aloud target. Note: The standby configuration does not have the automatic retry function, and the reading will be skipped directly after the first failure, so it is recommended to use the local TTS type as a backup.</string>
+    <string name="save_as_file">Save as a file</string>
+    <string name="group_move_a11y_msg">Group: moved from %1$d to %2$d</string>
+    <string name="list_move_a11y_msg">Moved from %1$d to %2$d</string>
+    <string name="word_wrap">Word wrap</string>
+    <string name="theme">Theme</string>
+    <string name="add_folder">Add folder</string>
+    <string name="add_bgm_tts">Add BGM</string>
+    <string name="edit_bgm_tts_title">Edit BGM</string>
+    <string name="add_bgm_tip">Please add a folder with audio to use as BGM</string>
+    <string name="grant_permission_all_file">Please grant [All file access permissions]</string>
+    <string name="go_to_settings">Go settings</string>
+    <string name="shuffle">Shuffle</string>
+
+    <string name="bgm_settings">BGM Settings</string>
+    <string name="bgm_settings_tip">Click the plus sign at the top right corner of the homepage to add background music</string>
+    <string name="bgm">BGM</string>
+    <string name="exo_player_title">Media Player</string>
+    <string name="remote_sync_service">Remote Sync Service</string>
+    <string name="clear_plugin_cache">Clear Plugin Cache</string>
+    <string name="listen_port">Listen Port</string>
+    <string name="script_sync_service_tip">The code synchronization service makes it easy to edit and update plugin code on the PC side for debugging purposes. \n⚠️ The settings will take effect after the editor is restarted.</string>
+    <string name="learn_more">Learn More</string>
+    <string name="systts_bgm_description">Volume: %1$s</string>
+    <string name="total_n_folders">Total %1$s Folders</string>
+    <string name="auto_check_update">Auto Check for Updates</string>
+    <string name="direct_upload_settings">Direct Link Upload</string>
+    <string name="warn_returned_url_is_empty">⚠️ The returned URL is empty!</string>
+    <string name="choose_an_upload_target">Choose an Upload Target</string>
+    <string name="copied_url">URL Copied</string>
+    <string name="direct_link_settings">Direct Link Settings</string>
+    <string name="set_sample_text_param">Set Text Parameters</string>
+    <string name="import_plugin">Import Plugin</string>
+    <string name="systts_drag_tip_msg">Long press the checkbox to drag and drop</string>
+    <string name="code_editor">Code Editor</string>
+    <string name="check_update_summary">Check for updates when you open the main interface</string>
+
+    <string name="edit_read_rule">Edit Reading Rule</string>
+    <string name="read_rule_manager">Reading Rule Manager</string>
+    <string name="tag">Tag</string>
+    <string name="speech_rule_script">Rule Script</string>
+    <string name="empty_list">List is Empty</string>
+    <string name="max_retry_count">Max Retry Count</string>
+    <string name="sys_doc_picker_error">Failed to Open System File Picker. Using Built-in Picker Automatically.</string>
+    <string name="add_file">Add File</string>
+    <string name="path_is_empty">Path is Empty</string>
+    <string name="file_picker_mode">File Picker Mode</string>
+    <string name="file_picker">File Picker</string>
+    <string name="file_picker_mode_system">System File Picker</string>
+    <string name="file_picker_mode_builtin">Built-in File Picker</string>
+    <string name="file_picker_mode_prompt">Prompt for File Picker</string>
+    <string name="no_retries">No Retries</string>
+    <string name="systts_no_custom_tag_config_warn">⚠️无标签配置，请添加配置或关闭多语音选项！</string>
+    <string name="tip">提示</string>
+    <string name="systts_split_text_tip_msg">多语音选项开启时优先使用朗读规则中的分割脚本；关闭时使用内置分割规则。</string>
+    <string name="systts_not_found_speech_rule_tag">⚠️未找到朗读规则</string>
+    <string name="no_files_in_dir">此目录下无文件</string>
+    <string name="click_play">点击播放</string>
+</resources>

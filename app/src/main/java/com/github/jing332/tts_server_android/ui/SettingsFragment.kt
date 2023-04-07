@@ -6,14 +6,12 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import androidx.core.view.setPadding
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
-import com.github.jing332.tts_server_android.BuildConfig
+import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
@@ -23,7 +21,6 @@ import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.util.dp
 import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.util.Locale
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -125,40 +122,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // 语言
         val langPre: ListPreference = findPreference("language")!!
+        langPre.apply {
+            entries = AppLocale.localeMap.map { it.value.getDisplayName(it.value) }.toMutableList()
+                .apply { add(0, getString(R.string.follow_system)) }.toTypedArray()
+            entryValues =
+                mutableListOf("").apply { addAll(AppLocale.localeMap.keys) }.toTypedArray()
+            setValue(AppLocale.getLocaleCodeFromFile(requireContext()), "")
+            summary = entry
 
-        val appLocales = BuildConfig.TRANSLATION_ARRAY.map { Locale.forLanguageTag(it) }
-        val entries = appLocales.map { it.getDisplayName(it) }.toMutableList()
-            .apply { add(0, getString(R.string.follow_system)) }
-
-        langPre.entries = entries.toTypedArray()
-        langPre.entryValues =
-            mutableListOf("").apply { addAll(BuildConfig.TRANSLATION_ARRAY) }.toTypedArray()
-
-        val currentLocale = AppCompatDelegate.getApplicationLocales().get(0)
-        langPre.setValueIndexNoException(
-            if (currentLocale == null) 0
-            else {
-                val languageTag = currentLocale.toLanguageTag()
-                appLocales.indexOfFirst { it.toLanguageTag() == languageTag } + 1
+            setOnPreferenceChangeListener { _, newValue ->
+                AppLocale.saveLocaleCodeToFile(requireContext(), newValue as String)
+                AppLocale.updateApplicationLocale(app)
+                longToast(R.string.app_languge_update_warn)
+                true
             }
-        )
-        langPre.summary =
-            if (currentLocale == null) getString(R.string.follow_system)
-            else currentLocale.getDisplayName(currentLocale)
-        langPre.setDialogMessage(R.string.app_language_to_follow_tip_msg)
-        langPre.setOnPreferenceChangeListener { _, newValue ->
-            val locale = if (newValue == null || newValue.toString().isEmpty()) { //随系统
-                longToast(R.string.app_language_to_follow_tip_msg)
-                app.updateLocale(Locale.getDefault())
-                LocaleListCompat.getEmptyLocaleList()
-            } else {
-                LocaleListCompat.create(Locale.forLanguageTag(newValue.toString()))
-            }
-            AppCompatDelegate.setApplicationLocales(locale)
 
-            true
         }
-
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
@@ -198,6 +177,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
             val dlg = MaterialAlertDialogBuilder(requireContext())
                 .setTitle(preference.dialogTitle)
+                .apply { preference.icon?.let { setIcon(it) } }
                 .setView(layout)
                 .setPositiveButton(android.R.string.cancel) { _, _ -> }
                 .show()

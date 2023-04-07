@@ -3,8 +3,10 @@
 
     <PreferenceCategory app:title="@string/app_name">
         <ListPreference
+            android:persistent="false"
             app:icon="@drawable/ic_web"
             app:key="language"
+            android:dialogMessage="@string/app_languge_update_warn"
             app:title="@string/language" />
 
         <SwitchPreferenceCompat
@@ -15,9 +17,9 @@
             android:title="@string/auto_check_update" />
 
         <ListPreference
+            android:icon="@drawable/ic_baseline_file_open_24"
             android:key="filePickerMode"
             android:persistent="false"
-            android:icon="@drawable/ic_baseline_file_open_24"
             android:title="@string/file_picker_mode" />
     </PreferenceCategory>
 

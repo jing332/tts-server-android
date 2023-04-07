@@ -6,6 +6,7 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.app
 import com.script.javascript.RhinoScriptEngine
 import java.text.SimpleDateFormat
+import java.util.Locale
 
 @SuppressLint("SimpleDateFormat")
 @Suppress("DEPRECATION")
@@ -14,6 +15,9 @@ object AppConst {
 
     // JS引擎
     val SCRIPT_ENGINE: RhinoScriptEngine by lazy { RhinoScriptEngine() }
+
+    val locale: Locale
+        get() = App.context.resources.configuration.locale
 
     val timeFormat: SimpleDateFormat by lazy {
         SimpleDateFormat("HH:mm")

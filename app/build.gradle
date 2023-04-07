@@ -25,9 +25,24 @@ android {
             }
         }
 
-        def locales = ["en", "zh-rCN", "zh-rTW"]
-        buildConfigField "String[]", "TRANSLATION_ARRAY", "new String[]{\"" + locales.join("\",\"").replaceAll("-r", "-") + "\"}"
-        resConfigs locales
+        // 读取strings.xml所在文件夹 获得应用支持的语言
+        task buildTranslationArray {
+            def foundLocales = new StringBuilder()
+            foundLocales.append("new String[]{")
+
+            fileTree("src/main/res").visit { FileVisitDetails details ->
+                if (details.file.path.endsWith("strings.xml")) {
+                    def path = details.file.parent.replaceAll('\\\\', "/")
+                    def languageCode = path.tokenize('/').last().replaceAll('values-', '').replaceAll('-r', '-')
+                    languageCode = (languageCode == "values") ? "zh-CN" : languageCode;
+                    foundLocales.append("\"").append(languageCode).append("\"").append(",")
+                }
+            }
+            foundLocales.append("}")
+            def foundLocalesString = foundLocales.toString().replaceAll(',}', '}')
+            buildConfigField "String[]", "TRANSLATION_ARRAY", foundLocalesString
+        }
+        preBuild.dependsOn buildTranslationArray
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -97,18 +112,6 @@ android {
         jvmToolchain(17)
     }
 
-
-    // 修改apk文件名
-    android.applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            //noinspection GrDeprecatedAPIUsage
-            def abiName = output.getFilter(com.android.build.OutputFile.ABI)
-            if (abiName == null)
-                output.outputFileName = "TTS-Server-v${variant.versionName}.apk"
-            else
-                output.outputFileName = "TTS-Server-v${variant.versionName}_${abiName}.apk"
-        }
-    }
 
     buildFeatures {
         viewBinding true
