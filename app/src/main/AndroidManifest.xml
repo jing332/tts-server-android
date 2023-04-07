@@ -89,10 +89,10 @@
                 <data android:scheme="app" />
                 <data android:scheme="content" />
                 <data android:scheme="file" />
-                
-                <data android:mimeType="text/plain" />
-                <!-- json -->
-                <data android:mimeType="application/json" />
+                <!-- text --> 
+                <data android:mimeType="text/plain" /> 
+                <!-- json --> 
+                <data android:mimeType="application/json" />
             </intent-filter>
 
             <intent-filter>
