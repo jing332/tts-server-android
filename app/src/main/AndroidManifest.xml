@@ -103,8 +103,12 @@
                 <data android:scheme="app" />
                 <data android:scheme="content" />
                 <data android:scheme="file" />
-                <!-- This media type is necessary, otherwise it won't match on the file extension -->
                 <data android:mimeType="*/*" />
+                <!--TXT-->
+                <data android:pathAdvancedPattern=".*\\.[tT][xX][tT]" />
+                <data android:pathPattern=".*\\.txt" />
+                <data android:pathPattern=".*\\.TXT" />
+                <!-- This media type is necessary, otherwise it won't match on the file extension -->
                 <data android:pathAdvancedPattern=".*\\.[jJ][sS][oO][nN]" />
                 <data android:pathPattern=".*\\.json" />
                 <data android:pathPattern=".*\\.JSON" />
