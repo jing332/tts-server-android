@@ -275,8 +275,8 @@ class SysTtsListFragment : Fragment() {
     }
 
     private fun importConfig() {
-        val fragment = ConfigImportBottomSheetFragment()
-        fragment.show(requireActivity().supportFragmentManager, ConfigImportBottomSheetFragment.TAG)
+        val fragment = ImportConfigBottomSheetFragment()
+        fragment.show(requireActivity().supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
     }
 
 

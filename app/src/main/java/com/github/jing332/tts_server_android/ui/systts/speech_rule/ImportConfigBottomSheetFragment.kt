@@ -24,4 +24,6 @@ class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
             dismiss()
         }
     }
+
+    override fun checkJson(json: String) = json.contains("ruleId")
 }

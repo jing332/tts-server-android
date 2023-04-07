@@ -64,4 +64,6 @@ class ImportConfigBottomSheetFragment :
         }
     }
 
+    override fun checkJson(json: String) = json.contains("pattern")
+
 }

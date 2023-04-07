@@ -32,9 +32,11 @@
         android:theme="@style/Theme.TtsServer"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
+
         <activity
             android:name=".ui.FilePickerActivity"
             android:theme="@style/TranslucentTheme" />
+
         <activity
             android:name=".ui.systts.speech_rule.SpeechRuleManagerActivity"
             android:exported="true"
@@ -75,6 +77,37 @@
                 <category android:name="android.intent.category.LAUNCHER" />
 
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="app" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <!-- json -->
+                <data android:mimeType="application/json" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:host="*" />
+
+                <data android:scheme="app" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <!-- This media type is necessary, otherwise it won't match on the file extension -->
+                <data android:mimeType="*/*" />
+                <data android:pathAdvancedPattern=".*\\.[jJ][sS][oO][nN]" />
+                <data android:pathPattern=".*\\.json" />
+                <data android:pathPattern=".*\\.JSON" />
             </intent-filter>
         </activity>
         <activity

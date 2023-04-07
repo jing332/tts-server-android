@@ -3,7 +3,11 @@ package com.github.jing332.tts_server_android.ui.systts.edit.bgm
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
@@ -135,11 +139,11 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
                 ), 1
             )
 
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (!Environment.isExternalStorageManager()) {
                 MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.grant_permission_all_file)
-                    .setMessage("否则将无法读取音乐文件导致无法播放！")
+                    .setMessage(getString(R.string.grant_permission_all_file_msg))
                     .setPositiveButton(R.string.go_to_settings) { _, _ ->
                         startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
                             data = Uri.parse("package:$packageName")
@@ -151,7 +155,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
                     }
                     .show()
             }
-        }*/
+        }
     }
 
     private fun updateList() {

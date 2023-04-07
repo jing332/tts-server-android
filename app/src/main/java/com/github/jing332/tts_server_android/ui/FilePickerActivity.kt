@@ -1,20 +1,25 @@
 package com.github.jing332.tts_server_android.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
+import com.drake.net.utils.mediaType
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.help.ByteArrayBinder
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.util.FileUtils
+import com.github.jing332.tts_server_android.util.FileUtils.mimeType
 import com.github.jing332.tts_server_android.util.getBinder
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -23,6 +28,7 @@ import kotlinx.parcelize.Parcelize
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.AbstractFileFilter
 import me.rosuh.filepicker.config.FilePickerManager
+import java.io.File
 
 
 @Suppress("DEPRECATION")
@@ -110,10 +116,20 @@ class FilePickerActivity : AppCompatActivity() {
         lp.alpha = 0.0f
         window.attributes = lp
 
-
         requestData = intent.getParcelableExtra(KEY_REQUEST_DATA)!!
 
         if (requestData is RequestSaveFile) {
+            val permission = ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            if (permission != PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(
+                    this, arrayOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    ), 1
+                )
+
             docCreate = FileUtils.registerResultCreateDocument(
                 this,
                 reqSaveFile.fileMime
@@ -203,6 +219,13 @@ class FilePickerActivity : AppCompatActivity() {
                 .maxSelectable(1)
                 .showCheckBox(false)
                 .enableSingleChoice()
+                .filter(object : AbstractFileFilter() {
+                    override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
+                        return ArrayList(listData.filter { item ->
+                            item.isDir || reqSelectFile.fileMimes.contains(File(item.filePath).mimeType)
+                        })
+                    }
+                })
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
     }
@@ -245,7 +268,7 @@ class FilePickerActivity : AppCompatActivity() {
         val fileName: String = "ttsrv-file.json",
         val fileMime: String = "text/*",
 
-        // 大数据使用Binder传递 这里只是方便客户调用
+        // 大数据使用Binder传递 这里只是负责临时存取
         @IgnoredOnParcel
         @Suppress("ArrayInDataClass")
         var fileBytes: ByteArray? = null

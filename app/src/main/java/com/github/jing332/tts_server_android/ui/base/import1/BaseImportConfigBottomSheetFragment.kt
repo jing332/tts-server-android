@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.core.view.isInvisible
 import androidx.core.view.setPadding
@@ -22,13 +21,16 @@ import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseConfigImportItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBaseImportConfigBottomSheetBinding
-import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
+import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.util.ClipboardUtils
+import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.dp
 import com.github.jing332.tts_server_android.util.setMarginMatchParent
+import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -40,7 +42,8 @@ import okhttp3.Response
 
 open class BaseImportConfigBottomSheetFragment(
     @StringRes
-    protected var title: Int = R.string.import_config
+    protected var title: Int = R.string.import_config,
+    var fileUri: Uri? = null,
 ) :
     BottomSheetDialogFragment() {
 
@@ -95,7 +98,11 @@ open class BaseImportConfigBottomSheetFragment(
                 }
             }
 
-            tilFilePath.setEndIconOnClickListener { filePicker() }
+            tilFilePath.setEndIconOnClickListener {
+                fileSelection.launch(
+                    FilePickerActivity.RequestSelectFile(listOf("application/json"))
+                )
+            }
 
             btnImport.clickWithThrottle {
                 waitDialog.show()
@@ -115,14 +122,24 @@ open class BaseImportConfigBottomSheetFragment(
                         waitDialog.dismiss()
                     }
 
-                    kotlin.runCatching { onImport(json) }.onFailure {
+                    kotlin.runCatching {
+                        if (checkJson(json))
+                            onImport(json)
+                        else
+                            Exception(getString(R.string.format_error))
+                    }.onFailure {
                         requireContext().displayErrorDialog(it)
                     }
                 }
             }
         }
-    }
 
+        fileUri?.let {
+            binding.groupSource.check(R.id.btn_src_local_file)
+            binding.tilFilePath.editText?.setText(fileUri.toString())
+            binding.btnImport.performClick()
+        }
+    }
 
     open fun onImport(json: String) {
     }
@@ -146,10 +163,12 @@ open class BaseImportConfigBottomSheetFragment(
             }
 
             SRC_FILE -> withContext(Dispatchers.IO) {
-                val input = requireContext().contentResolver.openInputStream(Uri.parse(fileUri))
-                val str = input!!.readBytes().decodeToString()
-                input.close()
-                return@withContext str
+                try {
+                    return@withContext Uri.parse(fileUri).readAllText(requireContext())
+                } catch (e: Exception) {
+                    toast("无权限访问文件！")
+                    throw e
+                }
             }
 
             else -> ClipboardUtils.text.toString()
@@ -158,14 +177,10 @@ open class BaseImportConfigBottomSheetFragment(
 
 
     private val fileSelection =
-        registerForActivityResult(ActivityResultContracts.OpenDocument()) {
-            if (it != null)
-                binding.tilFilePath.editText!!.setText(it.toString())
+        registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
+            if (it.second != null)
+                binding.tilFilePath.editText?.setText(it.second.toString())
         }
-
-    private fun filePicker() {
-        fileSelection.launch(arrayOf("*/*"))
-    }
 
     fun displayListSelectDialog(
         list: List<ConfigItemModel>,
@@ -198,5 +213,7 @@ open class BaseImportConfigBottomSheetFragment(
             .setNeutralButton(R.string.cancel, null)
             .show()
     }
+
+    open fun checkJson(json: String): Boolean = true
 
 }

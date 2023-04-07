@@ -366,4 +366,6 @@
     <string name="wake_lock_summary">开启唤醒锁可防止锁屏后CPU休眠，但部分系统可能会导致杀后台。</string>
     <string name="foreground_service_summary">设置为前台服务并显示通知以提高进程优先级。</string>
     <string name="foreground_service_and_notification">前台服务与通知</string>
+    <string name="grant_permission_all_file_msg">否则在部分系统上将无法读取音乐文件导致无法播放！</string>
+    <string name="format_error">格式错误</string>
 </resources>

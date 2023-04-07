@@ -29,4 +29,6 @@ class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment(R.st
         }
     }
 
+    override fun checkJson(json: String)= json.contains("pluginId")
+
 }

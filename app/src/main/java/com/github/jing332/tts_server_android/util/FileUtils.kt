@@ -1,10 +1,15 @@
 package com.github.jing332.tts_server_android.util
 
+import android.content.ContentResolver
+import android.content.Context
+import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -127,8 +132,26 @@ object FileUtils {
         return fileList
     }
 
-    fun getMimeType(file: File): String? {
-        val fileNameMap = URLConnection.getFileNameMap()
-        return fileNameMap.getContentTypeFor(file.name)
+    /**
+     * 通过拓展名判断MIME
+     */
+    val File.mimeType: String?
+        get() {
+            val fileNameMap = URLConnection.getFileNameMap()
+            return fileNameMap.getContentTypeFor(name)
+        }
+
+    fun Uri.readAllText(context: Context): String {
+        return when (scheme) {
+            ContentResolver.SCHEME_CONTENT -> {
+                val input = context.contentResolver.openInputStream(this)
+                val str = input!!.readBytes().decodeToString()
+                input.close()
+                str
+            }
+
+            ContentResolver.SCHEME_FILE -> toFile().readText()
+            else -> File(this.toString()).readText()
+        }
     }
 }

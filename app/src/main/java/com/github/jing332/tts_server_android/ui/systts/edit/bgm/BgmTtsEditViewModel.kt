@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.ui.systts.edit.bgm
 
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.util.FileUtils
+import com.github.jing332.tts_server_android.util.FileUtils.mimeType
 import java.io.File
 
 class BgmTtsEditViewModel : ViewModel() {
@@ -11,6 +12,6 @@ class BgmTtsEditViewModel : ViewModel() {
             listOf(file)
         else
             FileUtils.getAllFilesInFolder(file)
-                .filter { FileUtils.getMimeType(it)?.startsWith("audio") == true }
+                .filter { it.mimeType?.startsWith("audio") == true }
     }
 }

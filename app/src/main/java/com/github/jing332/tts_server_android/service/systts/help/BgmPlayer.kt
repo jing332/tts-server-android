@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.util.FileUtils
+import com.github.jing332.tts_server_android.util.FileUtils.mimeType
 import com.github.jing332.tts_server_android.util.runOnUI
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -83,7 +84,7 @@ class BgmPlayer(val context: Context) {
     }
 
     private fun addMediaItem(tag: Any, file: File): Boolean {
-        val mime = FileUtils.getMimeType(file)
+        val mime = file.mimeType
         // 非audio或未知则跳过
         if (mime == null || !mime.startsWith("audio")) return false
 

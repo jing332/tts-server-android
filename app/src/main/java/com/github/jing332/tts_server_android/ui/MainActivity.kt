@@ -18,6 +18,7 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.net.toFile
 import androidx.core.view.MenuCompat
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
@@ -29,10 +30,10 @@ import androidx.navigation.ui.*
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ShortCuts
-import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.ui.base.import1.BaseImportConfigBottomSheetFragment
 import com.github.jing332.tts_server_android.util.*
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -106,15 +107,52 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
+        importFileFromIntent(intent)
     }
 
-    @Suppress("DEPRECATION")
-    override fun onStart() {
-        super.onStart()
-
-        // 更新Application语言
-//        app.updateLocale(resources.configuration.locale)
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        importFileFromIntent(intent)
     }
+
+    private fun importFileFromIntent(intent: Intent?) {
+        if (intent?.data != null)
+            MaterialAlertDialogBuilder(this)
+                .setTitle("导入文件为...")
+                .setItems(arrayOf("配置列表", "插件", "替换规则", "朗读规则")) { _, which ->
+                    var fragment: BaseImportConfigBottomSheetFragment? = null
+                    when (which) {
+                        0 -> {
+                            fragment =
+                                com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
+                            fragment.fileUri = intent.data
+                        }
+
+                        1 -> {
+                            fragment =
+                                com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
+                            fragment.fileUri = intent.data
+                        }
+
+                        2 -> {
+                            fragment =
+                                com.github.jing332.tts_server_android.ui.systts.replace.ImportConfigBottomSheetFragment()
+                            fragment.fileUri = intent.data
+                        }
+
+                        3 -> {
+                            fragment =
+                                com.github.jing332.tts_server_android.ui.systts.speech_rule.ImportConfigBottomSheetFragment()
+                            fragment.fileUri = intent.data
+                        }
+                    }
+                    intent.data = null
+                    fragment?.show(supportFragmentManager, "BaseImportConfigBottomSheetFragment")
+                }
+                .setPositiveButton(R.string.cancel, null)
+                .show()
+    }
+
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
