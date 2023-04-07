@@ -26,7 +26,7 @@ data class CompatSysTtsConfig(
         fun read(): CompatSysTtsConfig? {
             return try {
                 val file = File(filepath)
-                if (!FileUtils.fileExists(file)) return null
+                if (!FileUtils.exists(file)) return null
 
                 val str = File(filepath).readText()
                 App.jsonBuilder.decodeFromString<CompatSysTtsConfig>(str)

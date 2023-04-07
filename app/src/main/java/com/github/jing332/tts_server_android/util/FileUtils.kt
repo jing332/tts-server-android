@@ -79,7 +79,7 @@ object FileUtils {
         return buffer.toString()
     }
 
-    fun fileExists(file: File): Boolean {
+    fun exists(file: File): Boolean {
         runCatching {
             if (file.isFile)
                 return file.exists()
@@ -89,8 +89,8 @@ object FileUtils {
         return false
     }
 
-    fun fileExists(filePath: String): Boolean {
-        return fileExists(File(filePath))
+    fun exists(filePath: String): Boolean {
+        return exists(File(filePath))
     }
 
     fun saveFile(path: String, data: ByteArray): Boolean {
@@ -99,7 +99,7 @@ object FileUtils {
 
     fun saveFile(file: File, data: ByteArray): Boolean {
         try {
-            if (!fileExists(file)) {
+            if (!exists(file)) {
                 if (file.parentFile?.exists() == false) /* 文件夹不存在则创建 */
                     file.parentFile?.mkdirs()
             }

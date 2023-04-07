@@ -4,8 +4,6 @@ import com.drake.net.utils.withDefault
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.bean.AzureVoiceBean
-import com.github.jing332.tts_server_android.bean.CreationVoiceBean
 import com.github.jing332.tts_server_android.bean.EdgeVoiceBean
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
@@ -41,7 +39,7 @@ class MsTtsEditRepository() {
         crossinline loadData: () -> ByteArray?
     ): List<T> {
         val file = File(cachePath)
-        return if (FileUtils.fileExists(file)) {
+        return if (FileUtils.exists(file)) {
             json.decodeFromString(withIO { file.readText() })
         } else {
             val data = withIO { loadData.invoke() ?: throw Exception("数据为空") }

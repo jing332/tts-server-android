@@ -1,16 +1,14 @@
 package com.github.jing332.tts_server_android.model.rhino.core.ext
 
 import android.content.Context
-import android.util.Base64
 import cn.hutool.core.io.CharsetDetector
-import cn.hutool.core.io.FileUtil
 import cn.hutool.core.lang.UUID
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
+import com.github.jing332.tts_server_android.util.FileUtils
 import java.io.File
 
 @Suppress("unused")
-open class JsExtensions(open val context: Context, open val engineId: String) : JsNet(),
-    JsCrypto,
+open class JsExtensions(open val context: Context, open val engineId: String) : JsNet(), JsCrypto,
     JsUserInterface {
 
     fun newByteArrayList() = arrayListOf<Byte>()
@@ -47,7 +45,7 @@ open class JsExtensions(open val context: Context, open val engineId: String) : 
      */
     fun getFile(path: String): File {
         val cachePath = "${context.externalCacheDir!!.absolutePath}/${engineId}"
-        if (!FileUtil.exist(cachePath)) FileUtil.mkdir(cachePath)
+        if (!FileUtils.exists(cachePath)) File(cachePath).mkdirs()
         val aPath = if (path.startsWith(File.separator)) {
             cachePath + path
         } else {
@@ -97,7 +95,7 @@ open class JsExtensions(open val context: Context, open val engineId: String) : 
     }
 
     fun fileExist(path: String): Boolean {
-        return FileUtil.exist(getFile(path))
+        return FileUtils.exists(getFile(path))
     }
 
     /**
