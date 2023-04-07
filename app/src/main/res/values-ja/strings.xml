@@ -1,0 +1,390 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" translatable="false">TTS Server</string>
+    <string name="app_name_dev" translatable="false">D·TTS Server</string>
+
+    <string name="app_switch">開閉（かいへい）</string>
+    <string name="help">ヘルプ</string>
+    <string name="warning">警告</string>
+    <string name="reset">重置</string>
+    <string name="exit">退出</string>
+    <string name="copied">已複製されました。</string>
+    <string name="ok_reset">既にリセットされました。</string>
+    <string name="loading">読み込み中</string>
+
+    <string name="selected">選択済み (Sentences in Chinese can be quite concise and compact. The translation literally means \"already selected\" but it conveys the same message in a more natural way in Japanese.)</string>
+
+    <string name="close">Translation: 終了する</string>
+    <string name="start">起動</string>
+    <string name="follow">跟随 (Genzui)</string>
+    <string name="custom">カスタマイズ</string>
+    <string name="app_down_again_to_exit">再度押せばアプリを終了します。</string>
+    <string name="cannot_empty">入力は必須項目です！</string>
+
+    <string name="open_web">Text translated into Japanese: ウェブ版を開く</string>
+    <string name="check_update">Text translated into Japanese: 更新を確認</string>
+    <string name="wake_lock">唤醒锁</string>
+    <string name="about">テキストの翻訳：関する</string>
+    <string name="config">配置</string>
+    <string name="log">日志</string>
+    <string name="background_whitelist">電池最適化ホワイトリスト</string>
+    <string name="desktop_shortcut">桌面ショートカット</string>
+    <string name="added_background_whitelist">已加入後台白名簿。</string>
+
+    <string name="kill_process">終了プロセス</string>
+    <string name="cancel">取消</string>
+
+    <string name="label_read_aloud_target">朗読の目標：</string>
+    <string name="label_api">OK. (no need for translation as it is already concise and doesn\'t require further clarification)</string>
+    <string name="label_language">言語：</string>
+    <string name="label_voice">音声：</string>
+    <string name="label_voice_role">角色:</string>
+    <string name="label_voice_style">Style:</string>
+    <string name="label_styleDegree">スタイルの強さ:</string>
+    <string name="label_audio_format">音声フォーマット：</string>
+    <string name="label_volume">音量：</string>
+    <string name="label_rate">音声の速度：</string>
+    <string name="label_pitch">音高:</string>
+    <string name="label_play_speed">プレイバックスピード:</string>
+    <string name="label_play_pitch">音声のピッチを再生する：</string>
+    <string name="label_result">結果：</string>
+    <string name="label_audio_sample_rate">音声サンプリングレート（Hz）：</string>
+    <string name="label_port">ポート:</string>
+
+    <string name="systts_api_edge">Microsoft Edge - 高音質ボイスリーダーインターフェース</string>
+    <string name="systts_api_azure">Microsoft Azure - ウェブデモAPI</string>
+    <string name="systts_api_creation">（⚠️ 既に無効化されています）マイクロソフトCreation - ウェブデモAPI</string>
+
+    <string name="systts_state_idle">TTS空閑中 (TTS kūkan chū)</string>
+    <string name="systts_state_synthesizing">TTS合成中</string>
+    <string name="systts_service">システムのTTSサービス</string>
+
+    <string name="systts_split_long_sentences">分割長い文章</string>
+    <string name="system_not_support_please_manual_set">Translation: システムはサポートされていません。手動で操作してください。</string>
+
+    <string name="service_started">サービスが開始されました。</string>
+    <string name="service_closed">サービスは終了しています。</string>
+    <string name="forwarder_ms">微ソフトTTS転送機</string>
+    <string name="server_listen_address_local">監視アドレス：%s</string>
+    <string name="server_please_start_service">「サービスを起動してください」</string>
+    <string name="server_restart_service_to_update">重要事項：サービスを有効にするには、再起動が必要です。</string>
+    <string name="server_set_token">設定トークン</string>
+    <string name="server_token_set_to">Tokenはすでに次に設定されました：</string>
+
+    <string name="system_tts">システムTTS</string>
+    <string name="settings">OK. 
+
+設定.</string>
+    <string name="global_settings">全局设置</string>
+    <string name="copy_address">コピーするアドレス</string>
+    <string name="check_update_failed">更新のチェックに失敗しました。</string>
+    <string name="current_is_last_version">現在、最新バージョンである。</string>
+
+    <string name="title_activity_tts_config_edit">原文のフォーマットやスタイルをそのまま保ち、翻訳が変わらない場合には原文を繰り返すように短く保ちます（例:「OK」）。対象読者は日本語を母国語とする人々であり、テキストはAndroidアプリのUIで使用できるよう、簡潔な翻訳にします。
+
+翻訳文: 内蔵TTSを編集する。</string>
+    <string name="title_activity_replace_edit">編集・置換規則</string>
+    <string name="title_activity_replace_manager">替換規則の管理</string>
+
+    <string name="display_name">表示名</string>
+    <string name="save">保存する</string>
+    <string name="desc_switch_item">開始または停止する場合は、この項目を有効または無効にしてください。</string>
+    <string name="desc_add_config">追加設定</string>
+    <string name="desc_edit_item">編集項目</string>
+    <string name="desc_delete_item">削除する。</string>
+    <string name="desc_seekbar_add">滑動バー　+1</string>
+    <string name="desc_seekbar_remove">滑動バー -1</string>
+
+    <string name="add_config">追加設定</string>
+    <string name="config_import_export">配置のインポート/エクスポート</string>
+    <string name="import_config">Text translated into Japanese: プロファイルをインポート</string>
+    <string name="export_config">そのままの書式やスタイルを保持し、「导出配置」を高品質で書かれた日本語に翻訳します。翻訳の際には以下の4つのルールに従います：1.原文の書式やスタイルを正確に保持します。2.翻訳は簡潔に行い、変更のない場合は元のテキストを繰り返します（例：「OK」）。3.対象読者は日本語を母語とする人々です。4.テキストはAndroidアプリのUIで使用されることがあります（スペースに限りがあるため、簡潔な翻訳が求められます！）。
+
+「导出配置」を翻訳すると、「設定のエクスポート」となります。</string>
+    <string name="copy" tools:ignore="PrivateResource">コピーする</string>
+    <string name="follow_system_or_read_aloud_app">Follow system or read aloud application.</string>
+    <string name="raw_format_is_play_while_downloading">Raw形式は、オンデマンドストリーミング形式である。</string>
+    <string name="is_confirm_delete">確認して削除しますか？</string>
+    <string name="delete">削除する</string>
+    <string name="ra_all">朗読全部</string>
+    <string name="ra_aside">仅旁白</string>
+    <string name="ra_dialogue">仅对话 (Jin duihua) 
+
+Note: This is already in Chinese and does not require translation. It means \"Only conversation\" in English.</string>
+
+    <string name="all">全部</string>
+    <string name="aside">旁白</string>
+    <string name="dialogue">対話 (Taiwa)</string>
+    <string name="none">無</string>
+    <string name="default_str">OK</string>
+
+    <string name="web">Webページ</string>
+    <string name="clear_web_data">文字を消去する</string>
+    <string name="cleared">已清空 (yi qing kong) can be translated as \"Cleared\" or \"Emptied\" in Japanese.</string>
+
+    <string name="import_from_clipboard">From clipboard import</string>
+    <string name="url_net">翻訳するテキスト：ネットワーク接続</string>
+    <string name="import_from_url">URLを上からインポートする。</string>
+    <string name="retry">重试</string>
+    <string name="test">テスト</string>
+    <string name="sample_text">テストテキスト</string>
+
+    <!-- 替换管理 -->
+    <string name="systts_replace_rule_manager">替換規則の管理</string>
+    <string name="systts_replace_add_rule">替換ルールを追加する。</string>
+    <string name="systts_replace_rule">替換規則</string>
+    <string name="systts_replace_as">Replace with.</string>
+    <string name="systts_replace_insert_pinyin">Text translated into Japanese: 注音符号を挿入する</string>
+    <string name="systts_replace_use_regex">使用正規表現</string>
+
+    <!-- 系统TTS 设置 -->
+    <string name="systts_set_dialogue_min_match_word_count">設定：対話の最小一致漢字数</string>
+    <string name="systts_set_dialogue_min_info">人物の会話に使われる漢字数（中国語の記号も含む）がこの値以上である場合、朗読は対話として扱われ、それ以外の場合はナレーションとして扱われます。</string>
+    <string name="systts_set_request_timeout">設定のリクエストタイムアウト</string>
+    <string name="systts_set_request_timeout_msg">リクエストされた音声に対する待機時間が設定値を超えた場合、リクエストは自動的にキャンセルされ、再試行されます。</string>
+
+    <string name="systts_http_edit_title">自作のTTSを編集する</string>
+    <string name="systts_http_request_header">リクエストヘッダー</string>
+
+    <string name="systts_sample_test_text">右側のボタンをクリックして、テストして再生できます。</string>
+
+    <string name="systts_decode_audio">解码音声</string>
+    <string name="systts_add_internal_tts">内蔵TTSを追加する。</string>
+    <string name="systts_add_custom_tts">自分で設定した音声を追加する。</string>
+    <string name="off_multi_voice_use_global">多言語音声オプションを終了して、単一の音声モードを使用してください。</string>
+
+    <string name="use_dns_lookup_ip">DNS解決APIを使用してIPアドレスを解決する。</string>
+    <string name="pref_edge_dns_summary">Translate: 内部組み込みのではなく、北京のマイクロソフトのクラウドノードを使用しています。</string>
+    <string name="pref_title_global_edge">全局-Edge接口</string>
+
+    <string name="systts_multi_voice_option">多言語音声（ナレーション/ダイアログ）</string>
+    <string name="systts_use_internal_audio_player">使用内蔵プレーヤー</string>
+    <string name="systts_in_app_play_info_html"><DATA><![CDATA[
+        打开此选项后，将直接<b>使用本程序内置的音频播放器</b>，而非转由系统TTS组件播放。
+        <br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。
+        <br><br>当然，直接播放也有兼容性问题：
+        <br> - 由于并未将原始音频发送到系统TTS组件，所以如果调用TTS者是先缓存后播放机制，即并非由系统播放时，这将会导致缓存时音频为空和意外播放。
+        <br> - raw格式依旧不支持，由系统播放。
+        <br> - 性能方面相较系统播放略低。
+        <br> - 由于内置播放器无音频缓冲，故<b>段落</b>与<b>句子(如已启用分割长句)</b>之间的间隔时间相较系统播放会<b>多出几百毫秒的延迟</b>。
+        ]]>
+    </DATA>
+    </string>
+    <string name="systts_help_secondary_locale">二次言語を選択してください。すなわち、朗読時にこの言語を使用します。現在、Microsoftはen-US-JennyMultilingualNeuralのみをサポートしています。</string>
+    <string name="systts_sample_rate">采样率（Hz）</string>
+    <string name="systts_secondaryLocale">二次言語（言語スキル）</string>
+    <string name="systts_voice_data_load_failed">音声データの読み込みに失敗しました。</string>
+    <string name="systts_help_sample_rate">テキストの翻訳：システムTTSは再生を開始するときにサンプリングレートを指定する必要があります。【内蔵プレイヤー】、【直接再生】が有効になっている場合は、このオプションを無視できます。</string>
+    <string name="systts_voice_multiple_option">同じ音読みの単語を複数選択できます。</string>
+    <string name="systts_voice_multiple_hint">Translation: 同じ音声を持つ読者は、排除されずにランダムに交互に読み上げられます。(単一音声ではこの機能はサポートされません)</string>
+    <string name="systts_groups_multiple">分類を複数選択できます。</string>
+    <string name="systts_groups_multiple_hint">テキストの翻訳：グループを選択すると、お互いを排除しなくなります。</string>
+
+    <string name="systts_warn_no_ra_dialogue">⚠️対話が不足しています。デフォルトを使用します。\n対話設定を有効にしてください。</string>
+    <string name="systts_warn_no_ra_all">⚠️TTSの設定が不足しています。デフォルトを使用します！\n複数言語オプションがオフになっていることを確認してください。</string>
+    <string name="systts_warn_no_ra_aside">⚠️ {旁白}が不足しています。デフォルトが使用されます。 \n旁白の設定を有効にしてください。</string>
+
+    <string name="systts_test_success">テストが成功しました。</string>
+    <string name="systts_test_success_info">ファイルサイズ: %1$dキロバイト \nサンプリングレート: %2$d \nオーディオフォーマット: %3$s</string>
+
+    <string name="systts_http_test_msg">音声のサイズ: %1$d Kib
+フォーマット: %2$s
+サンプリングレート: %3$d HZ
+コンテンツタイプ: %4$s</string>
+
+    <string name="systts_please_check_multi_voice_option">右上隅のメニューで言語オプションを選択してください。</string>
+    <string name="systts_sample_rate_different_in_enabled_list">検出されました。設定で異なる形式/サンプリングレートが有効になっています。
+これにより、音程が異常となり（音が太くなったり、細くなったり）、同じ形式/サンプリングレートに手動で変更するか、右上隅の【内蔵プレイヤーを使用する】オプションをオンにしてください。</string>
+    <string name="group_expanded">分類は展開されています。</string>
+    <string name="group_collapsed">分類は折りたたまれています。</string>
+    <string name="systts_desc_list_count_info">共%1$d項、うち%2$d項が有効です。</string>
+    <string name="systts_list_item_desc">目標%1$s、インターフェース%2$s、属性：%3$s、フォーマット：%4$s。</string>
+
+    <string name="more_options">その他のオプション</string>
+    <string name="add_group">分類を追加する。</string>
+    <string name="group">分類</string>
+    <string name="belonging_group">所属分グループ</string>
+    <string name="msg_group_is_empty">分组が空です。構成を追加してください。</string>
+    <string name="edit_group_name">編集グループ名</string>
+    <string name="default_group">デフォルトグループ</string>
+
+    <string name="content">内容</string>
+    <string name="name">名称</string>
+    <string name="unnamed">未命名</string>
+    <string name="rename">重命名</string>
+    <string name="test_failed">テストに失敗しました。</string>
+    <string name="enabled">OK.</string>
+    <string name="choice_item">%1$sを選択してください。</string>
+    <string name="import_failed">导入失败</string>
+
+    <string name="clipboard">剪切板</string>
+    <string name="type">タイプ</string>
+    <string name="source">OK. (There is no additional context or information provided, so I am repeating the original text as per translation rule 2) 
+
+原文のままの書式とスタイルを保ちます（翻訳ルール1）。文を簡潔に保ち、変わらない翻訳の場合は、原文を繰り返します（「OK」のように）（翻訳ルール2）。翻訳対象者は日本語のネイティブスピーカーとして考え（翻訳ルール3）、テキストはAndroidアプリのUIに使用できることを前提としています（限られたスペースで簡潔な翻訳が必要です！）</string>
+    <string name="legado">レガドを読む。</string>
+    <string name="str_import">OK</string>
+    <string name="please_choose">選択してください。</string>
+    <string name="config_import">配置のインポート</string>
+
+    <string name="systts_play_params_description">速度:%1$s | 音量:%2$s | 音程:%3$s</string>
+    <string name="systts_ms_express_as_description">%1$s-%2$s | 強度:%3$s</string>
+    <string name="server_log_service_running">サービスは実行中で、リスニングアドレスは%1$sです。</string>
+    <string name="server_log_tips">1. スタートボタンをクリックする
+2. ウェブページを開いて設定を選択します
+3. 最後に、リンクを生成して読書アプリにインポートします。
+⚠️音声サービスを使用する場合、常駐してバックグラウンドで実行する必要があります！
+⚠️この機能はシステムTTSと独立しており、互いに干渉しません！</string>
+    <string name="systts_log_request_audio">音声リクエスト：%1$s</string>
+    <string name="systts_log_success">取得に成功しました。サイズ：%1$s。時間：%2$s。</string>
+    <string name="systts_log_failed">取得失敗: %1$s</string>
+    <string name="systts_log_audio_empty">音声が空です：%1$s</string>
+    <string name="systts_log_decode_failed">解読失敗：%1$s</string>
+    <string name="systts_log_canceled">Translation: キャンセルされました: %1$s</string>
+    <string name="systts_log_finished_playing">完了：%1$s再生しました。</string>
+    <string name="systts_log_start_retry">開始第 %1$d 回のリトライを開始します。</string>
+    <string name="unlimited">無制限</string>
+    <string name="systts_log_ip_is_restricted">お使いのIPアドレスは、Microsoftのサーバーから制限されている可能性があります。データ使用量の少ないオーディオファイル形式に切り替えることで、この問題を回避することができます。</string>
+    <string name="local_file">ファイル</string>
+    <string name="select_file">ファイルを選択する</string>
+    <string name="select_file_hint">ファイルを選択するには、右側のボタンをクリックしてください➡️</string>
+    <string name="systts_group_empty_msg">➕ボタンをタップして、追加…、その後編集画面で所属グループを設定してください。これは、アプリバーの右側にあります。</string>
+    <string name="new_version_available">新しいバージョンがあります：%1$s。</string>
+    <string name="master_switch">全体スイッチ</string>
+    <string name="upload_to_url">URLにアップロード</string>
+    <string name="upload_failed">アップロードに失敗しました：%1s</string>
+    <string name="systts_copied_config">コンフィグをコピーしました</string>
+    <string name="search">検索</string>
+    <string name="replace_rule_search">置換ルール - 検索</string>
+    <string name="drawer_interface">インターフェース</string>
+    <string name="other">その他</string>
+    <string name="nav_back">戻る</string>
+    <string name="move_to_top">トップに移動</string>
+    <string name="move_to_bottom">最下部に移動</string>
+    <string name="local_tts_engine">ローカルTTSエンジン</string>
+    <string name="add_local_tts">ローカルTTSを追加</string>
+    <string name="local">ローカル</string>
+    <string name="systts_local_edit_title">ローカルTTSを編集</string>
+    <string name="label_tts_engine">TTSエンジン：</string>
+    <string name="type_of_data">データの種類</string>
+    <string name="str_key">キー</string>
+    <string name="str_value">値</string>
+    <string name="add_extra_params">追加パラメータを追加</string>
+    <string name="edit_extra_parameter">追加パラメータを編集</string>
+    <string name="as_standby">バックアップとして使用</string>
+    <string name="direct_play">直接再生</string>
+    <string name="systts_direct_play_help">【直接再生】について</string>
+    <string name="systts_direct_play_help_msg">このオプションをオンにすると、ストリーミング再生はTTSエンジンに直接行われます。オフにすると、音声がTTSサーバー経由で中継されるため、若干の性能低下(キャッシュの読み書き)がありますが、複数言語の場合、同じエンジンで音声が切り替わるときの初期化遅延を低減できます。</string>
+    <string name="systts_replace_please_on_switch">⚠️右上隅のメニューから【全体スイッチ】をオンにしてください。</string>
+    <string name="md_checkbox_checked">すべて選択済み</string>
+    <string name="md_checkbox_unchecked">選択されていません</string>
+    <string name="md_checkbox_indeterminate">一部が選択</string>
+    <string name="systts_local_test_msg">【直接再生】はオフです\nサイズ：%1dキロバイト\nサンプリングレート：%2$d HZ</string>
+    <string name="systts_set_standby">バックアップTTSを設定する</string>
+    <string name="systts_local_params_int_must">trueまたは1、falseまたは0である必要があります。</string>
+    <string name="set_built_in_player_params">内蔵プレーヤーの設定</string>
+    <string name="built_in_player_not_enabled">⚠️内蔵プレーヤーが有効になっていません。右上隅のメニューから手動で有効にしてください。</string>
+    <string name="please_turn_off_direct_play">【直接再生】オプションをオフにしてください。</string>
+    <string name="systts_as_standby_help">【バックアップとして使用】について</string>
+    <string name="systts_standby">バックアップ</string>
+    <string name="decode">デコード</string>
+    <string name="systts_log_replace_failed">置換に失敗しました：%1$s</string>
+
+    <string name="systts_sby_conditions_for_use">备用配置使用条件</string>
+    <string name="systts_sby_settings_msg">备用配置在第几次重试时触发？默认为1，即备用配置在首次失败重试时使用。</string>
+    <string name="systts_ms_webm_warn_msg">⚠️经测试，音频格式 webm..-24kbps-.. 的实际所耗流量是其音频大小的三倍有余，不推荐使用！</string>
+    <string name="search_filter">搜索过滤</string>
+    <string name="follow_system">跟随系统</string>
+    <string name="app_language_desc">一语言：%1$s</string>
+    <string name="app_language_to_follow_tip_msg">如更新语言失败，请手动结束程序并重启。</string>
+    <string name="forwarder_sys_fail_audio_file">合成失败：未找到音频文件</string>
+    <string name="systts_engine_init_failed_timeout">引擎初始化失败：已超时</string>
+    <string name="forwarder_systts">系统TTS转发器</string>
+    <string name="forwarder_sys_running">系统TTS转发器运行中</string>
+    <string name="language">语言</string>
+    <string name="plugin_manager">插件管理</string>
+    <string name="error">错误</string>
+    <string name="systts_add_plugin_tts">添加插件TTS</string>
+    <string name="debug">调试</string>
+    <string name="plugin_preview_ui">预览UI并设置</string>
+    <string name="edit_plugin_tts">编辑插件TTS</string>
+    <string name="not_found_plugin">⚠️未找到插件: %1$s</string>
+    <string name="plugin_tts_get_sample_rate_fail_msg">获取音频采样率失败：%1$s</string>
+    <string name="edit">编辑</string>
+    <string name="playing">播放中</string>
+    <string name="select_plugin">选择插件</string>
+    <string name="audition">试听</string>
+    <string name="no_plugins">无插件</string>
+    <string name="sys_tts_interface_preference">系统TTS - 界面</string>
+    <string name="pref_swap_listen_and_edit_button">交换试听和编辑按钮位置</string>
+    <string name="plugin_bad_format">版本(version)格式错误，必须为整数</string>
+    <string name="import_replace_rule">导入替换规则</string>
+    <string name="select_import">选择导入</string>
+    <string name="config_import_success_msg">共导入 %1$d 条配置</string>
+    <string name="file_save_failed">文件保存失败：%1$s</string>
+    <string name="save_success">保存成功</string>
+    <string name="failed_timed_out">已超时：%1$dms</string>
+    <string name="builtin_player_settings_tip_msg">启用内置播放器时，使用此处设置覆盖全局。</string>
+    <string name="systts_standby_help_msg">作为备用后，当请求失败时将会根据 [全部/旁白/对话] 使用此配置朗读。\n也就是说，可以根据朗读目标单独配置备用。\n注意：备用配置无自动重试功能，首次失败后将直接跳过朗读，所以建议使用本地TTS类型作为备用。</string>
+    <string name="save_as_file">另存为文件</string>
+    <string name="group_move_a11y_msg">分组已从 %1$d 移动到 %2$d</string>
+    <string name="list_move_a11y_msg">已从 %1$d 移动到 %2$d</string>
+    <string name="word_wrap">自动换行</string>
+    <string name="theme">主题</string>
+    <string name="add_folder">添加文件夹</string>
+    <string name="add_bgm_tts">添加背景音乐</string>
+    <string name="edit_bgm_tts_title">编辑背景音乐</string>
+    <string name="add_bgm_tip">请添加文件/文件夹以作为BGM使用</string>
+    <string name="grant_permission_all_file">请授予【所有文件访问权限】</string>
+    <string name="go_to_settings">前往设置</string>
+    <string name="shuffle">随机播放</string>
+    <string name="bgm_settings">背景音乐设置</string>
+    <string name="bgm_settings_tip">提示：右上角加号添加背景音乐。</string>
+    <string name="bgm">背景音乐</string>
+    <string name="exo_player_title">媒体播放器</string>
+    <string name="remote_sync_service">远程同步</string>
+    <string name="clear_plugin_cache">清空插件缓存</string>
+    <string name="listen_port">监听端口</string>
+    <string name="script_sync_service_tip">代码同步服务，方便在PC端编辑、更新插件代码进行调试。\n⚠️设置在重启编辑器后生效</string>
+    <string name="learn_more">了解详情</string>
+    <string name="systts_bgm_description">音量:%1$s</string>
+    <string name="total_n_folders">共 %1$s 个文件夹</string>
+    <string name="auto_check_update">自动检查更新</string>
+    <string name="direct_upload_settings">直链上传设置</string>
+    <string name="warn_returned_url_is_empty">返回的链接为空！</string>
+    <string name="choose_an_upload_target">选择一个上传目标</string>
+    <string name="copied_url">已复制链接</string>
+    <string name="direct_link_settings">直链设置</string>
+    <string name="set_sample_text_param">设置文本参数</string>
+    <string name="import_plugin">导入插件</string>
+    <string name="systts_drag_tip_msg">长按勾选框即可拖拽</string>
+    <string name="code_editor">代码编辑器</string>
+    <string name="check_update_summary">打开主界面时检查更新</string>
+    <string name="edit_read_rule">编辑朗读规则</string>
+    <string name="read_rule_manager">朗读规则管理</string>
+    <string name="speech_rule_script">规则脚本</string>
+    <string name="empty_list">列表为空</string>
+    <string name="max_retry_count">最大重试次数</string>
+    <string name="sys_doc_picker_error">打开系统文件选择器失败，自动使用内置选择器。</string>
+    <string name="add_file">添加文件</string>
+    <string name="path_is_empty">路径为空</string>
+    <string name="file_picker_mode">文件选择器模式</string>
+    <string name="file_picker">文件选择器</string>
+    <string name="file_picker_mode_system">系统文件选择器</string>
+    <string name="file_picker_mode_builtin">内置文件选择器</string>
+    <string name="file_picker_mode_prompt">弹出选择提示</string>
+    <string name="no_retries">不重试</string>
+    <string name="systts_no_custom_tag_config_warn">⚠️无标签配置，请添加配置或关闭多语音选项！</string>
+    <string name="tip">提示</string>
+    <string name="tag">标签</string>
+    <string name="systts_split_text_tip_msg">多语音选项开启时优先使用朗读规则中的分割脚本；关闭时使用内置分割规则。</string>
+    <string name="systts_not_found_speech_rule_tag">⚠️未找到朗读规则</string>
+    <string name="no_files_in_dir">此目录下无文件</string>
+    <string name="click_play">点击播放</string>
+    <string name="app_languge_update_warn">需要强行停止应用后才可完全显示新的语言！</string>
+    <string name="wake_lock_summary">开启唤醒锁可防止锁屏后CPU休眠，但部分系统可能会导致杀后台。</string>
+    <string name="foreground_service_summary">设置为前台服务并显示通知以提高进程优先级。</string>
+    <string name="foreground_service_and_notification">前台服务与通知</string>
+    <string name="grant_permission_all_file_msg">否则在部分系统上将无法读取音乐文件导致无法播放！</string>
+    <string name="format_error">格式错误</string>
+    <string name="systts_log_text_handle_failed">文本处理失败: %1$s</string>
+</resources>

@@ -28,6 +28,7 @@ import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
+import com.github.jing332.tts_server_android.util.FloatBtnUtil
 import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.rosemoe.sora.widget.CodeEditor
@@ -55,7 +56,18 @@ abstract class BaseScriptEditorActivity : BackActivity() {
         mEditorHelper = CodeEditorHelper(this, baseBinding.editor)
         mEditorHelper.initEditor()
         mEditorHelper.setTheme(ScriptEditorConfig.codeEditorTheme)
+        baseBinding.symbolInput.bindEditor(editor)
+        baseBinding.symbolInput.addSymbols(
+            arrayOf(
+                "->", "{", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/"
+            ), arrayOf("\t", "{}", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/")
+        )
+//        val floatBtnUtil =  FloatBtnUtil(this);
+//        floatBtnUtil.setFloatView(baseBinding.root, baseBinding.symbolInput);
+
         editor.isWordwrap = ScriptEditorConfig.isCodeEditorWordWrapEnabled
+        editor.nonPrintablePaintingFlags =
+            CodeEditor.FLAG_DRAW_WHITESPACE_LEADING or CodeEditor.FLAG_DRAW_LINE_SEPARATOR or CodeEditor.FLAG_DRAW_WHITESPACE_IN_SELECTION
 
         if (ScriptEditorConfig.isRemoteSyncEnabled) {
             lifecycleScope.launch(Dispatchers.IO) {
