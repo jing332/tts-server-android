@@ -109,11 +109,11 @@ open class BaseImportConfigBottomSheetFragment(
                 lifecycleScope.launch(Dispatchers.Main) {
                     val json = try {
                         withIO {
-                            importConfig(
-                                sourceType,
-                                binding.tilUrl.editText?.text.toString(),
-                                binding.tilFilePath.editText?.text.toString()
-                            )
+                            binding.tilFilePath.editText?.tag as? String
+                                ?: importConfig(
+                                    sourceType,
+                                    binding.tilUrl.editText?.text.toString()
+                                )
                         }
                     } catch (e: Exception) {
                         requireContext().displayErrorDialog(e)
@@ -147,7 +147,7 @@ open class BaseImportConfigBottomSheetFragment(
     private suspend fun importConfig(
         src: Int,
         url: String? = null,
-        fileUri: String? = null
+        uri: Uri? = null
     ): String {
         return when (src) {
             SRC_URL -> withContext(Dispatchers.IO) {
@@ -164,7 +164,7 @@ open class BaseImportConfigBottomSheetFragment(
 
             SRC_FILE -> withContext(Dispatchers.IO) {
                 try {
-                    return@withContext Uri.parse(fileUri).readAllText(requireContext())
+                    return@withContext uri!!.readAllText(requireContext())
                 } catch (e: Exception) {
                     toast("无权限访问文件！")
                     throw e
@@ -178,8 +178,11 @@ open class BaseImportConfigBottomSheetFragment(
 
     private val fileSelection =
         registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
-            if (it.second != null)
+            if (it.second != null) {
+                // 不知为何 必须在这里读取才有权限
+                binding.tilFilePath.editText?.tag = it?.second?.readAllText(requireContext())
                 binding.tilFilePath.editText?.setText(it.second.toString())
+            }
         }
 
     fun displayListSelectDialog(
