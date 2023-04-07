@@ -145,7 +145,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val langPre: ListPreference = findPreference("language")!!
         langPre.apply {
             entries =
-                AppLocale.localeMap.map { it.value.getDisplayName(it.value) }.toMutableList()
+                AppLocale.localeMap.map { "${it.value.displayName} - ${it.value.getDisplayName(it.value)}" }
+                    .toMutableList()
                     .apply { add(0, getString(R.string.follow_system)) }.toTypedArray()
             entryValues =
                 mutableListOf("").apply { addAll(AppLocale.localeMap.keys) }.toTypedArray()

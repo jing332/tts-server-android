@@ -2,7 +2,7 @@ let SpeechRuleJS = {
     name: "旁白/对话",
     id: "ttsrv.multi_voice",
     author: "TTS Server",
-    version: 2,
+    version: 3,
     tags: {narration: "旁白", dialogue: "对话"},
 
     handleText(text) {
@@ -16,10 +16,9 @@ let SpeechRuleJS = {
             if (char === '“') {
                 endTag = "dialogue";
                 list.push({text: tmpStr, tag: "narration"});
-                tmpStr = "";
+                tmpStr = "“";
             } else if (char === '”') {
                 endTag = "narration";
-                tmpStr = tmpStr.slice(0, -1);
                 list.push({text: tmpStr, tag: "dialogue"});
                 tmpStr = "";
             } else if (index === text.length - 1) {
@@ -46,7 +45,7 @@ let SpeechRuleJS = {
             }
         })
 
-        return list.filter(item => item.replace("”", "").trim().length > 0);
+        return list.filter(item => item.replace("”", '').replace("”", '').trim().length > 0);
     }
 
 };

@@ -90,7 +90,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         tts: ITextToSpeechEngine,
         isMultiVoice: Boolean
     ) {
-        if (isMultiVoice || list.isNotEmpty()) {
+        if (isMultiVoice) {
             val texts = mSpeechRuleHelper.splitText(text)
             if (texts.isEmpty())
                 listener?.onError(

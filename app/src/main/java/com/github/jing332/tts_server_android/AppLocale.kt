@@ -15,8 +15,8 @@ import java.util.Locale
 
 object AppLocale {
     val localeMap by lazy {
-        mutableMapOf<String, Locale>().apply {
-            BuildConfig.TRANSLATION_ARRAY.forEach {
+        linkedMapOf<String, Locale>().apply {
+            BuildConfig.TRANSLATION_ARRAY.sorted().forEach {
                 this[it] = Locale.forLanguageTag(it)
             }
         }
