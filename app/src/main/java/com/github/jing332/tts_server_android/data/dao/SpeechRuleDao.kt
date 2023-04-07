@@ -27,6 +27,6 @@ interface SpeechRuleDao {
     @Update
     fun update(vararg data: SpeechRule)
 
-    @Query("SELECT * FROM speech_rules WHERE ruleId = :ruleId ")
-    fun getByReadRuleId(ruleId: String): SpeechRule?
+    @Query("SELECT * FROM speech_rules WHERE ruleId = :ruleId AND isEnabled = :isEnabled LIMIT 1")
+    fun getByReadRuleId(ruleId: String, isEnabled: Boolean = true): SpeechRule?
 }

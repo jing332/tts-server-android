@@ -10,7 +10,7 @@ class RequestException(
     override val message: String? = null,
     override val cause: Throwable? = null
 ) :
-    TtsManagerException() {
+    SynthesisException() {
     companion object {
         const val ERROR_CODE_REQUEST = 0
         const val ERROR_CODE_AUDIO_NULL = 1

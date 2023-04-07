@@ -354,4 +354,5 @@
     <string name="foreground_service_and_notification">前台服务与通知</string>
     <string name="grant_permission_all_file_msg">否则在部分系统上将无法读取音乐文件导致无法播放！</string>
     <string name="format_error">格式错误</string>
+    <string name="systts_log_text_handle_failed">文本处理失败: %1$s</string>
 </resources>

@@ -25,7 +25,9 @@ import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
+import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException
 import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
+import com.github.jing332.tts_server_android.service.systts.help.exception.TextHandleException
 import com.github.jing332.tts_server_android.service.systts.help.exception.TextReplacerException
 import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.ui.AppLog
@@ -370,6 +372,14 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
             is TextReplacerException -> {
                 logE(getString(R.string.systts_log_replace_failed, e.toString()))
+            }
+
+            is TextHandleException -> {
+                logE(getString(R.string.systts_log_text_handle_failed, e.toString()))
+            }
+
+            is ConfigLoadException ->{
+                logE("配置加载失败: $e")
             }
         }
 
