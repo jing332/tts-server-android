@@ -4,7 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.github.jing332.tts_server_android.constant.SpeechTarget
+import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.model.rhino.ExceptionExt.lineMessage
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
@@ -64,10 +67,21 @@ class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(app
         if (evalRuleInfo()) {
             kotlin.runCatching {
                 logger.i("handleText()...")
-                val list = mRuleEngine.handleText(text)
-                list.forEach {
-                    val texts = mRuleEngine.splitText(it.text)
-                    logger.i("\ntag=${it.tag}, text=${it.text}, splittedTexts=${texts.joinToString(" | ")}")
+
+                val rules = appDb.systemTtsDao.getEnabledList(SpeechTarget.CUSTOM_TAG).map {
+                    it.speechRule.apply { configId = it.id }
+                }
+                val list = mRuleEngine.handleText(text, rules)
+                try {
+                    list.forEach {
+                        val texts = mRuleEngine.splitText(it.text)
+                        logger.i(
+                            "\ntag=${it.tag}, text=${it.text}, id=${it.id}, splittedTexts=${
+                                texts.joinToString(" | ")
+                            }"
+                        )
+                    }
+                } catch (_: NoSuchMethodException) {
                 }
             }.onFailure {
                 if (it is ScriptException) {

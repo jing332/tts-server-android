@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.model.rhino.speech_rule
 import android.content.Context
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngine
 import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngineContext
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
@@ -34,6 +35,9 @@ class SpeechRuleEngine(
 
             rule.tags = get("tags") as Map<String, String>
 
+            rule.tagsData =
+                getOrDefault("tagsData", mapOf<String, List<String>>()) as Map<String, List<String>>
+
             runCatching {
                 rule.version = (get("version") as Double).toInt()
             }.onFailure {
@@ -42,14 +46,50 @@ class SpeechRuleEngine(
         }
     }
 
-    fun handleText(text: String): List<TextWithTag> {
+    data class TagData(val id: String, val value: String)
+
+    fun handleText(text: String, list: List<SpeechRuleInfo> = emptyList()): List<TextWithTag> {
+        val tagsDataMap: MutableMap<String, MutableMap<String, MutableList<Map<String, String>>>> =
+            mutableMapOf()
+        list.forEach { info ->
+            if (tagsDataMap[info.tag] == null)
+                tagsDataMap[info.tag] = mutableMapOf()
+
+            info.tagData.forEach {
+                if (tagsDataMap[info.tag]!![it.key] == null)
+                    tagsDataMap[info.tag]!![it.key] = mutableListOf()
+
+                tagsDataMap[info.tag]!![it.key]!!.add(
+                    mapOf(
+                        "id" to info.configId.toString(),
+                        "value" to it.value
+                    )
+                )
+            }
+        }
+        return handleText(text, tagsDataMap)
+    }
+
+    /** ['dialogue']['role']= List<TagData>
+     *@param tagsDataSet 例： key: dialogue, value: map(key: role, value: [{tagDataId:111, 张三, 李四])
+     */
+    fun handleText(
+        text: String,
+        tagsDataMap: Map<String, Map<String, List<Map<String, String>>>>
+    ): List<TextWithTag> {
         val resultList: MutableList<TextWithTag> = mutableListOf()
-        rhino.invokeMethod(objJS, FUNC_HANDLE_TEXT, text)
+        rhino.invokeMethod(objJS, FUNC_HANDLE_TEXT, text, tagsDataMap)
             ?.run { this as List<*> }
             ?.let { list ->
                 list.forEach {
                     if (it is Map<*, *>) {
-                        resultList.add(TextWithTag(it["text"].toString(), it["tag"].toString()))
+                        resultList.add(
+                            TextWithTag(
+                                it["text"].toString(),
+                                it["tag"].toString(),
+                                it.getOrDefault("id", 0).toString().toLong(),
+                            )
+                        )
                     }
                 }
 
@@ -66,5 +106,5 @@ class SpeechRuleEngine(
         ) as List<CharSequence>
     }
 
-    data class TextWithTag(val text: String, val tag: String)
+    data class TextWithTag(val text: String, val tag: String, val id: Long)
 }

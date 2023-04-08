@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -20,11 +21,14 @@ import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditView
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.tts.PlayerParams
+import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
+import com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.layoutInflater
 import com.github.jing332.tts_server_android.util.runOnIO
+import com.github.jing332.tts_server_android.util.runOnUI
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -212,6 +216,26 @@ class BasicInfoEditView @JvmOverloads constructor(
                             currentRule?.let {
                                 speechRule.tagRuleId = it.ruleId
                                 speechRule.tag = currentTag.key
+
+                                binding.layoutTagData.removeAllViews()
+                                it.tagsData[speechRule.tag]?.forEach { defTag ->
+                                    runOnUI {
+                                        val textInput = MaterialTextInput(context)
+                                        textInput.hint = defTag
+                                        textInput.editText?.setText(
+                                            speechRule.tagData[defTag] ?: ""
+                                        )
+                                        textInput.editText?.addTextChangedListener { txt ->
+                                            speechRule.tagData[defTag] = txt.toString()
+                                        }
+                                        binding.layoutTagData.addView(
+                                            textInput,
+                                            ViewGroup.LayoutParams.MATCH_PARENT,
+                                            ViewGroup.LayoutParams.WRAP_CONTENT
+                                        )
+                                    }
+                                }
+
                             }
                     }
                 }
@@ -222,7 +246,6 @@ class BasicInfoEditView @JvmOverloads constructor(
 
             }
         }
-
     }
 
     private fun displayPlayerParamsSettings() {

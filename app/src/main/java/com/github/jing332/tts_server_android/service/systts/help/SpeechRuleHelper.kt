@@ -30,11 +30,14 @@ class SpeechRuleHelper {
         if (!this::engine.isInitialized) return listOf(TtsText(defaultConfig, text))
         val resultList = mutableListOf<TtsText<ITextToSpeechEngine>>()
 
-        engine.handleText(text).forEach {
-            if (it.text.isNotBlank()) {
-                val sameTagList = config[it.tag] ?: listOf(defaultConfig)
-                val i = random.nextInt(sameTagList.size)
-                resultList.add(TtsText(text = it.text, tts = sameTagList[i]))
+        val list = config.entries.map { it.value }.flatten().map { it.speechRule }
+        engine.handleText(text, list).forEach { txtWithTag ->
+            if (txtWithTag.text.isNotBlank()) {
+                val sameTagList = config[txtWithTag.tag] ?: listOf(defaultConfig)
+                val ttsFromId = sameTagList.find { it.speechRule.configId == txtWithTag.id }
+
+                val tts = ttsFromId ?: sameTagList[random.nextInt(sameTagList.size)]
+                resultList.add(TtsText(text = txtWithTag.text, tts = tts))
             }
         }
 

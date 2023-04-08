@@ -12,7 +12,7 @@ import kotlinx.serialization.Transient
 
 @Entity(tableName = "speech_rules")
 @Parcelize
-@TypeConverters(SpeechRule.Converters::class)
+@TypeConverters(MapConverters::class)
 @Serializable
 data class SpeechRule(
     @Transient
@@ -31,20 +31,14 @@ data class SpeechRule(
     @ColumnInfo(defaultValue = "")
     var tags: Map<String, String> = emptyMap(),
 
+    // 声明的tag的附加
+    // 如：为tag为dialogue的声明role附加数据
+    // key = dialogue, value = [role...]
+    @ColumnInfo(defaultValue = "")
+    var tagsData: Map<String, List<String>> = emptyMap(),
+
     // 索引 排序用
     @ColumnInfo(name = "order", defaultValue = "0")
     var order: Int = 0,
 ) : Parcelable {
-
-    object Converters {
-        @TypeConverter
-        fun toTags(json: String): Map<String, String> {
-            return TypeConverterUtils.decodeFromString(json) ?: emptyMap()
-        }
-
-        @TypeConverter
-        fun fromTags(tags: Map<String, String>): String {
-            return TypeConverterUtils.encodeToString(tags) ?: ""
-        }
-    }
 }

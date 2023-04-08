@@ -78,7 +78,9 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     this
             }
         }.onFailure {
-            throw TextHandleException(text = text, tts = null, message = it.message, cause = it)
+            listener?.onError(
+                TextHandleException(text = text, tts = null, message = it.message, cause = it)
+            )
         }
 
         return emptyList()
@@ -204,6 +206,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         mConfigMap[target] =
             appDb.systemTtsDao.getEnabledList(target, false).map {
                 it.tts.speechRule = it.speechRule
+                it.tts.speechRule.configId = it.id
                 return@map it.tts
             }
         if (mConfigMap[target]?.isEmpty() == true) {
@@ -215,6 +218,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         val sbyList =
             appDb.systemTtsDao.getEnabledList(target, true).map {
                 it.tts.speechRule = it.speechRule
+                it.tts.speechRule.configId = it.id
                 return@map it.tts
             }
 
