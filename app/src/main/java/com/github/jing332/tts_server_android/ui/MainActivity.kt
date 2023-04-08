@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                         1 -> {
                             fragment =
-                                com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
+                                com.github.jing332.tts_server_android.ui.systts.plugin.ImportConfigBottomSheetFragment()
                             fragment.fileUri = intent.data
                         }
 
