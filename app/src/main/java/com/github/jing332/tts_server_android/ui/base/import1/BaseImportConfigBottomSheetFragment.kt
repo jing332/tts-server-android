@@ -101,7 +101,7 @@ abstract class BaseImportConfigBottomSheetFragment(
 
             tilFilePath.setEndIconOnClickListener {
                 fileSelection.launch(
-                    FilePickerActivity.RequestSelectFile(listOf("application/json"))
+                    FilePickerActivity.RequestSelectFile(listOf("application/json", "text/*"))
                 )
             }
 
@@ -128,7 +128,7 @@ abstract class BaseImportConfigBottomSheetFragment(
                         if (checkJson(json))
                             onImport(json)
                         else
-                            Exception(getString(R.string.format_error))
+                            throw Exception(getString(R.string.format_error))
                     }.onFailure {
                         requireContext().displayErrorDialog(it)
                     }
