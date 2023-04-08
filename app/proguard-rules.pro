@@ -42,6 +42,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-keepattributes SourceFile,LineNumberTable
+
 ## Rhino
 -keep class javax.script.** { *; }
 -keep class com.sun.script.javascript.** { *; }
