@@ -21,6 +21,7 @@ import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.util.FileUtils
 import com.github.jing332.tts_server_android.util.FileUtils.mimeType
 import com.github.jing332.tts_server_android.util.getBinder
+import com.github.jing332.tts_server_android.util.grantReadWritePermission
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.parcelize.IgnoredOnParcel
@@ -57,11 +58,13 @@ class FilePickerActivity : AppCompatActivity() {
 
     private val docTreeSelector =
         registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+            it?.grantReadWritePermission(contentResolver)
             resultAndFinish(it)
         }
 
     private val docSelector =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+            it?.grantReadWritePermission(contentResolver)
             resultAndFinish(it)
         }
 

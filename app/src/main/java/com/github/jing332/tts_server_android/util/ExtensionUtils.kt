@@ -1,8 +1,10 @@
 package com.github.jing332.tts_server_android.util
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -17,6 +19,13 @@ import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.constant.KeyConst
 import java.lang.reflect.ParameterizedType
 
+
+fun Uri.grantReadWritePermission(contentResolver: ContentResolver) {
+    contentResolver.takePersistableUriPermission(
+        this,
+        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    )
+}
 
 fun Intent.getBinder(): IBinder? {
     val bundle = getBundleExtra(KeyConst.KEY_BUNDLE)

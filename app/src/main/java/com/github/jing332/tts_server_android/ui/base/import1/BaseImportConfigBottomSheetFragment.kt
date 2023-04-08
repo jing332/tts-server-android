@@ -18,6 +18,7 @@ import com.drake.brv.utils.setup
 import com.drake.net.Net
 import com.drake.net.okhttp.trustSSLCertificate
 import com.drake.net.utils.withIO
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseConfigImportItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBaseImportConfigBottomSheetBinding
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Response
 
-open class BaseImportConfigBottomSheetFragment(
+abstract class BaseImportConfigBottomSheetFragment(
     @StringRes
     protected var title: Int = R.string.import_config,
     var fileUri: Uri? = null,
@@ -110,9 +111,10 @@ open class BaseImportConfigBottomSheetFragment(
                     val json = try {
                         withIO {
                             binding.tilFilePath.editText?.tag as? String
-                                ?: importConfig(
+                                ?: readConfig(
                                     sourceType,
-                                    binding.tilUrl.editText?.text.toString()
+                                    binding.tilUrl.editText?.text.toString(),
+                                    fileUri,
                                 )
                         }
                     } catch (e: Exception) {
@@ -141,10 +143,9 @@ open class BaseImportConfigBottomSheetFragment(
         }
     }
 
-    open fun onImport(json: String) {
-    }
+    abstract fun onImport(json: String)
 
-    private suspend fun importConfig(
+    private suspend fun readConfig(
         src: Int,
         url: String? = null,
         uri: Uri? = null
@@ -162,25 +163,18 @@ open class BaseImportConfigBottomSheetFragment(
                 }
             }
 
-            SRC_FILE -> withContext(Dispatchers.IO) {
-                try {
-                    return@withContext uri!!.readAllText(requireContext())
-                } catch (e: Exception) {
-                    toast("无权限访问文件！")
-                    throw e
-                }
-            }
+            SRC_FILE -> withContext(Dispatchers.IO) { uri?.readAllText(requireContext()) ?: throw  Exception("file uri is null!") }
 
-            else -> ClipboardUtils.text.toString()
+            else -> withMain { ClipboardUtils.text.toString() }
         }
     }
-
 
     private val fileSelection =
         registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
             if (it.second != null) {
                 // 不知为何 必须在这里读取才有权限
-                binding.tilFilePath.editText?.tag = it?.second?.readAllText(requireContext())
+                fileUri = it?.second
+//                binding.tilFilePath.editText?.tag = it?.second?.readAllText(requireContext())
                 binding.tilFilePath.editText?.setText(it.second.toString())
             }
         }

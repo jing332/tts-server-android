@@ -48,8 +48,8 @@
         <activity
             android:name=".ui.systts.direct_upload.DirectUploadSettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|uiMode"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@string/direct_link_settings" />
+            android:label="@string/direct_link_settings"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.ExoPlayerActivity"
             android:exported="false"
@@ -89,10 +89,9 @@
                 <data android:scheme="app" />
                 <data android:scheme="content" />
                 <data android:scheme="file" />
-                <!-- text --> 
-                <data android:mimeType="text/plain" /> 
-                <!-- json --> 
-                <data android:mimeType="application/json" />
+
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/json" />
             </intent-filter>
 
             <intent-filter>
