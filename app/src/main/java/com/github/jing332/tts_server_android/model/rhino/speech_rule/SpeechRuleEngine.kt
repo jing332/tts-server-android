@@ -58,12 +58,12 @@ class SpeechRuleEngine(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun splitText(text: String): List<String> {
-        return try {
-            (rhino.invokeMethod(objJS, FUNC_SPLIT_TEXT, text) as List<CharSequence>).map { it.toString() }
-        } catch (_: NoSuchMethodException) {
-            emptyList()
-        }
+    fun splitText(text: String): List<CharSequence> {
+        return rhino.invokeMethod(
+            objJS,
+            FUNC_SPLIT_TEXT,
+            text
+        ) as List<CharSequence>
     }
 
     data class TextWithTag(val text: String, val tag: String)

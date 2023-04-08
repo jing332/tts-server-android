@@ -91,7 +91,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         isMultiVoice: Boolean
     ) {
         if (isMultiVoice) {
-            val texts = mSpeechRuleHelper.splitText(text)
+            val texts = try {
+                mSpeechRuleHelper.splitText(text)
+            } catch (e: NoSuchMethodException) {
+                return splitText(list, text, tts, false)
+            }
             if (texts.isEmpty())
                 listener?.onError(
                     TextHandleException(text = text, tts = tts, message = "splittedTexts is empty.")

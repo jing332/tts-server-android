@@ -19,7 +19,7 @@ class SpeechRuleHelper {
     }
 
     fun splitText(text: String): List<String> {
-        return engine.splitText(text)
+        return engine.splitText(text).map { it.toString() }
     }
 
     fun handleText(
