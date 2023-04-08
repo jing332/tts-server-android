@@ -111,7 +111,7 @@ android {
     kotlin {
         jvmToolchain(17)
     }
-    
+
     // 修改apk文件名
 
     android.applicationVariants.all { variant ->
@@ -191,6 +191,10 @@ dependencies {
     implementation 'com.github.liangjingkanji:Net:3.5.7'
 
     implementation 'me.rosuh:AndroidFilePicker:0.8.3'
+
+
+    // https://mvnrepository.com/artifact/com.louiscad.splitties/splitties-systemservices
+    implementation 'com.louiscad.splitties:splitties-systemservices:3.0.0'
 
 
     // Media

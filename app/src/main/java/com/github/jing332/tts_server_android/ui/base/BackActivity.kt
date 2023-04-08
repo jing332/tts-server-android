@@ -8,19 +8,23 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityBackBinding
 
 open class BackActivity : AppCompatActivity() {
-    private val binding: ActivityBackBinding by lazy { ActivityBackBinding.inflate(layoutInflater) }
+    protected val rootBinding: ActivityBackBinding by lazy {
+        ActivityBackBinding.inflate(
+            layoutInflater
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_TtsServer_NoActionBar)
         super.onCreate(savedInstanceState)
-        super.setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+        super.setContentView(rootBinding.root)
+        setSupportActionBar(rootBinding.toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun setContentView(view: View?) {
-        binding.content.addView(view)
+        rootBinding.content.addView(view)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -9,10 +9,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.os.SystemClock
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
+import android.view.WindowManager
+import android.view.WindowMetrics
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
@@ -66,6 +69,22 @@ fun <T : ViewBinding> Any.inflateBinding(
         .also { it.isAccessible = true }
         .invoke(null, inflater, root, attachToParent) as T
 }
+
+val WindowManager.windowSize: DisplayMetrics
+    get() {
+        val displayMetrics = DisplayMetrics()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics: WindowMetrics = currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            displayMetrics.widthPixels = windowMetrics.bounds.width() - insets.left - insets.right
+            displayMetrics.heightPixels = windowMetrics.bounds.height() - insets.top - insets.bottom
+        } else {
+            @Suppress("DEPRECATION")
+            defaultDisplay.getMetrics(displayMetrics)
+        }
+        return displayMetrics
+    }
 
 @Suppress("DEPRECATION")
 val Activity.displayHeight: Int

@@ -2,12 +2,14 @@ package com.github.jing332.tts_server_android.ui.systts.base
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
@@ -25,13 +27,16 @@ import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.base.BackActivity
+import com.github.jing332.tts_server_android.ui.systts.KeyBoardToolPop
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
 import com.github.jing332.tts_server_android.util.FloatBtnUtil
+import com.github.jing332.tts_server_android.util.displayHeight
 import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.rosemoe.sora.widget.CodeEditor
+import io.github.rosemoe.sora.widget.SymbolInputView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -56,14 +61,14 @@ abstract class BaseScriptEditorActivity : BackActivity() {
         mEditorHelper = CodeEditorHelper(this, baseBinding.editor)
         mEditorHelper.initEditor()
         mEditorHelper.setTheme(ScriptEditorConfig.codeEditorTheme)
-        baseBinding.symbolInput.bindEditor(editor)
-        baseBinding.symbolInput.addSymbols(
-            arrayOf(
-                "->", "{", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/"
-            ), arrayOf("\t", "{}", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/")
-        )
-//        val floatBtnUtil =  FloatBtnUtil(this);
-//        floatBtnUtil.setFloatView(baseBinding.root, baseBinding.symbolInput);
+
+//        val sym = SymbolInputView(this)
+//        sym.bindEditor(editor)
+//        sym.addSymbols(
+//            arrayOf(
+//                "->", "{", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/"
+//            ), arrayOf("\t", "{}", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/")
+//        )
 
         editor.isWordwrap = ScriptEditorConfig.isCodeEditorWordWrapEnabled
         editor.nonPrintablePaintingFlags =
@@ -88,6 +93,9 @@ abstract class BaseScriptEditorActivity : BackActivity() {
                 }
             }
         }
+
+//        val pop = KeyBoardToolPop(this, rootBinding.root, sym)
+//        pop.attachToWindow(window)
     }
 
     @SuppressLint("RestrictedApi")

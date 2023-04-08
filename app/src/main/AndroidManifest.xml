@@ -47,9 +47,10 @@
             android:label="@string/edit_read_rule" />
         <activity
             android:name=".ui.systts.direct_upload.DirectUploadSettingsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|uiMode"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="@string/direct_link_settings"
-            android:windowSoftInputMode="adjustResize" />
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".ui.ExoPlayerActivity"
             android:exported="false"
