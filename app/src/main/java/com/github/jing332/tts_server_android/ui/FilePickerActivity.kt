@@ -137,6 +137,7 @@ class FilePickerActivity : AppCompatActivity() {
                 this,
                 reqSaveFile.fileMime
             ) {
+                resultAndFinish(null)
                 reqSaveFile.fileBytes
             }
         }
