@@ -1,10 +1,13 @@
 package com.github.jing332.tts_server_android.model.speech
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import java.io.InputStream
 
 abstract class ITextToSpeechSynthesizer<T> {
     suspend fun <T> retry(
@@ -35,22 +38,26 @@ abstract class ITextToSpeechSynthesizer<T> {
 
     open suspend fun handleText(text: String): List<TtsText<T>> = emptyList()
 
-    open suspend fun getAudio(tts: T, text: String, sysRate: Int, sysPitch: Int): ByteArray? = null
+    open suspend fun getAudio(tts: T, text: String, sysRate: Int, sysPitch: Int): AudioResult? =
+        null
 
-    private suspend fun handleTextAndToSpeech(
+    suspend fun synthesizeText(
         text: String,
         sysRate: Int,
         sysPitch: Int,
         onAudioAvailable: suspend (AudioData<T>) -> Unit
     ) {
         val channel = Channel<AudioData<T>>(10)
-
         coroutineScope {
             launch(Dispatchers.IO) {
                 val textList = handleText(text)
                 textList.forEach { subTxtTts ->
-                    val audio = getAudio(subTxtTts.tts, subTxtTts.text, sysRate, sysPitch)
-                    channel.send(AudioData(txtTts = subTxtTts, audio = audio))
+                    val audioResult = getAudio(subTxtTts.tts, subTxtTts.text, sysRate, sysPitch)
+                    val waitJob = launch { awaitCancellation() }.job
+                    channel.send(AudioData(txtTts = subTxtTts, audio = audioResult, done = {
+                        waitJob.cancel()
+                    }))
+                    waitJob.start()
                 }
                 channel.close()
             }
@@ -61,22 +68,16 @@ abstract class ITextToSpeechSynthesizer<T> {
         }
     }
 
-    suspend fun synthesizeText(
-        text: String,
-        sysRate: Int,
-        sysPitch: Int,
-        onOutput: suspend (audio: ByteArray?, txtTts: TtsText<T>) -> Unit,
-    ) {
-        handleTextAndToSpeech(text, sysRate, sysPitch) {
-            onOutput.invoke(it.audio, it.txtTts)
-        }
-    }
 
-    @Suppress("ArrayInDataClass")
+    data class AudioResult(var inputStream: InputStream? = null, var data: Any? = null)
+
     data class AudioData<T>(
         val txtTts: TtsText<T>,
-        val audio: ByteArray? = null,
-        val isCancelled: Boolean = false
+        val audio: AudioResult? = null,
+//        val audio: InputStream? = null,
+        val done: () -> Unit,
+//        val data: Any? = null
+//        val isCancelled: Boolean = false
     )
 
 }

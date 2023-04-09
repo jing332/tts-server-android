@@ -1,7 +1,9 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
 import android.content.Context
+import android.provider.MediaStore.Audio
 import android.util.Log
+import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
@@ -27,6 +29,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 import kotlin.coroutines.coroutineContext
 import kotlin.system.measureTimeMillis
 
@@ -117,11 +121,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         text: String,
         sysRate: Int,
         sysPitch: Int
-    ): ByteArray? {
+    ): AudioResult? {
         Log.i(TAG, "请求音频：$tts, $text")
         if (!coroutineContext.isActive) return null
 
-        var audioResult: ByteArray? = null
+        var audioResult: AudioResult? = AudioResult(null, null)
         var retryTimes = 0
         retry(times = 20,
             onCatch = { times, e ->
@@ -175,12 +179,13 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         }.job
                         timeoutJob.start()
 
-                        audioResult =
-                            tts.getAudioWithSystemParams(text, sysRate, sysPitch)
-                                ?: throw RequestException(
-                                    errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
-                                    tts = tts, text = text
-                                )
+                        val bytes = tts.getAudioWithSystemParams(text, sysRate, sysPitch)
+                            ?: throw RequestException(
+                                errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
+                                tts = tts, text = text
+                            )
+
+                        audioResult?.inputStream = ByteArrayInputStream(bytes)
                         if (hasTimeout) throw RequestException(
                             tts = tts,
                             text = text,
@@ -189,7 +194,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         else timeoutJob.cancelAndJoin()
                     }
                 }
-                listener?.onRequestSuccess(text, tts, audioResult?.size ?: 0, costTime, retryTimes)
+                audioResult?.data = costTime to retryTimes
+//                listener?.onRequestSuccess(text, tts, 0, costTime, retryTimes)
             })
 
         return audioResult
@@ -287,6 +293,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         mAudioPlayer?.release()
     }
 
+    @Suppress("UNCHECKED_CAST")
     suspend fun textToAudio(
         text: String,
         sysRate: Int,
@@ -299,36 +306,51 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         val replaced = if (SysTtsConfig.isReplaceEnabled)
             mTextReplacer.replace(text) { listener?.onError(it) } else text
 
-        synthesizeText(replaced, sysRate, sysPitch) { audio, txtTts -> // 音频获取完毕
-            if (!coroutineContext.isActive) return@synthesizeText
+        synthesizeText(replaced, sysRate, sysPitch) { data -> // 音频获取完毕
+            kotlin.runCatching {
+                if (!coroutineContext.isActive) return@synthesizeText
+                val txtTts = data.txtTts
+                val audio = data.audio?.inputStream?.readBytes()
+                data.audio?.inputStream?.close()
+                data.done()
 
-            if (txtTts.tts.isDirectPlay())
-                txtTts.tts.startPlayWithSystemParams(txtTts.text, sysRate, sysPitch)
-            else if (audio == null) {
-                Log.w(TAG, "音频为空！ $txtTts")
-                txtTts.tts.speechRule.standbyTts?.startPlayWithSystemParams(
-                    txtTts.text,
-                    sysRate,
-                    sysPitch
-                )
-            } else {
-                if (txtTts.tts.audioFormat.isNeedDecode)
-                    if (SysTtsConfig.isInAppPlayAudio) {
-                        mAudioPlayer = mAudioPlayer ?: AudioPlayer(context)
-                        mAudioPlayer?.play(
-                            audio, SysTtsConfig.inAppPlaySpeed, SysTtsConfig.inAppPlayPitch
-                        )
-                    } else
-                        mAudioDecoder.doDecode(audio, audioFormat.sampleRate, { pcmData ->
-                            if (!isSynthesizing) return@doDecode
-                            onPcmAudio.invoke(pcmData)
-                        }, { reason -> Log.e(TAG, "解码失败！$reason, $txtTts") })
-                else
-                    onPcmAudio.invoke(audio)
+                if (data.audio?.data is Pair<*, *>) {
+                    val costTime = (data.audio.data as Pair<Long, Int>).first as Long
+                    val retryTimes = (data.audio.data as Pair<Long, Int>).second as Int
+                    listener?.onRequestSuccess(
+                        text, txtTts.tts, audio?.size ?: 0, costTime, retryTimes
+                    )
+                }
 
-                listener?.onPlayFinished(txtTts.text, txtTts.tts)
+                if (txtTts.tts.isDirectPlay())
+                    txtTts.tts.startPlayWithSystemParams(txtTts.text, sysRate, sysPitch)
+                else if (audio == null) {
+                    Log.w(TAG, "音频为空！ $txtTts")
+                    txtTts.tts.speechRule.standbyTts?.startPlayWithSystemParams(
+                        txtTts.text,
+                        sysRate,
+                        sysPitch
+                    )
+                } else {
+                    if (txtTts.tts.audioFormat.isNeedDecode)
+                        if (SysTtsConfig.isInAppPlayAudio) {
+                            mAudioPlayer = mAudioPlayer ?: AudioPlayer(context)
+                            mAudioPlayer?.play(
+                                audio, SysTtsConfig.inAppPlaySpeed, SysTtsConfig.inAppPlayPitch
+                            )
+                        } else
+                            mAudioDecoder.doDecode(audio, audioFormat.sampleRate) { pcmData ->
+                                if (!isSynthesizing) return@doDecode
+                                onPcmAudio.invoke(pcmData)
+                            }
+                    else
+                        onPcmAudio.invoke(audio)
+
+                    listener?.onPlayFinished(txtTts.text, txtTts.tts)
+                }
+            }.onFailure {
+                listener?.onError(TtsManagerException(cause = it, message = it.message))
             }
-
         }
         isSynthesizing = false
     }

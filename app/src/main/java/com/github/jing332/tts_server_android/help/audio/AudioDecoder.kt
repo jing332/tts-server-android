@@ -7,13 +7,16 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.github.jing332.tts_server_android.help.audio.AudioDecoderException.Companion.ERROR_CODE_NO_AUDIO_TRACK
 import com.github.jing332.tts_server_android.util.GcManager
+import kotlinx.coroutines.isActive
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
+import kotlin.coroutines.coroutineContext
 
 
 class AudioDecoder {
@@ -88,7 +91,6 @@ class AudioDecoder {
         mediaCodec!!.configure(mediaFormat, null, null, 0)
         return mediaCodec as MediaCodec
     }
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun decode(inputStream: InputStream, sampleRate: Int, onRead: (pcmData: ByteArray) -> Unit) {
@@ -192,17 +194,15 @@ class AudioDecoder {
         }
     }
 
-    @Synchronized
-    fun doDecode(
+    suspend fun doDecode(
         srcData: ByteArray,
         sampleRate: Int,
         onRead: (pcmData: ByteArray) -> Unit,
-        error: (reason: String) -> Unit
     ) {
         isDecoding = true
         try {
             // RIFF WAVEfmt直接去除文件头即可
-            if (srcData.copyOfRange(0, 15).decodeToString().endsWith("WAVEfmt")) {
+            if (srcData.size > 15 && srcData.copyOfRange(0, 15).decodeToString().endsWith("WAVEfmt")) {
                 val data = srcData.copyOfRange(44, srcData.size)
                 onRead.invoke(data)
                 isDecoding = false
@@ -232,11 +232,9 @@ class AudioDecoder {
             }
             //没有找到音频流的情况下
             if (audioTrackIndex == -1) {
-                error.invoke("initAudioDecoder: 没有找到音频流")
                 stop()
-                return
+                throw AudioDecoderException(ERROR_CODE_NO_AUDIO_TRACK, "没有找到音频流")
             }
-
 
             //opus的音频必须设置这个才能正确的解码
             if ("audio/opus" == mime) trackFormat?.compatOpus(sampleRate)
@@ -244,16 +242,13 @@ class AudioDecoder {
             //选择此音轨
             mediaExtractor.selectTrack(audioTrackIndex)
             //创建解码器
-            val mediaCodec: MediaCodec =
-                getMediaCodec(
-                    mime.toString(),
-                    trackFormat!!
-                ) //MediaCodec.createDecoderByType(mime);
+            val mediaCodec = getMediaCodec(mime.toString(), trackFormat!!)
             mediaCodec.start()
+
             val bufferInfo = MediaCodec.BufferInfo()
             var inputBuffer: ByteBuffer?
             val timeoutUs: Long = 10000
-            while (isDecoding) {
+            while (coroutineContext.isActive) {
                 //获取可用的inputBuffer，输入参数-1代表一直等到，0代表不等待，10*1000代表10秒超时
                 //超时时间10秒
                 val inputIndex = mediaCodec.dequeueInputBuffer(timeoutUs)
@@ -268,7 +263,7 @@ class AudioDecoder {
                 } else {
                     continue
                 }
-                //从流中读取的采用数据的大小
+                //从流中读取的采样数量
                 val sampleSize = mediaExtractor.readSampleData(inputBuffer, 0)
                 if (sampleSize > 0) {
                     bufferInfo.size = sampleSize
@@ -276,19 +271,17 @@ class AudioDecoder {
                     mediaCodec.queueInputBuffer(inputIndex, 0, sampleSize, 0, 0)
                     //移动到下一个采样点
                     mediaExtractor.advance()
-                } else {
+                } else
                     break
-                }
 
                 //取解码后的数据
                 var outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
                 //不一定能一次取完，所以要循环取
                 var outputBuffer: ByteBuffer?
-                var pcmData: ByteArray
+                val pcmData = ByteArray(bufferInfo.size)
 
-                while (outputIndex >= 0) {
+                while (coroutineContext.isActive && outputIndex >= 0) {
                     outputBuffer = mediaCodec.getOutputBuffer(outputIndex)
-                    pcmData = ByteArray(bufferInfo.size)
                     if (outputBuffer != null) {
                         outputBuffer.get(pcmData)
                         outputBuffer.clear() //用完后清空，复用
@@ -301,8 +294,7 @@ class AudioDecoder {
             }
         } catch (e: Exception) {
             mediaCodec?.reset()
-            stop()
-            error.invoke(e.toString())
+            throw AudioDecoderException(cause = e)
         }
     }
 

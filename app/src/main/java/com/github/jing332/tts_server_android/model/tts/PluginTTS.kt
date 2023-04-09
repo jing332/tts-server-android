@@ -13,6 +13,8 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Transient
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 
 @Keep
 @Parcelize
@@ -78,9 +80,16 @@ data class PluginTTS(
     }
 
     override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
-        return pluginEngine?.getAudio(
+        val bytes = pluginEngine?.getAudio(
             speakText, rate, pitch
         )
+        return bytes
+    }
 
+    override suspend fun getAudioStream(speakText: String, rate: Int, pitch: Int): InputStream? {
+//        return pluginEngine?.getAudioInputStream(
+//            speakText, rate, pitch
+//        )
+        return null
     }
 }

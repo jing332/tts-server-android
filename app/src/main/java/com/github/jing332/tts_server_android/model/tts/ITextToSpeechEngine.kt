@@ -104,7 +104,6 @@ sealed class ITextToSpeechEngine(
         return startPlay(text, r, p)
     }
 
-
     open suspend fun getAudio(
         speakText: String,
         rate: Int = 50,
@@ -116,12 +115,15 @@ sealed class ITextToSpeechEngine(
         sysRate: Int = 50,
         sysPitch: Int = 0
     ): ByteArray? {
+
         val r = if (isRateFollowSystem()) sysRate else this.rate
         val p = if (isPitchFollowSystem()) sysPitch else this.pitch
         return getAudio(text, r, p)
     }
 
-    suspend fun getAudioStreamWithSystemParams(
+    open suspend fun getAudioStream(text: String, rate: Int, pitch: Int): InputStream? = null
+
+    suspend fun getAudioStreamSysParams(
         text: String,
         sysRate: Int = 50,
         sysPitch: Int = 0
@@ -131,7 +133,6 @@ sealed class ITextToSpeechEngine(
         return getAudioStream(text, r, p)
     }
 
-    open suspend fun getAudioStream(text: String, rate: Int, pitch: Int): InputStream? = null
 
     /**
      * 获取PCM音频流
