@@ -24,6 +24,10 @@ data class SpeechRuleInfo(
     @ColumnInfo(defaultValue = "")
     var tagRuleId: String = "",
 
+    // 显示在列表右上角的标签名
+    @ColumnInfo(defaultValue = "")
+    var tagName: String = "",
+
     // 用于存储tag的数据
     // 例: key=role, value=张三
     @ColumnInfo(defaultValue = "")

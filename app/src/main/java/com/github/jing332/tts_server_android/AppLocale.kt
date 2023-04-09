@@ -23,7 +23,6 @@ object AppLocale {
     }
 
     fun getLocaleCodeFromFile(context: Context): String {
-
         kotlin.runCatching {
             val file = File(context.filesDir.absolutePath + "/application_locale")
             return file.readText()

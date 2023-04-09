@@ -20,7 +20,9 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
+import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
 import com.github.jing332.tts_server_android.model.tts.PlayerParams
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
@@ -82,7 +84,6 @@ class BasicInfoEditView @JvmOverloads constructor(
             binding.displayName = value
         }
 
-
     val currentGroup: SystemTtsGroup
         get() = binding.groupItems!![binding.groupCurrentPosition].value as SystemTtsGroup
 
@@ -93,6 +94,7 @@ class BasicInfoEditView @JvmOverloads constructor(
             }
         }
 
+    // {key = dialogue, value = 对话}
     @Suppress("UNCHECKED_CAST")
     val currentTag: Map.Entry<String, String>
         get() {
@@ -133,6 +135,26 @@ class BasicInfoEditView @JvmOverloads constructor(
         raTarget = data.speechRule.target
 
         isStandby = data.isStandby
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+
+        kotlin.runCatching {
+            currentRule?.let {
+                val engine = SpeechRuleEngine(context, it)
+                engine.eval()
+                try {
+                    mData?.speechRule?.tagName =
+                        engine.getTagName(currentTag.key, mData?.speechRule?.tagData ?: emptyMap())
+
+                } catch (_: NoSuchMethodException) {
+                }
+            }
+        }.onFailure {
+            context.displayErrorDialog(it, "获取标签名失败")
+        }
+
     }
 
     fun checkDisplayNameEmpty(): Boolean {

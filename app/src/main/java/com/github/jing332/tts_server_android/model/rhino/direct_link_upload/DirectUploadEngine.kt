@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.model.rhino.directupload
+package com.github.jing332.tts_server_android.model.rhino.direct_link_upload
 
 import android.content.Context
 import com.github.jing332.tts_server_android.help.config.DirectUploadConfig

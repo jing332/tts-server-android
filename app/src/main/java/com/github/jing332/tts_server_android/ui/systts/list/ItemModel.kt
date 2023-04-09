@@ -12,11 +12,12 @@ data class ItemModel(
     val data: SystemTts,
     override var itemOrientationDrag: Int = ItemOrientation.VERTICAL
 ) : ItemDrag {
-    val target: String
+    val tagName: String
         get() {
             return if (data.speechRule.target == SpeechTarget.CUSTOM_TAG)
                 appDb.speechRule.getByReadRuleId(data.speechRule.tagRuleId)?.run {
-                    tags[data.speechRule.tag] // tag的显示名称
+                    // 优先脚本 然后用定义的 tag.value
+                    data.speechRule.tagName.ifEmpty { tags[data.speechRule.tag] }
                 } ?: app.getString(R.string.systts_not_found_speech_rule_tag)
             else ""
         }

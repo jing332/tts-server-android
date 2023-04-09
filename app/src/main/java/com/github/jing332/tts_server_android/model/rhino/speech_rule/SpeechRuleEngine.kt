@@ -19,6 +19,7 @@ class SpeechRuleEngine(
     companion object {
         const val OBJ_JS = "SpeechRuleJS"
 
+        const val FUNC_GET_TAG_NAME = "getTagName"
         const val FUNC_HANDLE_TEXT = "handleText"
         const val FUNC_SPLIT_TEXT = "splitText"
     }
@@ -48,6 +49,10 @@ class SpeechRuleEngine(
                 throw NumberFormatException(context.getString(R.string.plugin_bad_format))
             }
         }
+    }
+
+    fun getTagName(tag: String, tagMap: Map<String, String>): String {
+        return rhino.invokeMethod(objJS, FUNC_GET_TAG_NAME, tag, tagMap).toString()
     }
 
     data class TagData(val id: String, val value: String)
