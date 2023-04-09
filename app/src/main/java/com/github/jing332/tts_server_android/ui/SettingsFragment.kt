@@ -141,6 +141,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        val wordWrapSwitch = findPreference<SwitchPreferenceCompat>("isCodeEditorWordWrapEnabled")!!
+        wordWrapSwitch.isChecked = ScriptEditorConfig.isCodeEditorWordWrapEnabled
+        wordWrapSwitch.setOnPreferenceChangeListener { _, newValue ->
+            ScriptEditorConfig.isCodeEditorWordWrapEnabled = newValue.toString().toBoolean()
+            true
+        }
+
         // 语言
         val langPre: ListPreference = findPreference("language")!!
         langPre.apply {

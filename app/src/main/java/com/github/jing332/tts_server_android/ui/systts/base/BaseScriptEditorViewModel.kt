@@ -28,6 +28,7 @@ class BaseScriptEditorViewModel : ViewModel() {
         onDebug: () -> Unit,
         onAction: (name: String, body: ByteArray?) -> Unit
     ) {
+        if (server != null) return
         server = tts_server_lib.ScriptSyncServer()
         server?.init(object : ScriptCodeSyncServerCallback {
             override fun log(level: Int, msg: String?) {
@@ -56,10 +57,13 @@ class BaseScriptEditorViewModel : ViewModel() {
         server?.start(port.toLong())
     }
 
-    override fun onCleared() {
-        super.onCleared()
-
+    fun closeSyncServer() {
         server?.close()
         server = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        closeSyncServer()
     }
 }

@@ -55,7 +55,6 @@ abstract class BaseScriptEditorActivity : BackActivity() {
         setContentView(baseBinding.root)
 
         fileSaver = registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
-
         }
 
         mEditorHelper = CodeEditorHelper(this, baseBinding.editor)
@@ -96,6 +95,12 @@ abstract class BaseScriptEditorActivity : BackActivity() {
 
 //        val pop = KeyBoardToolPop(this, rootBinding.root, sym)
 //        pop.attachToWindow(window)
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        vm.closeSyncServer()
     }
 
     @SuppressLint("RestrictedApi")
