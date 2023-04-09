@@ -107,9 +107,7 @@
     <string name="delete">削除する</string>
     <string name="ra_all">朗読全部</string>
     <string name="ra_aside">仅旁白</string>
-    <string name="ra_dialogue">仅对话 (Jin duihua) 
-
-Note: This is already in Chinese and does not require translation. It means \"Only conversation\" in English.</string>
+    <string name="ra_dialogue">仅对话 (Jin duihua)</string>
 
     <string name="all">全部</string>
     <string name="aside">旁白</string>

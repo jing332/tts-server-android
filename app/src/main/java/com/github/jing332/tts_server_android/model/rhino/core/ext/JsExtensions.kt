@@ -33,9 +33,7 @@ open class JsExtensions(open val context: Context, open val engineId: String) : 
         return String(bytes, charset(charset))
     }
 
-
     //****************文件操作******************//
-
     /**
      * 获取本地文件
      * @param path 相对路径
