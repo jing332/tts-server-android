@@ -14,6 +14,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonClassDiscriminator
+import java.io.InputStream
 
 @OptIn(ExperimentalSerializationApi::class)
 @Parcelize
@@ -119,6 +120,18 @@ sealed class ITextToSpeechEngine(
         val p = if (isPitchFollowSystem()) sysPitch else this.pitch
         return getAudio(text, r, p)
     }
+
+    suspend fun getAudioStreamWithSystemParams(
+        text: String,
+        sysRate: Int = 50,
+        sysPitch: Int = 0
+    ): InputStream? {
+        val r = if (isRateFollowSystem()) sysRate else this.rate
+        val p = if (isPitchFollowSystem()) sysPitch else this.pitch
+        return getAudioStream(text, r, p)
+    }
+
+    open suspend fun getAudioStream(text: String, rate: Int, pitch: Int): InputStream? = null
 
     /**
      * 获取PCM音频流
