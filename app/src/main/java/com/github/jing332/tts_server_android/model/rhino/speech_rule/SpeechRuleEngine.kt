@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.model.rhino.speech_rule
 import android.content.Context
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
+import com.github.jing332.tts_server_android.data.entities.TagsDataMap
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngine
 import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngineContext
@@ -36,7 +37,10 @@ class SpeechRuleEngine(
             rule.tags = get("tags") as Map<String, String>
 
             rule.tagsData =
-                getOrDefault("tagsData", mapOf<String, List<String>>()) as Map<String, List<String>>
+                getOrDefault(
+                    "tagsData",
+                    emptyMap<String, Map<String, Map<String, String>>>()
+                ) as TagsDataMap
 
             runCatching {
                 rule.version = (get("version") as Double).toInt()

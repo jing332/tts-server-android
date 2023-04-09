@@ -76,8 +76,8 @@ class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(app
                     list.forEach {
                         val texts = mRuleEngine.splitText(it.text)
                         logger.i(
-                            "\ntag=${it.tag}, text=${it.text}, id=${it.id}, splittedTexts=${
-                                texts.joinToString(" | ")
+                            "\ntag=${it.tag}, id=${it.id}, text=${it.text.trim()}, splittedTexts=${
+                                texts.joinToString(" | ").trim()
                             }"
                         )
                     }

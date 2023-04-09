@@ -218,15 +218,18 @@ class BasicInfoEditView @JvmOverloads constructor(
                                 speechRule.tag = currentTag.key
 
                                 binding.layoutTagData.removeAllViews()
-                                it.tagsData[speechRule.tag]?.forEach { defTag ->
-                                    runOnUI {
+                                runOnUI {
+                                    it.tagsData[speechRule.tag]?.forEach { defTag ->
                                         val textInput = MaterialTextInput(context)
-                                        textInput.hint = defTag
+                                        val key = defTag.key ?: ""
+                                        textInput.hint = defTag.value["label"]
+                                        textInput.isExpandedHintEnabled = true
+                                        textInput.placeholderText = defTag.value["hint"]
                                         textInput.editText?.setText(
-                                            speechRule.tagData[defTag] ?: ""
+                                            speechRule.tagData[key] ?: ""
                                         )
                                         textInput.editText?.addTextChangedListener { txt ->
-                                            speechRule.tagData[defTag] = txt.toString()
+                                            speechRule.tagData[key] = txt.toString()
                                         }
                                         binding.layoutTagData.addView(
                                             textInput,

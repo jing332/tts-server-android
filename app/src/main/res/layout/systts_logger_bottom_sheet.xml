@@ -20,9 +20,7 @@
             android:id="@+id/tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:breakStrategy="simple"
-            android:textAppearance="?attr/textAppearanceBody1"
-            tools:targetApi="m" />
+            android:textAppearance="?attr/textAppearanceBody1" />
 
     </androidx.core.widget.NestedScrollView>
 

@@ -14,12 +14,12 @@ object MapConverters {
     }
 
     @TypeConverter
-    fun toMapList(json: String): Map<String, List<String>> {
+    fun toMapList(json: String): Map<String, List<Map<String, String>>> {
         return TypeConverterUtils.decodeFromString(json) ?: emptyMap()
     }
 
     @TypeConverter
-    fun fromMapList(tags: Map<String, List<String>>): String {
+    fun fromMapList(tags: Map<String, List<Map<String, String>>>): String {
         return TypeConverterUtils.encodeToString(tags) ?: ""
     }
 }
