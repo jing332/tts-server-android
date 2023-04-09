@@ -11,8 +11,6 @@ import java.io.File
 open class JsExtensions(open val context: Context, open val engineId: String) : JsNet(), JsCrypto,
     JsUserInterface {
 
-    fun newByteArrayList() = arrayListOf<Byte>()
-
     fun getAudioSampleRate(audio: ByteArray): Int {
         return AudioDecoder.getSampleRateAndMime(audio).first
     }
@@ -79,7 +77,7 @@ open class JsExtensions(open val context: Context, open val engineId: String) : 
     /**
      * 获取文件编码
      */
-    fun charsetDetect(f: File): String = CharsetDetector.detect(f).name() ?: "UTF-8"
+    fun charsetDetect(f: File): String = FileUtils.getFileCharsetSimple(f)
 
     fun readTxtFile(path: String, charsetName: String): String {
         val file = getFile(path)
