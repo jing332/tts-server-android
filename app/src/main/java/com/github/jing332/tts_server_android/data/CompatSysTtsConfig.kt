@@ -5,7 +5,7 @@ import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
-import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.util.FileUtils
 import kotlinx.serialization.decodeFromString
 import java.io.File

@@ -21,7 +21,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditView
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
-import com.github.jing332.tts_server_android.model.tts.PlayerParams
+import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout

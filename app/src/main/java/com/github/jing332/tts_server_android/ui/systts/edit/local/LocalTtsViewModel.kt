@@ -12,7 +12,7 @@ import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
-import com.github.jing332.tts_server_android.model.tts.LocalTTS
+import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.runOnIO

@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsBgmParamsEditViewBinding
-import com.github.jing332.tts_server_android.model.tts.BgmTTS
+import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 

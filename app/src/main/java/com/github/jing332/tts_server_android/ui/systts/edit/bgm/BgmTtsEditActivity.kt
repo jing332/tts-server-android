@@ -18,7 +18,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.databinding.SysttsBgmEditActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBgmListItemBinding
-import com.github.jing332.tts_server_android.model.tts.BgmTTS
+import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.ExoPlayerActivity
 import com.github.jing332.tts_server_android.ui.FilePickerActivity

@@ -8,7 +8,7 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
-import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.runOnIO

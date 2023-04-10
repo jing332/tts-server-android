@@ -1,7 +1,7 @@
 package com.github.jing332.tts_server_android.model
 
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import tts_server_lib.*
 
 /* 系统TTS Go库的包装 */

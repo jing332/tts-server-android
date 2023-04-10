@@ -10,7 +10,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
-import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.readableString
 import com.github.jing332.tts_server_android.util.rootCause
 import com.script.ScriptException

@@ -12,7 +12,7 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivityBinding
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
-import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
-import com.github.jing332.tts_server_android.model.tts.HttpTTS
+import com.github.jing332.tts_server_android.model.speech.tts.HttpTTS
 import kotlinx.coroutines.launch
 
 class HttpTtsEditViewModel : ViewModel() {

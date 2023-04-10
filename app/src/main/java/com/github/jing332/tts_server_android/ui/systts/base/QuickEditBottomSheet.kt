@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsQuickEditBottomSheetBinding
-import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.BasicInfoEditView
 import com.github.jing332.tts_server_android.util.setMarginMatchParent

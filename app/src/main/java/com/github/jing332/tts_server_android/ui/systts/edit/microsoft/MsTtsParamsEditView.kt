@@ -9,9 +9,9 @@ import androidx.core.view.isVisible
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.databinding.SysttsMsParamsEditViewBinding
-import com.github.jing332.tts_server_android.model.tts.MsTTS
-import com.github.jing332.tts_server_android.model.tts.MsTtsAudioFormat
-import com.github.jing332.tts_server_android.model.tts.MsTtsFormatManger
+import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
+import com.github.jing332.tts_server_android.model.speech.tts.MsTtsAudioFormat
+import com.github.jing332.tts_server_android.model.speech.tts.MsTtsFormatManger
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter

@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.model.tts
+package com.github.jing332.tts_server_android.model.speech.tts
 
 import android.app.Activity
 import android.content.Context
@@ -132,7 +132,6 @@ sealed class ITextToSpeechEngine(
         val p = if (isPitchFollowSystem()) sysPitch else this.pitch
         return getAudioStream(text, r, p)
     }
-
 
     /**
      * 获取PCM音频流

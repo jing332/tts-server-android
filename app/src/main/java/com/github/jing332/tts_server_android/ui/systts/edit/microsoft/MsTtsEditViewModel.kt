@@ -10,8 +10,8 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
-import com.github.jing332.tts_server_android.model.tts.ExpressAs
-import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.model.speech.tts.ExpressAs
+import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.util.runOnIO

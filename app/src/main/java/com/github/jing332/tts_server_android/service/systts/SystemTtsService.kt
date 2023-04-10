@@ -23,11 +23,11 @@ import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
-import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
 import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException
 import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
-import com.github.jing332.tts_server_android.service.systts.help.exception.TextHandleException
+import com.github.jing332.tts_server_android.service.systts.help.exception.SpeechRuleException
 import com.github.jing332.tts_server_android.service.systts.help.exception.TextReplacerException
 import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.ui.AppLog
@@ -42,7 +42,6 @@ import com.github.jing332.tts_server_android.util.rootCause
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import com.github.jing332.tts_server_android.util.toHtmlItalic
 import com.github.jing332.tts_server_android.util.toHtmlSmall
-import com.github.jing332.tts_server_android.util.toast
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
@@ -378,7 +377,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                 logE(getString(R.string.systts_log_replace_failed, e.toString()))
             }
 
-            is TextHandleException -> {
+            is SpeechRuleException -> {
                 logE(getString(R.string.systts_log_text_handle_failed, e.toString()))
             }
 

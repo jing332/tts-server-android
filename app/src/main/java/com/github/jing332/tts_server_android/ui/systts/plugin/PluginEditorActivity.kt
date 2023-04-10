@@ -16,7 +16,7 @@ import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
-import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity

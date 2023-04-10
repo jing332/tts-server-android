@@ -1,9 +1,7 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
 import android.content.Context
-import android.provider.MediaStore.Audio
 import android.util.Log
-import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
@@ -12,14 +10,14 @@ import com.github.jing332.tts_server_android.help.audio.AudioPlayer
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.speech.ITextToSpeechSynthesizer
-import com.github.jing332.tts_server_android.model.speech.TtsText
-import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
-import com.github.jing332.tts_server_android.model.tts.BgmTTS
-import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
-import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.model.speech.TtsTextPair
+import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
+import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException
 import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
-import com.github.jing332.tts_server_android.service.systts.help.exception.TextHandleException
+import com.github.jing332.tts_server_android.service.systts.help.exception.SpeechRuleException
 import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.toast
@@ -30,7 +28,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
-import java.io.InputStream
 import kotlin.coroutines.coroutineContext
 import kotlin.system.measureTimeMillis
 
@@ -57,7 +54,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     private val mLoadedTtsMap = mutableSetOf<ITextToSpeechEngine>()
     private val mSpeechRuleHelper = SpeechRuleHelper()
 
-    override suspend fun handleText(text: String): List<TtsText<ITextToSpeechEngine>> {
+    override suspend fun handleText(text: String): List<TtsTextPair> {
         kotlin.runCatching {
             return if (SysTtsConfig.isMultiVoiceEnabled) {
                 val tagTtsMap = mutableMapOf<String, MutableList<ITextToSpeechEngine>>()
@@ -70,10 +67,10 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
                 mSpeechRuleHelper.handleText(text, tagTtsMap, defaultTtsConfig)
             } else {
-                listOf(TtsText(mConfigMap[SpeechTarget.ALL]?.get(0) ?: defaultTtsConfig, text))
+                listOf(TtsTextPair(mConfigMap[SpeechTarget.ALL]?.get(0) ?: defaultTtsConfig, text))
             }.run {
                 if (SysTtsConfig.isSplitEnabled) {
-                    val list = mutableListOf<TtsText<ITextToSpeechEngine>>()
+                    val list = mutableListOf<TtsTextPair>()
                     forEach { ttsText ->
                         splitText(list, ttsText.text, ttsText.tts, SysTtsConfig.isMultiVoiceEnabled)
                     }
@@ -83,7 +80,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             }
         }.onFailure {
             listener?.onError(
-                TextHandleException(text = text, tts = null, message = it.message, cause = it)
+                SpeechRuleException(text = text, tts = null, message = it.message, cause = it)
             )
         }
 
@@ -91,7 +88,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     }
 
     private fun splitText(
-        list: MutableList<TtsText<ITextToSpeechEngine>>,
+        list: MutableList<TtsTextPair>,
         text: String,
         tts: ITextToSpeechEngine,
         isMultiVoice: Boolean
@@ -104,14 +101,14 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             }
             if (texts.isEmpty())
                 listener?.onError(
-                    TextHandleException(text = text, tts = tts, message = "splittedTexts is empty.")
+                    SpeechRuleException(text = text, tts = tts, message = "splittedTexts is empty.")
                 )
             else
-                texts.forEach { list.add(TtsText(tts, it)) }
+                texts.forEach { list.add(TtsTextPair(tts, it)) }
         } else {
             Log.d(TAG, "使用内置分割规则...")
             StringUtils.splitSentences(text).forEach {
-                list.add(TtsText(tts, it))
+                list.add(TtsTextPair(tts, it))
             }
         }
     }

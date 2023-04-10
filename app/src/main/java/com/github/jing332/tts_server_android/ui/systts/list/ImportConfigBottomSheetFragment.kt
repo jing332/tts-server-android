@@ -10,8 +10,8 @@ import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSyste
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsListImportBinding
-import com.github.jing332.tts_server_android.model.tts.BaseAudioFormat
-import com.github.jing332.tts_server_android.model.tts.HttpTTS
+import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
+import com.github.jing332.tts_server_android.model.speech.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.base.import1.BaseImportConfigBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.base.import1.ConfigItemModel
 import com.github.jing332.tts_server_android.util.StringUtils

@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.model.speech
 
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.Channel
@@ -36,9 +37,14 @@ abstract class ITextToSpeechSynthesizer<T> {
     open fun stop() {}
     open fun destroy() {}
 
-    open suspend fun handleText(text: String): List<TtsText<T>> = emptyList()
+    open suspend fun handleText(text: String): List<TtsTextPair> = emptyList()
 
-    open suspend fun getAudio(tts: T, text: String, sysRate: Int, sysPitch: Int): AudioResult? =
+    open suspend fun getAudio(
+        tts: ITextToSpeechEngine,
+        text: String,
+        sysRate: Int,
+        sysPitch: Int
+    ): AudioResult? =
         null
 
     suspend fun synthesizeText(
@@ -72,12 +78,9 @@ abstract class ITextToSpeechSynthesizer<T> {
     data class AudioResult(var inputStream: InputStream? = null, var data: Any? = null)
 
     data class AudioData<T>(
-        val txtTts: TtsText<T>,
+        val txtTts: TtsTextPair,
         val audio: AudioResult? = null,
-//        val audio: InputStream? = null,
         val done: () -> Unit,
-//        val data: Any? = null
-//        val isCancelled: Boolean = false
     )
 
 }

@@ -55,4 +55,5 @@ data class SpeechRule(
     }
 }
 
+//{dialogue: {role: {label: '角色名', "hint": "仅支持前置搜索"}, } }
 typealias TagsDataMap =  Map<String, Map<String, Map<String, String>>>

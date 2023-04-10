@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsPluginParamsEditViewBinding
-import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 

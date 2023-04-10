@@ -1,6 +1,6 @@
 package com.github.jing332.tts_server_android.service.systts.help.exception
 
-import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 
 class RequestException(
     val errorCode: Int = 0,

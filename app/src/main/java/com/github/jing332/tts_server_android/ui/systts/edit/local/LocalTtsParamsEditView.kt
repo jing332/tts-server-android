@@ -20,9 +20,9 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsLocalExtraParamsItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsLocalParamsEditViewBinding
 import com.github.jing332.tts_server_android.databinding.SysttsLocalParamsExtraEditViewBinding
-import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
-import com.github.jing332.tts_server_android.model.tts.LocalTTS
-import com.github.jing332.tts_server_android.model.tts.LocalTtsParameter
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
+import com.github.jing332.tts_server_android.model.speech.tts.LocalTtsParameter
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar

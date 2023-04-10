@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsLocalEditActivityBinding
-import com.github.jing332.tts_server_android.model.tts.LocalTTS
+import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog

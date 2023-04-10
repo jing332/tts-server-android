@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.model.tts
+package com.github.jing332.tts_server_android.model.speech.tts
 
 import android.app.Activity
 import android.content.Context

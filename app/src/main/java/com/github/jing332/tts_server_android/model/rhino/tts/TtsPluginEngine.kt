@@ -6,7 +6,7 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngine
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
-import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
 

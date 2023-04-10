@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsHttpParamsEditViewBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
-import com.github.jing332.tts_server_android.model.tts.HttpTTS
+import com.github.jing332.tts_server_android.model.speech.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 

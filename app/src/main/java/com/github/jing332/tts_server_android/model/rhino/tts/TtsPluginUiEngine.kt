@@ -3,7 +3,7 @@ package com.github.jing332.tts_server_android.model.rhino.tts
 import android.content.Context
 import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.model.tts.PluginTTS
+import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.dp
 import org.mozilla.javascript.NativeObject
 

@@ -4,8 +4,8 @@ import android.os.Parcelable
 import androidx.room.*
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup
-import com.github.jing332.tts_server_android.model.tts.ITextToSpeechEngine
-import com.github.jing332.tts_server_android.model.tts.MsTTS
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Transient
