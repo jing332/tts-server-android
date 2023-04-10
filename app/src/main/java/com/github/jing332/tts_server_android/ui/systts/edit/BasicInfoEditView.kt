@@ -114,6 +114,22 @@ class BasicInfoEditView @JvmOverloads constructor(
             binding.btnPlayerSettings.isGone = value
         }
 
+    fun saveData() {
+        kotlin.runCatching {
+            currentRule?.let {
+                val engine = SpeechRuleEngine(context, it)
+                engine.eval()
+                try {
+                    mData?.speechRule?.tagName =
+                        engine.getTagName(currentTag.key, mData?.speechRule?.tagData ?: emptyMap())
+                } catch (_: NoSuchMethodException) {
+                }
+            }
+        }.onFailure {
+            context.displayErrorDialog(it, "获取标签名失败")
+        }
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     fun setData(data: SystemTts) {
         GlobalScope.runOnIO {
@@ -135,26 +151,6 @@ class BasicInfoEditView @JvmOverloads constructor(
         raTarget = data.speechRule.target
 
         isStandby = data.isStandby
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-
-        kotlin.runCatching {
-            currentRule?.let {
-                val engine = SpeechRuleEngine(context, it)
-                engine.eval()
-                try {
-                    mData?.speechRule?.tagName =
-                        engine.getTagName(currentTag.key, mData?.speechRule?.tagData ?: emptyMap())
-
-                } catch (_: NoSuchMethodException) {
-                }
-            }
-        }.onFailure {
-            context.displayErrorDialog(it, "获取标签名失败")
-        }
-
     }
 
     fun checkDisplayNameEmpty(): Boolean {

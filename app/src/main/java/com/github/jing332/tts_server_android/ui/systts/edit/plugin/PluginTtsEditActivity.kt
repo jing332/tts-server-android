@@ -79,16 +79,13 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
                             sampleRate,
                             mime
                         )
-                    ).setOnDismissListener {
-                        stopPlay()
-                    }
+                    ).setOnDismissListener { stopPlay() }
+                    .setPositiveButton(android.R.string.ok, null)
                     .show()
                 playAudio(audio)
             }, { err ->
                 waitDialog.dismiss()
-                MaterialAlertDialogBuilder(this@PluginTtsEditActivity).setTitle(R.string.test_failed)
-                    .setMessage(err.message ?: err.cause?.message)
-                    .show()
+                displayErrorDialog(err, getString(R.string.test_failed))
             })
     }
 

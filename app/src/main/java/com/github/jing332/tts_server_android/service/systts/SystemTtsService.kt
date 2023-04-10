@@ -362,6 +362,10 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                     RequestException.ERROR_CODE_AUDIO_NULL -> {
                         logE(getString(R.string.systts_log_audio_empty, e.text))
                     }
+
+                    RequestException.ERROR_CODE_TIMEOUT -> {
+                        logE(getString(R.string.failed_timed_out, SysTtsConfig.requestTimeout))
+                    }
                 }
 
                 updateNotification(
@@ -378,7 +382,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                 logE(getString(R.string.systts_log_text_handle_failed, e.toString()))
             }
 
-            is ConfigLoadException ->{
+            is ConfigLoadException -> {
                 logE("配置加载失败: $e")
             }
         }

@@ -7,13 +7,10 @@ import androidx.annotation.RequiresApi
 @RequiresApi(api = Build.VERSION_CODES.M)
 class ByteArrayMediaDataSource(var data: ByteArray) : MediaDataSource() {
     override fun readAt(position: Long, buffer: ByteArray, offset: Int, size: Int): Int {
-        if (position >= data.size) {
-            return -1
-        }
+        if (position >= data.size) return -1
+
         val endPosition = (position + size).toInt()
-        var size2 = size
-        if (endPosition > data.size)
-            size2 -= endPosition - data.size
+        val size2 = if (endPosition > data.size) size - (endPosition - data.size) else size
 
         System.arraycopy(data, position.toInt(), buffer, offset, size2)
         return size2

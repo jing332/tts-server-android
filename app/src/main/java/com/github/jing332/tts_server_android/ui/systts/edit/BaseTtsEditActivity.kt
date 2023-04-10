@@ -39,6 +39,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () 
     }
 
     open fun onSave() {
+        basicEditView.saveData()
         setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, systemTts) })
         finish()
     }
@@ -120,6 +121,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_save) {
             onSave()
+            return true
         }
 
         return super.onOptionsItemSelected(item)

@@ -68,7 +68,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                         }
 
                     cardView.clickWithThrottle {
-                        displayLiteEditDialog(
+                        displayQuickEditDialog(
                             itemView,
                             getModel<ItemModel>().data
                         )
@@ -270,7 +270,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun displayLiteEditDialog(v: View, data: SystemTts) {
+    private fun displayQuickEditDialog(v: View, data: SystemTts) {
         // 修改数据要clone，不然对比时数据相同导致UI不更新
         data.clone<SystemTts>()?.let { clonedData ->
             val paramsEdit = clonedData.tts.getParamsEditView(context)

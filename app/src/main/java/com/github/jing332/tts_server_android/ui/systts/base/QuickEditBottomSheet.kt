@@ -63,6 +63,8 @@ class QuickEditBottomSheet(
 
 
     override fun onDismiss(dialog: DialogInterface) {
+        basicEdit.saveData()
+
         if (dismissCallback.invoke(dialog))
             super.onDismiss(dialog)
     }

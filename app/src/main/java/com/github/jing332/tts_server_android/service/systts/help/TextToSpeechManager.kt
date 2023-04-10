@@ -174,8 +174,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         var hasTimeout = false
                         val timeoutJob = launch {
                             delay(SysTtsConfig.requestTimeout.toLong())
-                            tts.onStop()
                             hasTimeout = true
+                            tts.onStop()
                         }.job
                         timeoutJob.start()
 

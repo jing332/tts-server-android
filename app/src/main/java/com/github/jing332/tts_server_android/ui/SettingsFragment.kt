@@ -75,9 +75,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // 请求超时
         findPreference<ListPreference>("requestTimeout")!!.apply {
-            entries = (2..30).map { "${it}s" }.toTypedArray()
-            entryValues = (2..30).map { "$it" }.toTypedArray()
-            setValueIndexNoException((SysTtsConfig.requestTimeout / 1000) - 2)
+            entries = (1..30).map { "${it}s" }.toTypedArray()
+            entryValues = (1..30).map { "$it" }.toTypedArray()
+            setValue((SysTtsConfig.requestTimeout / 1000).toString(), "5")
             summary = entry
             setOnPreferenceChangeListener { _, newValue ->
                 SysTtsConfig.requestTimeout = (newValue as String).toInt() * 1000
