@@ -12,6 +12,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
+import okio.buffer
+import okio.source
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -98,7 +100,7 @@ class AudioDecoder {
         sampleRate: Int,
         onRead: (pcmData: ByteArray) -> Unit,
     ) {
-        isDecoding = true
+        val mediaExtractor = MediaExtractor()
         try {
             // RIFF WAVEfmt直接去除文件头即可
             if (srcData.size > 15 && srcData.copyOfRange(0, 15).decodeToString()
@@ -109,8 +111,6 @@ class AudioDecoder {
                 isDecoding = false
                 return
             }
-
-            val mediaExtractor = MediaExtractor()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 mediaExtractor.setDataSource(ByteArrayMediaDataSource(srcData))
             else
@@ -118,87 +118,17 @@ class AudioDecoder {
                     "data:" + currentMime + ";base64," + srcData.toByteString().base64()
                 )
 
-            //找到音频流的索引
-            var audioTrackIndex = -1
-            var mime: String? = null
-            var trackFormat: MediaFormat? = null
-            for (i in 0 until mediaExtractor.trackCount) {
-                trackFormat = mediaExtractor.getTrackFormat(i)
-                mime = trackFormat.getString(MediaFormat.KEY_MIME)
-                if (!TextUtils.isEmpty(mime) && mime!!.startsWith("audio")) {
-                    audioTrackIndex = i
-                    Log.d(TAG, "找到音频流的index：$audioTrackIndex, mime：$mime")
-                    break
-                }
-            }
-            //没有找到音频流的情况下
-            if (audioTrackIndex == -1) {
-                stop()
-                throw AudioDecoderException(ERROR_CODE_NO_AUDIO_TRACK, "没有找到音频流")
-            }
-
-            //opus的音频必须设置这个才能正确的解码
-            if ("audio/opus" == mime) trackFormat?.compatOpus(sampleRate)
-
-            //选择此音轨
-            mediaExtractor.selectTrack(audioTrackIndex)
-            //创建解码器
-            val mediaCodec = getMediaCodec(mime.toString(), trackFormat!!)
-            mediaCodec.start()
-
-            val bufferInfo = MediaCodec.BufferInfo()
-            var inputBuffer: ByteBuffer?
-            val timeoutUs: Long = 10000
-
-            while (coroutineContext.isActive) {
-                //获取可用的inputBuffer，输入参数-1代表一直等到，0代表不等待，10*1000代表10秒超时
-                //超时时间10秒
-                val inputIndex = mediaCodec.dequeueInputBuffer(timeoutUs)
-                if (inputIndex < 0) {
-                    break
-                }
-                bufferInfo.presentationTimeUs = mediaExtractor.sampleTime
-
-                inputBuffer = mediaCodec.getInputBuffer(inputIndex)
-                if (inputBuffer != null) {
-                    inputBuffer.clear()
-                } else {
-                    continue
-                }
-                //从流中读取的采样数量
-                val sampleSize = mediaExtractor.readSampleData(inputBuffer, 0)
-                if (sampleSize > 0) {
-                    bufferInfo.size = sampleSize
-                    //入队解码
-                    mediaCodec.queueInputBuffer(inputIndex, 0, sampleSize, 0, 0)
-                    //移动到下一个采样点
-                    mediaExtractor.advance()
-                } else
-                    break
-
-                //取解码后的数据
-                var outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
-                //不一定能一次取完，所以要循环取
-                var outputBuffer: ByteBuffer?
-                val pcmData = ByteArray(bufferInfo.size)
-
-                while (coroutineContext.isActive && outputIndex >= 0) {
-                    outputBuffer = mediaCodec.getOutputBuffer(outputIndex)
-                    if (outputBuffer != null) {
-                        outputBuffer.get(pcmData)
-                        outputBuffer.clear() //用完后清空，复用
-                    }
-
-                    onRead.invoke(pcmData)
-                    mediaCodec.releaseOutputBuffer(outputIndex, false)
-                    outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
-                }
+            decodeInternal(mediaExtractor, sampleRate) {
+                onRead.invoke(it)
             }
         } catch (e: Exception) {
             mediaCodec?.reset()
             throw AudioDecoderException(cause = e)
+        } finally {
+            mediaExtractor.release()
         }
     }
+
 
     /**
      * @param sampleRate opus音频必须设置采样率
@@ -206,15 +136,18 @@ class AudioDecoder {
     suspend fun doDecode(
         ins: InputStream,
         sampleRate: Int = 0,
+        timeoutUs: Long = 5000L,
         onRead: suspend (pcmData: ByteArray) -> Unit,
     ) {
-        isDecoding = true
+        val mediaExtractor = MediaExtractor()
         try {
             val bytes = ByteArray(15)
             val len = ins.read(bytes)
             println("len: $len, bytes: ${bytes.decodeToString()}")
+
+            if (len == -1) return
             if (bytes.decodeToString().endsWith("WAVEfmt")) {
-                val bis = BufferedInputStream(ins)
+                val bis = ins.source().buffer()
                 val buffer = ByteArray(4096)
                 val chunkSize = 2048
 
@@ -226,7 +159,8 @@ class AudioDecoder {
                         isFirst = false
                     }
 
-                    val readLen = bis.read(buffer, bufferFilledCount, chunkSize - bufferFilledCount)
+                    val readLen =
+                        bis.read(buffer, bufferFilledCount, chunkSize - bufferFilledCount)
                     if (readLen == -1) break
                     if (readLen == 0) {
                         delay(100)
@@ -242,98 +176,116 @@ class AudioDecoder {
                     }
                 }
 
+                bis.close()
                 return
             }
 
-            val mediaExtractor = MediaExtractor()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 mediaExtractor.setDataSource(InputStreamMediaDataSource(ins))
             else
-                throw Exception("音频流解码器不支持 Android 5")
+                throw AudioDecoderException(
+                    AudioDecoderException.ERROR_CODE_NOT_SUPPORT_A5,
+                    "音频流解码器不支持 Android 5"
+                )
 
-            //找到音频流的索引
-            var audioTrackIndex = -1
-            var mime: String? = null
-            var trackFormat: MediaFormat? = null
-            for (i in 0 until mediaExtractor.trackCount) {
-                trackFormat = mediaExtractor.getTrackFormat(i)
-                mime = trackFormat.getString(MediaFormat.KEY_MIME)
-                if (!TextUtils.isEmpty(mime) && mime!!.startsWith("audio")) {
-                    audioTrackIndex = i
-                    Log.d(TAG, "找到音频流的index：$audioTrackIndex, mime：$mime")
-                    break
-                }
-            }
-            //没有找到音频流的情况下
-            if (audioTrackIndex == -1) {
-                stop()
-                throw AudioDecoderException(ERROR_CODE_NO_AUDIO_TRACK, "没有找到音频流")
-            }
-
-            //opus的音频必须设置这个才能正确的解码
-            if ("audio/opus" == mime) trackFormat?.compatOpus(sampleRate)
-
-            //选择此音轨
-            mediaExtractor.selectTrack(audioTrackIndex)
-            //创建解码器
-            val mediaCodec = getMediaCodec(mime.toString(), trackFormat!!)
-            mediaCodec.start()
-
-            val bufferInfo = MediaCodec.BufferInfo()
-            var inputBuffer: ByteBuffer?
-            val timeoutUs: Long = 10000
-
-            while (coroutineContext.isActive) {
-                //获取可用的inputBuffer，输入参数-1代表一直等到，0代表不等待，10*1000代表10秒超时
-                //超时时间10秒
-                val inputIndex = mediaCodec.dequeueInputBuffer(timeoutUs)
-                if (inputIndex < 0) {
-                    break
-                }
-                bufferInfo.presentationTimeUs = mediaExtractor.sampleTime
-
-                inputBuffer = mediaCodec.getInputBuffer(inputIndex)
-                if (inputBuffer != null) {
-                    inputBuffer.clear()
-                } else {
-                    continue
-                }
-                //从流中读取的采样数量
-                val sampleSize = mediaExtractor.readSampleData(inputBuffer, 0)
-                if (sampleSize > 0) {
-                    bufferInfo.size = sampleSize
-                    //入队解码
-                    mediaCodec.queueInputBuffer(inputIndex, 0, sampleSize, 0, 0)
-                    //移动到下一个采样点
-                    mediaExtractor.advance()
-                } else
-                    break
-
-                //取解码后的数据
-                var outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
-                //不一定能一次取完，所以要循环取
-                var outputBuffer: ByteBuffer?
-                val pcmData = ByteArray(bufferInfo.size)
-
-                while (coroutineContext.isActive && outputIndex >= 0) {
-                    outputBuffer = mediaCodec.getOutputBuffer(outputIndex)
-                    if (outputBuffer != null) {
-                        outputBuffer.get(pcmData)
-                        outputBuffer.clear() //用完后清空，复用
-                    }
-
-                    onRead.invoke(pcmData)
-                    mediaCodec.releaseOutputBuffer(outputIndex, false)
-                    outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
-                }
+            decodeInternal(mediaExtractor, sampleRate, timeoutUs) {
+                onRead.invoke(it)
             }
         } catch (e: Exception) {
             mediaCodec?.reset()
             throw AudioDecoderException(cause = e)
+        } finally {
+            mediaExtractor.release()
         }
     }
 
-    fun MediaFormat.compatOpus(sampleRate: Int) {
+    private suspend fun decodeInternal(
+        mediaExtractor: MediaExtractor,
+        sampleRate: Int,
+        timeoutUs: Long = 5000L,
+        onRead: suspend (pcmData: ByteArray) -> Unit
+    ) {
+        val trackFormat = mediaExtractor.selectAudioTrack()
+        val mime = trackFormat.mime
+
+        //opus的音频必须设置这个才能正确的解码
+        if ("audio/opus" == mime) trackFormat.compatOpus(sampleRate)
+
+        //创建解码器
+        val mediaCodec = getMediaCodec(mime, trackFormat)
+        mediaCodec.start()
+
+        val bufferInfo = MediaCodec.BufferInfo()
+        var inputBuffer: ByteBuffer?
+
+        while (coroutineContext.isActive) {
+            //获取可用的inputBuffer，输入参数-1代表一直等到，0代表不等待，10*1000代表10秒超时
+            val inputIndex = mediaCodec.dequeueInputBuffer(timeoutUs)
+            if (inputIndex < 0) break
+
+            bufferInfo.presentationTimeUs = mediaExtractor.sampleTime
+
+            inputBuffer = mediaCodec.getInputBuffer(inputIndex)
+            if (inputBuffer != null) {
+                inputBuffer.clear()
+            } else
+                continue
+
+            //从流中读取的采样数量
+            val sampleSize = mediaExtractor.readSampleData(inputBuffer, 0)
+            if (sampleSize > 0) {
+                bufferInfo.size = sampleSize
+                //入队解码
+                mediaCodec.queueInputBuffer(inputIndex, 0, sampleSize, 0, 0)
+                //移动到下一个采样点
+                mediaExtractor.advance()
+            } else
+                break
+
+            //取解码后的数据
+            var outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
+            //不一定能一次取完，所以要循环取
+            var outputBuffer: ByteBuffer?
+            val pcmData = ByteArray(bufferInfo.size)
+
+            while (coroutineContext.isActive && outputIndex >= 0) {
+                outputBuffer = mediaCodec.getOutputBuffer(outputIndex)
+                if (outputBuffer != null) {
+                    outputBuffer.get(pcmData)
+                    outputBuffer.clear() //用完后清空，复用
+                }
+
+                onRead.invoke(pcmData)
+                mediaCodec.releaseOutputBuffer(outputIndex, false)
+                outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
+            }
+        }
+    }
+
+    private val MediaFormat.mime: String
+        get() = getString(MediaFormat.KEY_MIME) ?: ""
+
+
+    private fun MediaExtractor.selectAudioTrack(): MediaFormat {
+        var audioTrackIndex = -1
+        var mime: String?
+        var trackFormat: MediaFormat? = null
+        for (i in 0 until trackCount) {
+            trackFormat = getTrackFormat(i)
+            mime = trackFormat.getString(MediaFormat.KEY_MIME)
+            if (!TextUtils.isEmpty(mime) && mime!!.startsWith("audio")) {
+                audioTrackIndex = i
+                break
+            }
+        }
+        if (audioTrackIndex == -1)
+            throw AudioDecoderException(ERROR_CODE_NO_AUDIO_TRACK, "没有找到音频流")
+
+        selectTrack(audioTrackIndex)
+        return trackFormat!!
+    }
+
+    private fun MediaFormat.compatOpus(sampleRate: Int) {
         //Log.d(TAG, ByteString.of(trackFormat.getByteBuffer("csd-0")).hex());
         val buf = okio.Buffer()
         // Magic Signature：固定头，占8个字节，为字符串OpusHead
