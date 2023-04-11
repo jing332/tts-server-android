@@ -109,6 +109,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         mWakeLock?.acquire(60 * 20 * 100)
         mWifiLock.acquire()
 
+
         mTtsManager.load()
     }
 
@@ -391,6 +392,8 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             is ConfigLoadException -> {
                 logE("配置加载失败: $e")
             }
+
+            else -> logE("未知错误: $e")
         }
 
     }

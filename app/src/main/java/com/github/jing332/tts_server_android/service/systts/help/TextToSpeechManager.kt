@@ -258,28 +258,35 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     }
 
     override fun load() {
-        if (SysTtsConfig.isReplaceEnabled)
-            mTextReplacer.load()
+        try {
 
-        initBgm()
-        if (SysTtsConfig.isMultiVoiceEnabled) {
-            val ok = initConfig(SpeechTarget.CUSTOM_TAG)
-            audioFormat = mConfigMap[SpeechTarget.CUSTOM_TAG]!![0].audioFormat
-            if (ok) {
-                mConfigMap[SpeechTarget.CUSTOM_TAG]?.getOrNull(0)?.also {
-                    appDb.speechRule.getByReadRuleId(it.speechRule.tagRuleId)?.let { rule ->
-                        return@also mSpeechRuleHelper.init(context, rule)
+
+            if (SysTtsConfig.isReplaceEnabled)
+                mTextReplacer.load()
+
+            initBgm()
+            if (SysTtsConfig.isMultiVoiceEnabled) {
+                val ok = initConfig(SpeechTarget.CUSTOM_TAG)
+                audioFormat = mConfigMap[SpeechTarget.CUSTOM_TAG]!![0].audioFormat
+                if (ok) {
+                    mConfigMap[SpeechTarget.CUSTOM_TAG]?.getOrNull(0)?.also {
+                        appDb.speechRule.getByReadRuleId(it.speechRule.tagRuleId)?.let { rule ->
+                            return@also mSpeechRuleHelper.init(context, rule)
+                        }
+                        throw ConfigLoadException()
                     }
-                    throw ConfigLoadException()
-                }
-            } else
-                context.toast(R.string.systts_no_custom_tag_config_warn)
+                } else
+                    context.toast(R.string.systts_no_custom_tag_config_warn)
 
 
-        } else {
-            if (!initConfig(SpeechTarget.ALL))
-                context.toast(R.string.systts_warn_no_ra_all)
-            audioFormat = mConfigMap[SpeechTarget.ALL]!![0].audioFormat
+            } else {
+                if (!initConfig(SpeechTarget.ALL))
+                    context.toast(R.string.systts_warn_no_ra_all)
+                audioFormat = mConfigMap[SpeechTarget.ALL]!![0].audioFormat
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            listener?.onError(ConfigLoadException(cause = e))
         }
     }
 
