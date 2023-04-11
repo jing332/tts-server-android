@@ -41,6 +41,7 @@ data class MsTTS(
     var expressAs: ExpressAs? = null,
 
     override var audioPlayer: PlayerParams = PlayerParams(),
+    override var audioParams: AudioParams = AudioParams(),
     @Transient
     override var audioFormat: BaseAudioFormat = MsTtsFormatManger.getFormatOrDefault(format),
     @Transient

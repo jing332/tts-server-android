@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -17,6 +18,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
+import com.github.jing332.tts_server_android.databinding.SysttsBasicAudioParamsSettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
@@ -163,6 +165,7 @@ class BasicInfoEditView @JvmOverloads constructor(
 
     init {
         binding.apply {
+            btnAudioParams.clickWithThrottle { displayAudioParamsSettings() }
             btnPlayerSettings.clickWithThrottle { displayPlayerParamsSettings() }
             btnStandbyHelp.clickWithThrottle {
                 MaterialAlertDialogBuilder(context).setTitle(R.string.systts_as_standby_help)
@@ -330,6 +333,56 @@ class BasicInfoEditView @JvmOverloads constructor(
                 .setPositiveButton(android.R.string.ok, null)
                 .show()
         }
+    }
+
+    private fun displayAudioParamsSettings() {
+        val view = FrameLayout(context)
+        val binding =
+            SysttsBasicAudioParamsSettingsBinding.inflate(context.layoutInflater, view, true)
+        binding.apply {
+            seekSpeed.setFloatType(2)
+            seekVolume.setFloatType(2)
+            seekPitch.setFloatType(2)
+
+            seekSpeed.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
+                override fun onStopTrackingTouch(seekBar: Seekbar) {
+                    mData?.tts?.audioParams?.speed = seekBar.value as Float
+                }
+            }
+
+            seekVolume.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
+                override fun onStopTrackingTouch(seekBar: Seekbar) {
+                    mData?.tts?.audioParams?.volume = seekBar.value as Float
+                }
+            }
+
+            seekPitch.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
+                override fun onStopTrackingTouch(seekBar: Seekbar) {
+                    mData?.tts?.audioParams?.pitch = seekBar.value as Float
+                }
+            }
+
+            mData?.tts?.audioParams?.let {
+                seekSpeed.value = it.speed
+                seekVolume.value = it.volume
+                seekPitch.value = it.pitch
+            }
+        }
+
+        MaterialAlertDialogBuilder(context)
+            .setTitle(R.string.audio_params_settings)
+            .setMessage("⚠️内置播放器开启时此处参数无效。")
+            .setView(view)
+            .setPositiveButton(R.string.close, null)
+            .setNegativeButton(R.string.reset) { _, _ ->
+                mData?.tts?.audioParams?.let {
+                    it.speed = 1f
+                    it.volume = 1f
+                    it.pitch = 1f
+                }
+                context.toast(R.string.ok_reset)
+            }
+            .show()
     }
 
 }

@@ -11,6 +11,14 @@
         <attr name="hint" />
     </declare-styleable>
 
+    <declare-styleable name="AppSlider">
+        <attr name="stepSize" format="float" />
+        <attr name="valueTo" format="float" />
+        <attr name="valueFrom" format="float" />
+        <attr name="value" format="float" />
+        <attr name="hint" />
+    </declare-styleable>
+
     <declare-styleable name="MaterialSpinner">
         <attr name="emptyText" format="reference|string" />
     </declare-styleable>

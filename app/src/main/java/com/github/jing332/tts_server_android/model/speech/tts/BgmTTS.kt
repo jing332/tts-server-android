@@ -13,6 +13,7 @@ import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivi
 import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsParamsEditView
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -29,6 +30,10 @@ class BgmTTS(
     override var rate: Int = 0,
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(),
     override var audioPlayer: PlayerParams = PlayerParams(),
+
+    @Transient
+    @IgnoredOnParcel
+    override var audioParams: AudioParams = AudioParams(),
     @Transient
     override var speechRule: SpeechRuleInfo = SpeechRuleInfo()
 ) : ITextToSpeechEngine() {

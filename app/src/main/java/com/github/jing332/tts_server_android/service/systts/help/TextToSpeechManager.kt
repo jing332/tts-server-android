@@ -328,12 +328,26 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     )
                 }
 
+                val audioParams = txtTts.tts.audioParams
+                val sonic = if (audioParams.isDefaultValue) null
+                else Sonic(txtTts.tts.audioFormat.sampleRate, 1)
                 txtTts.playAudio(
                     sysRate, sysPitch, data.audio,
                     onDone = { data.done.invoke() })
                 { pcmAudio ->
-                    onPcmAudio.invoke(pcmAudio)
+                    if (sonic == null) onPcmAudio.invoke(pcmAudio)
+                    else {
+                        sonic.volume = txtTts.tts.audioParams.volume
+                        sonic.speed = txtTts.tts.audioParams.speed
+                        sonic.pitch = txtTts.tts.audioParams.pitch
+
+                        val buffer = ByteArray(pcmAudio.size)
+                        sonic.writeBytesToStream(pcmAudio, pcmAudio.size)
+                        onPcmAudio.invoke(sonic.readBytesFromStream(pcmAudio.size))
+                    }
                 }
+
+
 
                 listener?.onPlayFinished(txtTts.text, txtTts.tts)
             }.onFailure {

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
+        android:id="@+id/seek_speed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hint="@string/label_speed"
+        app:max="300"
+        app:min="1"
+        app:progress="100" />
+
+    <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
+        android:id="@+id/seek_volume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hint="@string/label_volume"
+        app:max="300"
+        app:min="1"
+        app:progress="100" />
+
+    <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
+        android:id="@+id/seek_pitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hint="@string/label_pitch"
+        app:max="300"
+        app:min="1"
+        app:progress="100" />
+
+</LinearLayout>

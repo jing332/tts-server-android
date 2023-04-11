@@ -43,6 +43,7 @@ data class LocalTTS(
 
     override var audioPlayer: PlayerParams = PlayerParams(),
     override var audioFormat: BaseAudioFormat = BaseAudioFormat(isNeedDecode = true),
+    override var audioParams: AudioParams = AudioParams(),
     @Transient
     override var speechRule: SpeechRuleInfo = SpeechRuleInfo(),
 ) : Parcelable, ITextToSpeechEngine() {

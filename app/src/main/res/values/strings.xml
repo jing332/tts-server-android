@@ -264,7 +264,7 @@
     <string name="systts_local_test_msg">直接播放已关闭 \n大小：%1$d KiB \n采样率：%2$d HZ</string>
     <string name="systts_set_standby">设置备用TTS</string>
     <string name="systts_local_params_int_must">必须为 true或1, false或0</string>
-    <string name="set_built_in_player_params">内置播放器设置</string>
+    <string name="set_built_in_player_params">内置播放器</string>
     <string name="built_in_player_not_enabled">⚠️内置播放器未启用，请前往右上角菜单手动启用。</string>
     <string name="please_turn_off_direct_play">请关闭【直接播放】选项</string>
     <string name="systts_as_standby_help">关于【作为备用】</string>
@@ -369,4 +369,7 @@
     <string name="grant_permission_all_file_msg">否则在部分系统上将无法读取音乐文件导致无法播放！</string>
     <string name="format_error">格式错误</string>
     <string name="systts_log_text_handle_failed">文本处理失败: %1$s</string>
+    <string name="audio_params">音频参数</string>
+    <string name="label_speed">速度：</string>
+    <string name="audio_params_settings">设置音频参数</string>
 </resources>

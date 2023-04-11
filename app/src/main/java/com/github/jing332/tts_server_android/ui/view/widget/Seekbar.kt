@@ -18,10 +18,11 @@ import com.github.jing332.tts_server_android.ui.view.widget.Seekbar.ValueFormatt
 import com.github.jing332.tts_server_android.util.ThrottleUtil
 import kotlin.math.roundToInt
 
-open class Seekbar(context: Context, attrs: AttributeSet?, defaultStyle: Int) :
-    ConstraintLayout(context, attrs, defaultStyle), OnSeekBarChangeListener {
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context) : this(context, null, 0)
+open class Seekbar @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defaultStyle: Int = 0
+) : ConstraintLayout(context, attrs, defaultStyle), OnSeekBarChangeListener {
 
     private val binding by lazy {
         SeekbarBinding.inflate(LayoutInflater.from(context), this, true)

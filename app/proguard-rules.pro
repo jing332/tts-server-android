@@ -55,6 +55,8 @@
 -keep class cn.hutool.crypto.** { *; }
 -keep class cn.hutool.core.** { *; }
 
+-keep class com.github.jing332.tts_server_android.service.systts.help.exception.** { *; }
+
 # OKIO
 -keep class okio.* { *; }
 

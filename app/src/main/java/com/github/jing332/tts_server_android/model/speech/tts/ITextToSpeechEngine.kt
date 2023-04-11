@@ -24,8 +24,9 @@ import java.io.InputStream
 sealed class ITextToSpeechEngine(
     @Transient
     @IgnoredOnParcel
-    protected val context: Context = app
-) : Parcelable {
+    protected val context: Context = app,
+
+    ) : Parcelable {
     companion object {
         const val VALUE_FOLLOW_SYSTEM = 0
     }
@@ -37,6 +38,8 @@ sealed class ITextToSpeechEngine(
     abstract var speechRule: SpeechRuleInfo
     abstract var audioFormat: BaseAudioFormat
     abstract var audioPlayer: PlayerParams
+    abstract var audioParams: AudioParams
+
 
     /**
      * 语速是否跟随系统
