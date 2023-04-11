@@ -26,6 +26,7 @@ import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
 import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException
+import com.github.jing332.tts_server_android.service.systts.help.exception.PlayException
 import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
 import com.github.jing332.tts_server_android.service.systts.help.exception.SpeechRuleException
 import com.github.jing332.tts_server_android.service.systts.help.exception.TextReplacerException
@@ -393,7 +394,14 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                 logE("配置加载失败: $e")
             }
 
-            else -> logE("未知错误: $e")
+            is PlayException ->{
+                logE("播放失败: $e")
+            }
+
+            else -> {
+                logE("未知错误: $e")
+                e.printStackTrace()
+            }
         }
 
     }

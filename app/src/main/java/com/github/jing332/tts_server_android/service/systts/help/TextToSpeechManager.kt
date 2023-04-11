@@ -7,6 +7,7 @@ import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
+import com.github.jing332.tts_server_android.help.audio.Sonic
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.speech.ITextToSpeechSynthesizer
@@ -16,8 +17,10 @@ import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException
+import com.github.jing332.tts_server_android.service.systts.help.exception.PlayException
 import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
 import com.github.jing332.tts_server_android.service.systts.help.exception.SpeechRuleException
+import com.github.jing332.tts_server_android.service.systts.help.exception.SynthesisException
 import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.toast
@@ -328,7 +331,9 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 txtTts.playAudio(
                     sysRate, sysPitch, data.audio,
                     onDone = { data.done.invoke() })
-                { pcmAudio -> onPcmAudio.invoke(pcmAudio) }
+                { pcmAudio ->
+                    onPcmAudio.invoke(pcmAudio)
+                }
 
                 listener?.onPlayFinished(txtTts.text, txtTts.tts)
             }.onFailure {
@@ -363,9 +368,14 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
         if (SysTtsConfig.isStreamPlayModeEnabled) {
             if (tts.audioFormat.isNeedDecode) {
-                mAudioDecoder.doDecode(audioResult.inputStream!!, audioFormat.sampleRate)
-                { pcmData -> onPcmAudio.invoke(pcmData) }
-                onDone.invoke()
+                try {
+                    mAudioDecoder.doDecode(audioResult.inputStream!!, audioFormat.sampleRate)
+                    { pcmData -> onPcmAudio.invoke(pcmData) }
+                } catch (e: Exception) {
+                    throw PlayException(tts = tts, cause = e, message = "流播放下的音频解码失败")
+                } finally {
+                    onDone.invoke()
+                }
             } else {
                 onDone.invoke()
                 throw TtsManagerException("暂不支持流播放下的raw音频")
