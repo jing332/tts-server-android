@@ -170,7 +170,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     }
                     // 直接播放 不用获取音频, 在接收者处播放
                     if (tts.isDirectPlay()) {
-                        audioResult = null
+                        audioResult = AudioResult()
                         return@retry
                     }
                     coroutineScope {
@@ -259,8 +259,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     override fun load() {
         try {
-
-
             if (SysTtsConfig.isReplaceEnabled)
                 mTextReplacer.load()
 
@@ -277,7 +275,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     }
                 } else
                     context.toast(R.string.systts_no_custom_tag_config_warn)
-
 
             } else {
                 if (!initConfig(SpeechTarget.ALL))
@@ -349,6 +346,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         onDone: suspend () -> Unit,
         onPcmAudio: suspend (pcmAudio: ByteArray) -> Unit,
     ) {
+        // audioResult == null 说明请求失败
         if (audioResult == null && tts.speechRule.standbyTts?.isDirectPlay() == true) { // 直接播放备用TTS
             tts.speechRule.standbyTts?.startPlayWithSystemParams(text, sysRate, sysPitch)
             onDone.invoke()
