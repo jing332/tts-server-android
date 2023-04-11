@@ -6,13 +6,15 @@ import androidx.annotation.RequiresApi
 import java.io.InputStream
 
 @RequiresApi(Build.VERSION_CODES.M)
-class InputStreamMediaDataSource(val inputStream: InputStream) : MediaDataSource() {
+class InputStreamMediaDataSource(private val inputStream: InputStream) : MediaDataSource() {
+    private val bufferedInputStream = inputStream.buffered()
+
     override fun close() {
-        inputStream.close()
+        bufferedInputStream.close()
     }
 
     override fun readAt(position: Long, buffer: ByteArray?, offset: Int, size: Int): Int {
-        return inputStream.read(buffer, offset, size)
+        return bufferedInputStream.read(buffer, offset, size)
     }
 
     override fun getSize(): Long = inputStream.available().toLong()
