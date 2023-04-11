@@ -143,7 +143,6 @@ class AudioDecoder {
         try {
             val bytes = ByteArray(15)
             val len = ins.read(bytes)
-            println("len: $len, bytes: ${bytes.decodeToString()}")
 
             if (len == -1) return
             if (bytes.decodeToString().endsWith("WAVEfmt")) {
@@ -170,7 +169,7 @@ class AudioDecoder {
                     bufferFilledCount += readLen
                     if (bufferFilledCount >= chunkSize) {
                         val chunkData = buffer.copyOfRange(0, chunkSize)
-                        println("chunkData: ${chunkData.size}")
+
                         onRead.invoke(chunkData)
                         bufferFilledCount = 0
                     }

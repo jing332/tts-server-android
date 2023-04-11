@@ -143,7 +143,10 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 if (SysTtsConfig.standbyTriggeredRetryIndex == times)
                     tts.speechRule.standbyTts?.let { sbyTts ->
                         Log.i(TAG, "使用备用TTS：$sbyTts")
-                        audioResult = getAudio(sbyTts, text, sysRate, sysPitch)
+                        audioResult = if (sbyTts.isDirectPlay()) {
+                            null
+                        } else
+                            getAudio(sbyTts, text, sysRate, sysPitch)
                         return@retry false // 取消重试
                     }
 
@@ -335,11 +338,14 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         audioResult: AudioResult?,
         onPcmAudio: (pcmAudio: ByteArray) -> Unit
     ) {
-        if (tts.isDirectPlay()) {
+        if (audioResult == null && tts.speechRule.standbyTts?.isDirectPlay() == true) { // 直接播放备用TTS
             tts.speechRule.standbyTts?.startPlayWithSystemParams(text, sysRate, sysPitch)
             return
-        } else if (audioResult == null) {
-            Log.w(TAG, "audioResult == null, $this")
+        } else if (tts.isDirectPlay()) { // 直接播放
+            tts.startPlayWithSystemParams(text, sysRate, sysPitch)
+            return
+        } else if (audioResult?.inputStream == null) { // 无音频
+            Log.w(TAG, "audio == null, $this")
             return
         }
 
@@ -348,7 +354,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 mAudioDecoder.doDecode(audioResult.inputStream!!, audioFormat.sampleRate)
                 { pcmData -> onPcmAudio.invoke(pcmData) }
             }
-        } else {
+        } else { // 全部加载到内存
             val audio = audioResult.inputStream!!.readBytes()
             audioResult.inputStream!!.close()
 
