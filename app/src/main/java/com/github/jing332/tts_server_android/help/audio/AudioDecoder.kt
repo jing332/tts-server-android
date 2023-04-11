@@ -6,13 +6,13 @@ import android.media.MediaFormat
 import android.os.Build
 import android.text.TextUtils
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.github.jing332.tts_server_android.help.audio.AudioDecoderException.Companion.ERROR_CODE_NO_AUDIO_TRACK
 import com.github.jing332.tts_server_android.util.GcManager
-import com.google.android.exoplayer2.upstream.FileDataSource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
+import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
@@ -210,14 +210,40 @@ class AudioDecoder {
     ) {
         isDecoding = true
         try {
+            val bytes = ByteArray(15)
+            val len = ins.read(bytes)
+            println("len: $len, bytes: ${bytes.decodeToString()}")
+            if (bytes.decodeToString().endsWith("WAVEfmt")) {
+                val bis = BufferedInputStream(ins)
+                val buffer = ByteArray(4096)
+                val chunkSize = 2048
 
-            // RIFF WAVEfmt直接去除文件头即可
-//            if (srcData.size > 15 && srcData.copyOfRange(0, 15).decodeToString().endsWith("WAVEfmt")) {
-//                val data = srcData.copyOfRange(44, srcData.size)
-//                onRead.invoke(data)
-//                isDecoding = false
-//                return
-//            }
+                var bufferFilledCount = 0
+                var isFirst = true
+                while (coroutineContext.isActive) {
+                    if (isFirst) {
+                        bis.skip(29)
+                        isFirst = false
+                    }
+
+                    val readLen = bis.read(buffer, bufferFilledCount, chunkSize - bufferFilledCount)
+                    if (readLen == -1) break
+                    if (readLen == 0) {
+                        delay(100)
+                        continue
+                    }
+
+                    bufferFilledCount += readLen
+                    if (bufferFilledCount >= chunkSize) {
+                        val chunkData = buffer.copyOfRange(0, chunkSize)
+                        println("chunkData: ${chunkData.size}")
+                        onRead.invoke(chunkData)
+                        bufferFilledCount = 0
+                    }
+                }
+
+                return
+            }
 
             val mediaExtractor = MediaExtractor()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
