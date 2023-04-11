@@ -39,6 +39,7 @@ import com.github.jing332.tts_server_android.util.GcManager
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.limitLength
 import com.github.jing332.tts_server_android.util.rootCause
+import com.github.jing332.tts_server_android.util.runOnUI
 import com.github.jing332.tts_server_android.util.toHtmlBold
 import com.github.jing332.tts_server_android.util.toHtmlItalic
 import com.github.jing332.tts_server_android.util.toHtmlSmall
@@ -210,7 +211,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         GcManager.doGC()
     }
 
-    private lateinit var mNotificationBuilder: Notification.Builder
+    private var mNotificationBuilder: Notification.Builder? = null
     private lateinit var mNotificationManager: NotificationManager
 
     // 通知是否显示中
@@ -251,15 +252,21 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     /* 更新通知 */
     private fun updateNotification(title: String, content: String? = null) {
         if (SysTtsConfig.isForegroundServiceEnabled)
-            synchronized(this) {
-                content?.let {
-                    val bigTextStyle = Notification.BigTextStyle().bigText(it).setSummaryText("TTS")
-                    mNotificationBuilder.style = bigTextStyle
-                    mNotificationBuilder.setContentText(it)
-                }
+            runOnUI {
+                mNotificationBuilder?.let { builder ->
+                    content?.let {
+                        val bigTextStyle =
+                            Notification.BigTextStyle().bigText(it).setSummaryText("TTS")
+                        builder.style = bigTextStyle
+                        builder.setContentText(it)
+                    }
 
-                mNotificationBuilder.setContentTitle(title)
-                startForeground(SystemNotificationConst.ID_SYSTEM_TTS, mNotificationBuilder.build())
+                    builder.setContentTitle(title)
+                    startForeground(
+                        SystemNotificationConst.ID_SYSTEM_TTS,
+                        builder.build()
+                    )
+                }
             }
     }
 
@@ -292,9 +299,9 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
         mNotificationBuilder = Notification.Builder(applicationContext)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mNotificationBuilder.setChannelId(NOTIFICATION_CHAN_ID)
+            mNotificationBuilder?.setChannelId(NOTIFICATION_CHAN_ID)
         }
-        notification = mNotificationBuilder
+        notification = mNotificationBuilder!!
             .setSmallIcon(R.mipmap.ic_app_notification)
             .setContentIntent(pendingIntent)
             .setColor(ContextCompat.getColor(this, R.color.md_theme_light_primary))

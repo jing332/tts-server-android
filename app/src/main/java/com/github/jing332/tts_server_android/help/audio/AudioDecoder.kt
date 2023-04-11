@@ -98,7 +98,7 @@ class AudioDecoder {
     suspend fun doDecode(
         srcData: ByteArray,
         sampleRate: Int,
-        onRead: (pcmData: ByteArray) -> Unit,
+        onRead: suspend (pcmData: ByteArray) -> Unit,
     ) {
         val mediaExtractor = MediaExtractor()
         try {

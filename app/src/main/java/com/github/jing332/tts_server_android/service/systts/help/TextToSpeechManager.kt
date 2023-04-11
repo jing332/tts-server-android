@@ -21,7 +21,9 @@ import com.github.jing332.tts_server_android.service.systts.help.exception.Speec
 import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.toast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -308,7 +310,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
         synthesizeText(replaced, sysRate, sysPitch) { data -> // 音频获取完毕
             kotlin.runCatching {
-                if (!coroutineContext.isActive) return@synthesizeText
+                if (!kotlin.coroutines.coroutineContext.isActive) return@synthesizeText
                 val txtTts = data.txtTts
 
                 if (data.audio?.data is Pair<*, *>) {
@@ -319,16 +321,17 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     )
                 }
 
-                txtTts.playAudio(sysRate, sysPitch, data.audio) { pcmAudio ->
-                    onPcmAudio.invoke(pcmAudio)
-                }
-                data.done()
+                txtTts.playAudio(
+                    sysRate, sysPitch, data.audio,
+                    onDone = { data.done.invoke() })
+                { pcmAudio -> onPcmAudio.invoke(pcmAudio) }
 
                 listener?.onPlayFinished(txtTts.text, txtTts.tts)
             }.onFailure {
                 listener?.onError(TtsManagerException(cause = it, message = it.message))
             }
         }
+
         isSynthesizing = false
     }
 
@@ -336,16 +339,20 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         sysRate: Int,
         sysPitch: Int,
         audioResult: AudioResult?,
-        onPcmAudio: (pcmAudio: ByteArray) -> Unit
+        onDone: suspend () -> Unit,
+        onPcmAudio: suspend (pcmAudio: ByteArray) -> Unit,
     ) {
         if (audioResult == null && tts.speechRule.standbyTts?.isDirectPlay() == true) { // 直接播放备用TTS
             tts.speechRule.standbyTts?.startPlayWithSystemParams(text, sysRate, sysPitch)
+            onDone.invoke()
             return
         } else if (tts.isDirectPlay()) { // 直接播放
             tts.startPlayWithSystemParams(text, sysRate, sysPitch)
+            onDone.invoke()
             return
         } else if (audioResult?.inputStream == null) { // 无音频
             Log.w(TAG, "audio == null, $this")
+            onDone.invoke()
             return
         }
 
@@ -353,10 +360,15 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             if (tts.audioFormat.isNeedDecode) {
                 mAudioDecoder.doDecode(audioResult.inputStream!!, audioFormat.sampleRate)
                 { pcmData -> onPcmAudio.invoke(pcmData) }
+                onDone.invoke()
+            } else {
+                onDone.invoke()
+                throw TtsManagerException("暂不支持流播放下的raw音频")
             }
         } else { // 全部加载到内存
             val audio = audioResult.inputStream!!.readBytes()
             audioResult.inputStream!!.close()
+            onDone.invoke()
 
             if (tts.audioFormat.isNeedDecode) {
                 if (SysTtsConfig.isInAppPlayAudio) {
