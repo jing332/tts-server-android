@@ -46,6 +46,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
+        findPreference<SwitchPreferenceCompat>("isStreamPlayModeEnabled")!!.apply {
+            isChecked = SysTtsConfig.isStreamPlayModeEnabled
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.isStreamPlayModeEnabled = newValue as Boolean
+                true
+            }
+        }
+
         findPreference<ListPreference>("maxRetryCount")!!.apply {
             entries = buildList<String> {
                 add(getString(R.string.no_retries))

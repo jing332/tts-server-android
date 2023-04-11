@@ -65,4 +65,6 @@ object SysTtsConfig : KotprefModel() {
      * 备用配置在第几次重试时触发
      */
     var standbyTriggeredRetryIndex by intPref(1)
+
+    var isStreamPlayModeEnabled by booleanPref(false)
 }

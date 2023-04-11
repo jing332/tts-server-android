@@ -14,6 +14,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonClassDiscriminator
+import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -108,30 +109,30 @@ sealed class ITextToSpeechEngine(
         speakText: String,
         rate: Int = 50,
         pitch: Int = 0
-    ): ByteArray? = null
+    ): InputStream? = null
 
     suspend fun getAudioWithSystemParams(
         text: String,
         sysRate: Int = 50,
         sysPitch: Int = 0
-    ): ByteArray? {
+    ): InputStream? {
 
         val r = if (isRateFollowSystem()) sysRate else this.rate
         val p = if (isPitchFollowSystem()) sysPitch else this.pitch
         return getAudio(text, r, p)
     }
 
-    open suspend fun getAudioStream(text: String, rate: Int, pitch: Int): InputStream? = null
-
-    suspend fun getAudioStreamSysParams(
-        text: String,
-        sysRate: Int = 50,
-        sysPitch: Int = 0
-    ): InputStream? {
-        val r = if (isRateFollowSystem()) sysRate else this.rate
-        val p = if (isPitchFollowSystem()) sysPitch else this.pitch
-        return getAudioStream(text, r, p)
-    }
+//    open suspend fun getAudioStream(text: String, rate: Int, pitch: Int): InputStream? = null
+//
+//    suspend fun getAudioStreamSysParams(
+//        text: String,
+//        sysRate: Int = 50,
+//        sysPitch: Int = 0
+//    ): InputStream? {
+//        val r = if (isRateFollowSystem()) sysRate else this.rate
+//        val p = if (isPitchFollowSystem()) sysPitch else this.pitch
+//        return getAudioStream(text, r, p)
+//    }
 
     /**
      * 获取PCM音频流
@@ -142,5 +143,10 @@ sealed class ITextToSpeechEngine(
         chunkSize: Int = 0,
         onData: (ByteArray?) -> Unit
     ) {
+    }
+
+
+    protected fun ByteArray?.toStream(): ByteArrayInputStream? {
+        return if (this == null) null else ByteArrayInputStream(this)
     }
 }

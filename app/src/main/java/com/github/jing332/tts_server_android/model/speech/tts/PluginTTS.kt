@@ -79,17 +79,9 @@ data class PluginTTS(
         pluginEngine?.onStop()
     }
 
-    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
-        val bytes = pluginEngine?.getAudio(
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream? {
+        return pluginEngine?.getAudio(
             speakText, rate, pitch
         )
-        return bytes
-    }
-
-    override suspend fun getAudioStream(speakText: String, rate: Int, pitch: Int): InputStream? {
-//        return pluginEngine?.getAudioInputStream(
-//            speakText, rate, pitch
-//        )
-        return null
     }
 }

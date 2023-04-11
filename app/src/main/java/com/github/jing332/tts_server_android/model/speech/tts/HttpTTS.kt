@@ -27,6 +27,7 @@ import kotlinx.serialization.decodeFromString
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import java.io.InputStream
 
 @Parcelize
 @Serializable
@@ -105,13 +106,12 @@ data class HttpTTS(
         }
     }
 
-    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream? {
         val resp = getAudioResponse(speakText)
-        val body = resp.body?.bytes()
-        if (resp.code != 200) throw Throwable("${resp.message}, ${body.contentToString()}")
-
-        resp.body?.close()
-        return body
+        return if (resp.isSuccessful) {
+            resp.body?.byteStream()
+        } else
+            throw Exception("HTTP TTS 请求失败：${resp.code}, ${resp.message}")
     }
 
     override suspend fun getAudioStream(
@@ -119,7 +119,7 @@ data class HttpTTS(
         chunkSize: Int,
         onData: (ByteArray?) -> Unit
     ) {
-        onData(getAudio(speakText))
+//        onData(getAudio(speakText))
         /* getAudioResponse(speakText).body?.byteStream()?.let {
              val data = ByteArray(chunkSize)
              while (true) {

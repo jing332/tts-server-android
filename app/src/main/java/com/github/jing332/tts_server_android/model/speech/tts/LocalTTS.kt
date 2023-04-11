@@ -20,7 +20,9 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.InputStream
 import java.util.*
 
 @Parcelize
@@ -240,8 +242,10 @@ data class LocalTTS(
     }
 
 
-    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
-        return getAudioFile(speakText, rate, pitch).run { if (exists()) readBytes() else null }
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream? {
+        return ByteArrayInputStream(
+            getAudioFile(speakText, rate, pitch).run { if (exists()) readBytes() else null }
+        )
     }
 
     override fun isDirectPlay() = isDirectPlayMode

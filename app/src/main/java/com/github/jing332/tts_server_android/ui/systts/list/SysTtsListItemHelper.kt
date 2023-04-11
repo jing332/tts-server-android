@@ -184,7 +184,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                     tts.onDestroy()
                 }.show()
 
-            withIO { audioPlayer.play(audio) }
+            withIO { audioPlayer.play(audio.readBytes()) }
             dlg.dismiss()
         }
     }

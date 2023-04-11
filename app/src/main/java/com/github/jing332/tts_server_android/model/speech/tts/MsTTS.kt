@@ -23,6 +23,8 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 
 @Parcelize
 @Serializable
@@ -147,11 +149,13 @@ data class MsTTS(
         return s
     }
 
-    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): ByteArray? {
-        return SysTtsLib.getAudio(
-            speakText,
-            this.copy(prosody = prosody.copy(rate = rate, pitch = pitch)),
-            format
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream {
+        return ByteArrayInputStream(
+            SysTtsLib.getAudio(
+                speakText,
+                this.copy(prosody = prosody.copy(rate = rate, pitch = pitch)),
+                format
+            )
         )
     }
 

@@ -98,12 +98,13 @@ class PluginTtsEditViewModel(application: Application) : AndroidViewModel(applic
             }
 
             if (audio == null) {
-                withMain { onFailure.invoke(Exception("null")) }
+                withMain { onFailure.invoke(Exception("audio == null")) }
                 return@runOnIO
             }
-            val ret = AudioDecoder.getSampleRateAndMime(audio)
+            val bytes = audio.readBytes()
+            val ret = AudioDecoder.getSampleRateAndMime(bytes)
 
-            withMain { onSuccess(audio, ret.first, ret.second) }
+            withMain { onSuccess(bytes, ret.first, ret.second) }
         }
     }
 

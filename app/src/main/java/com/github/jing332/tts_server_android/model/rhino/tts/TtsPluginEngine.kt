@@ -9,6 +9,8 @@ import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.script.javascript.RhinoScriptEngine
 import org.mozilla.javascript.NativeObject
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 
 open class TtsPluginEngine(
     private val pluginTTS: PluginTTS,
@@ -88,7 +90,7 @@ open class TtsPluginEngine(
 
     fun getAudio(
         text: String, rate: Int = 1, pitch: Int = 1
-    ): ByteArray? {
+    ): InputStream? {
         logger.d("getAudio()... $pluginTTS")
 
         return rhino.invokeMethod(
@@ -101,9 +103,14 @@ open class TtsPluginEngine(
             pluginTTS.volume,
             pitch
         )?.run {
-            if (this is ArrayList<*>) {
-                this.map { (it as Double).toInt().toByte() }.toByteArray()
-            } else this as ByteArray
+            when (this) {
+                is ArrayList<*> -> {
+                    ByteArrayInputStream(this.map { (it as Double).toInt().toByte() }.toByteArray())
+                }
+
+                is InputStream -> this
+                else -> ByteArrayInputStream(this as ByteArray)
+            }
         }
     }
 }

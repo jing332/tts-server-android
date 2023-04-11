@@ -63,7 +63,7 @@ abstract class ITextToSpeechSynthesizer<T> {
                     channel.send(AudioData(txtTts = subTxtTts, audio = audioResult, done = {
                         waitJob.cancel()
                     }))
-                    waitJob.start()
+                    waitJob.join()
                 }
                 channel.close()
             }

@@ -90,8 +90,10 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
                 val audio = pluginTTS.getAudioWithSystemParams(PluginConfig.sampleText)
                 if (audio == null)
                     pluginEngine.logger.w("音频为空！")
-                else
-                    pluginEngine.logger.i("音频大小: ${bytesToHumanReadable(audio.size.toLong())}")
+                else{
+                    val bytes = audio.readBytes()
+                    pluginEngine.logger.i("音频大小: ${bytesToHumanReadable(bytes.size.toLong())}")
+                }
 
             }.onFailure {
                 writeErrorLog(it)

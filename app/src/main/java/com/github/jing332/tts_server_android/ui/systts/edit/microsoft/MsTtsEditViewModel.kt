@@ -303,11 +303,12 @@ class MsTtsEditViewModel : ViewModel() {
                 return@runOnIO
             }
 
-            audio?.let {
-                val formats = AudioDecoder.getSampleRateAndMime(audio)
+            audio?.readBytes()?.let {
+                val formats = AudioDecoder.getSampleRateAndMime(it)
                 withMain { onSuccess.invoke(it, formats.first, formats.second) }
                 return@runOnIO
             }
+
             withMain { onFailure.invoke(Exception("音频为空")) }
         }
     }

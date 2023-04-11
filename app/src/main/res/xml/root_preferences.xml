@@ -32,6 +32,13 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/system_tts">
+        <SwitchPreferenceCompat
+            android:icon="@drawable/baseline_waves_24"
+            android:key="isStreamPlayModeEnabled"
+            android:persistent="false"
+            android:summary="开启流式播放，即边下边播。内置TTS暂不支持，插件TTS需主动适配。"
+            android:title="流式播放音频" />
+
         <ListPreference
             android:icon="@drawable/baseline_123_24"
             android:key="maxRetryCount"

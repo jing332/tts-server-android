@@ -101,7 +101,9 @@ class AudioDecoder {
         isDecoding = true
         try {
             // RIFF WAVEfmt直接去除文件头即可
-            if (srcData.size > 15 && srcData.copyOfRange(0, 15).decodeToString().endsWith("WAVEfmt")) {
+            if (srcData.size > 15 && srcData.copyOfRange(0, 15).decodeToString()
+                    .endsWith("WAVEfmt")
+            ) {
                 val data = srcData.copyOfRange(44, srcData.size)
                 onRead.invoke(data)
                 isDecoding = false
@@ -115,6 +117,113 @@ class AudioDecoder {
                 mediaExtractor.setDataSource(
                     "data:" + currentMime + ";base64," + srcData.toByteString().base64()
                 )
+
+            //找到音频流的索引
+            var audioTrackIndex = -1
+            var mime: String? = null
+            var trackFormat: MediaFormat? = null
+            for (i in 0 until mediaExtractor.trackCount) {
+                trackFormat = mediaExtractor.getTrackFormat(i)
+                mime = trackFormat.getString(MediaFormat.KEY_MIME)
+                if (!TextUtils.isEmpty(mime) && mime!!.startsWith("audio")) {
+                    audioTrackIndex = i
+                    Log.d(TAG, "找到音频流的index：$audioTrackIndex, mime：$mime")
+                    break
+                }
+            }
+            //没有找到音频流的情况下
+            if (audioTrackIndex == -1) {
+                stop()
+                throw AudioDecoderException(ERROR_CODE_NO_AUDIO_TRACK, "没有找到音频流")
+            }
+
+            //opus的音频必须设置这个才能正确的解码
+            if ("audio/opus" == mime) trackFormat?.compatOpus(sampleRate)
+
+            //选择此音轨
+            mediaExtractor.selectTrack(audioTrackIndex)
+            //创建解码器
+            val mediaCodec = getMediaCodec(mime.toString(), trackFormat!!)
+            mediaCodec.start()
+
+            val bufferInfo = MediaCodec.BufferInfo()
+            var inputBuffer: ByteBuffer?
+            val timeoutUs: Long = 10000
+
+            while (coroutineContext.isActive) {
+                //获取可用的inputBuffer，输入参数-1代表一直等到，0代表不等待，10*1000代表10秒超时
+                //超时时间10秒
+                val inputIndex = mediaCodec.dequeueInputBuffer(timeoutUs)
+                if (inputIndex < 0) {
+                    break
+                }
+                bufferInfo.presentationTimeUs = mediaExtractor.sampleTime
+
+                inputBuffer = mediaCodec.getInputBuffer(inputIndex)
+                if (inputBuffer != null) {
+                    inputBuffer.clear()
+                } else {
+                    continue
+                }
+                //从流中读取的采样数量
+                val sampleSize = mediaExtractor.readSampleData(inputBuffer, 0)
+                if (sampleSize > 0) {
+                    bufferInfo.size = sampleSize
+                    //入队解码
+                    mediaCodec.queueInputBuffer(inputIndex, 0, sampleSize, 0, 0)
+                    //移动到下一个采样点
+                    mediaExtractor.advance()
+                } else
+                    break
+
+                //取解码后的数据
+                var outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
+                //不一定能一次取完，所以要循环取
+                var outputBuffer: ByteBuffer?
+                val pcmData = ByteArray(bufferInfo.size)
+
+                while (coroutineContext.isActive && outputIndex >= 0) {
+                    outputBuffer = mediaCodec.getOutputBuffer(outputIndex)
+                    if (outputBuffer != null) {
+                        outputBuffer.get(pcmData)
+                        outputBuffer.clear() //用完后清空，复用
+                    }
+
+                    onRead.invoke(pcmData)
+                    mediaCodec.releaseOutputBuffer(outputIndex, false)
+                    outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
+                }
+            }
+        } catch (e: Exception) {
+            mediaCodec?.reset()
+            throw AudioDecoderException(cause = e)
+        }
+    }
+
+    /**
+     * @param sampleRate opus音频必须设置采样率
+     */
+    suspend fun doDecode(
+        ins: InputStream,
+        sampleRate: Int = 0,
+        onRead: suspend (pcmData: ByteArray) -> Unit,
+    ) {
+        isDecoding = true
+        try {
+
+            // RIFF WAVEfmt直接去除文件头即可
+//            if (srcData.size > 15 && srcData.copyOfRange(0, 15).decodeToString().endsWith("WAVEfmt")) {
+//                val data = srcData.copyOfRange(44, srcData.size)
+//                onRead.invoke(data)
+//                isDecoding = false
+//                return
+//            }
+
+            val mediaExtractor = MediaExtractor()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                mediaExtractor.setDataSource(InputStreamMediaDataSource(ins))
+            else
+                throw Exception("音频流解码器不支持 Android 5")
 
             //找到音频流的索引
             var audioTrackIndex = -1

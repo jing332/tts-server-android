@@ -6,13 +6,19 @@ import cn.hutool.core.lang.UUID
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.util.FileUtils
 import java.io.File
+import java.io.InputStream
 
 @Suppress("unused")
 open class JsExtensions(open val context: Context, open val engineId: String) : JsNet(), JsCrypto,
     JsUserInterface {
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun getAudioSampleRate(audio: ByteArray): Int {
         return AudioDecoder.getSampleRateAndMime(audio).first
+    }
+
+    fun getAudioSampleRate(ins: InputStream): Int {
+        return getAudioSampleRate(ins.readBytes())
     }
 
     /* Str转ByteArray */
