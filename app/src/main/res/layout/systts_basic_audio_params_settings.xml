@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         app:hint="@string/label_speed"
         app:max="300"
-        app:min="1"
+        app:min="0"
         app:progress="100" />
 
     <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         app:hint="@string/label_volume"
         app:max="300"
-        app:min="1"
+        app:min="0"
         app:progress="100" />
 
     <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         app:hint="@string/label_pitch"
         app:max="300"
-        app:min="1"
+        app:min="0"
         app:progress="100" />
 
 </LinearLayout>

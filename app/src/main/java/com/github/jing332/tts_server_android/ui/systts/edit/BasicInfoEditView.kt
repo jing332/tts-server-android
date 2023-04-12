@@ -23,7 +23,9 @@ import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditView
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
+import com.github.jing332.tts_server_android.model.speech.tts.AudioParams
 import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
+import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
@@ -336,42 +338,14 @@ class BasicInfoEditView @JvmOverloads constructor(
     }
 
     private fun displayAudioParamsSettings() {
-        val view = FrameLayout(context)
-        val binding =
-            SysttsBasicAudioParamsSettingsBinding.inflate(context.layoutInflater, view, true)
-        binding.apply {
-            seekSpeed.setFloatType(2)
-            seekVolume.setFloatType(2)
-            seekPitch.setFloatType(2)
-
-            seekSpeed.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
-                override fun onStopTrackingTouch(seekBar: Seekbar) {
-                    mData?.tts?.audioParams?.speed = seekBar.value as Float
-                }
-            }
-
-            seekVolume.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
-                override fun onStopTrackingTouch(seekBar: Seekbar) {
-                    mData?.tts?.audioParams?.volume = seekBar.value as Float
-                }
-            }
-
-            seekPitch.onSeekBarChangeListener = object : Seekbar.OnSeekBarChangeListener {
-                override fun onStopTrackingTouch(seekBar: Seekbar) {
-                    mData?.tts?.audioParams?.pitch = seekBar.value as Float
-                }
-            }
-
-            mData?.tts?.audioParams?.let {
-                seekSpeed.value = it.speed
-                seekVolume.value = it.volume
-                seekPitch.value = it.pitch
-            }
-        }
+        val view = AudioParamsSettingsView(context)
+        view.setData(mData!!.tts.audioParams)
 
         MaterialAlertDialogBuilder(context)
             .setTitle(R.string.audio_params_settings)
-            .setMessage("⚠️内置播放器开启时此处参数无效。")
+            .apply {
+                if (SysTtsConfig.isInAppPlayAudio) setMessage("⚠️内置播放器开启时此处参数无效。")
+            }
             .setView(view)
             .setPositiveButton(R.string.close, null)
             .setNegativeButton(R.string.reset) { _, _ ->

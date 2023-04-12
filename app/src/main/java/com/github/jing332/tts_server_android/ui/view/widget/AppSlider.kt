@@ -16,8 +16,6 @@ import splitties.systemservices.layoutInflater
 import java.util.Locale
 
 
-
-
 @SuppressLint("PrivateResource", "CustomViewStyleable")
 class AppSlider @JvmOverloads constructor(
     context: Context,
@@ -61,6 +59,21 @@ class AppSlider @JvmOverloads constructor(
             binding.tvHint.text = value
         }
 
+    private var floatN = 0
+    var floatValue: Float
+        get() = this.value / floatN
+        set(value) {
+            this.value = value * floatN
+        }
+
+    fun setFloat(n: Int) {
+        floatN = n
+        slider.setLabelFormatter {
+            (it.toInt() / n).toString()
+        }
+    }
+
+
     init {
         slider.addOnChangeListener { slider, value, fromUser ->
             binding.tvValue.text = value.toString()
@@ -99,15 +112,14 @@ class AppSlider @JvmOverloads constructor(
         stepSize = ta.getFloat(com.google.android.material.R.styleable.Slider_android_stepSize, 1f)
         value = ta.getFloat(com.google.android.material.R.styleable.Slider_android_value, valueFrom)
 
+        val floatN = ta.getInteger(R.styleable.AppSlider_floatN, 0)
+        if (floatN > 0) setFloat(floatN)
+
         binding.tvHint.text = ta.getString(R.styleable.AppSlider_hint)
         ta.recycle()
 
         binding.remove.contentDescription = "$hint -1"
         binding.add.contentDescription = "$hint +1"
-
-        slider.setLabelFormatter {
-             String.format(Locale.getDefault(), "%.2f", value.toFloat() / stepSize.toFloat())
-        }
 
         binding.slider.accessibilityLiveRegion = ACCESSIBILITY_LIVE_REGION_ASSERTIVE
         ViewCompat.setAccessibilityDelegate(binding.slider, object :

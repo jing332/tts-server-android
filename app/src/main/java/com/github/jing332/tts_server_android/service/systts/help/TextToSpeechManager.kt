@@ -16,29 +16,12 @@ import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
-import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException
-import com.github.jing332.tts_server_android.service.systts.help.exception.PlayException
-import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
-import com.github.jing332.tts_server_android.service.systts.help.exception.SpeechRuleException
-import com.github.jing332.tts_server_android.service.systts.help.exception.SynthesisException
-import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
+import com.github.jing332.tts_server_android.service.systts.help.exception.*
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.toast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.job
-import kotlinx.coroutines.launch
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
+import kotlinx.coroutines.*
 import kotlin.coroutines.coroutineContext
-import kotlin.math.roundToInt
 import kotlin.random.Random
-import kotlin.random.nextInt
 import kotlin.system.measureTimeMillis
 
 class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<ITextToSpeechEngine>() {
@@ -330,14 +313,14 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             kotlin.runCatching {
                 if (!kotlin.coroutines.coroutineContext.isActive) return@synthesizeText
                 val txtTts = data.txtTts
-
-                val audioParams = txtTts.tts.audioParams
+                val audioParams = txtTts.tts.audioParams.newIfFollow()
+                println(audioParams)
 
                 val srcSampleRate = txtTts.tts.audioFormat.sampleRate
                 val targetSampleRate = audioFormat.sampleRate
 
                 val sonic =
-                    if (audioParams.isDefaultValue || srcSampleRate == targetSampleRate) null
+                    if (audioParams.isDefaultValue && srcSampleRate == targetSampleRate) null
                     else Sonic(txtTts.tts.audioFormat.sampleRate, 1)
                 txtTts.playAudio(
                     sysRate, sysPitch, data.audio,
@@ -345,9 +328,9 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 { pcmAudio ->
                     if (sonic == null) onPcmAudio.invoke(pcmAudio)
                     else {
-                        sonic.volume = txtTts.tts.audioParams.volume
-                        sonic.speed = txtTts.tts.audioParams.speed
-                        sonic.pitch = txtTts.tts.audioParams.pitch
+                        sonic.volume = audioParams.volume
+                        sonic.speed = audioParams.speed
+                        sonic.pitch = audioParams.pitch
                         sonic.rate = srcSampleRate.toFloat() / targetSampleRate.toFloat()
 
                         sonic.writeBytesToStream(pcmAudio, pcmAudio.size)

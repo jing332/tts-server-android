@@ -16,6 +16,7 @@
         <attr name="valueTo" format="float" />
         <attr name="valueFrom" format="float" />
         <attr name="value" format="float" />
+        <attr name="floatN" format="integer" />
         <attr name="hint" />
     </declare-styleable>
 

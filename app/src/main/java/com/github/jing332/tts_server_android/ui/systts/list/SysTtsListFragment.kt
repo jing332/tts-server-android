@@ -31,6 +31,7 @@ import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.model.speech.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
@@ -168,6 +169,11 @@ class SysTtsListFragment : Fragment() {
                     true
                 }
 
+                R.id.menu_audio_params -> {
+                    displayAudioParamsSettings()
+                    true
+                }
+
                 R.id.menu_do_split -> {
                     SysTtsConfig.isSplitEnabled = !SysTtsConfig.isSplitEnabled
                     if (SysTtsConfig.isSplitEnabled)
@@ -236,6 +242,31 @@ class SysTtsListFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun displayAudioParamsSettings() {
+        val view = AudioParamsSettingsView(requireContext())
+        val params = AudioParams(
+            SysTtsConfig.audioParamsSpeed,
+            SysTtsConfig.audioParamsVolume,
+            SysTtsConfig.audioParamsPitch
+        )
+        view.setData(params, isGlobal = true)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.audio_params_settings)
+            .setView(view)
+            .setOnDismissListener {
+                SysTtsConfig.audioParamsSpeed = params.speed
+                SysTtsConfig.audioParamsVolume = params.volume
+                SysTtsConfig.audioParamsPitch = params.pitch
+                SystemTtsService.notifyUpdateConfig()
+            }
+            .setPositiveButton(R.string.close, null)
+            .setNegativeButton(R.string.reset) { _, _ ->
+                params.reset(1f)
+                requireContext().toast(R.string.ok_reset)
+            }
+            .show()
     }
 
     override fun onResume() {
