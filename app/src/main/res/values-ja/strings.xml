@@ -1,6 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name" translatable="false">TTS Server</string>
-    <string name="app_name_dev" translatable="false">D·TTS Server</string>
 
     <string name="app_switch">開閉（かいへい）</string>
     <string name="help">ヘルプ</string>
@@ -20,8 +18,8 @@
     <string name="app_down_again_to_exit">再度押せばアプリを終了します。</string>
     <string name="cannot_empty">入力は必須項目です！</string>
 
-    <string name="open_web">Text translated into Japanese: ウェブ版を開く</string>
-    <string name="check_update">Text translated into Japanese: 更新を確認</string>
+    <string name="open_web">ウェブ版を開く</string>
+    <string name="check_update">更新を確認</string>
     <string name="wake_lock">唤醒锁</string>
     <string name="about">テキストの翻訳：関する</string>
     <string name="config">配置</string>
@@ -34,7 +32,7 @@
     <string name="cancel">取消</string>
 
     <string name="label_read_aloud_target">朗読の目標：</string>
-    <string name="label_api">OK. (no need for translation as it is already concise and doesn\'t require further clarification)</string>
+    <string name="label_api">interface</string>
     <string name="label_language">言語：</string>
     <string name="label_voice">音声：</string>
     <string name="label_voice_role">角色:</string>
@@ -96,7 +94,7 @@
 
     <string name="add_config">追加設定</string>
     <string name="config_import_export">配置のインポート/エクスポート</string>
-    <string name="import_config">Text translated into Japanese: プロファイルをインポート</string>
+    <string name="import_config">プロファイルをインポート</string>
     <string name="export_config">そのままの書式やスタイルを保持し、「导出配置」を高品質で書かれた日本語に翻訳します。翻訳の際には以下の4つのルールに従います：1.原文の書式やスタイルを正確に保持します。2.翻訳は簡潔に行い、変更のない場合は元のテキストを繰り返します（例：「OK」）。3.対象読者は日本語を母語とする人々です。4.テキストはAndroidアプリのUIで使用されることがあります（スペースに限りがあるため、簡潔な翻訳が求められます！）。
 
 「导出配置」を翻訳すると、「設定のエクスポート」となります。</string>
@@ -117,8 +115,8 @@
 
     <string name="web">Webページ</string>
     <string name="clear_web_data">文字を消去する</string>
-    <string name="cleared">已清空 (yi qing kong) can be translated as \"Cleared\" or \"Emptied\" in Japanese.</string>
 
+    <string name="cleared">已清空 (yi qing kong) can be translated as \"\" or \"Emptied\" in Japanese.</string>
     <string name="import_from_clipboard">From clipboard import</string>
     <string name="url_net">翻訳するテキスト：ネットワーク接続</string>
     <string name="import_from_url">URLを上からインポートする。</string>
@@ -388,4 +386,5 @@
     <string name="audio_params">音频参数</string>
     <string name="label_speed">速度：</string>
     <string name="audio_params_settings">设置音频参数</string>
+    <string name="unknown">未知</string>
 </resources>

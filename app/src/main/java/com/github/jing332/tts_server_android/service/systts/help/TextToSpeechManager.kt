@@ -33,6 +33,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import kotlin.coroutines.coroutineContext
 import kotlin.system.measureTimeMillis
@@ -302,7 +303,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         mAudioPlayer?.release()
     }
 
-    @Suppress("UNCHECKED_CAST")
     suspend fun textToAudio(
         text: String,
         sysRate: Int,
@@ -319,14 +319,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             kotlin.runCatching {
                 if (!kotlin.coroutines.coroutineContext.isActive) return@synthesizeText
                 val txtTts = data.txtTts
-
-                if (data.audio?.data is Pair<*, *>) {
-                    val costTime = (data.audio.data as Pair<Long, Int>).first
-                    val retryTimes = (data.audio.data as Pair<Long, Int>).second
-                    listener?.onRequestSuccess(
-                        text, txtTts.tts, 0, costTime, retryTimes
-                    )
-                }
 
                 val audioParams = txtTts.tts.audioParams
                 val sonic = if (audioParams.isDefaultValue) null
@@ -346,9 +338,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         onPcmAudio.invoke(sonic.readBytesFromStream(pcmAudio.size))
                     }
                 }
-
-
-
                 listener?.onPlayFinished(txtTts.text, txtTts.tts)
             }.onFailure {
                 listener?.onError(TtsManagerException(cause = it, message = it.message))
@@ -358,6 +347,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         isSynthesizing = false
     }
 
+    @Suppress("UNCHECKED_CAST")
     private suspend fun TtsTextPair.playAudio(
         sysRate: Int,
         sysPitch: Int,
@@ -365,6 +355,16 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         onDone: suspend () -> Unit,
         onPcmAudio: suspend (pcmAudio: ByteArray) -> Unit,
     ) {
+        var costTime = 0L
+        var retryTimes = 0
+        if (audioResult?.data is Pair<*, *>) {
+            costTime = (audioResult.data as Pair<Long, Int>).first
+            retryTimes = (audioResult.data as Pair<Long, Int>).second
+            listener?.onRequestSuccess(
+                text, tts, 0, costTime, retryTimes
+            )
+        }
+
         // audioResult == null 说明请求失败
         if (audioResult == null && tts.speechRule.standbyTts?.isDirectPlay() == true) { // 直接播放备用TTS
             tts.speechRule.standbyTts?.startPlayWithSystemParams(text, sysRate, sysPitch)
@@ -381,6 +381,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         }
 
         if (SysTtsConfig.isStreamPlayModeEnabled) {
+            listener?.onRequestSuccess(text, tts, 0, costTime, retryTimes)
+
             if (tts.audioFormat.isNeedDecode) {
                 try {
                     mAudioDecoder.doDecode(audioResult.inputStream!!, audioFormat.sampleRate)
@@ -398,6 +400,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             val audio = audioResult.inputStream!!.readBytes()
             audioResult.inputStream!!.close()
             onDone.invoke()
+            listener?.onRequestSuccess(text, tts, audio.size, costTime, retryTimes)
 
             if (tts.audioFormat.isNeedDecode) {
                 if (SysTtsConfig.isInAppPlayAudio) {

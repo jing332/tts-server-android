@@ -1,6 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name" translatable="false">TTS Server</string>
-    <string name="app_name_dev" translatable="false">D·TTS Server</string>
 
     <string name="app_switch">Schalter</string>
     <string name="help">OK.</string>
@@ -13,7 +11,7 @@
 
     <string name="selected">OK</string>
 
-    <string name="close">OK. (no translation necessary, as it is already a widely used and recognized term in German)</string>
+    <string name="close">close</string>
     <string name="start">Starten.</string>
     <string name="follow">Folgen</string>
     <string name="custom">Benutzerdefiniert</string>
@@ -25,7 +23,7 @@
     <string name="wake_lock">唤醒锁</string>
     <string name="about">Über</string>
     <string name="config">Konfiguration</string>
-    <string name="log">日志 (pronounced as \"rizhi\") – meaning \"log\" or \"journal\" in English.</string>
+    <string name="log">log</string>
     <string name="background_whitelist">Battery-Optimierungs-Whitelist</string>
     <string name="desktop_shortcut">Desktop-Verknüpfung</string>
     <string name="added_background_whitelist">Hinzugefügt zur Hintergrund-Whitelist.</string>
@@ -374,4 +372,5 @@ Erfolgreich abgerufen, Größe: %1$s, Zeit: %2$s.</string>
     <string name="audio_params">音频参数</string>
     <string name="label_speed">速度：</string>
     <string name="audio_params_settings">设置音频参数</string>
+    <string name="unknown">未知</string>
 </resources>

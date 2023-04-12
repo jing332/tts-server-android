@@ -10,6 +10,39 @@ package com.github.jing332.tts_server_android.help.audio;
 
 public class Sonic {
 
+    public static byte[] upSampling(byte[] data, int inFrequency, int outFrequency) {
+        if (data.length < 4) {
+            return data;
+        }
+
+        int v1, v2;
+        short value;
+        double pos = 0;
+        int length = data.length;
+        double scale = (double) inFrequency / (double) outFrequency;
+        byte[] output = new byte[2 * (int) ((length / 2) / scale)];
+        for (int i = 0; i < output.length / 2; i++) {
+            int inPos = (int) pos;
+            double proportion = pos - inPos;
+
+            int inRealPos = inPos * 2;
+            if (inRealPos >= length - 3) {
+                inRealPos = length - 4;
+                proportion = 1;
+            }
+            v1 = ((data[inRealPos] & 255) | (data[inRealPos + 1] << 8));
+            v2 = ((data[inRealPos + 2] & 255) | (data[inRealPos + 3] << 8));
+
+            value = (short) (v1 * (1 - proportion) + v2 * proportion);
+
+            output[i * 2] = (byte) (value & 255);
+            output[i * 2 + 1] = (byte) ((value >> 8) & 255);
+
+            pos += scale;
+        }
+        return output;
+    }
+
     private static final int SONIC_MIN_PITCH = 65;
     private static final int SONIC_MAX_PITCH = 400;
     // This is used to down-sample some inputs to improve speed

@@ -394,7 +394,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                 logE("配置加载失败: $e")
             }
 
-            is PlayException ->{
+            is PlayException -> {
                 logE("播放失败: $e")
             }
 
@@ -418,11 +418,13 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         retryTimes: Int
     ) {
         if (!App.isSysTtsLogEnabled) return
+
+        val sizeStr = if (size <= 0) getString(R.string.unknown) else "${(size / 1024)}kb"
         logI(
             getString(
                 R.string.systts_log_success,
-                "<b>${(size / 1024)}kb</b>",
-                "<b>${costTime}ms</b>"
+                sizeStr.toHtmlBold(),
+                "${costTime}ms".toHtmlBold()
             )
         )
         // 重试成功

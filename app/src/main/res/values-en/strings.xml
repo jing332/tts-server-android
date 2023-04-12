@@ -1,6 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name" translatable="false">TTS Server</string>
-    <string name="app_name_dev" translatable="false">D·TTS Server</string>
 
     <string name="app_switch">Switch</string>
     <string name="help">Help</string>
@@ -375,4 +373,5 @@
     <string name="audio_params">音频参数</string>
     <string name="label_speed">速度：</string>
     <string name="audio_params_settings">设置音频参数</string>
+    <string name="unknown">未知</string>
 </resources>
