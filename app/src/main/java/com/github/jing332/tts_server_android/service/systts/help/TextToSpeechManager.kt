@@ -36,6 +36,9 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import kotlin.coroutines.coroutineContext
+import kotlin.math.roundToInt
+import kotlin.random.Random
+import kotlin.random.nextInt
 import kotlin.system.measureTimeMillis
 
 class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<ITextToSpeechEngine>() {
@@ -60,6 +63,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     private val mConfigMap: MutableMap<Int, List<ITextToSpeechEngine>> = mutableMapOf()
     private val mLoadedTtsMap = mutableSetOf<ITextToSpeechEngine>()
     private val mSpeechRuleHelper = SpeechRuleHelper()
+    private val mRandom = Random(System.currentTimeMillis())
 
     override suspend fun handleText(text: String): List<TtsTextPair> {
         kotlin.runCatching {
@@ -74,7 +78,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
                 mSpeechRuleHelper.handleText(text, tagTtsMap, defaultTtsConfig)
             } else {
-                listOf(TtsTextPair(mConfigMap[SpeechTarget.ALL]?.get(0) ?: defaultTtsConfig, text))
+                val list = mConfigMap[SpeechTarget.ALL] ?: listOf(defaultTtsConfig)
+                listOf(TtsTextPair(list[mRandom.nextInt(list.size)], text))
             }.run {
                 if (SysTtsConfig.isSplitEnabled) {
                     val list = mutableListOf<TtsTextPair>()
@@ -261,6 +266,12 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         }
     }
 
+    private fun initAudioFormat(@SpeechTarget target: Int) {
+        mConfigMap[target]?.maxBy { it.audioFormat.sampleRate }?.audioFormat?.also {
+            audioFormat = it
+        }
+    }
+
     override fun load() {
         try {
             if (SysTtsConfig.isReplaceEnabled)
@@ -269,7 +280,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             initBgm()
             if (SysTtsConfig.isMultiVoiceEnabled) {
                 val ok = initConfig(SpeechTarget.CUSTOM_TAG)
-                audioFormat = mConfigMap[SpeechTarget.CUSTOM_TAG]!![0].audioFormat
+                initAudioFormat(SpeechTarget.CUSTOM_TAG)
                 if (ok) {
                     mConfigMap[SpeechTarget.CUSTOM_TAG]?.getOrNull(0)?.also {
                         appDb.speechRule.getByReadRuleId(it.speechRule.tagRuleId)?.let { rule ->
@@ -283,7 +294,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             } else {
                 if (!initConfig(SpeechTarget.ALL))
                     context.toast(R.string.systts_warn_no_ra_all)
-                audioFormat = mConfigMap[SpeechTarget.ALL]!![0].audioFormat
+                initAudioFormat(SpeechTarget.ALL)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -321,8 +332,13 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 val txtTts = data.txtTts
 
                 val audioParams = txtTts.tts.audioParams
-                val sonic = if (audioParams.isDefaultValue) null
-                else Sonic(txtTts.tts.audioFormat.sampleRate, 1)
+
+                val srcSampleRate = txtTts.tts.audioFormat.sampleRate
+                val targetSampleRate = audioFormat.sampleRate
+
+                val sonic =
+                    if (audioParams.isDefaultValue || srcSampleRate == targetSampleRate) null
+                    else Sonic(txtTts.tts.audioFormat.sampleRate, 1)
                 txtTts.playAudio(
                     sysRate, sysPitch, data.audio,
                     onDone = { data.done.invoke() })
@@ -332,10 +348,12 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         sonic.volume = txtTts.tts.audioParams.volume
                         sonic.speed = txtTts.tts.audioParams.speed
                         sonic.pitch = txtTts.tts.audioParams.pitch
+                        sonic.rate = srcSampleRate.toFloat() / targetSampleRate.toFloat()
 
-                        val buffer = ByteArray(pcmAudio.size)
                         sonic.writeBytesToStream(pcmAudio, pcmAudio.size)
-                        onPcmAudio.invoke(sonic.readBytesFromStream(pcmAudio.size))
+                        val audio =
+                            sonic.readBytesFromStream(pcmAudio.size * targetSampleRate / srcSampleRate)
+                        onPcmAudio.invoke(audio)
                     }
                 }
                 listener?.onPlayFinished(txtTts.text, txtTts.tts)
