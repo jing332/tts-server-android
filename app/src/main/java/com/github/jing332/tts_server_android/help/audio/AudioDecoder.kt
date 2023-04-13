@@ -144,7 +144,7 @@ class AudioDecoder {
             val bytes = ByteArray(15)
             val len = ins.read(bytes)
 
-            if (len == -1) return
+            if (len == -1) throw AudioDecoderException(message = "读取音频流前15字节失败: len == -1")
             if (bytes.decodeToString().endsWith("WAVEfmt")) {
                 val bis = ins.source().buffer()
                 val buffer = ByteArray(4096)

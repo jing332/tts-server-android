@@ -314,7 +314,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 if (!kotlin.coroutines.coroutineContext.isActive) return@synthesizeText
                 val txtTts = data.txtTts
                 val audioParams = txtTts.tts.audioParams.newIfFollow()
-                println(audioParams)
 
                 val srcSampleRate = txtTts.tts.audioFormat.sampleRate
                 val targetSampleRate = audioFormat.sampleRate
@@ -361,9 +360,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         if (audioResult?.data is Pair<*, *>) {
             costTime = (audioResult.data as Pair<Long, Int>).first
             retryTimes = (audioResult.data as Pair<Long, Int>).second
-            listener?.onRequestSuccess(
-                text, tts, 0, costTime, retryTimes
-            )
         }
 
         // audioResult == null 说明请求失败
