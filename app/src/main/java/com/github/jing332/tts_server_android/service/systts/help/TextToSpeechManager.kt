@@ -189,7 +189,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     }
                 }
                 audioResult?.data = costTime to retryTimes
-//                listener?.onRequestSuccess(text, tts, 0, costTime, retryTimes)
             })
 
         return audioResult

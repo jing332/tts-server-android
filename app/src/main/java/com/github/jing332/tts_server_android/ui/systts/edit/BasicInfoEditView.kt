@@ -26,6 +26,7 @@ import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleE
 import com.github.jing332.tts_server_android.model.speech.tts.AudioParams
 import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
 import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
+import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
@@ -192,6 +193,15 @@ class BasicInfoEditView @JvmOverloads constructor(
                     }
                     if (this@BasicInfoEditView.raTarget != raTarget)
                         this@BasicInfoEditView.raTarget = raTarget
+
+                    if (raTarget == SpeechTarget.ALL) {
+                        binding.layoutTagData.removeAllViews()
+                        if (mData?.speechRule?.tagData?.isNotEmpty() == true) {
+                            AppDialogs.displayDeleteDialog(context, "当前标签已有数据 ${mData?.speechRule?.tagData}，\n是否删除？") {
+                                mData?.speechRule?.resetTag()
+                            }
+                        }
+                    }
                 }
             }
 

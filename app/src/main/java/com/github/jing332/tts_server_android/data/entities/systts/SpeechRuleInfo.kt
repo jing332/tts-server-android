@@ -50,4 +50,11 @@ data class SpeechRuleInfo(
     fun isTagSame(rule: SpeechRuleInfo): Boolean {
         return tag == rule.tag && tagRuleId == rule.tagRuleId
     }
+
+    fun resetTag(){
+        tag = ""
+        tagRuleId = ""
+        tagName = ""
+        tagData.clear()
+    }
 }
