@@ -31,6 +31,7 @@ class App : Application() {
                 allowStructuredMapKeys = true
                 ignoreUnknownKeys = true
                 prettyPrint = true
+                isLenient = true
                 explicitNulls = false //忽略为null的字段
                 allowStructuredMapKeys = true
             }

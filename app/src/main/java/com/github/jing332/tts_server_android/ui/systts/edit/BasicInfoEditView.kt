@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
@@ -22,12 +23,14 @@ import com.github.jing332.tts_server_android.databinding.SysttsBasicAudioParamsS
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
+import com.github.jing332.tts_server_android.model.rhino.core.type.ui.JSpinner
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
 import com.github.jing332.tts_server_android.model.speech.tts.AudioParams
 import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
 import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
+import com.github.jing332.tts_server_android.ui.view.AppMaterialSpinner
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
@@ -40,7 +43,9 @@ import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.serialization.decodeFromString
 import java.lang.Integer.max
+import kotlin.math.min
 
 class BasicInfoEditView @JvmOverloads constructor(
     context: Context,
@@ -197,7 +202,10 @@ class BasicInfoEditView @JvmOverloads constructor(
                     if (raTarget == SpeechTarget.ALL) {
                         binding.layoutTagData.removeAllViews()
                         if (mData?.speechRule?.tagData?.isNotEmpty() == true) {
-                            AppDialogs.displayDeleteDialog(context, "当前标签已有数据 ${mData?.speechRule?.tagData}，\n是否删除？") {
+                            AppDialogs.displayDeleteDialog(
+                                context,
+                                "当前标签已有数据 ${mData?.speechRule?.tagData}，\n是否删除？"
+                            ) {
                                 mData?.speechRule?.resetTag()
                             }
                         }
@@ -244,40 +252,103 @@ class BasicInfoEditView @JvmOverloads constructor(
                     position: Int,
                     id: Long
                 ) {
-                    mData?.apply {
-                        if (raTarget == SpeechTarget.CUSTOM_TAG)
-                            currentRule?.let {
-                                speechRule.tagRuleId = it.ruleId
-                                speechRule.tag = currentTag.key
-
-                                binding.layoutTagData.removeAllViews()
-                                runOnUI {
-                                    it.tagsData[speechRule.tag]?.forEach { defTag ->
-                                        val textInput = MaterialTextInput(context)
-                                        val key = defTag.key ?: ""
-                                        textInput.hint = defTag.value["label"]
-                                        textInput.isExpandedHintEnabled = true
-                                        textInput.placeholderText = defTag.value["hint"]
-                                        textInput.editText?.setText(
-                                            speechRule.tagData[key] ?: ""
-                                        )
-                                        textInput.editText?.addTextChangedListener { txt ->
-                                            speechRule.tagData[key] = txt.toString()
-                                        }
-                                        binding.layoutTagData.addView(
-                                            textInput,
-                                            ViewGroup.LayoutParams.MATCH_PARENT,
-                                            ViewGroup.LayoutParams.WRAP_CONTENT
-                                        )
-                                    }
-                                }
-
-                            }
+                    kotlin.runCatching {
+                        updateTagUI()
+                    }.onFailure {
+                        context.displayErrorDialog(it)
                     }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
 
+                }
+
+            }
+        }
+    }
+
+    private fun updateTagUI() {
+        mData?.apply {
+            if (raTarget != SpeechTarget.CUSTOM_TAG) return
+            if (currentRule == null) return
+            currentRule?.let {
+                speechRule.tagRuleId = it.ruleId
+                speechRule.tag = currentTag.key
+
+                binding.layoutTagData.removeAllViews()
+                runOnUI {
+                    it.tagsData[speechRule.tag]?.forEach { defTag ->
+                        val key = defTag.key ?: ""
+                        val label = defTag.value["label"]
+                        val hint = defTag.value["hint"]
+                        var view: View? = null
+                        val items = defTag.value["items"]
+                        if (items.isNullOrEmpty()) {
+                            val textInput = MaterialTextInput(context)
+                            textInput.hint = label
+                            textInput.isExpandedHintEnabled = true
+                            textInput.placeholderText = hint
+                            textInput.editText?.setText(
+                                speechRule.tagData[key] ?: ""
+                            )
+                            textInput.editText?.addTextChangedListener { txt ->
+                                speechRule.tagData[key] = txt.toString()
+                            }
+                            view = textInput
+                        } else {
+                            val spinenr = AppMaterialSpinner(context)
+                            spinenr.hint = label
+                            if (hint?.isNotEmpty() == true) {
+                                spinenr.til.setStartIconDrawable(R.drawable.ic_baseline_help_outline_24)
+                                spinenr.til.setStartIconContentDescription(R.string.tip)
+                                spinenr.til.setStartIconOnClickListener {
+                                    MaterialAlertDialogBuilder(context)
+                                        .setTitle(label)
+                                        .setMessage(hint)
+                                        .setPositiveButton(android.R.string.ok, null)
+                                        .show()
+                                }
+                            }
+
+                            val itemsMap: Map<String, String> =
+                                App.jsonBuilder.decodeFromString(items)
+                            val models = itemsMap.map { SpinnerItem(it.value, it.key) }
+                            spinenr.setListModel(models)
+
+                            val value = speechRule.tagData[key]
+                            val defaultValue = defTag.value["default"] ?: ""
+
+                            val index = models.indexOfFirst { it.value.toString() == value }
+                            val pos =
+                                if (index == -1) models.indexOfFirst { it.value.toString() == defaultValue } else index
+                            spinenr.selectedPosition = max(0, pos)
+
+                            spinenr.spinner.onItemSelectedListener =
+                                object : OnItemSelectedListener {
+                                    override fun onItemSelected(
+                                        parent: AdapterView<*>?,
+                                        view: View?,
+                                        position: Int,
+                                        id: Long
+                                    ) {
+                                        speechRule.tagData[key] =
+                                            models.getOrNull(position)?.value?.toString() ?: ""
+                                    }
+
+                                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                                    }
+
+                                }
+
+                            view = spinenr
+                        }
+
+                        binding.layoutTagData.addView(
+                            view,
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                    }
                 }
 
             }
