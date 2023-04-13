@@ -1,5 +1,7 @@
 package com.github.jing332.tts_server_android.model.rhino.core
 
+import android.util.Log
+import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.NativeMap
@@ -25,6 +27,7 @@ class Logger {
     }
 
     private fun write(text: CharSequence, level: Int) {
+        Log.d("RhinoLog", "${LogLevel.toString(level)} $text")
         for (listener in listenerSet) {
             listener.log(text, level)
         }

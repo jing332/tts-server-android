@@ -83,7 +83,7 @@ class WebSocketClient : WebSocketListener() {
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        Log.d(TAG, "onFailure: $t, $response")
+        Log.d(TAG, "onFailure: $t, $response ${response?.body?.string()}")
         super.onFailure(webSocket, t, response)
         connectStatus = Status.Failure(t, response)
         event?.onFailure(t)

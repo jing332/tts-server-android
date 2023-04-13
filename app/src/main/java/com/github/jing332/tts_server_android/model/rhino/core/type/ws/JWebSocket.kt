@@ -7,6 +7,7 @@ import com.github.jing332.tts_server_android.model.rhino.core.type.ws.internal.W
 import okhttp3.Request
 import okhttp3.Response
 import okio.ByteString
+import java.io.PipedOutputStream
 
 class JWebSocket(@JvmField val url: String, @JvmField val headers: Map<String, String>? = null) :
     JClass() {

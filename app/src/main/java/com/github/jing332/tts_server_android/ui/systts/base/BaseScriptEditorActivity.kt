@@ -2,14 +2,12 @@ package com.github.jing332.tts_server_android.ui.systts.base
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
@@ -27,16 +25,12 @@ import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.base.BackActivity
-import com.github.jing332.tts_server_android.ui.systts.KeyBoardToolPop
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
-import com.github.jing332.tts_server_android.util.FloatBtnUtil
-import com.github.jing332.tts_server_android.util.displayHeight
 import com.github.jing332.tts_server_android.util.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.rosemoe.sora.widget.CodeEditor
-import io.github.rosemoe.sora.widget.SymbolInputView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -255,13 +249,16 @@ abstract class BaseScriptEditorActivity : BackActivity() {
     abstract fun onDebug()
 
     open fun displayDebugBottomSheet(logger: Logger = getLogger()) {
-        val fragment =
-            supportFragmentManager.findFragmentByTag("PluginLoggerBottomSheetFragment")
-        if (fragment != null && fragment is LoggerBottomSheetFragment) {
-            fragment.clearLog()
-        } else {
-            val bottomSheetFragment = LoggerBottomSheetFragment(logger)
-            bottomSheetFragment.show(supportFragmentManager, "PluginLoggerBottomSheetFragment")
+        kotlin.runCatching {
+            val fragment =
+                supportFragmentManager.findFragmentByTag("PluginLoggerBottomSheetFragment")
+            if (fragment != null && fragment is LoggerBottomSheetFragment) {
+                fragment.clearLog()
+            } else {
+                val bottomSheetFragment = LoggerBottomSheetFragment(logger)
+                bottomSheetFragment.show(supportFragmentManager, "PluginLoggerBottomSheetFragment")
+            }
+
         }
     }
 }

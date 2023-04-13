@@ -89,22 +89,23 @@ class PluginTtsEditViewModel(application: Application) : AndroidViewModel(applic
         onFailure: suspend (Throwable) -> Unit
     ) {
         viewModelScope.runOnIO {
-            val audio = try {
+            kotlin.runCatching {
                 tts.onLoad()
-                tts.getAudioWithSystemParams(text)
-            } catch (e: Exception) {
-                withMain { onFailure.invoke(e) }
-                return@runOnIO
+                val audio = tts.getAudioWithSystemParams(text)
+                if (audio == null) {
+                    withMain { onFailure.invoke(Exception("audio == null")) }
+                    return@runOnIO
+                }
+                val bytes = audio.readBytes()
+                audio.close()
+
+                val ret = AudioDecoder.getSampleRateAndMime(bytes)
+
+                withMain { onSuccess(bytes, ret.first, ret.second) }
+            }.onFailure {
+                withMain { onFailure.invoke(it) }
             }
 
-            if (audio == null) {
-                withMain { onFailure.invoke(Exception("audio == null")) }
-                return@runOnIO
-            }
-            val bytes = audio.readBytes()
-            val ret = AudioDecoder.getSampleRateAndMime(bytes)
-
-            withMain { onSuccess(bytes, ret.first, ret.second) }
         }
     }
 
