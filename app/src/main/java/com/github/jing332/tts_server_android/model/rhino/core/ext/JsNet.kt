@@ -10,13 +10,18 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.File
+import java.util.Locale
 
 @Keep
 open class JsNet {
     @JvmOverloads
-    fun httpGet(url: String, headers: Map<String, String>? = null): Response {
-        return Net.get(url) {
-            headers?.let { setHeaders(it.toHeaders()) }
+    fun httpGet(url: CharSequence, headers: Map<CharSequence, CharSequence>? = null): Response {
+        return Net.get(url.toString()) {
+            headers?.let {
+                it.forEach {
+                    setHeader(it.key.toString(), it.value.toString())
+                }
+            }
         }.execute()
     }
 
@@ -24,10 +29,17 @@ open class JsNet {
      * HTTP GET
      */
     @JvmOverloads
-    fun httpGetString(url: String, headers: Map<String, String>? = null): String? {
+    fun httpGetString(
+        url: CharSequence,
+        headers: Map<CharSequence, CharSequence>? = null
+    ): String? {
         return try {
-            Net.get(url) {
-                headers?.let { setHeaders(it.toHeaders()) }
+            Net.get(url.toString()) {
+                headers?.let {
+                    it.forEach {
+                        setHeader(it.key.toString(), it.value.toString())
+                    }
+                }
             }.execute<String>()
         } catch (e: ConvertException) {
             throw Exception("Body is not a String, HTTP-${e.response.code}=${e.response.message}")
@@ -35,7 +47,10 @@ open class JsNet {
     }
 
     @JvmOverloads
-    fun httpGetBytes(url: String, headers: Map<String, String>? = null): ByteArray? {
+    fun httpGetBytes(
+        url: CharSequence,
+        headers: Map<CharSequence, CharSequence>? = null
+    ): ByteArray? {
         return try {
             httpGet(url, headers).body?.bytes()
         } catch (e: ConvertException) {
@@ -48,13 +63,17 @@ open class JsNet {
      */
     @JvmOverloads
     fun httpPost(
-        url: String,
-        body: String? = null,
-        headers: Map<String, String>? = null
+        url: CharSequence,
+        body: CharSequence? = null,
+        headers: Map<CharSequence, CharSequence>? = null
     ): Response {
-        return Net.post(url) {
-            body?.let { this.body = it.toRequestBody() }
-            headers?.let { setHeaders(it.toHeaders()) }
+        return Net.post(url.toString()) {
+            body?.let { this.body = it.toString().toRequestBody() }
+            headers?.let {
+                it.forEach {
+                    setHeader(it.key.toString(), it.value.toString())
+                }
+            }
         }.execute()
     }
 
@@ -93,13 +112,17 @@ open class JsNet {
 
     @JvmOverloads
     fun httpPostMultipart(
-        url: String,
+        url: CharSequence,
         form: Map<String, Any>,
         type: String = "multipart/form-data",
-        headers: Map<String, String>? = null
+        headers: Map<CharSequence, CharSequence>? = null
     ): Response {
-        return Net.post(url) {
-            headers?.let { setHeaders(it.toHeaders()) }
+        return Net.post(url.toString()) {
+            headers?.let {
+                it.forEach {
+                    setHeader(it.key.toString(), it.value.toString())
+                }
+            }
             body = postMultipart(type, form).build()
         }.execute()
     }

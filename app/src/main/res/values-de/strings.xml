@@ -1,21 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <string name="app_switch">Schalter</string>
-    <string name="help">OK.</string>
+    <string name="help">Hilfe</string>
     <string name="warning">Warnung</string>
-    <string name="reset">OK.</string>
-    <string name="exit">退出</string>
-    <string name="copied">已复制</string>
-    <string name="ok_reset">OK</string>
-    <string name="loading">加载中</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="exit">Beenden</string>
+    <string name="copied">Kopiert</string>
+    <string name="ok_reset">OK. Zurücksetzen.</string>
+    <string name="loading">Laden</string>
 
-    <string name="selected">OK</string>
+    <string name="selected">Ausgewählt</string>
 
-    <string name="close">close</string>
-    <string name="start">Starten.</string>
+    <string name="close">Schließen</string>
+    <string name="start">Start</string>
     <string name="follow">Folgen</string>
     <string name="custom">Benutzerdefiniert</string>
-    <string name="app_down_again_to_exit">再按一次退出程序</string>
+    <string name="app_down_again_to_exit">Drücken Sie erneut, um zu beenden</string>
     <string name="cannot_empty">Pflichtfeld!</string>
 
     <string name="open_web">打开网页版</string>
@@ -52,7 +52,7 @@
     <string name="systts_api_azure">微软Azure-网页演示接口</string>
     <string name="systts_api_creation">(⚠️ 已失效)微软Creation-网页演示接口</string>
 
-    <string name="systts_state_idle">TTS空闲中</string>
+    <string name="systts_state_idle">TTS空闲</string>
     <string name="systts_state_synthesizing">TTS合成中</string>
     <string name="systts_service">系统TTS服务</string>
 
@@ -178,7 +178,7 @@
 
     <string name="systts_please_check_multi_voice_option">Bitte wähle zuerst die Option \"Mehrere Sprachen\" im Menü oben rechts aus!</string>
     <string name="systts_sample_rate_different_in_enabled_list">Es wurde festgestellt, dass im Konfigurationsprofil ein abweichendes Format/Abtastrate aktiviert ist. Dies kann zu ungewöhnlichen Tonhöhen führen (z.B. dumpfer oder schriller Klang). Bitte wechseln Sie manuell zu einem Profil mit derselben Format/Abtastrate oder öffnen Sie die Option \"Verwenden des integrierten Players\" in der rechten oberen Ecke.</string>
-    <string name="group_expanded">分组 已展开</string>
+    <string name="group_expanded">Gruppe ausgeklappt</string>
     <string name="group_collapsed">Gruppe zusammengeklappt</string>
     <string name="systts_desc_list_count_info">Anzahl insgesamt: %1$d. Aktiviert: %2$d.</string>
     <string name="systts_list_item_desc">目标%1$s，接口%2$s，属性：%3$s，格式：%4$s</string>
@@ -193,17 +193,15 @@
 
     <string name="content">Inhalt.</string>
     <string name="name">Name</string>
-    <string name="unnamed">未命名</string>
+    <string name="unnamed">Unbenannt</string>
     <string name="rename">Umbenennen</string>
     <string name="test_failed">Fehler bei der Überprüfung.</string>
     <string name="enabled">Aktiviert.</string>
     <string name="choice_item">Wählen Sie %1$s aus.</string>
     <string name="import_failed">Import fehlgeschlagen.</string>
 
-    <string name="clipboard">Kurze Übersetzung: \"Zwischenablage\"
-
-Langere Übersetzung: Die \"Zwischenablage\" ist ein Speicherbereich in der Computertechnologie, der es Benutzern ermöglicht, Text oder Daten auszuschneiden, zu kopieren und einzufügen. In der Android-App wird der Begriff \"Zwischenablage\" oft mit dem Symbol eines Scheren- und Papierstücks dargestellt.</string>
-    <string name="type">Typ (OK)</string>
+    <string name="clipboard">Zwischenablage</string>
+    <string name="type">Type</string>
     <string name="source">Herkunft</string>
     <string name="legado">Lesen Sie Legado.</string>
     <string name="str_import">Importieren</string>
@@ -253,7 +251,7 @@ Erfolgreich abgerufen, Größe: %1$s, Zeit: %2$s.</string>
     <string name="label_tts_engine">TTS Engine:</string>
     <string name="type_of_data">Datentypen</string>
     <string name="str_key">Schlüssel</string>
-    <string name="str_value">OK. (There is no context or meaning provided for the word \"值\". Please provide more context for me to provide an accurate translation.)</string>
+    <string name="str_value">Value</string>
     <string name="add_extra_params">Neue zusätzliche Parameter erstellen.</string>
     <string name="edit_extra_parameter">Bearbeiten Sie zusätzliche Parameter</string>
     <string name="as_standby">作为备用</string>
@@ -373,4 +371,6 @@ Erfolgreich abgerufen, Größe: %1$s, Zeit: %2$s.</string>
     <string name="label_speed">速度：</string>
     <string name="audio_params_settings">设置音频参数</string>
     <string name="unknown">未知</string>
+    <string name="plugin_vars">插件变量</string>
+    <string name="plugin_set_vars">设置变量</string>
 </resources>

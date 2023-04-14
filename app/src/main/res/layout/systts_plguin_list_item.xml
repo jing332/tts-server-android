@@ -66,22 +66,22 @@
                     android:contentDescription="@string/desc_edit_item"
                     android:scaleType="centerInside"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/btn_delete"
+                    app:layout_constraintEnd_toStartOf="@id/btn_options"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_baseline_edit_24" />
 
                 <ImageButton
-                    android:id="@+id/btn_delete"
+                    android:id="@+id/btn_options"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginEnd="4dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/desc_delete_item"
+                    android:contentDescription="@string/more_options"
                     android:scaleType="centerInside"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_delete_forever_24" />
+                    app:srcCompat="@drawable/ic_baseline_more_vert_24" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
     </FrameLayout>

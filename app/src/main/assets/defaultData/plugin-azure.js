@@ -1,5 +1,8 @@
-let key = 'KEY'
-let region = 'eastus'
+// 请点击保存后在 更多选项按钮(垂直三个点) -> 设置变量 中设置密钥和区域
+// Please set the key and region in "More options" -> "Variables" after clicking save.
+
+let key = ttsrv.userVars['key'] || 'Default Key'
+let region = ttsrv.userVars['region'] || 'eastus'
 
 let format = "audio-24khz-48kbitrate-mono-mp3"
 let sampleRate = 24000 // 对应24khz. 格式后带有opus的实际采样率是其2倍
@@ -10,6 +13,10 @@ let PluginJS = {
     "author": "TTS Server",
     "description": "",
     "version": 2,
+    "vars":{
+        key:{label:"密钥 Key"},
+        region:{label:"区域 Region", hint:"为空时使用默认'eastus'"},
+    },
 
     "getAudio": function (text, locale, voice, rate, volume, pitch) {
         rate = (rate * 2) - 100
@@ -29,17 +36,24 @@ let PluginJS = {
             role = 'default'
         }
 
+        let textSsml = ''
+        let langSkill = ttsrv.tts.data['languageSkill']
+        if (langSkill == "" || langSkill == null) {
+            textSsml = text
+        }else{
+            textSsml = `<lang xml:lang="${langSkill}">${text}</lang>`
+        }
+
         let ssml = `
         <speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="zh-CN">
             <voice name="${voice}">
                 <mstts:express-as style="${style}" styledegree="${styleDegree}" role="${role}">
-                    <prosody rate="${rate}%" pitch="${pitch}%" volume="${volume}">${text}</prosody>
+                    <prosody rate="${rate}%" pitch="${pitch}%" volume="${volume}">${textSsml}</prosody>
                 </mstts:express-as>
             </voice >
          </speak >
         `
-
-        logger.d(ssml)
+//        logger.d(ssml)
         return getAudioInternal(ssml, format)
     },
 }
@@ -53,6 +67,10 @@ function getAudioInternal(ssml, format) {
     }
     let resp = ttsrv.httpPost(ttsUrl, ssml, headers)
     if (resp.code() !== 200) {
+        if (resp.code() === 401) {
+            throw "Unauthorized 请检查密钥与区域是否正确。"
+        }
+
         throw "音频获取失败: HTTP-" + resp.code()
     }
 
@@ -63,6 +81,9 @@ function getAudioInternal(ssml, format) {
 let voices = {}
 // 当前语言下的voice
 let currentVoices = new Map()
+
+// 语言技能 二级语言
+let skillSpinner
 
 let styleSpinner
 let roleSpinner
@@ -124,100 +145,129 @@ let EditorJS = {
         voices = JSON.parse(jsonStr)
     },
 
-    "onLoadUI": function (ctx, linerLayout) {
-        let layout = new LinearLayout(ctx)
-        layout.orientation = LinearLayout.HORIZONTAL // 水平布局
+  "onLoadUI": function (ctx, linerLayout) {
+         let layout = new LinearLayout(ctx)
+         layout.orientation = LinearLayout.HORIZONTAL // 水平布局
+         let params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1)
 
-        styleSpinner = JSpinner(ctx, "风格 (style)")
-        let params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1)
-        styleSpinner.layoutParams = params
-        layout.addView(styleSpinner)
-        ttsrv.setMargins(styleSpinner, 2, 4, 0, 0)
-        styleSpinner.setOnItemSelected(function (spinner, pos, item) {
-            ttsrv.tts.data['style'] = item.value
-            // 默认 || value为空 || value空字符串
-            if (pos === 0 || !item.value || item.value === "") {
-                seekStyle.visibility = View.GONE // 移除风格强度
-            } else {
-                seekStyle.visibility = View.VISIBLE // 显示
-            }
-        })
+         skillSpinner = JSpinner(ctx, "语言技能 (language skill)")
+         linerLayout.addView(skillSpinner)
+         ttsrv.setMargins(skillSpinner, 2, 4, 0, 0)
+         skillSpinner.setOnItemSelected(function (spinner, pos, item) {
+             ttsrv.tts.data['languageSkill'] = item.value + ''
+         })
 
-        roleSpinner = JSpinner(ctx, "角色 (role)")
-        roleSpinner.layoutParams = params
-        layout.addView(roleSpinner)
-        ttsrv.setMargins(roleSpinner, 0, 4, 2, 0)
-        roleSpinner.setOnItemSelected(function (spinner, pos, item) {
-            ttsrv.tts.data['role'] = item.value
-        })
-        linerLayout.addView(layout)
+         styleSpinner = JSpinner(ctx, "风格 (style)")
+         styleSpinner.layoutParams = params
+         layout.addView(styleSpinner)
+         ttsrv.setMargins(styleSpinner, 2, 4, 0, 0)
+         styleSpinner.setOnItemSelected(function (spinner, pos, item) {
+             ttsrv.tts.data['style'] = item.value
+             // 默认 || value为空 || value空字符串
+             if (pos === 0 || !item.value || item.value === "") {
+                 seekStyle.visibility = View.GONE // 移除风格强度
+             } else {
+                 seekStyle.visibility = View.VISIBLE // 显示
+             }
+         })
 
-        seekStyle = JSeekBar(ctx, "风格强度 (Style degree)：")
-        linerLayout.addView(seekStyle)
-        ttsrv.setMargins(seekStyle, 0, 4, 0, -4)
-        seekStyle.setFloatType(2) // 二位小数
-        seekStyle.max = 200 //最大200个刻度
+         roleSpinner = JSpinner(ctx, "角色 (role)")
+         roleSpinner.layoutParams = params
+         layout.addView(roleSpinner)
+         ttsrv.setMargins(roleSpinner, 0, 4, 2, 0)
+         roleSpinner.setOnItemSelected(function (spinner, pos, item) {
+             ttsrv.tts.data['role'] = item.value
+         })
+         linerLayout.addView(layout)
 
-        let styleDegree = Number(ttsrv.tts.data['styleDegree'])
-        if (!styleDegree || isNaN(styleDegree)) {
-            styleDegree = 1.0
+         seekStyle = JSeekBar(ctx, "风格强度 (Style degree)：")
+         linerLayout.addView(seekStyle)
+         ttsrv.setMargins(seekStyle, 0, 4, 0, -4)
+         seekStyle.setFloatType(2) // 二位小数
+         seekStyle.max = 200 //最大200个刻度
 
-        }
-        seekStyle.value = new java.lang.Float(styleDegree)
+         let styleDegree = Number(ttsrv.tts.data['styleDegree'])
+         if (!styleDegree || isNaN(styleDegree)) {
+             styleDegree = 1.0
+         }
+         seekStyle.value = new java.lang.Float(styleDegree)
 
-        seekStyle.setOnChangeListener(
-            {
-                // 开始时
-                onStartTrackingTouch: function (seek) {
+         seekStyle.setOnChangeListener(
+             {
+                 // 开始时
+                 onStartTrackingTouch: function (seek) {
 
-                },
-                // 进度滑动更改时
-                onProgressChanged: function (seek, progress, fromUser) {
+                 },
+                 // 进度滑动更改时
+                 onProgressChanged: function (seek, progress, fromUser) {
 
-                },
-                // 停止时
-                onStopTrackingTouch: function (seek) {
-                    ttsrv.tts.data['styleDegree'] = Number(seek.value).toFixed(2)
-                },
-            }
-        )
-    },
+                 },
+                 // 停止时
+                 onStopTrackingTouch: function (seek) {
+                     ttsrv.tts.data['styleDegree'] = Number(seek.value).toFixed(2)
+                 },
+             }
+         )
+     },
 
-    "onVoiceChanged": function (locale, voiceCode) {
-        let vic = currentVoices.get(voiceCode)
+     "onVoiceChanged": function (locale, voiceCode) {
+         let vic = currentVoices.get(voiceCode)
 
-        let styles = vic['StyleList']
-        let styleItems = []
-        let stylePos = 0
-        if (styles) {
-            styleItems.push(Item("默认 (general)", ""))
-            styles.map(function (v, i) {
-                styleItems.push(Item(v, v))
-                if (v === ttsrv.tts.data['style'] + '') {
-                    stylePos = i + 1 //算上默认的item 所以要 +1
-                }
-            })
-        } else {
-            seekStyle.visibility = View.GONE
-        }
-        styleSpinner.items = styleItems
-        styleSpinner.selectedPosition = stylePos
+         let locale2List = vic['SecondaryLocaleList']
+         let locale2Items = []
+         let locale2Pos = 0
 
-        let roles = vic['RolePlayList']
-        let roleItems = []
-        let rolePos = 0
-        if (roles) {
-            roleItems.push(Item("默认 (default)", ""))
-            roles.map(function (v, i) {
-                roleItems.push(Item(v, v))
-                if (v === ttsrv.tts.data['role'] + '') {
-                    rolePos = i + 1 //算上默认的item 所以要 +1
-                }
-            })
-        }
-        roleSpinner.items = roleItems
-        roleSpinner.selectedPosition = rolePos
-    }
+         if (locale2List) {
+             locale2Items.push(Item("默认 (default)", ""))
+             locale2List.map(function (v, i) {
+                 let loc = java.util.Locale.forLanguageTag(v)
+                 let name = loc.getDisplayName(loc)
+                 locale2Items.push(Item(name, v))
+                 if (v === ttsrv.tts.data['languageSkill'] + '') {
+                     locale2Pos = i + 1
+                 }
+             })
+         }
+         skillSpinner.items = locale2Items
+         skillSpinner.selectedPosition = locale2Pos
 
+         if (locale2Items.length === 0) {
+             skillSpinner.visibility = View.GONE
+         }else{
+             skillSpinner.visibility = View.VISIBLE
+         }
+
+         let styles = vic['StyleList']
+         let styleItems = []
+         let stylePos = 0
+         if (styles) {
+             styleItems.push(Item("默认 (general)", ""))
+             styles.map(function (v, i) {
+                 styleItems.push(Item(v, v))
+                 if (v === ttsrv.tts.data['style'] + '') {
+                     stylePos = i + 1 //算上默认的item 所以要 +1
+                 }
+             })
+         } else {
+             seekStyle.visibility = View.GONE
+         }
+         styleSpinner.items = styleItems
+         styleSpinner.selectedPosition = stylePos
+
+         let roles = vic['RolePlayList']
+         let roleItems = []
+         let rolePos = 0
+         if (roles) {
+             roleItems.push(Item("默认 (default)", ""))
+             roles.map(function (v, i) {
+                 roleItems.push(Item(v, v))
+                 if (v === ttsrv.tts.data['role'] + '') {
+                     rolePos = i + 1 //算上默认的item 所以要 +1
+                 }
+             })
+         }
+         roleSpinner.items = roleItems
+         roleSpinner.selectedPosition = rolePos
+     }
 }
 

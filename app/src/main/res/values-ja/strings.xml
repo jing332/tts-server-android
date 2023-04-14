@@ -387,4 +387,6 @@
     <string name="label_speed">速度：</string>
     <string name="audio_params_settings">设置音频参数</string>
     <string name="unknown">未知</string>
+    <string name="plugin_vars">插件变量</string>
+    <string name="plugin_set_vars">设置变量</string>
 </resources>

@@ -70,8 +70,11 @@ abstract class BaseImportConfigBottomSheetFragment(
 
     fun setTopContentView(view: View) {
         binding.content.removeAllViews()
-        binding.content.addView(view)
+        binding.content.addView(view, )
     }
+
+    val contentView: View
+        get() = binding.content
 
     override fun onCreateView(
         inflater: LayoutInflater,

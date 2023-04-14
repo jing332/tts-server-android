@@ -20,7 +20,12 @@ open class TtsPluginEngine(
 ) : BaseScriptEngine(
     rhino = rhino, logger = logger,
     code = pluginTTS.requirePlugin.code,
-    ttsrvObject = EngineContext(pluginTTS, context, pluginTTS.requirePlugin.pluginId)
+    ttsrvObject = EngineContext(
+        pluginTTS,
+        pluginTTS.plugin!!.userVars,
+        context,
+        pluginTTS.requirePlugin.pluginId
+    )
 ) {
     private var mPlugin: Plugin
         inline get() = pluginTTS.plugin!!
@@ -50,6 +55,7 @@ open class TtsPluginEngine(
     private val pluginJsObject: NativeObject
         get() = findObject(OBJ_PLUGIN_JS)
 
+    @Suppress("UNCHECKED_CAST")
     fun evalPluginInfo(): Plugin {
         logger.d("evalPluginInfo()...")
         eval()
@@ -58,6 +64,15 @@ open class TtsPluginEngine(
             mPlugin.name = get("name").toString()
             mPlugin.pluginId = get("id").toString()
             mPlugin.author = get("author").toString()
+
+
+            try {
+                mPlugin.defVars = get("vars") as Map<String, Map<String, String>>
+
+            } catch (_: NullPointerException) {
+            } catch (t: Throwable) {
+                throw ClassCastException("vars解析失败").initCause(t)
+            }
 
             runCatching {
                 mPlugin.version = (get("version") as Double).toInt()

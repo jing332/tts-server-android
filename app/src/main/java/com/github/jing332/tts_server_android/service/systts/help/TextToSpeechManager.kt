@@ -173,16 +173,15 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                             tts.onStop()
                         }.job
                         timeoutJob.start()
-
-                        if (SysTtsConfig.isStreamPlayModeEnabled) {
-                            audioResult?.inputStream =
-                                tts.getAudioWithSystemParams(text, sysRate, sysPitch)
-                                    ?: throw RequestException(
-                                        errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
-                                        tts = tts, text = text
-                                    )
-                        } else {
-                            audioResult?.bytes = tts.getAudio(text)?.readBytes()
+                        audioResult?.inputStream =
+                            tts.getAudioWithSystemParams(text, sysRate, sysPitch)
+                                ?: throw RequestException(
+                                    errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
+                                    tts = tts, text = text
+                                )
+                        if (!SysTtsConfig.isStreamPlayModeEnabled) {
+                            audioResult?.bytes = audioResult?.inputStream?.readBytes()
+                            audioResult?.inputStream?.close()
                             if (audioResult?.bytes == null || audioResult?.bytes?.size!! < 1024)
                                 throw RequestException(
                                     errorCode = RequestException.ERROR_CODE_AUDIO_NULL,

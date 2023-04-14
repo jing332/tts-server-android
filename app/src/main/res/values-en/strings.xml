@@ -370,8 +370,10 @@
     <string name="grant_permission_all_file_msg">Otherwise, on some systems, it will be unable to read music files, causing playback failure!</string>
     <string name="format_error">Format error</string>
     <string name="systts_log_text_handle_failed">Text processing failed: %1$s</string>
-    <string name="audio_params">音频参数</string>
-    <string name="label_speed">速度：</string>
-    <string name="audio_params_settings">设置音频参数</string>
-    <string name="unknown">未知</string>
+    <string name="audio_params">Audio Params</string>
+    <string name="label_speed">Speed：</string>
+    <string name="audio_params_settings">Set Audio Params</string>
+    <string name="unknown">Unknown</string>
+    <string name="plugin_vars">Plugin Variables</string>
+    <string name="plugin_set_vars">Set Variables</string>
 </resources>

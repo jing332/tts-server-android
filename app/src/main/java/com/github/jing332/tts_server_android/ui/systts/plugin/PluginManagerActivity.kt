@@ -5,9 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.view.MenuCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.drake.brv.BindingAdapter
@@ -52,11 +54,32 @@ class PluginManagerActivity : BackActivity() {
             addType<PluginModel>(R.layout.systts_plguin_list_item)
             onCreate {
                 getBinding<SysttsPlguinListItemBinding>().apply {
-                    btnDelete.clickWithThrottle {
+                    itemView.clickWithThrottle {
+                        displayVarsSettings(getModel())
+                    }
+                    btnOptions.clickWithThrottle {
                         val model = getModel<PluginModel>()
-                        AppDialogs.displayDeleteDialog(
-                            this@PluginManagerActivity, model.title
-                        ) { appDb.pluginDao.delete(model.data) }
+
+                        androidx.appcompat.widget.PopupMenu(this@PluginManagerActivity, it).apply {
+                            menuInflater.inflate(R.menu.systts_plugin_item, menu)
+                            MenuCompat.setGroupDividerEnabled(menu, true)
+                            setForceShowIcon(true)
+
+                            setOnMenuItemClickListener { menuItem ->
+                                when (menuItem.itemId) {
+                                    R.id.menu_set_vars -> displayVarsSettings(model)
+
+                                    R.id.menu_remove -> {
+                                        AppDialogs.displayDeleteDialog(
+                                            this@PluginManagerActivity, model.title
+                                        ) { appDb.pluginDao.delete(model.data) }
+                                    }
+                                }
+
+                                true
+                            }
+                            show()
+                        }
                     }
                     btnEdit.clickWithThrottle {
                         startForResult.launch(
@@ -140,5 +163,13 @@ class PluginManagerActivity : BackActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+
+    private fun displayVarsSettings(model: PluginModel) {
+        val fragment = PluginVarsSettingsBottomSheetFragment()
+        fragment.arguments = Bundle().apply { putParcelable(KeyConst.KEY_DATA, model.data) }
+        fragment.show(supportFragmentManager, "PluginVarsSettingsBottomSheetFragment")
+
     }
 }

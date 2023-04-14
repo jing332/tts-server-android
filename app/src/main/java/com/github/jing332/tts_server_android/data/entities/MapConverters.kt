@@ -14,6 +14,16 @@ object MapConverters {
     }
 
     @TypeConverter
+    fun toNestMap(json: String): Map<String, Map<String, String>> {
+        return TypeConverterUtils.decodeFromString(json) ?: emptyMap()
+    }
+
+    @TypeConverter
+    fun fromNestMap(map: Map<String, Map<String, String>>): String {
+        return TypeConverterUtils.encodeToString(map) ?: ""
+    }
+
+    @TypeConverter
     fun toMapList(json: String): Map<String, List<Map<String, String>>> {
         return TypeConverterUtils.decodeFromString(json) ?: emptyMap()
     }

@@ -123,7 +123,7 @@ class AudioDecoder {
             }
         } catch (e: Exception) {
             mediaCodec?.reset()
-            throw AudioDecoderException(cause = e)
+            throw AudioDecoderException(cause = e, message = "音频解码失败")
         } finally {
             mediaExtractor.release()
         }
@@ -192,7 +192,7 @@ class AudioDecoder {
             }
         } catch (e: Exception) {
             mediaCodec?.reset()
-            throw AudioDecoderException(cause = e)
+            throw AudioDecoderException(cause = e, message = "音频解码失败")
         } finally {
             mediaExtractor.release()
         }
