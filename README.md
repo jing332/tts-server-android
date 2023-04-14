@@ -9,7 +9,7 @@
 
 本APP起初为阅读APP的网络朗读所用，在原有基础上，现已支持:
 
-* 内置微软接口(Edge大声朗读、Azure演示API)，可自定义HTTP请求，可导入其他本地TTS引擎，以及根据中文双引号的简单旁白/对话识别朗读
+* 内置微软接口(Edge大声朗读、~~Azure演示API~~ )，可自定义HTTP请求，可导入其他本地TTS引擎，以及根据中文双引号的简单旁白/对话识别朗读
   ，还有自动重试，备用配置，文本替换等更多功能。
 
 这是 [tts-server-go](https://github.com/jing332/tts-server-go)
@@ -34,16 +34,12 @@
 
 # FAQ
 
-### Azure websocket: bad handshake ？
-
-> 说明你的IP被微软服务器限制，使用低流量消耗的音频格式(16khz-32bitrate-mp3)可降低发生几率。
-
 ### 如何添加自己的Azure API？
 
 > 使用自定义HTTP TTS，见https:
 > https//github.com/jing332/tts-server-android/issues/43#issuecomment-1405072848
 >
-> (推荐)使用插件: 插件管理 -> 右上角添加 -> 填入Key与Region -> 保存并启用即可。
+> (推荐)使用最新开发版插件: 插件管理 -> 右上角添加 -> 保存 -> 设置变量 -> 填入Key与Region
 
 # Grateful
 
