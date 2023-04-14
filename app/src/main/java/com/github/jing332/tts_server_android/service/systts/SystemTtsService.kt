@@ -399,7 +399,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             }
 
             else -> {
-                logE("未知错误: $e")
+                logE("错误: $e")
                 e.printStackTrace()
             }
         }

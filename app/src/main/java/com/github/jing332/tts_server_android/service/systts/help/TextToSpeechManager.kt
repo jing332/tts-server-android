@@ -174,12 +174,22 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         }.job
                         timeoutJob.start()
 
-                        audioResult?.inputStream =
-                            tts.getAudioWithSystemParams(text, sysRate, sysPitch)
-                                ?: throw RequestException(
+                        if (SysTtsConfig.isStreamPlayModeEnabled) {
+                            audioResult?.inputStream =
+                                tts.getAudioWithSystemParams(text, sysRate, sysPitch)
+                                    ?: throw RequestException(
+                                        errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
+                                        tts = tts, text = text
+                                    )
+                        } else {
+                            audioResult?.bytes = tts.getAudio(text)?.readBytes()
+                            if (audioResult?.bytes == null || audioResult?.bytes?.size!! < 1024)
+                                throw RequestException(
                                     errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
                                     tts = tts, text = text
                                 )
+                        }
+
                         if (hasTimeout) throw RequestException(
                             tts = tts,
                             text = text,
@@ -378,7 +388,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
         if (SysTtsConfig.isStreamPlayModeEnabled) {
             listener?.onRequestSuccess(text, tts, 0, costTime, retryTimes)
-
             if (tts.audioFormat.isNeedDecode) {
                 try {
                     mAudioDecoder.doDecode(audioResult.inputStream!!, audioFormat.sampleRate)
@@ -393,9 +402,9 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 throw TtsManagerException("暂不支持流播放下的raw音频")
             }
         } else { // 全部加载到内存
-            val audio = audioResult.inputStream!!.readBytes()
-            audioResult.inputStream!!.close()
+            val audio = audioResult.bytes ?: return
             onDone.invoke()
+
             listener?.onRequestSuccess(text, tts, audio.size, costTime, retryTimes)
 
             if (tts.audioFormat.isNeedDecode) {

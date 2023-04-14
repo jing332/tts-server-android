@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 open class BaseAudioFormat(
     var sampleRate: Int = 16000,
     var bitRate: Int = AudioFormat.ENCODING_PCM_16BIT,
-    var isNeedDecode: Boolean = true,
+    var isNeedDecode: Boolean = true
 ) : Parcelable {
     override fun toString(): String {
         val str = if (isNeedDecode) " | " + app.getString(R.string.decode) else ""
