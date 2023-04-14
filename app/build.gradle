@@ -70,6 +70,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
+            signingConfig signingConfigs.release
             applicationIdSuffix ".debug"
             versionNameSuffix "_debug"
             splits.abi.enable = false
@@ -138,6 +139,7 @@ dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
+
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
@@ -191,6 +193,8 @@ dependencies {
     // Media
     implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.5'
+
+    debugImplementation  'com.github.getActivity:Logcat:11.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
