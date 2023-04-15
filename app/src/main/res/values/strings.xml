@@ -51,9 +51,6 @@
     <string name="label_port">端口:</string>
 
     <string name="systts_api_edge">微软Edge-大声朗读接口</string>
-    <string name="systts_api_azure">微软Azure-网页演示接口</string>
-    <string name="systts_api_creation">(⚠️ 已失效)微软Creation-网页演示接口</string>
-
     <string name="systts_state_idle">TTS空闲中</string>
     <string name="systts_state_synthesizing">TTS合成中</string>
     <string name="systts_service">系统TTS服务</string>
@@ -171,10 +168,6 @@
     <string name="systts_groups_multiple">分组可多选</string>
     <string name="systts_groups_multiple_hint">勾选分组时将不再互相排斥。</string>
 
-    <string name="systts_warn_no_ra_dialogue">⚠️缺少{对话}，使用默认！\n请启用对话配置。</string>
-    <string name="systts_warn_no_ra_all">⚠️缺少TTS配置，使用默认！\n请确保关闭多语音选项。</string>
-    <string name="systts_warn_no_ra_aside">⚠️缺少{旁白}，使用默认！\n请启用旁白配置。</string>
-
     <string name="systts_test_success">测试成功</string>
     <string name="systts_test_success_info">音频大小: %1$dKiB \n音频采样率：%2$d \n音频格式: %3$s</string>
 
@@ -226,7 +219,6 @@
     <string name="systts_log_finished_playing">播放完毕：%1$s</string>
     <string name="systts_log_start_retry">开始第 %1$d 次重试</string>
     <string name="unlimited">无限制</string>
-    <string name="systts_log_ip_is_restricted">您的IP可能已被微软服务器限制，换为流量消耗小的音频格式可大程度避免此情况。</string>
     <string name="local_file">文件</string>
     <string name="select_file">选择文件</string>
     <string name="select_file_hint">单击右侧按钮选择文件➡️</string>
@@ -362,7 +354,7 @@
     <string name="systts_not_found_speech_rule_tag">⚠️未找到朗读规则</string>
     <string name="no_files_in_dir">此目录下无文件</string>
     <string name="click_play">点击播放</string>
-    <string name="app_languge_update_warn">需要强行停止应用后才可完全显示新的语言！</string>
+    <string name="app_language_update_warn">需要强行停止应用后才可完全显示新的语言！</string>
     <string name="wake_lock_summary">开启唤醒锁可防止锁屏后CPU休眠，但部分系统可能会导致杀后台。</string>
     <string name="foreground_service_summary">设置为前台服务并显示通知以提高进程优先级。</string>
     <string name="foreground_service_and_notification">前台服务与通知</string>
@@ -375,4 +367,13 @@
     <string name="unknown">未知</string>
     <string name="plugin_vars">插件变量</string>
     <string name="plugin_set_vars">设置变量</string>
+    <string name="config_list">配置列表</string>
+    <string name="plugin">插件</string>
+    <string name="replace_rule">替换规则</string>
+    <string name="speech_rule">朗读规则</string>
+    <string name="invalid_scheme_msg">无效的Scheme: %1$s</string>
+    <string name="invalid_url_msg">无效的URL：%1$s</string>
+    <string name="invalid_path_msg">无效的Path：%1$s</string>
+    <string name="import_file_as">导入文件为…</string>
+    <string name="systts_no_speech_target_all">⚠️ 缺少{朗读全部}，使用默认！ 请确保开启多语音选项。</string>
 </resources>

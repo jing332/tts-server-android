@@ -49,8 +49,6 @@
     <string name="label_port">Port: </string>
 
     <string name="systts_api_edge">Microsoft Edge - Read aloud API</string>
-    <string name="systts_api_azure">Microsoft Azure - Web demo API</string>
-    <string name="systts_api_creation">(⚠️ Invalid)Microsoft Creation - Web demo API</string>
 
     <string name="systts_state_idle">TTS Idle</string>
     <string name="systts_state_synthesizing">TTS synthesizing</string>
@@ -168,10 +166,6 @@
     <string name="systts_groups_multiple">Group can multiple</string>
     <string name="systts_groups_multiple_hint">⚠️Checking groups will no longer be mutually exclusive</string>
 
-    <string name="systts_warn_no_ra_dialogue">⚠️Missing {dialogue}，use default configuration!</string>
-    <string name="systts_warn_no_ra_all">⚠️Missing {all}，use default configuration!</string>
-    <string name="systts_warn_no_ra_aside">⚠️Missing {aside}，use default configuration!</string>
-
     <string name="systts_test_success">Test was successful</string>
     <string name="systts_test_success_info">Size: %1$dKiB \nSample rate: %2$d \nMime: %3$s</string>
     <string name="systts_http_test_msg">Audio size：%1$d KiB \nFormat：%2$s \nSample rate：%3$d hz \nContent-Type：%4$s</string>
@@ -226,7 +220,6 @@
     <string name="systts_log_finished_playing">Finished playing: %1$s</string>
     <string name="systts_log_start_retry">Start the %1$dth retry</string>
     <string name="unlimited">Unlimited</string>
-    <string name="systts_log_ip_is_restricted">Your IP may have been restricted by the Microsoft server. Switching to an audio format with low traffic consumption can largely avoid this situation.</string>
     <string name="local_file">File</string>
     <string name="select_file">Select the file</string>
     <string name="select_file_hint">Click the button on the right to select the file➡️</string>
@@ -364,6 +357,8 @@
     <string name="systts_not_found_speech_rule_tag">⚠️Speech rules not found</string>
     <string name="no_files_in_dir">No files in this directory</string>
     <string name="click_play">Click to play</string>
+    <string name="app_language_update_warn">Need to force stop the app to fully display the new language!</string>
+
     <string name="wake_lock_summary">Turning on the wake lock can prevent the CPU from sleeping after the screen is locked, but it may cause background app process killing on some systems.</string>
     <string name="foreground_service_summary">Set as a foreground service and display notifications to increase process priority.</string>
     <string name="foreground_service_and_notification">Foreground service and notification</string>
@@ -376,4 +371,13 @@
     <string name="unknown">Unknown</string>
     <string name="plugin_vars">Plugin Variables</string>
     <string name="plugin_set_vars">Set Variables</string>
+    <string name="config_list">Config list</string>
+    <string name="plugin">Plugin</string>
+    <string name="replace_rule">Replace Rule</string>
+    <string name="speech_rule">Speech Rule</string>
+    <string name="invalid_scheme_msg">Invalid Scheme: %1$s</string>
+    <string name="invalid_url_msg">Invalid URL：%1$s</string>
+    <string name="invalid_path_msg">Invalid Path：%1$s</string>
+    <string name="import_file_as">Import file as …</string>
+    <string name="systts_no_speech_target_all">⚠️ 缺少{朗读全部}，使用默认！ 请确保开启多语音选项。</string>
 </resources>

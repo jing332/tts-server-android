@@ -171,7 +171,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             setOnPreferenceChangeListener { _, newValue ->
                 AppLocale.saveLocaleCodeToFile(requireContext(), newValue as String)
                 AppLocale.updateApplicationLocale(app)
-                longToast(R.string.app_languge_update_warn)
+                longToast(R.string.app_language_update_warn)
                 true
             }
 

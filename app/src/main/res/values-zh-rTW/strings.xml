@@ -48,9 +48,6 @@
     <string name="label_port">端口:</string>
 
     <string name="systts_api_edge">微軟Edge：大聲朗讀接口</string>
-    <string name="systts_api_azure">微軟Azure：網頁展示接口</string>
-    <string name="systts_api_creation">(⚠️ 已失效)微軟Creation：網頁展示接口</string>
-
     <string name="systts_state_idle">TTS空閒中</string>
     <string name="systts_state_synthesizing">TTS合成中</string>
     <string name="systts_service">系統TTS服務</string>
@@ -159,10 +156,6 @@
     <string name="systts_groups_multiple">分組可多選</string>
     <string name="systts_groups_multiple_hint">⚠ ️勾選分組時將不再互相排斥。</string>
 
-    <string name="systts_warn_no_ra_dialogue">⚠️ 缺少{對話}，使用預設！ \n請啟用對話配置。</string>
-    <string name="systts_warn_no_ra_all">⚠️ 缺少{全部}，使用預設！ \n請確保關閉多語音選項。</string>
-    <string name="systts_warn_no_ra_aside">⚠️  ️缺少{旁白}，使用預設！ \n請啟用旁白配置。</string>
-
     <string name="systts_test_success">測試成功</string>
     <string name="systts_test_success_info">音频大小: %1$dKiB \n音频采样率：%2$d \n音频格式: %3$s</string>
 
@@ -213,7 +206,7 @@
     <string name="systts_log_finished_playing">播放完畢：%1$s</string>
     <string name="systts_log_start_retry">開始第%1$d次重試</string>
     <string name="unlimited">無限制</string>
-    <string name="systts_log_ip_is_restricted">您的IP可能已被微軟服務器限制，換為流量消耗小的音訊格式可大程度避免此情况。</string>
+    <string name="tag">標籤</string>
     <string name="local_file">文件</string>
     <string name="select_file">選擇檔案</string>
     <string name="select_file_hint">按一下右側按鈕選擇檔案 ➡️</string>
@@ -342,13 +335,14 @@
     <string name="file_picker_mode_builtin">内置文件选择器</string>
     <string name="file_picker_mode_prompt">弹出选择提示</string>
     <string name="no_retries">不重试</string>
+
     <string name="systts_no_custom_tag_config_warn">⚠️无标签配置，请添加配置或关闭多语音选项！</string>
     <string name="tip">提示</string>
     <string name="systts_split_text_tip_msg">多语音选项开启时优先使用朗读规则中的分割脚本；关闭时使用内置分割规则。</string>
     <string name="systts_not_found_speech_rule_tag">⚠️未找到朗读规则</string>
     <string name="no_files_in_dir">此目录下无文件</string>
     <string name="click_play">点击播放</string>
-    <string name="app_languge_update_warn">需要强行停止应用后才可完全显示新的语言！</string>
+    <string name="app_language_update_warn">需要强行停止应用后才可完全显示新的语言！</string>
     <string name="wake_lock_summary">开启唤醒锁可防止锁屏后CPU休眠，但部分系统可能会导致杀后台。</string>
     <string name="foreground_service_summary">设置为前台服务并显示通知以提高进程优先级。</string>
     <string name="foreground_service_and_notification">前台服务与通知</string>
@@ -361,4 +355,13 @@
     <string name="unknown">未知</string>
     <string name="plugin_vars">插件变量</string>
     <string name="plugin_set_vars">设置变量</string>
+    <string name="config_list">配置列表</string>
+    <string name="plugin">插件</string>
+    <string name="replace_rule">替换规则</string>
+    <string name="speech_rule">朗读规则</string>
+    <string name="invalid_scheme_msg">无效的Scheme: %1$s</string>
+    <string name="invalid_url_msg">无效的URL：%1$s</string>
+    <string name="invalid_path_msg">无效的Path：%1$s</string>
+    <string name="import_file_as">导入文件为…</string>
+    <string name="systts_no_speech_target_all">⚠️ 缺少{朗读全部}，使用默认！ 请确保开启多语音选项。</string>
 </resources>

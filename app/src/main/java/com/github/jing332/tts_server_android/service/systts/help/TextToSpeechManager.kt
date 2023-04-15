@@ -286,7 +286,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
             } else {
                 if (!initConfig(SpeechTarget.ALL))
-                    context.toast(R.string.systts_warn_no_ra_all)
+                    context.toast(R.string.systts_no_speech_target_all)
                 initAudioFormat(SpeechTarget.ALL)
             }
         } catch (e: Exception) {

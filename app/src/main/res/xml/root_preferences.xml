@@ -3,7 +3,7 @@
 
     <PreferenceCategory app:title="@string/app_name">
         <ListPreference
-            android:dialogMessage="@string/app_languge_update_warn"
+            android:dialogMessage="@string/app_language_update_warn"
             android:persistent="false"
             app:icon="@drawable/ic_web"
             app:key="language"

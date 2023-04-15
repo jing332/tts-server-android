@@ -31,7 +31,6 @@ import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.github.jing332.tts_server_android.util.dp
 import com.github.jing332.tts_server_android.util.setMarginMatchParent
-import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -45,6 +44,7 @@ abstract class BaseImportConfigBottomSheetFragment(
     @StringRes
     protected var title: Int = R.string.import_config,
     var fileUri: Uri? = null,
+    var netUrl: String? = null,
 ) :
     BottomSheetDialogFragment() {
 
@@ -70,7 +70,7 @@ abstract class BaseImportConfigBottomSheetFragment(
 
     fun setTopContentView(view: View) {
         binding.content.removeAllViews()
-        binding.content.addView(view, )
+        binding.content.addView(view)
     }
 
     val contentView: View
@@ -109,42 +109,53 @@ abstract class BaseImportConfigBottomSheetFragment(
             }
 
             btnImport.clickWithThrottle {
-                waitDialog.show()
-                lifecycleScope.launch(Dispatchers.Main) {
-                    val json = try {
-                        withIO {
-                            binding.tilFilePath.editText?.tag as? String
-                                ?: readConfig(
-                                    sourceType,
-                                    binding.tilUrl.editText?.text.toString(),
-                                    fileUri,
-                                )
-                        }
-                    } catch (e: Exception) {
-                        requireContext().displayErrorDialog(e)
-                        return@launch
-                    } finally {
-                        waitDialog.dismiss()
-                    }
-
-                    kotlin.runCatching {
-                        if (checkJson(json))
-                            onImport(json)
-                        else
-                            throw Exception(getString(R.string.format_error))
-                    }.onFailure {
-                        requireContext().displayErrorDialog(it)
-                    }
-                }
+                importAction()
             }
         }
 
         fileUri?.let {
             binding.groupSource.check(R.id.btn_src_local_file)
             binding.tilFilePath.editText?.setText(fileUri.toString())
-            binding.btnImport.performClick()
+            importAction()
+        }
+
+        netUrl?.let { url ->
+            binding.groupSource.check(R.id.btn_src_url)
+            binding.tilUrl.editText?.setText(url)
+            importAction()
         }
     }
+
+    private fun importAction() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            waitDialog.show()
+            val json = try {
+                withIO {
+                    binding.tilFilePath.editText?.tag as? String
+                        ?: readConfig(
+                            sourceType,
+                            binding.tilUrl.editText?.text.toString(),
+                            fileUri,
+                        )
+                }
+            } catch (e: Exception) {
+                requireContext().displayErrorDialog(e)
+                return@launch
+            } finally {
+                waitDialog.dismiss()
+            }
+
+            kotlin.runCatching {
+                if (checkJson(json))
+                    onImport(json)
+                else
+                    throw Exception(getString(R.string.format_error))
+            }.onFailure {
+                requireContext().displayErrorDialog(it)
+            }
+        }
+    }
+
 
     abstract fun onImport(json: String)
 
@@ -166,7 +177,9 @@ abstract class BaseImportConfigBottomSheetFragment(
                 }
             }
 
-            SRC_FILE -> withContext(Dispatchers.IO) { uri?.readAllText(requireContext()) ?: throw  Exception("file uri is null!") }
+            SRC_FILE -> withContext(Dispatchers.IO) {
+                uri?.readAllText(requireContext()) ?: throw Exception("file uri is null!")
+            }
 
             else -> withMain { ClipboardUtils.text.toString() }
         }

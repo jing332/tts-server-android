@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.ui
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -10,7 +11,6 @@ import android.os.SystemClock
 import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.Menu
@@ -32,7 +32,6 @@ import com.github.jing332.tts_server_android.ShortCuts
 import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
-import com.github.jing332.tts_server_android.ui.base.import1.BaseImportConfigBottomSheetFragment
 import com.github.jing332.tts_server_android.util.*
 import com.github.jing332.tts_server_android.util.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -100,56 +99,68 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         lifecycleScope.runOnIO {
             ShortCuts.buildShortCuts(this)
-            if (AppConfig.isAutoCheckUpdateEnabled) {
-                Log.d(TAG, "check for update...")
+            if (AppConfig.isAutoCheckUpdateEnabled)
                 MyTools.checkUpdate(this)
-            }
         }
 
-        importFileFromIntent(intent)
+        importConfigFromIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        importFileFromIntent(intent)
+        importConfigFromIntent(intent)
+    }
+
+    private fun importConfigFromIntent(intent: Intent?) {
+        intent?.data?.let {
+            when (it.scheme) {
+                ContentResolver.SCHEME_CONTENT -> importFileFromIntent(intent)
+                ContentResolver.SCHEME_FILE -> importFileFromIntent(intent)
+                "ttsrv" -> importUrlFromIntent(intent)
+                else -> longToast(getString(R.string.invalid_scheme_msg))
+            }
+        }
+    }
+
+    private fun importUrlFromIntent(intent: Intent?) {
+        intent?.data?.let { uri ->
+            if (uri.scheme == "ttsrv") {
+                val path = uri.host ?: ""
+                val url = uri.path?.removePrefix("/") ?: ""
+                if (url.isBlank()) {
+                    longToast(getString(R.string.invalid_url_msg, url))
+                    intent.data = null
+                    return
+                }
+
+                val fragment = ImportConfigFactory.createFragment(path)
+                if (fragment == null) {
+                    longToast(getString(R.string.invalid_path_msg, path))
+                    intent.data = null
+                    return
+                }
+
+                fragment.netUrl = url
+                fragment.show(supportFragmentManager, "ImportConfigBottomSheetFragment")
+                intent.data = null
+            }
+        }
     }
 
     private fun importFileFromIntent(intent: Intent?) {
-        if (intent?.data != null)
+        if (intent?.data != null) {
+            val list = ImportConfigFactory.localizedTypeList(this).toList()
             MaterialAlertDialogBuilder(this)
-                .setTitle("导入文件为...")
-                .setItems(arrayOf("配置列表", "插件", "替换规则", "朗读规则")) { _, which ->
-                    var fragment: BaseImportConfigBottomSheetFragment? = null
-                    when (which) {
-                        0 -> {
-                            fragment =
-                                com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
-                            fragment.fileUri = intent.data
-                        }
-
-                        1 -> {
-                            fragment =
-                                com.github.jing332.tts_server_android.ui.systts.plugin.ImportConfigBottomSheetFragment()
-                            fragment.fileUri = intent.data
-                        }
-
-                        2 -> {
-                            fragment =
-                                com.github.jing332.tts_server_android.ui.systts.replace.ImportConfigBottomSheetFragment()
-                            fragment.fileUri = intent.data
-                        }
-
-                        3 -> {
-                            fragment =
-                                com.github.jing332.tts_server_android.ui.systts.speech_rule.ImportConfigBottomSheetFragment()
-                            fragment.fileUri = intent.data
-                        }
-                    }
-                    intent.data = null
+                .setTitle(R.string.import_file_as)
+                .setItems(list.map { it.second }.toTypedArray()) { _, which ->
+                    val fragment = ImportConfigFactory.createFragment(list[which].first)
+                    fragment?.fileUri = intent.data
                     fragment?.show(supportFragmentManager, "BaseImportConfigBottomSheetFragment")
+                    intent.data = null
                 }
                 .setPositiveButton(R.string.cancel, null)
                 .show()
+        }
     }
 
 
