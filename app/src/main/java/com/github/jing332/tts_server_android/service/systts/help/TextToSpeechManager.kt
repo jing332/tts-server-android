@@ -246,12 +246,14 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         appDb.systemTtsDao.getEnabledList(SpeechTarget.BGM).forEach {
             val tts = (it.tts as BgmTTS)
             val volume = if (tts.volume == 0) SysTtsConfig.bgmVolume else it.tts.volume / 1000f
-            println(volume)
             list.addAll(tts.musicList.map { path ->
                 Pair(volume, path)
             })
         }
-        if (list.isNotEmpty()) {
+        if (list.isEmpty()) {
+            mBgmPlayer?.release()
+            mBgmPlayer = null
+        } else {
             mBgmPlayer = mBgmPlayer ?: BgmPlayer(context)
             mBgmPlayer?.setPlayList(SysTtsConfig.isBgmShuffleEnabled, list)
         }

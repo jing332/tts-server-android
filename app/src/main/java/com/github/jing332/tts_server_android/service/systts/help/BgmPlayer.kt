@@ -54,10 +54,6 @@ class BgmPlayer(val context: Context) {
     fun play() {
         Log.d(TAG, "play()...")
         runOnUI {
-//            exoPlayer.currentMediaItem?.localConfiguration?.tag?.let { tag ->
-//                if (tag is Float)
-//                    exoPlayer.volume = tag
-//            }
             if (!exoPlayer.isPlaying) exoPlayer.play()
         }
     }

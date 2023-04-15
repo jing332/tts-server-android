@@ -51,15 +51,18 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         adapter.apply {
             holder.apply {
                 getBindingOrNull<SysttsListItemBinding>()?.apply {
-                    checkBoxSwitch.setOnClickListener { view ->
+                    checkBoxSwitch.setOnClickListener {
                         if (hasGroup) {
                             getModelOrNull<GroupModel>(findParentPosition())?.let { group ->
                                 // 组中的item位置
                                 val subPos = modelPosition - findParentPosition() - 1
-                                switchChanged(view, (group.itemSublist!![subPos] as ItemModel).data)
+                                switchChanged(
+                                    checkBoxSwitch,
+                                    (group.itemSublist!![subPos] as ItemModel).data
+                                )
                             }
                         } else
-                            switchChanged(view, getModel<ItemModel>().data)
+                            switchChanged(checkBoxSwitch, getModel<ItemModel>().data)
                     }
                     if (hasGroup)
                         checkBoxSwitch.setOnLongClickListener {
@@ -68,7 +71,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                         }
 
                     cardView.clickWithThrottle {
-                        displayQuickEditDialog(
+                        displayQuickEditBottomSheet(
                             itemView,
                             getModel<ItemModel>().data
                         )
@@ -82,10 +85,10 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                         val model = getModel<ItemModel>().data.copy()
                         if (model.speechTarget == SpeechTarget.BGM) return@setOnLongClickListener true
 
-                        if (model.speechTarget == SpeechTarget.ASIDE)
-                            model.speechTarget = SpeechTarget.DIALOGUE
+                        if (model.speechTarget == SpeechTarget.CUSTOM_TAG)
+                            model.speechTarget = SpeechTarget.ALL
                         else
-                            model.speechTarget = SpeechTarget.ASIDE
+                            model.speechTarget = SpeechTarget.CUSTOM_TAG
 
                         appDb.systemTtsDao.updateTts(model)
                         notifyTtsUpdate(model.isEnabled)
@@ -225,8 +228,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
             .setMessage(R.string.systts_please_check_multi_voice_option).create()
     }
 
-    private fun switchChanged(view: View?, current: SystemTts) {
-        val checkBox = view as CheckBox
+    private fun switchChanged(checkBox: CheckBox, current: SystemTts) {
         // 检测是否开启多语音
         if (setCheckBoxSwitch(appDb.systemTtsDao.allEnabledTts, current, checkBox.isChecked))
             notifyTtsUpdate()
@@ -242,12 +244,9 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         checked: Boolean
     ): Boolean {
         if (checked) {
-            //检测多语音是否开启
-            if (!SysTtsConfig.isMultiVoiceEnabled) {
-                val target = current.speechTarget
-                if (target == SpeechTarget.ASIDE || target == SpeechTarget.DIALOGUE)
-                    return false
-            }
+            // 多语音未开启 但勾选了自定义TAG
+            if (!SysTtsConfig.isMultiVoiceEnabled && current.speechTarget == SpeechTarget.CUSTOM_TAG)
+                return false
 
             if (current.isStandby) {
                 list.forEach {
@@ -270,7 +269,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun displayQuickEditDialog(v: View, data: SystemTts) {
+    private fun displayQuickEditBottomSheet(v: View, data: SystemTts) {
         // 修改数据要clone，不然对比时数据相同导致UI不更新
         data.clone<SystemTts>()?.let { clonedData ->
             val paramsEdit = clonedData.tts.getParamsEditView(context)

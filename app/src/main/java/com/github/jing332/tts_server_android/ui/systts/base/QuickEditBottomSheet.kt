@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.ui.systts.base
 
-import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,17 +11,16 @@ import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngin
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.BasicInfoEditView
 import com.github.jing332.tts_server_android.util.setMarginMatchParent
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class QuickEditBottomSheet(
-    val data: SystemTts,
+class QuickEditBottomSheet @JvmOverloads constructor(
+    val data: SystemTts? = null,
     private val isLiteMode: Boolean = false,
-    private val editView: BaseParamsEditView<*, ITextToSpeechEngine>,
-    private val dismissCallback: (dialog: DialogInterface) -> Boolean
+    private val editView: BaseParamsEditView<*, ITextToSpeechEngine>? = null,
+    private val dismissCallback: ((dialog: DialogInterface) -> Boolean)? = null
 ) :
     BottomSheetDialogFragment() {
+
     companion object {
         const val TAG = "QuickEditBottomSheet"
     }
@@ -40,6 +38,11 @@ class QuickEditBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (data == null || editView == null) {
+            dismiss()
+            return
+        }
 
         basicEdit.liteModeEnabled = isLiteMode
         basicEdit.setData(data)
@@ -65,7 +68,9 @@ class QuickEditBottomSheet(
     override fun onDismiss(dialog: DialogInterface) {
         basicEdit.saveData()
 
-        if (dismissCallback.invoke(dialog))
+        if (dismissCallback == null) {
+            super.onDismiss(dialog)
+        } else if (dismissCallback.invoke(dialog))
             super.onDismiss(dialog)
     }
 }
