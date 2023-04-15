@@ -390,13 +390,24 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         if (SysTtsConfig.isStreamPlayModeEnabled) {
             listener?.onRequestSuccess(text, tts, 0, costTime, retryTimes)
             if (tts.audioFormat.isNeedDecode) {
-                try {
-                    mAudioDecoder.doDecode(audioResult.inputStream!!, audioFormat.sampleRate)
-                    { pcmData -> onPcmAudio.invoke(pcmData) }
-                } catch (e: Exception) {
-                    throw PlayException(tts = tts, cause = e, message = "流播放下的音频解码失败")
-                } finally {
+                if (SysTtsConfig.isInAppPlayAudio) {
+                    mAudioPlayer = mAudioPlayer ?: AudioPlayer(context)
+                    mAudioPlayer?.play(
+                        audioResult.inputStream!!,
+                        SysTtsConfig.inAppPlaySpeed,
+                        SysTtsConfig.inAppPlayPitch
+                    )
                     onDone.invoke()
+                    audioResult.inputStream?.close()
+                } else {
+                    try {
+                        mAudioDecoder.doDecode(audioResult.inputStream!!, audioFormat.sampleRate)
+                        { pcmData -> onPcmAudio.invoke(pcmData) }
+                    } catch (e: Exception) {
+                        throw PlayException(tts = tts, cause = e, message = "流播放下的音频解码失败")
+                    } finally {
+                        onDone.invoke()
+                    }
                 }
             } else {
                 onDone.invoke()

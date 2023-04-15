@@ -16,6 +16,7 @@ import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngin
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
+import java.io.InputStream
 
 open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () -> T) :
     BackActivity() {
@@ -29,6 +30,11 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () 
     suspend fun playAudio(audio: ByteArray) {
         mAudioPlayer = mAudioPlayer ?: AudioPlayer(this, lifecycleScope)
         mAudioPlayer?.play(audio)
+    }
+
+    suspend fun playAudio(inputStream: InputStream) {
+        mAudioPlayer = mAudioPlayer ?: AudioPlayer(this, lifecycleScope)
+        mAudioPlayer?.play(inputStream)
     }
 
     fun stopPlay() {

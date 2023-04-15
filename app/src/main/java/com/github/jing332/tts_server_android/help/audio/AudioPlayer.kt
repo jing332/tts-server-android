@@ -6,10 +6,12 @@ import android.util.Log
 import com.drake.net.utils.runMain
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.help.audio.ExoPlayerHelper.createMediaSourceFromByteArray
+import com.github.jing332.tts_server_android.help.audio.ExoPlayerHelper.createMediaSourceFromInputStream
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
 import kotlinx.coroutines.*
+import java.io.InputStream
 
 @OptIn(DelicateCoroutinesApi::class)
 class AudioPlayer(val context: Context, val scope: CoroutineScope = GlobalScope) {
@@ -37,6 +39,26 @@ class AudioPlayer(val context: Context, val scope: CoroutineScope = GlobalScope)
                 }
             })
         }
+    }
+
+    suspend fun play(audio: InputStream, speed: Float = 1f, pitch: Float = 1f) {
+        mInAppPlayJob = scope.launch {
+            try {
+                withMain {
+                    exoPlayer.setMediaSource(createMediaSourceFromInputStream(audio))
+                    exoPlayer.playbackParameters =
+                        PlaybackParameters(speed, pitch)
+                    exoPlayer.prepare()
+                }
+                // 一直等待 直到 job.cancel
+                awaitCancellation()
+            } catch (e: CancellationException) {
+                Log.w(TAG, "in-app play job cancel: ${e.message}")
+                runMain { exoPlayer.stop() }
+            }
+        }
+        mInAppPlayJob?.join()
+        mInAppPlayJob = null
     }
 
     /**
