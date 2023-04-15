@@ -15,8 +15,10 @@ import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
 
-open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () -> T) : BackActivity() {
+open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () -> T) :
+    BackActivity() {
     companion object {
         const val KEY_DATA = "KEY_DATA"
         const val KEY_BASIC_VISIBLE = "KEY_BASIC_VISIBLE"
@@ -61,7 +63,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () 
         binding.basicEdit.visibility = if (visible) View.VISIBLE else View.GONE
         binding.divider.visibility = binding.basicEdit.visibility
 
-        binding.basicEdit.setData(systemTts)
+        binding.basicEdit.setData(systemTts, lifecycleScope)
     }
 
     fun setEditContentView(view: View?, testTil: TextInputLayout? = null) {

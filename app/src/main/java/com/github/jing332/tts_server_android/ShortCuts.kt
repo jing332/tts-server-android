@@ -44,7 +44,7 @@ object ShortCuts {
         return ShortcutInfoCompat.Builder(context, "replace_manager")
             .setShortLabel(context.getString(R.string.systts_replace_rule_manager))
             .setLongLabel(context.getString(R.string.systts_replace_rule_manager))
-            .setIcon(IconCompat.createWithResource(context, R.drawable.ic_baseline_find_replace_24))
+            .setIcon(IconCompat.createWithResource(context, R.drawable.ic_shortcut_replace))
             .setIntent(buildIntent<ReplaceManagerActivity>(context))
             .build()
     }
@@ -53,7 +53,7 @@ object ShortCuts {
         return ShortcutInfoCompat.Builder(context, "plugin_manager")
             .setShortLabel(context.getString(R.string.plugin_manager))
             .setLongLabel(context.getString(R.string.plugin_manager))
-            .setIcon(IconCompat.createWithResource(context, R.drawable.ic_plugin))
+            .setIcon(IconCompat.createWithResource(context, R.drawable.ic_shortcut_plugin))
             .setIntent(buildIntent<PluginManagerActivity>(context))
             .build()
     }

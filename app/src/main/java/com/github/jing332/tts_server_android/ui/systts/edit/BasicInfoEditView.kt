@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import com.drake.net.utils.withIO
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.SpeechTarget
@@ -41,8 +44,7 @@ import com.github.jing332.tts_server_android.util.runOnIO
 import com.github.jing332.tts_server_android.util.runOnUI
 import com.github.jing332.tts_server_android.util.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.serialization.decodeFromString
 import java.lang.Integer.max
 import kotlin.math.min
@@ -122,6 +124,7 @@ class BasicInfoEditView @JvmOverloads constructor(
             binding.btnStandbyHelp.isGone = value
             binding.cbStandby.isGone = value
             binding.btnPlayerSettings.isGone = value
+            binding.btnAudioParams.isGone = value
         }
 
     fun saveData() {
@@ -140,9 +143,8 @@ class BasicInfoEditView @JvmOverloads constructor(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    fun setData(data: SystemTts) {
-        GlobalScope.runOnIO {
+    fun setData(data: SystemTts, coroutineScope: CoroutineScope) {
+        coroutineScope.launch(Dispatchers.IO) {
             val groupList = appDb.systemTtsDao.allGroup
             binding.groupItems = groupList.map { SpinnerItem(it.name, it) }
             binding.groupCurrentPosition = groupList.indexOfFirst { it.id == data.groupId }
@@ -156,11 +158,12 @@ class BasicInfoEditView @JvmOverloads constructor(
             }
         }
 
-        this.mData = data
-        this.displayName = data.displayName ?: ""
+
+        mData = data
+        displayName = data.displayName ?: ""
         raTarget = data.speechRule.target
 
-        isStandby = data.isStandby
+        isStandby = data.speechRule.isStandby
     }
 
     fun checkDisplayNameEmpty(): Boolean {

@@ -18,6 +18,7 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import java.io.InputStream
 
 @Parcelize
 @Serializable
@@ -49,4 +50,8 @@ class BgmTTS(
         context.getString(R.string.total_n_folders, musicList.size.toString())
 
     override fun getParamsEditView(context: Context) = BgmTtsParamsEditView(context) to true
+
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream? {
+        throw Exception("请在编辑界面中点击音乐路径进行测试播放")
+    }
 }
