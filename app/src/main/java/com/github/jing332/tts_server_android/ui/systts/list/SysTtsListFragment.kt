@@ -16,7 +16,6 @@ import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
@@ -48,7 +47,6 @@ import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.flow.conflate
 import kotlin.math.min
 
 
@@ -88,7 +86,7 @@ class SysTtsListFragment : Fragment() {
         if (savedInstanceState != null) return
 
         val fragmentList = listOf(
-            ListGroupPageFragment(), ListPageFragment.newInstance()
+            ListGroupPageFragment(), ListAllPageFragment.newInstance()
         )
         vpAdapter = GroupPageAdapter(this, fragmentList)
         binding.viewPager.isSaveEnabled = false
@@ -103,12 +101,6 @@ class SysTtsListFragment : Fragment() {
         TabLayoutMediator(tabLayout, binding.viewPager) { tab, pos ->
             tab.text = tabTitles[pos]
         }.attach()
-
-        lifecycleScope.runOnIO {
-            appDb.systemTtsDao.flowAllTts.conflate().collect {
-                checkSampleRate(it)
-            }
-        }
 
         // 插入默认分组
         if (appDb.systemTtsDao.getGroup() == null) {
@@ -285,21 +277,6 @@ class SysTtsListFragment : Fragment() {
         if (savedInstanceState != null) return
 
         CompatSysTtsConfig.migrationConfig()
-    }
-
-    /* 警告 格式不同 */
-    private val formatWarnDialog by lazy {
-        MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.warning))
-            .setMessage(getString(R.string.systts_sample_rate_different_in_enabled_list))
-            .setPositiveButton(android.R.string.ok) { _, _ -> }.create()
-    }
-
-    /* 检查格式 如不同则显示对话框 */
-    private fun checkSampleRate(list: List<SystemTts>) {
-        SysTtsConfig.apply {
-            if (isMultiVoiceEnabled && !isInAppPlayAudio && !vm.checkMultiVoiceFormat(list))
-                runOnUI { formatWarnDialog.show() }
-        }
     }
 
     private fun notifyTtsUpdate(isUpdate: Boolean = true) {

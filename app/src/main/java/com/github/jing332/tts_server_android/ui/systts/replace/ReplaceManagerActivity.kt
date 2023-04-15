@@ -97,7 +97,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
                         )
                     }
 
-                    override fun onDelete(v: View, model: GroupModel) {
+                    override fun onRemove(v: View, model: GroupModel) {
                         AppDialogs.displayDeleteDialog(this@ReplaceManagerActivity, model.name) {
                             appDb.replaceRuleDao.deleteGroup(model.data)
                             appDb.replaceRuleDao.deleteAllByGroup(model.data.id)

@@ -12,19 +12,6 @@ class SysTtsListViewModel : ViewModel() {
         const val TAG = "TtsConfigFragmentViewModel"
     }
 
-    /**
-     * 检查多语音采样率是否相等
-     */
-    fun checkMultiVoiceFormat(list: List<SystemTts>): Boolean {
-        list.filter { it.isEnabled && !it.tts.isDirectPlay() && it.speechRule.target != SpeechTarget.BGM }
-            .ifEmpty { return true }
-            .let { enabledList ->
-                val sampleRate = enabledList[0].tts.audioFormat.sampleRate
-                val size = enabledList.filter { it.tts.audioFormat.sampleRate == sampleRate }.size
-                return enabledList.size == size
-            }
-    }
-
     /* 导出配置 */
     fun exportConfig(): String {
         return try {

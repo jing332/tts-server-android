@@ -8,7 +8,6 @@ import androidx.core.view.MenuCompat
 import com.drake.brv.BindingAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseListGroupItemBinding
-import com.github.jing332.tts_server_android.ui.systts.list.GroupModel
 import com.github.jing332.tts_server_android.util.clickWithThrottle
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -18,7 +17,7 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
         fun onGroupClick(v: View, model: T)
         fun onCheckedChange(v: MaterialCheckBox, model: T)
         fun onExport(v: View, model: T)
-        fun onDelete(v: View, model: T)
+        fun onRemove(v: View, model: T)
         fun onRename(v: View, model: T)
     }
 
@@ -114,12 +113,11 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
                                 menuInflater.inflate(R.menu.systts_list_group_more, menu)
                                 setOnMenuItemClickListener { item ->
                                     when (item.itemId) {
-                                        R.id.menu_export_config -> callback?.onExport(
-                                            it, getModel()
-                                        )
+                                        R.id.menu_export_config ->
+                                            callback?.onExport(it, getModel())
 
                                         R.id.menu_rename_group -> callback?.onRename(it, getModel())
-                                        R.id.menu_delete_group -> callback?.onDelete(it, getModel())
+                                        R.id.menu_remove_group -> callback?.onRemove(it, getModel())
                                     }
                                     true
                                 }

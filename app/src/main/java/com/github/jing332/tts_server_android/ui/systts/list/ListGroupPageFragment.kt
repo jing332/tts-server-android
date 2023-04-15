@@ -1,11 +1,9 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -21,7 +19,6 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsListCustomGroupFragmentBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
@@ -30,8 +27,6 @@ import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
-import com.github.jing332.tts_server_android.util.FileUtils
-import com.github.jing332.tts_server_android.util.ThrottleUtil
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.conflate
@@ -80,8 +75,8 @@ class ListGroupPageFragment : Fragment() {
                     exportGroup(model)
                 }
 
-                override fun onDelete(v: View, model: GroupModel) {
-                    deleteGroup(model.data)
+                override fun onRemove(v: View, model: GroupModel) {
+                    removeGroup(model.data)
                 }
 
                 override fun onRename(v: View, model: GroupModel) {
@@ -171,43 +166,36 @@ class ListGroupPageFragment : Fragment() {
 
     private var mLastDataSet: List<GroupWithSystemTts>? = null
     private suspend fun updateModels(list: List<GroupWithSystemTts>? = mLastDataSet) {
-        mLastDataSet = list
-        mLastDataSet?.let { dataSet ->
-            val models = withDefault {
-                dataSet.mapIndexed { i, v ->
-                    val checkState =
-                        when (v.list.filter { it.isEnabled }.size) {
-                            0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
-                            v.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
-                            else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
-                        }
+        withDefault {
+            mLastDataSet = list
+            mLastDataSet?.let { dataSet ->
+                val models = withDefault {
+                    dataSet.mapIndexed { i, v ->
+                        val checkState =
+                            when (v.list.filter { it.isEnabled }.size) {
+                                0 -> MaterialCheckBox.STATE_UNCHECKED           // 全未选
+                                v.list.size -> MaterialCheckBox.STATE_CHECKED   // 全选
+                                else -> MaterialCheckBox.STATE_INDETERMINATE    // 部分选
+                            }
 
-                    GroupModel(
-                        data = v.group,
-                        itemSublist = v.list.sortedBy { it.order }.map { ItemModel(data = it) },
-                    ).apply {
-                        itemGroupPosition = i
-                        checkedState = checkState
-                        itemExpand = v.group.isExpanded
+                        GroupModel(
+                            data = v.group,
+                            itemSublist = v.list.sortedBy { it.order }.map { ItemModel(data = it) },
+                        ).apply {
+                            itemGroupPosition = i
+                            checkedState = checkState
+                            itemExpand = v.group.isExpanded
+                        }
                     }
                 }
-            }
 
-            if (brv.models == null)
-                withMain { brv.models = models }
-            else {
-                withDefault { brv.setDifferModels(models) }
+                if (brv.models == null)
+                    withMain { brv.models = models }
+                else
+                    brv.setDifferModels(models)
+
             }
         }
-    }
-
-
-    private var savedData: ByteArray? = null
-    private lateinit var getFileUriToSave: ActivityResultLauncher<String>
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        getFileUriToSave =
-            FileUtils.registerResultCreateDocument(this, "application/json") { savedData }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -231,10 +219,9 @@ class ListGroupPageFragment : Fragment() {
                 data.copy(name = it.ifEmpty { getString(R.string.unnamed) })
             )
         }
-
     }
 
-    private fun deleteGroup(data: SystemTtsGroup) {
+    private fun removeGroup(data: SystemTtsGroup) {
         AppDialogs.displayDeleteDialog(requireContext(), data.name) {
             appDb.systemTtsDao.deleteGroupAndTts(data)
         }

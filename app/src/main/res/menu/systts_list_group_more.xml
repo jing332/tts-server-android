@@ -9,7 +9,7 @@
             android:title="@string/rename"
             app:iconTint="?attr/colorPrimary" />
         <item
-            android:id="@+id/menu_delete_group"
+            android:id="@+id/menu_remove_group"
             android:icon="@drawable/ic_baseline_delete_forever_24"
             android:title="@string/delete"
             app:iconTint="?attr/colorError" />
