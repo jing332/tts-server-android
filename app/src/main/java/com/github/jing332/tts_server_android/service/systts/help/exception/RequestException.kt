@@ -17,4 +17,12 @@ class RequestException(
         const val ERROR_CODE_TIMEOUT = 2
     }
 
+    override fun getLocalizedMessage(): String? {
+        return when (errorCode) {
+            ERROR_CODE_REQUEST -> return "Request error"
+            ERROR_CODE_AUDIO_NULL -> return "Audio is null"
+            ERROR_CODE_TIMEOUT -> return "Request timeout"
+            else -> super.getLocalizedMessage()
+        }
+    }
 }

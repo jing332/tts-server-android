@@ -358,21 +358,21 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         when (e) {
             is RequestException -> {
                 when (e.errorCode) {
-                    RequestException.ERROR_CODE_REQUEST -> {
-                        logE(
-                            getString(
-                                R.string.systts_log_failed,
-                                "(${e.times}) ${e.rootCause ?: e.toString()}"
-                            )
-                        )
-                    }
-
                     RequestException.ERROR_CODE_AUDIO_NULL -> {
                         logE(getString(R.string.systts_log_audio_empty, e.text))
                     }
 
                     RequestException.ERROR_CODE_TIMEOUT -> {
                         logE(getString(R.string.failed_timed_out, SysTtsConfig.requestTimeout))
+                    }
+
+                    else -> {
+                        logE(
+                            getString(
+                                R.string.systts_log_failed,
+                                "(${e.times}) ${e.rootCause ?: e.toString()}"
+                            )
+                        )
                     }
                 }
 
@@ -383,7 +383,12 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             }
 
             is TextReplacerException -> {
-                logE(getString(R.string.systts_log_replace_failed, e.toString()))
+                logE(
+                    getString(
+                        R.string.systts_log_replace_failed,
+                        "${e.replaceRule}, ${e.localizedMessage}"
+                    )
+                )
             }
 
             is SpeechRuleException -> {
@@ -391,15 +396,15 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             }
 
             is ConfigLoadException -> {
-                logE("配置加载失败: $e")
+                logE("配置加载失败: ${e.localizedMessage}")
             }
 
             is PlayException -> {
-                logE("播放失败: $e")
+                logE("播放失败: ${e.localizedMessage}")
             }
 
             else -> {
-                logE("错误: $e")
+                logE("错误: ${e.localizedMessage}")
                 e.printStackTrace()
             }
         }

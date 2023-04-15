@@ -1,20 +1,25 @@
 package com.github.jing332.tts_server_android.help.audio
 
 import android.media.MediaCodec
+import android.media.MediaCodec.BufferInfo
+import android.media.MediaCodecInfo
+import android.media.MediaCodecList
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.os.Build
+import android.os.SystemClock
 import android.text.TextUtils
 import android.util.Log
 import com.github.jing332.tts_server_android.help.audio.AudioDecoderException.Companion.ERROR_CODE_NO_AUDIO_TRACK
+import com.github.jing332.tts_server_android.ui.LogLevel.DEBUG
 import com.github.jing332.tts_server_android.util.GcManager
+import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.buffer
 import okio.source
-import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
@@ -66,14 +71,9 @@ class AudioDecoder {
 
     }
 
-    private var isDecoding = false
     private val currentMime: String = ""
     private var mediaCodec: MediaCodec? = null
     private var oldMime: String? = null
-
-    fun stop() {
-        isDecoding = false
-    }
 
     private fun getMediaCodec(mime: String, mediaFormat: MediaFormat): MediaCodec {
         if (mediaCodec == null || mime != oldMime) {
@@ -108,7 +108,6 @@ class AudioDecoder {
             ) {
                 val data = srcData.copyOfRange(44, srcData.size)
                 onRead.invoke(data)
-                isDecoding = false
                 return
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -122,13 +121,13 @@ class AudioDecoder {
                 onRead.invoke(it)
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             mediaCodec?.reset()
             throw AudioDecoderException(cause = e, message = "音频解码失败")
         } finally {
             mediaExtractor.release()
         }
     }
-
 
     /**
      * @param sampleRate opus音频必须设置采样率
@@ -214,12 +213,13 @@ class AudioDecoder {
         val mediaCodec = getMediaCodec(mime, trackFormat)
         mediaCodec.start()
 
-        val bufferInfo = MediaCodec.BufferInfo()
+        val bufferInfo = BufferInfo()
         var inputBuffer: ByteBuffer?
-
+        val startNanos = SystemClock.elapsedRealtimeNanos()
         while (coroutineContext.isActive) {
             //获取可用的inputBuffer，输入参数-1代表一直等到，0代表不等待，10*1000代表10秒超时
             val inputIndex = mediaCodec.dequeueInputBuffer(timeoutUs)
+            Log.d(TAG, "dequeueInputBuffer(): inputIndex = $inputIndex")
             if (inputIndex < 0) break
 
             bufferInfo.presentationTimeUs = mediaExtractor.sampleTime
@@ -232,12 +232,15 @@ class AudioDecoder {
 
             //从流中读取的采样数量
             val sampleSize = mediaExtractor.readSampleData(inputBuffer, 0)
+            Log.d(TAG, "readSampleData(): sampleSize = $sampleSize")
             if (sampleSize > 0) {
                 bufferInfo.size = sampleSize
                 //入队解码
                 mediaCodec.queueInputBuffer(inputIndex, 0, sampleSize, 0, 0)
                 //移动到下一个采样点
-                mediaExtractor.advance()
+                if (!mediaExtractor.nextSample(startNanos)) {
+                    Log.d(TAG, "nextSample(): 已到达流末尾EOF")
+                }
             } else
                 break
 
@@ -255,10 +258,17 @@ class AudioDecoder {
                 }
 
                 onRead.invoke(pcmData)
-                mediaCodec.releaseOutputBuffer(outputIndex, false)
+                mediaCodec.releaseOutputBuffer(/* index = */ outputIndex, /* render = */ false)
                 outputIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, timeoutUs)
             }
         }
+    }
+
+    private fun MediaExtractor.nextSample(startNanos: Long): Boolean {
+//        while (sampleTime > SystemClock.elapsedRealtimeNanos() - startNanos) {
+//            delay(100)
+//        }
+        return advance()
     }
 
     private val MediaFormat.mime: String
