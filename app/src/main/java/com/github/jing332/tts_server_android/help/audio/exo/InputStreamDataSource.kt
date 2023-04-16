@@ -67,7 +67,6 @@ class InputStreamDataSource(
         return bytesRead
     }
 
-
     @Throws(IOException::class)
     override fun close() {
         try {

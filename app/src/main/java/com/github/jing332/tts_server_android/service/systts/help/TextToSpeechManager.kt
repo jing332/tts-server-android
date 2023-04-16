@@ -344,9 +344,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         sonic.rate = srcSampleRate.toFloat() / targetSampleRate.toFloat()
 
                         sonic.writeBytesToStream(pcmAudio, pcmAudio.size)
-                        val audio =
-                            sonic.readBytesFromStream(pcmAudio.size * targetSampleRate / srcSampleRate)
-                        onPcmAudio.invoke(audio)
+                        onPcmAudio.invoke(sonic.readBytesFromStream(sonic.samplesAvailable()))
                     }
                 }
                 listener?.onPlayFinished(txtTts.text, txtTts.tts)

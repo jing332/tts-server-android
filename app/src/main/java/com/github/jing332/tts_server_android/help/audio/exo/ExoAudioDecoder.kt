@@ -56,7 +56,6 @@ class ExoAudioDecoder(val context: Context) {
         }
     }
 
-
     suspend fun doDecode(bytes: ByteArray) {
         decodeInternal(ExoPlayerHelper.createMediaSourceFromByteArray(bytes))
     }
