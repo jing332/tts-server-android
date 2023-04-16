@@ -73,7 +73,12 @@ class ListAllPageFragment : Fragment() {
                     if (raTarget == -1) list else list.filter { it.speechTarget == raTarget }
                 val handledList =
                     filteredList.sortedBy { it.speechTarget }
-                        .map { ItemModel(data = it, ItemOrientation.NONE) }
+                        .map {
+                            ItemModel(
+                                data = it.apply { tts.context = requireContext() },
+                                ItemOrientation.NONE
+                            )
+                        }
 
                 if (brv.models == null) withMain { brv.models = handledList }
                 else brv.setDifferModels(handledList)

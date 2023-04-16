@@ -24,7 +24,7 @@ import java.io.InputStream
 sealed class ITextToSpeechEngine(
     @Transient
     @IgnoredOnParcel
-    protected val context: Context = app,
+    var context: Context = app,
 
     ) : Parcelable {
     companion object {

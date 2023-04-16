@@ -44,4 +44,8 @@ data class Plugin(
     override fun toString(): String {
         return "name: $name, pluginId: $pluginId, author: $author, version: $version, isEnabled: $isEnabled"
     }
+
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other) && other is Plugin && other.userVars == userVars
+    }
 }

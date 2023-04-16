@@ -2,18 +2,21 @@ package com.github.jing332.tts_server_android.ui.systts.plugin
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.PopupMenu
+import android.view.ViewTreeObserver
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
+import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.drake.net.utils.withDefault
@@ -29,6 +32,9 @@ import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFr
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.util.MyTools
 import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.badge.ExperimentalBadgeUtils
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
@@ -46,6 +52,7 @@ class PluginManagerActivity : BackActivity() {
             }
         }
 
+    @ExperimentalBadgeUtils
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -54,13 +61,29 @@ class PluginManagerActivity : BackActivity() {
             addType<PluginModel>(R.layout.systts_plguin_list_item)
             onCreate {
                 getBinding<SysttsPlguinListItemBinding>().apply {
-                    itemView.clickWithThrottle {
+                    btnOptions.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            val data = getModel<PluginModel>().data
+                            val badge = BadgeDrawable.create(this@PluginManagerActivity)
+                            badge.isVisible = false
+                            badge.badgeGravity = BadgeDrawable.TOP_END
+                            badge.isVisible = data.defVars.isNotEmpty() && data.userVars.isEmpty()
+                            badge.number = data.defVars.size
+                            BadgeUtils.attachBadgeDrawable(badge, btnOptions)
+                            btnOptions.tag = badge
+
+                            btnOptions.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        }
+                    })
+
+                    cardView.clickWithThrottle {
                         displayVarsSettings(getModel())
                     }
                     btnOptions.clickWithThrottle {
                         val model = getModel<PluginModel>()
 
-                        androidx.appcompat.widget.PopupMenu(this@PluginManagerActivity, it).apply {
+                        PopupMenu(this@PluginManagerActivity, it).apply {
                             menuInflater.inflate(R.menu.systts_plugin_item, menu)
                             MenuCompat.setGroupDividerEnabled(menu, true)
                             setForceShowIcon(true)
@@ -94,6 +117,16 @@ class PluginManagerActivity : BackActivity() {
                 }
             }
 
+            onBind {
+                getBinding<SysttsPlguinListItemBinding>().apply {
+                    val model = getModel<PluginModel>()
+                    val badge = btnOptions.tag as? BadgeDrawable
+                    badge?.isVisible =
+                        model.data.defVars.isNotEmpty() && model.data.userVars.isEmpty()
+                    badge?.number = model.data.defVars.size
+                }
+            }
+
             itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
                 override fun onDrag(
                     source: BindingAdapter.BindingViewHolder,
@@ -106,6 +139,17 @@ class PluginManagerActivity : BackActivity() {
                     }
                 }
             })
+
+            itemDifferCallback = object : ItemDifferCallback {
+                override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+                    return (oldItem as PluginModel).data == (newItem as PluginModel).data
+                }
+
+                override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+                    return (oldItem as PluginModel).data.id == (newItem as PluginModel).data.id
+                }
+
+            }
 
         }
 
@@ -165,10 +209,8 @@ class PluginManagerActivity : BackActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-
     private fun displayVarsSettings(model: PluginModel) {
-        val fragment = PluginVarsSettingsBottomSheetFragment()
-        fragment.arguments = Bundle().apply { putParcelable(KeyConst.KEY_DATA, model.data) }
+        val fragment = PluginVarsSettingsBottomSheetFragment.newInstance(model.title, model.data)
         fragment.show(supportFragmentManager, "PluginVarsSettingsBottomSheetFragment")
 
     }

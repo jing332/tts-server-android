@@ -132,7 +132,7 @@ class ListGroupPageFragment : Fragment() {
                     source: BindingAdapter.BindingViewHolder,
                     target: BindingAdapter.BindingViewHolder
                 ) {
-                    if (source.getModel<Any>() is GroupModel) { //分组做拽
+                    if (source.getModel<Any>() is GroupModel) { // 分组拖拽
                         models?.filterIsInstance<GroupModel>()?.let { models ->
                             models.forEachIndexed { index, value ->
                                 appDb.systemTtsDao.updateGroup(value.data.apply { order = index })
@@ -180,7 +180,11 @@ class ListGroupPageFragment : Fragment() {
 
                         GroupModel(
                             data = v.group,
-                            itemSublist = v.list.sortedBy { it.order }.map { ItemModel(data = it) },
+                            itemSublist = v.list.sortedBy { it.order }.map {
+                                ItemModel(data = it.apply {
+                                    tts.context = requireContext()
+                                })
+                            },
                         ).apply {
                             itemGroupPosition = i
                             checkedState = checkState
