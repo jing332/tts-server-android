@@ -398,10 +398,10 @@ class BasicInfoEditView @JvmOverloads constructor(
                 .setTitle(R.string.set_built_in_player_params)
                 .setView(binding.root)
                 .setNegativeButton(R.string.reset) { _, _ ->
-                    mData?.tts?.audioPlayer?.let {
-                        it.rate = 1f
-                        it.volume = 1f
-                        it.pitch = 1f
+                    binding.apply {
+                        seekRate.value = 1f
+                        seekVolume.value = 1f
+                        seekPitch.value = 1f
                     }
                     context.toast(R.string.ok_reset)
                 }

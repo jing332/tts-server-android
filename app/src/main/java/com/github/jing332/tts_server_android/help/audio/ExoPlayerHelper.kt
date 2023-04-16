@@ -5,6 +5,7 @@ import com.github.jing332.tts_server_android.help.audio.exo.InputStreamDataSourc
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.upstream.ByteArrayDataSource
 import com.google.android.exoplayer2.upstream.DataSource
 import java.io.InputStream
 
@@ -20,7 +21,7 @@ object ExoPlayerHelper {
 
     // 创建音频媒体源
     fun createMediaSourceFromByteArray(data: ByteArray): MediaSource {
-        val factory = DataSource.Factory { ExoByteArrayMediaSource(data) }
+        val factory = DataSource.Factory { ByteArrayDataSource(data) }
         return DefaultMediaSourceFactory(App.context).setDataSourceFactory(factory)
             .createMediaSource(MediaItem.fromUri(""))
     }

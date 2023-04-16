@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
+import com.github.jing332.tts_server_android.help.audio.AudioDecoderException
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
@@ -400,7 +401,10 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             }
 
             is PlayException -> {
-                logE("播放失败: ${e.localizedMessage}")
+                if (e.cause is AudioDecoderException) {
+                    logE("解码失败: ${e.cause?.localizedMessage}")
+                } else
+                    logE("播放失败: ${e.localizedMessage}")
             }
 
             else -> {
@@ -443,7 +447,6 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         if (!App.isSysTtsLogEnabled) return
         logI(getString(R.string.systts_log_finished_playing, text.limitLength().toHtmlBold()))
     }
-
 
     private fun logD(msg: String) = sendLog(LogLevel.DEBUG, msg)
     private fun logI(msg: String) = sendLog(LogLevel.INFO, msg)

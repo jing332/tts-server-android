@@ -11,7 +11,7 @@ import java.io.InputStream
 
 class InputStreamDataSource(
     private val inputStream: InputStream,
-) : BaseDataSource(false) {
+) : BaseDataSource(/* isNetwork = */ false) {
     private var dataSpec: DataSpec? = null
     private var bytesRemaining: Long = 0
     private var opened = false
@@ -73,7 +73,7 @@ class InputStreamDataSource(
         try {
             inputStream.close()
         } catch (e: IOException) {
-            throw IOException(e)
+            throw e
         } finally {
             if (opened) {
                 opened = false
