@@ -341,15 +341,18 @@ class SysTtsListFragment : Fragment() {
                 tvTip.isGone = isChecked
             }
 
+            seekVolume.setFloatType(2)
             seekRate.setFloatType(2)
             seekPitch.setFloatType(2)
 
             seekRate.value = SysTtsConfig.inAppPlaySpeed
+            seekVolume.value = SysTtsConfig.inAppPlayVolume
             seekPitch.value = SysTtsConfig.inAppPlayPitch
 
             btnReset.visibility = View.VISIBLE
             btnReset.clickWithThrottle {
                 seekRate.value = 1F
+                seekVolume.value = 1F
                 seekPitch.value = 1F
             }
 
@@ -363,35 +366,14 @@ class SysTtsListFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext())
             .setView(view).setOnDismissListener {
                 SysTtsConfig.isInAppPlayAudio = inAppBinding.switchOnOff.isChecked
+
                 SysTtsConfig.inAppPlaySpeed = inAppBinding.seekRate.value as Float
+                SysTtsConfig.inAppPlayVolume = inAppBinding.seekVolume.value as Float
                 SysTtsConfig.inAppPlayPitch = inAppBinding.seekPitch.value as Float
                 SystemTtsService.notifyUpdateConfig()
             }.show()
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun showSetAudioRequestTimeoutDialog() {
-        val numPicker = NumberPicker(requireContext())
-        numPicker.maxValue = 30
-        numPicker.minValue = 2
-        numPicker.value = 5
-        val displayList = ArrayList<String>()
-        for (i in 2..30) {
-            displayList.add("${i}s")
-        }
-        numPicker.displayedValues = displayList.toList().toTypedArray()
-
-        numPicker.value = SysTtsConfig.requestTimeout / 1000 //转为秒
-        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.systts_set_request_timeout)
-            .setMessage(R.string.systts_set_request_timeout_msg).setView(numPicker)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                SysTtsConfig.requestTimeout = numPicker.value * 1000 //转为毫秒
-                SystemTtsService.notifyUpdateConfig()
-            }.setNegativeButton(R.string.reset) { _, _ ->
-                SysTtsConfig.requestTimeout = 5000
-                SystemTtsService.notifyUpdateConfig()
-            }.show()
-    }
 
     private fun addTtsConfig(cls: Class<*>) {
         val intent = Intent(requireContext(), cls)
@@ -437,29 +419,6 @@ class SysTtsListFragment : Fragment() {
                 SystemTtsGroup(name = it.ifEmpty { getString(R.string.unnamed) })
             )
         }
-    }
-
-    private fun displayStandbySettings() {
-        val ranges = 1..10
-        val picker = NumberPicker(requireContext()).apply {
-            minValue = 1
-            maxValue = ranges.last
-            displayedValues = ranges.map { it.toString() }.toTypedArray()
-            value = SysTtsConfig.standbyTriggeredRetryIndex
-        }
-
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.systts_sby_conditions_for_use)
-            .setMessage(R.string.systts_sby_settings_msg)
-            .setView(picker)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                SysTtsConfig.standbyTriggeredRetryIndex = picker.value
-            }
-            .setNegativeButton(R.string.reset) { _, _ ->
-                SysTtsConfig.standbyTriggeredRetryIndex = 1
-                toast(R.string.ok_reset)
-            }
-            .show()
     }
 
     class GroupPageAdapter(parent: Fragment, val list: List<Fragment>) :

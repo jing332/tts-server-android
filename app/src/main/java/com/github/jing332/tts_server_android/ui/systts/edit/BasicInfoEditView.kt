@@ -53,8 +53,7 @@ class BasicInfoEditView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defaultStyle: Int = 0
-) :
-    ConstraintLayout(context, attrs, defaultStyle) {
+) : ConstraintLayout(context, attrs, defaultStyle) {
 
     private val binding: SysttsBasicInfoEditViewBinding by lazy {
         SysttsBasicInfoEditViewBinding.inflate(context.layoutInflater, this, true)
@@ -382,13 +381,15 @@ class BasicInfoEditView @JvmOverloads constructor(
                 seekPitch.setFloatType(2)
                 seekPitch.valueFormatter = formatter
 
-                seekRate.min = 0
-                seekPitch.min = 0
+                seekVolume.setFloatType(2)
+                seekVolume.valueFormatter = formatter
+
                 switchOnOff.visibility = View.GONE
                 tvTip.setText(R.string.builtin_player_settings_tip_msg)
 
                 mData?.tts?.audioPlayer?.let {
                     seekRate.value = it.rate
+                    seekVolume.value = it.volume
                     seekPitch.value = it.pitch
                 }
             }
@@ -396,15 +397,16 @@ class BasicInfoEditView @JvmOverloads constructor(
             MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.set_built_in_player_params)
                 .setView(binding.root)
-                .setNeutralButton(R.string.reset) { _, _ ->
+                .setNegativeButton(R.string.reset) { _, _ ->
                     mData?.tts?.audioPlayer?.let {
                         it.rate = 1f
+                        it.volume = 1f
                         it.pitch = 1f
                     }
                     context.toast(R.string.ok_reset)
                 }
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
+                .setPositiveButton(R.string.close, null)
+                .setOnDismissListener {
                     mData?.tts?.audioPlayer?.let {
                         it.rate = binding.seekRate.value as Float
                         it.pitch = binding.seekPitch.value as Float

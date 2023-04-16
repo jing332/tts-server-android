@@ -15,8 +15,11 @@ data class PlayerParams(
         const val VALUE_FOLLOW_GLOBAL = 0f
     }
 
-    fun setParamsIfFollow(gRate: Float, gPitch: Float) {
+    fun setParamsIfFollow(gRate: Float, gVolume: Float, gPitch: Float): PlayerParams {
         if (this.rate == VALUE_FOLLOW_GLOBAL) this.rate = gRate
+        if (this.volume == VALUE_FOLLOW_GLOBAL) this.volume = gVolume
         if (this.pitch == VALUE_FOLLOW_GLOBAL) this.pitch = gPitch
+
+        return this
     }
 }

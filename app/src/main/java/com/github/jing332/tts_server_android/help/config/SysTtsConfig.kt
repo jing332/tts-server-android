@@ -6,8 +6,9 @@ object SysTtsConfig : KotprefModel() {
     override val kotprefName: String
         get() = "systts"
 
-    var isInAppPlayAudio by booleanPref()
+    var isInAppPlayAudio by booleanPref(false)
     var inAppPlaySpeed by floatPref(1f)
+    var inAppPlayVolume by floatPref(1f)
     var inAppPlayPitch by floatPref(1f)
 
     var audioParamsSpeed by floatPref(1f)

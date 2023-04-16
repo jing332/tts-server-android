@@ -31,25 +31,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:hint="@string/label_play_speed"
+            app:hint="@string/label_speed"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:max="300"
-            app:min="1"
+            app:min="0"
             app:progress="100" />
 
+        <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
+            android:id="@+id/seek_volume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:hint="@string/label_volume"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:max="300"
+            app:min="0"
+            app:progress="100" />
 
         <com.github.jing332.tts_server_android.ui.view.widget.Seekbar
             android:id="@+id/seek_pitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:hint="@string/label_play_pitch"
+            app:hint="@string/label_pitch"
             app:layout_constraintTop_toBottomOf="@id/seek_rate"
             app:max="300"
-            app:min="1"
+            app:min="0"
             app:progress="100" />
 
         <Button

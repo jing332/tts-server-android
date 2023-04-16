@@ -13,10 +13,7 @@ import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.speech.ITextToSpeechSynthesizer
 import com.github.jing332.tts_server_android.model.speech.TtsTextPair
-import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
-import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
-import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
-import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
+import com.github.jing332.tts_server_android.model.speech.tts.*
 import com.github.jing332.tts_server_android.service.systts.help.exception.*
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.toast
@@ -395,11 +392,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             listener?.onRequestSuccess(text, tts, 0, costTime, retryTimes)
             if (tts.audioFormat.isNeedDecode) {
                 if (SysTtsConfig.isInAppPlayAudio) {
-                    mAudioPlayer = mAudioPlayer ?: AudioPlayer(context)
-                    mAudioPlayer?.play(
-                        audioResult.inputStream!!,
-                        SysTtsConfig.inAppPlaySpeed, SysTtsConfig.inAppPlayPitch
-                    )
+                    audioResult.builtinPlayAudio(tts.audioPlayer)
                     onDone.invoke()
                     audioResult.inputStream?.close()
                 } else {
@@ -421,12 +414,9 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             listener?.onRequestSuccess(text, tts, audio.size, costTime, retryTimes)
 
             if (tts.audioFormat.isNeedDecode) {
-                if (SysTtsConfig.isInAppPlayAudio) {
-                    mAudioPlayer = mAudioPlayer ?: AudioPlayer(context)
-                    mAudioPlayer?.play(
-                        audio, SysTtsConfig.inAppPlaySpeed, SysTtsConfig.inAppPlayPitch
-                    )
-                } else
+                if (SysTtsConfig.isInAppPlayAudio)
+                    audioResult.builtinPlayAudio(tts.audioPlayer)
+                else
                     try {
                         audioResult.decodeAudio { onPcmAudio.invoke(it) }
                     } catch (e: Exception) {
@@ -439,6 +429,22 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         }
     }
 
+    // 内置播放器
+    private suspend fun AudioResult.builtinPlayAudio(audioParams: PlayerParams) {
+        val params = audioParams.copy().setParamsIfFollow(
+            SysTtsConfig.inAppPlaySpeed,
+            SysTtsConfig.inAppPlayVolume,
+            SysTtsConfig.inAppPlayPitch
+        )
+
+        mAudioPlayer = mAudioPlayer ?: AudioPlayer(context)
+        if (SysTtsConfig.isStreamPlayModeEnabled)
+            mAudioPlayer?.play(inputStream!!, params.rate, params.volume, params.pitch)
+        else
+            mAudioPlayer?.play(bytes!!, params.rate, params.volume, params.pitch)
+    }
+
+    // 解码音频
     private suspend fun AudioResult.decodeAudio(
         isStream: Boolean = SysTtsConfig.isStreamPlayModeEnabled,
         useExoDecoder: Boolean = SysTtsConfig.isExoDecoderEnabled,
