@@ -119,10 +119,10 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
         var audioResult: AudioResult? = AudioResult(null, null)
         var retryTimes = 0
-        retry(times = 20,
+        retry(times = 50,
             onCatch = { times, e ->
                 retryTimes = times
-                Log.w(TAG, "请求失败: times=$times, $text, $tts, ${e.stackTraceToString()}")
+                Log.w(TAG, "请求失败: times=$times, $text, $tts, $e")
                 listener?.onError(
                     if (e is RequestException) e else RequestException(
                         text = text, tts = tts, cause = e, times = times
@@ -322,7 +322,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
         synthesizeText(replaced, sysRate, sysPitch) { data -> // 音频获取完毕
             kotlin.runCatching {
-                if (!kotlin.coroutines.coroutineContext.isActive) return@synthesizeText
                 val txtTts = data.txtTts
                 val audioParams = txtTts.tts.audioParams.newIfFollow()
 
@@ -387,11 +386,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         }
 
         if (SysTtsConfig.isStreamPlayModeEnabled) {
-            listener?.onRequestSuccess(text, tts, 0, costTime, retryTimes)
+            listener?.onRequestSuccess(text, tts, -1, costTime, retryTimes)
             if (tts.audioFormat.isNeedDecode) {
                 if (SysTtsConfig.isInAppPlayAudio) {
-                    audioResult.builtinPlayAudio(tts.audioPlayer)
                     onDone.invoke()
+                    audioResult.builtinPlayAudio(tts.audioPlayer)
                     audioResult.inputStream?.close()
                 } else {
                     try {
@@ -407,8 +406,10 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 throw TtsManagerException("暂不支持流播放下的raw音频")
             }
         } else { // 全部加载到内存
-            val audio = audioResult.bytes ?: return
+            val audio = audioResult.bytes
             onDone.invoke()
+            if (audio == null || audio.size < 1024) return
+
             listener?.onRequestSuccess(text, tts, audio.size, costTime, retryTimes)
 
             if (tts.audioFormat.isNeedDecode) {
@@ -419,8 +420,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         audioResult.decodeAudio { onPcmAudio.invoke(it) }
                     } catch (e: Exception) {
                         throw PlayException(tts = tts, cause = e, message = "音频解码失败")
-                    } finally {
-                        onDone.invoke()
                     }
             } else
                 onPcmAudio.invoke(audio)

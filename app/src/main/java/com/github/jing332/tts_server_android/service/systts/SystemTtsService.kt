@@ -393,7 +393,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             }
 
             is SpeechRuleException -> {
-                logE(getString(R.string.systts_log_text_handle_failed, e.toString()))
+                logE(getString(R.string.systts_log_text_handle_failed, e.localizedMessage))
             }
 
             is ConfigLoadException -> {
@@ -416,7 +416,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     }
 
     override fun onStartRetry(times: Int) {
-
+        logW(getString(R.string.systts_log_start_retry, times))
     }
 
     override fun onRequestSuccess(
@@ -428,7 +428,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     ) {
         if (!App.isSysTtsLogEnabled) return
 
-        val sizeStr = if (size <= 0) getString(R.string.unknown) else "${(size / 1024)}kb"
+        val sizeStr = if (size == -1) getString(R.string.unknown) else "${(size / 1024)}kb"
         logI(
             getString(
                 R.string.systts_log_success,

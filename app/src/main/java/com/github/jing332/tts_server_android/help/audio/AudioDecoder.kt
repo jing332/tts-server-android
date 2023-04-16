@@ -121,7 +121,6 @@ class AudioDecoder {
                 onRead.invoke(it)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
             mediaCodec?.reset()
             throw AudioDecoderException(cause = e, message = "音频解码失败")
         } finally {
@@ -219,7 +218,6 @@ class AudioDecoder {
         while (coroutineContext.isActive) {
             //获取可用的inputBuffer，输入参数-1代表一直等到，0代表不等待，10*1000代表10秒超时
             val inputIndex = mediaCodec.dequeueInputBuffer(timeoutUs)
-            Log.d(TAG, "dequeueInputBuffer(): inputIndex = $inputIndex")
             if (inputIndex < 0) break
 
             bufferInfo.presentationTimeUs = mediaExtractor.sampleTime
@@ -232,7 +230,6 @@ class AudioDecoder {
 
             //从流中读取的采样数量
             val sampleSize = mediaExtractor.readSampleData(inputBuffer, 0)
-            Log.d(TAG, "readSampleData(): sampleSize = $sampleSize")
             if (sampleSize > 0) {
                 bufferInfo.size = sampleSize
                 //入队解码
