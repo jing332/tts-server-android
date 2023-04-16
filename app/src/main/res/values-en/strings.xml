@@ -379,5 +379,9 @@
     <string name="invalid_url_msg">Invalid URL：%1$s</string>
     <string name="invalid_path_msg">Invalid Path：%1$s</string>
     <string name="import_file_as">Import file as …</string>
-    <string name="systts_no_speech_target_all">⚠️ 缺少{朗读全部}，使用默认！ 请确保开启多语音选项。</string>
+    <string name="systts_no_speech_target_all">⚠️ Missing {Read Aloud} feature, using default! Please make sure to enable multiple language voice options.</string>
+    <string name="stream_audio_mode">Stream audio</string>
+    <string name="stream_audio_mode_summary">Enabling streaming playback, i.e. downloading and playing at the same time, is not currently supported by the built-in TTS, and requires proactive adaptation of the plugin TTS.</string>
+    <string name="use_exo_decoder">Use ExoPlayer Decoder</string>
+    <string name="use_exo_decoder_summary">ExoPlayer is a media player developed by Google, which has higher compatibility. Enabling it will directly use its internal decoder for audio decoding.</string>
 </resources>

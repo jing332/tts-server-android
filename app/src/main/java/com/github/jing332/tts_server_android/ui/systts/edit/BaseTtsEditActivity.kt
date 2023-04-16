@@ -28,12 +28,12 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () 
     private var mAudioPlayer: AudioPlayer? = null
 
     suspend fun playAudio(audio: ByteArray) {
-        mAudioPlayer = mAudioPlayer ?: AudioPlayer(this, lifecycleScope)
+        mAudioPlayer = mAudioPlayer ?: AudioPlayer(this)
         mAudioPlayer?.play(audio)
     }
 
     suspend fun playAudio(inputStream: InputStream) {
-        mAudioPlayer = mAudioPlayer ?: AudioPlayer(this, lifecycleScope)
+        mAudioPlayer = mAudioPlayer ?: AudioPlayer(this)
         mAudioPlayer?.play(inputStream)
     }
 

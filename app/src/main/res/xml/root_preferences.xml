@@ -32,12 +32,19 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/system_tts">
+
+        <SwitchPreferenceCompat
+            android:key="isExoDecoderEnabled"
+            android:persistent="false"
+            android:summary="@string/use_exo_decoder_summary"
+            android:title="@string/use_exo_decoder" />
+
         <SwitchPreferenceCompat
             android:icon="@drawable/baseline_waves_24"
             android:key="isStreamPlayModeEnabled"
             android:persistent="false"
-            android:summary="开启流式播放，即边下边播。内置TTS暂不支持，插件TTS需主动适配。"
-            android:title="流式播放音频" />
+            android:summary="@string/stream_audio_mode_summary"
+            android:title="@string/stream_audio_mode" />
 
         <ListPreference
             android:icon="@drawable/baseline_123_24"

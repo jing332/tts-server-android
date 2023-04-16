@@ -46,6 +46,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
+        findPreference<SwitchPreferenceCompat>("isExoDecoderEnabled")!!.apply {
+            isChecked = SysTtsConfig.isExoDecoderEnabled
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.isExoDecoderEnabled = newValue as Boolean
+                true
+            }
+        }
+
         findPreference<SwitchPreferenceCompat>("isStreamPlayModeEnabled")!!.apply {
             isChecked = SysTtsConfig.isStreamPlayModeEnabled
             setOnPreferenceChangeListener { _, newValue ->

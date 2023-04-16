@@ -8,6 +8,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
 import com.github.jing332.tts_server_android.help.audio.Sonic
+import com.github.jing332.tts_server_android.help.audio.exo.ExoAudioDecoder
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.speech.ITextToSpeechSynthesizer
@@ -20,6 +21,8 @@ import com.github.jing332.tts_server_android.service.systts.help.exception.*
 import com.github.jing332.tts_server_android.util.StringUtils
 import com.github.jing332.tts_server_android.util.toast
 import kotlinx.coroutines.*
+import java.io.ByteArrayInputStream
+import java.nio.ByteBuffer
 import kotlin.coroutines.coroutineContext
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
@@ -205,6 +208,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     private val mTextReplacer = TextReplacer()
     private val mAudioDecoder = AudioDecoder()
+    private val mExoDecoder by lazy { ExoAudioDecoder(context) }
     private var mAudioPlayer: AudioPlayer? = null
     private var mBgmPlayer: BgmPlayer? = null
 
@@ -363,7 +367,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         sysPitch: Int,
         audioResult: AudioResult?,
         onDone: suspend () -> Unit,
-        onPcmAudio: suspend (pcmAudio: ByteArray) -> Unit,
+        onPcmAudio: (pcmAudio: ByteArray) -> Unit,
     ) {
         var costTime = 0L
         var retryTimes = 0
@@ -394,15 +398,13 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     mAudioPlayer = mAudioPlayer ?: AudioPlayer(context)
                     mAudioPlayer?.play(
                         audioResult.inputStream!!,
-                        SysTtsConfig.inAppPlaySpeed,
-                        SysTtsConfig.inAppPlayPitch
+                        SysTtsConfig.inAppPlaySpeed, SysTtsConfig.inAppPlayPitch
                     )
                     onDone.invoke()
                     audioResult.inputStream?.close()
                 } else {
                     try {
-                        mAudioDecoder.doDecode(audioResult.inputStream!!, audioFormat.sampleRate)
-                        { pcmData -> onPcmAudio.invoke(pcmData) }
+                        audioResult.decodeAudio { onPcmAudio.invoke(it) }
                     } catch (e: Exception) {
                         throw PlayException(tts = tts, cause = e, message = "流播放下的音频解码失败")
                     } finally {
@@ -416,7 +418,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         } else { // 全部加载到内存
             val audio = audioResult.bytes ?: return
             onDone.invoke()
-
             listener?.onRequestSuccess(text, tts, audio.size, costTime, retryTimes)
 
             if (tts.audioFormat.isNeedDecode) {
@@ -426,12 +427,45 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         audio, SysTtsConfig.inAppPlaySpeed, SysTtsConfig.inAppPlayPitch
                     )
                 } else
-                    mAudioDecoder.doDecode(audio, audioFormat.sampleRate) { pcmData ->
-                        onPcmAudio.invoke(pcmData)
+                    try {
+                        audioResult.decodeAudio { onPcmAudio.invoke(it) }
+                    } catch (e: Exception) {
+                        throw PlayException(tts = tts, cause = e, message = "音频解码失败")
+                    } finally {
+                        onDone.invoke()
                     }
             } else
                 onPcmAudio.invoke(audio)
         }
+    }
+
+    private suspend fun AudioResult.decodeAudio(
+        isStream: Boolean = SysTtsConfig.isStreamPlayModeEnabled,
+        useExoDecoder: Boolean = SysTtsConfig.isExoDecoderEnabled,
+        onPcmAudio: (pcmAudio: ByteArray) -> Unit,
+    ) {
+        if (useExoDecoder) {
+            mExoDecoder.callback = ExoAudioDecoder.Callback { byteBuffer ->
+                Log.d(TAG, "onReadPcmAudio: ${byteBuffer.remaining()}")
+                val buffer = ByteArray(byteBuffer.remaining())
+                byteBuffer.get(buffer)
+                onPcmAudio.invoke(buffer)
+            }
+            if (isStream) mExoDecoder.doDecode(inputStream!!)
+            else mExoDecoder.doDecode((bytes!!))
+        } else {
+            if (isStream) mAudioDecoder.doDecode(
+                inputStream!!,
+                audioFormat.sampleRate
+            ) { pcmData ->
+                onPcmAudio.invoke(pcmData)
+            }
+            else
+                mAudioDecoder.doDecode(bytes!!, audioFormat.sampleRate) { pcmData ->
+                    onPcmAudio.invoke(pcmData)
+                }
+        }
+
     }
 
     interface Listener {
@@ -439,12 +473,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         fun onStartRetry(times: Int)
         fun onRequestStarted(text: String, tts: ITextToSpeechEngine)
         fun onPlayFinished(text: String, tts: ITextToSpeechEngine)
-
-        /**
-         * @param size 音频字节数
-         * @param costTime 耗时 ms
-         * @param retryTimes 已经重试次数
-         */
         fun onRequestSuccess(
             text: String, tts: ITextToSpeechEngine, size: Int, costTime: Long, retryTimes: Int
         )

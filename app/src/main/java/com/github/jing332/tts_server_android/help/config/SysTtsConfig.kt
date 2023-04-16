@@ -34,4 +34,5 @@ object SysTtsConfig : KotprefModel() {
     var standbyTriggeredRetryIndex by intPref(1)
 
     var isStreamPlayModeEnabled by booleanPref(false)
+    var isExoDecoderEnabled by booleanPref(false)
 }
