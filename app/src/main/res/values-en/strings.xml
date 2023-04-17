@@ -385,4 +385,5 @@
     <string name="use_exo_decoder">Use ExoPlayer Decoder</string>
     <string name="use_exo_decoder_summary">ExoPlayer is a media player developed by Google, which has higher compatibility. Enabling it will directly use its internal decoder for audio decoding.</string>
     <string name="plugin_not_define_vars">This plugin does not define variable</string>
+    <string name="export_vars">Export Variables</string>
 </resources>

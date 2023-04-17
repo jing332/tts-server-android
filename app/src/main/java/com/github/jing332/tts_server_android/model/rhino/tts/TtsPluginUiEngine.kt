@@ -5,6 +5,9 @@ import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.util.dp
+import com.google.common.collect.HashBasedTable
+import org.mozilla.javascript.Hashtable
+import org.mozilla.javascript.NativeMap
 import org.mozilla.javascript.NativeObject
 
 class TtsPluginUiEngine(
@@ -62,9 +65,27 @@ class TtsPluginUiEngine(
 
     @Suppress("UNCHECKED_CAST")
     fun getVoices(locale: String): Map<String, String> {
+        val nati = NativeMap()
+
         return rhino.invokeMethod(editUiJsObject, FUNC_VOICES, locale).run {
-            if (this == null) emptyMap()
-            else this as Map<String, String>
+            when (this) {
+                is Map<*, *> -> {
+                    this.map { (key, value) ->
+                        key.toString() to value.toString()
+                    }.toMap()
+                }
+               /* is NativeMap -> {
+                    val entries = NativeMap::class.java.getDeclaredField("entries").apply {
+                        isAccessible = true
+                    }.get(this) as Hashtable
+                    entries.forEach {
+                        println(it)
+                    }
+
+                    emptyMap()
+                }*/
+                else -> emptyMap()
+            }
         }
     }
 

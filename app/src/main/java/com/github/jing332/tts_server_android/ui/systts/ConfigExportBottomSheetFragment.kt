@@ -17,18 +17,15 @@ import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
-import com.github.jing332.tts_server_android.util.ClipboardUtils
-import com.github.jing332.tts_server_android.util.clickWithThrottle
-import com.github.jing332.tts_server_android.util.longToast
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.util.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ConfigExportBottomSheetFragment(
-    private val onGetConfig: () -> String,
-    private val onGetName: () -> String
+open class ConfigExportBottomSheetFragment(
+    private val onGetConfig: (() -> String)? = null,
+    private val onGetName: (() -> String)? = null
 ) : BottomSheetDialogFragment() {
     companion object {
         const val TAG = "ConfigExportBottomSheetFragment"
@@ -42,8 +39,31 @@ class ConfigExportBottomSheetFragment(
         super.onAttach(context)
 
         fileSaver = registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
-
         }
+    }
+
+    open fun onCreateContainerView(inflater: LayoutInflater): View? = null
+    open fun getConfig(): String = ""
+    open fun getFileName(): String = ""
+
+    open fun onUpdateConfig() {
+        internalGetConfig().let {
+            if (it.isNotBlank())
+                binding.tvConfig.text = it
+        }
+    }
+
+    fun setConfigString(config: String) {
+        binding.tvConfig.text = config
+    }
+
+    private fun setContainerView(view: View) {
+        binding.container.removeAllViews()
+        binding.container.addView(
+            view,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
     }
 
     override fun onCreateView(
@@ -56,11 +76,12 @@ class ConfigExportBottomSheetFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sheetContainer = requireView().parent as ViewGroup
-        sheetContainer.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        onCreateContainerView(layoutInflater)?.let {
+            setContainerView(it)
+        }
 
-        val config = onGetConfig.invoke()
-        binding.tvConfig.text = config
+        (requireView().parent as ViewGroup).setMarginMatchParent()
+        onUpdateConfig()
 
         binding.btnCopy.clickWithThrottle {
             ClipboardUtils.copyText(binding.tvConfig.text.toString())
@@ -70,8 +91,8 @@ class ConfigExportBottomSheetFragment(
         binding.btnSave.clickWithThrottle {
             fileSaver.launch(
                 FilePickerActivity.RequestSaveFile(
-                    fileName = onGetName(),
-                    fileBytes = onGetConfig().toByteArray()
+                    fileName = internalGetName(),
+                    fileBytes = binding.tvConfig.text.toString().toByteArray()
                 )
             )
         }
@@ -79,6 +100,14 @@ class ConfigExportBottomSheetFragment(
         binding.btnUpload.clickWithThrottle {
             upload(binding.tvConfig.text.toString())
         }
+    }
+
+    private fun internalGetName(): String {
+        return onGetName?.invoke() ?: getFileName()
+    }
+
+    private fun internalGetConfig(): String {
+        return onGetConfig?.invoke() ?: getConfig()
     }
 
     private val uploadEngine by lazy { DirectUploadEngine(context = requireContext()) }

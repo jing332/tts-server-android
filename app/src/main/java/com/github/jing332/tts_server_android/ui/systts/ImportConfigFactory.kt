@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui
+package com.github.jing332.tts_server_android.ui.systts
 
 import android.content.Context
 import com.github.jing332.tts_server_android.R
@@ -19,7 +19,7 @@ object ImportConfigFactory {
     fun createFragment(type: String): BaseImportConfigBottomSheetFragment? {
         return when (type) {
             "list" -> com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
-            "plugin" -> com.github.jing332.tts_server_android.ui.systts.plugin.ImportConfigBottomSheetFragment()
+            "plugin" -> com.github.jing332.tts_server_android.ui.systts.plugin.ImportBottomSheetFragment()
             "replaceRule" -> com.github.jing332.tts_server_android.ui.systts.replace.ImportConfigBottomSheetFragment()
             "speechRule" -> com.github.jing332.tts_server_android.ui.systts.speech_rule.ImportConfigBottomSheetFragment()
             else -> null

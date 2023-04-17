@@ -2,7 +2,6 @@ package com.github.jing332.tts_server_android.ui.systts.plugin
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -196,14 +195,13 @@ class PluginManagerActivity : BackActivity() {
             }
 
             R.id.menu_export -> {
-                val fragment =
-                    ConfigExportBottomSheetFragment({ vm.exportConfig() }, { "ttsrv-plugins.json" })
-                fragment.show(supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
+                val fragment = ExportBottomSheetFragment.newInstance("ttsrv-plugins.json")
+                fragment.show(supportFragmentManager, "ExportBottomSheetFragment")
             }
 
             R.id.menu_import -> {
-                val fragment = ImportConfigBottomSheetFragment()
-                fragment.show(supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
+                val fragment = ImportBottomSheetFragment()
+                fragment.show(supportFragmentManager, ImportBottomSheetFragment.TAG)
             }
         }
         return super.onOptionsItemSelected(item)
