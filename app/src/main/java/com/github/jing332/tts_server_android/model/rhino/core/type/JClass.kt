@@ -7,9 +7,8 @@ abstract class JClass {
         kotlin.runCatching {
             block.invoke()
         }.onFailure {
-            if (onThrowable == null)
-                it.printStackTrace()
-            else onThrowable?.invoke(it)
+            it.printStackTrace()
+            onThrowable?.invoke(it)
         }
     }
 }

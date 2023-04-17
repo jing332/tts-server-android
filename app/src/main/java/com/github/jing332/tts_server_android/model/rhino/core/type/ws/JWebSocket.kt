@@ -7,10 +7,12 @@ import com.github.jing332.tts_server_android.model.rhino.core.type.ws.internal.W
 import okhttp3.Request
 import okhttp3.Response
 import okio.ByteString
-import java.io.PipedOutputStream
 
-class JWebSocket(@JvmField val url: String, @JvmField val headers: Map<String, String>? = null) :
-    JClass() {
+@Suppress("unused")
+class JWebSocket(
+    @JvmField val url: String,
+    @JvmField val headers: Map<CharSequence, CharSequence>? = null
+) : JClass() {
     companion object {
         const val CONNECTING = 0
         const val OPEN = 1
@@ -21,9 +23,9 @@ class JWebSocket(@JvmField val url: String, @JvmField val headers: Map<String, S
 
     fun connect() {
         val req = Request.Builder().url(url)
-        headers?.forEach { req.addHeader(it.key, it.value) }
-
+        headers?.forEach { req.header(it.key.toString(), it.value.toString()) }
         ws.connect(req.build())
+
         ws.event = object : IWebSocketEvent {
             override fun onOpen(response: Response) {
                 tryBlock { onOpen?.invoke(response) }
@@ -56,6 +58,8 @@ class JWebSocket(@JvmField val url: String, @JvmField val headers: Map<String, S
 
     @JvmOverloads
     fun close(code: Int, reason: String? = "") = ws.close(code, reason)
+
+    fun cancel() = ws.cancel()
 
     private var ws: WebSocketClient = WebSocketClient()
 

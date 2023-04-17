@@ -22,6 +22,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditView
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
+import com.github.jing332.tts_server_android.model.speech.tts.AudioParams
 import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
 import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -425,11 +426,7 @@ class BasicInfoEditView @JvmOverloads constructor(
             .setView(view)
             .setPositiveButton(R.string.close, null)
             .setNegativeButton(R.string.reset) { _, _ ->
-                mData?.tts?.audioParams?.let {
-                    it.speed = 1f
-                    it.volume = 1f
-                    it.pitch = 1f
-                }
+                mData?.tts?.audioParams?.reset(AudioParams.FOLLOW_GLOBAL_VALUE)
                 context.toast(R.string.ok_reset)
             }
             .show()

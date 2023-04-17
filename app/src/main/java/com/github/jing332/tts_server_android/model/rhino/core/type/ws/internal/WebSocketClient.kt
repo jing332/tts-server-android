@@ -4,18 +4,15 @@ import android.util.Log
 import com.drake.net.utils.withIO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
+import okhttp3.*
 import okio.ByteString
+import java.util.concurrent.TimeUnit
 
 class WebSocketClient : WebSocketListener() {
     private lateinit var webSocket: WebSocket
 
     companion object {
-        private val client = OkHttpClient.Builder().build()
+        private val client = OkHttpClient.Builder().writeTimeout(1, TimeUnit.SECONDS).build()
         private const val TAG = "WebSocketClient"
     }
 
@@ -60,8 +57,15 @@ class WebSocketClient : WebSocketListener() {
      */
     suspend fun reConnect() = connectSync(webSocket.request())
 
-    fun send(text: String) = webSocket.send(text)
-    fun send(bytes: ByteString) = webSocket.send(bytes)
+    fun send(text: String): Boolean {
+        Log.d(TAG, "send: $text")
+        return webSocket.send(text)
+    }
+
+    fun send(bytes: ByteString): Boolean {
+        Log.d(TAG, "send: $bytes")
+        return webSocket.send(bytes)
+    }
 
     fun cancel() = webSocket.cancel()
     fun close() = webSocket.close(1000, null)
@@ -109,14 +113,11 @@ class WebSocketClient : WebSocketListener() {
         event?.onMessage(bytes)
     }
 
-
     sealed class Status {
         object Connecting : Status()
-
         object Opened : Status()
-        data class Failure(val t: Throwable, val response: Response?) : Status()
-
         object Closed : Status()
         object Closing : Status()
+        data class Failure(val t: Throwable, val response: Response?) : Status()
     }
 }
