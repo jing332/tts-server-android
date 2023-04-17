@@ -382,4 +382,8 @@
     <string name="use_exo_decoder_summary">ExoPlayer为谷歌开发的媒体播放器，其兼容性更高。开启后将直接用其内部解码器进行音频解码。</string>
     <string name="plugin_not_define_vars">此插件未定义变量</string>
     <string name="export_vars">导出变量</string>
+    <string name="skip_request_silent_text">跳过请求无声文本</string>
+    <string name="skip_request_silent_text_summary">开启后将不会单独请求如纯符号之类的文本</string>
+    <string name="retry_count_when_audio_empty">音频为空时重试次数</string>
+    <string name="retry_count_when_audio_empty_msg">此值应小于等于【最大重试次数】</string>
 </resources>

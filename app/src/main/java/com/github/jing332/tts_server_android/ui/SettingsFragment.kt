@@ -46,6 +46,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
+        findPreference<SwitchPreferenceCompat>("isSkipSilentTextEnabled")!!.apply {
+            isChecked = SysTtsConfig.isSkipSilentText
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.isSkipSilentText = newValue as Boolean
+                true
+            }
+        }
+
         findPreference<SwitchPreferenceCompat>("isExoDecoderEnabled")!!.apply {
             isChecked = SysTtsConfig.isExoDecoderEnabled
             setOnPreferenceChangeListener { _, newValue ->
@@ -58,6 +66,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
             isChecked = SysTtsConfig.isStreamPlayModeEnabled
             setOnPreferenceChangeListener { _, newValue ->
                 SysTtsConfig.isStreamPlayModeEnabled = newValue as Boolean
+                true
+            }
+        }
+
+        findPreference<ListPreference>("maxEmptyAudioRetryCount")!!.apply {
+            entries = buildList {
+                add(getString(R.string.no_retries))
+                addAll((1..10).map { "$it" })
+            }.toTypedArray()
+
+            entryValues = (0..10).map { "$it" }.toTypedArray()
+            setValue(SysTtsConfig.maxEmptyAudioRetryCount.toString(), "1")
+            summary = entry
+            setOnPreferenceChangeListener { _, newValue ->
+                SysTtsConfig.maxEmptyAudioRetryCount = (newValue as String).toInt()
                 true
             }
         }

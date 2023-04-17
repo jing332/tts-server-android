@@ -33,7 +33,9 @@ object SysTtsConfig : KotprefModel() {
     var maxRetryCount by intPref(3)
 
     var standbyTriggeredRetryIndex by intPref(1)
+    var maxEmptyAudioRetryCount by intPref(1)
 
+    var isSkipSilentText by booleanPref(true)
     var isStreamPlayModeEnabled by booleanPref(false)
     var isExoDecoderEnabled by booleanPref(false)
 }

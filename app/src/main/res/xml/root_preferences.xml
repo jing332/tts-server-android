@@ -46,6 +46,20 @@
             android:summary="@string/stream_audio_mode_summary"
             android:title="@string/stream_audio_mode" />
 
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_baseline_text_snippet_24"
+            android:key="isSkipSilentTextEnabled"
+            android:persistent="false"
+            android:summary="@string/skip_request_silent_text_summary"
+            android:title="@string/skip_request_silent_text" />
+
+        <ListPreference
+            android:icon="@drawable/baseline_123_24"
+            android:key="maxEmptyAudioRetryCount"
+            android:persistent="false"
+            android:dialogMessage="@string/retry_count_when_audio_empty_msg"
+            android:title="@string/retry_count_when_audio_empty" />
+
         <ListPreference
             android:icon="@drawable/baseline_123_24"
             android:key="maxRetryCount"

@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.service.systts.help
 import android.content.Context
 import android.util.Log
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppPattern
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
@@ -62,14 +63,18 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 val list = mConfigMap[SpeechTarget.ALL] ?: listOf(defaultTtsConfig)
                 listOf(TtsTextPair(list[mRandom.nextInt(list.size)], text))
             }.run {
-                if (SysTtsConfig.isSplitEnabled) {
+                (if (SysTtsConfig.isSplitEnabled) {
                     val list = mutableListOf<TtsTextPair>()
                     forEach { ttsText ->
                         splitText(list, ttsText.text, ttsText.tts, SysTtsConfig.isMultiVoiceEnabled)
                     }
                     list
-                } else
-                    this
+                } else this).run {
+                    if (SysTtsConfig.isSkipSilentText) filterNot {
+                        AppPattern.notReadAloudRegex.matches(it.text)
+                    } else this
+                }
+
             }
         }.onFailure {
             listener?.onError(
@@ -142,9 +147,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         return@retry false // 取消重试
                     }
 
-                // 第二次音频为空失败后退出 return false
-                val canContinue =
-                    !(e is RequestException && e.errorCode == RequestException.ERROR_CODE_AUDIO_NULL && times >= 2)
+                // 第 maxEmptyAudioRetryCount 音频为空失败后退出 return false
+                val canContinue = if (SysTtsConfig.maxEmptyAudioRetryCount == 0) false else
+                    !(e is RequestException && e.errorCode == RequestException.ERROR_CODE_AUDIO_NULL
+                            && times >= SysTtsConfig.maxEmptyAudioRetryCount)
+
                 if (canContinue) listener?.onStartRetry(times)
                 return@retry canContinue
             },
@@ -406,7 +413,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         } else { // 全部加载到内存
             val audio = audioResult.bytes
             onDone.invoke()
-            if (audio == null || audio.size < 1024) return
+            if (audio == null || audio.size < 48) return
 
             listener?.onRequestSuccess(text, tts, audio.size, costTime, retryTimes)
 
