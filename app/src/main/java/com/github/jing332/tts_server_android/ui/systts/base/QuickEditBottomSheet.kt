@@ -11,10 +11,8 @@ import com.github.jing332.tts_server_android.databinding.SysttsQuickEditBottomSh
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.BasicInfoEditView
-import com.github.jing332.tts_server_android.util.setMarginMatchParent
+import com.github.jing332.tts_server_android.utils.setMarginMatchParent
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class QuickEditBottomSheet @JvmOverloads constructor(
     val data: SystemTts? = null,

@@ -15,7 +15,7 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.databinding.SysttsListSimpleGroupFragmentBinding
-import com.github.jing332.tts_server_android.util.*
+import com.github.jing332.tts_server_android.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch

@@ -4,9 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
-import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.help.ByteArrayBinder
-import com.github.jing332.tts_server_android.util.setBinder
+import com.github.jing332.tts_server_android.utils.setBinder
 
 object AppActivityResultContracts {
     fun filePickerActivity() =

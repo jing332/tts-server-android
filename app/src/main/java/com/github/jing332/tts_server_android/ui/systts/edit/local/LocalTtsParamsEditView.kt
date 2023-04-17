@@ -28,7 +28,7 @@ import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
-import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.github.jing332.tts_server_android.utils.clickWithThrottle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.lang.Integer.max
 

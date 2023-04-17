@@ -4,15 +4,12 @@ package com.github.jing332.tts_server_android.model.rhino.core.ext
 
 import cn.hutool.core.codec.Base64
 import cn.hutool.core.util.HexUtil
-import cn.hutool.crypto.digest.HMac
 import cn.hutool.crypto.symmetric.SymmetricCrypto
 import com.github.jing332.tts_server_android.constant.AppConst.dateFormat
-import com.github.jing332.tts_server_android.util.EncoderUtils
-import com.github.jing332.tts_server_android.util.MD5Utils
+import com.github.jing332.tts_server_android.utils.EncoderUtils
+import com.github.jing332.tts_server_android.utils.MD5Utils
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.SimpleTimeZone
+import java.util.*
 
 interface JsCrypto {
     fun md5Encode(str: String): String {

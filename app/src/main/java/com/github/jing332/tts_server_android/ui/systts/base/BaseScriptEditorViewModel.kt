@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.github.jing332.tts_server_android.util.runOnUI
+import com.github.jing332.tts_server_android.utils.runOnUI
 import tts_server_lib.ScriptCodeSyncServerCallback
 import tts_server_lib.ScriptSyncServer
 

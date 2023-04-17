@@ -33,8 +33,8 @@ import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory
-import com.github.jing332.tts_server_android.util.*
-import com.github.jing332.tts_server_android.util.FileUtils.readAllText
+import com.github.jing332.tts_server_android.utils.*
+import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import java.util.*

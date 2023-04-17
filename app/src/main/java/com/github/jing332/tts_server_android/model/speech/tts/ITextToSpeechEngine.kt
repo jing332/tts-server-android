@@ -7,7 +7,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
-import com.github.jing332.tts_server_android.util.toHtmlBold
+import com.github.jing332.tts_server_android.utils.toHtmlBold
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.ExperimentalSerializationApi

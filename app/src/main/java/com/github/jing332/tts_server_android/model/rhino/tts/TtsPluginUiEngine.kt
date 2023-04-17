@@ -4,9 +4,7 @@ import android.content.Context
 import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
-import com.github.jing332.tts_server_android.util.dp
-import com.google.common.collect.HashBasedTable
-import org.mozilla.javascript.Hashtable
+import com.github.jing332.tts_server_android.utils.dp
 import org.mozilla.javascript.NativeMap
 import org.mozilla.javascript.NativeObject
 

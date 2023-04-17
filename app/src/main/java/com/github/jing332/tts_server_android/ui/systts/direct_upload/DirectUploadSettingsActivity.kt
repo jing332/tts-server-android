@@ -9,11 +9,11 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.help.config.DirectUploadConfig
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.rhino.direct_link_upload.DirectUploadEngine
-import com.github.jing332.tts_server_android.ui.systts.base.LoggerBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
+import com.github.jing332.tts_server_android.ui.systts.base.LoggerBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
-import com.github.jing332.tts_server_android.util.readableString
-import com.github.jing332.tts_server_android.util.runOnIO
+import com.github.jing332.tts_server_android.utils.readableString
+import com.github.jing332.tts_server_android.utils.runOnIO
 
 class DirectUploadSettingsActivity : BaseScriptEditorActivity() {
     private val directUploadEngine by lazy { DirectUploadEngine(context = this) }

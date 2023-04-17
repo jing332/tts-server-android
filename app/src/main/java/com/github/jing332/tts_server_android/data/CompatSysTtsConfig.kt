@@ -1,12 +1,13 @@
 package com.github.jing332.tts_server_android.data
 
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
-import com.github.jing332.tts_server_android.util.FileUtils
+import com.github.jing332.tts_server_android.utils.FileUtils
 import kotlinx.serialization.decodeFromString
 import java.io.File
 import java.io.Serializable
@@ -29,7 +30,7 @@ data class CompatSysTtsConfig(
                 if (!FileUtils.exists(file)) return null
 
                 val str = File(filepath).readText()
-                App.jsonBuilder.decodeFromString<CompatSysTtsConfig>(str)
+                AppConst.jsonBuilder.decodeFromString<CompatSysTtsConfig>(str)
             } catch (e: Exception) {
                 e.printStackTrace()
                 return null

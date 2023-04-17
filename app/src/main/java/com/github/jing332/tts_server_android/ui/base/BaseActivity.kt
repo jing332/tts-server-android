@@ -1,12 +1,10 @@
 package com.github.jing332.tts_server_android.ui.base
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-import com.github.jing332.tts_server_android.util.inflateBinding
-import com.github.jing332.tts_server_android.util.toast
-import java.lang.reflect.ParameterizedType
+import com.github.jing332.tts_server_android.utils.inflateBinding
+import com.github.jing332.tts_server_android.utils.toast
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity(), IBinding<VB> {
     override lateinit var binding: VB

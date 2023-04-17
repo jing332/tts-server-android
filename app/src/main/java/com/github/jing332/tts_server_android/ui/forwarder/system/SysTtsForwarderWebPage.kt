@@ -8,7 +8,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.webkit.*
-import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.help.config.SysTtsForwarderConfig
 import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService
 import com.github.jing332.tts_server_android.ui.base.BaseWebViewPageFragment
@@ -19,7 +19,7 @@ class SysTtsForwarderWebPage : BaseWebViewPageFragment() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        App.localBroadcast.registerReceiver(
+        AppConst.localBroadcast.registerReceiver(
             mReceiver, IntentFilter(SysTtsForwarderService.ACTION_ON_STARTING)
         )
     }
@@ -36,7 +36,7 @@ class SysTtsForwarderWebPage : BaseWebViewPageFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
 

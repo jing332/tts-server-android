@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.replace
 
 import android.content.Intent
-import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Menu
@@ -22,7 +21,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivi
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
-import com.github.jing332.tts_server_android.util.dp
+import com.github.jing332.tts_server_android.utils.dp
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

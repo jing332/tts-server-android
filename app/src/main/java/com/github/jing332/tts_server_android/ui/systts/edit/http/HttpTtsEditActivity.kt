@@ -11,8 +11,8 @@ import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityB
 import com.github.jing332.tts_server_android.model.speech.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
-import com.github.jing332.tts_server_android.util.FileUtils.readAllText
-import com.github.jing332.tts_server_android.util.SoftKeyboardUtils
+import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
+import com.github.jing332.tts_server_android.utils.SoftKeyboardUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Suppress("DEPRECATION")

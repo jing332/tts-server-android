@@ -1,8 +1,8 @@
 package com.github.jing332.tts_server_android.ui.systts.edit.bgm
 
 import androidx.lifecycle.ViewModel
-import com.github.jing332.tts_server_android.util.FileUtils
-import com.github.jing332.tts_server_android.util.FileUtils.mimeType
+import com.github.jing332.tts_server_android.utils.FileUtils
+import com.github.jing332.tts_server_android.utils.FileUtils.mimeType
 import java.io.File
 
 class BgmTtsEditViewModel : ViewModel() {

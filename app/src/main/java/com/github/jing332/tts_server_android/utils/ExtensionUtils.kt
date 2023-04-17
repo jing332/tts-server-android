@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.util
+package com.github.jing332.tts_server_android.utils
 
 import android.app.Activity
 import android.content.ContentResolver
@@ -10,12 +10,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowInsets
-import android.view.WindowManager
-import android.view.WindowMetrics
+import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2

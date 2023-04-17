@@ -8,10 +8,10 @@ import android.os.Build
 import android.os.LocaleList
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
-import com.github.jing332.tts_server_android.util.FileUtils
-import com.github.jing332.tts_server_android.util.sysConfiguration
+import com.github.jing332.tts_server_android.utils.FileUtils
+import com.github.jing332.tts_server_android.utils.sysConfiguration
 import java.io.File
-import java.util.Locale
+import java.util.*
 
 object AppLocale {
     val localeMap by lazy {

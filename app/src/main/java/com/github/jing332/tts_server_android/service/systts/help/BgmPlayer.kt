@@ -3,9 +3,9 @@ package com.github.jing332.tts_server_android.service.systts.help
 import android.content.Context
 import android.util.Log
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
-import com.github.jing332.tts_server_android.util.FileUtils
-import com.github.jing332.tts_server_android.util.FileUtils.mimeType
-import com.github.jing332.tts_server_android.util.runOnUI
+import com.github.jing332.tts_server_android.utils.FileUtils
+import com.github.jing332.tts_server_android.utils.FileUtils.mimeType
+import com.github.jing332.tts_server_android.utils.runOnUI
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException

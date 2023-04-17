@@ -14,7 +14,7 @@ import com.github.jing332.tts_server_android.model.speech.tts.ExpressAs
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
-import com.github.jing332.tts_server_android.util.runOnIO
+import com.github.jing332.tts_server_android.utils.runOnIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.max

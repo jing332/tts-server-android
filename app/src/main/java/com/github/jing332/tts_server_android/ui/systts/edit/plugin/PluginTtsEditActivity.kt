@@ -8,8 +8,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withIO
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.databinding.SysttsPluginEditActivityBinding
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
@@ -55,12 +55,12 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
             displayErrorDialog(it)
         }
 
-        App.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_FINISH))
+        AppConst.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_FINISH))
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
     private val waitDialog by lazy { WaitDialog(this) }

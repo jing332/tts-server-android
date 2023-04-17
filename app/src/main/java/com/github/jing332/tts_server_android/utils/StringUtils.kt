@@ -1,8 +1,7 @@
-package com.github.jing332.tts_server_android.util
+package com.github.jing332.tts_server_android.utils
 
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import java.util.regex.Pattern
 
 object StringUtils {

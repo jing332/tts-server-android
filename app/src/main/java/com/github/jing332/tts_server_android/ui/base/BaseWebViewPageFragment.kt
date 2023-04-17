@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.webkit.*
 import androidx.fragment.app.Fragment
 import com.github.jing332.tts_server_android.databinding.WebPageFragmentBinding
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.toast
 
 open class BaseWebViewPageFragment() : Fragment() {
     private val binding: WebPageFragmentBinding by lazy {

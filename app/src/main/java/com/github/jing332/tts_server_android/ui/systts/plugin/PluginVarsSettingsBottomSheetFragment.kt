@@ -5,16 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.databinding.SysttsPluginVarsSettingsBottomSheetBinding
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
-import com.github.jing332.tts_server_android.util.setMarginMatchParent
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.setMarginMatchParent
+import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class PluginVarsSettingsBottomSheetFragment : BottomSheetDialogFragment() {

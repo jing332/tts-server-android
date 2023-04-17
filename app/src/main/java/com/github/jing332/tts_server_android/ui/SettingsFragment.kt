@@ -18,8 +18,8 @@ import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
-import com.github.jing332.tts_server_android.util.dp
-import com.github.jing332.tts_server_android.util.longToast
+import com.github.jing332.tts_server_android.utils.dp
+import com.github.jing332.tts_server_android.utils.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 

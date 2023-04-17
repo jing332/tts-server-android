@@ -2,11 +2,7 @@
 
 package com.github.jing332.tts_server_android.service.forwarder.system
 
-import android.app.IntentService
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -19,6 +15,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.help.LocalTtsEngineHelper
@@ -29,9 +26,9 @@ import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_FORWARDER_SYS
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
-import com.github.jing332.tts_server_android.util.ClipboardUtils
-import com.github.jing332.tts_server_android.util.longToast
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.ClipboardUtils
+import com.github.jing332.tts_server_android.utils.longToast
+import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import tts_server_lib.SysTtsForwarder
@@ -49,7 +46,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
         const val ACTION_NOTIFICATION_EXIT = "ACTION_NOTIFICATION_STOP"
 
         fun requestCloseServer() {
-            App.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_CLOSE_SERVER))
+            AppConst.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_CLOSE_SERVER))
         }
 
         val isRunning: Boolean
@@ -118,7 +115,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
 
                 override fun getEngines(): String {
                     val data = getSysTtsEngines().map { EngineInfo(it.name, it.label) }
-                    return App.jsonBuilder.encodeToString(data)
+                    return AppConst.jsonBuilder.encodeToString(data)
                 }
 
                 override fun getVoices(engine: String): String {
@@ -135,7 +132,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
                             )
                         }
 
-                        return@runBlocking App.jsonBuilder.encodeToString(data)
+                        return@runBlocking AppConst.jsonBuilder.encodeToString(data)
                     }
                 }
             })
@@ -146,17 +143,17 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
     private fun sendLog(level: Int, msg: String) {
         Log.d(TAG, "$level, $msg")
         val intent = Intent(ACTION_ON_LOG).putExtra(KeyConst.KEY_DATA, AppLog(level, msg))
-        App.localBroadcast.sendBroadcast(intent)
+        AppConst.localBroadcast.sendBroadcast(intent)
     }
 
     override fun onHandleIntent(intent: Intent?) {
         isRunning = true
         mServer?.let {
             toast(R.string.service_started)
-            App.localBroadcast.sendBroadcast(Intent(ACTION_ON_STARTING))
+            AppConst.localBroadcast.sendBroadcast(Intent(ACTION_ON_STARTING))
             it.start(mCfg.port.toLong())
             toast(R.string.service_closed)
-            App.localBroadcast.sendBroadcast(Intent(ACTION_ON_CLOSED))
+            AppConst.localBroadcast.sendBroadcast(Intent(ACTION_ON_CLOSED))
         }
         isRunning = false
     }
@@ -166,7 +163,10 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
 
     override fun onCreate() {
         super.onCreate()
-        App.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_REQUEST_CLOSE_SERVER))
+        AppConst.localBroadcast.registerReceiver(
+            mReceiver,
+            IntentFilter(ACTION_REQUEST_CLOSE_SERVER)
+        )
         registerReceiver(mNotificationReceiver, IntentFilter(ACTION_NOTIFICATION_COPY_URL).apply {
             addAction(ACTION_NOTIFICATION_EXIT)
         })
@@ -174,7 +174,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
 
     override fun onDestroy() {
         super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
         unregisterReceiver(mNotificationReceiver)
         stopForeground(true)
         mWakeLock?.release()
@@ -251,7 +251,7 @@ class SysTtsForwarderService : IntentService("ApiConvIntentService") {
                 }
 
                 ACTION_NOTIFICATION_EXIT -> {
-                    App.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_CLOSE_SERVER))
+                    AppConst.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_CLOSE_SERVER))
                 }
 
             }

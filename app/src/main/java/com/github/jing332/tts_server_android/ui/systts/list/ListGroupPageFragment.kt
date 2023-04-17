@@ -15,8 +15,8 @@ import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.drake.net.utils.withDefault
 import com.drake.net.utils.withMain
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
@@ -208,7 +208,7 @@ class ListGroupPageFragment : Fragment() {
         val obj =
             GroupWithSystemTts(group = model.data, list = subList)
         val fragment = ConfigExportBottomSheetFragment(
-            { App.jsonBuilder.encodeToString(obj) },
+            { AppConst.jsonBuilder.encodeToString(obj) },
             { "ttsrv-${model.name}.json" }
         )
         fragment.show(requireActivity().supportFragmentManager, ConfigExportBottomSheetFragment.TAG)

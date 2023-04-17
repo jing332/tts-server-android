@@ -6,7 +6,6 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.widget.PopupMenu
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
@@ -14,8 +13,8 @@ import com.github.jing332.tts_server_android.help.config.SpeechRuleConfig
 import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
-import com.github.jing332.tts_server_android.util.FileUtils.readAllText
-import com.github.jing332.tts_server_android.util.observeNoSticky
+import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
+import com.github.jing332.tts_server_android.utils.observeNoSticky
 
 class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
     private val vm: SpeechRuleEditorViewModel by viewModels()

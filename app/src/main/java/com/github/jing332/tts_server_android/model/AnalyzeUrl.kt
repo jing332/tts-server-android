@@ -1,6 +1,6 @@
 package com.github.jing332.tts_server_android.model
 
-import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.AppConst.SCRIPT_ENGINE
 import com.script.SimpleBindings
 import kotlinx.serialization.decodeFromString
@@ -46,7 +46,7 @@ class AnalyzeUrl(
         // POST
         baseUrl = str.substring(0, splitIndex).trim()
         val jsonStr = str.substring(splitIndex + 1)
-        return App.jsonBuilder.decodeFromString(jsonStr)
+        return AppConst.jsonBuilder.decodeFromString(jsonStr)
     }
 
 

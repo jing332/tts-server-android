@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.databinding.SysTtsForwarderLogPageFragmentBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsForwarderConfig
@@ -19,7 +19,7 @@ import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForw
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.view.adapter.LogListItemAdapter
-import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.github.jing332.tts_server_android.utils.clickWithThrottle
 
 class SysTtsForwarderLogPage : Fragment() {
     private val binding: SysTtsForwarderLogPageFragmentBinding by lazy {
@@ -41,7 +41,7 @@ class SysTtsForwarderLogPage : Fragment() {
         binding.fabSwitch.clickWithThrottle {
             SysTtsForwarderConfig.port = binding.etPort.text.toString().toInt()
             if (SysTtsForwarderService.instance?.isRunning == true) {
-                App.localBroadcast.sendBroadcast(Intent(SysTtsForwarderService.ACTION_REQUEST_CLOSE_SERVER))
+                AppConst.localBroadcast.sendBroadcast(Intent(SysTtsForwarderService.ACTION_REQUEST_CLOSE_SERVER))
             } else {
                 requireContext().startService(
                     Intent(
@@ -72,7 +72,7 @@ class SysTtsForwarderLogPage : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        App.localBroadcast.registerReceiver(
+        AppConst.localBroadcast.registerReceiver(
             mReceiver,
             IntentFilter(SysTtsForwarderService.ACTION_ON_CLOSED).apply {
                 addAction(SysTtsForwarderService.ACTION_ON_LOG)
@@ -83,7 +83,7 @@ class SysTtsForwarderLogPage : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
     private fun updateSwitch(isStarted: Boolean) {

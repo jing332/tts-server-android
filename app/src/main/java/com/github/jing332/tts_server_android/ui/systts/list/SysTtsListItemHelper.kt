@@ -32,10 +32,10 @@ import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
-import com.github.jing332.tts_server_android.util.clickWithThrottle
-import com.github.jing332.tts_server_android.util.clone
-import com.github.jing332.tts_server_android.util.longToast
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.clickWithThrottle
+import com.github.jing332.tts_server_android.utils.clone
+import com.github.jing332.tts_server_android.utils.longToast
+import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -15,7 +15,7 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SeekbarBinding
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar.ValueFormatter
-import com.github.jing332.tts_server_android.util.ThrottleUtil
+import com.github.jing332.tts_server_android.utils.ThrottleUtil
 import kotlin.math.roundToInt
 
 open class Seekbar @JvmOverloads constructor(

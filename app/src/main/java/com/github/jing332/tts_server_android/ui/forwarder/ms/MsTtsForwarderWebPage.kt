@@ -8,8 +8,8 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.webkit.*
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
 import com.github.jing332.tts_server_android.ui.base.BaseWebViewPageFragment
 
@@ -21,12 +21,10 @@ class MsTtsForwarderWebPage : BaseWebViewPageFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        App.localBroadcast.registerReceiver(
+        AppConst.localBroadcast.registerReceiver(
             mReceiver,
             IntentFilter(TtsIntentService.ACTION_ON_STARTED)
         )
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,7 +40,7 @@ class MsTtsForwarderWebPage : BaseWebViewPageFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
     inner class MyReceiver : BroadcastReceiver() {

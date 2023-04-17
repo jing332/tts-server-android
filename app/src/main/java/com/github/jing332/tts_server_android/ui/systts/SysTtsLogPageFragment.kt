@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.databinding.SysttsLogFragmentBinding
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService.Companion.ACTION_ON_LOG
@@ -44,14 +44,14 @@ class SysTtsLogPageFragment : Fragment() {
         binding.recyclerViewLog.layoutManager = layoutManager
         binding.recyclerViewLog.adapter = logAdapter
 
-        App.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_ON_LOG))
-        App.isSysTtsLogEnabled = true
+        AppConst.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_ON_LOG))
+        AppConst.isSysTtsLogEnabled = true
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
-        App.isSysTtsLogEnabled = false
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
+        AppConst.isSysTtsLogEnabled = false
     }
 
     @Suppress("DEPRECATION")

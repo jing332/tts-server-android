@@ -2,16 +2,40 @@ package com.github.jing332.tts_server_android.constant
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.app
 import com.script.javascript.RhinoScriptEngine
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
 
 @SuppressLint("SimpleDateFormat")
 @Suppress("DEPRECATION")
 object AppConst {
     const val PACKET_NAME = "com.github.jing332.tts_server_android"
+
+    val localBroadcast by lazy { LocalBroadcastManager.getInstance(App.context) }
+
+    var isSysTtsLogEnabled = false
+    var isServerLogEnabled = false
+
+    @OptIn(ExperimentalSerializationApi::class)
+    val jsonBuilder by lazy {
+        Json {
+            allowStructuredMapKeys = true
+            ignoreUnknownKeys = true
+            prettyPrint = true
+            isLenient = true
+            explicitNulls = false //忽略为null的字段
+            allowStructuredMapKeys = true
+        }
+    }
+
+    val isCnLocale: Boolean
+        get() = App.context.resources.configuration.locale.language.endsWith("zh")
+
 
     // JS引擎
     val SCRIPT_ENGINE: RhinoScriptEngine by lazy { RhinoScriptEngine() }

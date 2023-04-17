@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 /* https://github.com/gedoor/legado/blob/master/app/src/main/java/io/legado/app/utils/HandlerUtils.kt */
-package com.github.jing332.tts_server_android.util
+package com.github.jing332.tts_server_android.utils
 
 import android.os.Build.VERSION.SDK_INT
 import android.os.Handler

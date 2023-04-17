@@ -1,12 +1,7 @@
-package com.github.jing332.tts_server_android.util
+package com.github.jing332.tts_server_android.utils
 
 
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
 
 /**
  * 零入侵零反射解决 [LiveData] 在 event 场景下的粘性数据问题

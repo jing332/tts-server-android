@@ -10,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsFragmentBinding
 import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListFragment
-import com.github.jing332.tts_server_android.util.reduceDragSensitivity
+import com.github.jing332.tts_server_android.utils.reduceDragSensitivity
 
 
 class SysTtsHostFragment : Fragment() {

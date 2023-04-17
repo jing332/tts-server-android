@@ -1,9 +1,9 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.os.Bundle
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.LegadoHttpTts
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.CompatSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
@@ -14,9 +14,9 @@ import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.speech.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.base.import1.BaseImportConfigBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.base.import1.ConfigItemModel
-import com.github.jing332.tts_server_android.util.StringUtils
-import com.github.jing332.tts_server_android.util.longToast
-import com.github.jing332.tts_server_android.util.toJsonListString
+import com.github.jing332.tts_server_android.utils.StringUtils
+import com.github.jing332.tts_server_android.utils.longToast
+import com.github.jing332.tts_server_android.utils.toJsonListString
 import kotlinx.serialization.decodeFromString
 
 class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
@@ -68,7 +68,7 @@ class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
         val groupId = System.currentTimeMillis()
         val groupCount = appDb.systemTtsDao.groupCount
         if (fromLegado) {
-            App.jsonBuilder.decodeFromString<List<LegadoHttpTts>>(json).ifEmpty { return null }
+            AppConst.jsonBuilder.decodeFromString<List<LegadoHttpTts>>(json).ifEmpty { return null }
                 .let { list ->
                     return listOf(GroupWithSystemTts(
                         group =
@@ -91,9 +91,9 @@ class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
 
         } else {
             return if (json.contains("\"group\"")) { // 新版数据结构
-                App.jsonBuilder.decodeFromString<List<GroupWithSystemTts>>(json)
+                AppConst.jsonBuilder.decodeFromString<List<GroupWithSystemTts>>(json)
             } else {
-                val list = App.jsonBuilder.decodeFromString<List<CompatSystemTts>>(json)
+                val list = AppConst.jsonBuilder.decodeFromString<List<CompatSystemTts>>(json)
                 listOf(
                     GroupWithSystemTts(
                         group = appDb.systemTtsDao.getGroup()!!,

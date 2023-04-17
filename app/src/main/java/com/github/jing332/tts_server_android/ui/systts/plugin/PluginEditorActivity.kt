@@ -9,8 +9,8 @@ import android.view.MenuItem
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -22,9 +22,9 @@ import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
-import com.github.jing332.tts_server_android.util.FileUtils.readAllText
-import com.github.jing332.tts_server_android.util.observeNoSticky
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
+import com.github.jing332.tts_server_android.utils.observeNoSticky
+import com.github.jing332.tts_server_android.utils.toast
 
 
 class PluginEditorActivity : BaseScriptEditorActivity() {
@@ -90,7 +90,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
     }
 
     override fun onScriptSyncPush() {
-        App.localBroadcast.sendBroadcast(Intent(PluginTtsEditActivity.ACTION_FINISH))
+        AppConst.localBroadcast.sendBroadcast(Intent(PluginTtsEditActivity.ACTION_FINISH))
     }
 
     override fun updateCode(code: String) {

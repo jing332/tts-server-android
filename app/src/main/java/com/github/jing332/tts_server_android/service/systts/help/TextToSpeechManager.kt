@@ -15,11 +15,9 @@ import com.github.jing332.tts_server_android.model.speech.ITextToSpeechSynthesiz
 import com.github.jing332.tts_server_android.model.speech.TtsTextPair
 import com.github.jing332.tts_server_android.model.speech.tts.*
 import com.github.jing332.tts_server_android.service.systts.help.exception.*
-import com.github.jing332.tts_server_android.util.StringUtils
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.StringUtils
+import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.*
-import java.io.ByteArrayInputStream
-import java.nio.ByteBuffer
 import kotlin.coroutines.coroutineContext
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
@@ -449,7 +447,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     ) {
         if (useExoDecoder) {
             mExoDecoder.callback = ExoAudioDecoder.Callback { byteBuffer ->
-                Log.d(TAG, "onReadPcmAudio: ${byteBuffer.remaining()}")
                 val buffer = ByteArray(byteBuffer.remaining())
                 byteBuffer.get(buffer)
                 onPcmAudio.invoke(buffer)

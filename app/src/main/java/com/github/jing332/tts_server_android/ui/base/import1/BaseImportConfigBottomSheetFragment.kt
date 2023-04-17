@@ -26,11 +26,11 @@ import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
-import com.github.jing332.tts_server_android.util.ClipboardUtils
-import com.github.jing332.tts_server_android.util.FileUtils.readAllText
-import com.github.jing332.tts_server_android.util.clickWithThrottle
-import com.github.jing332.tts_server_android.util.dp
-import com.github.jing332.tts_server_android.util.setMarginMatchParent
+import com.github.jing332.tts_server_android.utils.ClipboardUtils
+import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
+import com.github.jing332.tts_server_android.utils.clickWithThrottle
+import com.github.jing332.tts_server_android.utils.dp
+import com.github.jing332.tts_server_android.utils.setMarginMatchParent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.util
+package com.github.jing332.tts_server_android.utils
 
 import android.content.ContentResolver
 import android.content.Context
@@ -9,12 +9,7 @@ import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.net.URLConnection
 
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.jing332.tts_server_android.*
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.databinding.MsTtsForwarderLogFragmentBinding
 import com.github.jing332.tts_server_android.help.config.ServerConfig
@@ -78,15 +79,15 @@ class MsTtsForwarderLogPage : Fragment() {
         IntentFilter(TtsIntentService.ACTION_ON_LOG).apply {
             addAction(TtsIntentService.ACTION_ON_STARTED)
             addAction(TtsIntentService.ACTION_ON_CLOSED)
-            App.localBroadcast.registerReceiver(mReceiver, this)
+            AppConst.localBroadcast.registerReceiver(mReceiver, this)
         }
-        App.isServerLogEnabled = true
+        AppConst.isServerLogEnabled = true
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
-        App.isServerLogEnabled = false
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
+        AppConst.isServerLogEnabled = false
     }
 
     /* 设置底部按钮、端口 是否可点击 */

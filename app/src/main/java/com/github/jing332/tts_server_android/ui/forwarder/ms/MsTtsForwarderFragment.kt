@@ -6,12 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
@@ -21,16 +16,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.databinding.MsTtsForwarderFragmentBinding
 import com.github.jing332.tts_server_android.help.config.ServerConfig
 import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
-import com.github.jing332.tts_server_android.util.MyTools
-import com.github.jing332.tts_server_android.util.reduceDragSensitivity
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.MyTools
+import com.github.jing332.tts_server_android.utils.reduceDragSensitivity
+import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
@@ -47,7 +42,7 @@ class MsTtsForwarderFragment : Fragment(), MenuProvider {
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        App.localBroadcast.registerReceiver(
+        AppConst.localBroadcast.registerReceiver(
             mReceiver,
             IntentFilter(MainActivity.ACTION_BACK_KEY_DOWN).apply {
             }
@@ -83,7 +78,7 @@ class MsTtsForwarderFragment : Fragment(), MenuProvider {
 
     override fun onDestroy() {
         super.onDestroy()
-        App.localBroadcast.unregisterReceiver(mReceiver)
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
     val logFragment = MsTtsForwarderLogPage()

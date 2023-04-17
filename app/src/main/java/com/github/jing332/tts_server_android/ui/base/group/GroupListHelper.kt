@@ -8,7 +8,7 @@ import androidx.core.view.MenuCompat
 import com.drake.brv.BindingAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseListGroupItemBinding
-import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.github.jing332.tts_server_android.utils.clickWithThrottle
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 

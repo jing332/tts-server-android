@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.util
+package com.github.jing332.tts_server_android.utils
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
@@ -12,10 +12,10 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import com.drake.net.Net
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.GithubReleaseApiBean
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.serialization.decodeFromString
 import okhttp3.Response
@@ -26,7 +26,6 @@ object MyTools {
     const val TAG = "MyTools"
     private const val GITHUB_RELEASES_LATEST_URL =
         "https://api.github.com/repos/jing332/tts-server-android/releases/latest"
-    private val json by lazy { App.jsonBuilder }
 
     /*从Github检查更新*/
     suspend fun checkUpdate(ctx: Context, isFromUser: Boolean = false) {
@@ -43,7 +42,7 @@ object MyTools {
 
     private fun checkVersionFromJson(ctx: Context, s: String, isFromUser: Boolean) {
         val cpuAbi = Build.SUPPORTED_ABIS[0]
-        val bean = json.decodeFromString<GithubReleaseApiBean>(s)
+        val bean = AppConst.jsonBuilder.decodeFromString<GithubReleaseApiBean>(s)
         // 最大的为全量apk
         val apkUniversalUrl = bean.assets.sortedByDescending { it.size }[0].browserDownloadUrl
         // 根据CPU ABI判断精简版apk

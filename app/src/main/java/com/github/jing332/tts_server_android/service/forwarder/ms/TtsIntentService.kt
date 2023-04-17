@@ -7,8 +7,8 @@ import android.graphics.Color
 import android.os.Build
 import android.os.PowerManager
 import androidx.core.content.ContextCompat
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.help.config.AppConfig
@@ -17,8 +17,8 @@ import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_FORWARDER_MS
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
-import com.github.jing332.tts_server_android.util.ClipboardUtils
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.ClipboardUtils
+import com.github.jing332.tts_server_android.utils.toast
 import tts_server_lib.LogCallback
 import tts_server_lib.Tts_server_lib
 
@@ -87,7 +87,7 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         sendStartedMsg()
         /* 初始化Go: 设置日志转发，注册Http.Server */
         val cb = LogCallback { level, msg ->
-            if (App.isServerLogEnabled) sendLog(AppLog(level, msg))
+            if (AppConst.isServerLogEnabled) sendLog(AppLog(level, msg))
         }
         Tts_server_lib.init(cb)
         /*启动Go服务并阻塞等待,直到关闭*/
@@ -104,17 +104,17 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
     /* 广播日志消息 */
     private fun sendLog(log: AppLog) {
         val intent = Intent(ACTION_ON_LOG).apply { putExtra(KeyConst.KEY_DATA, log) }
-        App.localBroadcast.sendBroadcast(intent)
+        AppConst.localBroadcast.sendBroadcast(intent)
     }
 
     /* 广播启动消息 */
     private fun sendStartedMsg() {
-        App.localBroadcast.sendBroadcast(Intent(ACTION_ON_STARTED))
+        AppConst.localBroadcast.sendBroadcast(Intent(ACTION_ON_STARTED))
     }
 
     /* 广播关闭消息 */
     private fun sendClosedMsg() {
-        App.localBroadcast.sendBroadcast(Intent(ACTION_ON_CLOSED))
+        AppConst.localBroadcast.sendBroadcast(Intent(ACTION_ON_CLOSED))
     }
 
     private fun initNotification() {

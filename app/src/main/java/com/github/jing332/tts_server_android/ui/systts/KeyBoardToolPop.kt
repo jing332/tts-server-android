@@ -2,14 +2,10 @@ package com.github.jing332.tts_server_android.ui.systts
 
 import android.content.Context
 import android.graphics.Rect
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.view.Window
+import android.view.*
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.RecyclerView
-import com.github.jing332.tts_server_android.util.windowSize
+import com.github.jing332.tts_server_android.utils.windowSize
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import splitties.systemservices.windowManager

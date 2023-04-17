@@ -4,10 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewbinding.ViewBinding
-import com.github.jing332.tts_server_android.databinding.SysttsBgmParamsEditViewBinding
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
-import com.github.jing332.tts_server_android.util.inflateBinding
-import com.github.jing332.tts_server_android.util.layoutInflater
+import com.github.jing332.tts_server_android.utils.inflateBinding
+import com.github.jing332.tts_server_android.utils.layoutInflater
 
 abstract class BaseParamsEditView<VB : ViewBinding, T : ITextToSpeechEngine> @JvmOverloads constructor(
     context: Context,

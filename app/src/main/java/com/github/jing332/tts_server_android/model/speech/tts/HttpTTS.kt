@@ -4,20 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.os.Parcelable
 import android.os.SystemClock
-import android.view.View
-import androidx.fragment.app.FragmentActivity
 import com.drake.net.Net
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
-import com.github.jing332.tts_server_android.databinding.SysttsHttpEditBottomSheetBinding
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
-import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsParamsEditView
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -83,7 +77,7 @@ data class HttpTTS(
 
     private fun parseHeaders() {
         if (!header.isNullOrEmpty()) {
-            httpHeaders = App.jsonBuilder.decodeFromString(header.toString())
+            httpHeaders = AppConst.jsonBuilder.decodeFromString(header.toString())
         }
     }
 
@@ -113,22 +107,5 @@ data class HttpTTS(
             resp.body?.byteStream()
         } else
             throw Exception("HTTP TTS 请求失败：${resp.code}, ${resp.message}")
-    }
-
-    override suspend fun getAudioStream(
-        speakText: String,
-        chunkSize: Int,
-        onData: (ByteArray?) -> Unit
-    ) {
-//        onData(getAudio(speakText))
-        /* getAudioResponse(speakText).body?.byteStream()?.let {
-             val data = ByteArray(chunkSize)
-             while (true) {
-                 val index = it.read(data)
-                 if (index == 0) continue
-                 if (index == -1) break
-
-                 onData(data.copyOfRange(0, index))
-             }*/
     }
 }

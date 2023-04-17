@@ -2,52 +2,42 @@ package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import com.drake.net.utils.withIO
-import com.drake.net.utils.withMain
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
-import com.github.jing332.tts_server_android.databinding.SysttsBasicAudioParamsSettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
-import com.github.jing332.tts_server_android.model.rhino.core.type.ui.JSpinner
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
-import com.github.jing332.tts_server_android.model.speech.tts.AudioParams
 import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
 import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.AppMaterialSpinner
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
-import com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
-import com.github.jing332.tts_server_android.util.clickWithThrottle
-import com.github.jing332.tts_server_android.util.layoutInflater
-import com.github.jing332.tts_server_android.util.runOnIO
-import com.github.jing332.tts_server_android.util.runOnUI
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.clickWithThrottle
+import com.github.jing332.tts_server_android.utils.layoutInflater
+import com.github.jing332.tts_server_android.utils.runOnUI
+import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
 import kotlinx.serialization.decodeFromString
 import java.lang.Integer.max
-import kotlin.math.min
 
 class BasicInfoEditView @JvmOverloads constructor(
     context: Context,
@@ -313,7 +303,7 @@ class BasicInfoEditView @JvmOverloads constructor(
                             }
 
                             val itemsMap: Map<String, String> =
-                                App.jsonBuilder.decodeFromString(items)
+                                AppConst.jsonBuilder.decodeFromString(items)
                             val models = itemsMap.map { SpinnerItem(it.value, it.key) }
                             spinenr.setListModel(models)
 

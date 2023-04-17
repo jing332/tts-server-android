@@ -15,8 +15,8 @@ import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.SpinnerData
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
-import com.github.jing332.tts_server_android.util.runOnIO
-import com.github.jing332.tts_server_android.util.runOnUI
+import com.github.jing332.tts_server_android.utils.runOnIO
+import com.github.jing332.tts_server_android.utils.runOnUI
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.max

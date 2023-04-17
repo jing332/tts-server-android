@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withIO
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
@@ -56,9 +55,9 @@ class ExportBottomSheetFragment : ConfigExportBottomSheetFragment() {
 
     private fun updateConfig(isIncludeVars: Boolean = includeVarsCheckBox.isChecked) {
         val cfg = if (isIncludeVars) {
-            App.jsonBuilder.encodeToString(pluginList)
+            AppConst.jsonBuilder.encodeToString(pluginList)
         } else {
-            App.jsonBuilder.encodeToString(pluginList.map { it.copy(userVars = mutableMapOf()) })
+            AppConst.jsonBuilder.encodeToString(pluginList.map { it.copy(userVars = mutableMapOf()) })
         }
         setConfigString(cfg)
     }

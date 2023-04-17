@@ -27,10 +27,9 @@ import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
-import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
-import com.github.jing332.tts_server_android.util.MyTools
-import com.github.jing332.tts_server_android.util.clickWithThrottle
+import com.github.jing332.tts_server_android.utils.MyTools
+import com.github.jing332.tts_server_android.utils.clickWithThrottle
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.badge.ExperimentalBadgeUtils

@@ -14,12 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ErrorDialogBinding
-import com.github.jing332.tts_server_android.util.ClipboardUtils
-import com.github.jing332.tts_server_android.util.dp
-import com.github.jing332.tts_server_android.util.layoutInflater
-import com.github.jing332.tts_server_android.util.longToast
-import com.github.jing332.tts_server_android.util.runOnUI
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

@@ -2,20 +2,16 @@ package com.github.jing332.tts_server_android.model.speech.tts
 
 import android.content.Context
 import android.os.Parcelable
-import android.view.View
-import androidx.fragment.app.FragmentActivity
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
-import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
-import com.github.jing332.tts_server_android.ui.systts.base.QuickEditBottomSheet
-import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsParamsEditView
 import kotlinx.parcelize.IgnoredOnParcel
@@ -101,8 +97,10 @@ data class MsTTS(
         val styleDegree = expressAs?.styleDegree ?: 1F
         var role = strNone
         expressAs?.also { exp ->
-            exp.style?.let { style = if (App.isCnLocale) CnLocalMap.getStyleAndRole(it) else it }
-            exp.role?.let { role = if (App.isCnLocale) CnLocalMap.getStyleAndRole(it) else it }
+            exp.style?.let {
+                style = if (AppConst.isCnLocale) CnLocalMap.getStyleAndRole(it) else it
+            }
+            exp.role?.let { role = if (AppConst.isCnLocale) CnLocalMap.getStyleAndRole(it) else it }
         }
 
         val expressAs =

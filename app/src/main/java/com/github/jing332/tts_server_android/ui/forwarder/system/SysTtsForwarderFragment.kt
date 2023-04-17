@@ -3,12 +3,7 @@ package com.github.jing332.tts_server_android.ui.forwarder.system
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -19,9 +14,9 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysTtsForwarderFragmentBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsForwarderConfig
 import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService
-import com.github.jing332.tts_server_android.util.MyTools
-import com.github.jing332.tts_server_android.util.reduceDragSensitivity
-import com.github.jing332.tts_server_android.util.toast
+import com.github.jing332.tts_server_android.utils.MyTools
+import com.github.jing332.tts_server_android.utils.reduceDragSensitivity
+import com.github.jing332.tts_server_android.utils.toast
 
 class SysTtsForwarderFragment : Fragment() {
     val binding: SysTtsForwarderFragmentBinding by lazy {

@@ -2,12 +2,12 @@ package com.github.jing332.tts_server_android.ui.systts.edit.microsoft
 
 import com.drake.net.utils.withDefault
 import com.drake.net.utils.withIO
-import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.bean.EdgeVoiceBean
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.util.FileUtils
+import com.github.jing332.tts_server_android.utils.FileUtils
 import kotlinx.serialization.decodeFromString
 import tts_server_lib.Tts_server_lib
 import java.io.File
@@ -15,7 +15,7 @@ import java.util.*
 
 class MsTtsEditRepository() {
     companion object {
-        private val json by lazy { App.jsonBuilder }
+        private val json by lazy { AppConst.jsonBuilder }
         private val EDGE_CACHE_PATH by lazy { "${app.cacheDir.path}/edge/voices.json" }
         private val AZURE_CACHE_PATH by lazy { "${app.cacheDir.path}/azure/voices.json" }
         private val CREATION_CACHE_PATH by lazy { "${app.cacheDir.path}/creation/voices.json" }
@@ -127,7 +127,7 @@ data class GeneralVoiceData(
      */
     val localStyleList: List<Pair<String, String>>?
         get() = (
-                if (App.isCnLocale) styleList?.map { Pair(it, CnLocalMap.getStyleAndRole(it)) }
+                if (AppConst.isCnLocale) styleList?.map { Pair(it, CnLocalMap.getStyleAndRole(it)) }
                 else styleList?.map { Pair(it, it) }
                 )
             ?.also { if (it.isEmpty()) return null }
@@ -144,7 +144,7 @@ data class GeneralVoiceData(
      */
     val localRoleList: List<Pair<String, String>>?
         get() = (
-                if (App.isCnLocale) roleList?.map { Pair(it, CnLocalMap.getStyleAndRole(it)) }
+                if (AppConst.isCnLocale) roleList?.map { Pair(it, CnLocalMap.getStyleAndRole(it)) }
                 else roleList?.map { Pair(it, it) }
                 )
             ?.also { if (it.isEmpty()) return null }

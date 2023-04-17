@@ -20,31 +20,20 @@ import android.speech.tts.TextToSpeechService
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.*
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.help.audio.AudioDecoderException
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
-import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException
-import com.github.jing332.tts_server_android.service.systts.help.exception.PlayException
-import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
-import com.github.jing332.tts_server_android.service.systts.help.exception.SpeechRuleException
-import com.github.jing332.tts_server_android.service.systts.help.exception.TextReplacerException
-import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
+import com.github.jing332.tts_server_android.service.systts.help.exception.*
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_SYS_TTS
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
-import com.github.jing332.tts_server_android.util.GcManager
-import com.github.jing332.tts_server_android.util.StringUtils
-import com.github.jing332.tts_server_android.util.limitLength
-import com.github.jing332.tts_server_android.util.rootCause
-import com.github.jing332.tts_server_android.util.runOnUI
-import com.github.jing332.tts_server_android.util.toHtmlBold
-import com.github.jing332.tts_server_android.util.toHtmlItalic
-import com.github.jing332.tts_server_android.util.toHtmlSmall
+import com.github.jing332.tts_server_android.utils.*
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
@@ -64,7 +53,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
          * 更新配置
          */
         fun notifyUpdateConfig() {
-            App.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_UPDATE_CONFIG))
+            AppConst.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_UPDATE_CONFIG))
         }
     }
 
@@ -97,7 +86,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             registerReceiver(mReceiver, this)
         }
 
-        App.localBroadcast.registerReceiver(
+        AppConst.localBroadcast.registerReceiver(
             mLocalReceiver,
             IntentFilter(ACTION_REQUEST_UPDATE_CONFIG)
         )
@@ -120,7 +109,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
         mTtsManager.destroy()
         unregisterReceiver(mReceiver)
-        App.localBroadcast.unregisterReceiver(mLocalReceiver)
+        AppConst.localBroadcast.unregisterReceiver(mLocalReceiver)
 
         mWakeLock?.release()
         mWifiLock.release()
@@ -345,7 +334,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     }
 
     override fun onRequestStarted(text: String, tts: ITextToSpeechEngine) {
-        if (!App.isSysTtsLogEnabled) return
+        if (!AppConst.isSysTtsLogEnabled) return
         logD(
             "<br>" + getString(
                 R.string.systts_log_request_audio,
@@ -355,7 +344,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     }
 
     override fun onError(e: TtsManagerException) {
-        if (!App.isSysTtsLogEnabled) return
+        if (!AppConst.isSysTtsLogEnabled) return
         when (e) {
             is RequestException -> {
                 when (e.errorCode) {
@@ -426,7 +415,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         costTime: Long,
         retryTimes: Int
     ) {
-        if (!App.isSysTtsLogEnabled) return
+        if (!AppConst.isSysTtsLogEnabled) return
 
         val sizeStr = if (size == -1) getString(R.string.unknown) else "${(size / 1024)}kb"
         logI(
@@ -444,7 +433,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     }
 
     override fun onPlayFinished(text: String, tts: ITextToSpeechEngine) {
-        if (!App.isSysTtsLogEnabled) return
+        if (!AppConst.isSysTtsLogEnabled) return
         logI(getString(R.string.systts_log_finished_playing, text.limitLength().toHtmlBold()))
     }
 
@@ -457,7 +446,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         Log.d(TAG, "$level, $msg")
         val intent =
             Intent(ACTION_ON_LOG).putExtra(KeyConst.KEY_DATA, AppLog(level, msg))
-        App.localBroadcast.sendBroadcast(intent)
+        AppConst.localBroadcast.sendBroadcast(intent)
     }
 
 }
