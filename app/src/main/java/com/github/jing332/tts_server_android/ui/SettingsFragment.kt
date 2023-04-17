@@ -46,28 +46,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        findPreference<SwitchPreferenceCompat>("isSkipSilentTextEnabled")!!.apply {
-            isChecked = SysTtsConfig.isSkipSilentText
-            setOnPreferenceChangeListener { _, newValue ->
-                SysTtsConfig.isSkipSilentText = newValue as Boolean
-                true
-            }
+        initSwitchPreference("isSkipSilentTextEnabled", SysTtsConfig.isSkipSilentText) {
+            SysTtsConfig.isSkipSilentText = it
         }
 
-        findPreference<SwitchPreferenceCompat>("isExoDecoderEnabled")!!.apply {
-            isChecked = SysTtsConfig.isExoDecoderEnabled
-            setOnPreferenceChangeListener { _, newValue ->
-                SysTtsConfig.isExoDecoderEnabled = newValue as Boolean
-                true
-            }
+        initSwitchPreference("isExoDecoderEnabled", SysTtsConfig.isExoDecoderEnabled) {
+            SysTtsConfig.isExoDecoderEnabled = it
         }
 
-        findPreference<SwitchPreferenceCompat>("isStreamPlayModeEnabled")!!.apply {
-            isChecked = SysTtsConfig.isStreamPlayModeEnabled
-            setOnPreferenceChangeListener { _, newValue ->
-                SysTtsConfig.isStreamPlayModeEnabled = newValue as Boolean
-                true
-            }
+        initSwitchPreference("isStreamPlayModeEnabled", SysTtsConfig.isStreamPlayModeEnabled) {
+            SysTtsConfig.isStreamPlayModeEnabled = it
         }
 
         findPreference<ListPreference>("maxEmptyAudioRetryCount")!!.apply {
@@ -86,7 +74,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<ListPreference>("maxRetryCount")!!.apply {
-            entries = buildList<String> {
+            entries = buildList {
                 add(getString(R.string.no_retries))
                 addAll((1..50).map { "$it" })
             }.toTypedArray()
@@ -124,41 +112,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        // 朗读目标多选开关
-        val voiceMultipleSwitch: SwitchPreferenceCompat = findPreference("isVoiceMultiple")!!
-        voiceMultipleSwitch.isChecked = SysTtsConfig.isVoiceMultipleEnabled
-        voiceMultipleSwitch.setOnPreferenceChangeListener { _, newValue ->
-            SysTtsConfig.isVoiceMultipleEnabled = newValue as Boolean
-            true
+        initSwitchPreference("isVoiceMultiple", SysTtsConfig.isVoiceMultipleEnabled) {
+            SysTtsConfig.isVoiceMultipleEnabled = it
         }
 
-        // 分组多选开关
-        val groupMultipleSwitch: SwitchPreferenceCompat = findPreference("groupMultiple")!!
-        groupMultipleSwitch.isChecked = SysTtsConfig.isGroupMultipleEnabled
-        groupMultipleSwitch.setOnPreferenceChangeListener { _, newValue ->
-            SysTtsConfig.isGroupMultipleEnabled = newValue as Boolean
-            true
+        initSwitchPreference("groupMultiple", SysTtsConfig.isGroupMultipleEnabled) {
+            SysTtsConfig.isGroupMultipleEnabled = it
         }
 
-        // 唤醒或开关
-        val wakeLockSwitch: SwitchPreferenceCompat = findPreference("isWakeLockEnabled")!!
-        wakeLockSwitch.apply {
-            wakeLockSwitch.isChecked = SysTtsConfig.isWakeLockEnabled
-            setOnPreferenceChangeListener { _, newValue ->
-                SysTtsConfig.isWakeLockEnabled = newValue.toString().toBoolean()
-                true
-            }
+        initSwitchPreference("isWakeLockEnabled", SysTtsConfig.isWakeLockEnabled) {
+            SysTtsConfig.isWakeLockEnabled = it
         }
 
-        // 前台服务开关
-        val foregroundServiceSwitch: SwitchPreferenceCompat =
-            findPreference("isForegroundServiceEnabled")!!
-        foregroundServiceSwitch.apply {
-            isChecked = SysTtsConfig.isForegroundServiceEnabled
-            setOnPreferenceChangeListener { _, newValue ->
-                SysTtsConfig.isForegroundServiceEnabled = newValue.toString().toBoolean()
-                true
-            }
+        initSwitchPreference(
+            "isForegroundServiceEnabled", SysTtsConfig.isForegroundServiceEnabled
+        ) {
+            SysTtsConfig.isForegroundServiceEnabled = it
         }
 
         // 代码编辑器主题
@@ -280,6 +249,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
             this.value = value
         }.onFailure {
             this.value = default
+        }
+    }
+
+    private fun initSwitchPreference(
+        key: String,
+        isChecked: Boolean = false,
+        valueChange: (Boolean) -> Unit
+    ) {
+        findPreference<SwitchPreferenceCompat>(key)!!.init(isChecked) { valueChange.invoke(it) }
+    }
+
+    private fun SwitchPreferenceCompat.init(
+        isChecked: Boolean = false,
+        valueChange: (Boolean) -> Unit
+    ) {
+        this.isChecked = isChecked
+        setOnPreferenceChangeListener { _, newValue ->
+            valueChange.invoke(newValue.toString().toBoolean())
+            true
         }
     }
 }

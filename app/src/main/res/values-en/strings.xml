@@ -318,7 +318,7 @@
     <string name="bgm">BGM</string>
     <string name="exo_player_title">Media Player</string>
     <string name="remote_sync_service">Remote Sync Service</string>
-    <string name="clear_plugin_cache">Clear Plugin Cache</string>
+    <string name="clear_cache">Clear Cache</string>
     <string name="listen_port">Listen Port</string>
     <string name="script_sync_service_tip">The code synchronization service makes it easy to edit and update plugin code on the PC side for debugging purposes. \n⚠️ The settings will take effect after the editor is restarted.</string>
     <string name="learn_more">Learn More</string>
@@ -389,5 +389,5 @@
     <string name="skip_request_silent_text">Skip request for silent text</string>
     <string name="skip_request_silent_text_summary">When enabled, text such as plain symbols will not be requested separately</string>
     <string name="retry_count_when_audio_empty">Number of retries when audio is empty</string>
-    <string name="retry_count_when_audio_empty_msg">此值应小于等于【最大重试次数】</string>
+    <string name="retry_count_when_audio_empty_msg">This value should be less than or equal to 【Maximum number of retries】</string>
 </resources>
