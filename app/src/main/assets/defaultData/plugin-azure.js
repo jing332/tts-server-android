@@ -1,7 +1,7 @@
 // 请点击保存后在 更多选项按钮(垂直三个点) -> 设置变量 中设置密钥和区域
 // Please set the key and region in "More options" -> "Variables" after clicking save.
 
-let key = ttsrv.userVars['key'] || 'Default Key'
+let key = ttsrv.userVars['key'] || ''
 let region = ttsrv.userVars['region'] || 'eastus'
 
 let format = "audio-24khz-48kbitrate-mono-mp3"
@@ -58,8 +58,15 @@ let PluginJS = {
     },
 }
 
-let ttsUrl = 'https://' + region + '.tts.speech.microsoft.com/cognitiveservices/v1'
+function checkKey() {
+    if (key === '' || region === '') {
+         throw "请设置变量: 密钥Key与区域Region。 Please set the key and region."
+    }
+}
+
 function getAudioInternal(ssml, format) {
+    checkKey()
+    let ttsUrl = 'https://' + region + '.tts.speech.microsoft.com/cognitiveservices/v1'
     let headers = {
         'Ocp-Apim-Subscription-Key': key,
         "X-Microsoft-OutputFormat": format,
@@ -68,13 +75,13 @@ function getAudioInternal(ssml, format) {
     let resp = ttsrv.httpPost(ttsUrl, ssml, headers)
     if (resp.code() !== 200) {
         if (resp.code() === 401) {
-            throw "Unauthorized 请检查密钥与区域是否正确。"
+            throw "Unauthorized 未授权，请检查密钥与区域是否正确。"
         }
 
         throw "音频获取失败: HTTP-" + resp.code()
     }
 
-    return resp.body().bytes()
+    return resp.body().byteStream()
 }
 
 // 全部voice数据
@@ -133,12 +140,15 @@ let EditorJS = {
         if (ttsrv.fileExist('voices.json')) {
             jsonStr = ttsrv.readTxtFile('voices.json')
         } else {
+            checkKey()
             let url = 'https://' + region + '.tts.speech.microsoft.com/cognitiveservices/voices/list'
             let header = {
                 "Ocp-Apim-Subscription-Key": key,
                 "Content-Type": "application/json",
             }
             jsonStr = ttsrv.httpGetString(url, header)
+
+
             ttsrv.writeTxtFile('voices.json', jsonStr)
         }
 
