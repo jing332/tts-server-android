@@ -390,9 +390,9 @@ class BasicInfoEditView @JvmOverloads constructor(
                 .setView(binding.root)
                 .setNegativeButton(R.string.reset) { _, _ ->
                     binding.apply {
-                        seekRate.value = 1f
-                        seekVolume.value = 1f
-                        seekPitch.value = 1f
+                        seekRate.value = PlayerParams.VALUE_FOLLOW_GLOBAL
+                        seekVolume.value = PlayerParams.VALUE_FOLLOW_GLOBAL
+                        seekPitch.value = PlayerParams.VALUE_FOLLOW_GLOBAL
                     }
                     context.toast(R.string.ok_reset)
                 }
@@ -400,6 +400,7 @@ class BasicInfoEditView @JvmOverloads constructor(
                 .setOnDismissListener {
                     mData?.tts?.audioPlayer?.let {
                         it.rate = binding.seekRate.value as Float
+                        it.volume = binding.seekVolume.value as Float
                         it.pitch = binding.seekPitch.value as Float
                     }
                 }
