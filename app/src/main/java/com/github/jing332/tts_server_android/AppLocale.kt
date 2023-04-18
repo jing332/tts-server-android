@@ -2,8 +2,6 @@ package com.github.jing332.tts_server_android
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Build
 import android.os.LocaleList
 import androidx.appcompat.app.AppCompatDelegate
@@ -13,6 +11,8 @@ import com.github.jing332.tts_server_android.utils.sysConfiguration
 import java.io.File
 import java.util.*
 
+
+@Suppress("DEPRECATION")
 object AppLocale {
     val localeMap by lazy {
         linkedMapOf<String, Locale>().apply {
@@ -35,22 +35,23 @@ object AppLocale {
         FileUtils.saveFile(file, lang.toByteArray())
     }
 
-    fun updateApplicationLocale(context: Context): Context {
-        val resources: Resources = context.resources
-        val configuration: Configuration = resources.configuration
-        val targetLocale = getSetLocale(context)
-
-        println("update locale: $targetLocale")
+    fun setLocale(context: Context, locale: Locale = getSetLocale(context)) {
+        val resources = context.resources
+        val metrics = resources.displayMetrics
+        val configuration = resources.configuration
+        val newLocale = getSetLocale(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            configuration.setLocale(targetLocale)
-            configuration.setLocales(LocaleList(targetLocale))
+            configuration.setLocale(newLocale)
+            val localeList = LocaleList(newLocale)
+            LocaleList.setDefault(localeList)
+            configuration.setLocales(localeList)
         } else {
-            @Suppress("DEPRECATION")
-            configuration.locale = targetLocale
+            Locale.setDefault(newLocale)
+            configuration.setLocale(newLocale)
         }
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(targetLocale))
-//        configuration.fontScale = getFontScale(context)
-        return context.createConfigurationContext(configuration)
+
+        resources.updateConfiguration(configuration, metrics)
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(locale))
     }
 
     /**
@@ -87,8 +88,8 @@ object AppLocale {
     /**
      * 当前设置语言
      */
-    private fun getSetLocale(context: Context): Locale {
-        return localeMap[AppLocale.getLocaleCodeFromFile(context)] ?: getSystemLocale()
+    fun getSetLocale(context: Context): Locale {
+        return localeMap[getLocaleCodeFromFile(context)] ?: getSystemLocale()
     }
 
     /**

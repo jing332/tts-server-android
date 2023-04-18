@@ -1,9 +1,6 @@
 package com.github.jing332.tts_server_android.ui.preference
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -18,7 +15,6 @@ import androidx.preference.SwitchPreferenceCompat
 import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
@@ -189,7 +185,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
             setOnPreferenceChangeListener { _, newValue ->
                 AppLocale.saveLocaleCodeToFile(requireContext(), newValue as String)
-                AppLocale.updateApplicationLocale(app)
+                AppLocale.setLocale(app)
                 longToast(R.string.app_language_update_warn)
                 true
             }

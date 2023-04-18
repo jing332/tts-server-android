@@ -22,8 +22,8 @@ class App : Application() {
         val context: Context by lazy { instance }
     }
 
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(AppLocale.updateApplicationLocale(base!!))
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base.apply { AppLocale.setLocale(base) })
     }
 
     override fun onCreate() {
