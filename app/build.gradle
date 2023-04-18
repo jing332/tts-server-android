@@ -162,7 +162,8 @@ dependencies {
 
 
     // RecyclerView
-    implementation 'com.github.liangjingkanji:BRV:1.4.1'
+    //noinspection GradleDependency
+    implementation 'com.github.liangjingkanji:BRV:1.3.90'
     implementation "androidx.recyclerview:recyclerview:1.3.0"
 
     // 代码编辑器

@@ -42,6 +42,7 @@ import com.github.jing332.tts_server_android.utils.*
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
+import splitties.systemservices.textClassificationManager
 
 @Suppress("DEPRECATION")
 class ReplaceManagerActivity : AppCompatActivity() {

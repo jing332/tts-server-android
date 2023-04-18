@@ -3,8 +3,11 @@ package com.github.jing332.tts_server_android.ui.systts
 import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.BindingAdapter
 import com.github.jing332.tts_server_android.R
+import splitties.systemservices.accessibilityManager
 
 object BrvItemTouchHelper {
+
+
     /**
      * 带分组的item拖拽
      * @param T 分组Model
