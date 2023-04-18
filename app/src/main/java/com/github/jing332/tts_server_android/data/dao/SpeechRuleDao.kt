@@ -36,16 +36,13 @@ interface SpeechRuleDao {
     fun insertOrUpdate(vararg args: SpeechRule) {
         for (v in args) {
             val old = getByRuleId(v.ruleId)
-            if (old == null){
+            if (old == null) {
                 insert(v)
                 continue
             }
 
-            if (v.ruleId == old.ruleId && v.version > old.version) {
+            if (v.ruleId == old.ruleId && v.version > old.version)
                 update(v.copy(id = old.id))
-            } else {
-                insert(v)
-            }
         }
     }
 }

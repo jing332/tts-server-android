@@ -16,8 +16,6 @@ class BackupRestoreActivity : BackActivity() {
 
     companion object {
         const val TAG = "BackupRestoreActivity"
-        const val ACTION_RESTORE = "$TAG.action_restore"
-        const val KEY_URI = "key_uri"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +26,6 @@ class BackupRestoreActivity : BackActivity() {
         supportFragmentManager.beginTransaction()
             .add(R.id.container, fragment, "BackupRestoreFragment")
             .commit()
-
-//        (intent.getBinder() as? ByteArrayBinder)?.let {
-//            fragment.restore(it.data)
-//        }
         restoreFromIntent(intent)
     }
 
@@ -49,18 +43,8 @@ class BackupRestoreActivity : BackActivity() {
                 .setPositiveButton(R.string.restore) { _, _ ->
                     val bytes = it.readBytes(this)
                     fragment.restore(bytes)
-                    intent.data = null
-                }
+                }.setOnDismissListener { intent.data = null }
                 .show()
-        }
-    }
-
-
-    inner class MyReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == ACTION_RESTORE) {
-
-            }
         }
     }
 }

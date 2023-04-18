@@ -39,11 +39,8 @@ interface PluginDao {
                 continue
             }
 
-            if (v.pluginId == old.pluginId && v.version > old.version) {
+            if (v.pluginId == old.pluginId && v.version > old.version)
                 update(v.copy(id = old.id))
-            } else {
-                insert(v)
-            }
         }
     }
 }
