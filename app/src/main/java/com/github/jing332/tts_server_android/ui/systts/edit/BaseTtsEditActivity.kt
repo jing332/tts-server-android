@@ -18,7 +18,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 import java.io.InputStream
 
-open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () -> T) :
+open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) :
     BackActivity() {
     companion object {
         const val KEY_DATA = "KEY_DATA"
@@ -115,11 +115,14 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(private val factory: () 
             return mData!!
         }
 
-    @Suppress("UNCHECKED_CAST")
-    val tts: T
-        get() {
-            return systemTts.tts as T
+    inline fun <reified T : ITextToSpeechEngine> getTts(): T {
+        return if (systemTts.tts is T) {
+            systemTts.tts as T
+        } else {
+            systemTts.tts = factory()
+            systemTts.tts as T
         }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.systts_config_edit, menu)

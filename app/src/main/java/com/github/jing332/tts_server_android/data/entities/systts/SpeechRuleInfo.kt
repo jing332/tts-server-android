@@ -36,8 +36,7 @@ data class SpeechRuleInfo(
     // 用于标识tts配置的唯一性，由脚本处理后将 tag 与 id 返回给程序以找到朗读
     @ColumnInfo(defaultValue = "0")
     var configId: Long = 0L
-) :
-    Parcelable {
+) : Parcelable {
     @IgnoredOnParcel
     @Ignore
     @Transient
@@ -51,7 +50,7 @@ data class SpeechRuleInfo(
         return tag == rule.tag && tagRuleId == rule.tagRuleId
     }
 
-    fun resetTag(){
+    fun resetTag() {
         tag = ""
         tagRuleId = ""
         tagName = ""

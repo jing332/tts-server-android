@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsLocalEditActivityBinding
+import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -13,6 +14,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
     private val vm: LocalTtsViewModel by viewModels()
+    private val tts by lazy { getTts<LocalTTS>() }
     private val binding: SysttsLocalEditActivityBinding by lazy {
         SysttsLocalEditActivityBinding.inflate(layoutInflater).apply { m = vm }
     }

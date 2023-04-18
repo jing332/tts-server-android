@@ -1,8 +1,10 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.text.Html
 import android.view.*
@@ -18,6 +20,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
@@ -53,9 +57,12 @@ import kotlin.math.min
 class SysTtsListFragment : Fragment() {
     companion object {
         const val TAG = "TtsConfigFragment"
-
+        const val ACTION_ADD_TTS = "com.github.jing332.tts_server_android.ui.systts.list.ADD_TTS"
+        const val KEY_MENU_ID = "menu_id"
+        const val KEY_SYSTEM_TTS_DATA = "system_tts_data"
     }
 
+    private val mReceiver by lazy { MyReceiver() }
     private val vm: SysTtsListViewModel by activityViewModels()
     private val binding: SysttsListFragmentBinding by lazy {
         SysttsListFragmentBinding.inflate(layoutInflater)
@@ -83,6 +90,8 @@ class SysTtsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) return
+
+        AppConst.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_ADD_TTS))
 
         val fragmentList = listOf(
             ListGroupPageFragment(), ListAllPageFragment.newInstance()
@@ -112,34 +121,20 @@ class SysTtsListFragment : Fragment() {
         menuHost.addMenuProvider(MyMenuProvider(), viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
+    }
+
     inner class MyMenuProvider : MenuProvider {
         override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
             menuInflater.inflate(R.menu.systts, menu)
         }
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            if (addTtsFromMenuId(menuItem.itemId)) return true
+
             return when (menuItem.itemId) {
-                /* 添加配置 */
-                R.id.menu_add_ms_tts -> {
-                    addTtsConfig(MsTtsEditActivity::class.java)
-                    true
-                }
-
-                R.id.menu_add_local_tts -> {
-                    addTtsConfig(LocalTtsEditActivity::class.java)
-                    true
-                }
-
-                R.id.menu_add_http_tts -> {
-                    addTtsConfig(HttpTtsEditActivity::class.java)
-                    true
-                }
-
-                R.id.menu_add_plugin_tts -> {
-                    addPluginTts()
-                    true
-                }
-
                 R.id.menu_add_bgm_tts -> {
                     addTtsConfig(BgmTtsEditActivity::class.java)
                     true
@@ -287,7 +282,6 @@ class SysTtsListFragment : Fragment() {
         fragment.show(requireActivity().supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
     }
 
-
     private var savedData: ByteArray? = null
 
     private lateinit var getFileUriToSave: ActivityResultLauncher<String>
@@ -379,7 +373,7 @@ class SysTtsListFragment : Fragment() {
         startForResult.launch(intent)
     }
 
-    private fun addPluginTts() {
+    private fun addPluginTts(data: SystemTts? = null) {
         val plugins = appDb.pluginDao.allEnabled
         val pluginItems = plugins.map { "${it.name} (${it.pluginId})" }.toTypedArray()
         MaterialAlertDialogBuilder(requireContext())
@@ -391,10 +385,20 @@ class SysTtsListFragment : Fragment() {
                         requireContext(),
                         PluginTtsEditActivity::class.java
                     ).apply {
-                        putExtra(
-                            BaseTtsEditActivity.KEY_DATA,
-                            SystemTts(tts = PluginTTS(pluginId = selected.pluginId))
-                        )
+                        if (data == null)
+                            putExtra(
+                                BaseTtsEditActivity.KEY_DATA,
+                                SystemTts(tts = PluginTTS(pluginId = selected.pluginId))
+                            )
+                        else
+                            putExtra(
+                                BaseTtsEditActivity.KEY_DATA,
+                                data.copy(
+                                    tts = PluginTTS(pluginId = selected.pluginId),
+                                    displayName = "",
+                                    id = System.currentTimeMillis()
+                                )
+                            )
                     })
             }.apply {
                 if (plugins.isEmpty()) {
@@ -420,12 +424,59 @@ class SysTtsListFragment : Fragment() {
         }
     }
 
+    fun addTtsFromMenuId(menuId: Int, data: SystemTts? = null): Boolean {
+        return when (menuId) {
+            R.id.menu_add_ms_tts -> {
+                addTtsOrCopyAsOther(MsTtsEditActivity::class.java, data)
+                true
+            }
+
+            R.id.menu_add_local_tts -> {
+                addTtsOrCopyAsOther(LocalTtsEditActivity::class.java, data)
+                true
+            }
+
+            R.id.menu_add_http_tts -> {
+                addTtsOrCopyAsOther(HttpTtsEditActivity::class.java, data)
+                true
+            }
+
+            R.id.menu_add_plugin_tts -> {
+                addPluginTts(data)
+                true
+            }
+            else -> false
+        }
+    }
+
+    private fun addTtsOrCopyAsOther(cls: Class<*>, data: SystemTts? = null) {
+        val intent = Intent(context, cls)
+        if (data != null) {
+            intent.putExtra(
+                BaseTtsEditActivity.KEY_DATA,
+                data.clone<SystemTts>()!!
+                    .copy(id = System.currentTimeMillis(), displayName = "", isEnabled = false)
+            )
+        }
+        startForResult.launch(intent)
+    }
+
     class GroupPageAdapter(parent: Fragment, val list: List<Fragment>) :
         FragmentStateAdapter(parent) {
         override fun getItemCount() = list.size
 
         override fun createFragment(position: Int): Fragment {
             return list[position]
+        }
+    }
+
+    inner class MyReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ACTION_ADD_TTS) {
+                val menuId = intent.getIntExtra(KEY_MENU_ID, 0)
+                val systemTts = intent.getParcelableExtra<SystemTts>(KEY_SYSTEM_TTS_DATA)
+                addTtsFromMenuId(menuId, systemTts)
+            }
         }
     }
 

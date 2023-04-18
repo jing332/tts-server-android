@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsHttpEditActivityBinding
+import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.model.speech.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
@@ -18,6 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 @Suppress("DEPRECATION")
 class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
     private val vm: HttpTtsEditViewModel by viewModels()
+    private val tts by lazy { getTts<HttpTTS>() }
     private val binding: SysttsHttpEditActivityBinding by lazy {
         SysttsHttpEditActivityBinding.inflate(layoutInflater)
     }

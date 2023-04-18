@@ -35,7 +35,8 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
 
     private val binding by lazy { SysttsBgmEditActivityBinding.inflate(layoutInflater) }
     private val vm: BgmTtsEditViewModel by viewModels()
-
+    private val tts by lazy { getTts<BgmTTS>() }
+    
     private val mFilePicker =
         registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
             if (it == null) return@registerForActivityResult

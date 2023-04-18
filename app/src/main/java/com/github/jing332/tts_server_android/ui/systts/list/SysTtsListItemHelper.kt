@@ -17,6 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import com.drake.brv.BindingAdapter
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -29,6 +31,10 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.base.QuickEditBottomSheet
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
+import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
@@ -194,7 +200,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
 
     private fun displayMoreOptions(v: View, model: SystemTts) {
         PopupMenu(context, v).apply {
-            menuInflater.inflate(R.menu.sysstts_more_options, menu)
+            menuInflater.inflate(R.menu.sysstts_item_more_options, menu)
             setForceShowIcon(true)
             MenuCompat.setGroupDividerEnabled(menu, true)
 
@@ -203,16 +209,31 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
 
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.menu_edit -> edit(model)
-                    R.id.menu_listen -> listen(model)
+                    R.id.menu_edit -> {
+                        edit(model)
+                        true
+                    }
+                    R.id.menu_listen -> {
+                        listen(model)
+                        true
+                    }
                     R.id.menu_copy_config -> {
                         context.toast(R.string.systts_copied_config)
                         edit(model.copy(id = System.currentTimeMillis()))
+                        true
                     }
-
-                    R.id.menu_delete -> delete(model)
+                    R.id.menu_delete -> {
+                        delete(model)
+                        true
+                    }
+                    else -> {
+                        AppConst.localBroadcast.sendBroadcast(Intent(SysTtsListFragment.ACTION_ADD_TTS).apply {
+                            putExtra(SysTtsListFragment.KEY_SYSTEM_TTS_DATA, model)
+                            putExtra(SysTtsListFragment.KEY_MENU_ID, it.itemId)
+                        })
+                        true
+                    }
                 }
-                true
             }
             show()
         }
