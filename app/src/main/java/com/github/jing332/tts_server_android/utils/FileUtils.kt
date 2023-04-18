@@ -138,18 +138,22 @@ object FileUtils {
             return fileNameMap.getContentTypeFor(name)
         }
 
-    fun Uri.readAllText(context: Context): String {
+    fun Uri.readBytes(context: Context): ByteArray {
         return when (scheme) {
             ContentResolver.SCHEME_CONTENT -> {
                 val input = context.contentResolver.openInputStream(this)
-                val str = input!!.readBytes().decodeToString()
+                val bytes = input!!.readBytes()
                 input.close()
-                str
+                bytes
             }
 
-            ContentResolver.SCHEME_FILE -> toFile().readText()
-            else -> File(this.toString()).readText()
+            ContentResolver.SCHEME_FILE -> toFile().readBytes()
+            else -> File(this.toString()).readBytes()
         }
+    }
+
+    fun Uri.readAllText(context: Context): String {
+        return readBytes(context).decodeToString()
     }
 
 

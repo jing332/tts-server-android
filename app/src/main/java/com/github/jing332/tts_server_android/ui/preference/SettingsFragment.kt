@@ -1,5 +1,9 @@
-package com.github.jing332.tts_server_android.ui
+package com.github.jing332.tts_server_android.ui.preference
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -14,16 +18,23 @@ import androidx.preference.SwitchPreferenceCompat
 import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
+import com.github.jing332.tts_server_android.ui.preference.backup_restore.BackupRestoreActivity
 import com.github.jing332.tts_server_android.utils.dp
 import com.github.jing332.tts_server_android.utils.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
+    companion object {
+        private const val TAG = "SettingsFragment"
+        const val ACTION_RELOAD = "com.github.jing332.tts_server_android.action.RELOAD"
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.sharedPreferencesName = AppConfig.kotprefName
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -31,6 +42,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        findPreference<Preference>("backup_restore")!!.apply {
+            setOnPreferenceClickListener {
+                startActivity(Intent(requireContext(), BackupRestoreActivity::class.java))
+                true
+            }
+        }
+
         findPreference<ListPreference>("filePickerMode")!!.apply {
             entryValues = (0..2).map { "$it" }.toTypedArray()
             entries = arrayOf(
@@ -270,4 +289,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
     }
+
 }

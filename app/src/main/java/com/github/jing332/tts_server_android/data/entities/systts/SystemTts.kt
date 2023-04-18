@@ -27,7 +27,6 @@ data class SystemTts(
 
     var displayName: String? = null,
 
-    @Transient
     var isEnabled: Boolean = false,
 
     @Embedded("speechRule_")

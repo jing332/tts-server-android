@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="key_backup" translatable="false">key_backup</string>
+    <string name="key_restore" translatable="false">key_restore</string>
+
+</resources>

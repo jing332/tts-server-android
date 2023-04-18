@@ -33,10 +33,6 @@ import java.io.File
 @Suppress("DEPRECATION")
 class FilePickerActivity : AppCompatActivity() {
     companion object {
-        const val ACTION_SAVE_FILE = 0
-        const val ACTION_SELECT_FILE = 1
-        const val ACTION_SELECT_DIR = 2
-
         const val KEY_REQUEST_DATA = "KEY_REQUEST_DATA"
         private const val REQUEST_CODE_SAVE_FILE = 123321
     }

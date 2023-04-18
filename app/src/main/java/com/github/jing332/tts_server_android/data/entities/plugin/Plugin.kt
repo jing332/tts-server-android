@@ -19,7 +19,6 @@ data class Plugin(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
-    @Transient
     var isEnabled: Boolean = false,
 
     @ColumnInfo(defaultValue = "0")

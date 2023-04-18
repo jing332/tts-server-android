@@ -32,11 +32,13 @@
         android:theme="@style/Theme.TtsServer"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
-
+        <activity
+            android:name=".ui.preference.backup_restore.BackupRestoreActivity"
+            android:label="@string/backup_restore"
+            android:exported="true" />
         <activity
             android:name=".ui.FilePickerActivity"
             android:theme="@style/TranslucentTheme" />
-
         <activity
             android:name=".ui.systts.speech_rule.SpeechRuleManagerActivity"
             android:exported="true"
@@ -80,7 +82,6 @@
 
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -89,7 +90,6 @@
 
                 <data android:scheme="ttsrv" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -99,11 +99,9 @@
                 <data android:scheme="app" />
                 <data android:scheme="content" />
                 <data android:scheme="file" />
-
                 <data android:mimeType="text/plain" />
                 <data android:mimeType="application/json" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -111,12 +109,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:host="*" />
-
                 <data android:scheme="app" />
                 <data android:scheme="content" />
                 <data android:scheme="file" />
                 <data android:mimeType="*/*" />
-                <!--TXT-->
+                <!-- TXT -->
                 <data android:pathAdvancedPattern=".*\\.[tT][xX][tT]" />
                 <data android:pathPattern=".*\\.txt" />
                 <data android:pathPattern=".*\\.TXT" />
@@ -172,7 +169,7 @@
             android:exported="false">
             <meta-data
                 android:name="autoStoreLocales"
-                android:value="false" /> <!--禁用Android自动存储语言-->
+                android:value="false" /> <!-- 禁用Android自动存储语言 -->
         </service>
         <service
             android:name=".service.systts.SystemTtsService"

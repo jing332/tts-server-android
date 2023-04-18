@@ -88,4 +88,11 @@ interface SystemTtsDao {
         deleteTtsByGroup(group.id)
         deleteGroup(group)
     }
+
+    fun insertGroupWithTts(vararg args: GroupWithSystemTts) {
+        for (v in args) {
+            insertGroup(v.group)
+            insertTts(*v.list.toTypedArray())
+        }
+    }
 }

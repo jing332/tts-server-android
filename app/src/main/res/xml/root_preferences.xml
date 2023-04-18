@@ -2,6 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="@string/app_name">
+        <Preference
+            android:key="backup_restore"
+            android:icon="@drawable/baseline_settings_backup_restore_24"
+            android:title="备份与恢复" />
+
         <ListPreference
             android:dialogMessage="@string/app_language_update_warn"
             android:persistent="false"
@@ -35,6 +40,7 @@
 
         <SwitchPreferenceCompat
             android:key="isExoDecoderEnabled"
+            android:icon="@drawable/baseline_play_circle_outline_24"
             android:persistent="false"
             android:summary="@string/use_exo_decoder_summary"
             android:title="@string/use_exo_decoder" />
@@ -54,10 +60,10 @@
             android:title="@string/skip_request_silent_text" />
 
         <ListPreference
+            android:dialogMessage="@string/retry_count_when_audio_empty_msg"
             android:icon="@drawable/baseline_123_24"
             android:key="maxEmptyAudioRetryCount"
             android:persistent="false"
-            android:dialogMessage="@string/retry_count_when_audio_empty_msg"
             android:title="@string/retry_count_when_audio_empty" />
 
         <ListPreference

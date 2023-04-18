@@ -29,4 +29,23 @@ interface SpeechRuleDao {
 
     @Query("SELECT * FROM speech_rules WHERE ruleId = :ruleId AND isEnabled = :isEnabled LIMIT 1")
     fun getByReadRuleId(ruleId: String, isEnabled: Boolean = true): SpeechRule?
+
+    @Query("SELECT * FROM speech_rules WHERE ruleId = :ruleId")
+    fun getByRuleId(ruleId: String): SpeechRule?
+
+    fun insertOrUpdate(vararg args: SpeechRule) {
+        for (v in args) {
+            val old = getByRuleId(v.ruleId)
+            if (old == null){
+                insert(v)
+                continue
+            }
+
+            if (v.ruleId == old.ruleId && v.version > old.version) {
+                update(v.copy(id = old.id))
+            } else {
+                insert(v)
+            }
+        }
+    }
 }

@@ -21,7 +21,6 @@ data class SpeechRule(
     @PrimaryKey(autoGenerate = true)
     val id: Long = System.currentTimeMillis(),
 
-    @Transient
     var isEnabled: Boolean = false,
 
     var name: String = "",

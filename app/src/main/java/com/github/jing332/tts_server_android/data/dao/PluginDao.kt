@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.data.dao
 
 import androidx.room.*
+import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import kotlinx.coroutines.flow.Flow
 
@@ -29,4 +30,20 @@ interface PluginDao {
 
     @Query("SELECT * FROM plugin WHERE pluginId = :pluginId ")
     fun getByPluginId(pluginId: String): Plugin?
+
+    fun insertOrUpdate(vararg args: Plugin) {
+        for (v in args) {
+            val old = getByPluginId(v.pluginId)
+            if (old == null) {
+                insert(v)
+                continue
+            }
+
+            if (v.pluginId == old.pluginId && v.version > old.version) {
+                update(v.copy(id = old.id))
+            } else {
+                insert(v)
+            }
+        }
+    }
 }

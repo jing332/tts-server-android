@@ -390,4 +390,10 @@
     <string name="skip_request_silent_text_summary">When enabled, text such as plain symbols will not be requested separately</string>
     <string name="retry_count_when_audio_empty">Number of retries when audio is empty</string>
     <string name="retry_count_when_audio_empty_msg">This value should be less than or equal to 【Maximum number of retries】</string>
+    <string name="backup_restore">Backup and Restore</string>
+    <string name="backup">Backup</string>
+    <string name="preference_settings">Preference</string>
+    <string name="restart">restart</string>
+    <string name="restore_finished">恢复已完成</string>
+    <string name="restore_restart_msg">部分设置需要重启程序才能生效，是否重启？</string>
 </resources>

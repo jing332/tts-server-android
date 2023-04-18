@@ -74,4 +74,11 @@ interface ReplaceRuleDao {
 
         update(*list.toTypedArray())
     }
+
+    fun insertRuleWithGroup(vararg args: GroupWithReplaceRule) {
+        for (v in args) {
+            insertGroup(v.group)
+            insert(*v.list.toTypedArray())
+        }
+    }
 }
