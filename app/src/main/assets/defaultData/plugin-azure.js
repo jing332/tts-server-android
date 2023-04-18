@@ -12,10 +12,14 @@ let PluginJS = {
     "id": "com.microsoft.azure",
     "author": "TTS Server",
     "description": "",
-    "version": 2,
-    "vars":{
-        key:{label:"密钥 Key"},
-        region:{label:"区域 Region", hint:"为空时使用默认'eastus'"},
+    "version": 3,
+    "vars": {
+        key: {label: "密钥 Key"},
+        region: {label: "区域 Region", hint: "为空时使用默认'eastus'"},
+    },
+
+    "onLoad": function () {
+      checkKeyRegion()
     },
 
     "getAudio": function (text, locale, voice, rate, volume, pitch) {
@@ -38,10 +42,10 @@ let PluginJS = {
 
         let textSsml = ''
         let langSkill = ttsrv.tts.data['languageSkill']
-        if (langSkill == "" || langSkill == null) {
-            textSsml = text
-        }else{
-            textSsml = `<lang xml:lang="${langSkill}">${text}</lang>`
+        if (langSkill === "" || langSkill == null) {
+            textSsml = escapeXml(text)
+        } else {
+            textSsml = `<lang xml:lang="${langSkill}">${escapeXml(text)}</lang>`
         }
 
         let ssml = `
@@ -53,20 +57,26 @@ let PluginJS = {
             </voice >
          </speak >
         `
-//        logger.d(ssml)
+
         return getAudioInternal(ssml, format)
     },
 }
 
-function checkKey() {
+function escapeXml(s) {
+    return s.replace("'", "&apos;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;').replace('/', '').replace('\\', '')
+}
+
+function checkKeyRegion() {
+    key = (key + '').trim()
+    region = (region + '').trim()
     if (key === '' || region === '') {
-         throw "请设置变量: 密钥Key与区域Region。 Please set the key and region."
+        throw "请设置变量: 密钥Key与区域Region。 Please set the key and region."
     }
 }
 
+let ttsUrl = 'https://' + region + '.tts.speech.microsoft.com/cognitiveservices/v1'
+
 function getAudioInternal(ssml, format) {
-    checkKey()
-    let ttsUrl = 'https://' + region + '.tts.speech.microsoft.com/cognitiveservices/v1'
     let headers = {
         'Ocp-Apim-Subscription-Key': key,
         "X-Microsoft-OutputFormat": format,
@@ -140,7 +150,7 @@ let EditorJS = {
         if (ttsrv.fileExist('voices.json')) {
             jsonStr = ttsrv.readTxtFile('voices.json')
         } else {
-            checkKey()
+            checkKeyRegion()
             let url = 'https://' + region + '.tts.speech.microsoft.com/cognitiveservices/voices/list'
             let header = {
                 "Ocp-Apim-Subscription-Key": key,
@@ -155,129 +165,184 @@ let EditorJS = {
         voices = JSON.parse(jsonStr)
     },
 
-  "onLoadUI": function (ctx, linerLayout) {
-         let layout = new LinearLayout(ctx)
-         layout.orientation = LinearLayout.HORIZONTAL // 水平布局
-         let params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1)
+    "onLoadUI": function (ctx, linerLayout) {
+        let layout = new LinearLayout(ctx)
+        layout.orientation = LinearLayout.HORIZONTAL // 水平布局
+        let params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1)
 
-         skillSpinner = JSpinner(ctx, "语言技能 (language skill)")
-         linerLayout.addView(skillSpinner)
-         ttsrv.setMargins(skillSpinner, 2, 4, 0, 0)
-         skillSpinner.setOnItemSelected(function (spinner, pos, item) {
-             ttsrv.tts.data['languageSkill'] = item.value + ''
-         })
+        skillSpinner = JSpinner(ctx, "语言技能 (language skill)")
+        linerLayout.addView(skillSpinner)
+        ttsrv.setMargins(skillSpinner, 2, 4, 0, 0)
+        skillSpinner.setOnItemSelected(function (spinner, pos, item) {
+            ttsrv.tts.data['languageSkill'] = item.value + ''
+        })
 
-         styleSpinner = JSpinner(ctx, "风格 (style)")
-         styleSpinner.layoutParams = params
-         layout.addView(styleSpinner)
-         ttsrv.setMargins(styleSpinner, 2, 4, 0, 0)
-         styleSpinner.setOnItemSelected(function (spinner, pos, item) {
-             ttsrv.tts.data['style'] = item.value
-             // 默认 || value为空 || value空字符串
-             if (pos === 0 || !item.value || item.value === "") {
-                 seekStyle.visibility = View.GONE // 移除风格强度
-             } else {
-                 seekStyle.visibility = View.VISIBLE // 显示
-             }
-         })
+        styleSpinner = JSpinner(ctx, "风格 (style)")
+        styleSpinner.layoutParams = params
+        layout.addView(styleSpinner)
+        ttsrv.setMargins(styleSpinner, 2, 4, 0, 0)
+        styleSpinner.setOnItemSelected(function (spinner, pos, item) {
+            ttsrv.tts.data['style'] = item.value
+            // 默认 || value为空 || value空字符串
+            if (pos === 0 || !item.value || item.value === "") {
+                seekStyle.visibility = View.GONE // 移除风格强度
+            } else {
+                seekStyle.visibility = View.VISIBLE // 显示
+            }
+        })
 
-         roleSpinner = JSpinner(ctx, "角色 (role)")
-         roleSpinner.layoutParams = params
-         layout.addView(roleSpinner)
-         ttsrv.setMargins(roleSpinner, 0, 4, 2, 0)
-         roleSpinner.setOnItemSelected(function (spinner, pos, item) {
-             ttsrv.tts.data['role'] = item.value
-         })
-         linerLayout.addView(layout)
+        roleSpinner = JSpinner(ctx, "角色 (role)")
+        roleSpinner.layoutParams = params
+        layout.addView(roleSpinner)
+        ttsrv.setMargins(roleSpinner, 0, 4, 2, 0)
+        roleSpinner.setOnItemSelected(function (spinner, pos, item) {
+            ttsrv.tts.data['role'] = item.value
+        })
+        linerLayout.addView(layout)
 
-         seekStyle = JSeekBar(ctx, "风格强度 (Style degree)：")
-         linerLayout.addView(seekStyle)
-         ttsrv.setMargins(seekStyle, 0, 4, 0, -4)
-         seekStyle.setFloatType(2) // 二位小数
-         seekStyle.max = 200 //最大200个刻度
+        seekStyle = JSeekBar(ctx, "风格强度 (Style degree)：")
+        linerLayout.addView(seekStyle)
+        ttsrv.setMargins(seekStyle, 0, 4, 0, -4)
+        seekStyle.setFloatType(2) // 二位小数
+        seekStyle.max = 200 //最大200个刻度
 
-         let styleDegree = Number(ttsrv.tts.data['styleDegree'])
-         if (!styleDegree || isNaN(styleDegree)) {
-             styleDegree = 1.0
-         }
-         seekStyle.value = new java.lang.Float(styleDegree)
+        let styleDegree = Number(ttsrv.tts.data['styleDegree'])
+        if (!styleDegree || isNaN(styleDegree)) {
+            styleDegree = 1.0
+        }
+        seekStyle.value = new java.lang.Float(styleDegree)
 
-         seekStyle.setOnChangeListener(
-             {
-                 // 开始时
-                 onStartTrackingTouch: function (seek) {
+        seekStyle.setOnChangeListener(
+            {
+                // 开始时
+                onStartTrackingTouch: function (seek) {
 
-                 },
-                 // 进度滑动更改时
-                 onProgressChanged: function (seek, progress, fromUser) {
+                },
+                // 进度滑动更改时
+                onProgressChanged: function (seek, progress, fromUser) {
 
-                 },
-                 // 停止时
-                 onStopTrackingTouch: function (seek) {
-                     ttsrv.tts.data['styleDegree'] = Number(seek.value).toFixed(2)
-                 },
-             }
-         )
-     },
+                },
+                // 停止时
+                onStopTrackingTouch: function (seek) {
+                    ttsrv.tts.data['styleDegree'] = Number(seek.value).toFixed(2)
+                },
+            }
+        )
+    },
 
-     "onVoiceChanged": function (locale, voiceCode) {
-         let vic = currentVoices.get(voiceCode)
+    "onVoiceChanged": function (locale, voiceCode) {
+        let vic = currentVoices.get(voiceCode)
 
-         let locale2List = vic['SecondaryLocaleList']
-         let locale2Items = []
-         let locale2Pos = 0
+        let locale2List = vic['SecondaryLocaleList']
+        let locale2Items = []
+        let locale2Pos = 0
 
-         if (locale2List) {
-             locale2Items.push(Item("默认 (default)", ""))
-             locale2List.map(function (v, i) {
-                 let loc = java.util.Locale.forLanguageTag(v)
-                 let name = loc.getDisplayName(loc)
-                 locale2Items.push(Item(name, v))
-                 if (v === ttsrv.tts.data['languageSkill'] + '') {
-                     locale2Pos = i + 1
-                 }
-             })
-         }
-         skillSpinner.items = locale2Items
-         skillSpinner.selectedPosition = locale2Pos
+        if (locale2List) {
+            locale2Items.push(Item("默认 (default)", ""))
+            locale2List.map(function (v, i) {
+                let loc = java.util.Locale.forLanguageTag(v)
+                let name = loc.getDisplayName(loc)
+                locale2Items.push(Item(name, v))
+                if (v === ttsrv.tts.data['languageSkill'] + '') {
+                    locale2Pos = i + 1
+                }
+            })
+        }
+        skillSpinner.items = locale2Items
+        skillSpinner.selectedPosition = locale2Pos
 
-         if (locale2Items.length === 0) {
-             skillSpinner.visibility = View.GONE
-         }else{
-             skillSpinner.visibility = View.VISIBLE
-         }
+        if (locale2Items.length === 0) {
+            skillSpinner.visibility = View.GONE
+        } else {
+            skillSpinner.visibility = View.VISIBLE
+        }
 
-         let styles = vic['StyleList']
-         let styleItems = []
-         let stylePos = 0
-         if (styles) {
-             styleItems.push(Item("默认 (general)", ""))
-             styles.map(function (v, i) {
-                 styleItems.push(Item(v, v))
-                 if (v === ttsrv.tts.data['style'] + '') {
-                     stylePos = i + 1 //算上默认的item 所以要 +1
-                 }
-             })
-         } else {
-             seekStyle.visibility = View.GONE
-         }
-         styleSpinner.items = styleItems
-         styleSpinner.selectedPosition = stylePos
+        let styles = vic['StyleList']
+        let styleItems = []
+        let stylePos = 0
+        if (styles) {
+            styleItems.push(Item("默认 (general)", ""))
+            styles.map(function (v, i) {
+                styleItems.push(Item(getString(v), v))
+                if (v === ttsrv.tts.data['style'] + '') {
+                    stylePos = i + 1 //算上默认的item 所以要 +1
+                }
+            })
+        } else {
+            seekStyle.visibility = View.GONE
+        }
+        styleSpinner.items = styleItems
+        styleSpinner.selectedPosition = stylePos
 
-         let roles = vic['RolePlayList']
-         let roleItems = []
-         let rolePos = 0
-         if (roles) {
-             roleItems.push(Item("默认 (default)", ""))
-             roles.map(function (v, i) {
-                 roleItems.push(Item(v, v))
-                 if (v === ttsrv.tts.data['role'] + '') {
-                     rolePos = i + 1 //算上默认的item 所以要 +1
-                 }
-             })
-         }
-         roleSpinner.items = roleItems
-         roleSpinner.selectedPosition = rolePos
-     }
+        let roles = vic['RolePlayList']
+        let roleItems = []
+        let rolePos = 0
+        if (roles) {
+            roleItems.push(Item("默认 (default)", ""))
+            roles.map(function (v, i) {
+                roleItems.push(Item(getString(v), v))
+                if (v === ttsrv.tts.data['role'] + '') {
+                    rolePos = i + 1 //算上默认的item 所以要 +1
+                }
+            })
+        }
+        roleSpinner.items = roleItems
+        roleSpinner.selectedPosition = rolePos
+    }
 }
 
+let cnLocales = {
+    "girl": "女孩",
+    "boy": "男孩",
+    "youngadultfemale": "青年女",
+    "youngadultmale": "青年男",
+    "olderadultfemale": "中年女",
+    "olderadultmale": "中年男",
+    "seniorfemale": "老年女",
+    "seniormale": "老年男",
+
+    "advertisement_upbeat": "广告",
+    "affectionate": "亲切",
+    "angry": "愤怒",
+    "assistant": "助理",
+    "calm": "平静",
+    "chat": "聊天",
+    "cheerful": "快乐",
+    "customerservice": "客服",
+    "depressed": "沮丧",
+    "disgruntled": "不满",
+    "documentary-narration": "纪录片",
+    "embarrassed": "尴尬",
+    "empathetic": "同情",
+    "envious": "嫉妒",
+    "excited": "兴奋",
+    "fearful": "害怕",
+    "friendly": "友好",
+    "gentle": "温柔",
+    "hopeful": "希望",
+    "lyrical": "抒情",
+    "narration-professional": "专业",
+    "narration-relaxed": "轻松",
+    "newscast": "新闻",
+    "newscast-casual": "新闻-休闲",
+    "newscast-formal": "新闻-正式",
+    "poetry-reading": "诗歌",
+    "sad": "伤心",
+    "serious": "严肃",
+    "shouting": "大声",
+    "sports_commentary": "体育",
+    "sports_commentary_excited": "体育-兴奋",
+    "whispering": "低语",
+    "terrified": "恐惧",
+    "unfriendly": "不友好",
+}
+
+let isZh = java.util.Locale.getDefault().getLanguage() === 'zh'
+
+function getString(key) {
+    if (isZh) {
+        return cnLocales[key.toLowerCase()] || key
+    } else {
+        return key
+    }
+}
