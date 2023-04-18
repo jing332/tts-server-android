@@ -6,13 +6,12 @@ import android.content.Intent
 import android.os.Bundle
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BackupRestoreActivityBinding
-import com.github.jing332.tts_server_android.help.ByteArrayBinder
-import com.github.jing332.tts_server_android.ui.base.AppBackActivity
+import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.utils.FileUtils.readBytes
-import com.github.jing332.tts_server_android.utils.getBinder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class BackupRestoreActivity : AppBackActivity<BackupRestoreActivityBinding>() {
+class BackupRestoreActivity : BackActivity() {
+    private val binding by lazy { BackupRestoreActivityBinding.inflate(layoutInflater) }
     private lateinit var fragment: BackupRestoreFragment
 
     companion object {
@@ -23,6 +22,7 @@ class BackupRestoreActivity : AppBackActivity<BackupRestoreActivityBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(binding.root)
 
         fragment = BackupRestoreFragment()
         supportFragmentManager.beginTransaction()

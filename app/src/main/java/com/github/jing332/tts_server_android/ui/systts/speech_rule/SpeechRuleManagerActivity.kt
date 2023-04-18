@@ -20,7 +20,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.databinding.SysttsSpeechRuleItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsSpeechRuleManagerActivityBinding
-import com.github.jing332.tts_server_android.ui.base.AppBackActivity
+import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.clickWithThrottle
@@ -28,7 +28,9 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 
-class SpeechRuleManagerActivity : AppBackActivity<SysttsSpeechRuleManagerActivityBinding>() {
+class SpeechRuleManagerActivity : BackActivity() {
+    private val binding by lazy { SysttsSpeechRuleManagerActivityBinding.inflate(layoutInflater) }
+
     private lateinit var brv: BindingAdapter
 
 
@@ -44,6 +46,7 @@ class SpeechRuleManagerActivity : AppBackActivity<SysttsSpeechRuleManagerActivit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(binding.root)
 
         brv = binding.rv.linear().setup {
             addType<SpeechRuleModel>(R.layout.systts_speech_rule_item)
