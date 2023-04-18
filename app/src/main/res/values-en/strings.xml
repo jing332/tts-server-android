@@ -393,7 +393,9 @@
     <string name="backup_restore">Backup and Restore</string>
     <string name="backup">Backup</string>
     <string name="preference_settings">Preference</string>
-    <string name="restart">restart</string>
-    <string name="restore_finished">恢复已完成</string>
-    <string name="restore_restart_msg">部分设置需要重启程序才能生效，是否重启？</string>
+    <string name="restart">Restart</string>
+    <string name="restore_finished">Restore Finished</string>
+    <string name="restore_restart_msg">Preferences need to restart the program to take effect</string>
+    <string name="restore">Restore</string>
+    <string name="restore_confirm">Restore data from this file?</string>
 </resources>

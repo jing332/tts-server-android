@@ -32,7 +32,7 @@ class BackupRestoreFragment : PreferenceFragmentCompat() {
         registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
             it.first?.let { reqData ->
                 if (reqData is FilePickerActivity.RequestSelectFile && it.second != null) {
-                    restore(it.second!!)
+                    restore(it.second!!.readBytes(requireContext()))
                 }
             }
         }
@@ -103,10 +103,11 @@ class BackupRestoreFragment : PreferenceFragmentCompat() {
 
     private val waitDialog by lazy { WaitDialog(requireContext()) }
 
-    private fun restore(uri: Uri) = lifecycleScope.launch(Dispatchers.Main) {
+
+    fun restore(bytes: ByteArray) = lifecycleScope.launch(Dispatchers.Main) {
         waitDialog.show()
         val isRestart = try {
-            withIO { vm.restore(uri.readBytes(requireContext())) }
+            withIO { vm.restore(bytes) }
         } catch (e: Exception) {
             requireContext().displayErrorDialog(e)
             false

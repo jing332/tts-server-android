@@ -380,4 +380,6 @@
     <string name="restart">重启</string>
     <string name="restore_finished">恢复已完成</string>
     <string name="restore_restart_msg">部分设置需要重启程序才能生效，是否重启？</string>
+    <string name="restore">恢复</string>
+    <string name="restore_confirm">从此文件恢复数据？</string>
 </resources>
