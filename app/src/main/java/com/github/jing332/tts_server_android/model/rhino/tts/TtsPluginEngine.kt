@@ -96,6 +96,7 @@ open class TtsPluginEngine(
 
     fun onStop(): Any? {
         logger.d("onStop()...")
+        ttsrvObject.cancel()
         try {
             return rhino.invokeMethod(pluginJsObject, FUNC_ON_STOP)
         } catch (_: NoSuchMethodException) {

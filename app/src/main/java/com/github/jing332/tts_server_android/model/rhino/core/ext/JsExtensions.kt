@@ -8,7 +8,7 @@ import java.io.File
 import java.io.InputStream
 
 @Suppress("unused")
-open class JsExtensions(open val context: Context, open val engineId: String) : JsNet(), JsCrypto,
+open class JsExtensions(open val context: Context, open val engineId: String) : JsNet(engineId), JsCrypto,
     JsUserInterface {
 
     @Suppress("MemberVisibilityCanBePrivate")

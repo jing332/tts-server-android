@@ -2,21 +2,27 @@ package com.github.jing332.tts_server_android.model.rhino.core.ext
 
 import androidx.annotation.Keep
 import com.drake.net.Net
+import com.drake.net.NetConfig
 import com.drake.net.exception.ConvertException
-import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.File
-import java.util.Locale
 
 @Keep
-open class JsNet {
+open class JsNet(private val engineId: String) {
+    private val groupId by lazy { engineId + hashCode() }
+
+    internal fun cancel() {
+        Net.cancelGroup(groupId)
+    }
+
     @JvmOverloads
     fun httpGet(url: CharSequence, headers: Map<CharSequence, CharSequence>? = null): Response {
         return Net.get(url.toString()) {
+            setGroup(groupId)
             headers?.let {
                 it.forEach {
                     setHeader(it.key.toString(), it.value.toString())
@@ -30,11 +36,11 @@ open class JsNet {
      */
     @JvmOverloads
     fun httpGetString(
-        url: CharSequence,
-        headers: Map<CharSequence, CharSequence>? = null
+        url: CharSequence, headers: Map<CharSequence, CharSequence>? = null
     ): String? {
         return try {
             Net.get(url.toString()) {
+                setGroup(groupId)
                 headers?.let {
                     it.forEach {
                         setHeader(it.key.toString(), it.value.toString())
@@ -48,8 +54,7 @@ open class JsNet {
 
     @JvmOverloads
     fun httpGetBytes(
-        url: CharSequence,
-        headers: Map<CharSequence, CharSequence>? = null
+        url: CharSequence, headers: Map<CharSequence, CharSequence>? = null
     ): ByteArray? {
         return try {
             httpGet(url, headers).body?.bytes()
@@ -68,6 +73,7 @@ open class JsNet {
         headers: Map<CharSequence, CharSequence>? = null
     ): Response {
         return Net.post(url.toString()) {
+            setGroup(groupId)
             body?.let { this.body = it.toString().toRequestBody() }
             headers?.let {
                 it.forEach {
@@ -118,6 +124,7 @@ open class JsNet {
         headers: Map<CharSequence, CharSequence>? = null
     ): Response {
         return Net.post(url.toString()) {
+            setGroup(groupId)
             headers?.let {
                 it.forEach {
                     setHeader(it.key.toString(), it.value.toString())
