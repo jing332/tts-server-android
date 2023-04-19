@@ -1,60 +1,65 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/app_name">
+    <PreferenceCategory android:title="@string/app_name">
         <Preference
-            android:key="backup_restore"
             android:icon="@drawable/baseline_settings_backup_restore_24"
+            android:key="@string/key_backup_and_restore"
             android:title="备份与恢复" />
+
+        <Preference
+            android:icon="@drawable/baseline_upload_24"
+            android:key="@string/key_direct_link_settings"
+            android:title="@string/direct_link_settings" />
 
         <ListPreference
             android:dialogMessage="@string/app_language_update_warn"
+            android:icon="@drawable/ic_web"
+            android:key="@string/key_language"
             android:persistent="false"
-            app:icon="@drawable/ic_web"
-            app:key="language"
-            app:title="@string/language" />
+            android:title="@string/language" />
 
         <SwitchPreferenceCompat
             android:defaultValue="true"
             android:icon="@drawable/baseline_arrow_circle_up_24"
-            android:key="isAutoCheckUpdateEnabled"
+            android:key="@string/key_is_auto_check_update"
             android:summary="@string/check_update_summary"
             android:title="@string/auto_check_update" />
 
         <ListPreference
             android:icon="@drawable/ic_baseline_file_open_24"
-            android:key="filePickerMode"
+            android:key="@string/key_file_picker_mode"
             android:persistent="false"
             android:title="@string/file_picker_mode" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_title_global_edge">
         <SwitchPreferenceCompat
-            app:icon="@drawable/ic_baseline_dns_24"
-            app:key="isEdgeDnsEnabled"
-            app:summary="@string/pref_edge_dns_summary"
-            app:title="@string/use_dns_lookup_ip" />
+            android:icon="@drawable/ic_baseline_dns_24"
+            android:key="@string/key_is_edge_dns"
+            android:summary="@string/pref_edge_dns_summary"
+            android:title="@string/use_dns_lookup_ip" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/system_tts">
 
         <SwitchPreferenceCompat
-            android:key="isExoDecoderEnabled"
             android:icon="@drawable/baseline_play_circle_outline_24"
+            android:key="@string/key_is_exo_decoder"
             android:persistent="false"
             android:summary="@string/use_exo_decoder_summary"
             android:title="@string/use_exo_decoder" />
 
         <SwitchPreferenceCompat
             android:icon="@drawable/baseline_waves_24"
-            android:key="isStreamPlayModeEnabled"
+            android:key="@string/key_is_stream_play_mode"
             android:persistent="false"
             android:summary="@string/stream_audio_mode_summary"
             android:title="@string/stream_audio_mode" />
 
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_text_snippet_24"
-            android:key="isSkipSilentTextEnabled"
+            android:key="@string/key_is_skip_silent_text"
             android:persistent="false"
             android:summary="@string/skip_request_silent_text_summary"
             android:title="@string/skip_request_silent_text" />
@@ -62,62 +67,62 @@
         <ListPreference
             android:dialogMessage="@string/retry_count_when_audio_empty_msg"
             android:icon="@drawable/baseline_123_24"
-            android:key="maxEmptyAudioRetryCount"
+            android:key="@string/key_max_empty_audio_retry_count"
             android:persistent="false"
             android:title="@string/retry_count_when_audio_empty" />
 
         <ListPreference
             android:icon="@drawable/baseline_123_24"
-            android:key="maxRetryCount"
+            android:key="@string/key_max_retry_count"
             android:persistent="false"
             android:title="@string/max_retry_count" />
 
         <ListPreference
             android:dialogMessage="@string/systts_set_request_timeout_msg"
             android:icon="@drawable/ic_baseline_access_time_24"
-            android:key="requestTimeout"
+            android:key="@string/key_request_timeout"
             android:persistent="false"
             android:title="@string/systts_set_request_timeout" />
 
         <ListPreference
             android:dialogMessage="@string/systts_sby_settings_msg"
             android:icon="@drawable/ic_baseline_mode_standby_24"
-            android:key="standbyTriggeredRetryIndex"
+            android:key="@string/key_standby_triggered_retry_index"
             android:persistent="false"
             android:title="@string/systts_sby_conditions_for_use" />
 
         <SwitchPreferenceCompat
             android:icon="@drawable/baseline_notifications_none_24"
-            android:key="isForegroundServiceEnabled"
+            android:key="@string/key_is_foreground_service"
             android:summary="@string/foreground_service_summary"
             android:title="@string/foreground_service_and_notification" />
 
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_lock_24_2"
-            android:key="isWakeLockEnabled"
+            android:key="@string/key_is_wake_lock"
             android:persistent="false"
             android:summary="@string/wake_lock_summary"
             android:title="@string/wake_lock" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sys_tts_interface_preference">
+    <PreferenceCategory android:title="@string/sys_tts_interface_preference">
 
         <SwitchPreferenceCompat
-            app:icon="@drawable/ic_baseline_headset_24"
-            app:key="isSwapListenAndEditButton"
-            app:title="@string/pref_swap_listen_and_edit_button" />
+            android:icon="@drawable/ic_baseline_headset_24"
+            android:key="key_is_swap_listen_and_edit_button"
+            android:title="@string/pref_swap_listen_and_edit_button" />
 
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_select_all_24"
-            android:key="isVoiceMultiple"
+            android:key="@string/key_is_voice_multiple"
             android:persistent="false"
             android:summary="@string/systts_voice_multiple_hint"
             android:title="@string/systts_voice_multiple_option" />
 
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_groups_24"
-            android:key="groupMultiple"
+            android:key="@string/key_is_group_multiple"
             android:persistent="false"
             android:summary="@string/systts_groups_multiple_hint"
             android:title="@string/systts_groups_multiple" />
@@ -127,13 +132,13 @@
     <PreferenceCategory android:title="@string/code_editor">
         <ListPreference
             android:icon="@drawable/baseline_color_lens_24"
-            android:key="codeEditorTheme"
+            android:key="@string/key_code_editor_theme"
             android:persistent="false"
             android:title="@string/theme" />
 
         <SwitchPreferenceCompat
             android:icon="@drawable/baseline_subdirectory_arrow_left_24"
-            android:key="isCodeEditorWordWrapEnabled"
+            android:key="@string/key_is_code_editor_word_wrap"
             android:title="@string/word_wrap" />
 
     </PreferenceCategory>

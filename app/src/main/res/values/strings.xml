@@ -88,9 +88,8 @@
     <string name="desc_seekbar_remove">滑动条 -1</string>
 
     <string name="add_config">添加配置</string>
-    <string name="config_import_export">配置导入/导出</string>
-    <string name="import_config">导入配置</string>
-    <string name="export_config">导出配置</string>
+    <string name="import_config">导入</string>
+    <string name="export_config">导出</string>
     <string name="copy" tools:ignore="PrivateResource">复制</string>
     <string name="follow_system_or_read_aloud_app">跟随系统或朗读应用</string>
     <string name="raw_format_is_play_while_downloading">Raw格式为边下边播模式</string>

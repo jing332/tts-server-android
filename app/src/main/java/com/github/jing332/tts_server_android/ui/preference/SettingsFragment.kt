@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.core.view.setPadding
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -20,6 +21,7 @@ import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.preference.backup_restore.BackupRestoreActivity
+import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.utils.dp
 import com.github.jing332.tts_server_android.utils.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -39,14 +41,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        findPreference<Preference>("backup_restore")!!.apply {
+        findPreference<Preference>(R.string.key_direct_link_settings)?.apply {
+            setOnPreferenceClickListener {
+                startActivity(Intent(requireContext(), DirectUploadSettingsActivity::class.java))
+                true
+            }
+        }
+
+        findPreference<Preference>(R.string.key_backup_and_restore)!!.apply {
             setOnPreferenceClickListener {
                 startActivity(Intent(requireContext(), BackupRestoreActivity::class.java))
                 true
             }
         }
 
-        findPreference<ListPreference>("filePickerMode")!!.apply {
+        findPreference<ListPreference>(R.string.key_file_picker_mode)!!.apply {
             entryValues = (0..2).map { "$it" }.toTypedArray()
             entries = arrayOf(
                 getString(R.string.file_picker_mode_prompt),
@@ -61,19 +70,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        initSwitchPreference("isSkipSilentTextEnabled", SysTtsConfig.isSkipSilentText) {
+        initSwitchPreference(R.string.key_is_skip_silent_text, SysTtsConfig.isSkipSilentText) {
             SysTtsConfig.isSkipSilentText = it
         }
 
-        initSwitchPreference("isExoDecoderEnabled", SysTtsConfig.isExoDecoderEnabled) {
+        initSwitchPreference(R.string.key_is_exo_decoder, SysTtsConfig.isExoDecoderEnabled) {
             SysTtsConfig.isExoDecoderEnabled = it
         }
 
-        initSwitchPreference("isStreamPlayModeEnabled", SysTtsConfig.isStreamPlayModeEnabled) {
+        initSwitchPreference(
+            R.string.key_is_stream_play_mode,
+            SysTtsConfig.isStreamPlayModeEnabled
+        ) {
             SysTtsConfig.isStreamPlayModeEnabled = it
         }
 
-        findPreference<ListPreference>("maxEmptyAudioRetryCount")!!.apply {
+        findPreference<ListPreference>(R.string.key_max_empty_audio_retry_count)!!.apply {
             entries = buildList {
                 add(getString(R.string.no_retries))
                 addAll((1..10).map { "$it" })
@@ -88,7 +100,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        findPreference<ListPreference>("maxRetryCount")!!.apply {
+        findPreference<ListPreference>(R.string.key_max_retry_count)!!.apply {
             entries = buildList {
                 add(getString(R.string.no_retries))
                 addAll((1..50).map { "$it" })
@@ -104,7 +116,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         // 备用配置使用条件
-        findPreference<ListPreference>("standbyTriggeredRetryIndex")!!.apply {
+        findPreference<ListPreference>(R.string.key_standby_triggered_retry_index)!!.apply {
             entries = (1..10).map { "$it" }.toTypedArray()
             entryValues = entries
             setValue(SysTtsConfig.standbyTriggeredRetryIndex.toString(), "1")
@@ -116,7 +128,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         // 请求超时
-        findPreference<ListPreference>("requestTimeout")!!.apply {
+        findPreference<ListPreference>(R.string.key_request_timeout)!!.apply {
             entries = (1..30).map { "${it}s" }.toTypedArray()
             entryValues = (1..30).map { "$it" }.toTypedArray()
             setValue((SysTtsConfig.requestTimeout / 1000).toString(), "5")
@@ -127,26 +139,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        initSwitchPreference("isVoiceMultiple", SysTtsConfig.isVoiceMultipleEnabled) {
+        initSwitchPreference(R.string.key_is_voice_multiple, SysTtsConfig.isVoiceMultipleEnabled) {
             SysTtsConfig.isVoiceMultipleEnabled = it
         }
 
-        initSwitchPreference("groupMultiple", SysTtsConfig.isGroupMultipleEnabled) {
+        initSwitchPreference(R.string.key_is_group_multiple, SysTtsConfig.isGroupMultipleEnabled) {
             SysTtsConfig.isGroupMultipleEnabled = it
         }
 
-        initSwitchPreference("isWakeLockEnabled", SysTtsConfig.isWakeLockEnabled) {
+        initSwitchPreference(R.string.key_is_wake_lock, SysTtsConfig.isWakeLockEnabled) {
             SysTtsConfig.isWakeLockEnabled = it
         }
 
         initSwitchPreference(
-            "isForegroundServiceEnabled", SysTtsConfig.isForegroundServiceEnabled
-        ) {
-            SysTtsConfig.isForegroundServiceEnabled = it
-        }
+            R.string.key_is_foreground_service, SysTtsConfig.isForegroundServiceEnabled
+        ) { SysTtsConfig.isForegroundServiceEnabled = it }
 
         // 代码编辑器主题
-        val editorTheme: ListPreference = findPreference("codeEditorTheme")!!
+        val editorTheme: ListPreference = findPreference(R.string.key_code_editor_theme)!!
         val themes = linkedMapOf(
             CodeEditorTheme.AUTO to requireContext().getString(R.string.follow_system),
             CodeEditorTheme.QUIET_LIGHT to "Quiet-Light",
@@ -164,7 +174,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-        val wordWrapSwitch = findPreference<SwitchPreferenceCompat>("isCodeEditorWordWrapEnabled")!!
+        val wordWrapSwitch =
+            findPreference<SwitchPreferenceCompat>(R.string.key_is_code_editor_word_wrap)!!
         wordWrapSwitch.isChecked = ScriptEditorConfig.isCodeEditorWordWrapEnabled
         wordWrapSwitch.setOnPreferenceChangeListener { _, newValue ->
             ScriptEditorConfig.isCodeEditorWordWrapEnabled = newValue.toString().toBoolean()
@@ -172,7 +183,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         // 语言
-        val langPre: ListPreference = findPreference("language")!!
+        val langPre: ListPreference = findPreference(R.string.key_language)!!
         langPre.apply {
             entries =
                 AppLocale.localeMap.map { "${it.value.displayName} - ${it.value.getDisplayName(it.value)}" }
@@ -268,6 +279,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initSwitchPreference(
+        @StringRes key: Int,
+        isChecked: Boolean = false,
+        valueChange: (Boolean) -> Unit
+    ) {
+        initSwitchPreference(getString(key), isChecked, valueChange)
+    }
+
+    private fun initSwitchPreference(
         key: String,
         isChecked: Boolean = false,
         valueChange: (Boolean) -> Unit
@@ -286,4 +305,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+
+    fun <T : Preference?> findPreference(@StringRes key: Int): T? {
+        return findPreference(getString(key))
+    }
 }
