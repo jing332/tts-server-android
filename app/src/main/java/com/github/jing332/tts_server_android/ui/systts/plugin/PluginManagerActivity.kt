@@ -13,6 +13,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.listener.ItemDifferCallback
@@ -27,6 +28,8 @@ import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
+import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
+import com.github.jing332.tts_server_android.ui.systts.replace.GroupModel
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.MyTools
 import com.github.jing332.tts_server_android.utils.clickWithThrottle
@@ -126,6 +129,20 @@ class PluginManagerActivity : BackActivity() {
             }
 
             itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    source: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return if (BrvItemTouchHelper.onMove<GroupModel>(
+                            recyclerView, source, target
+                        )
+                    ) {
+                        super.onMove(recyclerView, source, target)
+                    } else false
+                }
+
+
                 override fun onDrag(
                     source: BindingAdapter.BindingViewHolder,
                     target: BindingAdapter.BindingViewHolder

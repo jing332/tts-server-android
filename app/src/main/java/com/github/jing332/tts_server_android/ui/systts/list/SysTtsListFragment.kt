@@ -21,7 +21,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
@@ -35,7 +34,6 @@ import com.github.jing332.tts_server_android.model.speech.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
-import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
@@ -194,20 +192,13 @@ class SysTtsListFragment : Fragment() {
                     true
                 }
 
-                R.id.menu_direct_upload_settings -> {
-                    startActivity(
-                        Intent(requireContext(), DirectUploadSettingsActivity::class.java)
-                    )
-                    true
-                }
-
                 /* 导入导出 */
-                R.id.menu_importConfig -> {
+                R.id.menu_import -> {
                     importConfig()
                     true
                 }
 
-                R.id.menu_export_config -> {
+                R.id.menu_export -> {
                     exportConfig()
                     true
                 }

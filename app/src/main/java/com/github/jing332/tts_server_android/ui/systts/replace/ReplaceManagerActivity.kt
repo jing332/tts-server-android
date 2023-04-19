@@ -42,7 +42,6 @@ import com.github.jing332.tts_server_android.utils.*
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
-import splitties.systemservices.textClassificationManager
 
 @Suppress("DEPRECATION")
 class ReplaceManagerActivity : AppCompatActivity() {
@@ -364,12 +363,12 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)
             }
 
-            R.id.menu_importConfig -> {
+            R.id.menu_import -> {
                 val fragment = ImportConfigBottomSheetFragment()
                 fragment.show(supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
             }
 
-            R.id.menu_export_config -> {
+            R.id.menu_export -> {
                 displayExport("ttsrv-replaces.json", vm.configToJson())
             }
         }

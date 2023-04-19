@@ -113,7 +113,7 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
                                 menuInflater.inflate(R.menu.systts_list_group_more, menu)
                                 setOnMenuItemClickListener { item ->
                                     when (item.itemId) {
-                                        R.id.menu_export_config ->
+                                        R.id.menu_export ->
                                             callback?.onExport(it, getModel())
 
                                         R.id.menu_rename_group -> callback?.onRename(it, getModel())
