@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.databinding.SysttsLoggerBottomSheetBinding
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
+import com.github.jing332.tts_server_android.ui.view.Attr.colorOnBackground
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.utils.setMarginMatchParent
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -33,16 +34,7 @@ class LoggerBottomSheetFragment @JvmOverloads constructor(private val logger: Lo
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View = binding.root
 
-    private val infoColor by lazy {
-        val typedValue = android.util.TypedValue()
-        requireContext().theme.resolveAttribute(
-            com.google.android.material.R.attr.colorOnBackground,
-            typedValue,
-            true,
-        )
-        typedValue.data
-    }
-
+    private val infoColor by lazy { requireContext().colorOnBackground }
     private val channel = Channel<Pair<CharSequence, Int>>(Int.MAX_VALUE)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

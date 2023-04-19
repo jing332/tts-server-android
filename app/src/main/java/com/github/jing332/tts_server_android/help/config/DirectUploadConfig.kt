@@ -5,8 +5,7 @@ import com.chibatching.kotpref.KotprefModel
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 
 object DirectUploadConfig : KotprefModel() {
-    override val kotprefMode: Int
-        get() = Context.MODE_MULTI_PROCESS
+
 
     override val kotprefName: String = "direct_link_upload"
     var code by stringPref(

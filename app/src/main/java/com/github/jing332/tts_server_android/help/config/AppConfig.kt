@@ -7,8 +7,7 @@ import com.github.jing332.tts_server_android.constant.FilePickerMode
 
 @Suppress("DEPRECATION")
 object AppConfig : KotprefModel() {
-    override val kotprefMode: Int
-        get() = Context.MODE_MULTI_PROCESS
+
 
     override val kotprefName: String
         get() = "app"

@@ -5,8 +5,7 @@ import com.chibatching.kotpref.KotprefModel
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 
 object ScriptEditorConfig : KotprefModel() {
-    override val kotprefMode: Int
-        get() = Context.MODE_MULTI_PROCESS
+
     override val kotprefName = "script_editor"
 
     var isRemoteSyncEnabled by booleanPref(false)
