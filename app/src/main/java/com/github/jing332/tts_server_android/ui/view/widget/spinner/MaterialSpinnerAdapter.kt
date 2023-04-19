@@ -5,8 +5,7 @@ import android.graphics.Typeface
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
-import androidx.core.view.isGone
-import com.github.jing332.tts_server_android.databinding.ItemMaterialSpinnerBinding
+import com.github.jing332.tts_server_android.databinding.MaterialSpinnerItemBinding
 
 data class SpinnerItem(
     var displayText: String,
@@ -21,23 +20,22 @@ class MaterialSpinnerAdapter(val content: Context, items: List<SpinnerItem>) :
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View
 
-        val binding: ItemMaterialSpinnerBinding
+        val binding: MaterialSpinnerItemBinding
         if (convertView == null) { // 新建
-            binding = ItemMaterialSpinnerBinding.inflate(layoutInflater, parent, false)
+            binding = MaterialSpinnerItemBinding.inflate(layoutInflater, parent, false)
             view = binding.root
             view.tag = binding
         } else { // 复用
             view = convertView
-            binding = view.tag as ItemMaterialSpinnerBinding
+            binding = view.tag as MaterialSpinnerItemBinding
         }
 
         val item = getItem(position)
-        val isSelected = position == selectedItemPosition
+        val isChecked = position == selectedItemPosition
 
-        binding.radioButton.isGone = !isSelected
-        binding.tv.text = item.displayText
-        binding.tv.setTypeface(null, if (isSelected) Typeface.BOLD else Typeface.NORMAL)
-        if (item.imageResId != -1) binding.imageView.setImageResource(item.imageResId)
+        binding.text1.isChecked = isChecked
+        binding.text1.text = item.displayText
+        binding.text1.setTypeface(null, if (isChecked) Typeface.BOLD else Typeface.NORMAL)
 
         return view
     }

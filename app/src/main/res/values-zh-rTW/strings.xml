@@ -85,7 +85,6 @@
     <string name="desc_seekbar_remove">滑動條 -1</string>
 
     <string name="add_config">新增配置</string>
-    <string name="config_import_export">配置導入/導出</string>
     <string name="import_config">導入配置</string>
     <string name="export_config">導出配置</string>
     <string name="copy" tools:ignore="PrivateResource">複製</string>

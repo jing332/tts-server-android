@@ -87,7 +87,6 @@
     <string name="desc_seekbar_remove">Slider -1</string>
 
     <string name="add_config">Add Configuration</string>
-    <string name="config_import_export">Import and export</string>
     <string name="import_config">Import</string>
     <string name="export_config">Export</string>
     <string name="copy" tools:override="true">Copy</string>

@@ -45,8 +45,10 @@
         android:orientation="vertical">
 
         <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scrollbarSize="2dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -100,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:scrollbars="none">
+            android:scrollbarSize="2dp">
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/btn_group_ra_target"
@@ -155,7 +157,7 @@
 
         <LinearLayout
             android:id="@+id/layout_speech_rule"
-            visible="gone"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
