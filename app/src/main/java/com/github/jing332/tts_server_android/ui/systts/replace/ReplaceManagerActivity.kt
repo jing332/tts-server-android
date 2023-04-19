@@ -295,6 +295,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
             val model = value as ItemModel
             appDb.replaceRuleDao.update(model.data.copy(order = index))
         }
+        SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)
     }
 
     private fun edit(data: ReplaceRule) {
@@ -307,7 +308,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
         result.data?.apply {
             getParcelableExtra<ReplaceRule>(KeyConst.KEY_DATA)?.let {
                 appDb.replaceRuleDao.insert(it)
-                if (it.isEnabled) SystemTtsService.notifyUpdateConfig()
+                if (it.isEnabled) SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)
             }
         }
     }
@@ -360,6 +361,7 @@ class ReplaceManagerActivity : AppCompatActivity() {
             R.id.menu_switch -> {
                 item.isChecked = !item.isChecked
                 SysTtsConfig.isReplaceEnabled = item.isChecked
+                SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)
             }
 
             R.id.menu_importConfig -> {

@@ -271,11 +271,14 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         }
     }
 
+    fun loadReplacer() {
+        if (SysTtsConfig.isReplaceEnabled)
+            mTextReplacer.load()
+    }
+
     override fun load() {
         try {
-            if (SysTtsConfig.isReplaceEnabled)
-                mTextReplacer.load()
-
+            loadReplacer()
             initBgm()
             if (SysTtsConfig.isMultiVoiceEnabled) {
                 val ok = initConfig(SpeechTarget.CUSTOM_TAG)

@@ -44,7 +44,9 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     companion object {
         const val TAG = "SysTtsService"
         const val ACTION_ON_LOG = "SYS_TTS_ON_LOG"
-        const val ACTION_REQUEST_UPDATE_CONFIG = "on_config_changed"
+        const val ACTION_UPDATE_CONFIG = "on_config_changed"
+        const val ACTION_UPDATE_REPLACER = "on_replacer_changed"
+
         const val ACTION_NOTIFY_CANCEL = "SYS_TTS_NOTIFY_CANCEL"
         const val ACTION_KILL_PROCESS = "SYS_TTS_NOTIFY_EXIT_0"
         const val NOTIFICATION_CHAN_ID = "system_tts_service"
@@ -52,8 +54,11 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         /**
          * 更新配置
          */
-        fun notifyUpdateConfig() {
-            AppConst.localBroadcast.sendBroadcast(Intent(ACTION_REQUEST_UPDATE_CONFIG))
+        fun notifyUpdateConfig(isOnlyReplacer: Boolean = false) {
+            if (isOnlyReplacer)
+                AppConst.localBroadcast.sendBroadcast(Intent(ACTION_UPDATE_REPLACER))
+            else
+                AppConst.localBroadcast.sendBroadcast(Intent(ACTION_UPDATE_CONFIG))
         }
     }
 
@@ -88,7 +93,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
         AppConst.localBroadcast.registerReceiver(
             mLocalReceiver,
-            IntentFilter(ACTION_REQUEST_UPDATE_CONFIG)
+            IntentFilter(ACTION_UPDATE_CONFIG)
         )
 
         if (SysTtsConfig.isWakeLockEnabled)
@@ -328,7 +333,8 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     inner class LocalReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_REQUEST_UPDATE_CONFIG -> mTtsManager.load()
+                ACTION_UPDATE_CONFIG -> mTtsManager.load()
+                ACTION_UPDATE_REPLACER -> mTtsManager.loadReplacer()
             }
         }
     }
