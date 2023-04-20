@@ -10,27 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import androidx.fragment.app.Fragment
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.WebPageFragmentBinding
 import com.github.jing332.tts_server_android.utils.toast
 
-open class BaseWebViewPageFragment() : Fragment() {
-    private val binding: WebPageFragmentBinding by lazy {
-        WebPageFragmentBinding.inflate(layoutInflater)
-    }
-
-    val webView: WebView
-        get() = binding.webView
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
-    }
+open class BaseWebViewPageFragment() : Fragment(R.layout.web_page_fragment) {
+    private val binding by viewBinding(WebPageFragmentBinding::bind)
+    val webView: WebView get() = binding.webView
 
     @SuppressLint("SetJavaScriptEnabled")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.swipeRefresh.setOnRefreshListener {
             binding.webView.reload()
@@ -48,16 +39,17 @@ open class BaseWebViewPageFragment() : Fragment() {
                 view: WebView?,
                 request: WebResourceRequest?
             ): Boolean {
-                try {
+                kotlin.runCatching {
                     if (request?.url?.scheme?.startsWith("http") == false) {
                         val intent = Intent(Intent.ACTION_VIEW, request.url)
                         startActivity(intent)
                         return true
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+
+                }.onFailure {
                     toast("跳转APP失败！")
                 }
+
                 return super.shouldOverrideUrlLoading(view, request)
             }
         }
@@ -66,6 +58,7 @@ open class BaseWebViewPageFragment() : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         binding.webView.clearHistory()
+        binding.webView.destroy()
     }
 
     @Suppress("DEPRECATION")

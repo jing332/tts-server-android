@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
@@ -21,18 +22,11 @@ import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.view.adapter.LogListItemAdapter
 import com.github.jing332.tts_server_android.utils.clickWithThrottle
 
-class SysTtsForwarderLogPage : Fragment() {
-    private val binding: SysTtsForwarderLogPageFragmentBinding by lazy {
-        SysTtsForwarderLogPageFragmentBinding.inflate(layoutInflater)
-    }
+class SysTtsForwarderLogPage : Fragment(R.layout.sys_tts_forwarder_log_page_fragment) {
+    private val binding by viewBinding(SysTtsForwarderLogPageFragmentBinding::bind)
 
     private val mReceiver by lazy { MyReceiver() }
     private var logAdapter: LogListItemAdapter? = null
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = binding.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,8 +34,8 @@ class SysTtsForwarderLogPage : Fragment() {
         binding.etPort.setText(SysTtsForwarderConfig.port.toString())
         binding.fabSwitch.clickWithThrottle {
             SysTtsForwarderConfig.port = binding.etPort.text.toString().toInt()
-            if (SysTtsForwarderService.instance?.isRunning == true) {
-                AppConst.localBroadcast.sendBroadcast(Intent(SysTtsForwarderService.ACTION_REQUEST_CLOSE_SERVER))
+            if (SysTtsForwarderService.isRunning) {
+                SysTtsForwarderService.requestCloseServer()
             } else {
                 requireContext().startService(
                     Intent(
@@ -59,7 +53,7 @@ class SysTtsForwarderLogPage : Fragment() {
         layoutManager.stackFromEnd = true
         binding.rvLog.layoutManager = layoutManager
 
-        if (SysTtsForwarderService.instance?.isRunning == true) {
+        if (SysTtsForwarderService.isRunning) {
             updateSwitch(true)
             val address = SysTtsForwarderService.instance?.listenAddress
             logAdapter?.append(
@@ -88,22 +82,20 @@ class SysTtsForwarderLogPage : Fragment() {
 
     private fun updateSwitch(isStarted: Boolean) {
         binding.tilPort.isEnabled = !isStarted
-        if (isStarted) {
-            binding.fabSwitch.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
-        } else
-            binding.fabSwitch.setImageResource(R.drawable.ic_baseline_do_disturb_alt_24)
+        binding.fabSwitch.isChecked = isStarted
     }
-
-
 
     @Suppress("DEPRECATION")
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
             when (intent?.action) {
                 SysTtsForwarderService.ACTION_ON_CLOSED -> {
-                    updateSwitch(SysTtsForwarderService.instance?.isRunning == true)
+                    updateSwitch(SysTtsForwarderService.isRunning)
                 }
-                SysTtsForwarderService.ACTION_ON_STARTING -> logAdapter?.removeAll()
+                SysTtsForwarderService.ACTION_ON_STARTING -> {
+                    updateSwitch(SysTtsForwarderService.isRunning)
+                    logAdapter?.removeAll()
+                }
                 SysTtsForwarderService.ACTION_ON_LOG -> {
                     logAdapter?.let {
                         val log = intent.getParcelableExtra<AppLog>(KeyConst.KEY_DATA) as AppLog

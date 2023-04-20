@@ -33,7 +33,6 @@ class TtsIntentService(name: String = "TtsIntentService") : IntentService(name) 
         const val ACTION_NOTIFY_EXIT = "notify_exit" /* 通知的{退出}按钮*/
         const val ACTION_NOTIFY_COPY_ADDRESS = "notify_copy_address"
         var instance: TtsIntentService? = null
-
     }
 
     private var listenAddress = ""

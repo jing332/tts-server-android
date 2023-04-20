@@ -1,48 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:orientation="vertical">
 
     <com.github.jing332.tts_server_android.ui.view.widget.RecyclerViewAtViewPager2
         android:id="@+id/rv_log"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/til_port"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_weight="1" />
 
-    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
-        android:id="@+id/til_port"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fab_switch"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_port"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/label_port"
-            android:inputType="number"
-            tools:ignore="Autofill,LabelFor" />
-    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_port"
+            style="?attr/textInputOutlinedDenseStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_port"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/label_port"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/app_switch"
-        app:srcCompat="@drawable/ic_baseline_do_disturb_alt_24"
-        app:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/fab_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:contentDescription="@string/app_switch" />
+    </LinearLayout>
+</LinearLayout>

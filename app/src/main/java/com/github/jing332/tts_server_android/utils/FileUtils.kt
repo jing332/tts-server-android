@@ -48,8 +48,9 @@ object FileUtils {
         activity.apply {
             return registerForActivityResult(ActivityResultContracts.CreateDocument(mime)) { uri ->
                 val saveData = onGetData.invoke()
-                if (saveData == null || uri == null)
-                    return@registerForActivityResult
+                if (saveData == null || uri == null) return@registerForActivityResult
+
+                uri.grantReadWritePermission(contentResolver)
                 lifecycleScope.runOnIO {
                     try {
                         contentResolver?.openOutputStream(uri)?.let {

@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ShortCuts
@@ -37,10 +38,12 @@ import com.github.jing332.tts_server_android.utils.*
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
+import splitties.systemservices.powerManager
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(R.layout.main_activity),
+    NavigationView.OnNavigationItemSelectedListener {
     companion object {
         const val TAG = "MainActivity"
         const val ACTION_BACK_KEY_DOWN = "ACTION_BACK_KEY_DOWN"
@@ -55,7 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private val binding: MainActivityBinding by lazy { MainActivityBinding.inflate(layoutInflater) }
+    private val binding by viewBinding(MainActivityBinding::bind)
     private val navHeaderBinding: MainDrawerNavHeaderBinding by lazy {
         MainDrawerNavHeaderBinding.bind(binding.navView.getHeaderView(0))
     }
@@ -64,7 +67,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(null)
+        super.onCreate(savedInstanceState)
+
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
@@ -78,11 +82,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         navController = hostFragment.navController
 
-        // 关联抽屉菜单和Fragment
+        // 关联标题栏和Fragment
         appBarConfiguration = AppBarConfiguration(
             drawerMenus.toSet(), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+        // 关联侧边栏和Fragment
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
@@ -193,7 +199,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return handled
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.let { MenuCompat.setGroupDividerEnabled(it, true) }
         return super.onCreateOptionsMenu(menu)
@@ -223,6 +228,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        println("onSupportNavigateUp")
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
@@ -240,19 +246,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @SuppressLint("BatteryLife")
     private fun killBattery() {
-        val intent = Intent()
-        val pm = getSystemService(POWER_SERVICE) as PowerManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (pm.isIgnoringBatteryOptimizations(packageName)) {
+            if (powerManager.isIgnoringBatteryOptimizations(packageName)) {
                 toast(R.string.added_background_whitelist)
             } else {
-                try {
-                    intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                    intent.data = Uri.parse("package:$packageName")
-                    startActivity(intent)
-                } catch (e: Exception) {
+                kotlin.runCatching {
+                    startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                        data = Uri.parse("package:$packageName")
+                    })
+                }.onFailure {
                     toast(R.string.system_not_support_please_manual_set)
-                    e.printStackTrace()
                 }
             }
         }

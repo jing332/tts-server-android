@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.databinding.MsTtsForwarderFragmentBinding
@@ -29,10 +30,8 @@ import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
-class MsTtsForwarderFragment : Fragment(), MenuProvider {
-    private val binding: MsTtsForwarderFragmentBinding by lazy {
-        MsTtsForwarderFragmentBinding.inflate(layoutInflater)
-    }
+class MsTtsForwarderHostFragment : Fragment(R.layout.ms_tts_forwarder_fragment), MenuProvider {
+    private val binding by viewBinding(MsTtsForwarderFragmentBinding::bind)
 
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
 
@@ -49,7 +48,7 @@ class MsTtsForwarderFragment : Fragment(), MenuProvider {
         )
 
         binding.viewPager.reduceDragSensitivity(8)
-        binding.viewPager.isSaveEnabled = false
+//        binding.viewPager.isSaveEnabled = false
         binding.viewPager.adapter = FragmentAdapter(this)
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -69,24 +68,17 @@ class MsTtsForwarderFragment : Fragment(), MenuProvider {
 
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
-    val logFragment = MsTtsForwarderLogPage()
-    val webFragment = MsTtsForwarderWebPage()
+    val logFragment by lazy { MsTtsForwarderLogPage() }
+    val webFragment by lazy { MsTtsForwarderWebPage() }
 
     inner class FragmentAdapter(fragment: Fragment) :
         FragmentStateAdapter(fragment) {
-        private val fragmentList = arrayListOf(logFragment, webFragment)
+        private val fragmentList = listOf(logFragment, webFragment)
         override fun getItemCount(): Int {
             return fragmentList.size
         }

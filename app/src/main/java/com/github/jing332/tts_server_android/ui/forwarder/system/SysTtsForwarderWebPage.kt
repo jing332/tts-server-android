@@ -14,20 +14,19 @@ import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForw
 import com.github.jing332.tts_server_android.ui.base.BaseWebViewPageFragment
 
 class SysTtsForwarderWebPage : BaseWebViewPageFragment() {
-    private val mReceiver by lazy { MyReceiver() }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        AppConst.localBroadcast.registerReceiver(
-            mReceiver, IntentFilter(SysTtsForwarderService.ACTION_ON_STARTING)
-        )
-    }
-
+    private val mReceiver = MyReceiver()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        AppConst.localBroadcast.registerReceiver(
+            mReceiver, IntentFilter(SysTtsForwarderService.ACTION_ON_STARTING)
+        )
+
         webView.loadUrl("http://localhost:${SysTtsForwarderConfig.port}")
+    }
+
+    override fun onStart() {
+        super.onStart()
         if (SysTtsForwarderService.instance?.isRunning != true) {
             val i = Intent(requireContext(), SysTtsForwarderService::class.java)
             requireContext().startService(i)

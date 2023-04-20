@@ -32,6 +32,10 @@ class MsTtsForwarderWebPage : BaseWebViewPageFragment() {
 
         val port = TtsIntentService.instance?.cfg?.port ?: 1233
         webView.loadUrl("http://localhost:${port}")
+    }
+
+    override fun onStart() {
+        super.onStart()
         if (TtsIntentService.instance?.isRunning != true) {
             val i = Intent(app, TtsIntentService::class.java)
             requireContext().startService(i)
