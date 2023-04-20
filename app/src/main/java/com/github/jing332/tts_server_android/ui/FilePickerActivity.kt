@@ -12,16 +12,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.help.ByteArrayBinder
 import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.FileUtils
 import com.github.jing332.tts_server_android.utils.FileUtils.mimeType
 import com.github.jing332.tts_server_android.utils.getBinder
 import com.github.jing332.tts_server_android.utils.grantReadWritePermission
 import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import me.rosuh.filepicker.bean.FileItemBeanImpl
@@ -117,8 +121,7 @@ class FilePickerActivity : AppCompatActivity() {
 
         if (requestData is RequestSaveFile) {
             val permission = ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                this, Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
             if (permission != PackageManager.PERMISSION_GRANTED)
                 ActivityCompat.requestPermissions(
@@ -127,13 +130,21 @@ class FilePickerActivity : AppCompatActivity() {
                     ), 1
                 )
 
-            docCreate = FileUtils.registerResultCreateDocument(
-                this,
-                reqSaveFile.fileMime
-            ) {
-                resultAndFinish(null)
-                reqSaveFile.fileBytes
-            }
+            docCreate =
+                registerForActivityResult(ActivityResultContracts.CreateDocument(reqSaveFile.fileMime)) { uri ->
+                    if (uri == null) return@registerForActivityResult
+
+                    uri.grantReadWritePermission(contentResolver)
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        kotlin.runCatching {
+                            contentResolver.openOutputStream(uri)
+                                .use { it?.write(reqSaveFile.fileBytes) }
+                            toast(R.string.save_success)
+                        }.onFailure {
+                            displayErrorDialog(it)
+                        }
+                    }
+                }
         }
 
         when (AppConfig.filePickerMode) {

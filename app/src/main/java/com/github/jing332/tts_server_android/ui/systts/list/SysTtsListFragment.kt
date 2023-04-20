@@ -273,17 +273,6 @@ class SysTtsListFragment : Fragment() {
         fragment.show(requireActivity().supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
     }
 
-    private var savedData: ByteArray? = null
-
-    private lateinit var getFileUriToSave: ActivityResultLauncher<String>
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        getFileUriToSave = FileUtils.registerResultCreateDocument(
-            this@SysTtsListFragment,
-            "application/json"
-        ) { savedData }
-    }
-
     private fun exportConfig() {
         val fragment = ConfigExportBottomSheetFragment(
             onGetConfig = { vm.exportConfig() },
