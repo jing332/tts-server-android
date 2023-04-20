@@ -5,7 +5,7 @@
         <Preference
             android:icon="@drawable/baseline_settings_backup_restore_24"
             android:key="@string/key_backup_and_restore"
-            android:title="备份与恢复" />
+            android:title="@string/backup_restore" />
 
         <Preference
             android:icon="@drawable/baseline_upload_24"

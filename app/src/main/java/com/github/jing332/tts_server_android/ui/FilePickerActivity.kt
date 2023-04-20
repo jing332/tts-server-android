@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.help.ByteArrayBinder
@@ -142,6 +143,8 @@ class FilePickerActivity : AppCompatActivity() {
                             toast(R.string.save_success)
                         }.onFailure {
                             displayErrorDialog(it)
+                        }.onSuccess {
+                            withMain { finish() }
                         }
                     }
                 }
