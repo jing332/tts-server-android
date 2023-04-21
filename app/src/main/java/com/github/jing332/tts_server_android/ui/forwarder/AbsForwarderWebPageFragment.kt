@@ -1,27 +1,36 @@
-package com.github.jing332.tts_server_android.ui.base
+package com.github.jing332.tts_server_android.ui.forwarder
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.*
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.databinding.WebPageFragmentBinding
 import com.github.jing332.tts_server_android.utils.toast
 
-open class BaseWebViewPageFragment() : Fragment(R.layout.web_page_fragment) {
+abstract class AbsForwarderWebPageFragment(val startedAction: String) :
+    Fragment(R.layout.web_page_fragment) {
     private val binding by viewBinding(WebPageFragmentBinding::bind)
     val webView: WebView get() = binding.webView
+    private val mReceiver = MyReceiver()
+
+    abstract val port: Int
+    abstract val isServiceRunning: Boolean
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        AppConst.localBroadcast.registerReceiver(mReceiver, IntentFilter(startedAction))
 
         binding.swipeRefresh.setOnRefreshListener {
             binding.webView.reload()
@@ -45,7 +54,6 @@ open class BaseWebViewPageFragment() : Fragment(R.layout.web_page_fragment) {
                         startActivity(intent)
                         return true
                     }
-
                 }.onFailure {
                     toast("跳转APP失败！")
                 }
@@ -53,10 +61,13 @@ open class BaseWebViewPageFragment() : Fragment(R.layout.web_page_fragment) {
                 return super.shouldOverrideUrlLoading(view, request)
             }
         }
+
+        webView.loadUrl("http://localhost:$port")
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
         binding.webView.clearHistory()
         binding.webView.destroy()
     }
@@ -80,5 +91,15 @@ open class BaseWebViewPageFragment() : Fragment(R.layout.web_page_fragment) {
         }
 
         return false
+    }
+
+
+    inner class MyReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == startedAction) {
+                webView.reload()
+            }
+        }
+
     }
 }

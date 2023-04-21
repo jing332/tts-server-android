@@ -1,103 +1,41 @@
 package com.github.jing332.tts_server_android.ui.forwarder.ms
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
-import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.databinding.MsTtsForwarderFragmentBinding
 import com.github.jing332.tts_server_android.help.config.ServerConfig
 import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
-import com.github.jing332.tts_server_android.ui.MainActivity
+import com.github.jing332.tts_server_android.ui.forwarder.AbsForwarderHomePageFragment
+import com.github.jing332.tts_server_android.ui.forwarder.AbsForwarderHostFragment
+import com.github.jing332.tts_server_android.ui.forwarder.AbsForwarderWebPageFragment
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.utils.MyTools
-import com.github.jing332.tts_server_android.utils.reduceDragSensitivity
 import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
+class HostFragment(
+) : AbsForwarderHostFragment() {
+    override val isServiceRunning: Boolean get() = TtsIntentService.instance?.isRunning == true
+    override val homePageFragment: AbsForwarderHomePageFragment
+        get() = HomeFragment()
+    override val webPageFragment: AbsForwarderWebPageFragment
+        get() = WebFragment()
 
-class MsTtsForwarderHostFragment : Fragment(R.layout.ms_tts_forwarder_fragment), MenuProvider {
-    private val binding by viewBinding(MsTtsForwarderFragmentBinding::bind)
 
-    private val mReceiver: MyReceiver by lazy { MyReceiver() }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
-        AppConst.localBroadcast.registerReceiver(
-            mReceiver,
-            IntentFilter(MainActivity.ACTION_BACK_KEY_DOWN).apply {
+    override fun onSwitchChanged(isChecked: Boolean) {
+        if (isChecked) {
+            Intent(requireContext(), TtsIntentService::class.java).also {
+                requireContext().startService(it)
             }
-        )
-
-        binding.viewPager.reduceDragSensitivity(8)
-//        binding.viewPager.isSaveEnabled = false
-        binding.viewPager.adapter = FragmentAdapter(this)
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                binding.bnv.menu.getItem(position).isChecked = true
-            }
-        })
-        binding.bnv.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.menu_serverLog -> binding.viewPager.setCurrentItem(0, true)
-                R.id.menu_serverWeb -> {
-                    binding.viewPager.setCurrentItem(1, true)
-                }
-            }
-            true
+        } else {
+            TtsIntentService.instance?.closeServer()
         }
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        AppConst.localBroadcast.unregisterReceiver(mReceiver)
-    }
-
-    val logFragment by lazy { MsTtsForwarderLogPage() }
-    val webFragment by lazy { MsTtsForwarderWebPage() }
-
-    inner class FragmentAdapter(fragment: Fragment) :
-        FragmentStateAdapter(fragment) {
-        private val fragmentList = listOf(logFragment, webFragment)
-        override fun getItemCount(): Int {
-            return fragmentList.size
-        }
-
-        override fun createFragment(position: Int): Fragment {
-            return fragmentList[position]
-        }
-    }
-
-    inner class MyReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                MainActivity.ACTION_BACK_KEY_DOWN -> {
-                    if (!webFragment.onBackKeyDown())
-                        binding.viewPager.setCurrentItem(0, true)
-                }
-            }
-        }
-
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

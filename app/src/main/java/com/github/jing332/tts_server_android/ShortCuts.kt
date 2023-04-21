@@ -18,7 +18,7 @@ object ShortCuts {
 
     private fun buildSysSwitchShortCutInfo(context: Context): ShortcutInfoCompat {
         val msSwitchIntent =
-            buildIntent<com.github.jing332.tts_server_android.ui.forwarder.system.ScSwitchActivity>(
+            buildIntent<com.github.jing332.tts_server_android.ui.forwarder.sys.ScSwitchActivity>(
                 context
             )
         return ShortcutInfoCompat.Builder(context, "forwarder_sys_switch")

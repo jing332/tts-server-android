@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.forwarder.system
+package com.github.jing332.tts_server_android.ui.forwarder.sys
 
 import android.app.Activity
 import android.content.Intent
