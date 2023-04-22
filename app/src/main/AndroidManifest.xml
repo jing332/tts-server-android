@@ -215,8 +215,9 @@
                 android:name="android.speech.tts"
                 android:resource="@xml/tts_engine" />
         </service>
+
         <service
-            android:name=".service.forwarder.ms.TtsIntentService"
+            android:name=".service.forwarder.ms.MsTtsForwarderService"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedService,Instantiatable" />

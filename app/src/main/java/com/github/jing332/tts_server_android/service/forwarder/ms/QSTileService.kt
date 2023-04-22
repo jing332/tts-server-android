@@ -5,6 +5,7 @@ import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import androidx.annotation.RequiresApi
+import com.github.jing332.tts_server_android.service.forwarder.ForwarderServiceManager.startMsTtsForwarder
 
 /* 快捷开关(Android 7+) */
 @RequiresApi(Build.VERSION_CODES.N)
@@ -15,7 +16,7 @@ class QSTileService : TileService() {
 
     override fun onStartListening() {
         super.onStartListening()
-        if (TtsIntentService.instance?.isRunning == true) {
+        if (MsTtsForwarderService.isRunning) {
             qsTile.state = Tile.STATE_ACTIVE
         } else {
             qsTile.state = Tile.STATE_INACTIVE
@@ -26,13 +27,12 @@ class QSTileService : TileService() {
     override fun onClick() {
         super.onClick()
         if (qsTile.state == Tile.STATE_ACTIVE) { /* 关闭 */
-            if (TtsIntentService.instance?.isRunning == true) {
-                TtsIntentService.instance?.closeServer()
+            if (MsTtsForwarderService.isRunning) {
+                MsTtsForwarderService.instance?.close()
             }
             qsTile.state = Tile.STATE_INACTIVE
         } else {/* 打开 */
-            val i = Intent(this.applicationContext, TtsIntentService::class.java)
-            startService(i)
+            startMsTtsForwarder()
             qsTile.state = Tile.STATE_ACTIVE
         }
         qsTile.updateTile()

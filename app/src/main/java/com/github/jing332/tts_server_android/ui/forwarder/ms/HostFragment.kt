@@ -10,7 +10,8 @@ import android.webkit.WebStorage
 import android.webkit.WebView
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.help.config.ServerConfig
-import com.github.jing332.tts_server_android.service.forwarder.ms.TtsIntentService
+import com.github.jing332.tts_server_android.service.forwarder.ForwarderServiceManager.startMsTtsForwarder
+import com.github.jing332.tts_server_android.service.forwarder.ms.MsTtsForwarderService
 import com.github.jing332.tts_server_android.ui.forwarder.AbsForwarderHomePageFragment
 import com.github.jing332.tts_server_android.ui.forwarder.AbsForwarderHostFragment
 import com.github.jing332.tts_server_android.ui.forwarder.AbsForwarderWebPageFragment
@@ -21,20 +22,17 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class HostFragment(
 ) : AbsForwarderHostFragment() {
-    override val isServiceRunning: Boolean get() = TtsIntentService.instance?.isRunning == true
+    override val isServiceRunning: Boolean get() = MsTtsForwarderService.isRunning
     override val homePageFragment: AbsForwarderHomePageFragment
         get() = HomeFragment()
     override val webPageFragment: AbsForwarderWebPageFragment
         get() = WebFragment()
 
-
     override fun onSwitchChanged(isChecked: Boolean) {
         if (isChecked) {
-            Intent(requireContext(), TtsIntentService::class.java).also {
-                requireContext().startService(it)
-            }
+            requireContext().startMsTtsForwarder()
         } else {
-            TtsIntentService.instance?.closeServer()
+            MsTtsForwarderService.instance?.close()
         }
     }
 
@@ -45,10 +43,10 @@ class HostFragment(
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
             R.id.menu_open_web -> { /* {打开网页版} 按钮 */
-                if (TtsIntentService.instance?.isRunning == true) {
+                if (MsTtsForwarderService.isRunning) {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data =
-                        Uri.parse("http://localhost:${TtsIntentService.instance?.cfg?.port}")
+                        Uri.parse("http://localhost:${ServerConfig.port}")
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                 } else {

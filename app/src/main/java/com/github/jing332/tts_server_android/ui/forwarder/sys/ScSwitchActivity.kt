@@ -9,7 +9,7 @@ class ScSwitchActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (SysTtsForwarderService.isRunning)
-            SysTtsForwarderService.requestCloseServer()
+            SysTtsForwarderService.instance?.close()
         else
             startService(Intent(this, SysTtsForwarderService::class.java))
 

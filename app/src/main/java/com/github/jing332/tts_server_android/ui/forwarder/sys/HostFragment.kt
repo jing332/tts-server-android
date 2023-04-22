@@ -7,6 +7,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.help.config.SysTtsForwarderConfig
+import com.github.jing332.tts_server_android.service.forwarder.ForwarderServiceManager
+import com.github.jing332.tts_server_android.service.forwarder.ForwarderServiceManager.startSysTtsForwarder
 import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService
 import com.github.jing332.tts_server_android.ui.forwarder.AbsForwarderHomePageFragment
 import com.github.jing332.tts_server_android.ui.forwarder.AbsForwarderHostFragment
@@ -18,19 +20,14 @@ class HostFragment() : AbsForwarderHostFragment() {
     override val isServiceRunning: Boolean = SysTtsForwarderService.isRunning
     override fun onSwitchChanged(isChecked: Boolean) {
         if (isChecked) {
-            requireContext().startService(
-                Intent(
-                    requireContext(),
-                    SysTtsForwarderService::class.java
-                )
-            )
+            requireContext().startSysTtsForwarder()
         } else {
-            SysTtsForwarderService.requestCloseServer()
+            ForwarderServiceManager.closeSysTtsForwarder()
         }
     }
 
     override val homePageFragment: AbsForwarderHomePageFragment
-        get() = LogFragment()
+        get() = HomeFragment()
 
     override val webPageFragment: AbsForwarderWebPageFragment
         get() = WebFragment()
@@ -48,7 +45,7 @@ class HostFragment() : AbsForwarderHostFragment() {
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
             R.id.menu_open_web -> {
-                if (SysTtsForwarderService.instance?.isRunning == true) {
+                if (SysTtsForwarderService.isRunning) {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data =
                         Uri.parse("http://localhost:${SysTtsForwarderConfig.port}")

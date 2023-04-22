@@ -2,6 +2,7 @@
 
 package com.github.jing332.tts_server_android.service.forwarder
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,20 +10,27 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Build
+import android.os.PowerManager
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.SystemNotificationConst
+import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.toast
+import splitties.systemservices.powerManager
 import tts_server_lib.Tts_server_lib
 
 @Suppress("DEPRECATION")
 abstract class AbsForwarderService(
-    name: String,
+    private val name: String,
     private val id: Int,
+    private val actionLog: String,
+    private val actionStarting: String,
+    private val actionClosed: String,
     private val notificationChanId: String,
     @StringRes val notificationChanTitle: Int,
     @StringRes val notificationTitle: Int,
@@ -31,9 +39,20 @@ abstract class AbsForwarderService(
     private val notificationActionCopyUrl = "ACTION_NOTIFICATION_COPY_URL_$name"
     private val notificationActionClose = "ACTION_NOTIFICATION_CLOSE_$name"
 
-    abstract fun close()
-    abstract var isRunning: Boolean
+    abstract fun initServer()
+    abstract fun startServer()
+    abstract fun closeServer()
+
+    fun close() {
+        if (isRunning)
+            closeServer()
+    }
+
+    private var wakeLock: PowerManager.WakeLock? = null
+
+    protected var isRunning: Boolean = false
     abstract val port: Int
+    abstract val isWakeLockEnabled: Boolean
 
     private val mNotificationReceiver = NotificationActionReceiver()
 
@@ -41,9 +60,11 @@ abstract class AbsForwarderService(
         return Tts_server_lib.getOutboundIP() + ":" + port
     }
 
+    @SuppressLint("WakelockTimeout")
     override fun onCreate() {
         super.onCreate()
         isRunning = true
+
         initNotification()
 
         registerReceiver(
@@ -52,12 +73,52 @@ abstract class AbsForwarderService(
                 addAction(notificationActionClose)
             }
         )
+
+        if (isWakeLockEnabled) {
+            wakeLock =
+                powerManager.newWakeLock(
+                    PowerManager.PARTIAL_WAKE_LOCK,
+                    "TTS_SERVER_ANDROID::$name"
+                )
+            wakeLock?.acquire()
+        }
+        initServer()
+    }
+
+    override fun onHandleIntent(intent: Intent?) {
+        synchronized(this) {
+            notifiStarted()
+            startServer()
+            notifiClosed()
+        }
+    }
+
+    private fun notifiStarted() {
+        val intent = Intent(actionStarting)
+        AppConst.localBroadcast.sendBroadcast(intent)
+    }
+
+    private fun notifiClosed() {
+        val intent = Intent(actionClosed)
+        AppConst.localBroadcast.sendBroadcast(intent)
+    }
+
+    protected fun sendLog(log: AppLog) {
+        val intent = Intent(actionLog).apply { putExtra(KeyConst.KEY_DATA, log) }
+        AppConst.localBroadcast.sendBroadcast(intent)
+    }
+
+    protected fun sendLog(level: Int, msg: String) {
+        sendLog(AppLog(level, msg))
     }
 
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
         unregisterReceiver(mNotificationReceiver)
+
+        wakeLock?.release()
+        wakeLock = null
     }
 
     private fun initNotification() {
@@ -137,7 +198,7 @@ abstract class AbsForwarderService(
                 }
 
                 notificationActionClose -> {
-                    close()
+                    closeServer()
                 }
 
             }
