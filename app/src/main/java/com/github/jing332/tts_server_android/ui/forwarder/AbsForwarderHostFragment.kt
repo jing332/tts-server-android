@@ -10,6 +10,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.MsTtsForwarderFragmentBinding
 import com.github.jing332.tts_server_android.ui.base.MenuHostFragment
+import com.github.jing332.tts_server_android.utils.observeForeverNoSticky
+import com.github.jing332.tts_server_android.utils.observeNoSticky
 import com.github.jing332.tts_server_android.utils.reduceDragSensitivity
 
 abstract class AbsForwarderHostFragment : MenuHostFragment(R.layout.ms_tts_forwarder_fragment) {
@@ -22,7 +24,7 @@ abstract class AbsForwarderHostFragment : MenuHostFragment(R.layout.ms_tts_forwa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vm.switchStateLiveData.observe(viewLifecycleOwner) {
+        vm.switchStateLiveData.observeNoSticky(viewLifecycleOwner) {
             onSwitchChanged(it)
         }
 
