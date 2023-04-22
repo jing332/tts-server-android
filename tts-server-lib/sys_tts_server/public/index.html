@@ -16,11 +16,38 @@
     <div class="row">
         <div class="col">
             <label id="label_engine" for="select_engine"> TTS引擎 (Engine)</label>
-            <select class="form-select" id="select_engine">
+            <select class="form-select" id="select_engine" onchange="engineChanged()">
                 <option value="">加载中/Loading</option>
             </select>
         </div>
     </div>
+
+
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="switch_custom" onchange="switchCustomChanged()">
+        <label class="form-check-label" for="switch_custom">自定义 (Custom)</label>
+    </div>
+
+    <div class="collapse" id="customVoiceCollapse">
+        <div class="card card-body">
+            <div class="col">
+                <label id="label_locale" for="select_locale"> 地区 (Locale)</label>
+                <select class="form-select" id="select_locale" onchange="localeChanged()">
+                    <option value="">加载中/Loading</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label id="label_voice" for="select_voice"> 声音 (Voice)</label>
+                    <select class="form-select" id="select_voice" onchange="voiceChanged()">
+                        <option value="">加载中/Loading</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="row" style="margin-top: 10px">
         <div class="col">
@@ -30,11 +57,20 @@
     </div>
 
     <div class="row" style="margin-top: 10px">
-        <label>
-            测试语速 (speech rate)
-            <input id="input_rate" class="form-control" type="number" value="50" style="max-width: 100px"
-                   oninput="if(value>100){value=100}else if (value <1){value=1}">
-        </label>
+        <div class="col">
+            <label>
+                语速 (Speed)
+                <input id="input_rate" class="form-control" type="number" value="50" style="max-width: 100px"
+                       oninput="if(value>100){value=100}else if (value <1){value=1}">
+            </label>
+
+            <label style="padding-left: 10px">
+                音调 (Pitch)
+                <input id="input_pitch" class="form-control" type="number" value="100" max="300" min="1"
+                       style="max-width: 100px;"
+                       oninput="if(value>300){value=300}else if (value <1){value=1}">
+            </label>
+        </div>
     </div>
 
     <div class="row" style="margin-top:10px">
@@ -49,6 +85,7 @@
 
     <div class="col" style="margin-top: 10px">
         <audio controls="controls" id="audio">
+            你的浏览器不支持 &lt;audio&gt; 音频标签。
             Your browser does not support the &lt;audio&gt; tag.
             <source id="source" src="" type="audio/wav"/>
         </audio>
@@ -87,8 +124,54 @@
 <script src=https://cdn.staticfile.org/github-buttons/2.22.0/buttons.min.js></script>
 <script src="https://cdn.staticfile.org/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
 <script>
-    //let baseUrl = 'http://192.168.0.105:1221'
+    let engineElement = $("#select_engine")[0]
+    let localeElement = $("#select_locale")[0]
+    let voiceElement = $("#select_voice")[0]
+    let switchElement = $("#switch_custom")[0]
+    let collapseElement = $("#customVoiceCollapse")
+    let sampleTextElement = $("#textarea_test")[0]
+
+    let storageEngine = localStorage.getItem("engine")
+    let storageLocale = localStorage.getItem("locale")
+    let storageVoice = localStorage.getItem("voice")
+    let storageIsCustom = localStorage.getItem("isCustom")
+    let storageSampleText = localStorage.getItem("sampleText")
+
+    function switchCustomChanged() {
+        let visible = "hide"
+        if (switchElement.checked) visible = "show"
+        collapseElement.collapse(visible)
+    }
+
+    window.onload = function () {
+        if (storageIsCustom) {
+            switchElement.checked = storageIsCustom
+            switchCustomChanged()
+        }
+
+        sampleTextElement.value = storageSampleText.trim().length === 0 ? "如果喜欢这个项目的话请点个Star吧。\nIf you like this project, please click Star." : storageSampleText
+    }
+
+    window.onbeforeunload = function () {
+        localStorage.setItem("sampleText", sampleTextElement.value)
+    }
+
+    function engineChanged() {
+        localStorage.setItem("engine", engineElement.value)
+        fetchVoices()
+    }
+
+    function localeChanged() {
+        localStorage.setItem("locale", localeElement.value)
+        updateVoice()
+    }
+
+    function voiceChanged() {
+        localStorage.setItem("voice", voiceElement.value)
+    }
+
     let baseUrl = ''
+    // let baseUrl = 'http://192.168.0.106:1233'
 
     let engines = {}
     fetch(baseUrl + '/api/engines', {mode: 'cors'})
@@ -108,7 +191,6 @@
                 "Failed to load engine data: \n" +
                 reason)
         })
-
 
     /* 复制导入链接 */
     function copyLegadoUrl() {
@@ -137,8 +219,13 @@
         let selectEngine = $('#select_engine')[0]
         let engine = selectEngine.value
         let name = getSelectedText(selectEngine)
-        $('#legadoUrl')[0].value = `${window.location.protocol}//${window.location.host}/api/legado?api=${encodeURI(window.location.protocol)}//${window.location.host}/api/tts`
-            + `&name=${name}&engine=${engine}`
+        let pitch  = $('#input_pitch')[0].value
+
+        let url = `${window.location.protocol}//${window.location.host}/api/legado?api=${encodeURI(window.location.protocol)}//${window.location.host}/api/tts`
+            + `&name=${name}&engine=${engine}&pitch=${pitch}`
+        if (switchElement.checked) url += `&voice=${voiceElement.value}`
+
+        $('#legadoUrl')[0].value = url
         let modal = new bootstrap.Modal($('#legadoUrlModal')[0])
         modal.show()
     }
@@ -148,16 +235,28 @@
         return obj.options[index].text
     }
 
+    function getSelectedOption(obj) {
+        return obj.options[obj.selectedIndex]
+    }
+
     function onBtnTestClick() {
         let speechRate = $('#input_rate')[0].value
+        let pitch = $('#input_pitch')[0].value
         let engine = $('#select_engine')[0].value
+        let voice = $('#select_voice')[0].value
+        let isCustom = switchElement.checked
+
         let btn = $("#btn_test")[0]
         let load = $('#btn_test_load')[0]
         btn.disabled = true
         load.hidden = false
 
         let text = $('#textarea_test')[0].value
-        fetch(baseUrl + `/api/tts?text=${text}&engine=${engine}&rate=${speechRate}`,
+        let params = `/api/tts?text=${text}&engine=${engine}&rate=${speechRate}&pitch=${pitch}`
+        if (isCustom) {
+            params += `&voice=${voice}`
+        }
+        fetch(baseUrl + params,
             {method: 'GET'})
             .then(response => {
                 if (response.status === 200) {
@@ -183,7 +282,6 @@
     }
 
     function updateEngine() {
-        let engineElement = $("#select_engine")[0]
         engineElement.innerHTML = ''
         engineElement.label = $('#label_engine').innerText
         engines.forEach(engine => {
@@ -191,13 +289,83 @@
                 let label = engine['label']
 
                 let option = document.createElement('option')
-                console.log(name, label)
                 option.innerText = label + " (" + name + ")"
                 option.value = name
+                if (storageEngine === name) option.selected = true
 
                 engineElement.append(option)
             }
         )
+
+        fetchVoices()
+    }
+
+    let voices = {}
+
+    function fetchVoices() {
+        let engine = getSelectedOption(engineElement).value
+        fetch(baseUrl + `/api/voices?engine=${engine}`, {mode: 'cors'})
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json()
+                } else {
+                    return response.text().then(text => Promise.reject(text))
+                }
+            })
+            .then(data => {
+                voices = data
+                updateLocaleAndVoice()
+            })
+            .catch(reason => {
+                alert("加载语音数据失败\n" +
+                    "Failed to load voice data: \n" +
+                    reason)
+            })
+    }
+
+    function updateLocaleAndVoice() {
+        let locales = new Map()
+        voices.forEach(voice => {
+            let locale = voice['locale']
+            locales.set(locale, voice['localeName'])
+        })
+
+        const sortMap = new Map([...locales.entries()].sort((a, b) => a[1].localeCompare(b[1])));
+        localeElement.innerHTML = ''
+        sortMap.forEach((value, key) => {
+            let option = document.createElement('option')
+            option.innerText = value
+            option.value = key
+            if (storageLocale === key) option.selected = true
+
+            localeElement.append(option)
+        })
+
+        updateVoice()
+    }
+
+    function updateVoice() {
+        voiceElement.innerHTML = ''
+        voiceElement.label = $('#label_voice').innerText
+        let currentLocale = getSelectedOption(localeElement).value
+        voices.forEach(voice => {
+            let locale = voice['locale']
+            if (currentLocale === locale) {
+                let name = voice['name']
+                let features = voice['features']
+                let option = document.createElement('option')
+                if (features) {
+                    option.innerText = name + ` (${features})`
+                } else {
+                    option.innerText = name
+                }
+                if (storageVoice === name) option.selected = true
+
+                option.value = name
+                voiceElement.append(option)
+            }
+        })
+
     }
 
 

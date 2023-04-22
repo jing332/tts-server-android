@@ -10,7 +10,7 @@ func TestServer(t *testing.T) {
 	server.OnGetEngines = func() (string, error) {
 		return `{["name": "com.google.android.tts", "Google语音服务"]}`, nil
 	}
-	server.OnGetWavAudio = func(engine string, text string, rate int32) ([]byte, error) {
+	server.OnGetWavAudio = func(engine string, voice string, text string, rate int32, pitch int32) ([]byte, error) {
 		file, err := os.ReadFile("./ms_audio.wav")
 		if err != nil {
 			return nil, err

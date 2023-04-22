@@ -110,7 +110,7 @@
 
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_headset_24"
-            android:key="key_is_swap_listen_and_edit_button"
+            android:key="@string/key_is_swap_listen_and_edit_button"
             android:title="@string/pref_swap_listen_and_edit_button" />
 
         <SwitchPreferenceCompat

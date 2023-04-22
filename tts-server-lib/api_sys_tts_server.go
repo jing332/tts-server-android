@@ -13,7 +13,7 @@ type SysTtsForwarderCallback interface {
 	Log(level int32, msg string)
 
 	CancelAudio(engine string)
-	GetAudio(engine string, text string, rate int32) (file string, err error)
+	GetAudio(engine string, voice string, text string, rate int32, pitch int32) (file string, err error)
 	GetEngines() (json string, err error)
 	GetVoices(engine string) (json string, err error)
 }
@@ -41,8 +41,8 @@ func (s *SysTtsForwarder) InitCallback(cb SysTtsForwarderCallback) {
 	s.server.OnCancelAudio = func(engine string) {
 		s.callback.CancelAudio(engine)
 	}
-	s.server.OnGetWavAudio = func(engine string, text string, rate int32) ([]byte, error) {
-		filePath, err := s.callback.GetAudio(engine, text, rate)
+	s.server.OnGetWavAudio = func(engine string, voice string, text string, rate int32, pitch int32) ([]byte, error) {
+		filePath, err := s.callback.GetAudio(engine, voice, text, rate, pitch)
 		if err != nil {
 			return nil, err
 		}

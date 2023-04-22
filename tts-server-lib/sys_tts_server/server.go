@@ -17,7 +17,7 @@ var webFiles embed.FS
 
 type ConvServer struct {
 	OnCancelAudio func(engine string)
-	OnGetWavAudio func(engine string, text string, rate int32) ([]byte, error)
+	OnGetWavAudio func(engine string, voice string, text string, rate int32, pitch int32) ([]byte, error)
 	OnGetEngines  func() (string, error)
 	OnGetVoices   func(engine string) (string, error)
 
@@ -88,15 +88,18 @@ func (c *ConvServer) ttsAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	params := r.URL.Query()
 	engine := params.Get("engine")
+	voice := params.Get("voice")
+
 	text := params.Get("text")
 	rate, _ := strconv.ParseInt(params.Get("rate"), 10, 32)
+	pitch, _ := strconv.ParseInt(params.Get("pitch"), 10, 32)
 
 	c.Log.Infof("api/tts: %v\n", params)
 
 	var success = make(chan []byte)
 	var failure = make(chan error)
 	go func() {
-		audio, err := c.OnGetWavAudio(engine, text, int32(rate))
+		audio, err := c.OnGetWavAudio(engine, voice, text, int32(rate), int32(pitch))
 		if err != nil {
 			failure <- err
 			return
@@ -182,8 +185,10 @@ func (c *ConvServer) legadoUrlApiHandler(w http.ResponseWriter, r *http.Request)
 	api := params.Get("api")
 	name := params.Get("name")
 	engine := params.Get("engine")
+	voice := params.Get("voice")
+	pitch := params.Get("pitch")
 
-	json, err := getLegadoJson(api, name, engine)
+	json, err := getLegadoJson(api, name, engine, voice, pitch)
 	if err != nil {
 		c.writeErrorMsg(w, err)
 		return

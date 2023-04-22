@@ -87,14 +87,22 @@ class SysTtsForwarderService(
                     }
                 }
 
-                override fun getAudio(engine: String, text: String, rate: Int): String {
+
+                override fun getAudio(
+                    engine: String,
+                    voice: String,
+                    text: String,
+                    rate: Int,
+                    pitch: Int
+                ): String {
                     if (mLocalTTS?.engine != engine) {
                         mLocalTTS?.onDestroy()
                         mLocalTTS = LocalTTS(engine)
                     }
 
                     mLocalTTS?.let {
-                        val file = it.getAudioFile(text, rate)
+                        it.voiceName = voice
+                        val file = it.getAudioFile(text, rate, pitch)
                         if (file.exists()) return file.absolutePath
                     }
                     throw Exception(getString(R.string.forwarder_sys_fail_audio_file))

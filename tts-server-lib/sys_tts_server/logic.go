@@ -19,9 +19,11 @@ type LegadoJson struct {
 	//LoginURL       string `json:"loginUrl"`
 }
 
-func getLegadoJson(api string, displayName string, engine string) (string, error) {
+func getLegadoJson(api string, displayName string, engine string, voice string, pitch string) (string, error) {
 	t := time.Now().UnixNano() / 1e6
-	url := api + `?engine=` + engine + `&text={{java.encodeURI(speakText)}}&rate={{speakSpeed * 2}}`
+	url := api + `?engine=` + engine + `&text={{java.encodeURI(speakText)}}&rate={{speakSpeed * 2}}&pitch=` +
+		pitch + `&voice=` + voice
+
 	data := &LegadoJson{Name: displayName, LastUpdateTime: t, ID: t, URL: url, ContentType: "audio/x-wav", ConcurrentRate: "100"}
 	jsonStr, err := json.Marshal(data)
 	if err != nil {
