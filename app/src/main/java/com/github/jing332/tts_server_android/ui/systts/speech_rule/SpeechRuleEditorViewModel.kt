@@ -57,9 +57,9 @@ class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(app
     fun evalRuleInfo(): Boolean {
         kotlin.runCatching {
             mRuleEngine.evalInfo()
-            _displayLoggerLiveData.value = true
+            _displayLoggerLiveData.postValue(true)
         }.onFailure {
-            _errorLiveData.value = it
+            _errorLiveData.postValue(it)
             return false
         }
 
