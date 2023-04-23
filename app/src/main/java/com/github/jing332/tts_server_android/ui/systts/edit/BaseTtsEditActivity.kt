@@ -7,23 +7,27 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.lifecycleScope
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsBaseEditActivityBinding
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 import java.io.InputStream
 
 open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) :
-    BackActivity() {
+    AppBackActivity(R.layout.systts_base_edit_activity) {
     companion object {
         const val KEY_DATA = "KEY_DATA"
         const val KEY_BASIC_VISIBLE = "KEY_BASIC_VISIBLE"
     }
+
+    private val binding by viewBinding(SysttsBaseEditActivityBinding::bind) { contentView }
 
     private var mAudioPlayer: AudioPlayer? = null
 
@@ -54,16 +58,11 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) :
 
     open fun onTest(text: String) {}
 
-    private val binding: SysttsBaseEditActivityBinding by lazy {
-        SysttsBaseEditActivityBinding.inflate(layoutInflater)
-    }
-
     protected var testInputLayout: TextInputLayout? = null
     protected val basicEditView: BasicInfoEditView by lazy { binding.basicEdit }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        super.setContentView(binding.root)
 
         val visible = intent.getBooleanExtra(KEY_BASIC_VISIBLE, true)
         binding.basicEdit.visibility = if (visible) View.VISIBLE else View.GONE
@@ -73,7 +72,9 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) :
     }
 
     fun setEditContentView(view: View?, testTil: TextInputLayout? = null) {
-        super.setContentView(view)
+        binding.container.removeAllViews()
+        binding.container.addView(view)
+
         if (basicEditView.liteModeEnabled) return
 
         this.testInputLayout = testTil

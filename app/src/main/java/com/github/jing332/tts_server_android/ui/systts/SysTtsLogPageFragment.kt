@@ -48,8 +48,8 @@ class SysTtsLogPageFragment : Fragment() {
         AppConst.isSysTtsLogEnabled = true
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         AppConst.localBroadcast.unregisterReceiver(mReceiver)
         AppConst.isSysTtsLogEnabled = false
     }
