@@ -8,14 +8,13 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.MsTtsForwarderFragmentBinding
+import com.github.jing332.tts_server_android.databinding.ForwarderHostFragmentBinding
 import com.github.jing332.tts_server_android.ui.base.MenuHostFragment
-import com.github.jing332.tts_server_android.utils.observeForeverNoSticky
 import com.github.jing332.tts_server_android.utils.observeNoSticky
 import com.github.jing332.tts_server_android.utils.reduceDragSensitivity
 
-abstract class AbsForwarderHostFragment : MenuHostFragment(R.layout.ms_tts_forwarder_fragment) {
-    private val binding by viewBinding(MsTtsForwarderFragmentBinding::bind)
+abstract class AbsForwarderHostFragment : MenuHostFragment(R.layout.forwarder_host_fragment) {
+    private val binding by viewBinding(ForwarderHostFragmentBinding::bind)
     private val vm: ForwarderHostViewModel by viewModels()
 
     abstract val isServiceRunning: Boolean

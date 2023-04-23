@@ -15,13 +15,13 @@
         android:id="@+id/nav_server"
         android:name="com.github.jing332.tts_server_android.ui.forwarder.ms.HostFragment"
         android:label="@string/forwarder_ms"
-        tools:layout="@layout/ms_tts_forwarder_fragment" />
+        tools:layout="@layout/forwarder_host_fragment" />
 
     <fragment
         android:id="@+id/nav_systts_forwarder"
         android:name="com.github.jing332.tts_server_android.ui.forwarder.sys.HostFragment"
         android:label="@string/forwarder_systts"
-        tools:layout="@layout/sys_tts_forwarder_fragment" />
+        tools:layout="@layout/forwarder_host_fragment" />
 
     <fragment
         android:id="@+id/nav_settings"

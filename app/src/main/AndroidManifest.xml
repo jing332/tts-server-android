@@ -33,6 +33,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".CrashActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.preference.backup_restore.BackupRestoreActivity"
             android:exported="true"
             android:label="@string/backup_restore">
@@ -58,12 +61,10 @@
                 <data android:scheme="content" />
                 <data android:scheme="file" />
                 <data android:mimeType="*/*" />
-
                 <data android:pathAdvancedPattern=".*\\.[zZ][iI][pP]" />
                 <data android:pathPattern=".*\\.zip" />
                 <data android:pathPattern=".*\\.ZIP" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".ui.FilePickerActivity"
@@ -215,7 +216,6 @@
                 android:name="android.speech.tts"
                 android:resource="@xml/tts_engine" />
         </service>
-
         <service
             android:name=".service.forwarder.ms.MsTtsForwarderService"
             android:enabled="true"

@@ -18,6 +18,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.ui.AppLog
+import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.toast
@@ -88,7 +89,11 @@ abstract class AbsForwarderService(
     override fun onHandleIntent(intent: Intent?) {
         synchronized(this) {
             notifiStarted()
-            startServer()
+            kotlin.runCatching {
+                startServer()
+            }.onFailure {
+                sendLog(LogLevel.ERROR, it.localizedMessage ?: it.toString())
+            }
             notifiClosed()
         }
     }

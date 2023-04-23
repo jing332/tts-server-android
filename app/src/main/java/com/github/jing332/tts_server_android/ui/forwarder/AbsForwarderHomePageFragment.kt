@@ -14,7 +14,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
-import com.github.jing332.tts_server_android.databinding.MsTtsForwarderLogFragmentBinding
+import com.github.jing332.tts_server_android.databinding.ForwarderHomeFragmentBinding
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.view.adapter.LogListItemAdapter
@@ -25,13 +25,13 @@ abstract class AbsForwarderHomePageFragment(
     private val startedAction: String,
     private val closedAction: String,
     private val logAction: String,
-) : Fragment(R.layout.ms_tts_forwarder_log_fragment) {
+) : Fragment(R.layout.forwarder_home_fragment) {
 
     abstract var port: Int
     abstract val isServiceRunning: Boolean
     abstract val tipInfo: String
 
-    private val binding by viewBinding(MsTtsForwarderLogFragmentBinding::bind)
+    private val binding by viewBinding(ForwarderHomeFragmentBinding::bind)
     private val vm: ForwarderHostViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
     private lateinit var mLogAdapter: LogListItemAdapter
