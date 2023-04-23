@@ -8,19 +8,19 @@
     <io.github.rosemoe.sora.widget.CodeEditor
         android:id="@+id/editor"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <!--    <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <com.github.jing332.tts_server_android.ui.systts.base.MySymbolInputView
+            android:id="@+id/symbol_input"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp" />
 
-            <io.github.rosemoe.sora.widget.SymbolInputView
-                android:id="@+id/symbol_input"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp" />
-
-        </HorizontalScrollView>-->
+    </HorizontalScrollView>
 
 
 </LinearLayout>

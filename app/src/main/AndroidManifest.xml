@@ -79,18 +79,15 @@
             android:label="@string/edit_read_rule" />
         <activity
             android:name=".ui.systts.direct_upload.DirectUploadSettingsActivity"
-            android:configChanges="locale|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout"
             android:label="@string/direct_link_settings"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.ExoPlayerActivity"
             android:exported="false"
             android:label="@string/exo_player_title" />
         <activity
             android:name=".ui.systts.plugin.PluginEditorActivity"
-            android:exported="false"
-            android:label=""
+            android:exported="true"
             android:theme="@style/Theme.TtsServer.NoActionBar" />
         <activity
             android:name=".ui.systts.plugin.PluginManagerActivity"

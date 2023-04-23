@@ -69,12 +69,12 @@ abstract class BaseImportConfigBottomSheetFragment(
     protected val waitDialog by lazy { WaitDialog(requireContext()) }
 
     fun setTopContentView(view: View) {
-        binding.content.removeAllViews()
-        binding.content.addView(view)
+        binding.container.removeAllViews()
+        binding.container.addView(view)
     }
 
     val contentView: View
-        get() = binding.content
+        get() = binding.container
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -30,7 +30,7 @@
             android:layout_height="wrap_content">
 
             <FrameLayout
-                android:id="@+id/content"
+                android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
                 android:textAppearance="?attr/textAppearanceTitleLarge"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/content" />
+                app:layout_constraintTop_toBottomOf="@id/container" />
 
             <HorizontalScrollView
                 android:id="@+id/sv_group_source"

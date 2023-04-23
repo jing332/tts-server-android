@@ -2,18 +2,21 @@ package com.github.jing332.tts_server_android.ui.systts.base
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
+import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuCompat
 import androidx.lifecycle.lifecycleScope
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.constant.KeyConst
@@ -24,7 +27,7 @@ import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
-import com.github.jing332.tts_server_android.ui.base.BackActivity
+import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
@@ -34,19 +37,59 @@ import io.github.rosemoe.sora.widget.CodeEditor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-abstract class BaseScriptEditorActivity : BackActivity() {
+abstract class BaseScriptEditorActivity :
+    AppBackActivity(R.layout.systts_base_script_editor_activity) {
+    companion object {
+        private val symbolMap by lazy {
+            linkedMapOf(
+                "TAB" to "\t",
+                "=" to "=",
+                ">" to ">",
+                "{" to "{",
+                "}" to "}",
+                "(" to "(",
+                ")" to ")",
+                "," to ",",
+                "." to ".",
+                ";" to ";",
+                "'" to "'",
+                "\"" to "\"",
+                "?" to "?",
+                "+" to "+",
+                "-" to "-",
+                "*" to "*",
+                "/" to "/",
+            )
+        }
+    }
+
     private lateinit var fileSaver: ActivityResultLauncher<FilePickerActivity.IRequestData>
     private lateinit var mEditorHelper: CodeEditorHelper
-    private val baseBinding by lazy { SysttsBaseScriptEditorActivityBinding.inflate(layoutInflater) }
+    private val baseBinding by viewBinding(
+        SysttsBaseScriptEditorActivityBinding::bind
+    ) { contentView }
+
     private val vm: BaseScriptEditorViewModel by viewModels()
 
     private var savedData: ByteArray? = null
 
     val editor: CodeEditor by lazy { baseBinding.editor }
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(baseBinding.root)
+
+        // 设置 configChanges
+        val configChanges = listOf(
+            ActivityInfo.CONFIG_ORIENTATION,
+            ActivityInfo.CONFIG_KEYBOARD_HIDDEN,
+            ActivityInfo.CONFIG_SCREEN_SIZE,
+            ActivityInfo.CONFIG_UI_MODE
+        ).fold(0) { acc, i -> acc or i }
+        requestedOrientation = configChanges
+
+        // 设置 windowSoftInputMode
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         fileSaver = registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
         }
@@ -55,13 +98,10 @@ abstract class BaseScriptEditorActivity : BackActivity() {
         mEditorHelper.initEditor()
         mEditorHelper.setTheme(ScriptEditorConfig.codeEditorTheme)
 
-//        val sym = SymbolInputView(this)
-//        sym.bindEditor(editor)
-//        sym.addSymbols(
-//            arrayOf(
-//                "->", "{", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/"
-//            ), arrayOf("\t", "{}", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/")
-//        )
+        baseBinding.symbolInput.bindEditor(baseBinding.editor)
+        baseBinding.symbolInput.addSymbols(
+            symbolMap.keys.toTypedArray(), symbolMap.values.toTypedArray()
+        )
 
         editor.isWordwrap = ScriptEditorConfig.isCodeEditorWordWrapEnabled
         editor.nonPrintablePaintingFlags =

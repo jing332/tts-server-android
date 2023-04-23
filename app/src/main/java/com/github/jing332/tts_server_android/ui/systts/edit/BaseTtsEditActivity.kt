@@ -73,8 +73,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) :
     }
 
     fun setEditContentView(view: View?, testTil: TextInputLayout? = null) {
-        binding.content.removeAllViews()
-        binding.content.addView(view)
+        super.setContentView(view)
         if (basicEditView.liteModeEnabled) return
 
         this.testInputLayout = testTil

@@ -47,12 +47,13 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
             plugin = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: Plugin(),
             defaultCode = resources.assets.open("defaultData/plugin-azure.js").readAllText()
         )
+        title = vm.pluginInfo.name
 
         vm.codeLiveData.observe(this) {
             editor.setText(it)
         }
 
-        vm.displayLoggerLiveData.observeNoSticky(this){
+        vm.displayLoggerLiveData.observeNoSticky(this) {
             displayDebugBottomSheet()
         }
     }

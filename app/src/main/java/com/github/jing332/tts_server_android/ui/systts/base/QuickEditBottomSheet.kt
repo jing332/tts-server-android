@@ -60,8 +60,8 @@ class QuickEditBottomSheet @JvmOverloads constructor(
 //    }
 
     private fun setContent(view: View) {
-        binding.content.removeAllViews()
-        binding.content.addView(view)
+        binding.container.removeAllViews()
+        binding.container.addView(view)
     }
 
 

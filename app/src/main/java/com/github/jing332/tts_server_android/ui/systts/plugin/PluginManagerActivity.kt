@@ -14,6 +14,8 @@ import androidx.core.view.MenuCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.internal.findRootView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.listener.ItemDifferCallback
@@ -27,6 +29,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
+import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.replace.GroupModel
@@ -39,9 +42,12 @@ import com.google.android.material.badge.ExperimentalBadgeUtils
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
-class PluginManagerActivity : BackActivity() {
-    val binding by lazy { SysttsPluginManagerActivityBinding.inflate(layoutInflater) }
-    val vm: PluginManagerViewModel by viewModels()
+class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_activity) {
+    private val binding by viewBinding(
+        vbFactory = SysttsPluginManagerActivityBinding::bind,
+        viewProvider = { contentView }
+    )
+    private val vm: PluginManagerViewModel by viewModels()
 
     @Suppress("DEPRECATION")
     private val startForResult =
@@ -56,7 +62,7 @@ class PluginManagerActivity : BackActivity() {
     @ExperimentalBadgeUtils
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        com.google.android.material.R.id.action_bar_container
 
         val brv = binding.rv.linear().setup {
             addType<PluginModel>(R.layout.systts_plguin_list_item)
