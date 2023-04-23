@@ -11,15 +11,20 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.databinding.WebPageFragmentBinding
-import com.github.jing332.tts_server_android.utils.toast
+import com.github.jing332.tts_server_android.utils.addOnBackPressed
+import com.github.jing332.tts_server_android.utils.longToast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 abstract class AbsForwarderWebPageFragment(val startedAction: String) :
     Fragment(R.layout.web_page_fragment) {
     private val binding by viewBinding(WebPageFragmentBinding::bind)
+    private val vm: ForwarderHostViewModel by viewModels({ requireParentFragment() })
+
     val webView: WebView get() = binding.webView
     private val mReceiver = MyReceiver()
 
@@ -32,13 +37,56 @@ abstract class AbsForwarderWebPageFragment(val startedAction: String) :
 
         AppConst.localBroadcast.registerReceiver(mReceiver, IntentFilter(startedAction))
 
+        requireActivity().addOnBackPressed(viewLifecycleOwner) {
+            onBackKeyDown()
+        }
+
         binding.swipeRefresh.setOnRefreshListener {
             binding.webView.reload()
         }
         binding.webView.settings.javaScriptEnabled = true
         binding.webView.settings.domStorageEnabled = true
 
-        binding.webView.webChromeClient = WebChromeClient()
+        binding.webView.webChromeClient = object : WebChromeClient() {
+            override fun onJsAlert(
+                view: WebView?,
+                url: String?,
+                message: String?,
+                result: JsResult?
+            ): Boolean {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setIcon(R.drawable.ic_baseline_info_24)
+                    .setTitle(url.toString())
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        result?.confirm()
+                    }
+                    .show()
+                return true
+            }
+
+            override fun onJsConfirm(
+                view: WebView?,
+                url: String?,
+                message: String?,
+                result: JsResult?
+            ): Boolean {
+                if (result == null) return false
+
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(url.toString())
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        result.confirm()
+                    }
+                    .setNegativeButton(R.string.cancel) { _, _ ->
+                        result.cancel()
+                    }
+                    .show()
+                return true
+            }
+        }
+
         binding.webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 binding.swipeRefresh.isRefreshing = false
@@ -55,7 +103,7 @@ abstract class AbsForwarderWebPageFragment(val startedAction: String) :
                         return true
                     }
                 }.onFailure {
-                    toast("跳转APP失败！")
+                    longToast("跳转APP失败: ${request?.url}")
                 }
 
                 return super.shouldOverrideUrlLoading(view, request)
@@ -84,15 +132,18 @@ abstract class AbsForwarderWebPageFragment(val startedAction: String) :
         }
     }
 
-    fun onBackKeyDown(): Boolean {
+    private fun onBackKeyDown(): Boolean {
         if (binding.webView.canGoBack()) {
             binding.webView.goBack()
+            return true
+        }
+        if (vm.viewPageIndexLiveData.value != 0) {
+            vm.viewPageIndexLiveData.value = 0
             return true
         }
 
         return false
     }
-
 
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {

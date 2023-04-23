@@ -28,6 +28,10 @@ abstract class AbsForwarderHostFragment : MenuHostFragment(R.layout.ms_tts_forwa
             onSwitchChanged(it)
         }
 
+        vm.viewPageIndexLiveData.observeNoSticky(viewLifecycleOwner) {
+            binding.viewPager.setCurrentItem(it, true)
+        }
+
         binding.viewPager.reduceDragSensitivity(8)
         binding.viewPager.adapter = FragmentAdapter(this)
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -38,8 +42,8 @@ abstract class AbsForwarderHostFragment : MenuHostFragment(R.layout.ms_tts_forwa
         })
         binding.bnv.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.menu_serverLog -> binding.viewPager.setCurrentItem(0, true)
-                R.id.menu_serverWeb -> binding.viewPager.setCurrentItem(1, true)
+                R.id.menu_serverLog -> vm.viewPageIndexLiveData.value = 0
+                R.id.menu_serverWeb -> vm.viewPageIndexLiveData.value = 1
             }
             true
         }

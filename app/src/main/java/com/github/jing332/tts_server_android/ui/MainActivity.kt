@@ -111,6 +111,24 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
         }
 
         importConfigFromIntent(intent)
+
+        addBackPressedCallback()
+    }
+
+    private fun addBackPressedCallback() {
+        var lastBackDownTime = 0L
+        addOnBackPressed(this) {
+            SystemClock.elapsedRealtime().let {
+                if (it - lastBackDownTime <= 1500) {
+                    finish()
+                } else {
+                    toast(getString(R.string.app_down_again_to_exit))
+                    lastBackDownTime = it
+                    return@addOnBackPressed true
+                }
+            }
+            false
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -208,23 +226,6 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
         return super.onPrepareOptionsMenu(menu)
-    }
-
-
-    private var lastBackDownTime = 0L
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK)
-            SystemClock.elapsedRealtime().let {
-                if (it - lastBackDownTime <= 1500) {
-                    finish()
-                } else {
-                    toast(getString(R.string.app_down_again_to_exit))
-                    lastBackDownTime = it
-                }
-                return true
-            }
-
-        return false
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -5,4 +5,5 @@ import androidx.lifecycle.ViewModel
 
 class ForwarderHostViewModel : ViewModel() {
     val switchStateLiveData = MutableLiveData<Boolean>()
+    val viewPageIndexLiveData = MutableLiveData<Int>()
 }
