@@ -337,7 +337,7 @@ let cnLocales = {
     "unfriendly": "不友好",
 }
 
-let isZh = java.util.Locale.getDefault().getLanguage() === 'zh'
+let isZh = java.util.Locale.getDefault().getLanguage() == 'zh'
 
 function getString(key) {
     if (isZh) {

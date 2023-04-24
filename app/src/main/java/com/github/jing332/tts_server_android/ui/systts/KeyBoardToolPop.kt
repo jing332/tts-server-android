@@ -2,9 +2,20 @@ package com.github.jing332.tts_server_android.ui.systts
 
 import android.content.Context
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.*
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.PopupWindow
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.ui.view.Attr
+import com.github.jing332.tts_server_android.ui.view.Attr.colorOnBackground
+import com.github.jing332.tts_server_android.ui.view.Attr.selectableItemBackground
 import com.github.jing332.tts_server_android.utils.windowSize
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -14,33 +25,21 @@ import kotlin.math.abs
 class KeyBoardToolPop(
     val context: Context,
     private val rootView: View,
-    private val customView: View? = null,
+    customView: View? = null,
 ) :
-    PopupWindow(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT),
+    PopupWindow(
+        customView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+    ),
     ViewTreeObserver.OnGlobalLayoutListener {
 
     private var mIsSoftKeyBoardShowing: Boolean = false
-    private val rv by lazy { RecyclerView(context) }
-    private val chipGroup by lazy { ChipGroup(context) }
 
     init {
-        if (customView == null) {
-            contentView = chipGroup
-            chipGroup.addView(Chip(context).apply { text = "12222" })
-        } else {
-            contentView = customView
-        }
-
-//        contentView.layoutParams = ViewGroup.LayoutParams(
-//            ViewGroup.LayoutParams.MATCH_PARENT,
-//            100.dp
-//        )
-
-
         isTouchable = true
         isOutsideTouchable = false
         isFocusable = false
         inputMethodMode = INPUT_METHOD_NEEDED // 避免遮盖输入法
+        setBackgroundDrawable(ContextCompat.getDrawable(context, context.colorOnBackground))
     }
 
     fun attachToWindow(window: Window) {

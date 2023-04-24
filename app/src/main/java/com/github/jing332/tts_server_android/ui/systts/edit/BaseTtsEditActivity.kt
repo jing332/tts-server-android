@@ -20,14 +20,16 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 import java.io.InputStream
 
-open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) :
-    AppBackActivity(R.layout.systts_base_edit_activity) {
+open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : BackActivity() {
     companion object {
         const val KEY_DATA = "KEY_DATA"
         const val KEY_BASIC_VISIBLE = "KEY_BASIC_VISIBLE"
     }
 
-    private val binding by viewBinding(SysttsBaseEditActivityBinding::bind) { contentView }
+    private val binding by lazy {
+        SysttsBaseEditActivityBinding.inflate(layoutInflater)
+    }
+
 
     private var mAudioPlayer: AudioPlayer? = null
 
@@ -63,6 +65,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(binding.root)
 
         val visible = intent.getBooleanExtra(KEY_BASIC_VISIBLE, true)
         binding.basicEdit.visibility = if (visible) View.VISIBLE else View.GONE

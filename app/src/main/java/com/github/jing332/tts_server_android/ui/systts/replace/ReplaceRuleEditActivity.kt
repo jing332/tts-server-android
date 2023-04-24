@@ -1,24 +1,34 @@
 package com.github.jing332.tts_server_android.ui.systts.replace
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.PopupWindow
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
+import androidx.core.widget.PopupWindowCompat
 import androidx.core.widget.addTextChangedListener
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
+import com.github.jing332.tts_server_android.databinding.SysttsReplaceSymPopBinding
+import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.base.BackActivity
+import com.github.jing332.tts_server_android.ui.systts.KeyBoardToolPop
+import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.utils.dp
@@ -29,10 +39,8 @@ import java.lang.Integer.max
 
 
 @Suppress("DEPRECATION")
-class ReplaceRuleEditActivity : BackActivity() {
-    val binding: SysttsReplaceEditActivityBinding by lazy {
-        SysttsReplaceEditActivityBinding.inflate(layoutInflater)
-    }
+class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_activity) {
+    private val binding by viewBinding(SysttsReplaceEditActivityBinding::bind) { contentView }
     private val vm: ReplaceRuleEditViewModel by viewModels()
 
     private val pinyinList by lazy {
@@ -68,7 +76,6 @@ class ReplaceRuleEditActivity : BackActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
 
         data = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: ReplaceRule()
 
@@ -111,6 +118,19 @@ class ReplaceRuleEditActivity : BackActivity() {
             etPattern.setText(data.pattern)
             etReplacement.setText(data.replacement)
         }
+
+
+        // 设置 configChanges
+        val configChanges = listOf(
+            ActivityInfo.CONFIG_ORIENTATION,
+            ActivityInfo.CONFIG_KEYBOARD_HIDDEN,
+            ActivityInfo.CONFIG_SCREEN_SIZE,
+            ActivityInfo.CONFIG_UI_MODE
+        ).fold(0) { acc, i -> acc or i }
+        requestedOrientation = configChanges
+
+        // 设置 windowSoftInputMode
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 
     private fun displayPinyinDialog() {
@@ -155,7 +175,7 @@ class ReplaceRuleEditActivity : BackActivity() {
         val isRegex = binding.switchIsRegex.isChecked
 
         val result =
-            vm.test(text, pattern, replacement, isRegex).ifEmpty { getString(R.string.none) }
+            vm.test(text, pattern, replacement, isRegex).ifBlank { getString(R.string.none) }
         binding.tvResult.text = result
     }
 
