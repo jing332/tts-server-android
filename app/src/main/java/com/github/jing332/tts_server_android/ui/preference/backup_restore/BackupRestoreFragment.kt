@@ -11,7 +11,7 @@ import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
-import com.github.jing332.tts_server_android.ui.view.Attr.colorOnBackground
+import com.github.jing332.tts_server_android.ui.view.Attributes.colorOnBackground
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog

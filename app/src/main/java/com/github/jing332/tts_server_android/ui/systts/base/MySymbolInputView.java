@@ -30,7 +30,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
-import com.github.jing332.tts_server_android.ui.view.Attr;
+import com.github.jing332.tts_server_android.ui.view.Attributes;
 
 import io.github.rosemoe.sora.R;
 import io.github.rosemoe.sora.widget.CodeEditor;
@@ -117,7 +117,7 @@ public class MySymbolInputView extends LinearLayout {
         for (int i = 0; i < count; i++) {
             var btn = new Button(getContext(), null, android.R.attr.buttonStyleSmall);
             btn.setText(display[i]);
-            btn.setBackgroundResource(Attr.INSTANCE.getSelectableItemBackgroundBorderless(getContext()));
+            btn.setBackgroundResource(Attributes.INSTANCE.getSelectableItemBackgroundBorderless(getContext()));
             btn.setTextColor(textColor);
             addView(btn, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
             int finalI = i;

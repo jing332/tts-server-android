@@ -2,23 +2,11 @@ package com.github.jing332.tts_server_android.ui.systts
 
 import android.content.Context
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.view.*
-import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.PopupWindow
-import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.recyclerview.widget.RecyclerView
-import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.ui.view.Attr
-import com.github.jing332.tts_server_android.ui.view.Attr.colorOnBackground
-import com.github.jing332.tts_server_android.ui.view.Attr.selectableItemBackground
+import com.github.jing332.tts_server_android.ui.view.Attributes.colorOnBackground
 import com.github.jing332.tts_server_android.utils.windowSize
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import splitties.systemservices.windowManager
 import kotlin.math.abs
 

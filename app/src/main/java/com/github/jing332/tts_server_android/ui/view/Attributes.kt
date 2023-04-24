@@ -3,7 +3,7 @@ package com.github.jing332.tts_server_android.ui.view
 import android.content.Context
 import android.util.TypedValue
 
-object Attr {
+object Attributes {
     fun Context.colorAttr(resId: Int): Int {
         val typedValue = TypedValue()
         this.theme.resolveAttribute(

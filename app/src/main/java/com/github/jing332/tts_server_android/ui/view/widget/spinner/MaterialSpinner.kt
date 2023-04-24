@@ -5,19 +5,19 @@ import android.content.Context
 import android.graphics.Typeface
 import android.text.InputType
 import android.util.AttributeSet
+import android.view.View
 import android.view.accessibility.AccessibilityManager
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.*
 import androidx.core.widget.addTextChangedListener
-import androidx.recyclerview.widget.DividerItemDecoration
-import com.drake.brv.utils.divider
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.MaterialSpinnerDialogBinding
 import com.github.jing332.tts_server_android.databinding.MaterialSpinnerDialogItemBinding
-import com.github.jing332.tts_server_android.ui.view.Attr.colorAttr
-import com.github.jing332.tts_server_android.ui.view.Attr.selectableItemBackground
+import com.github.jing332.tts_server_android.ui.view.Attributes.colorAttr
+import com.github.jing332.tts_server_android.ui.view.Attributes.selectableItemBackground
 import com.github.jing332.tts_server_android.utils.clickWithThrottle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -107,11 +107,26 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
             val brv = rv.linear().setup {
                 addType<DialogItemModel>(R.layout.material_spinner_dialog_item)
                 onCreate {
-                    itemView.clickWithThrottle {
-                        val model = getModel<DialogItemModel>()
-                        selectedPosition = model.position
-                        super.getOnItemClickListener()?.onItemClick(null, it, selectedPosition, -1)
-                        dlg.dismiss()
+                    getBinding<MaterialSpinnerDialogItemBinding>().apply {
+                        card.clickWithThrottle {
+                            val model = getModel<DialogItemModel>()
+                            selectedPosition = model.position
+                            super.getOnItemClickListener()
+                                ?.onItemClick(null, it, selectedPosition, -1)
+                            dlg.dismiss()
+                        }
+
+                        card.accessibilityDelegate = object : AccessibilityDelegate() {
+                            override fun onInitializeAccessibilityNodeInfo(
+                                host: View,
+                                info: AccessibilityNodeInfo
+                            ) {
+                                super.onInitializeAccessibilityNodeInfo(host, info)
+                                info.isClickable = true
+                                info.isCheckable = true
+                                info.isChecked = getModel<DialogItemModel>().isChecked
+                            }
+                        }
                     }
                 }
 
@@ -123,10 +138,11 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
                         text1.setTypeface(
                             null, if (model.isChecked) Typeface.BOLD else Typeface.NORMAL
                         )
+
                         if (model.isChecked)
-                            itemView.setBackgroundColor(colorHighLight)
+                            layout.setBackgroundColor(colorHighLight)
                         else
-                            itemView.setBackgroundResource(context.selectableItemBackground)
+                            layout.setBackgroundResource(context.selectableItemBackground)
                     }
                 }
             }

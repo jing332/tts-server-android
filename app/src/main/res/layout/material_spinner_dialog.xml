@@ -16,7 +16,8 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:singleLine="true" />
     </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
