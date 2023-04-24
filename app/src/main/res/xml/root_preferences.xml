@@ -11,7 +11,11 @@
             android:icon="@drawable/baseline_upload_24"
             android:key="@string/key_direct_link_settings"
             android:title="@string/direct_link_settings" />
-
+        <ListPreference
+            android:icon="@drawable/ic_baseline_file_open_24"
+            android:key="@string/key_file_picker_mode"
+            android:persistent="false"
+            android:title="@string/file_picker_mode" />
         <ListPreference
             android:dialogMessage="@string/app_language_update_warn"
             android:icon="@drawable/ic_web"
@@ -26,11 +30,7 @@
             android:summary="@string/check_update_summary"
             android:title="@string/auto_check_update" />
 
-        <ListPreference
-            android:icon="@drawable/ic_baseline_file_open_24"
-            android:key="@string/key_file_picker_mode"
-            android:persistent="false"
-            android:title="@string/file_picker_mode" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_title_global_edge">
