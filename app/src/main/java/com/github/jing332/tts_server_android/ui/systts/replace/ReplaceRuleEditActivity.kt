@@ -23,7 +23,9 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
+import com.github.jing332.tts_server_android.help.config.ReplaceRuleConfig
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
+import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.utils.dp
@@ -130,21 +132,33 @@ class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_act
             )
     }
 
-    private fun initKeyBoardToolTip() {
-        val chars =
-            listOf("(", ")", "[", "]", "|", "\\", "/", "{", "}", "^", "$", ".", "*", "+", "?")
-        for (char in chars) {
-            binding.chipGroup.addView(
-                Chip(
-                    this, null,
-                    com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated
-                ).apply {
-                    text = char
-                    setTypeface(null, Typeface.BOLD)
-                    setOnClickListener { insertCharToCurrentEditText(char) }
-                })
-        }
+    private fun addClipGroup(text: String, onClick: () -> Unit) {
+        binding.chipGroup.addView(
+            Chip(
+                this, null,
+                com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated
+            ).apply {
+                this.text = text
+                setTypeface(null, Typeface.BOLD)
+                setOnClickListener { onClick.invoke() }
+            })
+    }
 
+    private fun updateSymbolClipGroup() {
+        binding.chipGroup.removeAllViews()
+        val symbols = ReplaceRuleConfig.symbols.split("\n")
+        for (char in symbols) {
+            addClipGroup(char) {
+                insertCharToCurrentEditText(char)
+            }
+        }
+        addClipGroup("自定义") {
+            displayCustomSymbolDialog()
+        }
+    }
+
+    private fun initKeyBoardToolTip() {
+        updateSymbolClipGroup()
         val keyBoardHelper = KeyBoardHelper(binding.root)
         keyBoardHelper.attachToWindow(window)
         keyBoardHelper.callback = object : KeyBoardHelper.Callback {
@@ -156,7 +170,22 @@ class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_act
                 binding.chipGroup.isGone = true
             }
         }
+    }
 
+    private fun displayCustomSymbolDialog() {
+        AppDialogs.displayInputDialog(
+            this,
+            "自定义符号",
+            "一行一个，为空使用默认符号。",
+            ReplaceRuleConfig.symbols
+        ) {
+            if (it.isBlank())
+                ReplaceRuleConfig.symbols = ReplaceRuleConfig.defSymbols
+            else
+                ReplaceRuleConfig.symbols = it
+
+            updateSymbolClipGroup()
+        }
     }
 
     private fun displayPinyinDialog() {
