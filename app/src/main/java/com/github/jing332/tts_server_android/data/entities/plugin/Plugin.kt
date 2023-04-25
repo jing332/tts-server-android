@@ -32,6 +32,7 @@ data class Plugin(
     @ColumnInfo(name = "defVars", defaultValue = "{}")
     var defVars: Map<String, Map<String, String>> = mutableMapOf(),
 
+
     @ColumnInfo(defaultValue = "{}")
     var userVars: MutableMap<String, String> = mutableMapOf(),
 

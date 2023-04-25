@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityBackBinding
 
-@Deprecated("Use {AppBackActivity} instead")
+/**
+ * 带behavior
+ */
 open class BackActivity : AppCompatActivity() {
     protected val rootBinding: ActivityBackBinding by lazy {
         ActivityBackBinding.inflate(

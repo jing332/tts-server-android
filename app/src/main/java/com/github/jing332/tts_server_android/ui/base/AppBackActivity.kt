@@ -10,7 +10,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.AppBackActivityBinding
 
 /**
- * 一个自定义的Activity，用于实现返回按钮
+ * 不带behavior， 解决CoordinatorLayout的fitSystemWindows无效问题
  *
  * ViewBinding的使用: by viewBinding(xxxBinding::bind){contentView}
  *@param layoutId 布局ID

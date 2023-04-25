@@ -77,11 +77,12 @@ android {
             splits.density.enable = false
         }
     }
-
     packagingOptions {
-        exclude "META-INF/INDEX.LIST"
-        exclude "META-INF/*.md"
+        resources {
+            excludes += ['META-INF/INDEX.LIST', 'META-INF/*.md']
+        }
     }
+
 
     // 分别打包APK 原版 和 dev共存版
     flavorDimensions += "version"
