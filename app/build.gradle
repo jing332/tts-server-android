@@ -30,7 +30,7 @@ android {
             def foundLocales = new StringBuilder()
             foundLocales.append("new String[]{")
 
-            fileTree("src/main/res").visit { FileVisitDetails details ->
+            fileTree("src/main/res").visit { details ->
                 if (details.file.path.endsWith("strings.xml")) {
                     def path = details.file.parent.replaceAll('\\\\', "/")
                     def languageCode = path.tokenize('/').last().replaceAll('values-', '').replaceAll('-r', '-')
@@ -107,15 +107,15 @@ android {
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
 
     kotlin {
-        jvmToolchain(11)
+        jvmToolchain(17)
     }
 
     // 修改apk文件名
