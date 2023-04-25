@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.replace
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Menu
@@ -10,12 +9,12 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.PopupWindow
-import android.widget.TextView
+import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
-import androidx.core.widget.PopupWindowCompat
 import androidx.core.widget.addTextChangedListener
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
@@ -24,11 +23,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
-import com.github.jing332.tts_server_android.databinding.SysttsReplaceSymPopBinding
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
-import com.github.jing332.tts_server_android.ui.base.BackActivity
-import com.github.jing332.tts_server_android.ui.systts.KeyBoardToolPop
-import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.utils.dp
@@ -40,7 +35,7 @@ import java.lang.Integer.max
 
 @Suppress("DEPRECATION")
 class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_activity) {
-    private val binding by viewBinding(SysttsReplaceEditActivityBinding::bind) { contentView }
+    private val binding by viewBinding(SysttsReplaceEditActivityBinding::bind)
     private val vm: ReplaceRuleEditViewModel by viewModels()
 
     private val pinyinList by lazy {
@@ -97,8 +92,12 @@ class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_act
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        binding.tilPattern.setEndIconOnClickListener { displayPinyinDialog() }
-        binding.tilReplacement.setEndIconOnClickListener { displayPinyinDialog() }
+        binding.tilPattern.setEndIconOnClickListener {
+            displayPinyinDialog()
+        }
+        binding.tilReplacement.setEndIconOnClickListener {
+            displayPinyinDialog()
+        }
 
         binding.etPattern.addTextChangedListener {
             if (!binding.switchIsRegex.isChecked) {
@@ -119,18 +118,45 @@ class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_act
             etReplacement.setText(data.replacement)
         }
 
-
-        // 设置 configChanges
-        val configChanges = listOf(
-            ActivityInfo.CONFIG_ORIENTATION,
-            ActivityInfo.CONFIG_KEYBOARD_HIDDEN,
-            ActivityInfo.CONFIG_SCREEN_SIZE,
-            ActivityInfo.CONFIG_UI_MODE
-        ).fold(0) { acc, i -> acc or i }
-        requestedOrientation = configChanges
-
-        // 设置 windowSoftInputMode
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        initKeyBoardToolTip()
+    }
+
+    private fun insertCharToCurrentEditText(char: String) {
+        val currentFocusView = currentFocus
+        if (currentFocusView is EditText)
+            currentFocusView.editableText.insert(
+                currentFocusView.selectionStart, char
+            )
+    }
+
+    private fun initKeyBoardToolTip() {
+        val chars =
+            listOf("(", ")", "[", "]", "|", "\\", "/", "{", "}", "^", "$", ".", "*", "+", "?")
+        for (char in chars) {
+            binding.chipGroup.addView(
+                Chip(
+                    this, null,
+                    com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated
+                ).apply {
+                    text = char
+                    setTypeface(null, Typeface.BOLD)
+                    setOnClickListener { insertCharToCurrentEditText(char) }
+                })
+        }
+
+        val keyBoardHelper = KeyBoardHelper(binding.root)
+        keyBoardHelper.attachToWindow(window)
+        keyBoardHelper.callback = object : KeyBoardHelper.Callback {
+            override fun onShow() {
+                binding.chipGroup.isVisible = true
+            }
+
+            override fun onDismiss() {
+                binding.chipGroup.isGone = true
+            }
+        }
+
     }
 
     private fun displayPinyinDialog() {
@@ -154,16 +180,7 @@ class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_act
             chipGroup.addView(chipItem)
             chipItem.setOnClickListener {
                 dlg.dismiss()
-                val char = py[0].toString()
-                if (binding.etPattern.hasFocus()) {
-                    binding.etPattern.apply {
-                        text?.insert(selectionStart, char)
-                    }
-                } else if (binding.etReplacement.hasFocus()) {
-                    binding.etReplacement.apply {
-                        text?.insert(selectionStart, char)
-                    }
-                }
+                insertCharToCurrentEditText(py[0].toString())
             }
         }
     }

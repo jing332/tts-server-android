@@ -169,9 +169,9 @@
             android:theme="@style/Theme.TtsServer.NoActionBar" />
         <activity
             android:name=".ui.systts.replace.ReplaceRuleEditActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|uiMode"
             android:label="@string/title_activity_replace_edit"
-            android:windowSoftInputMode="adjustResize" />
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TtsServer.NoActionBar" />
         <activity
             android:name=".ui.forwarder.ms.ScSwitchActivity"
             android:taskAffinity="sc.switch"

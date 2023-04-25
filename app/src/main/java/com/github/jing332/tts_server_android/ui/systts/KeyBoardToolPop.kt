@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.ui.view.Attributes.colorOnBackground
+import com.github.jing332.tts_server_android.utils.dp
 import com.github.jing332.tts_server_android.utils.windowSize
 import splitties.systemservices.windowManager
 import kotlin.math.abs
@@ -14,11 +15,11 @@ class KeyBoardToolPop(
     val context: Context,
     private val rootView: View,
     customView: View? = null,
-) :
-    PopupWindow(
-        customView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
-    ),
-    ViewTreeObserver.OnGlobalLayoutListener {
+) : PopupWindow(
+    customView,
+    ViewGroup.LayoutParams.MATCH_PARENT,
+    ViewGroup.LayoutParams.WRAP_CONTENT
+), ViewTreeObserver.OnGlobalLayoutListener {
 
     private var mIsSoftKeyBoardShowing: Boolean = false
 
@@ -27,7 +28,7 @@ class KeyBoardToolPop(
         isOutsideTouchable = false
         isFocusable = false
         inputMethodMode = INPUT_METHOD_NEEDED // 避免遮盖输入法
-        setBackgroundDrawable(ContextCompat.getDrawable(context, context.colorOnBackground))
+//        setBackgroundDrawable(ContextCompat.getDrawable(context, context.colorOnBackground))
     }
 
     fun attachToWindow(window: Window) {

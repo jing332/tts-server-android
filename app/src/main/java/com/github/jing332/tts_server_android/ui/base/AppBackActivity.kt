@@ -35,6 +35,9 @@ open class AppBackActivity(@LayoutRes val layoutId: Int) :
     protected val contentView: View
         get() = binding.container.getChildAt(0)
 
+    protected val rootView: View
+        get() = binding.root
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
