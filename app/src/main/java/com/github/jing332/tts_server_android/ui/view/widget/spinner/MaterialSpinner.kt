@@ -2,27 +2,15 @@ package com.github.jing332.tts_server_android.ui.view.widget.spinner
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Typeface
 import android.text.InputType
 import android.util.AttributeSet
-import android.view.View
 import android.view.accessibility.AccessibilityManager
-import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.*
-import androidx.core.widget.addTextChangedListener
-import com.drake.brv.utils.linear
-import com.drake.brv.utils.setup
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.MaterialSpinnerDialogBinding
-import com.github.jing332.tts_server_android.databinding.MaterialSpinnerDialogItemBinding
-import com.github.jing332.tts_server_android.ui.view.Attributes.colorAttr
-import com.github.jing332.tts_server_android.ui.view.Attributes.selectableItemBackground
-import com.github.jing332.tts_server_android.utils.clickWithThrottle
+import com.github.jing332.tts_server_android.ui.view.widget.AppMaterialDialogBuilder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
-import me.zhanghai.android.fastscroll.FastScrollerBuilder
-import splitties.systemservices.layoutInflater
 
 
 @SuppressLint("DiscouragedPrivateApi")
@@ -82,87 +70,26 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         } else {
             super.showDropDown()
             listSelection = selectedPosition
-
         }
     }
 
-
     private fun displayChooseDialog(items: List<SpinnerItem>) {
-        val dlgBinding = MaterialSpinnerDialogBinding.inflate(layoutInflater)
-        val dlg = MaterialAlertDialogBuilder(context)
+        AppMaterialDialogBuilder(context)
             .setTitle(hint)
             .apply {
                 if (items.isEmpty()) setMessage(R.string.empty_list)
             }
-            .setView(dlgBinding.root)
-            .setOnDismissListener {
-                updateCurrentPositionText()
+            .setSingleChoiceItems(
+                items.map { it.displayText }.toTypedArray(),
+                selectedPosition
+            ) { dlg, which ->
+                selectedPosition = which
+                super.getOnItemClickListener()?.onItemClick(null, null, which, -1)
+                dlg.dismiss()
             }
-            .setPositiveButton(R.string.cancel, null)
+            .setOnDismissListener { updateCurrentPositionText() }
+            .setPositiveButton(android.R.string.cancel, null)
             .show()
-
-        dlgBinding.apply {
-            FastScrollerBuilder(rv).build()
-
-            val brv = rv.linear().setup {
-                addType<DialogItemModel>(R.layout.material_spinner_dialog_item)
-                onCreate {
-                    getBinding<MaterialSpinnerDialogItemBinding>().apply {
-                        card.clickWithThrottle {
-                            val model = getModel<DialogItemModel>()
-                            selectedPosition = model.position
-                            super.getOnItemClickListener()
-                                ?.onItemClick(null, it, selectedPosition, -1)
-                            dlg.dismiss()
-                        }
-
-                        card.accessibilityDelegate = object : AccessibilityDelegate() {
-                            override fun onInitializeAccessibilityNodeInfo(
-                                host: View,
-                                info: AccessibilityNodeInfo
-                            ) {
-                                super.onInitializeAccessibilityNodeInfo(host, info)
-                                info.isClickable = true
-                                info.isCheckable = true
-                                info.isChecked = getModel<DialogItemModel>().isChecked
-                            }
-                        }
-                    }
-                }
-
-                val colorHighLight =
-                    context.colorAttr(com.google.android.material.R.attr.colorControlHighlight)
-                onBind {
-                    getBinding<MaterialSpinnerDialogItemBinding>().apply {
-                        val model = getModel<DialogItemModel>()
-                        text1.setTypeface(
-                            null, if (model.isChecked) Typeface.BOLD else Typeface.NORMAL
-                        )
-
-                        if (model.isChecked)
-                            layout.setBackgroundColor(colorHighLight)
-                        else
-                            layout.setBackgroundResource(context.selectableItemBackground)
-                    }
-                }
-            }
-
-            val fullModels = items.mapIndexed { index, item ->
-                DialogItemModel(
-                    text = item.displayText,
-                    isChecked = index == selectedPosition,
-                    position = index
-                )
-            }
-
-            brv.models = fullModels
-            rv.scrollToPosition(selectedPosition)
-
-            tilFilter.editText?.addTextChangedListener { editable ->
-                brv.models =
-                    fullModels.filter { it.text.contains(editable.toString().trim(), true) }
-            }
-        }
     }
 
     override fun getAdapter(): BaseMaterialSpinnerAdapter<*>? {

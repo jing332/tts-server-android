@@ -26,6 +26,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:layout_weight="1"
+        android:scrollbarSize="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </LinearLayout>

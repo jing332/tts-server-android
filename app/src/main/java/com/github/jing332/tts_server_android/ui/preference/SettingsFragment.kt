@@ -3,12 +3,10 @@ package com.github.jing332.tts_server_android.ui.preference
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.widget.ArrayAdapter
+import android.widget.AdapterView
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.TextView
 import androidx.annotation.StringRes
-import androidx.core.view.setPadding
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -22,6 +20,7 @@ import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.preference.backup_restore.BackupRestoreActivity
 import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
+import com.github.jing332.tts_server_android.ui.view.ListChooseView
 import com.github.jing332.tts_server_android.utils.dp
 import com.github.jing332.tts_server_android.utils.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -30,7 +29,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         private const val TAG = "SettingsFragment"
-        const val ACTION_RELOAD = "com.github.jing332.tts_server_android.action.RELOAD"
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -217,26 +215,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     )
                 }
 
-            val listView = ListView(preference.context).apply {
-                adapter = ArrayAdapter(
-                    listView.context,
-                    android.R.layout.simple_list_item_single_choice,
-                    preference.entries
+            val chooseView = ListChooseView(preference.context).apply {
+                isSearchFilterEnabled = false
+                setItems(
+                    preference.entries.map { it.toString() },
+                    preference.findIndexOfValue(preference.value)
                 )
-                divider = null
-
-                choiceMode = ListView.CHOICE_MODE_SINGLE
-                val i = preference.findIndexOfValue(preference.value)
-                setItemChecked(i, true)
-                setSelection(i)
-                setPadding(8.dp)
             }
 
             val layout =
                 LinearLayout(preference.context).apply {
                     orientation = LinearLayout.VERTICAL
                     tvMsg?.let { addView(it) }
-                    addView(listView)
+                    addView(chooseView)
                 }
 
             val dlg = MaterialAlertDialogBuilder(requireContext())
@@ -246,7 +237,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 .setPositiveButton(android.R.string.cancel) { _, _ -> }
                 .show()
 
-            listView.setOnItemClickListener { _, _, position, _ ->
+            chooseView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 val value = preference.entryValues[position].toString()
                 if (preference.callChangeListener(value)) {
                     preference.setValueIndexNoException(preference.findIndexOfValue(value))
@@ -255,7 +246,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
                 dlg.dismiss()
             }
-
         } else
             super.onDisplayPreferenceDialog(preference)
     }
