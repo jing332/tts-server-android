@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.edit.local
 
+import android.content.pm.PackageManager
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,7 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
@@ -18,6 +20,8 @@ import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.utils.runOnIO
 import com.github.jing332.tts_server_android.utils.runOnUI
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.*
 import kotlin.math.max
 
@@ -65,7 +69,11 @@ class LocalTtsViewModel : ViewModel() {
                 viewModelScope.runOnIO {
                     withMain { onStart.invoke() }
 
-                    if (!engineHelper.setEngine(mTts.engine!!)) {
+                    val ok = withTimeoutOrNull(8000) {
+                        engineHelper.setEngine(mTts.engine!!)
+                    } ?: false
+
+                    if (!ok) { // 超时
                         withMain { onDone(false) }
                         return@runOnIO
                     }

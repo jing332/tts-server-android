@@ -3,8 +3,11 @@ package com.github.jing332.tts_server_android.ui.systts.edit.local
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import java.util.*
 
 class TtsEngineHelper(val context: Context, val scope: CoroutineScope) {
@@ -14,37 +17,44 @@ class TtsEngineHelper(val context: Context, val scope: CoroutineScope) {
 
     private var tts: TextToSpeech? = null
 
-    private var engineName: String = ""
 
     /**
-     * return 是否 初始化成功
+     * @return 是否成功
      */
-    suspend fun setEngine(name: String): Boolean {
-        if (engineName != name) {
-            engineName = name
-            shutdown()
+    suspend fun setEngine(name: String): Boolean = coroutineScope {
+        shutdown()
 
-            var status = INIT_STATUS_WAITING
-            tts = TextToSpeech(context, { status = it }, name)
+        var status = INIT_STATUS_WAITING
+        tts = TextToSpeech(context, { status = it }, name)
 
-            for (i in 1..50) { // 5s
-                if (status == TextToSpeech.SUCCESS) break
-                else if (i == 50) return false
-                delay(100)
+        while (isActive) {
+            if (status == TextToSpeech.SUCCESS) break
+            else if (status != INIT_STATUS_WAITING) {
+                tts = null
+                return@coroutineScope false // 初始化失败
             }
 
+            try {
+                delay(100)
+            } catch (_: CancellationException) {
+            }
         }
-        return true
+        if (!isActive) { // 取消了
+            tts = null
+            return@coroutineScope false
+        }
+
+        return@coroutineScope true
     }
 
     fun shutdown() {
         tts?.shutdown()
+        tts = null
     }
-
 
     val voices: List<Voice>
         get() = try {
-            tts!!.voices?.toList()!!
+            tts?.voices?.toList()!!
         } catch (e: NullPointerException) {
             emptyList()
         }

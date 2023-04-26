@@ -39,4 +39,5 @@ object AppConfig : KotprefModel() {
     var fragmentIndex by intPref(0)
 
     var filePickerMode by intPref(FilePickerMode.PROMPT)
+    var spinnerMaxDropDownCount by intPref(20)
 }

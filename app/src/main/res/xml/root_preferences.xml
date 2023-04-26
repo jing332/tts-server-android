@@ -11,6 +11,13 @@
             android:icon="@drawable/baseline_upload_24"
             android:key="@string/key_direct_link_settings"
             android:title="@string/direct_link_settings" />
+
+        <ListPreference
+            android:dialogMessage="@string/spinner_drop_down_max_count_msg"
+            android:icon="@drawable/baseline_menu_24"
+            android:key="@string/key_spinner_max_drop_down_count"
+            android:persistent="false"
+            android:title="@string/spinner_drop_down_max_count" />
         <ListPreference
             android:icon="@drawable/ic_baseline_file_open_24"
             android:key="@string/key_file_picker_mode"

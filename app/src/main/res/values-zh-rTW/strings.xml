@@ -364,7 +364,7 @@
     <string name="import_file_as">导入文件为…</string>
     <string name="systts_no_speech_target_all">⚠️ 缺少{朗读全部}，使用默认！ 请确保开启多语音选项。</string>
     <string name="stream_audio_mode">流式播放音频</string>
-    <string name="stream_audio_mode_summary">开启流式播放(内置TTS不支持)。开启后将无法自动失败重试/备用TTS</string>
+    <string name="stream_audio_mode_summary">即边下边播，对网络稳定性要求高。(开启后将无法自动失败重试/备用TTS)</string>
     <string name="use_exo_decoder">使用ExoPlayer解码器</string>
     <string name="use_exo_decoder_summary">ExoPlayer为谷歌开发的媒体播放器，其兼容性更高。开启后将直接用其内部解码器进行音频解码。</string>
     <string name="plugin_not_define_vars">此插件未定义变量</string>
@@ -382,4 +382,6 @@
     <string name="restore">恢复</string>
     <string name="restore_confirm">从此文件恢复数据？</string>
     <string name="js_file_type_not_recognized">无法识别JS文件类型</string>
+    <string name="spinner_drop_down_max_count">下拉框内容最大数</string>
+    <string name="spinner_drop_down_max_count_msg">当下拉框内容数超过设置值时将以弹出对话框形式显示。</string>
 </resources>

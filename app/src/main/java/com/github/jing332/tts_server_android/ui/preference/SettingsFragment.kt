@@ -53,6 +53,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
+        findPreference<ListPreference>(R.string.key_spinner_max_drop_down_count)!!.apply {
+            entryValues = (0..50).map { "$it" }.toTypedArray()
+            entries = entryValues
+
+            setValue(AppConfig.spinnerMaxDropDownCount.toString(), "20")
+            summary = entry
+            setOnPreferenceChangeListener { _, newValue ->
+                AppConfig.spinnerMaxDropDownCount = newValue.toString().toInt()
+                true
+            }
+        }
+
         findPreference<ListPreference>(R.string.key_file_picker_mode)!!.apply {
             entryValues = (0..2).map { "$it" }.toTypedArray()
             entries = arrayOf(
