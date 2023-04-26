@@ -1,8 +1,11 @@
 package com.github.jing332.tts_server_android.ui.systts
 
 import android.content.Context
+import android.content.Intent
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ui.base.import1.BaseImportConfigBottomSheetFragment
+import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
+import com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleManagerActivity
 
 object ImportConfigFactory {
     val typeList = linkedMapOf(
@@ -24,5 +27,24 @@ object ImportConfigFactory {
             "speechRule" -> com.github.jing332.tts_server_android.ui.systts.speech_rule.ImportConfigBottomSheetFragment()
             else -> null
         }
+    }
+
+    /**
+     * @return 是否识别成功
+     */
+    fun Context.newEditorFromJS(js: String): Boolean {
+        if (js.contains("PluginJS")) {
+            startActivity(Intent(this, PluginManagerActivity::class.java).apply {
+                putExtra("js", js)
+            })
+
+        } else if (js.contains("SpeechRuleJS")) {
+            startActivity(Intent(this, SpeechRuleManagerActivity::class.java).apply {
+                putExtra("js", js)
+            })
+        } else
+            return false
+
+        return true
     }
 }

@@ -110,24 +110,29 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
                     true
                 )
             }
+
             is Type.List -> {
                 encodeJsonAndCopyToTmpZipPath(appDb.systemTtsDao.getSysTtsWithGroups(), "list")
             }
+
             is Type.SpeechRule -> {
                 encodeJsonAndCopyToTmpZipPath(appDb.speechRule.all, "speechRules")
             }
+
             is Type.ReplaceRule -> {
                 encodeJsonAndCopyToTmpZipPath(
                     appDb.replaceRuleDao.allGroupWithReplaceRules(),
                     "replaceRules"
                 )
             }
+
             is Type.IPlugin -> {
                 if (type.includeVars) {
                     encodeJsonAndCopyToTmpZipPath(appDb.pluginDao.all, "plugins")
                 } else {
                     encodeJsonAndCopyToTmpZipPath(appDb.pluginDao.all.map {
                         it.userVars = mutableMapOf()
+                        it
                     }, "plugins")
                 }
             }

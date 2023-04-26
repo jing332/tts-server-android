@@ -42,12 +42,13 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.title = getString(R.string.plugin)
 
         vm.init(
             plugin = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: Plugin(),
             defaultCode = resources.assets.open("defaultData/plugin-azure.js").readAllText()
         )
-        title = vm.pluginInfo.name
+        supportActionBar?.subtitle = vm.pluginInfo.name
 
         vm.codeLiveData.observe(this) {
             editor.setText(it)

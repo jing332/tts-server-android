@@ -393,4 +393,5 @@
     <string name="restore_restart_msg">偏好设置需要重启程序才可生效</string>
     <string name="restore">恢复</string>
     <string name="restore_confirm">从此文件恢复数据？</string>
+    <string name="js_file_type_not_recognized">无法识别JS文件类型</string>
 </resources>

@@ -58,9 +58,7 @@ data class LocalTTS(
 
         init {
             kotlin.runCatching {
-                File(saveDir).apply { deleteRecursively() }
-            }.onFailure {
-                it.printStackTrace()
+                File(saveDir).deleteRecursively()
             }
         }
     }
@@ -192,23 +190,21 @@ data class LocalTTS(
         }
     }
 
-    override suspend fun startPlay(text: String, rate: Int, pitch: Int): Boolean {
+    override suspend fun startPlay(text: String, rate: Int, pitch: Int): Boolean = coroutineScope {
         initEngineIf()
-        return coroutineScope {
-            if (!checkInitAndWait()) return@coroutineScope false
+        if (!checkInitAndWait()) return@coroutineScope false
 
-            waitJob = launch {
-                mTtsEngine?.apply {
-                    speak(
-                        text, TextToSpeech.QUEUE_FLUSH, setEnginePlayParams(this, rate, pitch),
-                        ""
-                    )
-                }
-                awaitCancellation()
-            }.job
-            waitJob?.start()
-            return@coroutineScope true
-        }
+        waitJob = launch {
+            mTtsEngine?.apply {
+                speak(
+                    text, TextToSpeech.QUEUE_FLUSH, setEnginePlayParams(this, rate, pitch),
+                    ""
+                )
+            }
+            awaitCancellation()
+        }.job
+        waitJob?.start()
+        return@coroutineScope true
     }
 
     fun getAudioFile(text: String, rate: Int, pitch: Int = 0): File {

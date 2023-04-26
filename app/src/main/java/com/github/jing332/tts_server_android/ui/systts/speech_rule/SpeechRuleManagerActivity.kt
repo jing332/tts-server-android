@@ -26,6 +26,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsSpeechRuleManager
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
+import com.github.jing332.tts_server_android.ui.systts.plugin.PluginEditorActivity
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginModel
 import com.github.jing332.tts_server_android.ui.systts.replace.GroupModel
 import com.github.jing332.tts_server_android.ui.systts.replace.ItemModel
@@ -53,6 +54,14 @@ class SpeechRuleManagerActivity : BackActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        intent?.getStringExtra("js")?.let { js ->
+            startForResult.launch(
+                Intent(
+                    this,
+                    SpeechRuleEditorActivity::class.java
+                ).apply { putExtra(KeyConst.KEY_DATA, SpeechRule(code = js, name = "New Speech Rule")) })
+        }
 
         brv = binding.rv.linear().setup {
             addType<SpeechRuleModel>(R.layout.systts_speech_rule_item)

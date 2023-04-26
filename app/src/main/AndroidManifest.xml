@@ -148,6 +148,10 @@
                 <data android:pathAdvancedPattern=".*\\.[jJ][sS][oO][nN]" />
                 <data android:pathPattern=".*\\.json" />
                 <data android:pathPattern=".*\\.JSON" />
+
+                <data android:pathAdvancedPattern=".*\\.[jJ][sS]" />
+                <data android:pathPattern=".*\\.js" />
+                <data android:pathPattern=".*\\.JS" />
             </intent-filter>
         </activity>
         <activity

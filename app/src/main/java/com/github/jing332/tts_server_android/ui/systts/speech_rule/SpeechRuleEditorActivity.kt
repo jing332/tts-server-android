@@ -22,6 +22,7 @@ class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.title = getString(R.string.speech_rule)
 
         vm.errorLiveData.observeNoSticky(this) {
             displayErrorDialog(it)
@@ -35,6 +36,9 @@ class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
         }
 
         val rule = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: SpeechRule()
+        if (rule.name.isNotBlank()) supportActionBar?.subtitle = rule.name
+
+
         vm.init(rule, assets.open("defaultData/speech_rule.js").readAllText())
     }
 
@@ -44,7 +48,7 @@ class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
 
     override fun clearCacheFile(): Boolean = true
 
-    override fun onGetSaveFileName(): String = "ttsrv-${vm.speechRule.name}.json"
+    override fun onGetSaveFileName(): String = "ttsrv-${vm.speechRule.name}.js"
 
     override fun onSave(): Parcelable? {
         return if (vm.evalRuleInfo())

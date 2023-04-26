@@ -29,6 +29,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.drake.net.utils.fileName
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ShortCuts
@@ -36,6 +37,7 @@ import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory
+import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory.newEditorFromJS
 import com.github.jing332.tts_server_android.utils.*
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -185,17 +187,30 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
 
     private fun importFileFromIntent(intent: Intent?) {
         if (intent?.data != null) {
-            val list = ImportConfigFactory.localizedTypeList(this).toList()
-            MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.import_file_as)
-                .setItems(list.map { it.second }.toTypedArray()) { _, which ->
-                    val fragment = ImportConfigFactory.createFragment(list[which].first)
-                    fragment?.fileUri = intent.data
-                    fragment?.show(supportFragmentManager, "BaseImportConfigBottomSheetFragment")
-                    intent.data = null
-                }
-                .setPositiveButton(R.string.cancel, null)
-                .show()
+            if (intent.data?.fileName()?.endsWith("js", true) == true) {
+                val txt = intent.data?.readAllText(this)
+                if (txt.isNullOrBlank()) {
+                    longToast(R.string.js_file_type_not_recognized)
+                } else
+                    if (!newEditorFromJS(txt))
+                        longToast(R.string.js_file_type_not_recognized)
+
+            } else {
+                val list = ImportConfigFactory.localizedTypeList(this).toList()
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.import_file_as)
+                    .setItems(list.map { it.second }.toTypedArray()) { _, which ->
+                        val fragment = ImportConfigFactory.createFragment(list[which].first)
+                        fragment?.fileUri = intent.data
+                        fragment?.show(
+                            supportFragmentManager,
+                            "BaseImportConfigBottomSheetFragment"
+                        )
+                        intent.data = null
+                    }
+                    .setPositiveButton(R.string.cancel, null)
+                    .show()
+            }
         }
     }
 

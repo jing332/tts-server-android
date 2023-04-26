@@ -62,7 +62,14 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
     @ExperimentalBadgeUtils
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        com.google.android.material.R.id.action_bar_container
+
+        intent.getStringExtra("js")?.let { js ->
+            startForResult.launch(
+                Intent(
+                    this@PluginManagerActivity,
+                    PluginEditorActivity::class.java
+                ).apply { putExtra(KeyConst.KEY_DATA, Plugin(code = js, name = "New Plugin")) })
+        }
 
         val brv = binding.rv.linear().setup {
             addType<PluginModel>(R.layout.systts_plguin_list_item)

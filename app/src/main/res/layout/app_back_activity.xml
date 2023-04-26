@@ -17,6 +17,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:titleTextAppearance="?attr/textAppearanceTitleLarge"
+            app:subtitleTextAppearance="?attr/textAppearanceLabelSmall"
+            tools:subtitle="SubTitle 子标题"
             tools:title="ToolBar Title" />
     </com.google.android.material.appbar.AppBarLayout>
 
