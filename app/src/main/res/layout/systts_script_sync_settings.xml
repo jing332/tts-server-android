@@ -24,7 +24,7 @@
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceSubtitle2" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout
         android:id="@+id/til_port"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,6 +35,6 @@
             android:layout_height="match_parent"
             android:hint="@string/listen_port"
             android:inputType="number" />
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.github.jing332.tts_server_android.ui.view.widget.AppTextInputLayout>
 
 </LinearLayout>
