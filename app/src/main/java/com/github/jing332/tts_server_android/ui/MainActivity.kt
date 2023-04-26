@@ -118,6 +118,15 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
     private fun addBackPressedCallback() {
         var lastBackDownTime = 0L
         addOnBackPressed(this) {
+            if (navController.currentDestination?.id == R.id.nav_settings) {
+                if (navController.backQueue.isNotEmpty() && navController.popBackStack()) {
+                    binding.navView.setCheckedItem(
+                        navController.currentDestination?.id ?: return@addOnBackPressed true
+                    )
+                    return@addOnBackPressed true
+                }
+            }
+
             SystemClock.elapsedRealtime().let {
                 if (it - lastBackDownTime <= 1500) {
                     finish()
@@ -188,7 +197,6 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
         }
     }
 
-
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
         if (handled) {
@@ -229,9 +237,9 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
 
     @Suppress("DEPRECATION")
     private fun displayAboutDialog() {
