@@ -91,7 +91,7 @@ class EdgeTtsWS : WebSocketListener() {
     ): InputStream = getAudio(generateSSML(text, voice, rate, volume, pitch), format)
 
     suspend fun getAudio(ssml: String, format: String): InputStream = coroutineScope {
-        if (outputStream != null) throw IllegalStateException("上一个请求还未完成")
+        
 
         uuid = UUID.randomUUID().toString(true)
         outputStream = PipedOutputStream()
