@@ -16,7 +16,6 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import okhttp3.internal.wait
 import okio.ByteString
 import java.io.InputStream
 import java.io.PipedInputStream
@@ -91,8 +90,9 @@ class EdgeTtsWS : WebSocketListener() {
         format: String
     ): InputStream = getAudio(generateSSML(text, voice, rate, volume, pitch), format)
 
-
     suspend fun getAudio(ssml: String, format: String): InputStream = coroutineScope {
+        if (outputStream != null) throw IllegalStateException("上一个请求还未完成")
+
         uuid = UUID.randomUUID().toString(true)
         outputStream = PipedOutputStream()
 
@@ -105,6 +105,14 @@ class EdgeTtsWS : WebSocketListener() {
         waitJob?.join() // 等待响应: Path:turn.start
 
         return@coroutineScope PipedInputStream(outputStream)
+    }
+
+    /**
+     * 取消并关闭 Websocket 连接
+     */
+    fun cancelConnect() {
+        ws.cancel()
+        connectStatus = Status.Closed
     }
 
     private val currentISOTime: String

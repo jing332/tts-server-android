@@ -149,9 +149,12 @@ data class MsTTS(
         return s
     }
 
-    @Transient
+    override fun onStop() {
+        if (api == EDGE_OKHTTP) tts.cancelConnect()
+    }
+
     @IgnoredOnParcel
-    private val tts = EdgeTtsWS()
+    private val tts by lazy { EdgeTtsWS() }
 
     override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream {
         return if (api == EDGE_OKHTTP) {

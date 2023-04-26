@@ -1,7 +1,7 @@
 // 请点击保存后在 更多选项按钮(垂直三个点) -> 设置变量 中设置密钥和区域
 // Please set the key and region in "More options" -> "Variables" after clicking save.
 
-let key = ttsrv.userVars['key'] || ''
+let key = ttsrv.userVars['key'] || '默认/Default KEY'
 let region = ttsrv.userVars['region'] || 'eastus'
 
 let format = "audio-24khz-48kbitrate-mono-mp3"
@@ -63,7 +63,7 @@ let PluginJS = {
 }
 
 function escapeXml(s) {
-    return s.replace("'", "&apos;").replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;').replace('/', '').replace('\\', '')
+    return s.replace(/'/g, "&apos;").replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/\//g, '').replace(/\\/g, '');
 }
 
 function checkKeyRegion() {
