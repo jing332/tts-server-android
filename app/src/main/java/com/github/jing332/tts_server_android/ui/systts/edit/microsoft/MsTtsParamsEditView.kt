@@ -47,7 +47,8 @@ class MsTtsParamsEditView @JvmOverloads constructor(
     var formatValue: String = MsTtsAudioFormat.DEFAULT
 
     fun setFormatByApi(@MsTtsApiType api: Int, currentFormat: String? = null) {
-        mFormatItems = MsTtsFormatManger.getFormatsByApiType(api).map { SpinnerItem(it, it) }
+        mFormatItems =
+            MsTtsFormatManger.getFormatsByApiType(MsTtsApiType.EDGE).map { SpinnerItem(it, it) }
         binding.spinnerFormat.setAdapter(MaterialSpinnerAdapter(context, mFormatItems))
 
         val format = currentFormat ?: tts?.format

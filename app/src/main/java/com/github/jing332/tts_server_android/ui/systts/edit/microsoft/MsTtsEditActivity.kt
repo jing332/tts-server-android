@@ -21,6 +21,7 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
     companion object {
         const val TAG = "MsTtsEditActivity"
     }
+
     private val tts by lazy { getTts<MsTTS>() }
     private val binding: SysttsMsEditActivityBinding by lazy {
         SysttsMsEditActivityBinding.inflate(layoutInflater).apply { m = vm }
@@ -67,7 +68,8 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
         // 初始化 注册监听
         vm.init(
             listOf(
-                Pair(getString(R.string.systts_api_edge), R.drawable.ic_ms_edge),
+                Pair(getString(R.string.systts_api_edge) + " (Java-OkHTTP)", 0),
+                Pair(getString(R.string.systts_api_edge) + " (Go-Native)", 0),
             )
         )
 

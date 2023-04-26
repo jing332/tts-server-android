@@ -97,7 +97,12 @@ class MsTtsEditViewModel : ViewModel() {
     fun reloadApiData() {
         viewModelScope.launch(Dispatchers.Default) {
             val spinner = ui.apis
-            mTts.api = spinner.position
+            mTts.api = when (spinner.position) {
+                0 -> MsTtsApiType.EDGE
+                1 -> MsTtsApiType.EDGE_OKHTTP
+                else -> MsTtsApiType.EDGE
+            }
+
             withMain { mCallback?.onStart(mTts.api) }
 
             kotlin.runCatching {

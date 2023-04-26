@@ -8,6 +8,7 @@ import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.CnLocalMap
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
+import com.github.jing332.tts_server_android.constant.MsTtsApiType.Companion.EDGE_OKHTTP
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
@@ -148,14 +149,27 @@ data class MsTTS(
         return s
     }
 
+    @Transient
+    @IgnoredOnParcel
+    private val tts = EdgeTtsWS()
+
     override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream {
-        return ByteArrayInputStream(
-            SysTtsLib.getAudio(
+        return if (api == EDGE_OKHTTP) {
+            tts.getAudio(
                 speakText,
-                this.copy(prosody = prosody.copy(rate = rate, pitch = pitch)),
-                format
+                voiceName,
+                rate,
+                volume,
+                pitch,
+                format.ifBlank { "audio-24khz-48kbitrate-mono-mp3" })
+        } else
+            ByteArrayInputStream(
+                SysTtsLib.getAudio(
+                    speakText,
+                    this.copy(prosody = prosody.copy(rate = rate, pitch = pitch)),
+                    format
+                )
             )
-        )
     }
 
 //    override suspend fun getAudioStream(
