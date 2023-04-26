@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,18 +9,17 @@ import android.text.Html
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.data.CompatSysTtsConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -115,8 +113,12 @@ class SysTtsListFragment : Fragment() {
             )
         }
 
-        val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(MyMenuProvider(), viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        requireActivity().addMenuProvider(
+            MyMenuProvider(),
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
+        )
     }
 
     override fun onDestroy() {
@@ -248,20 +250,22 @@ class SysTtsListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
+        tabLayout.updateLayoutParams {
+            width = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
         tabLayout.visibility = View.VISIBLE
     }
 
     override fun onPause() {
         super.onPause()
         tabLayout.visibility = View.INVISIBLE
-    }
-
-    @SuppressLint("RestrictedApi", "SetTextI18n")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState != null) return
-
-        CompatSysTtsConfig.migrationConfig()
+        // 等待动画结束
+        tabLayout.postDelayed({
+            tabLayout.updateLayoutParams {
+                width = 0
+            }
+        }, 500)
     }
 
     private fun notifyTtsUpdate(isUpdate: Boolean = true) {
@@ -425,6 +429,7 @@ class SysTtsListFragment : Fragment() {
                 addPluginTts(data)
                 true
             }
+
             else -> false
         }
     }
