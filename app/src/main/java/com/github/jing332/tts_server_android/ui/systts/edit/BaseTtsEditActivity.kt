@@ -30,7 +30,6 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
         SysttsBaseEditActivityBinding.inflate(layoutInflater)
     }
 
-
     private var mAudioPlayer: AudioPlayer? = null
 
     suspend fun playAudio(audio: ByteArray) {
@@ -44,6 +43,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
     }
 
     fun stopPlay() {
+        systemTts.tts.onStop()
         mAudioPlayer?.stop()
     }
 

@@ -68,7 +68,7 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
         // 初始化 注册监听
         vm.init(
             listOf(
-                Pair(getString(R.string.systts_api_edge) + " (Java-OkHTTP)", 0),
+                Pair(getString(R.string.systts_api_edge) + " (Java-OkHTTP 支持音频流)", 0),
                 Pair(getString(R.string.systts_api_edge) + " (Go-Native)", 0),
             )
         )
@@ -92,6 +92,7 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
                         audio.size / 1024, sampleRate, mime
                     )
                 )
+                .setPositiveButton(android.R.string.ok, null)
                 .setOnDismissListener { stopPlay() }
                 .show()
             playAudio(audio)
@@ -100,7 +101,7 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.test_failed)
                 .setMessage(err.message)
-
+                .setPositiveButton(android.R.string.ok, null)
                 .show()
         })
     }

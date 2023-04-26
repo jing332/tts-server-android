@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.BR
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
@@ -62,6 +63,9 @@ class PluginTtsEditViewModel(application: Application) : AndroidViewModel(applic
             errMessageLiveData.postValue(it)
             return
         }
+
+        if (tts.locale.isBlank())
+            tts.locale = AppConst.locale.run { "$language-$country" }
 
         ui.locales.position =
             max(0, ui.locales.items.indexOfFirst { it.value.toString() == tts.locale })

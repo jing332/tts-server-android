@@ -237,7 +237,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             }
 
         mConfigMap[target]?.forEach { tts ->
-            sbyList.find { it.speechRule.isTagSame(tts.speechRule).apply { println(this) } }
+            sbyList.find { it.speechRule.isTagSame(tts.speechRule) }
                 ?.let { sbyTts ->
                     Log.i(TAG, "找到备用TTS：$sbyTts")
                     tts.speechRule.standbyTts = sbyTts
@@ -404,7 +404,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     try {
                         audioResult.decodeAudio { onPcmAudio.invoke(it) }
                     } catch (e: Exception) {
-                        throw PlayException(tts = tts, cause = e, message = "流播放下的音频解码失败")
+                        throw PlayException(
+                            tts = tts,
+                            cause = e,
+                            message = "流播放下的音频解码失败"
+                        )
                     } finally {
                         onDone.invoke()
                     }

@@ -75,7 +75,11 @@ class MsTtsEditViewModel : ViewModel() {
         mData = data
         mTts = data.tts as MsTTS
 
-        ui.apis.position = mTts.api
+        ui.apis.position = when (mTts.api) {
+            MsTtsApiType.EDGE_OKHTTP -> 0
+            MsTtsApiType.EDGE -> 1
+            else -> 0
+        }
     }
 
     interface CallBack {
@@ -98,9 +102,9 @@ class MsTtsEditViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.Default) {
             val spinner = ui.apis
             mTts.api = when (spinner.position) {
-                0 -> MsTtsApiType.EDGE
-                1 -> MsTtsApiType.EDGE_OKHTTP
-                else -> MsTtsApiType.EDGE
+                0 -> MsTtsApiType.EDGE_OKHTTP
+                1 -> MsTtsApiType.EDGE
+                else -> MsTtsApiType.EDGE_OKHTTP
             }
 
             withMain { mCallback?.onStart(mTts.api) }

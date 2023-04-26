@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst.KEY_DATA
 import com.github.jing332.tts_server_android.databinding.SysttsLogFragmentBinding
@@ -17,27 +19,17 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService.Com
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.ui.view.adapter.LogListItemAdapter
 
-class SysTtsLogPageFragment : Fragment() {
+class SysTtsLogPageFragment : Fragment(R.layout.systts_log_fragment) {
     companion object {
         const val TAG = "TtsLogFragment"
     }
 
-    private val binding: SysttsLogFragmentBinding by lazy {
-        SysttsLogFragmentBinding.inflate(layoutInflater)
-    }
+    private val binding by viewBinding(SysttsLogFragmentBinding::bind)
     private val logAdapter: LogListItemAdapter by lazy { LogListItemAdapter(isHtmlText = true) }
     private val mReceiver: MyReceiver by lazy { MyReceiver() }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val layoutManager = LinearLayoutManager(requireContext())
         layoutManager.stackFromEnd = true
@@ -57,10 +49,12 @@ class SysTtsLogPageFragment : Fragment() {
     @Suppress("DEPRECATION")
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == ACTION_ON_LOG) {
+            if (intent?.action == ACTION_ON_LOG && view != null) {
                 val log = intent.getParcelableExtra<AppLog>(KEY_DATA) as AppLog
                 val layout = binding.recyclerViewLog.layoutManager as LinearLayoutManager
-                val isBottom = layout.findLastVisibleItemPosition() == layout.itemCount - 1
+                val lastPos = layout.findLastVisibleItemPosition()
+                // 最后5个item之内才滚动
+                val isBottom = lastPos <= layout.itemCount && lastPos >= layout.itemCount - 5
                 logAdapter.append(log)
                 if (isBottom)
                     binding.recyclerViewLog.scrollToPosition(logAdapter.itemCount - 1)

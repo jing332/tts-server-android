@@ -183,7 +183,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             synthesizerJob!!.join()
         }
         callback.done()
-        println("done...................")
+        Log.i(TAG, "done...................")
     }
 
     private fun writeToCallBack(callback: SynthesisCallback, pcmData: ByteArray) {

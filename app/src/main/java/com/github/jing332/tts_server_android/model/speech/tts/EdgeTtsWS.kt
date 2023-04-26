@@ -4,13 +4,19 @@ import android.util.Log
 import cn.hutool.core.lang.UUID
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.model.rhino.core.type.ws.internal.WebSocketException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import okhttp3.internal.wait
 import okio.ByteString
 import java.io.InputStream
 import java.io.PipedInputStream
@@ -36,6 +42,7 @@ class EdgeTtsWS : WebSocketListener() {
 
     private lateinit var ws: WebSocket
     private var uuid: String = ""
+    private var waitJob: Job? = null
 
     var connectStatus: Status = Status.Closed
         private set
@@ -74,7 +81,6 @@ class EdgeTtsWS : WebSocketListener() {
         return@withIO false
     }
 
-
     private var outputStream: PipedOutputStream? = null
     suspend fun getAudio(
         text: String,
@@ -85,22 +91,24 @@ class EdgeTtsWS : WebSocketListener() {
         format: String
     ): InputStream = getAudio(generateSSML(text, voice, rate, volume, pitch), format)
 
-    suspend fun getAudio(ssml: String, format: String): InputStream {
+
+    suspend fun getAudio(ssml: String, format: String): InputStream = coroutineScope {
         uuid = UUID.randomUUID().toString(true)
         outputStream = PipedOutputStream()
 
         if (connectStatus != Status.Opened) connectSync()
 
-
         sendConfig(format)
         sendSSML(ssml)
 
-        return PipedInputStream(outputStream)
+        waitJob = launch { awaitCancellation() }.job
+        waitJob?.join() // 等待响应: Path:turn.start
+
+        return@coroutineScope PipedInputStream(outputStream)
     }
 
     private val currentISOTime: String
         get() = simpleDateFormat.format(System.currentTimeMillis())
-
 
     private fun sendSSML(ssml: String) {
         Log.d(TAG, "sendSSML: $ssml")
@@ -154,6 +162,8 @@ class EdgeTtsWS : WebSocketListener() {
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         Log.w(TAG, "onFailure: $response", t)
         connectStatus = Status.Failure(t, response)
+        outputStream?.close()
+        waitJob?.cancel()
     }
 
     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -173,7 +183,11 @@ class EdgeTtsWS : WebSocketListener() {
             Log.d(TAG, "turn.end")
             outputStream?.close()
             outputStream = null
+        } else if (text.contains("Path:turn.start")) {
+            waitJob?.cancel()
+            waitJob = null
         }
+
     }
 
     sealed class Status {
