@@ -14,4 +14,7 @@ data class PluginModel(
     val subTitle: String
         get() = "${data.author} - v${data.version}"
 
+    val isNeedSetVar: Boolean
+        get() = data.defVars.isNotEmpty() && data.userVars.isEmpty()
+
 }

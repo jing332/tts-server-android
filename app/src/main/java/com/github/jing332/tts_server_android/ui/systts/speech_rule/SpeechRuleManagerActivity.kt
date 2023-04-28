@@ -136,6 +136,8 @@ class SpeechRuleManagerActivity : BackActivity() {
                 override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
                     return (oldItem as SpeechRuleModel).data == (newItem as SpeechRuleModel).data
                 }
+
+                override fun getChangePayload(oldItem: Any, newItem: Any) = true
             }
         }
 

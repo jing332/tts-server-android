@@ -31,6 +31,19 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp">
 
+                <TextView
+                    visible="@{m.needSetVar}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/systts_plugin_please_set_vars"
+                    android:textStyle="bold"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/cb_switch"
                     android:layout_width="wrap_content"

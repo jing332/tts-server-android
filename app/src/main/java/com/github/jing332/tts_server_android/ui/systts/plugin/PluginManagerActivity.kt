@@ -183,6 +183,7 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
                     return (oldItem as PluginModel).data.id == (newItem as PluginModel).data.id
                 }
 
+                override fun getChangePayload(oldItem: Any, newItem: Any) = true
             }
 
         }
