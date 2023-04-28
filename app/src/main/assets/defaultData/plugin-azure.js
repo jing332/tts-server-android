@@ -1,7 +1,7 @@
 // 请点击保存后在 更多选项按钮(垂直三个点) -> 设置变量 中设置密钥和区域
 // Please set the key and region in "More options" -> "Variables" after clicking save.
 
-let key = ttsrv.userVars['key'] || '默认/Default KEY'
+let key = ttsrv.userVars['key'] || 'Default_KEY'
 let region = ttsrv.userVars['region'] || 'eastus'
 
 let format = "audio-24khz-48kbitrate-mono-mp3"
@@ -13,7 +13,7 @@ let PluginJS = {
     "author": "TTS Server",
     "description": "",
     "version": 3,
-    "vars": {
+    "vars": { // 声明变量，再由用户设置。
         key: {label: "密钥 Key"},
         region: {label: "区域 Region", hint: "为空时使用默认'eastus'"},
     },
@@ -63,7 +63,7 @@ let PluginJS = {
 }
 
 function escapeXml(s) {
-    return s.replace(/'/g, "&apos;").replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/\//g, '').replace(/\\/g, '');
+    return s.replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/\//g, '').replace(/\\/g, '');
 }
 
 function checkKeyRegion() {
@@ -85,7 +85,9 @@ function getAudioInternal(ssml, format) {
     let resp = ttsrv.httpPost(ttsUrl, ssml, headers)
     if (resp.code() !== 200) {
         if (resp.code() === 401) {
-            throw "Unauthorized 未授权，请检查密钥与区域是否正确。"
+            throw "401 Unauthorized 未授权，请检查密钥与区域是否正确。"
+        }else if (resp.code() === 403) {
+            throw "403 Forbidden 被禁止，您的Azure账户可能已被禁用。"
         }
 
         throw "音频获取失败: HTTP-" + resp.code()
@@ -292,23 +294,24 @@ let EditorJS = {
 }
 
 let cnLocales = {
+    "narrator": "旁白",
     "girl": "女孩",
     "boy": "男孩",
-    "youngadultfemale": "青年女",
-    "youngadultmale": "青年男",
-    "olderadultfemale": "中年女",
-    "olderadultmale": "中年男",
-    "seniorfemale": "老年女",
-    "seniormale": "老年男",
+    "youngadultfemale": "年轻女性",
+    "youngadultmale": "年轻男性",
+    "olderadultfemale": "年长女性",
+    "olderadultmale": "年长男性",
+    "seniorfemale": "年老女性",
+    "seniormale": "年老男性",
 
-    "advertisement_upbeat": "广告",
+    "advertisement_upbeat": "广告推销",
     "affectionate": "亲切",
-    "angry": "愤怒",
-    "assistant": "助理",
+    "angry": "生气",
+    "assistant": "数字助理",
     "calm": "平静",
-    "chat": "聊天",
-    "cheerful": "快乐",
-    "customerservice": "客服",
+    "chat": "闲聊",
+    "cheerful": "愉快",
+    "customerservice": "客户服务",
     "depressed": "沮丧",
     "disgruntled": "不满",
     "documentary-narration": "纪录片",
@@ -316,7 +319,7 @@ let cnLocales = {
     "empathetic": "同情",
     "envious": "嫉妒",
     "excited": "兴奋",
-    "fearful": "害怕",
+    "fearful": "恐惧",
     "friendly": "友好",
     "gentle": "温柔",
     "hopeful": "希望",
@@ -326,13 +329,13 @@ let cnLocales = {
     "newscast": "新闻",
     "newscast-casual": "新闻-休闲",
     "newscast-formal": "新闻-正式",
-    "poetry-reading": "诗歌",
-    "sad": "伤心",
+    "poetry-reading": "诗歌朗诵",
+    "sad": "悲伤",
     "serious": "严肃",
-    "shouting": "大声",
+    "shouting": "喊叫",
     "sports_commentary": "体育",
     "sports_commentary_excited": "体育-兴奋",
-    "whispering": "低语",
+    "whispering": "耳语",
     "terrified": "恐惧",
     "unfriendly": "不友好",
 }
