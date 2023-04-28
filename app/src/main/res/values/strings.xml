@@ -397,4 +397,5 @@
     <string name="spinner_drop_down_max_count">下拉框内容最大数</string>
     <string name="spinner_drop_down_max_count_msg">当下拉框内容数超过设置值时将以弹出对话框形式显示。</string>
     <string name="systts_plugin_please_set_vars">请单击此处设置变量</string>
+    <string name="clear_log">清空日志</string>
 </resources>
