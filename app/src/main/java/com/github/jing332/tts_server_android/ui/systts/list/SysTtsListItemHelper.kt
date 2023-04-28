@@ -18,7 +18,6 @@ import com.drake.brv.BindingAdapter
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -31,10 +30,6 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.base.QuickEditBottomSheet
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
@@ -92,9 +87,23 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                         if (model.speechTarget == SpeechTarget.BGM) return@setOnLongClickListener true
 
                         if (model.speechTarget == SpeechTarget.CUSTOM_TAG)
-                            model.speechTarget = SpeechTarget.ALL
-                        else
-                            model.speechTarget = SpeechTarget.CUSTOM_TAG
+                            appDb.speechRule.getByRuleId(model.speechRule.tagRuleId)?.let {
+                                val keys = it.tags.keys.toList()
+                                val idx = keys.indexOf(model.speechRule.tag)
+
+                                val newTag = keys.getOrNull(idx + 1)
+                                if (newTag == null) {
+                                    model.speechRule.target = SpeechTarget.ALL
+                                } else {
+                                    model.speechRule.tag = newTag
+                                }
+                            }
+                        else {
+                            appDb.speechRule.getByRuleId(model.speechRule.tagRuleId)?.let {
+                                model.speechRule.target = SpeechTarget.CUSTOM_TAG
+                                model.speechRule.tag = it.tags.keys.first()
+                            }
+                        }
 
                         appDb.systemTtsDao.updateTts(model)
                         notifyTtsUpdate(model.isEnabled)
@@ -213,19 +222,23 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                         edit(model)
                         true
                     }
+
                     R.id.menu_listen -> {
                         listen(model)
                         true
                     }
+
                     R.id.menu_copy_config -> {
                         context.toast(R.string.systts_copied_config)
                         edit(model.copy(id = System.currentTimeMillis()))
                         true
                     }
+
                     R.id.menu_delete -> {
                         delete(model)
                         true
                     }
+
                     else -> {
                         AppConst.localBroadcast.sendBroadcast(Intent(SysTtsListFragment.ACTION_ADD_TTS).apply {
                             putExtra(SysTtsListFragment.KEY_SYSTEM_TTS_DATA, model)

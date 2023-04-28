@@ -31,6 +31,7 @@ import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
+import com.github.jing332.tts_server_android.ui.view.widget.AppMaterialDialogBuilder
 import com.github.jing332.tts_server_android.utils.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.rosemoe.sora.widget.CodeEditor
@@ -126,9 +127,6 @@ abstract class BaseScriptEditorActivity :
                 }
             }
         }
-
-//        val pop = KeyBoardToolPop(this, rootBinding.root, sym)
-//        pop.attachToWindow(window)
     }
 
 
@@ -228,14 +226,14 @@ abstract class BaseScriptEditorActivity :
 
             R.id.menu_theme -> {
                 val maps = linkedMapOf(
-                    CodeEditorTheme.AUTO to "自动",
+                    CodeEditorTheme.AUTO to getString(R.string.follow_system),
                     CodeEditorTheme.QUIET_LIGHT to "Quiet-Light",
                     CodeEditorTheme.SOLARIZED_DRAK to "Solarized-Dark",
                     CodeEditorTheme.DARCULA to "Darcula",
                     CodeEditorTheme.ABYSS to "Abyss"
                 )
                 val items = maps.values
-                MaterialAlertDialogBuilder(this)
+                AppMaterialDialogBuilder(this)
                     .setTitle(R.string.theme)
                     .setSingleChoiceItems(
                         items.toTypedArray(),

@@ -28,10 +28,10 @@ interface SpeechRuleDao {
     fun update(vararg data: SpeechRule)
 
     @Query("SELECT * FROM speech_rules WHERE ruleId = :ruleId AND isEnabled = :isEnabled LIMIT 1")
-    fun getByReadRuleId(ruleId: String, isEnabled: Boolean = true): SpeechRule?
+    fun getByRuleId(ruleId: String, isEnabled: Boolean = true): SpeechRule?
 
-    @Query("SELECT * FROM speech_rules WHERE ruleId = :ruleId")
-    fun getByRuleId(ruleId: String): SpeechRule?
+//    @Query("SELECT * FROM speech_rules WHERE ruleId = :ruleId")
+//    fun getByRuleId(ruleId: String): SpeechRule?
 
     fun insertOrUpdate(vararg args: SpeechRule) {
         for (v in args) {

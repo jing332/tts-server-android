@@ -285,7 +285,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 initAudioFormat(SpeechTarget.CUSTOM_TAG)
                 if (ok) {
                     mConfigMap[SpeechTarget.CUSTOM_TAG]?.getOrNull(0)?.also {
-                        appDb.speechRule.getByReadRuleId(it.speechRule.tagRuleId)?.let { rule ->
+                        appDb.speechRule.getByRuleId(it.speechRule.tagRuleId)?.let { rule ->
                             return@also mSpeechRuleHelper.init(context, rule)
                         }
                         throw ConfigLoadException()

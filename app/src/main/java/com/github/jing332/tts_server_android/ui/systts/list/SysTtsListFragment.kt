@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
@@ -50,7 +51,7 @@ import kotlin.math.min
 
 
 @Suppress("DEPRECATION")
-class SysTtsListFragment : Fragment() {
+class SysTtsListFragment : Fragment(R.layout.systts_list_fragment) {
     companion object {
         const val TAG = "TtsConfigFragment"
         const val ACTION_ADD_TTS = "com.github.jing332.tts_server_android.ui.systts.list.ADD_TTS"
@@ -60,12 +61,12 @@ class SysTtsListFragment : Fragment() {
 
     private val mReceiver by lazy { MyReceiver() }
     private val vm: SysTtsListViewModel by activityViewModels()
-    private val binding: SysttsListFragmentBinding by lazy {
-        SysttsListFragmentBinding.inflate(layoutInflater)
-    }
+    private val binding by viewBinding(SysttsListFragmentBinding::bind)
 
     private lateinit var vpAdapter: GroupPageAdapter
-    private lateinit var tabLayout: TabLayout
+
+    // ToolBar的 分组&全部
+    private val tabLayout: TabLayout by lazy { requireActivity().findViewById(R.id.tabLayout) }
 
     /* EditActivity的返回值 */
     private val startForResult =
@@ -76,16 +77,8 @@ class SysTtsListFragment : Fragment() {
             }
         }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        tabLayout = requireActivity().findViewById(R.id.tabLayout)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState != null) return
 
         AppConst.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_ADD_TTS))
 
@@ -93,15 +86,10 @@ class SysTtsListFragment : Fragment() {
             ListGroupPageFragment(), ListAllPageFragment.newInstance()
         )
         vpAdapter = GroupPageAdapter(this, fragmentList)
-        binding.viewPager.isSaveEnabled = false
         binding.viewPager.adapter = vpAdapter
         binding.viewPager.reduceDragSensitivity(8)
 
-        val tabTitles = listOf(
-            getString(R.string.group),
-            getString(R.string.all),
-        )
-
+        val tabTitles = listOf(getString(R.string.group), getString(R.string.all))
         TabLayoutMediator(tabLayout, binding.viewPager) { tab, pos ->
             tab.text = tabTitles[pos]
         }.attach()
@@ -113,7 +101,6 @@ class SysTtsListFragment : Fragment() {
             )
         }
 
-
         requireActivity().addMenuProvider(
             MyMenuProvider(),
             viewLifecycleOwner,
@@ -121,8 +108,8 @@ class SysTtsListFragment : Fragment() {
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
@@ -212,6 +199,7 @@ class SysTtsListFragment : Fragment() {
 
         override fun onPrepareMenu(menu: Menu) {
             super.onPrepareMenu(menu)
+
             SysTtsConfig.apply {
                 menu.apply {
                     findItem(R.id.menu_switch_multi_voice)?.isChecked = isMultiVoiceEnabled
