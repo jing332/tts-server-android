@@ -6,26 +6,21 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuCompat
-import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -178,7 +173,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
                     return
                 }
 
-                fragment.netUrl = url
+                fragment.remoteUrl = url
                 fragment.show(supportFragmentManager, "ImportConfigBottomSheetFragment")
                 intent.data = null
             }

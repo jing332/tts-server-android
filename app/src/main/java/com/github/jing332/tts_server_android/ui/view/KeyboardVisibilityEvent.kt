@@ -34,11 +34,11 @@ class KeyboardVisibilityEvent(private val rootView: View, var callback: Callback
         val preShowing = mIsSoftKeyBoardShowing
         if (abs(keyboardHeight) > screenHeight / 5) {
             mIsSoftKeyBoardShowing = true // 超过屏幕五分之一则表示弹出了输入法
-            if (!isShowing) callback?.onChanged(true)
+            if (!isShowing) callback.onChanged(true)
         } else {
             mIsSoftKeyBoardShowing = false
             rootView.setPadding(0, 0, 0, 0)
-            if (preShowing) callback?.onChanged(false)
+            if (preShowing) callback.onChanged(false)
         }
     }
 }

@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -110,6 +112,21 @@ fun View.clickWithThrottle(throttleTime: Long = 600L, action: (v: View) -> Unit)
             lastClickTime = SystemClock.elapsedRealtime()
         }
     })
+}
+
+/**
+ * View 是否在屏幕上可见
+ */
+fun View.isVisibleOnScreen(): Boolean {
+    if (!isShown) {
+        return false
+    }
+    val actualPosition = Rect()
+    val isGlobalVisible = getGlobalVisibleRect(actualPosition)
+    val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+    val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+    val screen = Rect(0, 0, screenWidth, screenHeight)
+    return isGlobalVisible && Rect.intersects(actualPosition, screen)
 }
 
 fun ViewPager2.reduceDragSensitivity(f: Int = 4) {

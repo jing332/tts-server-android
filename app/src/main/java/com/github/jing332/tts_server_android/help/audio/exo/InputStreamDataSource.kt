@@ -69,8 +69,6 @@ class InputStreamDataSource(
         try {
             bufferedSource.close()
             inputStream.close()
-        } catch (e: IOException) {
-            throw e
         } finally {
             opened = false
         }

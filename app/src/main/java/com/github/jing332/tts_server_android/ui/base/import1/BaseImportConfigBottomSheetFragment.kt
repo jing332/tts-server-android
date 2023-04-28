@@ -3,7 +3,6 @@ package com.github.jing332.tts_server_android.ui.base.import1
 import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
@@ -12,6 +11,7 @@ import androidx.core.view.setPadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -44,11 +44,9 @@ abstract class BaseImportConfigBottomSheetFragment(
     @StringRes
     protected var title: Int = R.string.import_config,
     var fileUri: Uri? = null,
-    var netUrl: String? = null,
-) :
-    BottomSheetDialogFragment() {
-
-    private val binding by lazy { SysttsBaseImportConfigBottomSheetBinding.inflate(layoutInflater) }
+    var remoteUrl: String? = null,
+) : BottomSheetDialogFragment(R.layout.systts_base_import_config_bottom_sheet) {
+    private val binding by viewBinding(SysttsBaseImportConfigBottomSheetBinding::bind)
 
     companion object {
         const val SRC_CLIPBOARD = 1
@@ -75,12 +73,6 @@ abstract class BaseImportConfigBottomSheetFragment(
 
     val contentView: View
         get() = binding.container
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = binding.root
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return BottomSheetDialog(requireContext(), theme).apply {
@@ -119,7 +111,7 @@ abstract class BaseImportConfigBottomSheetFragment(
             importAction()
         }
 
-        netUrl?.let { url ->
+        remoteUrl?.let { url ->
             binding.groupSource.check(R.id.btn_src_url)
             binding.tilUrl.editText?.setText(url)
             importAction()
