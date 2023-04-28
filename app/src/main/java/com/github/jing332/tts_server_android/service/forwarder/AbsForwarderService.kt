@@ -18,7 +18,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.ui.AppLog
-import com.github.jing332.tts_server_android.ui.LogLevel
+import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.toast
@@ -61,7 +61,7 @@ abstract class AbsForwarderService(
         return Tts_server_lib.getOutboundIP() + ":" + port
     }
 
-    @SuppressLint("WakelockTimeout")
+    @SuppressLint("WakelockTimeout", "UnspecifiedRegisterReceiverFlag")
     override fun onCreate() {
         super.onCreate()
         isRunning = true
@@ -113,7 +113,7 @@ abstract class AbsForwarderService(
         AppConst.localBroadcast.sendBroadcast(intent)
     }
 
-    protected fun sendLog(level: Int, msg: String) {
+    protected fun sendLog(@LogLevel level: Int, msg: String) {
         sendLog(AppLog(level, msg))
     }
 

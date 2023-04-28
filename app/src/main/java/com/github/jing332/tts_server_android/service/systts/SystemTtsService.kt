@@ -30,7 +30,7 @@ import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngin
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
 import com.github.jing332.tts_server_android.service.systts.help.exception.*
 import com.github.jing332.tts_server_android.ui.AppLog
-import com.github.jing332.tts_server_android.ui.LogLevel
+import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_SYS_TTS
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
@@ -448,7 +448,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     private fun logW(msg: String) = sendLog(LogLevel.WARN, msg)
     private fun logE(msg: String) = sendLog(LogLevel.ERROR, msg)
 
-    private fun sendLog(level: Int, msg: String) {
+    private fun sendLog(@LogLevel level: Int, msg: String) {
         Log.d(TAG, "$level, $msg")
         val intent =
             Intent(ACTION_ON_LOG).putExtra(KeyConst.KEY_DATA, AppLog(level, msg))

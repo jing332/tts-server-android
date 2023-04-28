@@ -9,10 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.databinding.SysttsLoggerBottomSheetBinding
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.ui.view.Attributes.colorOnBackground
-import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.utils.setMarginMatchParent
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.channels.Channel

@@ -14,9 +14,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.databinding.ForwarderHomeFragmentBinding
 import com.github.jing332.tts_server_android.ui.AppLog
-import com.github.jing332.tts_server_android.ui.LogLevel
 import com.github.jing332.tts_server_android.ui.view.adapter.LogListItemAdapter
 import com.github.jing332.tts_server_android.utils.clickWithThrottle
 import tts_server_lib.Tts_server_lib

@@ -3,37 +3,18 @@
 package com.github.jing332.tts_server_android.service.forwarder.system
 
 import android.app.*
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.graphics.Color
-import android.os.Build
-import android.os.PowerManager
 import android.speech.tts.TextToSpeech
-import android.util.Log
-import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.constant.KeyConst
-import com.github.jing332.tts_server_android.constant.SystemNotificationConst
+import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.help.LocalTtsEngineHelper
 import com.github.jing332.tts_server_android.help.config.SysTtsForwarderConfig
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
 import com.github.jing332.tts_server_android.service.forwarder.AbsForwarderService
-import com.github.jing332.tts_server_android.ui.AppLog
-import com.github.jing332.tts_server_android.ui.LogLevel
-import com.github.jing332.tts_server_android.ui.MainActivity
-import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_FORWARDER_SYS
-import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
-import com.github.jing332.tts_server_android.utils.ClipboardUtils
-import com.github.jing332.tts_server_android.utils.longToast
-import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import tts_server_lib.SysTtsForwarder
-import tts_server_lib.Tts_server_lib
 
 class SysTtsForwarderService(
     override val port: Int = SysTtsForwarderConfig.port,
@@ -86,7 +67,6 @@ class SysTtsForwarderService(
                         sendLog(LogLevel.WARN, "Canceled: $engine")
                     }
                 }
-
 
                 override fun getAudio(
                     engine: String,
