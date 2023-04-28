@@ -68,7 +68,10 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
                 Intent(
                     this@PluginManagerActivity,
                     PluginEditorActivity::class.java
-                ).apply { putExtra(KeyConst.KEY_DATA, Plugin(code = js, name = "New Plugin")) })
+                ).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra(KeyConst.KEY_DATA, Plugin(code = js, name = "New Plugin"))
+                })
         }
 
         val brv = binding.rv.linear().setup {
@@ -123,7 +126,10 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
                             Intent(
                                 this@PluginManagerActivity,
                                 PluginEditorActivity::class.java
-                            ).apply { putExtra(KeyConst.KEY_DATA, getModel<PluginModel>().data) })
+                            ).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                putExtra(KeyConst.KEY_DATA, getModel<PluginModel>().data)
+                            })
                     }
                     cbSwitch.setOnClickListener {
                         appDb.pluginDao.update(getModel<PluginModel>().data.copy(isEnabled = cbSwitch.isChecked))
@@ -210,7 +216,9 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_add -> {
-                startForResult.launch(Intent(this, PluginEditorActivity::class.java))
+                startForResult.launch(Intent(this, PluginEditorActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                })
             }
 
             R.id.menu_shortcut -> {
@@ -219,7 +227,9 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
                     getString(R.string.plugin_manager),
                     "plugin_manager",
                     R.drawable.ic_plugin,
-                    Intent(this, PluginManagerActivity::class.java)
+                    Intent(this, PluginManagerActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
                 )
             }
 

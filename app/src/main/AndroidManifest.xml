@@ -33,9 +33,6 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
-            android:name=".CrashActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.preference.backup_restore.BackupRestoreActivity"
             android:exported="true"
             android:label="@string/backup_restore">
@@ -72,11 +69,13 @@
         <activity
             android:name=".ui.systts.speech_rule.SpeechRuleManagerActivity"
             android:exported="true"
-            android:label="@string/read_rule_manager" />
+            android:label="@string/read_rule_manager"
+            android:taskAffinity="com.github.jing332.tts_server_android.plugin.speech_rule" />
         <activity
             android:name=".ui.systts.speech_rule.SpeechRuleEditorActivity"
             android:exported="false"
-            android:label="@string/edit_read_rule" />
+            android:label="@string/edit_read_rule"
+            android:taskAffinity="com.github.jing332.tts_server_android.plugin.speech_rule" />
         <activity
             android:name=".ui.systts.direct_upload.DirectUploadSettingsActivity"
             android:label="@string/direct_link_settings"
@@ -88,11 +87,13 @@
         <activity
             android:name=".ui.systts.plugin.PluginEditorActivity"
             android:exported="true"
+            android:taskAffinity="com.github.jing332.tts_server_android.plugin"
             android:theme="@style/Theme.TtsServer.NoActionBar" />
         <activity
             android:name=".ui.systts.plugin.PluginManagerActivity"
             android:exported="true"
-            android:label="@string/plugin_manager" />
+            android:label="@string/plugin_manager"
+            android:taskAffinity="com.github.jing332.tts_server_android.plugin" />
         <activity
             android:name=".ui.systts.edit.plugin.PluginTtsEditActivity"
             android:exported="false"

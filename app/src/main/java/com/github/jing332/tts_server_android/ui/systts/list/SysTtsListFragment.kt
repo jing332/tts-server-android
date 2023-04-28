@@ -167,12 +167,24 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_fragment) {
                 }
 
                 R.id.menu_read_rule_manager -> {
-                    startActivity(Intent(requireContext(), SpeechRuleManagerActivity::class.java))
+                    startActivity(
+                        Intent(
+                            requireContext(),
+                            SpeechRuleManagerActivity::class.java
+                        ).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        })
                     true
                 }
 
                 R.id.menu_plugin_manager -> {
-                    startActivity(Intent(requireContext(), PluginManagerActivity::class.java))
+                    startActivity(
+                        Intent(
+                            requireContext(),
+                            PluginManagerActivity::class.java
+                        ).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        })
                     true
                 }
 
@@ -376,7 +388,13 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_fragment) {
                 if (plugins.isEmpty()) {
                     setMessage(R.string.no_plugins)
                     setPositiveButton(R.string.plugin_manager) { _, _ ->
-                        startActivity(Intent(requireContext(), PluginManagerActivity::class.java))
+                        startActivity(
+                            Intent(
+                                requireContext(),
+                                PluginManagerActivity::class.java
+                            ).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            })
                     }
                 }
             }

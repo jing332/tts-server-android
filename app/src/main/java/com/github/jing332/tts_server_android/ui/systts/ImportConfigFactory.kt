@@ -40,11 +40,13 @@ object ImportConfigFactory {
     fun Context.newEditorFromJS(js: String): Boolean {
         if (js.contains("PluginJS")) {
             startActivity(Intent(this, PluginManagerActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 putExtra("js", js)
             })
 
         } else if (js.contains("SpeechRuleJS")) {
             startActivity(Intent(this, SpeechRuleManagerActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 putExtra("js", js)
             })
         } else

@@ -60,7 +60,12 @@ class SpeechRuleManagerActivity : BackActivity() {
                 Intent(
                     this,
                     SpeechRuleEditorActivity::class.java
-                ).apply { putExtra(KeyConst.KEY_DATA, SpeechRule(code = js, name = "New Speech Rule")) })
+                ).apply {
+                    putExtra(
+                        KeyConst.KEY_DATA,
+                        SpeechRule(code = js, name = "New Speech Rule")
+                    )
+                })
         }
 
         brv = binding.rv.linear().setup {
@@ -87,6 +92,7 @@ class SpeechRuleManagerActivity : BackActivity() {
                             this@SpeechRuleManagerActivity,
                             SpeechRuleEditorActivity::class.java
                         ).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             putExtra(KeyConst.KEY_DATA, model.data)
                         })
                     }
@@ -170,7 +176,9 @@ class SpeechRuleManagerActivity : BackActivity() {
             }
 
             R.id.menu_add -> {
-                startForResult.launch(Intent(this, SpeechRuleEditorActivity::class.java))
+                startForResult.launch(Intent(this, SpeechRuleEditorActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                })
             }
         }
 
