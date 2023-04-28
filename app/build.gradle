@@ -5,7 +5,6 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id("com.google.devtools.ksp")
-
 }
 
 android {
@@ -25,7 +24,8 @@ android {
         }
 
         // 读取strings.xml所在文件夹 获得应用支持的语言
-        task buildTranslationArray {
+        tasks.register('buildTranslationArray') {
+            def defaultCode = "zh-CN"
             def foundLocales = new StringBuilder()
             foundLocales.append("new String[]{")
 
@@ -33,7 +33,7 @@ android {
                 if (details.file.path.endsWith("strings.xml")) {
                     def path = details.file.parent.replaceAll('\\\\', "/")
                     def languageCode = path.tokenize('/').last().replaceAll('values-', '').replaceAll('-r', '-')
-                    languageCode = (languageCode == "values") ? "zh-CN" : languageCode;
+                    languageCode = (languageCode == "values") ? defaultCode : languageCode;
                     foundLocales.append("\"").append(languageCode).append("\"").append(",")
                 }
             }

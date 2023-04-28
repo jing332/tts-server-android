@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.service.systts
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -48,7 +49,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         const val ACTION_UPDATE_REPLACER = "on_replacer_changed"
 
         const val ACTION_NOTIFY_CANCEL = "SYS_TTS_NOTIFY_CANCEL"
-        const val ACTION_KILL_PROCESS = "SYS_TTS_NOTIFY_EXIT_0"
+        const val ACTION_NOTIFY_KILL_PROCESS = "SYS_TTS_NOTIFY_EXIT_0"
         const val NOTIFICATION_CHAN_ID = "system_tts_service"
 
         /**
@@ -69,7 +70,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         TextToSpeechManager(this).also { it.listener = this }
     }
 
-    private val mReceiver: MyReceiver by lazy { MyReceiver() }
+    private val mNotificationReceiver: NotificationReceiver by lazy { NotificationReceiver() }
     private val mLocalReceiver: LocalReceiver by lazy { LocalReceiver() }
 
     private val mScope = CoroutineScope(Job())
@@ -83,12 +84,13 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     // 唤醒锁
     private var mWakeLock: PowerManager.WakeLock? = null
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate() {
         super.onCreate()
 
-        IntentFilter(ACTION_KILL_PROCESS).apply {
+        IntentFilter(ACTION_NOTIFY_KILL_PROCESS).apply {
             addAction(ACTION_NOTIFY_CANCEL)
-            registerReceiver(mReceiver, this)
+            registerReceiver(mNotificationReceiver, this)
         }
 
         AppConst.localBroadcast.registerReceiver(
@@ -105,7 +107,6 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         mWakeLock?.acquire(60 * 20 * 100)
         mWifiLock.acquire()
 
-
         mTtsManager.load()
     }
 
@@ -113,7 +114,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         super.onDestroy()
 
         mTtsManager.destroy()
-        unregisterReceiver(mReceiver)
+        unregisterReceiver(mNotificationReceiver)
         AppConst.localBroadcast.unregisterReceiver(mLocalReceiver)
 
         mWakeLock?.release()
@@ -288,7 +289,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
         val killProcessPendingIntent = PendingIntent.getBroadcast(
             this, 0, Intent(
-                ACTION_KILL_PROCESS
+                ACTION_NOTIFY_KILL_PROCESS
             ), pendingIntentFlags
         )
         val cancelPendingIntent =
@@ -310,10 +311,10 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     }
 
     @Suppress("DEPRECATION")
-    inner class MyReceiver : BroadcastReceiver() {
+    inner class NotificationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_KILL_PROCESS -> { // 通知按钮{结束进程}
+                ACTION_NOTIFY_KILL_PROCESS -> { // 通知按钮{结束进程}
                     stopForeground(true)
                     exitProcess(0)
                 }
@@ -407,7 +408,6 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                 e.printStackTrace()
             }
         }
-
     }
 
     override fun onStartRetry(times: Int) {
