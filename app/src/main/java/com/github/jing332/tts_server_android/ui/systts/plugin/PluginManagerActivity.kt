@@ -29,6 +29,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
+import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
@@ -50,12 +51,14 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
     private val vm: PluginManagerViewModel by viewModels()
 
     @Suppress("DEPRECATION")
-    private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            result.data?.apply {
-                getParcelableExtra<Plugin>(KeyConst.KEY_DATA)?.let {
-                    appDb.pluginDao.insert(it)
-                }
+    private val pluginEditorForResult =
+        registerForActivityResult(
+            AppActivityResultContracts.parcelableDataActivity<Plugin>(
+                PluginEditorActivity::class.java
+            )
+        ) { plugin ->
+            plugin?.let {
+                appDb.pluginDao.insert(it)
             }
         }
 
@@ -64,14 +67,7 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
         super.onCreate(savedInstanceState)
 
         intent.getStringExtra("js")?.let { js ->
-            startForResult.launch(
-                Intent(
-                    this@PluginManagerActivity,
-                    PluginEditorActivity::class.java
-                ).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra(KeyConst.KEY_DATA, Plugin(code = js, name = "New Plugin"))
-                })
+            pluginEditorForResult.launch(Plugin(code = js, name = "New Plugin"))
         }
 
         val brv = binding.rv.linear().setup {
@@ -122,14 +118,7 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
                         }
                     }
                     btnEdit.clickWithThrottle {
-                        startForResult.launch(
-                            Intent(
-                                this@PluginManagerActivity,
-                                PluginEditorActivity::class.java
-                            ).apply {
-                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                putExtra(KeyConst.KEY_DATA, getModel<PluginModel>().data)
-                            })
+                        pluginEditorForResult.launch(getModel<PluginModel>().data)
                     }
                     cbSwitch.setOnClickListener {
                         appDb.pluginDao.update(getModel<PluginModel>().data.copy(isEnabled = cbSwitch.isChecked))
@@ -217,9 +206,7 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_add -> {
-                startForResult.launch(Intent(this, PluginEditorActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                })
+                pluginEditorForResult.launch(null)
             }
 
             R.id.menu_shortcut -> {

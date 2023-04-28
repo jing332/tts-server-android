@@ -23,6 +23,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.databinding.SysttsSpeechRuleItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsSpeechRuleManagerActivityBinding
+import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
@@ -41,31 +42,21 @@ class SpeechRuleManagerActivity : BackActivity() {
 
     private lateinit var brv: BindingAdapter
 
-    @Suppress("DEPRECATION")
-    private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            result?.data?.let { intent ->
-                intent.getParcelableExtra<SpeechRule>(KeyConst.KEY_DATA)?.let {
-                    appDb.speechRule.insert(it)
-                }
-            }
+    private val editorForResult = registerForActivityResult(
+        AppActivityResultContracts.parcelableDataActivity<SpeechRule>(SpeechRuleEditorActivity::class.java)
+    ) { rule ->
+        rule?.let {
+            appDb.speechRule.insert(it)
         }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         intent?.getStringExtra("js")?.let { js ->
-            startForResult.launch(
-                Intent(
-                    this,
-                    SpeechRuleEditorActivity::class.java
-                ).apply {
-                    putExtra(
-                        KeyConst.KEY_DATA,
-                        SpeechRule(code = js, name = "New Speech Rule")
-                    )
-                })
+            editorForResult.launch(SpeechRule(code = js, name = "New Speech Rule"))
         }
 
         brv = binding.rv.linear().setup {
@@ -88,13 +79,7 @@ class SpeechRuleManagerActivity : BackActivity() {
                     }
                     btnEdit.clickWithThrottle {
                         val model = getModel<SpeechRuleModel>()
-                        startForResult.launch(Intent(
-                            this@SpeechRuleManagerActivity,
-                            SpeechRuleEditorActivity::class.java
-                        ).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            putExtra(KeyConst.KEY_DATA, model.data)
-                        })
+                        editorForResult.launch(model.data)
                     }
                     cbSwitch.setOnClickListener {
                         appDb.speechRule.update(getModel<SpeechRuleModel>().data.copy(isEnabled = cbSwitch.isChecked))
@@ -178,9 +163,7 @@ class SpeechRuleManagerActivity : BackActivity() {
             }
 
             R.id.menu_add -> {
-                startForResult.launch(Intent(this, SpeechRuleEditorActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                })
+                editorForResult.launch(null)
             }
         }
 
