@@ -4,6 +4,8 @@ plugins {
     id 'kotlinx-serialization'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -16,13 +18,10 @@ android {
         versionCode 7
         versionName "0.6"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += [
-                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
-                        "room.incremental"     : "true",
-                        "room.expandProjection": "true"]
-            }
+        ksp{
+            arg("room.schemaLocation",  "$projectDir/schemas".toString())
+            arg("room.incremental", "true")
+            arg("room.expandProjection", "true")
         }
 
         // 读取strings.xml所在文件夹 获得应用支持的语言
@@ -153,37 +152,31 @@ dependencies {
     //noinspection GradleDependency
     implementation 'com.google.android.material:material:1.9.0-beta01'
 
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 
-
+    // RecyclerView
     //noinspection GradleDependency
-    implementation 'com.github.liangjingkanji:BRV:1.3.90'
+    implementation 'com.github.liangjingkanji:BRV:1.3.90' // BRV 新版有拖动问题
     implementation "androidx.recyclerview:recyclerview:1.3.0"
     implementation 'me.zhanghai.android.fastscroll:library:1.2.0'
 
     implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.9'
 
-    // 代码编辑器
+    // Code Editor
     implementation 'io.github.Rosemoe.sora-editor:editor:0.21.1'
-    // https://mvnrepository.com/artifact/io.github.Rosemoe.sora-editor/language-textmate
     implementation 'io.github.Rosemoe.sora-editor:language-textmate:0.21.1'
-
-    // https://mvnrepository.com/artifact/cn.hutool/hutool-crypto
-    implementation 'cn.hutool:hutool-crypto:5.8.17'
 
     // Room
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
     androidTestImplementation("androidx.room:room-testing:$room_version")
 
-    // SharedPreference
-    implementation 'com.chibatching.kotpref:kotpref:2.13.2'
 
     // IO & NET
     implementation 'com.squareup.okio:okio:3.3.0'
@@ -193,11 +186,14 @@ dependencies {
     implementation 'me.rosuh:AndroidFilePicker:0.8.3'
     implementation 'com.louiscad.splitties:splitties-systemservices:3.0.0'
 
+    implementation 'com.chibatching.kotpref:kotpref:2.13.2'
+    implementation 'cn.hutool:hutool-crypto:5.8.17'
 
     // Media
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.5'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.6'
 
+    // Logcat (Debug)
     debugImplementation 'com.github.getActivity:Logcat:11.2'
 
     testImplementation 'junit:junit:4.13.2'

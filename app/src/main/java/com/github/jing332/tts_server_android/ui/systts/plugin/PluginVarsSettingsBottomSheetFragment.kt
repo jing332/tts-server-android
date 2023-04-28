@@ -70,9 +70,9 @@ class PluginVarsSettingsBottomSheetFragment : BottomSheetDialogFragment() {
             input.placeholderText = it.value["hint"]
             input.editText?.addTextChangedListener { et ->
                 if (et.isNullOrBlank()) {
-                    plugin!!.userVars.remove(key)
+                    plugin!!.mutableUserVars.remove(key)
                 } else
-                    plugin!!.userVars[key] = et.toString()
+                    plugin!!.mutableUserVars[key] = et.toString()
             }
             input.editText?.setText(plugin!!.userVars.getOrDefault(key, ""))
 

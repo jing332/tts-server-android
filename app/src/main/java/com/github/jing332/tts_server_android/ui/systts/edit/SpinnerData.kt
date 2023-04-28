@@ -6,6 +6,9 @@ import androidx.databinding.Observable
 import com.github.jing332.tts_server_android.BR
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 
+/**
+ * MVVM ViewBinding 直接在ViewModel中操作Spinner下拉框数据
+ */
 class SpinnerData : BaseObservable() {
     // 包装成lambda
     fun addOnPropertyChangedCallback(callback: (sender: Observable?, propertyId: Int) -> Unit) {

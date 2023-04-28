@@ -8,11 +8,16 @@ import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActiv
 import com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleManagerActivity
 
 object ImportConfigFactory {
-    val typeList = linkedMapOf(
-        "list" to R.string.config_list,
-        "plugin" to R.string.plugin,
-        "replaceRule" to R.string.replace_rule,
-        "speechRule" to R.string.speech_rule
+    private const val ID_LIST = "list"
+    private const val ID_PLUGIN = "plugin"
+    private const val ID_REPLACE_RULE = "replaceRule"
+    private const val ID_SPEECH_RULE = "speechRule"
+
+    private val typeList = linkedMapOf(
+        ID_LIST to R.string.config_list,
+        ID_PLUGIN to R.string.plugin,
+        ID_REPLACE_RULE to R.string.replace_rule,
+        ID_SPEECH_RULE to R.string.speech_rule
     )
 
     fun localizedTypeList(context: Context): List<Pair<String, String>> {
@@ -21,10 +26,10 @@ object ImportConfigFactory {
 
     fun createFragment(type: String): BaseImportConfigBottomSheetFragment? {
         return when (type) {
-            "list" -> com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
-            "plugin" -> com.github.jing332.tts_server_android.ui.systts.plugin.ImportBottomSheetFragment()
-            "replaceRule" -> com.github.jing332.tts_server_android.ui.systts.replace.ImportConfigBottomSheetFragment()
-            "speechRule" -> com.github.jing332.tts_server_android.ui.systts.speech_rule.ImportConfigBottomSheetFragment()
+            ID_LIST -> com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
+            ID_PLUGIN -> com.github.jing332.tts_server_android.ui.systts.plugin.ImportBottomSheetFragment()
+            ID_REPLACE_RULE -> com.github.jing332.tts_server_android.ui.systts.replace.ImportConfigBottomSheetFragment()
+            ID_SPEECH_RULE -> com.github.jing332.tts_server_android.ui.systts.speech_rule.ImportConfigBottomSheetFragment()
             else -> null
         }
     }

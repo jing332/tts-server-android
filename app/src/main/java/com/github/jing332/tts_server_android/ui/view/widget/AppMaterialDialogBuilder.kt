@@ -2,13 +2,10 @@ package com.github.jing332.tts_server_android.ui.view.widget
 
 import android.content.Context
 import android.content.DialogInterface
-import android.database.Cursor
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ListAdapter
 import androidx.appcompat.app.AlertDialog
-import com.github.jing332.tts_server_android.ui.view.ListChooseView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class AppMaterialDialogBuilder(context: Context, theme: Int = 0) :

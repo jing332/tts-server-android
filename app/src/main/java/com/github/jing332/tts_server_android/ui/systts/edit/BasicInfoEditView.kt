@@ -285,7 +285,7 @@ class BasicInfoEditView @JvmOverloads constructor(
                                 speechRule.tagData[key] ?: ""
                             )
                             textInput.editText?.addTextChangedListener { txt ->
-                                speechRule.tagData[key] = txt.toString()
+                                speechRule.mutableTagData[key] = txt.toString()
                             }
                             view = textInput
                         } else {
@@ -324,7 +324,7 @@ class BasicInfoEditView @JvmOverloads constructor(
                                         position: Int,
                                         id: Long
                                     ) {
-                                        speechRule.tagData[key] =
+                                        speechRule.mutableTagData[key] =
                                             models.getOrNull(position)?.value?.toString() ?: ""
                                     }
 

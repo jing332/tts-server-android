@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.replace
+package com.github.jing332.tts_server_android.ui.view
 
 import android.graphics.Rect
 import android.view.View
@@ -11,24 +11,18 @@ import kotlin.math.abs
 /**
  * 用于监听软键盘的弹出和隐藏
  */
-class KeyBoardHelper(private val rootView: View) : ViewTreeObserver.OnGlobalLayoutListener {
+class KeyboardVisibilityEvent(private val rootView: View, var callback: Callback) :
+    ViewTreeObserver.OnGlobalLayoutListener {
 
     private var mIsSoftKeyBoardShowing = false
     private var isShowing = false
 
-    interface Callback {
-        fun onShow()
-        fun onDismiss()
+    fun interface Callback {
+        fun onChanged(isVisible: Boolean)
     }
-
-    var callback: Callback? = null
 
     fun attachToWindow(window: Window) {
         window.decorView.viewTreeObserver.addOnGlobalLayoutListener(this)
-//        contentView.measure(
-//            View.MeasureSpec.UNSPECIFIED,
-//            View.MeasureSpec.UNSPECIFIED,
-//        )
     }
 
     override fun onGlobalLayout() {
@@ -40,19 +34,11 @@ class KeyBoardHelper(private val rootView: View) : ViewTreeObserver.OnGlobalLayo
         val preShowing = mIsSoftKeyBoardShowing
         if (abs(keyboardHeight) > screenHeight / 5) {
             mIsSoftKeyBoardShowing = true // 超过屏幕五分之一则表示弹出了输入法
-//            rootView.setPadding(0, 0, 0, contentView.measuredHeight)
-            if (!isShowing)
-                callback?.onShow()
-//                showAtLocation(rootView, Gravity.BOTTOM, 0, 0)
+            if (!isShowing) callback?.onChanged(true)
         } else {
             mIsSoftKeyBoardShowing = false
             rootView.setPadding(0, 0, 0, 0)
-            if (preShowing) {
-                callback?.onDismiss()
-//                dismiss()
-            }
+            if (preShowing) callback?.onChanged(false)
         }
     }
-
-
 }

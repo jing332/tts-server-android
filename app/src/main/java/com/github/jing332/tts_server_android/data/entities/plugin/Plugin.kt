@@ -34,12 +34,15 @@ data class Plugin(
 
 
     @ColumnInfo(defaultValue = "{}")
-    var userVars: MutableMap<String, String> = mutableMapOf(),
+    var userVars: Map<String, String> = mutableMapOf(),
 
     // 索引 排序用
     @ColumnInfo(name = "order", defaultValue = "0")
     var order: Int = 0,
 ) : Parcelable {
+    val mutableUserVars: MutableMap<String, String>
+        get() = userVars as MutableMap<String, String>
+
     override fun toString(): String {
         return "name: $name, pluginId: $pluginId, author: $author, version: $version, isEnabled: $isEnabled"
     }

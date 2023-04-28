@@ -20,7 +20,7 @@ import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.ui.preference.backup_restore.BackupRestoreActivity
 import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
-import com.github.jing332.tts_server_android.ui.view.ListChooseView
+import com.github.jing332.tts_server_android.ui.view.widget.ListChooseView
 import com.github.jing332.tts_server_android.utils.dp
 import com.github.jing332.tts_server_android.utils.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

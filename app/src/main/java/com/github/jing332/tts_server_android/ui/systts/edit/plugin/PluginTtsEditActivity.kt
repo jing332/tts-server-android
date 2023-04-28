@@ -32,6 +32,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         SysttsPluginEditActivityBinding.inflate(layoutInflater).apply { m = vm }
     }
     private val mReceiver by lazy { MyReceiver() }
+    private val mWaitDialog by lazy { WaitDialog(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +41,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         lifecycleScope.launch(Dispatchers.Main) {
             vm.tts = tts
             kotlin.runCatching {
-                waitDialog.show()
+                mWaitDialog.show()
                 withIO { engine.onLoadData() }
                 engine.onLoadUI(this@PluginTtsEditActivity, binding.container)
             }.onFailure {
@@ -49,7 +50,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
             }
             binding.paramsEdit.setData(tts)
             vm.init()
-            waitDialog.dismiss()
+            mWaitDialog.dismiss()
         }
 
         vm.errMessageLiveData.observe(this) {
@@ -64,13 +65,11 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
-    private val waitDialog by lazy { WaitDialog(this) }
-
     override fun onTest(text: String) {
-        waitDialog.show()
+        mWaitDialog.show()
         vm.doTest(text,
             { audio, sampleRate, mime ->
-                waitDialog.dismiss()
+                mWaitDialog.dismiss()
                 MaterialAlertDialogBuilder(this@PluginTtsEditActivity)
                     .setTitle(R.string.systts_test_success)
                     .setMessage(
@@ -80,12 +79,13 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
                             sampleRate,
                             mime
                         )
-                    ).setOnDismissListener { stopPlay() }
+                    )
+                    .setOnDismissListener { stopPlay() }
                     .setPositiveButton(android.R.string.ok, null)
                     .show()
                 playAudio(audio)
             }, { err ->
-                waitDialog.dismiss()
+                mWaitDialog.dismiss()
                 displayErrorDialog(err, getString(R.string.test_failed))
             })
     }
@@ -94,7 +94,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         lifecycleScope.launch(Dispatchers.Main) {
             systemTts.displayName = vm.checkDisplayName(basicEditView.displayName)
             kotlin.runCatching {
-                waitDialog.show()
+                mWaitDialog.show()
                 withIO {
                     tts.audioFormat.sampleRate =
                         engine.getSampleRate(tts.locale, tts.voice) ?: 16000
@@ -110,13 +110,14 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
             }.onSuccess {
                 super.onSave()
             }
-            waitDialog.dismiss()
+            mWaitDialog.dismiss()
         }
     }
 
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            finish()
+            if (intent?.action == ACTION_FINISH)
+                finish()
         }
     }
 }

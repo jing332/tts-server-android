@@ -31,12 +31,15 @@ data class SpeechRuleInfo(
     // 用于存储tag的数据
     // 例: key=role, value=张三
     @ColumnInfo(defaultValue = "")
-    var tagData: MutableMap<String, String> = mutableMapOf(),
+    var tagData: Map<String, String> = mutableMapOf(),
 
     // 用于标识tts配置的唯一性，由脚本处理后将 tag 与 id 返回给程序以找到朗读
     @ColumnInfo(defaultValue = "0")
     var configId: Long = 0L
 ) : Parcelable {
+    val mutableTagData: MutableMap<String, String>
+        get() = tagData as MutableMap<String, String>
+
     @IgnoredOnParcel
     @Ignore
     @Transient
@@ -54,6 +57,6 @@ data class SpeechRuleInfo(
         tag = ""
         tagRuleId = ""
         tagName = ""
-        tagData.clear()
+        mutableTagData.clear()
     }
 }

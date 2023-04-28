@@ -11,7 +11,6 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.EditText
 import androidx.activity.viewModels
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
@@ -26,6 +25,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivi
 import com.github.jing332.tts_server_android.help.config.ReplaceRuleConfig
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.KeyboardVisibilityEvent
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.utils.dp
@@ -159,17 +159,10 @@ class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_act
 
     private fun initKeyBoardToolTip() {
         updateSymbolClipGroup()
-        val keyBoardHelper = KeyBoardHelper(binding.root)
-        keyBoardHelper.attachToWindow(window)
-        keyBoardHelper.callback = object : KeyBoardHelper.Callback {
-            override fun onShow() {
-                binding.chipGroup.isVisible = true
-            }
-
-            override fun onDismiss() {
-                binding.chipGroup.isGone = true
-            }
+        val keyBoardEvent = KeyboardVisibilityEvent(binding.root) {
+            binding.chipGroup.isVisible = it
         }
+        keyBoardEvent.attachToWindow(window)
     }
 
     private fun displayCustomSymbolDialog() {
