@@ -1,11 +1,13 @@
 package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
@@ -16,7 +18,10 @@ import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.base.BackActivity
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initTargetTransition
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import kotlinx.coroutines.launch
 import java.io.InputStream
 
@@ -26,9 +31,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
         const val KEY_BASIC_VISIBLE = "KEY_BASIC_VISIBLE"
     }
 
-    private val binding by lazy {
-        SysttsBaseEditActivityBinding.inflate(layoutInflater)
-    }
+    private val binding by lazy { SysttsBaseEditActivityBinding.inflate(layoutInflater) }
 
     private var mAudioPlayer: AudioPlayer? = null
 
@@ -50,12 +53,13 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
     override fun onDestroy() {
         super.onDestroy()
         mAudioPlayer?.release()
+        systemTts.tts.onDestroy()
     }
 
     open fun onSave() {
         basicEditView.saveData()
         setResult(RESULT_OK, Intent().apply { putExtra(KEY_DATA, systemTts) })
-        finish()
+        finishAfterTransition()
     }
 
     open fun onTest(text: String) {}
@@ -64,7 +68,9 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
     protected val basicEditView: BasicInfoEditView by lazy { binding.basicEdit }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestWindowFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         super.onCreate(savedInstanceState)
+        initTargetTransition()
         setContentView(binding.root)
 
         val visible = intent.getBooleanExtra(KEY_BASIC_VISIBLE, true)

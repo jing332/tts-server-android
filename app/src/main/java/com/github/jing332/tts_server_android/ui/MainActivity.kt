@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.Window
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
@@ -33,10 +34,12 @@ import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBind
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory.newEditorFromJS
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initSourceTransition
 import com.github.jing332.tts_server_android.utils.*
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import splitties.systemservices.powerManager
 import java.util.*
 
@@ -66,8 +69,9 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        initSourceTransition()
 
+        super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 

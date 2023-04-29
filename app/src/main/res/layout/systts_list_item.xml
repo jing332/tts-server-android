@@ -16,7 +16,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:transitionName="@string/key_activity_shared_container_trans">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_view"

@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.CheckBox
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.MenuCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -116,15 +118,23 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                     btnEdit.isGone = AppConfig.isSwapListenAndEditButton
 
                     btnListen.clickWithThrottle { listen(getModel<ItemModel>().data) }
-                    btnEdit.clickWithThrottle { edit(getModel<ItemModel>().data) }
+                    btnEdit.clickWithThrottle { edit(root, getModel<ItemModel>().data) }
                     btnListen.setOnLongClickListener {
-                        edit(getModel<ItemModel>().data)
+                        edit(it, getModel<ItemModel>().data)
                         true
                     }
 
-                    btnMore.clickWithThrottle { displayMoreOptions(it, getModel<ItemModel>().data) }
+                    btnMore.clickWithThrottle {
+                        displayMoreOptions(
+                            root,
+                            getModel<ItemModel>().data
+                        )
+                    }
                     btnMore.setOnLongClickListener {
-                        if (AppConfig.isSwapListenAndEditButton) edit(getModel<ItemModel>().data)
+                        if (AppConfig.isSwapListenAndEditButton) edit(
+                            root,
+                            getModel<ItemModel>().data
+                        )
                         else listen(getModel<ItemModel>().data)
 
                         true
@@ -219,7 +229,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_edit -> {
-                        edit(model)
+                        edit(v, model)
                         true
                     }
 
@@ -230,7 +240,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
 
                     R.id.menu_copy_config -> {
                         context.toast(R.string.systts_copied_config)
-                        edit(model.copy(id = System.currentTimeMillis()))
+                        edit(v.rootView, model.copy(id = System.currentTimeMillis()))
                         true
                     }
 
@@ -337,10 +347,17 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         if (isUpdate) SystemTtsService.notifyUpdateConfig()
     }
 
-    fun edit(data: SystemTts) {
-        startForResult.launch(Intent(context, data.tts.getEditActivity()).apply {
-            putExtra(BaseTtsEditActivity.KEY_DATA, data)
-        })
+    fun edit(v: View, data: SystemTts) {
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            fragment.requireActivity(), v,
+            context.getString(R.string.key_activity_shared_container_trans)
+        )
+        startForResult.launch(
+            Intent(context, data.tts.getEditActivity()).apply {
+                putExtra(BaseTtsEditActivity.KEY_DATA, data)
+            },
+            options
+        )
     }
 
     fun delete(data: SystemTts) {

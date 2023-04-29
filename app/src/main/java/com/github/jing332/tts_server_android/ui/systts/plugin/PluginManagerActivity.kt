@@ -5,16 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewTreeObserver
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.MenuCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import by.kirich1409.viewbindingdelegate.internal.findRootView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
@@ -24,16 +24,15 @@ import com.drake.brv.utils.setup
 import com.drake.net.utils.withDefault
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.databinding.SysttsPlguinListItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsPluginManagerActivityBinding
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
-import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.replace.GroupModel
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initSourceTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.MyTools
 import com.github.jing332.tts_server_android.utils.clickWithThrottle
@@ -62,12 +61,25 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
             }
         }
 
+    private fun startEditor(plugin: Plugin? = null, itemView: View? = null) {
+        if (itemView == null) {
+            pluginEditorForResult.launch(plugin)
+        } else {
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this, itemView,
+                getString(R.string.key_activity_shared_container_trans)
+            )
+            pluginEditorForResult.launch(plugin, options)
+        }
+    }
+
     @ExperimentalBadgeUtils
     override fun onCreate(savedInstanceState: Bundle?) {
+        initSourceTransition()
         super.onCreate(savedInstanceState)
 
         intent.getStringExtra("js")?.let { js ->
-            pluginEditorForResult.launch(Plugin(code = js, name = "New Plugin"))
+            startEditor(Plugin(code = js, name = "New Plugin"))
         }
 
         val brv = binding.rv.linear().setup {
@@ -118,7 +130,7 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
                         }
                     }
                     btnEdit.clickWithThrottle {
-                        pluginEditorForResult.launch(getModel<PluginModel>().data)
+                        startEditor(getModel<PluginModel>().data, root)
                     }
                     cbSwitch.setOnClickListener {
                         appDb.pluginDao.update(getModel<PluginModel>().data.copy(isEnabled = cbSwitch.isChecked))
@@ -206,7 +218,7 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_add -> {
-                pluginEditorForResult.launch(null)
+                startEditor()
             }
 
             R.id.menu_shortcut -> {

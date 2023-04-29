@@ -6,17 +6,20 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.MenuCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.listener.ItemDifferCallback
@@ -37,22 +40,22 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initSourceTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.*
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
-class ReplaceManagerActivity : AppCompatActivity() {
+class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activity) {
     companion object {
         const val TAG = "ReplaceManagerActivity"
     }
 
     private val vm: ReplaceManagerViewModel by viewModels()
-    private val binding: SysttsReplaceActivityBinding by lazy {
-        SysttsReplaceActivityBinding.inflate(layoutInflater)
-    }
+    private val binding by viewBinding(SysttsReplaceActivityBinding::bind)
 
     private lateinit var brv: BindingAdapter
 
@@ -60,11 +63,11 @@ class ReplaceManagerActivity : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
+        initSourceTransition()
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        binding.toolbar.setNavigationOnClickListener { finishAfterTransition() }
 
         brv = binding.recyclerView.linear().setup {
             addType<ItemModel>(R.layout.systts_replace_rule_item)
@@ -116,7 +119,9 @@ class ReplaceManagerActivity : AppCompatActivity() {
                 groupHelper.initGroup(this@setup, this)
 
                 getBindingOrNull<SysttsReplaceRuleItemBinding>()?.apply {
-                    btnEdit.clickWithThrottle { edit(getModel<ItemModel>().data) }
+                    btnEdit.clickWithThrottle {
+                        edit(root, getModel<ItemModel>().data)
+                    }
                     btnMore.clickWithThrottle {
                         displayMoreMenu(it, getModel<ItemModel>().data)
                     }
@@ -297,10 +302,15 @@ class ReplaceManagerActivity : AppCompatActivity() {
         SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)
     }
 
-    private fun edit(data: ReplaceRule) {
+    private fun edit(v: View, data: ReplaceRule) {
         val intent = Intent(this, ReplaceRuleEditActivity::class.java)
         intent.putExtra(KeyConst.KEY_DATA, data)
-        startForResult.launch(intent)
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            this,
+            v,
+            getString(R.string.key_activity_shared_container_trans)
+        )
+        startForResult.launch(intent, options)
     }
 
     private val startForResult = registerForActivityResult(StartActivityForResult()) { result ->

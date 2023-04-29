@@ -1,12 +1,12 @@
 package com.github.jing332.tts_server_android.ui.systts.speech_rule
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.result.contract.ActivityResultContracts
+import android.view.View
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +18,6 @@ import com.drake.brv.utils.setup
 import com.drake.net.utils.withDefault
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
-import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.databinding.SysttsSpeechRuleItemBinding
@@ -27,10 +26,8 @@ import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
-import com.github.jing332.tts_server_android.ui.systts.plugin.PluginEditorActivity
-import com.github.jing332.tts_server_android.ui.systts.plugin.PluginModel
 import com.github.jing332.tts_server_android.ui.systts.replace.GroupModel
-import com.github.jing332.tts_server_android.ui.systts.replace.ItemModel
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initSourceTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.clickWithThrottle
 import kotlinx.coroutines.flow.conflate
@@ -50,13 +47,25 @@ class SpeechRuleManagerActivity : BackActivity() {
         }
     }
 
+    private fun startEditor(rule: SpeechRule? = null, itemView: View? = null) {
+        if (itemView == null) {
+            editorForResult.launch(rule)
+        } else {
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this, itemView,
+                getString(R.string.key_activity_shared_container_trans)
+            )
+            editorForResult.launch(rule, options)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initSourceTransition()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         intent?.getStringExtra("js")?.let { js ->
-            editorForResult.launch(SpeechRule(code = js, name = "New Speech Rule"))
+            startEditor(SpeechRule(code = js, name = "New Speech Rule"))
         }
 
         brv = binding.rv.linear().setup {
@@ -79,7 +88,7 @@ class SpeechRuleManagerActivity : BackActivity() {
                     }
                     btnEdit.clickWithThrottle {
                         val model = getModel<SpeechRuleModel>()
-                        editorForResult.launch(model.data)
+                        startEditor(model.data, root)
                     }
                     cbSwitch.setOnClickListener {
                         appDb.speechRule.update(getModel<SpeechRuleModel>().data.copy(isEnabled = cbSwitch.isChecked))
@@ -162,9 +171,8 @@ class SpeechRuleManagerActivity : BackActivity() {
                 importFragment.show(supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
             }
 
-            R.id.menu_add -> {
-                editorForResult.launch(null)
-            }
+            R.id.menu_add -> startEditor()
+
         }
 
         return super.onOptionsItemSelected(item)

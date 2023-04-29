@@ -12,7 +12,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:transitionName="@string/key_activity_shared_container_trans">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_view"
@@ -36,9 +37,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/systts_plugin_please_set_vars"
-                    android:textStyle="bold"
                     android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:textColor="?attr/colorPrimary"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

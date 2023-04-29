@@ -12,6 +12,8 @@ import com.github.jing332.tts_server_android.utils.setBinder
 
 object AppActivityResultContracts {
 
+
+
     /**
      * 用于传递Parcelable数据
      */

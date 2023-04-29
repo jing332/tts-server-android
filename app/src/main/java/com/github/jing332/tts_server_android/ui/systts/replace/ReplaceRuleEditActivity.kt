@@ -1,11 +1,13 @@
 package com.github.jing332.tts_server_android.ui.systts.replace
 
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -24,6 +26,7 @@ import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGr
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditActivityBinding
 import com.github.jing332.tts_server_android.help.config.ReplaceRuleConfig
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initTargetTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.KeyboardVisibilityEvent
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
@@ -32,6 +35,8 @@ import com.github.jing332.tts_server_android.utils.dp
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import java.lang.Integer.max
 
 
@@ -72,6 +77,8 @@ class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_act
     private lateinit var data: ReplaceRule
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        initTargetTransition()
         super.onCreate(savedInstanceState)
 
         data = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: ReplaceRule()
@@ -242,7 +249,7 @@ class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_act
                 val intent = Intent()
                 intent.putExtra(KeyConst.KEY_DATA, data)
                 setResult(RESULT_OK, intent)
-                finish()
+                finishAfterTransition()
             }
         }
 

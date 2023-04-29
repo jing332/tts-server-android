@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="key_activity_shared_container_trans" translatable="false">shared_element_container</string>
+
     <string name="key_language" translatable="false">language</string>
     <string name="key_spinner_max_drop_down_count" translatable="false">spinnerMaxDropDownCount</string>
     <string name="key_backup_and_restore" translatable="false">backup_restore</string>
