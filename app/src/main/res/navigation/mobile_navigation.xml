@@ -9,7 +9,7 @@
         android:id="@+id/nav_systts"
         android:name="com.github.jing332.tts_server_android.ui.systts.SysTtsHostFragment"
         android:label="@string/system_tts"
-        tools:layout="@layout/systts_fragment" />
+        tools:layout="@layout/systts_host_fragment" />
 
     <fragment
         android:id="@+id/nav_server"

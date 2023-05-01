@@ -1,25 +1,22 @@
 package com.github.jing332.tts_server_android.ui.systts
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.databinding.SysttsFragmentBinding
+import com.github.jing332.tts_server_android.databinding.SysttsHostFragmentBinding
 import com.github.jing332.tts_server_android.ui.systts.list.SysTtsListFragment
 import com.github.jing332.tts_server_android.utils.reduceDragSensitivity
 
 
-class SysTtsHostFragment : Fragment() {
-    private val binding: SysttsFragmentBinding by lazy {
-        SysttsFragmentBinding.inflate(layoutInflater)
-    }
+class SysTtsHostFragment : Fragment(R.layout.systts_host_fragment) {
+    private val binding by viewBinding(SysttsHostFragmentBinding::bind)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.viewPager.isSaveEnabled = false
         binding.viewPager.reduceDragSensitivity(8)
@@ -38,20 +35,11 @@ class SysTtsHostFragment : Fragment() {
             }
             true
         }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
     }
-
-    val listFragment = SysTtsListFragment()
-    val logFragment = SysTtsLogPageFragment()
 
     inner class FragmentAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
-        private val fragmentList = listOf(listFragment, logFragment)
+        private val fragmentList = listOf(SysTtsListFragment(), SysTtsLogPageFragment())
         override fun getItemCount(): Int {
             return fragmentList.size
         }

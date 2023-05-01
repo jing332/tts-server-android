@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.listener.ItemDifferCallback
@@ -32,20 +33,11 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.conflate
 import kotlinx.serialization.encodeToString
 
-class ListGroupPageFragment : Fragment() {
-    val binding: SysttsListCustomGroupFragmentBinding by lazy {
-        SysttsListCustomGroupFragmentBinding.inflate(layoutInflater)
-    }
+class ListGroupPageFragment : Fragment(R.layout.systts_list_custom_group_fragment) {
+    private val binding by viewBinding(SysttsListCustomGroupFragmentBinding::bind)
 
     private lateinit var brv: BindingAdapter
     private val itemHelper = SysTtsListItemHelper(this, hasGroup = true)
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        return binding.root
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
