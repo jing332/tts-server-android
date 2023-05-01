@@ -70,7 +70,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         super.onCreate(savedInstanceState)
-        initTargetTransition()
+        initTargetTransition(binding.root)
         setContentView(binding.root)
 
         val visible = intent.getBooleanExtra(KEY_BASIC_VISIBLE, true)

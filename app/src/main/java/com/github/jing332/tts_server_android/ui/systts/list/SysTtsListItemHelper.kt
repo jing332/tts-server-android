@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -113,7 +112,6 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                         true
                     }
 
-
                     btnListen.isVisible = AppConfig.isSwapListenAndEditButton
                     btnEdit.isGone = AppConfig.isSwapListenAndEditButton
 
@@ -126,8 +124,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
 
                     btnMore.clickWithThrottle {
                         displayMoreOptions(
-                            root,
-                            getModel<ItemModel>().data
+                            root, it, getModel<ItemModel>().data
                         )
                     }
                     btnMore.setOnLongClickListener {
@@ -217,8 +214,8 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         }
     }
 
-    private fun displayMoreOptions(v: View, model: SystemTts) {
-        PopupMenu(context, v).apply {
+    private fun displayMoreOptions(itemView: View, anchorView: View, model: SystemTts) {
+        PopupMenu(context, anchorView).apply {
             menuInflater.inflate(R.menu.sysstts_item_more_options, menu)
             setForceShowIcon(true)
             MenuCompat.setGroupDividerEnabled(menu, true)
@@ -229,7 +226,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_edit -> {
-                        edit(v, model)
+                        edit(itemView, model)
                         true
                     }
 
@@ -240,7 +237,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
 
                     R.id.menu_copy_config -> {
                         context.toast(R.string.systts_copied_config)
-                        edit(v.rootView, model.copy(id = System.currentTimeMillis()))
+                        edit(itemView, model.copy(id = System.currentTimeMillis()))
                         true
                     }
 
@@ -268,7 +265,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         MaterialAlertDialogBuilder(context)
             .setTitle(R.string.warning)
             .setCancelable(false)
-            .setPositiveButton(android.R.string.ok) { _, _ -> }
+            .setPositiveButton(android.R.string.ok, null)
             .setMessage(R.string.systts_please_check_multi_voice_option).create()
     }
 
@@ -347,9 +344,9 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
         if (isUpdate) SystemTtsService.notifyUpdateConfig()
     }
 
-    fun edit(v: View, data: SystemTts) {
+    fun edit(itemView: View, data: SystemTts) {
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-            fragment.requireActivity(), v,
+            fragment.requireActivity(), itemView,
             context.getString(R.string.key_activity_shared_container_trans)
         )
         startForResult.launch(
