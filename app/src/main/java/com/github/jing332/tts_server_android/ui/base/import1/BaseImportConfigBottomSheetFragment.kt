@@ -122,13 +122,12 @@ abstract class BaseImportConfigBottomSheetFragment(
         lifecycleScope.launch(Dispatchers.Main) {
             waitDialog.show()
             val json = try {
-                withIO {
-                    binding.tilFilePath.editText?.tag as? String
-                        ?: readConfig(
-                            sourceType,
-                            binding.tilUrl.editText?.text.toString(),
-                            fileUri,
-                        )
+                withMain {
+                    binding.tilFilePath.editText?.tag as? String ?: readConfig(
+                        sourceType,
+                        binding.tilUrl.editText?.text.toString(),
+                        fileUri,
+                    )
                 }
             } catch (e: Exception) {
                 requireContext().displayErrorDialog(e)

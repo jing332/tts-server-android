@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.os.Bundle
+import android.view.View
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.LegadoHttpTts
 import com.github.jing332.tts_server_android.constant.AppConst
@@ -25,8 +26,11 @@ class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
     }
 
     private val binding by lazy { SysttsListImportBinding.inflate(layoutInflater) }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
         setTopContentView(binding.root)
         binding.groupType.check(binding.btnTypeApp.id)
     }
