@@ -27,7 +27,7 @@ import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.GroupModel
-import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initSourceTransition
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initExitSharedTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.clickWithThrottle
 import kotlinx.coroutines.flow.conflate
@@ -60,7 +60,7 @@ class SpeechRuleManagerActivity : BackActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initSourceTransition()
+        initExitSharedTransition()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 

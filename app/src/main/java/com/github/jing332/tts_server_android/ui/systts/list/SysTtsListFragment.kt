@@ -17,6 +17,9 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withResumed
+import androidx.lifecycle.withStarted
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
@@ -47,6 +50,7 @@ import com.github.jing332.tts_server_android.utils.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.launch
 import kotlin.math.min
 
 
@@ -106,6 +110,7 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_fragment) {
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
         )
+
     }
 
     override fun onDestroyView() {

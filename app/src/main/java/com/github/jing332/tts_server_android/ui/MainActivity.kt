@@ -13,8 +13,8 @@ import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.Window
 import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.MenuCompat
@@ -22,6 +22,7 @@ import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -34,12 +35,11 @@ import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBind
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory.newEditorFromJS
-import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initSourceTransition
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initExitSharedTransition
 import com.github.jing332.tts_server_android.utils.*
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import splitties.systemservices.powerManager
 import java.util.*
 
@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
     NavigationView.OnNavigationItemSelectedListener {
     companion object {
         const val TAG = "MainActivity"
-        const val ACTION_BACK_KEY_DOWN = "ACTION_BACK_KEY_DOWN"
         const val KEY_FRAGMENT_INDEX = "KEY_INDEX"
 
         const val INDEX_SYS_TTS = 0
@@ -68,8 +67,9 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
-        initSourceTransition()
+        initExitSharedTransition()
 
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -102,10 +102,21 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
         val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
         navGraph.setStartDestination(checkedId)
         navController.graph = navGraph
-
-        navHeaderBinding.apply {
-            subtitle.text = BuildConfig.VERSION_NAME
+        // 设置 抽屉导航按钮根据用户侧滑滑动变化
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                binding.appBarMain.toolbar,
+                androidx.navigation.ui.R.string.nav_app_bar_open_drawer_description,
+                androidx.navigation.ui.R.string.nav_app_bar_open_drawer_description
+            ).apply {
+                drawerLayout.setDrawerListener(this)
+                syncState()
+            }
         }
+
+        navHeaderBinding.subtitle.text = BuildConfig.VERSION_NAME
 
         lifecycleScope.runOnIO {
             ShortCuts.buildShortCuts(this)

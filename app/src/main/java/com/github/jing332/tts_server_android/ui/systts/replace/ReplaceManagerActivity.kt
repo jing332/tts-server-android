@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.Window
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
 import androidx.activity.viewModels
@@ -40,11 +39,10 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
-import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initSourceTransition
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initExitSharedTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.*
 import com.google.android.material.checkbox.MaterialCheckBox
-import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
@@ -63,7 +61,7 @@ class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activit
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
-        initSourceTransition()
+        initExitSharedTransition()
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
 

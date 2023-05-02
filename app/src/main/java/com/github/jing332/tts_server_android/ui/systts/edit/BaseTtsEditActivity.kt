@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.edit
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -9,20 +8,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import androidx.lifecycle.lifecycleScope
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.SysttsBaseEditActivityBinding
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
-import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.base.BackActivity
-import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initTargetTransition
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initEnterSharedTransition
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.transition.platform.MaterialContainerTransform
-import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
-import kotlinx.coroutines.launch
 import java.io.InputStream
 
 open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : BackActivity() {
@@ -70,7 +64,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         super.onCreate(savedInstanceState)
-        initTargetTransition(binding.root)
+        initEnterSharedTransition(binding.root)
         setContentView(binding.root)
 
         val visible = intent.getBooleanExtra(KEY_BASIC_VISIBLE, true)

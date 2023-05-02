@@ -67,7 +67,6 @@ class SysTtsLogPageFragment : Fragment(R.layout.systts_log_fragment), MenuProvid
         when (menuItem.itemId) {
             R.id.menu_clear_log -> {
                 mLogHelper?.removeAll()
-
             }
         }
 

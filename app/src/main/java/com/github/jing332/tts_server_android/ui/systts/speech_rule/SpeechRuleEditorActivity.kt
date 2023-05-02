@@ -12,7 +12,7 @@ import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.help.config.SpeechRuleConfig
 import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
-import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initTargetTransition
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initEnterSharedTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
@@ -25,7 +25,7 @@ class SpeechRuleEditorActivity : BaseScriptEditorActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         super.onCreate(savedInstanceState)
-        initTargetTransition()
+        initEnterSharedTransition()
         supportActionBar?.title = getString(R.string.speech_rule)
 
         vm.errorLiveData.observeNoSticky(this) {

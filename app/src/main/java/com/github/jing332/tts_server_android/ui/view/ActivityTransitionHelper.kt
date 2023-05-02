@@ -1,21 +1,18 @@
 package com.github.jing332.tts_server_android.ui.view
 
 import android.app.Activity
-import android.graphics.Color
 import android.view.View
 import android.view.Window
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.ui.view.Attributes.colorAttr
-import com.github.jing332.tts_server_android.ui.view.Attributes.colorOnBackground
 import com.github.jing332.tts_server_android.ui.view.Attributes.colorSurface
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 
 object ActivityTransitionHelper {
     /**
-     * startActivity() 的 Activity 初始化
+     * 回退动画
      */
-    fun Activity.initSourceTransition(requestFeature: Int = Window.FEATURE_ACTIVITY_TRANSITIONS) {
+    fun Activity.initExitSharedTransition(requestFeature: Int = Window.FEATURE_ACTIVITY_TRANSITIONS) {
         window.requestFeature(requestFeature)
         setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         window.sharedElementsUseOverlay = false
@@ -24,7 +21,7 @@ object ActivityTransitionHelper {
     /**
      * 目标 的 Activity
      */
-    fun Activity.initTargetTransition(view: View = findViewById(android.R.id.content)) {
+    fun Activity.initEnterSharedTransition(view: View = findViewById(android.R.id.content)) {
         view.transitionName = getString(R.string.key_activity_shared_container_trans)
         // 附加共享元素回调，以便接收来自 StartActivity 的共享元素
         setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())

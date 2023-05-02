@@ -21,7 +21,7 @@ import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
-import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initTargetTransition
+import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initEnterSharedTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
@@ -45,7 +45,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         super.onCreate(savedInstanceState)
-        initTargetTransition()
+        initEnterSharedTransition()
         supportActionBar?.title = getString(R.string.plugin)
 
         vm.init(
