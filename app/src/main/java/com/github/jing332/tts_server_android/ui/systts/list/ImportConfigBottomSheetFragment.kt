@@ -10,7 +10,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.CompatSystemTt
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
-import com.github.jing332.tts_server_android.databinding.SysttsListImportBinding
+import com.github.jing332.tts_server_android.databinding.SysttsConfigImportBinding
 import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.speech.tts.HttpTTS
 import com.github.jing332.tts_server_android.ui.base.import1.BaseImportConfigBottomSheetFragment
@@ -25,11 +25,10 @@ class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
         const val TAG = "ConfigImportBottomSheetFragment"
     }
 
-    private val binding by lazy { SysttsListImportBinding.inflate(layoutInflater) }
+    private val binding by lazy { SysttsConfigImportBinding.inflate(layoutInflater) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         setTopContentView(binding.root)
         binding.groupType.check(binding.btnTypeApp.id)

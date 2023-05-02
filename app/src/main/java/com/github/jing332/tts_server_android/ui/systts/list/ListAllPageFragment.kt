@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.drake.brv.annotaion.ItemOrientation
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.linear
@@ -14,14 +15,14 @@ import com.drake.brv.utils.setup
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.databinding.SysttsListSimpleGroupFragmentBinding
+import com.github.jing332.tts_server_android.databinding.SysttsListSimpleFragmentBinding
 import com.github.jing332.tts_server_android.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
-class ListAllPageFragment : Fragment() {
+class ListAllPageFragment : Fragment(R.layout.systts_list_simple_fragment) {
     companion object {
         private const val ARG_RA_TARGET = "ARG_RA_TARGET"
 
@@ -32,24 +33,11 @@ class ListAllPageFragment : Fragment() {
         }
     }
 
-    private val binding: SysttsListSimpleGroupFragmentBinding by lazy {
-        SysttsListSimpleGroupFragmentBinding.inflate(layoutInflater)
-    }
-
+    private val binding by viewBinding(SysttsListSimpleFragmentBinding::bind)
     private val itemHelper = SysTtsListItemHelper(this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
-    }
-
-    @SuppressLint("RestrictedApi")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState != null) return
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val brv = binding.rv.linear().setup {
             addType<ItemModel>(R.layout.systts_list_item)

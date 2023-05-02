@@ -1,9 +1,7 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -21,7 +19,7 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
-import com.github.jing332.tts_server_android.databinding.SysttsListCustomGroupFragmentBinding
+import com.github.jing332.tts_server_android.databinding.SysttsListGroupFragmentBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
@@ -33,8 +31,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.conflate
 import kotlinx.serialization.encodeToString
 
-class ListGroupPageFragment : Fragment(R.layout.systts_list_custom_group_fragment) {
-    private val binding by viewBinding(SysttsListCustomGroupFragmentBinding::bind)
+class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
+    private val binding by viewBinding(SysttsListGroupFragmentBinding::bind)
 
     private lateinit var brv: BindingAdapter
     private val itemHelper = SysTtsListItemHelper(this, hasGroup = true)

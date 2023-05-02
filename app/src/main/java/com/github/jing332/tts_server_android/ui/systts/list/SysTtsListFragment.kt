@@ -12,14 +12,10 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.withResumed
-import androidx.lifecycle.withStarted
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
@@ -30,7 +26,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBgmSettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
-import com.github.jing332.tts_server_android.databinding.SysttsListFragmentBinding
+import com.github.jing332.tts_server_android.databinding.SysttsListHostFragmentBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
@@ -50,12 +46,11 @@ import com.github.jing332.tts_server_android.utils.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.launch
 import kotlin.math.min
 
 
 @Suppress("DEPRECATION")
-class SysTtsListFragment : Fragment(R.layout.systts_list_fragment) {
+class SysTtsListFragment : Fragment(R.layout.systts_list_host_fragment) {
     companion object {
         const val TAG = "TtsConfigFragment"
         const val ACTION_ADD_TTS = "com.github.jing332.tts_server_android.ui.systts.list.ADD_TTS"
@@ -63,9 +58,9 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_fragment) {
         const val KEY_SYSTEM_TTS_DATA = "system_tts_data"
     }
 
-    private val mReceiver by lazy { MyReceiver() }
+    private val mReceiver = MyReceiver()
     private val vm: SysTtsListViewModel by activityViewModels()
-    private val binding by viewBinding(SysttsListFragmentBinding::bind)
+    private val binding by viewBinding(SysttsListHostFragmentBinding::bind)
 
     private lateinit var vpAdapter: GroupPageAdapter
 
