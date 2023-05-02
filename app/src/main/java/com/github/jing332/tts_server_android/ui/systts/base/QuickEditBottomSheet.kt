@@ -19,8 +19,7 @@ class QuickEditBottomSheet @JvmOverloads constructor(
     private val isLiteMode: Boolean = false,
     private val editView: BaseParamsEditView<*, ITextToSpeechEngine>? = null,
     private val dismissCallback: ((dialog: DialogInterface) -> Boolean)? = null
-) :
-    BottomSheetDialogFragment() {
+) : BottomSheetDialogFragment() {
 
     companion object {
         const val TAG = "QuickEditBottomSheet"

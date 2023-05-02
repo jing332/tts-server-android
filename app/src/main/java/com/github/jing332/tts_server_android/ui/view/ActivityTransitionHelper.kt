@@ -5,6 +5,9 @@ import android.graphics.Color
 import android.view.View
 import android.view.Window
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.ui.view.Attributes.colorAttr
+import com.github.jing332.tts_server_android.ui.view.Attributes.colorOnBackground
+import com.github.jing332.tts_server_android.ui.view.Attributes.colorSurface
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 
@@ -28,12 +31,12 @@ object ActivityTransitionHelper {
         // 将此 Activity 的进入和返回转换设置为 MaterialContainerTransform
         window.sharedElementEnterTransition = MaterialContainerTransform().apply {
             addTarget(view)
-            startContainerColor = Color.TRANSPARENT
+            startContainerColor = colorSurface
             duration = 300L
         }
         window.sharedElementReturnTransition = MaterialContainerTransform().apply {
             addTarget(view)
-            endContainerColor = Color.TRANSPARENT
+            startContainerColor = colorSurface
             duration = 250L
         }
     }
