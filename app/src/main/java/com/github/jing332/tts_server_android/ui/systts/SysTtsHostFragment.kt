@@ -18,7 +18,7 @@ class SysTtsHostFragment : Fragment(R.layout.systts_host_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewPager.isSaveEnabled = false
+//        binding.viewPager.isSaveEnabled = false
         binding.viewPager.reduceDragSensitivity(8)
         binding.viewPager.adapter = FragmentAdapter(this)
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
