@@ -112,13 +112,18 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                         true
                     }
 
+                    // 交换按钮
                     btnListen.isVisible = AppConfig.isSwapListenAndEditButton
                     btnEdit.isGone = AppConfig.isSwapListenAndEditButton
 
                     btnListen.clickWithThrottle { listen(getModel<ItemModel>().data) }
-                    btnEdit.clickWithThrottle { edit(root, getModel<ItemModel>().data) }
                     btnListen.setOnLongClickListener {
-                        edit(it, getModel<ItemModel>().data)
+                        edit(root, getModel<ItemModel>().data)
+                        true
+                    }
+                    btnEdit.clickWithThrottle { edit(root, getModel<ItemModel>().data) }
+                    btnEdit.setOnLongClickListener {
+                        listen(getModel<ItemModel>().data)
                         true
                     }
 
@@ -128,19 +133,18 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                         )
                     }
                     btnMore.setOnLongClickListener {
-                        if (AppConfig.isSwapListenAndEditButton) edit(
-                            root,
-                            getModel<ItemModel>().data
+                        context.toast(R.string.systts_copied_config)
+                        edit(
+                            itemView,
+                            getModel<ItemModel>().data.copy(id = System.currentTimeMillis())
                         )
-                        else listen(getModel<ItemModel>().data)
 
                         true
                     }
 
                     itemView.accessibilityDelegate = object : AccessibilityDelegate() {
                         override fun onInitializeAccessibilityNodeInfo(
-                            host: View,
-                            info: AccessibilityNodeInfo
+                            host: View, info: AccessibilityNodeInfo
                         ) {
                             super.onInitializeAccessibilityNodeInfo(host, info)
 
