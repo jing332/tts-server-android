@@ -88,29 +88,40 @@ class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activit
                         }
                     }
 
+                    override fun onGroupMoveButtonClick(v: View, model: GroupModel) {
+                        PopupMenu(this@ReplaceManagerActivity, v).apply {
+                            this.setForceShowIcon(true)
+                            MenuCompat.setGroupDividerEnabled(menu, true)
+                            menuInflater.inflate(R.menu.systts_replace_group, menu)
+                            setOnMenuItemClickListener { item ->
+                                when (item.itemId) {
+                                    R.id.menu_rename_group -> {
+                                        AppDialogs.displayInputDialog(
+                                            this@ReplaceManagerActivity,
+                                            getString(R.string.edit_group_name),
+                                            getString(R.string.name),
+                                            model.name
+                                        ) {text->
+                                            appDb.replaceRuleDao.insertGroup(model.data.copy(name = text))
+                                        }
+                                    }
+                                    R.id.menu_export ->{
+                                        displayExport(
+                                            "ttsrv-replaces-${model.data.name}.json",
+                                            vm.exportGroup(model)
+                                        )
+                                    }
 
-                    override fun onExport(v: View, model: GroupModel) {
-                        displayExport(
-                            "ttsrv-replaces-${model.data.name}.json",
-                            vm.exportGroup(model)
-                        )
-                    }
-
-                    override fun onRemove(v: View, model: GroupModel) {
-                        AppDialogs.displayDeleteDialog(this@ReplaceManagerActivity, model.name) {
-                            appDb.replaceRuleDao.deleteGroup(model.data)
-                            appDb.replaceRuleDao.deleteAllByGroup(model.data.id)
-                        }
-                    }
-
-                    override fun onRename(v: View, model: GroupModel) {
-                        AppDialogs.displayInputDialog(
-                            this@ReplaceManagerActivity,
-                            getString(R.string.edit_group_name),
-                            getString(R.string.name),
-                            model.name
-                        ) {
-                            appDb.replaceRuleDao.insertGroup(model.data.copy(name = it))
+                                    R.id.menu_remove_group -> {
+                                        AppDialogs.displayDeleteDialog(this@ReplaceManagerActivity, model.name) {
+                                            appDb.replaceRuleDao.deleteGroup(model.data)
+                                            appDb.replaceRuleDao.deleteAllByGroup(model.data.id)
+                                        }
+                                    }
+                                }
+                                true
+                            }
+                            show()
                         }
                     }
                 }
@@ -131,6 +142,10 @@ class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activit
 
 
             itemDifferCallback = object : ItemDifferCallback {
+                override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+                    return super.areContentsTheSame(oldItem, newItem)
+                }
+
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
                     return if (oldItem is ItemModel && newItem is ItemModel) oldItem.data.id == newItem.data.id
                     else if (oldItem is GroupModel && newItem is GroupModel) oldItem.data.id == newItem.data.id

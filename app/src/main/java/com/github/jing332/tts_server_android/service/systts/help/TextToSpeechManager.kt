@@ -214,27 +214,36 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     private var mAudioPlayer: AudioPlayer? = null
     private var mBgmPlayer: BgmPlayer? = null
 
+    private fun getEnabledList(target: Int, isStandby: Boolean): List<ITextToSpeechEngine> {
+        return appDb.systemTtsDao.getEnabledList(target, isStandby).map {
+            appDb.systemTtsDao.getGroup(it.groupId)?.let { group ->
+                val groupAudioParams = group.audioParams.copyIfFollow(
+                    SysTtsConfig.audioParamsSpeed,
+                    SysTtsConfig.audioParamsVolume, SysTtsConfig.audioParamsPitch
+                )
+                it.tts.audioParams = it.tts.audioParams.copyIfFollow(
+                    followSpeed = groupAudioParams.speed,
+                    followVolume = groupAudioParams.volume,
+                    followPitch = groupAudioParams.pitch,
+                )
+            }
+            it.tts.speechRule = it.speechRule
+            it.tts.speechRule.configId = it.id
+            return@map it.tts
+        }
+    }
+
     private fun initConfig(target: Int): Boolean {
         Log.i(TAG, "initConfig: $target")
         var isOk = true
-        mConfigMap[target] =
-            appDb.systemTtsDao.getEnabledList(target, false).map {
-                it.tts.speechRule = it.speechRule
-                it.tts.speechRule.configId = it.id
-                return@map it.tts
-            }
+        mConfigMap[target] = getEnabledList(target, isStandby = false)
         if (mConfigMap[target]?.isEmpty() == true) {
             isOk = false
             Log.w(TAG, "缺少朗读目标$target, 使用内置MsTTS！")
             mConfigMap[target] = listOf(MsTTS())
         }
 
-        val sbyList =
-            appDb.systemTtsDao.getEnabledList(target, true).map {
-                it.tts.speechRule = it.speechRule
-                it.tts.speechRule.configId = it.id
-                return@map it.tts
-            }
+        val sbyList = getEnabledList(target, isStandby = true)
 
         mConfigMap[target]?.forEach { tts ->
             sbyList.find { it.speechRule.isTagSame(tts.speechRule) }
@@ -331,7 +340,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         synthesizeText(replaced, sysRate, sysPitch) { data -> // 音频获取完毕
             kotlin.runCatching {
                 val txtTts = data.txtTts
-                val audioParams = txtTts.tts.audioParams.newIfFollow()
+                val audioParams = txtTts.tts.audioParams
 
                 val srcSampleRate = txtTts.tts.audioFormat.sampleRate
                 val targetSampleRate = audioFormat.sampleRate

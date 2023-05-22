@@ -12,7 +12,6 @@ class GroupModel(
     override var itemSublist: List<Any?>?,
     override var checkedState: Int = MaterialCheckBox.STATE_UNCHECKED,
 
-
     override var itemExpand: Boolean = false,
     override var itemGroupPosition: Int = 0,
     override var itemHover: Boolean = true,

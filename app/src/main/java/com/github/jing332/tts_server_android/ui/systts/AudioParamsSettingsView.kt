@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.FrameLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.SysttsBasicAudioParamsSettingsBinding
-import com.github.jing332.tts_server_android.model.speech.tts.AudioParams
+import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import splitties.systemservices.layoutInflater
 

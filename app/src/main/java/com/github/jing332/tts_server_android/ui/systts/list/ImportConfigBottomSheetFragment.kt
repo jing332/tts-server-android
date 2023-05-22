@@ -74,8 +74,11 @@ class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
             AppConst.jsonBuilder.decodeFromString<List<LegadoHttpTts>>(json).ifEmpty { return null }
                 .let { list ->
                     return listOf(GroupWithSystemTts(
-                        group =
-                        SystemTtsGroup(id = groupId, name = groupName, order = groupCount),
+                        group = SystemTtsGroup(
+                            id = groupId,
+                            name = groupName,
+                            order = groupCount
+                        ),
                         list = list.map {
                             SystemTts(
                                 groupId = groupId,

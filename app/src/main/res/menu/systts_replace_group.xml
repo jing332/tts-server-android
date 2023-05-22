@@ -7,11 +7,6 @@
             android:id="@+id/menu_rename_group"
             android:icon="@drawable/ic_baseline_edit_24"
             android:title="@string/rename" />
-
-        <item
-            android:id="@+id/menu_audio_params"
-            android:icon="@drawable/baseline_speed_24"
-            android:title="@string/audio_params" />
         <item
             android:id="@+id/menu_export"
             android:icon="@drawable/ic_baseline_output_24"

@@ -22,7 +22,7 @@ import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditView
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
-import com.github.jing332.tts_server_android.model.speech.tts.AudioParams
+import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
 import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
 import com.github.jing332.tts_server_android.ui.view.AppDialogs

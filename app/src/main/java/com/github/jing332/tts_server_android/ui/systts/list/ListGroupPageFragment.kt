@@ -1,7 +1,10 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.os.Bundle
+import android.speech.tts.TextToSpeechService
 import android.view.View
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.MenuCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -17,16 +20,20 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsListGroupFragmentBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.base.group.GroupListHelper
+import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
 import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.conflate
 import kotlinx.serialization.encodeToString
@@ -61,16 +68,23 @@ class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
                     SystemTtsService.notifyUpdateConfig()
                 }
 
-                override fun onExport(v: View, model: GroupModel) {
-                    exportGroup(model)
-                }
+                override fun onGroupMoveButtonClick(v: View, model: GroupModel) {
+                    PopupMenu(requireContext(), v).apply {
+                        this.setForceShowIcon(true)
+                        MenuCompat.setGroupDividerEnabled(menu, true)
+                        menuInflater.inflate(R.menu.systts_list_group_more, menu)
+                        setOnMenuItemClickListener { item ->
+                            when (item.itemId) {
+                                R.id.menu_rename_group -> displayGroupRename(model.data)
+                                R.id.menu_export -> displayGroupExport(model)
+                                R.id.menu_audio_params -> displayGroupAudioParams(model.data)
 
-                override fun onRemove(v: View, model: GroupModel) {
-                    removeGroup(model.data)
-                }
-
-                override fun onRename(v: View, model: GroupModel) {
-                    editGroupName(model.data)
+                                R.id.menu_remove_group -> removeGroup(model.data)
+                            }
+                            true
+                        }
+                        show()
+                    }
                 }
             }
 
@@ -193,7 +207,7 @@ class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun exportGroup(model: GroupModel) {
+    private fun displayGroupExport(model: GroupModel) {
         val subList = (model.itemSublist as List<ItemModel>).map { it.data }
         val obj =
             GroupWithSystemTts(group = model.data, list = subList)
@@ -204,7 +218,7 @@ class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
         fragment.show(requireActivity().supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
     }
 
-    private fun editGroupName(data: SystemTtsGroup) {
+    private fun displayGroupRename(data: SystemTtsGroup) {
         AppDialogs.displayInputDialog(
             requireContext(), getString(R.string.edit_group_name),
             getString(R.string.name), data.name
@@ -213,6 +227,27 @@ class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
                 data.copy(name = it.ifEmpty { getString(R.string.unnamed) })
             )
         }
+    }
+
+    private fun displayGroupAudioParams(data: SystemTtsGroup) {
+        val audioParamsView = AudioParamsSettingsView(requireContext()).apply {
+            setData(data.audioParams)
+        }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.audio_params_settings)
+            .setView(audioParamsView)
+            .setPositiveButton(R.string.close, null)
+            .setNegativeButton(R.string.reset) { _, _ ->
+                data.audioParams.reset(AudioParams.FOLLOW_GLOBAL_VALUE)
+                requireContext().toast(R.string.ok_reset)
+            }
+            .setOnDismissListener {
+                appDb.systemTtsDao.updateGroup(data)
+                SystemTtsService.notifyUpdateConfig()
+            }
+            .show()
+
     }
 
     private fun removeGroup(data: SystemTtsGroup) {

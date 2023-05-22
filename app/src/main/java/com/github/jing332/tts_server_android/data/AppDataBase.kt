@@ -17,17 +17,21 @@ import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
+import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 
 val appDb by lazy { AppDatabase.createDatabase(App.context) }
 
 @Database(
-    version = 21,
+    version = 22,
     entities = [
-        SystemTts::class, SystemTtsGroup::class,
-        ReplaceRule::class, ReplaceRuleGroup::class,
-        Plugin::class, SpeechRule::class
+        SystemTts::class,
+        SystemTtsGroup::class,/* AudioParams::class,*/
+        ReplaceRule::class,
+        ReplaceRuleGroup::class,
+        Plugin::class,
+        SpeechRule::class,
     ],
     autoMigrations = [
         AutoMigration(from = 7, to = 8),
@@ -44,6 +48,7 @@ val appDb by lazy { AppDatabase.createDatabase(App.context) }
         AutoMigration(from = 18, to = 19),
         AutoMigration(from = 19, to = 20),
         AutoMigration(from = 20, to = 21),
+        AutoMigration(from = 21, to = 22),
     ]
 )
 abstract class AppDatabase : RoomDatabase() {

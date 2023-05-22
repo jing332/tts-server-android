@@ -3,8 +3,6 @@ package com.github.jing332.tts_server_android.ui.base.group
 import android.content.Context
 import android.view.View
 import android.view.accessibility.AccessibilityNodeInfo
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.MenuCompat
 import com.drake.brv.BindingAdapter
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.BaseListGroupItemBinding
@@ -12,16 +10,14 @@ import com.github.jing332.tts_server_android.utils.clickWithThrottle
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class GroupListHelper<T : IGroupModel>(val context: Context) {
-    interface Callback<T : IGroupModel> {
-        fun onGroupClick(v: View, model: T)
-        fun onCheckedChange(v: MaterialCheckBox, model: T)
-        fun onExport(v: View, model: T)
-        fun onRemove(v: View, model: T)
-        fun onRename(v: View, model: T)
+class GroupListHelper<M : IGroupModel>(val context: Context) {
+    interface Callback<M : IGroupModel> {
+        fun onGroupClick(v: View, model: M)
+        fun onGroupMoveButtonClick(v: View, model: M)
+        fun onCheckedChange(v: MaterialCheckBox, model: M)
     }
 
-    var callback: Callback<T>? = null
+    var callback: Callback<M>? = null
 
     /**
      * addType<IGroupModel>(R.layout.base_list_group_item)
@@ -62,7 +58,7 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
                         }
 
                         itemView.clickWithThrottle {
-                            val model = getModel<T>()
+                            val model = getModel<M>()
                             val isExpanded = !model.itemExpand
 
                             val speakText =
@@ -107,23 +103,7 @@ class GroupListHelper<T : IGroupModel>(val context: Context) {
                             callback?.onCheckedChange(checkBox, getModel())
                         }
                         btnMore.clickWithThrottle {
-                            PopupMenu(context, it).apply {
-                                this.setForceShowIcon(true)
-                                MenuCompat.setGroupDividerEnabled(menu, true)
-                                menuInflater.inflate(R.menu.systts_list_group_more, menu)
-                                setOnMenuItemClickListener { item ->
-                                    when (item.itemId) {
-                                        R.id.menu_export ->
-                                            callback?.onExport(it, getModel())
-
-                                        R.id.menu_rename_group -> callback?.onRename(it, getModel())
-                                        R.id.menu_remove_group -> callback?.onRemove(it, getModel())
-                                    }
-                                    true
-                                }
-                                show()
-                            }
-
+                            callback?.onGroupMoveButtonClick(it, getModel())
                         }
                     }
 
