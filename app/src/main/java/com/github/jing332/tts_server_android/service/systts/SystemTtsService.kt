@@ -156,8 +156,10 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
     private lateinit var mCurrentText: String
     private var synthesizerJob: Job? = null
+    private var mNotificationJob: Job? = null
 
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
+        mNotificationJob?.cancel()
         reNewWakeLock()
         startForegroundService()
         val text = request?.charSequenceText.toString().trim()
@@ -185,6 +187,12 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         }
         callback.done()
         Log.i(TAG, "done...................")
+
+        mNotificationJob = mScope.launch {
+            delay(5000)
+            stopForeground(true)
+            mNotificationDisplayed = false
+        }
     }
 
     private fun writeToCallBack(callback: SynthesisCallback, pcmData: ByteArray) {
@@ -232,18 +240,6 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             }
             startForeground(SystemNotificationConst.ID_SYSTEM_TTS, getNotification())
             mNotificationDisplayed = true
-
-            mScope.launch {
-                while (true) {
-                    delay(5000)
-                    if (!mTtsManager.isSynthesizing) {
-                        stopForeground(true)
-                        mNotificationDisplayed = false
-                        return@launch
-                    }
-                }
-            }
-
         }
     }
 
