@@ -62,6 +62,7 @@ class BgmPlayer(val context: Context) {
         if (list == currentPlaySet) return
         currentPlaySet.clear()
         currentPlaySet.addAll(list)
+
         exoPlayer.stop()
         exoPlayer.clearMediaItems()
         for (path in list) {
