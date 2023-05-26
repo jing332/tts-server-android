@@ -25,6 +25,13 @@ interface SystemTtsDao {
         isStandbyType: Boolean = false
     ): List<SystemTts>
 
+    @Query("SELECT * FROM sysTts WHERE isEnabled = '1' AND  speechRule_target = :target AND speechRule_isStandby = :isStandbyType AND groupId = :groupId")
+    fun getEnabledListByGroupId(
+        groupId: Long,
+        target: Int = SpeechTarget.ALL,
+        isStandbyType: Boolean = false,
+    ): List<SystemTts>
+
     @get:Query("SELECT * FROM sysTts WHERE isEnabled = '1'")
     val allEnabledTts: List<SystemTts>
 
@@ -94,5 +101,22 @@ interface SystemTtsDao {
             insertGroup(v.group)
             insertTts(*v.list.toTypedArray())
         }
+    }
+
+    /**
+     * 按照分组和分组内进行排序获取
+     */
+    fun getEnabledListForSort(target: Int, isStandbyType: Boolean = false): List<SystemTts> {
+        val list = mutableListOf<SystemTts>()
+        allGroup.forEach { group ->
+            list.addAll(
+                getEnabledListByGroupId(
+                    group.id,
+                    target,
+                    isStandbyType
+                ).sortedBy { it.order })
+        }
+
+        return list
     }
 }

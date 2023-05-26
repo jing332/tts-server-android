@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
-import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.model.rhino.ExceptionExt.lineMessage
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
@@ -72,7 +71,7 @@ class SpeechRuleEditorViewModel(application: Application) : AndroidViewModel(app
                 kotlin.runCatching {
                     logger.i("handleText()...")
 
-                    val rules = appDb.systemTtsDao.getEnabledList(SpeechTarget.CUSTOM_TAG).map {
+                    val rules = appDb.systemTtsDao.getEnabledListForSort(SpeechTarget.CUSTOM_TAG).map {
                         it.speechRule.apply { configId = it.id }
                     }
                     val list = mRuleEngine.handleText(text, rules)

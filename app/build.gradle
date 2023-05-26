@@ -4,7 +4,7 @@ plugins {
     id 'kotlinx-serialization'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
-    id 'com.google.devtools.ksp'
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -17,8 +17,8 @@ android {
         versionCode 7
         versionName "0.6"
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas".toString())
+        ksp{
+            arg("room.schemaLocation",  "$projectDir/schemas".toString())
             arg("room.incremental", "true")
             arg("room.expandProjection", "true")
         }
@@ -61,11 +61,11 @@ android {
 
     buildTypes {
         release {
-            //noinspection GroovyImplicitNullArgumentCall
             versionNameSuffix "_${releaseTime()}"
             signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -119,8 +119,8 @@ android {
     }
 
     // 修改apk文件名
-    android.applicationVariants.configureEach { variant ->
-        variant.outputs.configureEach { output ->
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
             //noinspection GrDeprecatedAPIUsage
             def abiName = output.getFilter(com.android.build.OutputFile.ABI)
             if (abiName == null)
@@ -143,7 +143,7 @@ dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
@@ -153,8 +153,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0-beta01'
 
     implementation 'androidx.preference:preference-ktx:1.2.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
@@ -190,8 +190,8 @@ dependencies {
     implementation 'cn.hutool:hutool-crypto:5.8.17'
 
     // Media
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.7'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.7'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.6'
 
     // Logcat (Debug)
     debugImplementation 'com.github.getActivity:Logcat:11.2'
@@ -201,7 +201,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
-@SuppressWarnings('unused')
 static def releaseTime() {
     return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
 }

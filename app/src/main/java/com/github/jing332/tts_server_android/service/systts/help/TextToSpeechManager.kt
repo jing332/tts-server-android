@@ -215,7 +215,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     private var mBgmPlayer: BgmPlayer? = null
 
     private fun getEnabledList(target: Int, isStandby: Boolean): List<ITextToSpeechEngine> {
-        return appDb.systemTtsDao.getEnabledList(target, isStandby).map {
+        return appDb.systemTtsDao.getEnabledListForSort(target, isStandby).map {
             appDb.systemTtsDao.getGroup(it.groupId)?.let { group ->
                 val groupAudioParams = group.audioParams.copyIfFollow(
                     SysTtsConfig.audioParamsSpeed,
@@ -258,7 +258,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
 
     private fun initBgm() {
         val list = mutableSetOf<Pair<Float, String>>()
-        appDb.systemTtsDao.getEnabledList(SpeechTarget.BGM).forEach {
+        appDb.systemTtsDao.getEnabledListForSort(SpeechTarget.BGM).forEach {
             val tts = (it.tts as BgmTTS)
             val volume = if (tts.volume == 0) SysTtsConfig.bgmVolume else it.tts.volume / 1000f
             list.addAll(tts.musicList.map { path ->
