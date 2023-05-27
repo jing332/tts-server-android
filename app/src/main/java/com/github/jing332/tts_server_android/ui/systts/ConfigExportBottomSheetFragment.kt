@@ -34,11 +34,11 @@ open class ConfigExportBottomSheetFragment(
     private lateinit var fileSaver: ActivityResultLauncher<FilePickerActivity.IRequestData>
     private val binding by lazy { SysttsConfigExportBottomSheetBinding.inflate(layoutInflater) }
 
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         fileSaver = registerForActivityResult(AppActivityResultContracts.filePickerActivity()) {
+
         }
     }
 

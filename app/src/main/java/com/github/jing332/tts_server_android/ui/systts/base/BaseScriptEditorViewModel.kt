@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.utils.runOnUI
+import kotlinx.coroutines.runBlocking
 import tts_server_lib.ScriptCodeSyncServerCallback
 import tts_server_lib.ScriptSyncServer
 
@@ -44,10 +46,10 @@ class BaseScriptEditorViewModel : ViewModel() {
                 }
             }
 
-            override fun pull(): String {
-                runOnUI {
-                    return onPull.invoke()
-                ｝
+            override fun pull(): String = runBlocking {
+                return@runBlocking withMain {
+                    return@withMain onPull.invoke()
+                }
             }
 
             override fun push(code: String) {

@@ -133,8 +133,10 @@ class FilePickerActivity : AppCompatActivity() {
 
             docCreate =
                 registerForActivityResult(ActivityResultContracts.CreateDocument(reqSaveFile.fileMime)) { uri ->
-                    if (uri == null) return@registerForActivityResult
-
+                    if (uri == null) {
+                        finish()
+                        return@registerForActivityResult
+                    }
                     uri.grantReadWritePermission(contentResolver)
                     lifecycleScope.launch(Dispatchers.IO) {
                         kotlin.runCatching {
