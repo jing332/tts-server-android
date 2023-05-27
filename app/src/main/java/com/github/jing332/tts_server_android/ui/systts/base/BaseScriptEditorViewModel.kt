@@ -45,7 +45,9 @@ class BaseScriptEditorViewModel : ViewModel() {
             }
 
             override fun pull(): String {
-                return onPull.invoke()
+                runOnUI {
+                    return onPull.invoke()
+                ｝
             }
 
             override fun push(code: String) {
