@@ -117,6 +117,15 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
                                 when (menuItem.itemId) {
                                     R.id.menu_set_vars -> displayVarsSettings(model)
 
+                                    R.id.menu_export -> {
+                                        val fragment =
+                                            ExportBottomSheetFragment.newInstance(
+                                                "ttsrv-plugin-${model.title}.json",
+                                                listOf(model.data)
+                                            )
+                                        fragment.show(supportFragmentManager, "export")
+                                    }
+
                                     R.id.menu_remove -> {
                                         AppDialogs.displayDeleteDialog(
                                             this@PluginManagerActivity, model.title
@@ -161,7 +170,6 @@ class PluginManagerActivity : AppBackActivity(R.layout.systts_plugin_manager_act
                         super.onMove(recyclerView, source, target)
                     } else false
                 }
-
 
                 override fun onDrag(
                     source: BindingAdapter.BindingViewHolder,

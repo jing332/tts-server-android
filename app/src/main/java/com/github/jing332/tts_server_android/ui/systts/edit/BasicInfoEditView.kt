@@ -10,6 +10,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.size
 import androidx.core.widget.addTextChangedListener
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
@@ -32,6 +33,7 @@ import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.utils.clickWithThrottle
+import com.github.jing332.tts_server_android.utils.dp
 import com.github.jing332.tts_server_android.utils.layoutInflater
 import com.github.jing332.tts_server_android.utils.runOnUI
 import com.github.jing332.tts_server_android.utils.toast
@@ -341,6 +343,10 @@ class BasicInfoEditView @JvmOverloads constructor(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT
                         )
+                        (view.layoutParams as MarginLayoutParams).bottomMargin = 2.dp
+                        if (binding.layoutTagData.size == 1)
+                            (view.layoutParams as MarginLayoutParams).topMargin = 2.dp
+
                     }
                 }
 

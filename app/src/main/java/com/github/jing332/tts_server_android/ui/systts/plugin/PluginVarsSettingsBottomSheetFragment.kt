@@ -11,6 +11,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.databinding.SysttsPluginVarsSettingsBottomSheetBinding
 import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
+import com.github.jing332.tts_server_android.utils.dp
 import com.github.jing332.tts_server_android.utils.setMarginMatchParent
 import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -81,6 +82,7 @@ class PluginVarsSettingsBottomSheetFragment : BottomSheetDialogFragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
+            (input.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = 4.dp
         }
     }
 }

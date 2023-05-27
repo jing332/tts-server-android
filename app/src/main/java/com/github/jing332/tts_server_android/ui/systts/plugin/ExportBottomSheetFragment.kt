@@ -21,17 +21,19 @@ import kotlinx.serialization.encodeToString
 class ExportBottomSheetFragment : ConfigExportBottomSheetFragment() {
     private lateinit var pluginList: Array<Plugin>
     private lateinit var includeVarsCheckBox: CheckBox
-    private var name: String? = null
+
+    private var mFileName: String = "file.json"
+    override fun getFileName() = mFileName
 
     companion object {
         private const val KEY_PLUGIN_LIST = "pluginList"
-        private const val KEY_NAME = "name"
+        private const val KEY_FILE_NAME = "fileName"
 
-        fun newInstance(name: String, list: List<Plugin>? = null): ExportBottomSheetFragment {
+        fun newInstance(fileName: String, list: List<Plugin>? = null): ExportBottomSheetFragment {
             return ExportBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArray(KEY_PLUGIN_LIST, list?.toTypedArray())
-                    putString(KEY_NAME, name)
+                    putString(KEY_FILE_NAME, fileName)
                 }
             }
         }
@@ -41,7 +43,9 @@ class ExportBottomSheetFragment : ConfigExportBottomSheetFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        name = arguments?.getString(KEY_NAME) ?: ""
+        arguments?.getString(KEY_FILE_NAME)?.let {
+            mFileName = it
+        }
         val plugins = arguments?.getParcelableArray(KEY_PLUGIN_LIST) as? Array<Plugin>
         lifecycleScope.launch(Dispatchers.Main) {
             if (plugins == null) {
