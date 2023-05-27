@@ -17,10 +17,12 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:focusableInTouchMode="true"
             android:id="@+id/tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAppearance="?attr/textAppearanceBody1" />
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textIsSelectable="true" />
 
     </androidx.core.widget.NestedScrollView>
 

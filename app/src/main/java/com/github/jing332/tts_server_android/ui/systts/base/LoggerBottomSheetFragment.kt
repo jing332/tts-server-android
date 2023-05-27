@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.databinding.SysttsLoggerBottomSheetBinding
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
@@ -20,7 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class LoggerBottomSheetFragment @JvmOverloads constructor(private val logger: Logger? = null) :
-    BottomSheetDialogFragment(), Logger.LogListener {
+    BottomSheetDialogFragment(R.layout.systts_logger_bottom_sheet), Logger.LogListener {
     companion object {
         const val TAG = "LoggerBottomSheetFragment"
     }
@@ -29,10 +31,7 @@ class LoggerBottomSheetFragment @JvmOverloads constructor(private val logger: Lo
         logger?.addListener(this)
     }
 
-    private val binding by lazy { SysttsLoggerBottomSheetBinding.inflate(layoutInflater) }
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View = binding.root
+    private val binding by viewBinding(SysttsLoggerBottomSheetBinding::bind)
 
     private val infoColor by lazy { requireContext().colorOnBackground }
     private val channel = Channel<Pair<CharSequence, Int>>(Int.MAX_VALUE)
