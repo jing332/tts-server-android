@@ -11,7 +11,7 @@ import com.github.jing332.tts_server_android.ui.view.AppMaterialSpinner
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 
 @SuppressLint("ViewConstructor")
-class JSpinner(context: Context, hint: String) : AppMaterialSpinner(context) {
+class JSpinner(context: Context, hint: CharSequence) : AppMaterialSpinner(context) {
     init {
         super.hint = hint
     }
@@ -19,7 +19,7 @@ class JSpinner(context: Context, hint: String) : AppMaterialSpinner(context) {
     var items: List<Item> = listOf()
         set(value) {
             field = value
-            setListModel(value.map { SpinnerItem(it.name, it.value) })
+            setListModel(value.map { SpinnerItem(it.name.toString(), it.value) })
         }
 
     interface OnItemSelectedListener {

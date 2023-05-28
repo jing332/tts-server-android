@@ -9,6 +9,10 @@ import com.github.jing332.tts_server_android.ui.view.MaterialTextInput
 class JTextInput(context: Context, hint: String? = null) : MaterialTextInput(context) {
     init {
         super.setHint(hint)
+
+        editText!!.addTextChangedListener {
+            mOnTextChangedListeners?.onChanged(it.toString())
+        }
     }
 
     interface OnTextChangedListener {
@@ -19,6 +23,12 @@ class JTextInput(context: Context, hint: String? = null) : MaterialTextInput(con
         editText!!.addTextChangedListener {
             listener.onChanged(it.toString())
         }
+    }
+
+    private var mOnTextChangedListeners: OnTextChangedListener? = null
+
+    fun setOnTextChangedListener(listener: OnTextChangedListener) {
+        mOnTextChangedListeners = listener
     }
 
 }

@@ -6,9 +6,9 @@ import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDial
 import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
 
 @SuppressLint("ViewConstructor")
-class JSeekBar(context: Context, hint: String) : Seekbar(context), Seekbar.OnSeekBarChangeListener {
+class JSeekBar(context: Context, hint: CharSequence) : Seekbar(context), Seekbar.OnSeekBarChangeListener {
     init {
-        super.hint = hint
+        super.hint = hint.toString()
     }
 
     fun setOnChangeListener(listener: OnSeekBarChangeListener?) {

@@ -34,10 +34,7 @@ open class TtsPluginEngine(
         }
 
     companion object {
-        const val OBJ_TTSRV = "ttsrv"
-        const val OBJ_LOGGER = "logger"
         const val OBJ_PLUGIN_JS = "PluginJS"
-        const val OBJ_TTS_DATA = "ttsData"
 
         const val FUNC_GET_AUDIO = "getAudio"
         const val FUNC_ON_LOAD = "onLoad"

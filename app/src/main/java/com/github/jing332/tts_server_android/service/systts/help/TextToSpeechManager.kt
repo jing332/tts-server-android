@@ -175,9 +175,8 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         val timeoutJob = launch {
                             delay(SysTtsConfig.requestTimeout.toLong())
                             hasTimeout = true
-                            tts.onStop()
-                        }.job
-                        timeoutJob.start()
+                        }
+
                         audioResult?.inputStream =
                             tts.getAudioWithSystemParams(text, sysRate, sysPitch)
                                 ?: throw RequestException(
@@ -194,12 +193,17 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                                 )
                         }
 
-                        if (hasTimeout) throw RequestException(
-                            tts = tts,
-                            text = text,
-                            errorCode = RequestException.ERROR_CODE_TIMEOUT
-                        )
-                        else timeoutJob.cancelAndJoin()
+                        if (hasTimeout) {
+                            launch { // 延迟 500ms 以防止 onStop() 后 java.io.IOException: Canceled 导致不抛出Timeout异常
+                                delay(500)
+                                tts.onStop()
+                            }
+                            throw RequestException(
+                                tts = tts,
+                                text = text,
+                                errorCode = RequestException.ERROR_CODE_TIMEOUT
+                            )
+                        } else timeoutJob.cancelAndJoin()
                     }
                 }
                 audioResult?.data = costTime to retryTimes

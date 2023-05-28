@@ -4,6 +4,7 @@ import android.util.Log
 import cn.hutool.core.lang.UUID
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.model.rhino.core.type.ws.internal.WebSocketException
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
@@ -91,8 +92,6 @@ class EdgeTtsWS : WebSocketListener() {
     ): InputStream = getAudio(generateSSML(text, voice, rate, volume, pitch), format)
 
     suspend fun getAudio(ssml: String, format: String): InputStream = coroutineScope {
-        
-
         uuid = UUID.randomUUID().toString(true)
         outputStream = PipedOutputStream()
 
@@ -101,7 +100,13 @@ class EdgeTtsWS : WebSocketListener() {
         sendConfig(format)
         sendSSML(ssml)
 
-        waitJob = launch { awaitCancellation() }.job
+        waitJob = launch {
+            try {
+                awaitCancellation()
+            } catch (_: CancellationException) {
+                cancelConnect()
+            }
+        }.job
         waitJob?.join() // 等待响应: Path:turn.start
 
         return@coroutineScope PipedInputStream(outputStream)
