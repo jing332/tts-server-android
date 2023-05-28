@@ -44,6 +44,7 @@ open class TtsPluginEngine(
         const val FUNC_ON_STOP = "onStop"
     }
 
+    @Synchronized
     override fun eval(prefixCode: String): Any? {
         return super.eval("$prefixCode ;importPackage(${AppConst.PACKET_NAME}.model.rhino.core.type.ws)")
     }
@@ -56,6 +57,7 @@ open class TtsPluginEngine(
         get() = findObject(OBJ_PLUGIN_JS)
 
     @Suppress("UNCHECKED_CAST")
+    @Synchronized
     fun evalPluginInfo(): Plugin {
         logger.d("evalPluginInfo()...")
         eval()
@@ -84,6 +86,7 @@ open class TtsPluginEngine(
         return mPlugin
     }
 
+    @Synchronized
     fun onLoad(): Any? {
         logger.d("onLoad()...")
         eval()
@@ -94,6 +97,7 @@ open class TtsPluginEngine(
         return null
     }
 
+    @Synchronized
     fun onStop(): Any? {
         logger.d("onStop()...")
         ttsrvObject.cancel()
@@ -104,6 +108,7 @@ open class TtsPluginEngine(
         return null
     }
 
+    @Synchronized
     fun getAudio(
         text: String, rate: Int = 1, pitch: Int = 1
     ): InputStream? {

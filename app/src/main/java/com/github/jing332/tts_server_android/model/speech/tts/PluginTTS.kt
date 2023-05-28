@@ -10,6 +10,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginEngine
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsParamsEditView
+import com.script.javascript.RhinoScriptEngine
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -71,8 +72,17 @@ data class PluginTTS(
     @Transient
     var pluginEngine: TtsPluginEngine? = null
 
+    companion object {
+        private val engineMap = mutableMapOf<String, RhinoScriptEngine>()
+    }
+
     override fun onLoad() {
-        pluginEngine = pluginEngine ?: TtsPluginEngine(pluginTTS = this, context = context)
+        if (engineMap.containsKey(pluginId)) {
+        } else {
+            engineMap[pluginId] = RhinoScriptEngine()
+        }
+        pluginEngine = pluginEngine ?: TtsPluginEngine(pluginTTS = this, context = context, rhino = engineMap[pluginId]!!)
+
         pluginEngine?.onLoad()
     }
 

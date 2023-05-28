@@ -21,6 +21,7 @@ open class BaseScriptEngine(
         }
     }
 
+    @Synchronized
     open fun eval(
         prefixCode: String = ""
     ): Any? {
