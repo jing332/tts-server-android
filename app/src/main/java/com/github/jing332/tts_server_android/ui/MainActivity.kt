@@ -108,8 +108,8 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
                 this,
                 drawerLayout,
                 binding.appBarMain.toolbar,
-                androidx.navigation.ui.R.string.nav_app_bar_open_drawer_description,
-                androidx.navigation.ui.R.string.nav_app_bar_open_drawer_description
+                R.string.nav_app_bar_open_drawer_description,
+                R.string.nav_app_bar_open_drawer_description
             ).apply {
                 drawerLayout.setDrawerListener(this)
                 syncState()
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
         var lastBackDownTime = 0L
         addOnBackPressed(this) {
             if (navController.currentDestination?.id == R.id.nav_settings) {
-                if (navController.backQueue.isNotEmpty() && navController.popBackStack()) {
+                if (navController.popBackStack()) {
                     binding.navView.setCheckedItem(
                         navController.currentDestination?.id ?: return@addOnBackPressed true
                     )

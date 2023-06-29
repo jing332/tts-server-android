@@ -145,15 +145,15 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     //noinspection GradleDependency
     implementation 'com.google.android.material:material:1.9.0-beta01'
 
     implementation 'androidx.preference:preference-ktx:1.2.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
@@ -181,7 +181,7 @@ dependencies {
     // IO & NET
     implementation 'com.squareup.okio:okio:3.3.0'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    implementation 'com.github.liangjingkanji:Net:3.5.7'
+    implementation 'com.github.liangjingkanji:Net:3.5.8'
 
     implementation 'me.rosuh:AndroidFilePicker:0.8.3'
     implementation 'com.louiscad.splitties:splitties-systemservices:3.0.0'
@@ -190,8 +190,8 @@ dependencies {
     implementation 'cn.hutool:hutool-crypto:5.8.17'
 
     // Media
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.6'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.7'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.7'
 
     // Logcat (Debug)
     debugImplementation 'com.github.getActivity:Logcat:11.2'

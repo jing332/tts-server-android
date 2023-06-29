@@ -402,4 +402,5 @@
     <string name="spinner_drop_down_max_count_msg">When the number of items in the dropdown exceeds the set value, it will be displayed in the form of a popup dialog.</string>
     <string name="systts_plugin_please_set_vars">Please click here to set variables</string>
     <string name="clear_log">Clear Log</string>
+    <string name="nav_app_bar_open_drawer_description" tools:ignore="PrivateResource">Open drawer navigation bar</string>
 </resources>
