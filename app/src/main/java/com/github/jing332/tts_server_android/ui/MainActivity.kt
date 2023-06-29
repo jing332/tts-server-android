@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
         initExitSharedTransition()
 
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_TtsServer_Tianlan)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
