@@ -82,13 +82,15 @@ class AudioPlayer(val context: Context) {
                     runMain { exoPlayer.stop() }
                 } else if (e.message == MSG_PLAYER_ERROR) {
                     throwable = e.cause
+                } else {
+                    runMain { exoPlayer.stop() }
                 }
             }
         }
         mPlayWaitJob?.join()
         mPlayWaitJob = null
 
-        throwable?.let { throw it  }
+        throwable?.let { throw it }
     }
 
     fun stop() {
