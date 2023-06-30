@@ -104,7 +104,7 @@ class BgmTtsEditActivity : BaseTtsEditActivity<BgmTTS>({ BgmTTS() }) {
                                     putExtra(ExoPlayerActivity.PARAM_URI, file.absolutePath)
                                 })
                         }
-                        .setPositiveButton(android.R.string.ok, null)
+                        .setNegativeButton(android.R.string.cancel, null)
                         .show()
                 }
 
