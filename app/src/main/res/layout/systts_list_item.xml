@@ -135,7 +135,7 @@
                     android:focusable="false"
                     android:importantForAccessibility="no"
                     android:text="@{m.tagName}"
-                    android:textColor="@color/teal_700"
+                    android:textColor="?attr/colorSecondaryVariant"
                     android:textStyle="bold"
                     android:visibility="@{m.tagName.empty ? View.INVISIBLE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -64,7 +64,7 @@
                 app:endIconContentDescription="@string/systts_replace_insert_pinyin"
                 app:endIconDrawable="@drawable/ic_baseline_abc_24"
                 app:endIconMode="custom"
-                app:endIconTint="@color/teal_200"
+                app:endIconTint="?attr/colorPrimaryInverse"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_name">
@@ -89,7 +89,7 @@
                 app:endIconContentDescription="@string/systts_replace_insert_pinyin"
                 app:endIconDrawable="@drawable/ic_baseline_abc_24"
                 app:endIconMode="custom"
-                app:endIconTint="@color/teal_200"
+                app:endIconTint="?attr/colorPrimaryInverse"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_pattern">
@@ -167,6 +167,10 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <HorizontalScrollView
         android:layout_width="match_parent"
