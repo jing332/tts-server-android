@@ -3,6 +3,9 @@ package com.github.jing332.tts_server_android.ui
 import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,12 +20,13 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuCompat
 import androidx.core.view.setPadding
+import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -30,14 +34,18 @@ import com.drake.net.utils.fileName
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ShortCuts
+import com.github.jing332.tts_server_android.constant.AppTheme
 import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory.newEditorFromJS
 import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initExitSharedTransition
+import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 import com.github.jing332.tts_server_android.utils.*
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import splitties.systemservices.powerManager
@@ -72,7 +80,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
         initExitSharedTransition()
 
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_TtsServer_Tianlan)
+        initAppTheme()
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
@@ -117,8 +125,6 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
             }
         }
 
-        navHeaderBinding.subtitle.text = BuildConfig.VERSION_NAME
-
         lifecycleScope.runOnIO {
             ShortCuts.buildShortCuts(this)
             if (AppConfig.isAutoCheckUpdateEnabled)
@@ -127,7 +133,41 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
 
         importConfigFromIntent(intent)
 
+        initDrawerView()
         addBackPressedCallback()
+    }
+
+    // 抽屉View
+    private fun initDrawerView() {
+        navHeaderBinding.subtitle.text = BuildConfig.VERSION_NAME
+        navHeaderBinding.btnTheme.clickWithThrottle {
+            val scrollView = NestedScrollView(this)
+            val chipGroup = ChipGroup(this).apply { setPadding(16.dp) }
+            scrollView.addView(chipGroup)
+            val dlg = MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.theme)
+                .setView(scrollView)
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+            AppTheme.values().forEach { theme ->
+                Chip(this).apply {
+                    val themeColor = ContextCompat.getColor(this@MainActivity, theme.colorId)
+                    text = getString(theme.strId)
+                    isCheckable = true
+                    isChecked = theme == AppConfig.theme
+                    chipStrokeColor =
+                        ColorStateList.valueOf(if (isChecked) themeColor else Color.TRANSPARENT)
+                    chipIcon = ColorDrawable(themeColor)
+                    setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium)
+                    chipGroup.addView(this)
+                    setOnClickListener {
+                        dlg.dismiss()
+                        AppConfig.theme = theme
+                        this@MainActivity.restart()
+                    }
+                }
+            }
+        }
     }
 
     private fun addBackPressedCallback() {

@@ -17,6 +17,7 @@ object Attributes {
         return typedValue.data
     }
 
+
     @DrawableRes
     fun Context.drawableAttr(resId: Int): Int {
         val typedValue = TypedValue()
@@ -27,6 +28,14 @@ object Attributes {
         )
         return typedValue.resourceId
     }
+
+    @get:ColorInt
+    val Context.colorChipStroke: Int
+        get() = colorAttr(com.google.android.material.R.attr.chipStrokeColor)
+
+    @get:ColorInt
+    val Context.colorControlHighlight: Int
+        get() = colorAttr(com.google.android.material.R.attr.colorControlHighlight)
 
     @get:ColorInt
     val Context.colorSurface: Int

@@ -187,6 +187,8 @@ dependencies {
     implementation 'com.louiscad.splitties:splitties-systemservices:3.0.0'
 
     implementation 'com.chibatching.kotpref:kotpref:2.13.2'
+    implementation 'com.chibatching.kotpref:enum-support:2.13.2'
+
     implementation 'cn.hutool:hutool-crypto:5.8.17'
 
     // Media

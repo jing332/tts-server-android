@@ -37,4 +37,15 @@
         android:textIsSelectable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_theme"
+        android:layout_width="wrap_content"
+        style="?attr/materialIconButtonOutlinedStyle"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/baseline_color_lens_24"
+        android:text="主题"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

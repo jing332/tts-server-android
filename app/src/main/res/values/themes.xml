@@ -50,48 +50,131 @@
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
     </style>
 
-    <style name="Theme.TtsServer.Tianlan">
-        <item name="colorPrimary">@color/md_theme_tianlan_light_primary</item>
-        <item name="colorOnPrimary">@color/md_theme_tianlan_light_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/md_theme_tianlan_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/md_theme_tianlan_light_onPrimaryContainer</item>
-        <item name="colorSecondary">@color/md_theme_tianlan_light_secondary</item>
-        <item name="colorOnSecondary">@color/md_theme_tianlan_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_tianlan_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_tianlan_light_onSecondaryContainer</item>
-        <item name="colorTertiary">@color/md_theme_tianlan_light_tertiary</item>
-        <item name="colorOnTertiary">@color/md_theme_tianlan_light_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/md_theme_tianlan_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_tianlan_light_onTertiaryContainer</item>
-        <item name="colorError">@color/md_theme_tianlan_light_error</item>
-        <item name="colorErrorContainer">@color/md_theme_tianlan_light_errorContainer</item>
-        <item name="colorOnError">@color/md_theme_tianlan_light_onError</item>
-        <item name="colorOnErrorContainer">@color/md_theme_tianlan_light_onErrorContainer</item>
-        <item name="android:colorBackground">@color/md_theme_tianlan_light_background</item>
-        <item name="colorOnBackground">@color/md_theme_tianlan_light_onBackground</item>
-        <item name="colorSurface">@color/md_theme_tianlan_light_surface</item>
-        <item name="colorOnSurface">@color/md_theme_tianlan_light_onSurface</item>
-        <item name="colorSurfaceVariant">@color/md_theme_tianlan_light_surfaceVariant</item>
-        <item name="colorOnSurfaceVariant">@color/md_theme_tianlan_light_onSurfaceVariant</item>
-        <item name="colorOutline">@color/md_theme_tianlan_light_outline</item>
-        <item name="colorOnSurfaceInverse">@color/md_theme_tianlan_light_inverseOnSurface</item>
-        <item name="colorSurfaceInverse">@color/md_theme_tianlan_light_inverseSurface</item>
-        <item name="colorPrimaryInverse">@color/md_theme_tianlan_light_inversePrimary</item>
+    <style name="Theme.TtsServer.SkyBlue">
+        <item name="colorPrimary">@color/md_theme_sky_blue_light_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_sky_blue_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_sky_blue_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_sky_blue_light_onPrimaryContainer
+        </item>
+        <item name="colorSecondary">@color/md_theme_sky_blue_light_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_sky_blue_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_sky_blue_light_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_sky_blue_light_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_sky_blue_light_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_sky_blue_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_sky_blue_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_sky_blue_light_onTertiaryContainer
+        </item>
+        <item name="colorError">@color/md_theme_sky_blue_light_error</item>
+        <item name="colorErrorContainer">@color/md_theme_sky_blue_light_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_sky_blue_light_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_sky_blue_light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_sky_blue_light_background</item>
+        <item name="colorOnBackground">@color/md_theme_sky_blue_light_onBackground</item>
+        <item name="colorSurface">@color/md_theme_sky_blue_light_surface</item>
+        <item name="colorOnSurface">@color/md_theme_sky_blue_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_sky_blue_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_sky_blue_light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_sky_blue_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_sky_blue_light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_sky_blue_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_sky_blue_light_inversePrimary</item>
+    </style>
+
+    <style name="Theme.TtsServer.SorghumRed">
+        <item name="colorPrimary">@color/md_theme_sorghum_red_light_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_sorghum_red_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_sorghum_red_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_sorghum_red_light_onPrimaryContainer
+        </item>
+        <item name="colorSecondary">@color/md_theme_sorghum_red_light_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_sorghum_red_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_sorghum_red_light_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">
+            @color/md_theme_sorghum_red_light_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_sorghum_red_light_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_sorghum_red_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_sorghum_red_light_tertiaryContainer
+        </item>
+        <item name="colorOnTertiaryContainer">
+            @color/md_theme_sorghum_red_light_onTertiaryContainer
+        </item>
+        <item name="colorError">@color/md_theme_sorghum_red_light_error</item>
+        <item name="colorErrorContainer">@color/md_theme_sorghum_red_light_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_sorghum_red_light_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_sorghum_red_light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_sorghum_red_light_background</item>
+        <item name="colorOnBackground">@color/md_theme_sorghum_red_light_onBackground</item>
+        <item name="colorSurface">@color/md_theme_sorghum_red_light_surface</item>
+        <item name="colorOnSurface">@color/md_theme_sorghum_red_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_sorghum_red_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_sorghum_red_light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_sorghum_red_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_sorghum_red_light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_sorghum_red_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_sorghum_red_light_inversePrimary</item>
+    </style>
+
+    <!-- 孔雀绿 -->
+    <style name="Theme.TtsServer.PeacockGreen">
+        <item name="colorPrimary">@color/md_theme_peacock_green_light_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_peacock_green_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_peacock_green_light_primaryContainer
+        </item>
+        <item name="colorOnPrimaryContainer">
+            @color/md_theme_peacock_green_light_onPrimaryContainer
+        </item>
+        <item name="colorSecondary">@color/md_theme_peacock_green_light_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_peacock_green_light_onSecondary</item>
+        <item name="colorSecondaryContainer">
+            @color/md_theme_peacock_green_light_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">
+            @color/md_theme_peacock_green_light_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_peacock_green_light_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_peacock_green_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_peacock_green_light_tertiaryContainer
+        </item>
+        <item name="colorOnTertiaryContainer">
+            @color/md_theme_peacock_green_light_onTertiaryContainer
+        </item>
+        <item name="colorError">@color/md_theme_peacock_green_light_error</item>
+        <item name="colorErrorContainer">@color/md_theme_peacock_green_light_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_peacock_green_light_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_peacock_green_light_onErrorContainer
+        </item>
+        <item name="android:colorBackground">@color/md_theme_peacock_green_light_background</item>
+        <item name="colorOnBackground">@color/md_theme_peacock_green_light_onBackground</item>
+        <item name="colorSurface">@color/md_theme_peacock_green_light_surface</item>
+        <item name="colorOnSurface">@color/md_theme_peacock_green_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_peacock_green_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_peacock_green_light_onSurfaceVariant
+        </item>
+        <item name="colorOutline">@color/md_theme_peacock_green_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_peacock_green_light_inverseOnSurface
+        </item>
+        <item name="colorSurfaceInverse">@color/md_theme_peacock_green_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_peacock_green_light_inversePrimary</item>
     </style>
 
     <style name="Preference.SwitchPreferenceCompat" parent="Preference.SwitchPreferenceCompat.Material">
         <item name="widgetLayout">@layout/view_preference_switch</item>
     </style>
 
-<!--    <style name="Theme.TtsServer" parent="Base.Theme.TtsServer">-->
-<!--        <item name="android:windowTranslucentStatus">false</item>-->
-<!--        <item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
-<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
-<!--        <item name="textInputStyle">?attr/textInputOutlinedStyle</item>-->
-<!--        <item name="materialButtonOutlinedStyle">@style/Widget.TtsServer.Button.OutlinedButton-->
-<!--        </item>-->
-<!--        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.TtsServer.BottomSheetDialog</item>-->
-<!--    </style>-->
+    <!--    <style name="Theme.TtsServer" parent="Base.Theme.TtsServer">-->
+    <!--        <item name="android:windowTranslucentStatus">false</item>-->
+    <!--        <item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+    <!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+    <!--        <item name="textInputStyle">?attr/textInputOutlinedStyle</item>-->
+    <!--        <item name="materialButtonOutlinedStyle">@style/Widget.TtsServer.Button.OutlinedButton-->
+    <!--        </item>-->
+    <!--        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.TtsServer.BottomSheetDialog</item>-->
+    <!--    </style>-->
 
     <style name="ThemeOverlay.TtsServer.BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog">
         <!--        <item name="bottomSheetStyle">@style/Widget.TtsServer.BottomSheet.Modal</item>-->

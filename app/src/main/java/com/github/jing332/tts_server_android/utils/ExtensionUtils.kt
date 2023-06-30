@@ -14,6 +14,7 @@ import android.os.SystemClock
 import android.util.DisplayMetrics
 import android.view.*
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -51,6 +52,14 @@ val Context.layoutInflater: LayoutInflater
 
 fun ViewGroup.setMarginMatchParent() {
     this.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+}
+
+/**
+ * 重启当前 Activity
+ */
+fun Activity.restart() {
+    finish()
+    ContextCompat.startActivity(this, intent, null)
 }
 
 @Suppress("UNCHECKED_CAST")
