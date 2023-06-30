@@ -394,4 +394,7 @@
     <string name="theme_lilac_brown">丁香棕</string>
     <string name="theme_cyan">白青</string>
     <string name="theme_sakura_pink">樱花粉</string>
+    <string name="theme_ink_grey">墨灰</string>
+    <string name="theme_emerald_green">碧绿</string>
+    <string name="theme_red_gold">赤金</string>
 </resources>

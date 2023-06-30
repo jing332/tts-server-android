@@ -142,7 +142,9 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
         navHeaderBinding.subtitle.text = BuildConfig.VERSION_NAME
         navHeaderBinding.btnTheme.clickWithThrottle {
             val scrollView = NestedScrollView(this)
-            val chipGroup = ChipGroup(this).apply { setPadding(16.dp) }
+            val chipGroup = ChipGroup(this).apply {
+                setPadding(16.dp)
+            }
             scrollView.addView(chipGroup)
             val dlg = MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.theme)
