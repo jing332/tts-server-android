@@ -88,3 +88,26 @@
 * [阿里巴巴IconFont](https://www.iconfont.cn/)
 
 * [酷安@沉默_9520](http://www.coolapk.com/u/25956307) 本APP图标作者
+
+# build
+
+### Android Studio
+在项目根目录下新建文件 `local.properties` 并写入如下内容：
+```
+KEY_PATH=E\:\\Android\\key\\sign.jks (签名文件)
+KEY_PASSWORD= 密码
+ALIAS_NAME= 别名
+ALIAS_PASSWORD= 别名密码
+```
+
+### Github Actions
+> 详见 https://www.cnblogs.com/jing332/p/17452492.html
+
+使用 Git Bash 对签名文件进行无换行Base64编码: `openssl base64 < sign.jks | tr -d '\n' | tee sign.jks.base64.txt`
+
+分别添加如下四个安全变量 (Repository secrets):
+> 前往以下链接：https://github.com/你的用户名/tts-server-android/settings/secrets/actions
+* `ALIAS_NAME` 别名
+* `ALIAS_PASSWORD` 别名密码
+* `KEY_PASSWORD` 密码
+* `KEY_STORE` 前面生成的 sign.jks.base64.txt 内容
