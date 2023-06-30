@@ -22,4 +22,26 @@ enum class AppTheme(
         R.string.theme_peacock_green,
         R.color.peacock_green_seed
     ),
+    Golden(
+        R.style.Theme_TtsServer_Golden,
+        R.string.theme_golden,
+        R.color.golden_seed
+    ),
+    LilacBrown(
+        R.style.Theme_TtsServer_LilacBrown,
+        R.string.theme_lilac_brown,
+        R.color.lilac_brown_seed
+    ),
+
+    Cyan(
+        R.style.Theme_TtsServer_Cyan,
+        R.string.theme_cyan,
+        R.color.cyan_seed
+    ),
+
+    SakuraPink(
+        R.style.Theme_TtsServer_SakuraPink,
+        R.string.theme_sakura_pink,
+        R.color.sakura_pink_seed
+    )
 }

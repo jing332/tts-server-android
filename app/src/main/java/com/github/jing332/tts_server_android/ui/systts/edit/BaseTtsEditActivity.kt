@@ -16,6 +16,7 @@ import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initEnterSharedTransition
+import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 import com.google.android.material.textfield.TextInputLayout
 import java.io.InputStream
 
@@ -63,6 +64,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        initAppTheme()
         super.onCreate(savedInstanceState)
         initEnterSharedTransition(binding.root)
         setContentView(binding.root)

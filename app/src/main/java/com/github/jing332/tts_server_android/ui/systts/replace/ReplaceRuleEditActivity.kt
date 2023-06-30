@@ -28,6 +28,7 @@ import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initEnterSharedTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.KeyboardVisibilityEvent
+import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.MaterialSpinnerAdapter
 import com.github.jing332.tts_server_android.ui.view.widget.spinner.SpinnerItem
 import com.github.jing332.tts_server_android.utils.dp
@@ -76,6 +77,7 @@ class ReplaceRuleEditActivity : AppBackActivity(R.layout.systts_replace_edit_act
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         initEnterSharedTransition()
+        initAppTheme()
         super.onCreate(savedInstanceState)
 
         data = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: ReplaceRule()

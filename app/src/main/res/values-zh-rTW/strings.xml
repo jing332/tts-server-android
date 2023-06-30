@@ -390,4 +390,8 @@
     <string name="theme_sky_blue">天蓝</string>
     <string name="theme_sorghum_red">高粱红</string>
     <string name="theme_peacock_green">孔雀绿</string>
+    <string name="theme_golden">金黄</string>
+    <string name="theme_lilac_brown">丁香棕</string>
+    <string name="theme_cyan">白青</string>
+    <string name="theme_sakura_pink">樱花粉</string>
 </resources>

@@ -78,9 +78,9 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         initExitSharedTransition()
-
-        super.onCreate(savedInstanceState)
         initAppTheme()
+        super.onCreate(savedInstanceState)
+
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 

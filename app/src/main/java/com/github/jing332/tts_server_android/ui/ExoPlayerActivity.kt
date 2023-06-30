@@ -8,6 +8,7 @@ import com.github.jing332.tts_server_android.databinding.ExoPlayerActivityBindin
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
+import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
@@ -27,6 +28,7 @@ class ExoPlayerActivity : BackActivity(), Player.Listener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initAppTheme()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 

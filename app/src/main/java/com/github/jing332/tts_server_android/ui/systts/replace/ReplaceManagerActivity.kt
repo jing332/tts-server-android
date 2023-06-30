@@ -41,6 +41,7 @@ import com.github.jing332.tts_server_android.ui.systts.BrvItemTouchHelper
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initExitSharedTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
+import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 import com.github.jing332.tts_server_android.utils.*
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.coroutines.flow.conflate
@@ -62,6 +63,7 @@ class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activit
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         initExitSharedTransition()
+        initAppTheme()
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
 

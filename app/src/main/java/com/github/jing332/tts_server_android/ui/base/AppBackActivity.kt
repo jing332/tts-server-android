@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.AppBackActivityBinding
+import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 
 /**
  * 不带behavior， 解决CoordinatorLayout的fitSystemWindows无效问题
@@ -20,7 +21,7 @@ open class AppBackActivity(@LayoutRes val layoutId: Int) :
     private val binding by viewBinding(AppBackActivityBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_TtsServer_NoActionBar)
+        initAppTheme()
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

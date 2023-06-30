@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
+
     <style name="Theme.TtsServer" parent="TtsServer.Base.Dark">
         <item name="colorPrimary">@color/md_theme_dark_primary</item>
         <item name="colorOnPrimary">@color/md_theme_dark_onPrimary</item>
@@ -65,15 +66,21 @@
         <item name="colorPrimary">@color/md_theme_sorghum_red_dark_primary</item>
         <item name="colorOnPrimary">@color/md_theme_sorghum_red_dark_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_sorghum_red_dark_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/md_theme_sorghum_red_dark_onPrimaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_sorghum_red_dark_onPrimaryContainer
+        </item>
         <item name="colorSecondary">@color/md_theme_sorghum_red_dark_secondary</item>
         <item name="colorOnSecondary">@color/md_theme_sorghum_red_dark_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_sorghum_red_dark_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_sorghum_red_dark_onSecondaryContainer</item>
+        <item name="colorSecondaryContainer">@color/md_theme_sorghum_red_dark_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">
+            @color/md_theme_sorghum_red_dark_onSecondaryContainer
+        </item>
         <item name="colorTertiary">@color/md_theme_sorghum_red_dark_tertiary</item>
         <item name="colorOnTertiary">@color/md_theme_sorghum_red_dark_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/md_theme_sorghum_red_dark_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_sorghum_red_dark_onTertiaryContainer</item>
+        <item name="colorTertiaryContainer">@color/md_theme_sorghum_red_dark_tertiaryContainer
+        </item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_sorghum_red_dark_onTertiaryContainer
+        </item>
         <item name="colorError">@color/md_theme_sorghum_red_dark_error</item>
         <item name="colorErrorContainer">@color/md_theme_sorghum_red_dark_errorContainer</item>
         <item name="colorOnError">@color/md_theme_sorghum_red_dark_onError</item>
@@ -92,32 +99,171 @@
 
     <!-- 孔雀绿 -->
     <style name="Theme.TtsServer.PeacockGreen">
-        <item name="colorPrimary">@color/md_theme_sorghum_red_dark_primary</item>
-        <item name="colorOnPrimary">@color/md_theme_sorghum_red_dark_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/md_theme_sorghum_red_dark_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/md_theme_sorghum_red_dark_onPrimaryContainer</item>
-        <item name="colorSecondary">@color/md_theme_sorghum_red_dark_secondary</item>
-        <item name="colorOnSecondary">@color/md_theme_sorghum_red_dark_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_sorghum_red_dark_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_sorghum_red_dark_onSecondaryContainer</item>
-        <item name="colorTertiary">@color/md_theme_sorghum_red_dark_tertiary</item>
-        <item name="colorOnTertiary">@color/md_theme_sorghum_red_dark_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/md_theme_sorghum_red_dark_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_sorghum_red_dark_onTertiaryContainer</item>
-        <item name="colorError">@color/md_theme_sorghum_red_dark_error</item>
-        <item name="colorErrorContainer">@color/md_theme_sorghum_red_dark_errorContainer</item>
-        <item name="colorOnError">@color/md_theme_sorghum_red_dark_onError</item>
-        <item name="colorOnErrorContainer">@color/md_theme_sorghum_red_dark_onErrorContainer</item>
-        <item name="android:colorBackground">@color/md_theme_sorghum_red_dark_background</item>
-        <item name="colorOnBackground">@color/md_theme_sorghum_red_dark_onBackground</item>
-        <item name="colorSurface">@color/md_theme_sorghum_red_dark_surface</item>
-        <item name="colorOnSurface">@color/md_theme_sorghum_red_dark_onSurface</item>
-        <item name="colorSurfaceVariant">@color/md_theme_sorghum_red_dark_surfaceVariant</item>
-        <item name="colorOnSurfaceVariant">@color/md_theme_sorghum_red_dark_onSurfaceVariant</item>
-        <item name="colorOutline">@color/md_theme_sorghum_red_dark_outline</item>
-        <item name="colorOnSurfaceInverse">@color/md_theme_sorghum_red_dark_inverseOnSurface</item>
-        <item name="colorSurfaceInverse">@color/md_theme_sorghum_red_dark_inverseSurface</item>
-        <item name="colorPrimaryInverse">@color/md_theme_sorghum_red_dark_inversePrimary</item>
+        <item name="colorPrimary">@color/md_theme_peacock_green_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_peacock_green_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_peacock_green_dark_primaryContainer
+        </item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_peacock_green_dark_onPrimaryContainer
+        </item>
+        <item name="colorSecondary">@color/md_theme_peacock_green_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_peacock_green_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_peacock_green_dark_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">
+            @color/md_theme_peacock_green_dark_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_peacock_green_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_peacock_green_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_peacock_green_dark_tertiaryContainer
+        </item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_peacock_green_dark_onTertiaryContainer
+        </item>
+        <item name="colorError">@color/md_theme_peacock_green_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_peacock_green_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_peacock_green_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_peacock_green_dark_onErrorContainer
+        </item>
+        <item name="android:colorBackground">@color/md_theme_peacock_green_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_peacock_green_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_peacock_green_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_peacock_green_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_peacock_green_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_peacock_green_dark_onSurfaceVariant
+        </item>
+        <item name="colorOutline">@color/md_theme_peacock_green_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_peacock_green_dark_inverseOnSurface
+        </item>
+        <item name="colorSurfaceInverse">@color/md_theme_peacock_green_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_peacock_green_dark_inversePrimary</item>
+    </style>
+
+    <style name="Theme.TtsServer.Golden">
+        <item name="colorPrimary">@color/md_theme_golden_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_golden_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_golden_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_golden_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_golden_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_golden_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_golden_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_golden_dark_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_golden_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_golden_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_golden_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_golden_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_golden_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_golden_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_golden_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_golden_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_golden_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_golden_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_golden_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_golden_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_golden_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_golden_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_golden_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_golden_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_golden_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_golden_dark_inversePrimary</item>
+    </style>
+
+    <style name="Theme.TtsServer.LilacBrown">
+        <item name="colorPrimary">@color/md_theme_lilac_brown_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_lilac_brown_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_lilac_brown_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_lilac_brown_dark_onPrimaryContainer
+        </item>
+        <item name="colorSecondary">@color/md_theme_lilac_brown_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_lilac_brown_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_lilac_brown_dark_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">
+            @color/md_theme_lilac_brown_dark_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_lilac_brown_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_lilac_brown_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_lilac_brown_dark_tertiaryContainer
+        </item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_lilac_brown_dark_onTertiaryContainer
+        </item>
+        <item name="colorError">@color/md_theme_lilac_brown_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_lilac_brown_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_lilac_brown_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_lilac_brown_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_lilac_brown_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_lilac_brown_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_lilac_brown_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_lilac_brown_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_lilac_brown_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_lilac_brown_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_lilac_brown_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_lilac_brown_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_lilac_brown_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_lilac_brown_dark_inversePrimary</item>
+    </style>
+
+    <style name="Theme.TtsServer.Cyan">
+        <item name="colorPrimary">@color/md_theme_cyan_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_cyan_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_cyan_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_cyan_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_cyan_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_cyan_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_cyan_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_cyan_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_cyan_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_cyan_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_cyan_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_cyan_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_cyan_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_cyan_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_cyan_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_cyan_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_cyan_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_cyan_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_cyan_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_cyan_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_cyan_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_cyan_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_cyan_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_cyan_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_cyan_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_cyan_dark_inversePrimary</item>
+    </style>
+
+    <style name="Theme.TtsServer.SakuraPink">
+        <item name="colorPrimary">@color/md_theme_sakura_pink_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_sakura_pink_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_sakura_pink_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_sakura_pink_dark_onPrimaryContainer
+        </item>
+        <item name="colorSecondary">@color/md_theme_sakura_pink_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_sakura_pink_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_sakura_pink_dark_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">
+            @color/md_theme_sakura_pink_dark_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_sakura_pink_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_sakura_pink_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_sakura_pink_dark_tertiaryContainer
+        </item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_sakura_pink_dark_onTertiaryContainer
+        </item>
+        <item name="colorError">@color/md_theme_sakura_pink_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_sakura_pink_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_sakura_pink_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_sakura_pink_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_sakura_pink_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_sakura_pink_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_sakura_pink_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_sakura_pink_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_sakura_pink_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_sakura_pink_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_sakura_pink_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_sakura_pink_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_sakura_pink_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_sakura_pink_dark_inversePrimary</item>
     </style>
 
 </resources>

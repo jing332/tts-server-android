@@ -31,6 +31,7 @@ import com.github.jing332.tts_server_android.ui.base.AppBackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
+import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 import com.github.jing332.tts_server_android.ui.view.widget.AppMaterialDialogBuilder
 import com.github.jing332.tts_server_android.utils.longToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -78,6 +79,7 @@ abstract class BaseScriptEditorActivity :
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
+        initAppTheme()
         super.onCreate(savedInstanceState)
 
         // 设置 configChanges
