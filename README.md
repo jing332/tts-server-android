@@ -89,9 +89,9 @@
 
 * [酷安@沉默_9520](http://www.coolapk.com/u/25956307) 本APP图标作者
 
-# build
+# Build
 
-### Android Studio
+### Android Studio:
 在项目根目录下新建文件 `local.properties` 并写入如下内容：
 ```
 KEY_PATH=E\:\\Android\\key\\sign.jks (签名文件)
@@ -100,7 +100,9 @@ ALIAS_NAME= 别名
 ALIAS_PASSWORD= 别名密码
 ```
 
-### Github Actions
+
+
+### Github Actions:
 > 详见 https://www.cnblogs.com/jing332/p/17452492.html
 
 使用 Git Bash 对签名文件进行无换行Base64编码: `openssl base64 < sign.jks | tr -d '\n' | tee sign.jks.base64.txt`
