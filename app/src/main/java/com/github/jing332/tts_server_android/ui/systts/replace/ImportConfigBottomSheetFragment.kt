@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.ui.systts.replace
 
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.constant.ConfigType
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.GroupWithReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
@@ -14,7 +15,7 @@ import com.github.jing332.tts_server_android.utils.toJsonListString
 import kotlinx.serialization.decodeFromString
 
 class ImportConfigBottomSheetFragment :
-    BaseImportConfigBottomSheetFragment(R.string.import_replace_rule) {
+    BaseImportConfigBottomSheetFragment(R.string.import_replace_rule, ConfigType.REPLACE_RULE) {
     companion object {
         const val TAG = "ImportConfigBottomSheetFragment"
     }
@@ -63,7 +64,4 @@ class ImportConfigBottomSheetFragment :
             dismiss()
         }
     }
-
-    override fun checkJson(json: String) = json.contains("pattern")
-
 }

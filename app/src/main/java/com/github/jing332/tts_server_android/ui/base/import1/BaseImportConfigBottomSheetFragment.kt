@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.view.isInvisible
 import androidx.core.view.setPadding
@@ -17,11 +18,12 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.drake.net.Net
 import com.drake.net.okhttp.trustSSLCertificate
-import com.drake.net.utils.withIO
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.constant.ConfigType
 import com.github.jing332.tts_server_android.databinding.BaseConfigImportItemBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBaseImportConfigBottomSheetBinding
+import com.github.jing332.tts_server_android.help.ConfigImportHelper
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
@@ -43,6 +45,7 @@ import okhttp3.Response
 abstract class BaseImportConfigBottomSheetFragment(
     @StringRes
     protected var title: Int = R.string.import_config,
+    val configType: ConfigType,
     var fileUri: Uri? = null,
     var remoteUrl: String? = null,
 ) : BottomSheetDialogFragment(R.layout.systts_base_import_config_bottom_sheet) {
@@ -137,10 +140,26 @@ abstract class BaseImportConfigBottomSheetFragment(
             }
 
             kotlin.runCatching {
-                if (checkJson(json))
+                val type = ConfigImportHelper.getConfigType(json)
+                if (type == configType)
                     onImport(json)
-                else
-                    throw Exception(getString(R.string.format_error))
+                else {
+                    if (type == ConfigType.UNKNOWN)
+                        throw Exception(getString(R.string.import_config_type_unknown_msg))
+
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setIcon(R.drawable.baseline_error_24)
+                        .setTitle(R.string.import_config)
+                        .setMessage(
+                            getString(
+                                R.string.import_config_type_not_match_msg,
+                                getString(configType.strId),
+                                getString(type.strId)
+                            )
+                        )
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show()
+                }
             }.onFailure {
                 requireContext().displayErrorDialog(it)
             }
@@ -217,7 +236,4 @@ abstract class BaseImportConfigBottomSheetFragment(
             .setNeutralButton(R.string.cancel, null)
             .show()
     }
-
-    open fun checkJson(json: String): Boolean = true
-
 }

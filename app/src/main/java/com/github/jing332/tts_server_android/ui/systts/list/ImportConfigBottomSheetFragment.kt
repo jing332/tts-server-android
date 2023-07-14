@@ -5,6 +5,7 @@ import android.view.View
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.LegadoHttpTts
 import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.constant.ConfigType
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.CompatSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
@@ -20,7 +21,8 @@ import com.github.jing332.tts_server_android.utils.longToast
 import com.github.jing332.tts_server_android.utils.toJsonListString
 import kotlinx.serialization.decodeFromString
 
-class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
+class ImportConfigBottomSheetFragment :
+    BaseImportConfigBottomSheetFragment(configType = ConfigType.LIST) {
     companion object {
         const val TAG = "ConfigImportBottomSheetFragment"
     }
@@ -36,8 +38,6 @@ class ImportConfigBottomSheetFragment : BaseImportConfigBottomSheetFragment() {
 
     private val isLegado: Boolean
         get() = binding.groupType.checkedButtonId == binding.btnTypeLegado.id
-
-    override fun checkJson(json: String) = json.contains("tts")
 
     @Suppress("UNCHECKED_CAST")
     override fun onImport(json: String) {
