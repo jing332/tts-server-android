@@ -1,30 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!--基本样式-->
-    <style name="TtsServer.Base" parent="Theme.Material3.DayNight">
-        <!--        <item name="android:windowTranslucentStatus">false</item>-->
-        <!--        <item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
-        <!--        &lt;!&ndash;        <item name="materialButtonOutlinedStyle">@style/Widget.TtsServer.Button.OutlinedButton&ndash;&gt;-->
-        <!--        &lt;!&ndash;        </item>&ndash;&gt;-->
-    </style>
-
-    <style name="TtsServer.Base.Light" parent="Theme.Material3.Light">
+    <style name="BaseTheme.TtsServer" parent="Theme.Material3.DayNight">
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.TtsServer.BottomSheetDialog</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="TtsServer.Base.Light" parent="BaseTheme.TtsServer">
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="TtsServer.Base.Dark" parent="Theme.Material3.Dark">
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.TtsServer.BottomSheetDialog</item>
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+    <style name="TtsServer.Base.Dark" parent="BaseTheme.TtsServer">
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
     <!-- 默认主题 -->
@@ -245,7 +236,8 @@
         <item name="colorSecondary">@color/md_theme_cyan_light_secondary</item>
         <item name="colorOnSecondary">@color/md_theme_cyan_light_onSecondary</item>
         <item name="colorSecondaryContainer">@color/md_theme_cyan_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_cyan_light_onSecondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_cyan_light_onSecondaryContainer
+        </item>
         <item name="colorTertiary">@color/md_theme_cyan_light_tertiary</item>
         <item name="colorOnTertiary">@color/md_theme_cyan_light_onTertiary</item>
         <item name="colorTertiaryContainer">@color/md_theme_cyan_light_tertiaryContainer</item>
@@ -270,15 +262,22 @@
         <item name="colorPrimary">@color/md_theme_sakura_pink_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_sakura_pink_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_sakura_pink_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/md_theme_sakura_pink_light_onPrimaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_sakura_pink_light_onPrimaryContainer
+        </item>
         <item name="colorSecondary">@color/md_theme_sakura_pink_light_secondary</item>
         <item name="colorOnSecondary">@color/md_theme_sakura_pink_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_sakura_pink_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_sakura_pink_light_onSecondaryContainer</item>
+        <item name="colorSecondaryContainer">@color/md_theme_sakura_pink_light_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">
+            @color/md_theme_sakura_pink_light_onSecondaryContainer
+        </item>
         <item name="colorTertiary">@color/md_theme_sakura_pink_light_tertiary</item>
         <item name="colorOnTertiary">@color/md_theme_sakura_pink_light_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/md_theme_sakura_pink_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_sakura_pink_light_onTertiaryContainer</item>
+        <item name="colorTertiaryContainer">@color/md_theme_sakura_pink_light_tertiaryContainer
+        </item>
+        <item name="colorOnTertiaryContainer">
+            @color/md_theme_sakura_pink_light_onTertiaryContainer
+        </item>
         <item name="colorError">@color/md_theme_sakura_pink_light_error</item>
         <item name="colorErrorContainer">@color/md_theme_sakura_pink_light_errorContainer</item>
         <item name="colorOnError">@color/md_theme_sakura_pink_light_onError</item>
@@ -300,15 +299,19 @@
         <item name="colorPrimary">@color/md_theme_ink_grey_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_ink_grey_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_ink_grey_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/md_theme_ink_grey_light_onPrimaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_ink_grey_light_onPrimaryContainer
+        </item>
         <item name="colorSecondary">@color/md_theme_ink_grey_light_secondary</item>
         <item name="colorOnSecondary">@color/md_theme_ink_grey_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_ink_grey_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_ink_grey_light_onSecondaryContainer</item>
+        <item name="colorSecondaryContainer">@color/md_theme_ink_grey_light_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_ink_grey_light_onSecondaryContainer
+        </item>
         <item name="colorTertiary">@color/md_theme_ink_grey_light_tertiary</item>
         <item name="colorOnTertiary">@color/md_theme_ink_grey_light_onTertiary</item>
         <item name="colorTertiaryContainer">@color/md_theme_ink_grey_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_ink_grey_light_onTertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_ink_grey_light_onTertiaryContainer
+        </item>
         <item name="colorError">@color/md_theme_ink_grey_light_error</item>
         <item name="colorErrorContainer">@color/md_theme_ink_grey_light_errorContainer</item>
         <item name="colorOnError">@color/md_theme_ink_grey_light_onError</item>
@@ -328,28 +331,41 @@
     <style name="Theme.TtsServer.EmeraldGreen">
         <item name="colorPrimary">@color/md_theme_emerald_green_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_emerald_green_light_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/md_theme_emerald_green_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/md_theme_emerald_green_light_onPrimaryContainer</item>
+        <item name="colorPrimaryContainer">@color/md_theme_emerald_green_light_primaryContainer
+        </item>
+        <item name="colorOnPrimaryContainer">
+            @color/md_theme_emerald_green_light_onPrimaryContainer
+        </item>
         <item name="colorSecondary">@color/md_theme_emerald_green_light_secondary</item>
         <item name="colorOnSecondary">@color/md_theme_emerald_green_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_emerald_green_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_emerald_green_light_onSecondaryContainer</item>
+        <item name="colorSecondaryContainer">
+            @color/md_theme_emerald_green_light_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">
+            @color/md_theme_emerald_green_light_onSecondaryContainer
+        </item>
         <item name="colorTertiary">@color/md_theme_emerald_green_light_tertiary</item>
         <item name="colorOnTertiary">@color/md_theme_emerald_green_light_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/md_theme_emerald_green_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_emerald_green_light_onTertiaryContainer</item>
+        <item name="colorTertiaryContainer">@color/md_theme_emerald_green_light_tertiaryContainer
+        </item>
+        <item name="colorOnTertiaryContainer">
+            @color/md_theme_emerald_green_light_onTertiaryContainer
+        </item>
         <item name="colorError">@color/md_theme_emerald_green_light_error</item>
         <item name="colorErrorContainer">@color/md_theme_emerald_green_light_errorContainer</item>
         <item name="colorOnError">@color/md_theme_emerald_green_light_onError</item>
-        <item name="colorOnErrorContainer">@color/md_theme_emerald_green_light_onErrorContainer</item>
+        <item name="colorOnErrorContainer">@color/md_theme_emerald_green_light_onErrorContainer
+        </item>
         <item name="android:colorBackground">@color/md_theme_emerald_green_light_background</item>
         <item name="colorOnBackground">@color/md_theme_emerald_green_light_onBackground</item>
         <item name="colorSurface">@color/md_theme_emerald_green_light_surface</item>
         <item name="colorOnSurface">@color/md_theme_emerald_green_light_onSurface</item>
         <item name="colorSurfaceVariant">@color/md_theme_emerald_green_light_surfaceVariant</item>
-        <item name="colorOnSurfaceVariant">@color/md_theme_emerald_green_light_onSurfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_emerald_green_light_onSurfaceVariant
+        </item>
         <item name="colorOutline">@color/md_theme_emerald_green_light_outline</item>
-        <item name="colorOnSurfaceInverse">@color/md_theme_emerald_green_light_inverseOnSurface</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_emerald_green_light_inverseOnSurface
+        </item>
         <item name="colorSurfaceInverse">@color/md_theme_emerald_green_light_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_emerald_green_light_inversePrimary</item>
     </style>
@@ -358,15 +374,19 @@
         <item name="colorPrimary">@color/md_theme_red_gold_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_red_gold_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_red_gold_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/md_theme_red_gold_light_onPrimaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_red_gold_light_onPrimaryContainer
+        </item>
         <item name="colorSecondary">@color/md_theme_red_gold_light_secondary</item>
         <item name="colorOnSecondary">@color/md_theme_red_gold_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_red_gold_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_red_gold_light_onSecondaryContainer</item>
+        <item name="colorSecondaryContainer">@color/md_theme_red_gold_light_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_red_gold_light_onSecondaryContainer
+        </item>
         <item name="colorTertiary">@color/md_theme_red_gold_light_tertiary</item>
         <item name="colorOnTertiary">@color/md_theme_red_gold_light_onTertiary</item>
         <item name="colorTertiaryContainer">@color/md_theme_red_gold_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_red_gold_light_onTertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_red_gold_light_onTertiaryContainer
+        </item>
         <item name="colorError">@color/md_theme_red_gold_light_error</item>
         <item name="colorErrorContainer">@color/md_theme_red_gold_light_errorContainer</item>
         <item name="colorOnError">@color/md_theme_red_gold_light_onError</item>
