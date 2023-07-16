@@ -105,7 +105,7 @@ ALIAS_PASSWORD= 别名密码
 ### Github Actions:
 > 详见 https://www.cnblogs.com/jing332/p/17452492.html
 
-使用 Git Bash 对签名文件进行无换行Base64编码: `openssl base64 < sign.jks | tr -d '\n' | tee sign.jks.base64.txt`
+使用 Git Bash 对签名文件进行无换行Base64编码: `openssl base64 < key.jks | tr -d '\r\n' | tee key.jks.base64.txt`
 
 分别添加如下四个安全变量 (Repository secrets):
 > 前往以下链接：https://github.com/你的用户名/tts-server-android/settings/secrets/actions
