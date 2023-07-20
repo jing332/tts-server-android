@@ -162,7 +162,7 @@ class SpeechRuleManagerActivity : BackActivity() {
             R.id.menu_export -> {
                 val exportFragment = ConfigExportBottomSheetFragment({
                     AppConst.jsonBuilder.encodeToString(appDb.speechRule.allEnabled)
-                }, { "ttsrv-speechRules" })
+                }, { "ttsrv-speechRules.json" })
                 exportFragment.show(supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
             }
 
