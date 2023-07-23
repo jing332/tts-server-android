@@ -73,6 +73,7 @@ data class PluginTTS(
     var pluginEngine: TtsPluginEngine? = null
 
     companion object {
+        // 复用
         private val engineMap = mutableMapOf<String, RhinoScriptEngine>()
     }
 
@@ -95,21 +96,16 @@ data class PluginTTS(
     }
 
     override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream? {
-        pluginEngine?.let {
-            return if (it.pluginTTS === this) {
-                it.getAudio(speakText, rate, pitch)
-            } else {
-                return TtsPluginEngine(
-                    this,
-                    context,
-                    pluginEngine!!.rhino,
-                    pluginEngine!!.logger
-                ).getAudio(
-                    speakText, rate, pitch
-                )
-            }
-        }
+        if (pluginEngine?.pluginTTS !== this) // 当PluginTTS对象不同时 就更新并重新设置
+            pluginEngine = TtsPluginEngine(
+                this,
+                context,
+                pluginEngine!!.rhino,
+                pluginEngine!!.logger
+            ).apply { putDefaultObjects() }
 
-        return null
+        return pluginEngine?.getAudio(
+            speakText, rate, pitch
+        )
     }
 }

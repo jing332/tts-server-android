@@ -21,12 +21,16 @@ open class BaseScriptEngine(
         }
     }
 
+    fun putDefaultObjects() {
+        rhino.put(OBJ_TTSRV, ttsrvObject)
+        rhino.put(OBJ_LOGGER, logger)
+    }
+
     @Synchronized
     open fun eval(
         prefixCode: String = ""
     ): Any? {
-        rhino.put(OBJ_TTSRV, ttsrvObject)
-        rhino.put(OBJ_LOGGER, logger)
+        putDefaultObjects()
 
         return rhino.eval("${prefixCode.removePrefix(";").removeSuffix(";")};$code")
     }
