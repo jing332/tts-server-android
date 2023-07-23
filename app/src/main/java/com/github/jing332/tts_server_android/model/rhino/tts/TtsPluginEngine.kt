@@ -13,7 +13,7 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 open class TtsPluginEngine(
-    private val pluginTTS: PluginTTS,
+    val pluginTTS: PluginTTS,
     private val context: Context,
     override val rhino: RhinoScriptEngine = RhinoScriptEngine(),
     override val logger: Logger = Logger(),

@@ -95,8 +95,21 @@ data class PluginTTS(
     }
 
     override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream? {
-        return pluginEngine?.getAudio(
-            speakText, rate, pitch
-        )
+        pluginEngine?.let {
+            return if (it.pluginTTS === this) {
+                it.getAudio(speakText, rate, pitch)
+            } else {
+                return TtsPluginEngine(
+                    this,
+                    context,
+                    pluginEngine!!.rhino,
+                    pluginEngine!!.logger
+                ).getAudio(
+                    speakText, rate, pitch
+                )
+            }
+        }
+
+        return null
     }
 }
