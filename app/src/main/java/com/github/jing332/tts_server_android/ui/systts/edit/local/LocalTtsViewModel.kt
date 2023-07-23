@@ -192,9 +192,9 @@ class LocalTtsViewModel : ViewModel() {
             } else {
                 withIO {
                     mTts.getAudioWithSystemParams(text)?.let {
-                        val sampleRate = AudioDecoder.getSampleRateAndMime(it.readBytes()).first
-
-                        withMain { onGetAudioSuccess(it.readBytes(), sampleRate) }
+                        val bytes = it.readBytes()
+                        val sampleRate = AudioDecoder.getSampleRateAndMime(bytes).first
+                        withMain { onGetAudioSuccess(bytes, sampleRate) }
                         return@withIO
                     }
                 }
