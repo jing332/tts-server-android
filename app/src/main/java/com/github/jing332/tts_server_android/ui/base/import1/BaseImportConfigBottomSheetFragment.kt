@@ -158,6 +158,7 @@ abstract class BaseImportConfigBottomSheetFragment(
                             )
                         )
                         .setPositiveButton(android.R.string.ok, null)
+                        .setNeutralButton( R.string.still_to_import) { _, _ -> onImport(json) }
                         .show()
                 }
             }.onFailure {

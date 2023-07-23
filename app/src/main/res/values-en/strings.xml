@@ -415,4 +415,5 @@
     <string name="theme_red_gold">赤金</string>
     <string name="import_config_type_not_match_msg">Format error (expected: %1$s).\nThe format you entered is %2$s, please go to the corresponding management interface for import.</string>
     <string name="import_config_type_unknown_msg">Unknown format, please enter the correct configuration.</string>
+    <string name="still_to_import">Stil to Import</string>
 </resources>

@@ -411,4 +411,5 @@
     <string name="theme_red_gold">赤金</string>
     <string name="import_config_type_not_match_msg">格式错误(预期为: %1$s)。\n您输入的格式为 %2$s, 请前往对应管理界面进行导入。</string>
     <string name="import_config_type_unknown_msg">格式未知，请输入正确的配置。</string>
+    <string name="still_to_import">仍要导入</string>
 </resources>

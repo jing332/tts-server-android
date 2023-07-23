@@ -4,10 +4,10 @@ import com.github.jing332.tts_server_android.constant.ConfigType
 
 object ConfigImportHelper {
     private val fieldMap = mapOf(
-        "list" to ConfigType.LIST,
         "pluginId" to ConfigType.PLUGIN,
         "pattern" to ConfigType.REPLACE_RULE,
-        "ruleId" to ConfigType.SPEECH_RULE
+        "ruleId" to ConfigType.SPEECH_RULE,
+        "list" to ConfigType.LIST,
     )
 
     /**
