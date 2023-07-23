@@ -23,7 +23,7 @@ import java.io.InputStream
 @SerialName("plugin")
 data class PluginTTS(
     val pluginId: String = "",
-    var locale: String = "",
+    override var locale: String = "",
     var voice: String = "",
     // 插件附加数据
     var data: MutableMap<String, String> = mutableMapOf(),
@@ -81,7 +81,11 @@ data class PluginTTS(
         } else {
             engineMap[pluginId] = RhinoScriptEngine()
         }
-        pluginEngine = pluginEngine ?: TtsPluginEngine(pluginTTS = this, context = context, rhino = engineMap[pluginId]!!)
+        pluginEngine = pluginEngine ?: TtsPluginEngine(
+            pluginTTS = this,
+            context = context,
+            rhino = engineMap[pluginId]!!
+        )
 
         pluginEngine?.onLoad()
     }

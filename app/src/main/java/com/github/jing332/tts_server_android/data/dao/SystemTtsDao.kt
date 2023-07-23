@@ -32,6 +32,9 @@ interface SystemTtsDao {
         isStandbyType: Boolean = false,
     ): List<SystemTts>
 
+    @Query("SELECT * FROM sysTts WHERE id = :id")
+    fun getTts(id: Long): SystemTts?
+
     @get:Query("SELECT * FROM sysTts WHERE isEnabled = '1'")
     val allEnabledTts: List<SystemTts>
 

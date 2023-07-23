@@ -18,19 +18,21 @@ import android.speech.tts.SynthesisCallback
 import android.speech.tts.SynthesisRequest
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeechService
+import android.speech.tts.Voice
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.*
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
+import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.help.audio.AudioDecoderException
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
 import com.github.jing332.tts_server_android.service.systts.help.exception.*
 import com.github.jing332.tts_server_android.ui.AppLog
-import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_SYS_TTS
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
@@ -51,6 +53,8 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         const val ACTION_NOTIFY_CANCEL = "SYS_TTS_NOTIFY_CANCEL"
         const val ACTION_NOTIFY_KILL_PROCESS = "SYS_TTS_NOTIFY_EXIT_0"
         const val NOTIFICATION_CHAN_ID = "system_tts_service"
+
+        const val DEFAULT_VOICE_NAME = "DEFAULT_默认"
 
         /**
          * 更新配置
@@ -147,6 +151,51 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         return result
     }
 
+    override fun onGetDefaultVoiceNameFor(
+        lang: String?,
+        country: String?,
+        variant: String?
+    ): String {
+        return DEFAULT_VOICE_NAME
+    }
+
+
+    override fun onGetVoices(): MutableList<Voice> {
+        val list =
+            mutableListOf(Voice(DEFAULT_VOICE_NAME, Locale.getDefault(), 0, 0, true, emptySet()))
+
+        appDb.systemTtsDao.getSysTtsWithGroups().forEach {
+            it.list.forEach { tts ->
+                list.add(
+                    Voice(
+                        /* name = */ "${tts.displayName}_${tts.id}",
+                        /* locale = */ Locale.forLanguageTag(tts.tts.locale),
+                        /* quality = */ 0,
+                        /* latency = */ 0,
+                        /* requiresNetworkConnection = */true,
+                        /* features = */mutableSetOf<String>().apply {
+                            add(tts.order.toString())
+                            add(tts.id.toString())
+                        }
+                    )
+                )
+
+            }
+        }
+
+        return list
+    }
+
+    override fun onIsValidVoiceName(voiceName: String?): Int {
+        val isDefault = voiceName == DEFAULT_VOICE_NAME
+        if (isDefault) return TextToSpeech.SUCCESS
+
+        val index =
+            appDb.systemTtsDao.allTts.indexOfFirst { "${it.displayName}_${it.id}" == voiceName }
+
+        return if (index == -1) TextToSpeech.ERROR else TextToSpeech.SUCCESS
+    }
+
     override fun onStop() {
         Log.d(TAG, "onStop")
         mTtsManager.stop()
@@ -158,7 +207,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     private var synthesizerJob: Job? = null
     private var mNotificationJob: Job? = null
 
-    override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
+    override fun onSynthesizeText(request: SynthesisRequest, callback: SynthesisCallback) {
         mNotificationJob?.cancel()
         reNewWakeLock()
         startForegroundService()
@@ -167,18 +216,30 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         updateNotification(getString(R.string.systts_state_synthesizing), text)
 
         if (StringUtils.isSilent(text)) {
-            callback?.start(16000, AudioFormat.ENCODING_PCM_16BIT, 1)
-            callback?.done()
+            callback.start(16000, AudioFormat.ENCODING_PCM_16BIT, 1)
+            callback.done()
             return
         }
 
-        callback!!.start(mTtsManager.audioFormat.sampleRate, mTtsManager.audioFormat.bitRate, 1)
+        // 调用者指定ID
+        var ttsId = -1L
+        if (request.voiceName.isNotEmpty() && request.voiceName.contains("_")) {
+            val voiceSplitList = request.voiceName.split("_")
+            voiceSplitList.getOrNull(voiceSplitList.size - 1)?.let { idStr ->
+                ttsId = idStr.toLongOrNull() ?: -1L
+            }
+        }
+
         runBlocking {
             synthesizerJob = launch {
                 mTtsManager.textToAudio(
+                    ttsId = ttsId,
                     text = text,
                     sysRate = (request!!.speechRate * 100) / 500, // < 100
-                    sysPitch = request.pitch - 100, // 默认0
+                    sysPitch = request.pitch - 100, // 默认0,
+                    onStart = { sampleRate, bitRate ->
+                        callback.start(sampleRate, bitRate, 1)
+                    }
                 ) {
                     writeToCallBack(callback, it)
                 }

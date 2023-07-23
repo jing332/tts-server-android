@@ -31,7 +31,7 @@ import java.util.*
 @SerialName("local")
 data class LocalTTS(
     var engine: String? = null,
-    var locale: String? = null,
+    override var locale: String = "",
     var voiceName: String? = null,
 
     var extraParams: MutableList<LocalTtsParameter>? = null,

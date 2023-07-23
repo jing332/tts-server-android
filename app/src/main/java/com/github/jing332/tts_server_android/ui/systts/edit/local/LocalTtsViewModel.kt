@@ -92,14 +92,14 @@ class LocalTtsViewModel : ViewModel() {
                     ui.locales.selectedItem?.let {
                         mTts.locale = if (it.value == null) {
                             mTts.voiceName = null
-                            null
+                            ""
                         } else {
                             (it.value as Locale).toLanguageTag()
                         }
                     }
                     updateVoice(mAllVoices)
 
-                    voiceEnabledLiveData.postValue(mTts.locale != null)
+                    voiceEnabledLiveData.postValue(mTts.locale != "")
                 }
             }
         }

@@ -36,6 +36,8 @@ sealed class ITextToSpeechEngine(
     abstract var volume: Int
     abstract val rate: Int
 
+    abstract var locale: String
+
     abstract var speechRule: SpeechRuleInfo
     abstract var audioFormat: BaseAudioFormat
     abstract var audioPlayer: PlayerParams

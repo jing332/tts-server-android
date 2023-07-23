@@ -41,6 +41,9 @@ data class HttpTTS(
     @Transient
     override var speechRule: SpeechRuleInfo = SpeechRuleInfo(),
 
+    @Transient
+    override var locale: String = "",
+
     ) : Parcelable, ITextToSpeechEngine() {
     override fun isRateFollowSystem(): Boolean {
         return VALUE_FOLLOW_SYSTEM == rate

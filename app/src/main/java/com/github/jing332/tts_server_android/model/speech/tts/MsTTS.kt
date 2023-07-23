@@ -30,7 +30,7 @@ import java.io.InputStream
 data class MsTTS(
     @MsTtsApiType var api: Int = MsTtsApiType.EDGE,
     var format: String = MsTtsAudioFormat.DEFAULT,
-    var locale: String = DEFAULT_LOCALE,
+    override var locale: String = DEFAULT_LOCALE,
     // 二级语言（语言技能）仅限en-US-JennyMultilingualNeural
     var secondaryLocale: String? = null,
     var voiceName: String = DEFAULT_VOICE,

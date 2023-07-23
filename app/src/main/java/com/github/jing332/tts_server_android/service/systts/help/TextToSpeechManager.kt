@@ -17,6 +17,7 @@ import com.github.jing332.tts_server_android.model.speech.TtsTextPair
 import com.github.jing332.tts_server_android.model.speech.tts.*
 import com.github.jing332.tts_server_android.service.systts.help.exception.*
 import com.github.jing332.tts_server_android.utils.StringUtils
+import com.github.jing332.tts_server_android.utils.longToast
 import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.*
 import kotlin.coroutines.coroutineContext
@@ -35,8 +36,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     var isSynthesizing: Boolean = false
         private set
 
-    var audioFormat: BaseAudioFormat = BaseAudioFormat()
-        private set
+    private var audioFormat: BaseAudioFormat = BaseAudioFormat()
 
     init {
         SysTtsLib.setTimeout(SysTtsConfig.requestTimeout)
@@ -330,50 +330,93 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     }
 
     suspend fun textToAudio(
+        ttsId: Long = -1L,
         text: String,
         sysRate: Int,
         sysPitch: Int,
+        onStart: (sampleRate: Int, bitRate: Int) -> Unit,
         onPcmAudio: (pcmAudio: ByteArray) -> Unit,
     ) {
         isSynthesizing = true
-        mBgmPlayer?.play()
 
         val replaced = if (SysTtsConfig.isReplaceEnabled)
             mTextReplacer.replace(text) { listener?.onError(it) } else text
 
-        synthesizeText(replaced, sysRate, sysPitch) { data -> // 音频获取完毕
-            kotlin.runCatching {
-                val txtTts = data.txtTts
-                val audioParams = txtTts.tts.audioParams
+        if (ttsId == -1L) {
+            mBgmPlayer?.play()
+            onStart(audioFormat.sampleRate, audioFormat.bitRate)
+            synthesizeText(replaced, sysRate, sysPitch) { data -> // 音频获取完毕
+                data.receiver(sysRate, sysPitch, audioFormat, onPcmAudio)
+            }
+        } else {
+            val specifiedTts = appDb.systemTtsDao.getTts(ttsId)
+            if (specifiedTts == null) {
+                context.longToast("指定的TTS配置不存在")
+                return
+            }
 
-                val srcSampleRate = txtTts.tts.audioFormat.sampleRate
-                val targetSampleRate = audioFormat.sampleRate
-
-                val sonic =
-                    if (audioParams.isDefaultValue && srcSampleRate == targetSampleRate) null
-                    else Sonic(txtTts.tts.audioFormat.sampleRate, 1)
-                txtTts.playAudio(
-                    sysRate, sysPitch, data.audio,
-                    onDone = { data.done.invoke() })
-                { pcmAudio ->
-                    if (sonic == null) onPcmAudio.invoke(pcmAudio)
-                    else {
-                        sonic.volume = audioParams.volume
-                        sonic.speed = audioParams.speed
-                        sonic.pitch = audioParams.pitch
-                        sonic.rate = srcSampleRate.toFloat() / targetSampleRate.toFloat()
-
-                        sonic.writeBytesToStream(pcmAudio, pcmAudio.size)
-                        onPcmAudio.invoke(sonic.readBytesFromStream(sonic.samplesAvailable()))
-                    }
-                }
-                listener?.onPlayFinished(txtTts.text, txtTts.tts)
-            }.onFailure {
-                listener?.onError(TtsManagerException(cause = it, message = it.message))
+            val group = appDb.systemTtsDao.getGroup(specifiedTts.groupId)
+            if (group != null) {
+                val groupAudioParams = group.audioParams.copyIfFollow(
+                    SysTtsConfig.audioParamsSpeed,
+                    SysTtsConfig.audioParamsVolume,
+                    SysTtsConfig.audioParamsPitch
+                )
+                specifiedTts.tts.audioParams = specifiedTts.tts.audioParams.copyIfFollow(
+                    followSpeed = groupAudioParams.speed,
+                    followVolume = groupAudioParams.volume,
+                    followPitch = groupAudioParams.pitch,
+                )
+            }
+            onStart(specifiedTts.tts.audioFormat.sampleRate, specifiedTts.tts.audioFormat.bitRate)
+            synthesizeText(specifiedTts.tts, text, sysRate, sysPitch) {
+                it.receiver(sysRate, sysPitch, it.txtTts.tts.audioFormat, onPcmAudio)
             }
         }
 
+
         isSynthesizing = false
+    }
+
+    private suspend fun AudioData<ITextToSpeechEngine>.receiver(
+        sysRate: Int,
+        sysPitch: Int,
+        audioFormat: BaseAudioFormat,
+        onPcmAudio: (pcmAudio: ByteArray) -> Unit
+    ) {
+        val data = this
+        kotlin.runCatching {
+            val txtTts = data.txtTts
+            val audioParams = txtTts.tts.audioParams
+
+            val srcSampleRate = txtTts.tts.audioFormat.sampleRate
+            val targetSampleRate = audioFormat.sampleRate
+
+            println(audioParams)
+            println(" ${srcSampleRate} $targetSampleRate")
+
+            val sonic =
+                if (audioParams.isDefaultValue && srcSampleRate == targetSampleRate) null
+                else Sonic(txtTts.tts.audioFormat.sampleRate, 1)
+            txtTts.playAudio(
+                sysRate, sysPitch, data.audio,
+                onDone = { data.done.invoke() })
+            { pcmAudio ->
+                if (sonic == null) onPcmAudio.invoke(pcmAudio)
+                else {
+                    sonic.volume = audioParams.volume
+                    sonic.speed = audioParams.speed
+                    sonic.pitch = audioParams.pitch
+                    sonic.rate = srcSampleRate.toFloat() / targetSampleRate.toFloat()
+
+                    sonic.writeBytesToStream(pcmAudio, pcmAudio.size)
+                    onPcmAudio.invoke(sonic.readBytesFromStream(sonic.samplesAvailable()))
+                }
+            }
+            listener?.onPlayFinished(txtTts.text, txtTts.tts)
+        }.onFailure {
+            listener?.onError(TtsManagerException(cause = it, message = it.message))
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

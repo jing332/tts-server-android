@@ -48,6 +48,18 @@ abstract class ITextToSpeechSynthesizer<T> {
         null
 
     suspend fun synthesizeText(
+        tts: ITextToSpeechEngine,
+        text: String,
+        sysRate: Int,
+        sysPitch: Int,
+        onAudioAvailable: suspend (AudioData<T>) -> Unit
+    ){
+        getAudio(tts, text, sysRate, sysPitch)?.let {
+            onAudioAvailable.invoke(AudioData(txtTts = TtsTextPair(tts, text), audio = it, done = {}))
+        }
+    }
+
+    suspend fun synthesizeText(
         text: String,
         sysRate: Int,
         sysPitch: Int,

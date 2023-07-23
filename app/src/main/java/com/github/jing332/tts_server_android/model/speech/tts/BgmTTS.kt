@@ -31,7 +31,9 @@ class BgmTTS(
     @IgnoredOnParcel
     override var audioParams: AudioParams = AudioParams(),
     @Transient
-    override var speechRule: SpeechRuleInfo = SpeechRuleInfo()
+    override var speechRule: SpeechRuleInfo = SpeechRuleInfo(),
+
+    override var locale: String = ""
 ) : ITextToSpeechEngine() {
     override fun getEditActivity(): Class<out Activity> = BgmTtsEditActivity::class.java
     override fun getType() = "BGM"
