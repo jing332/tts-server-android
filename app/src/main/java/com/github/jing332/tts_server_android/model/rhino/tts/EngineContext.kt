@@ -10,7 +10,7 @@ import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
  */
 @Keep
 data class EngineContext(
-    val tts: PluginTTS,
+    var tts: PluginTTS,
     val userVars: Map<String, String> = mutableMapOf(),
     override val context: Context,
     override val engineId: String

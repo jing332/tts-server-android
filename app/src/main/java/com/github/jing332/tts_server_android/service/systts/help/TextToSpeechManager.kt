@@ -392,9 +392,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             val srcSampleRate = txtTts.tts.audioFormat.sampleRate
             val targetSampleRate = audioFormat.sampleRate
 
-            println(audioParams)
-            println(" ${srcSampleRate} $targetSampleRate")
-
             val sonic =
                 if (audioParams.isDefaultValue && srcSampleRate == targetSampleRate) null
                 else Sonic(txtTts.tts.audioFormat.sampleRate, 1)

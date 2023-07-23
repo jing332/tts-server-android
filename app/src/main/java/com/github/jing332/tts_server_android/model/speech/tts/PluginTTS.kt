@@ -7,6 +7,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
+import com.github.jing332.tts_server_android.model.rhino.tts.EngineContext
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginEngine
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsParamsEditView
@@ -96,16 +97,15 @@ data class PluginTTS(
     }
 
     override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream? {
-        if (pluginEngine?.pluginTTS !== this) // 当PluginTTS对象不同时 就更新并重新设置
-            pluginEngine = TtsPluginEngine(
-                this,
-                context,
-                pluginEngine!!.rhino,
-                pluginEngine!!.logger
-            ).apply { putDefaultObjects() }
+        synchronized(engineMap) {
+            // 重新更新 ttsrv.tts 对象
+            val ctx = (pluginEngine?.ttsrvObject as EngineContext)
+            ctx.tts = this
+            pluginEngine?.putDefaultObjects()
 
-        return pluginEngine?.getAudio(
-            speakText, rate, pitch
-        )
+            return pluginEngine?.getAudio(
+                speakText, rate, pitch
+            )
+        }
     }
 }
