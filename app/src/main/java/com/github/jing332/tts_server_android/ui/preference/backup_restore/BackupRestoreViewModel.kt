@@ -10,6 +10,7 @@ import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.replace.GroupWithReplaceRule
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
+import com.github.jing332.tts_server_android.utils.FileUtils
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import java.io.ByteArrayInputStream
@@ -75,6 +76,7 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
             val list: List<Plugin> = AppConst.jsonBuilder.decodeFromString(jsonStr)
             appDb.pluginDao.insertOrUpdate(*list.toTypedArray())
         }
+        File("").toPath()
     }
 
     fun backup(_types: List<Type>): ByteArray {
@@ -104,10 +106,9 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
         when (type) {
             is Type.Preference -> {
                 val folder = internalDataFile.absolutePath + File.separator + "shared_prefs"
-                FileUtil.copyFilesFromDir(
+                FileUtils.copyFilesFromDir(
                     File(folder),
                     File(tmpZipPath + File.separator + "shared_prefs"),
-                    true
                 )
             }
 

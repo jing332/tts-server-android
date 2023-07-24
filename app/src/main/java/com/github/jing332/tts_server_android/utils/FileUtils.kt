@@ -3,17 +3,29 @@ package com.github.jing332.tts_server_android.utils
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.github.jing332.tts_server_android.R
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.net.URLConnection
 
 
 object FileUtils {
+    /**
+     * 复制文件夹
+     */
+    fun copyFilesFromDir(src: File, target: File, overwrite: Boolean = true) {
+        target.mkdirs()
+
+        src.listFiles()?.forEach {
+            val newFile = File(target.absolutePath + File.separator + it.name)
+            it.copyTo(newFile, overwrite)
+        }
+    }
+
     /**
      * 按行读取txt
      */
