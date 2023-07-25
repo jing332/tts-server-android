@@ -92,9 +92,6 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
         }
 
         val zipFile = File(tmpZipFile)
-        zipFile.delete()
-        zipFile.createNewFile()
-
         ZipUtils.zipFolder(File(tmpZipPath), zipFile)
         return@withIO zipFile.readBytes()
     }

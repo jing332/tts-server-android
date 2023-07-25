@@ -18,6 +18,10 @@ object ZipUtils {
     const val TAG = "ZipUtils"
 
     suspend fun zipFolder(sourceFolder: File, zipFile: File) {
+        zipFile.delete()
+        zipFile.parentFile?.mkdirs()
+        zipFile.createNewFile()
+
         val fos = FileOutputStream(zipFile)
         val zos = ZipOutputStream(BufferedOutputStream(fos))
 
@@ -34,7 +38,7 @@ object ZipUtils {
         var bytesRead: Int
 
         for (file in files!!) {
-            if (coroutineContext.isActive) break
+            if (!coroutineContext.isActive) break
 
             if (file.isDirectory) {
                 zipFolder(file, zos, parentPath + file.name + "/")
@@ -45,7 +49,7 @@ object ZipUtils {
                 val entry = ZipEntry(entryPath)
                 zos.putNextEntry(entry)
                 while (bis.read(buffer).also { bytesRead = it } != -1) {
-                    if (coroutineContext.isActive) break
+                    if (!coroutineContext.isActive) break
                     zos.write(buffer, 0, bytesRead)
                 }
                 bis.close()
