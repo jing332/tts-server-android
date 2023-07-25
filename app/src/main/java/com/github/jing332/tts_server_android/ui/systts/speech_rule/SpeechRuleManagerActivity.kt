@@ -6,7 +6,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.MenuCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -80,15 +82,36 @@ class SpeechRuleManagerActivity : BackActivity() {
                     }.toTypedArray())
                 }
                 getBinding<SysttsSpeechRuleItemBinding>().apply {
-                    btnDelete.clickWithThrottle {
-                        val model = getModel<SpeechRuleModel>()
-                        AppDialogs.displayDeleteDialog(
-                            this@SpeechRuleManagerActivity, model.title
-                        ) { appDb.speechRule.delete(model.data) }
-                    }
+
                     btnEdit.clickWithThrottle {
                         val model = getModel<SpeechRuleModel>()
                         startEditor(model.data, root)
+                    }
+                    btnOptions.clickWithThrottle {
+                        val model = getModel<SpeechRuleModel>()
+
+                        PopupMenu(this@SpeechRuleManagerActivity, it).apply {
+                            menuInflater.inflate(R.menu.systts_speech_rule_item, menu)
+                            MenuCompat.setGroupDividerEnabled(menu, true)
+                            setForceShowIcon(true)
+
+                            setOnMenuItemClickListener { menuItem ->
+                                when (menuItem.itemId) {
+                                    R.id.menu_export -> {
+                                        exportConfig(listOf(model.data), fileName = "ttsrv-speechRules-${model.data.name}.json")
+                                    }
+
+                                    R.id.menu_remove -> {
+                                        AppDialogs.displayDeleteDialog(
+                                            this@SpeechRuleManagerActivity, model.title
+                                        ) { appDb.speechRule.delete(model.data) }
+                                    }
+                                }
+
+                                true
+                            }
+                            show()
+                        }
                     }
                     cbSwitch.setOnClickListener {
                         appDb.speechRule.update(getModel<SpeechRuleModel>().data.copy(isEnabled = cbSwitch.isChecked))
@@ -151,19 +174,23 @@ class SpeechRuleManagerActivity : BackActivity() {
 
     @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.systts_read_rule_manager, menu)
+        menuInflater.inflate(R.menu.systts_speech_rule_manager, menu)
         if (menu is MenuBuilder) menu.setOptionalIconsVisible(true)
 
         return super.onCreateOptionsMenu(menu)
     }
 
+    private fun exportConfig(list: List<SpeechRule>, fileName: String = "ttsrv-speechRules.json") {
+        val exportFragment = ConfigExportBottomSheetFragment({
+            AppConst.jsonBuilder.encodeToString(list)
+        }, { fileName })
+        exportFragment.show(supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_export -> {
-                val exportFragment = ConfigExportBottomSheetFragment({
-                    AppConst.jsonBuilder.encodeToString(appDb.speechRule.allEnabled)
-                }, { "ttsrv-speechRules.json" })
-                exportFragment.show(supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
+                exportConfig(appDb.speechRule.all)
             }
 
             R.id.menu_import -> {

@@ -139,31 +139,36 @@ abstract class BaseImportConfigBottomSheetFragment(
                 waitDialog.dismiss()
             }
 
-            kotlin.runCatching {
-                val type = ConfigImportHelper.getConfigType(json)
-                if (type == configType)
-                    onImport(json)
-                else {
-                    if (type == ConfigType.UNKNOWN)
-                        throw Exception(getString(R.string.import_config_type_unknown_msg))
+            val type = ConfigImportHelper.getConfigType(json)
+            if (type == configType)
+                internalImport(json)
+            else {
+                if (type == ConfigType.UNKNOWN)
+                    throw Exception(getString(R.string.import_config_type_unknown_msg))
 
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setIcon(R.drawable.baseline_error_24)
-                        .setTitle(R.string.import_config)
-                        .setMessage(
-                            getString(
-                                R.string.import_config_type_not_match_msg,
-                                getString(configType.strId),
-                                getString(type.strId)
-                            )
+                MaterialAlertDialogBuilder(requireContext())
+                    .setIcon(R.drawable.baseline_error_24)
+                    .setTitle(R.string.import_config)
+                    .setMessage(
+                        getString(
+                            R.string.import_config_type_not_match_msg,
+                            getString(configType.strId),
+                            getString(type.strId)
                         )
-                        .setPositiveButton(android.R.string.ok, null)
-                        .setNeutralButton( R.string.still_to_import) { _, _ -> onImport(json) }
-                        .show()
-                }
-            }.onFailure {
-                requireContext().displayErrorDialog(it)
+                    )
+                    .setPositiveButton(android.R.string.ok, null)
+                    .setNeutralButton(R.string.still_to_import) { _, _ -> internalImport(json) }
+                    .show()
             }
+
+        }
+    }
+
+    private fun internalImport(json: String) {
+        kotlin.runCatching {
+            onImport(json)
+        }.onFailure {
+            requireContext().displayErrorDialog(it)
         }
     }
 

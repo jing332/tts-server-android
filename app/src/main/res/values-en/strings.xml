@@ -413,9 +413,9 @@
     <string name="theme_ink_grey">墨灰</string>
     <string name="theme_emerald_green">碧绿</string>
     <string name="theme_red_gold">赤金</string>
-    <string name="import_config_type_not_match_msg">Format error (expected: %1$s).\nThe format you entered is %2$s, please go to the corresponding management interface for import.</string>
+    <string name="import_config_type_not_match_msg">Format error (expected: {%1$s}).\nThe format you entered is {%2$s}, please go to the corresponding management interface for import.</string>
     <string name="import_config_type_unknown_msg">Unknown format, please enter the correct configuration.</string>
-    <string name="still_to_import">Stil to Import</string>
+    <string name="still_to_import">Still to Import</string>
     <string name="theme_kite_crown_purple">鹞冠紫</string>
     <string name="theme_beautiful_person_orange">美人焦橙</string>
     <string name="theme_magenta">紫红</string>
