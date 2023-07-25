@@ -18,17 +18,13 @@ object ZipUtils {
     const val TAG = "ZipUtils"
 
     suspend fun zipFolder(sourceFolder: File, zipFile: File) {
-        try {
-            val fos = FileOutputStream(zipFile)
-            val zos = ZipOutputStream(BufferedOutputStream(fos))
+        val fos = FileOutputStream(zipFile)
+        val zos = ZipOutputStream(BufferedOutputStream(fos))
 
-            zos.setLevel(Deflater.DEFAULT_COMPRESSION)
-            zipFolder(sourceFolder, zos, "")
-            zos.closeEntry()
-            zos.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        zos.setLevel(Deflater.DEFAULT_COMPRESSION)
+        zipFolder(sourceFolder, zos, "")
+        zos.closeEntry()
+        zos.close()
     }
 
     @Throws(IOException::class)

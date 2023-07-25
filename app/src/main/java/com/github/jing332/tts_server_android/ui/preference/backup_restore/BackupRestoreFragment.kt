@@ -12,9 +12,9 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
-import com.github.jing332.tts_server_android.ui.view.Attributes.colorOnBackground
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
+import com.github.jing332.tts_server_android.ui.view.Attributes.colorOnBackground
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.utils.FileUtils.readBytes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -73,19 +73,23 @@ class BackupRestoreFragment : PreferenceFragmentCompat() {
                     }
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         lifecycleScope.launch {
-                            val bytes = vm.backup(
-                                checkedItems.mapIndexed { index, b ->
-                                    if (b) Type.typeList[index] else null
-                                }.filterNot { it == null }.map { it!! }
-                            )
-                            withMain {
-                                filePicker.launch(
-                                    FilePickerActivity.RequestSaveFile(
-                                        fileName = "ttsrv-backup.zip",
-                                        fileMime = "application/zip",
-                                        fileBytes = bytes
-                                    )
+                            runCatching {
+                                val bytes = vm.backup(
+                                    checkedItems.mapIndexed { index, b ->
+                                        if (b) Type.typeList[index] else null
+                                    }.filterNot { it == null }.map { it!! }
                                 )
+                                withMain {
+                                    filePicker.launch(
+                                        FilePickerActivity.RequestSaveFile(
+                                            fileName = "ttsrv-backup.zip",
+                                            fileMime = "application/zip",
+                                            fileBytes = bytes
+                                        )
+                                    )
+                                }
+                            }.onFailure {
+                                context.displayErrorDialog(it)
                             }
                         }
                     }
