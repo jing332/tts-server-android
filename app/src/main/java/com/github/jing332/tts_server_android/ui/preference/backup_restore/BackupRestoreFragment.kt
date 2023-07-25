@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.drake.net.utils.withIO
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
@@ -71,18 +72,22 @@ class BackupRestoreFragment : PreferenceFragmentCompat() {
                         }
                     }
                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                        val bytes = vm.backup(
-                            checkedItems.mapIndexed { index, b ->
-                                if (b) Type.typeList[index] else null
-                            }.filterNot { it == null }.map { it!! }
-                        )
-                        filePicker.launch(
-                            FilePickerActivity.RequestSaveFile(
-                                fileName = "ttsrv-backup.zip",
-                                fileMime = "application/zip",
-                                fileBytes = bytes
+                        lifecycleScope.launch {
+                            val bytes = vm.backup(
+                                checkedItems.mapIndexed { index, b ->
+                                    if (b) Type.typeList[index] else null
+                                }.filterNot { it == null }.map { it!! }
                             )
-                        )
+                            withMain {
+                                filePicker.launch(
+                                    FilePickerActivity.RequestSaveFile(
+                                        fileName = "ttsrv-backup.zip",
+                                        fileMime = "application/zip",
+                                        fileBytes = bytes
+                                    )
+                                )
+                            }
+                        }
                     }
                     .show()
 

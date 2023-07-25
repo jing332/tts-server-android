@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import cn.hutool.core.io.FileUtil
 import cn.hutool.core.util.ZipUtil
+import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
@@ -11,11 +12,13 @@ import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.replace.GroupWithReplaceRule
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.utils.FileUtils
+import com.github.jing332.tts_server_android.utils.ZipUtils
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.nio.charset.Charset
+import java.util.zip.ZipInputStream
 
 class BackupRestoreViewModel(application: Application) : AndroidViewModel(application) {
     // ... /cache/backupRestore
@@ -39,10 +42,10 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
     }
 
 
-    fun restore(bytes: ByteArray): Boolean {
+    suspend fun restore(bytes: ByteArray): Boolean {
         var isRestart = false
         val outFileDir = File(restorePath)
-        ZipUtil.unzip(ByteArrayInputStream(bytes), outFileDir, Charset.defaultCharset())
+        ZipUtils.unzipFile(ZipInputStream(ByteArrayInputStream(bytes)), outFileDir)
         if (outFileDir.exists()) {
             // shared_prefs
             val restorePrefsFile = File(restorePrefsPath)
@@ -76,10 +79,9 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
             val list: List<Plugin> = AppConst.jsonBuilder.decodeFromString(jsonStr)
             appDb.pluginDao.insertOrUpdate(*list.toTypedArray())
         }
-        File("").toPath()
     }
 
-    fun backup(_types: List<Type>): ByteArray {
+    suspend fun backup(_types: List<Type>): ByteArray = withIO {
         File(tmpZipPath).deleteRecursively()
         File(tmpZipPath).mkdirs()
 
@@ -89,7 +91,12 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
             createConfigFile(it)
         }
 
-        return ZipUtil.zip(tmpZipPath).readBytes()
+        val zipFile = File(tmpZipFile)
+        zipFile.delete()
+        zipFile.createNewFile()
+
+        ZipUtils.zipFolder(File(tmpZipPath), zipFile)
+        return@withIO zipFile.readBytes()
     }
 
     override fun onCleared() {
@@ -100,6 +107,10 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
     // ... /cache/backupRestore/backup
     private val tmpZipPath by lazy {
         backupRestorePath + File.separator + "backup"
+    }
+
+    private val tmpZipFile by lazy {
+        backupRestorePath + File.separator + "backup.zip"
     }
 
     private fun createConfigFile(type: Type) {

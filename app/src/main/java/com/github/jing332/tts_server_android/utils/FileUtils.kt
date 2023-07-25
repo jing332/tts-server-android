@@ -11,6 +11,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.URLConnection
+import java.util.zip.ZipFile
 
 
 object FileUtils {
@@ -19,7 +20,6 @@ object FileUtils {
      */
     fun copyFilesFromDir(src: File, target: File, overwrite: Boolean = true) {
         target.mkdirs()
-
         src.listFiles()?.forEach {
             val newFile = File(target.absolutePath + File.separator + it.name)
             it.copyTo(newFile, overwrite)
