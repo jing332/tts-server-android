@@ -50,7 +50,8 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
             // shared_prefs
             val restorePrefsFile = File(restorePrefsPath)
             if (restorePrefsFile.exists()) {
-                FileUtil.move(restorePrefsFile, internalDataFile, true)
+                FileUtils.copyFolder(restorePrefsFile, internalDataFile)
+                restorePrefsFile.deleteRecursively()
                 isRestart = true
             }
 
