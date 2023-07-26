@@ -11,7 +11,7 @@ import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppThem
 /**
  * 带behavior
  */
-open class BackActivity : AppCompatActivity() {
+open class BackActivity() : AppCompatActivity() {
     protected val rootBinding: ActivityBackBinding by lazy {
         ActivityBackBinding.inflate(
             layoutInflater

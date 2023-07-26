@@ -43,4 +43,6 @@ object AppConfig : KotprefModel() {
 
     var filePickerMode by intPref(FilePickerMode.PROMPT)
     var spinnerMaxDropDownCount by intPref(20)
+
+    var lastReadHelpDocumentVersion by intPref(0)
 }

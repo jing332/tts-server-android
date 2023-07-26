@@ -33,6 +33,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".ui.AppHelpDocumentActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.preference.backup_restore.BackupRestoreActivity"
             android:exported="true"
             android:label="@string/backup_restore">
@@ -149,7 +152,6 @@
                 <data android:pathAdvancedPattern=".*\\.[jJ][sS][oO][nN]" />
                 <data android:pathPattern=".*\\.json" />
                 <data android:pathPattern=".*\\.JSON" />
-
                 <data android:pathAdvancedPattern=".*\\.[jJ][sS]" />
                 <data android:pathPattern=".*\\.js" />
                 <data android:pathPattern=".*\\.JS" />

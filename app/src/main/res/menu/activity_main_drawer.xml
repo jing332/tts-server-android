@@ -43,6 +43,11 @@
                 android:id="@+id/nav_checkUpdate"
                 android:icon="@drawable/ic_check_update"
                 android:title="@string/check_update" />
+
+            <item
+                android:id="@+id/nav_help_document"
+                android:icon="@drawable/ic_baseline_help_outline_24"
+                android:title="@string/app_help_document" />
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_baseline_info_24"

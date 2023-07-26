@@ -17,8 +17,8 @@ android {
         versionCode 8
         versionName "0.8"
 
-        ksp{
-            arg("room.schemaLocation",  "$projectDir/schemas".toString())
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas".toString())
             arg("room.incremental", "true")
             arg("room.expandProjection", "true")
         }
@@ -158,7 +158,13 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 
-    implementation "io.noties.markwon:core:4.6.2"
+    def markwon_version = '4.6.2'
+    implementation "io.noties.markwon:core:$markwon_version"
+    implementation "io.noties.markwon:image:$markwon_version"
+    implementation "io.noties.markwon:html:$markwon_version"
+    implementation "io.noties.markwon:linkify:$markwon_version"
+
+    implementation "com.caverock:androidsvg:1.4"
 
     // RecyclerView
     implementation 'com.github.liangjingkanji:BRV:1.4.3'
