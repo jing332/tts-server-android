@@ -14,8 +14,8 @@ android {
         applicationId 'com.github.jing332.tts_server_android'
         minSdk 21
         targetSdk 33
-        versionCode 8
-        versionName "0.8"
+        versionCode 9
+        versionName "0.9"
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas".toString())
