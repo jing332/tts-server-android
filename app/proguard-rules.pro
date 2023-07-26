@@ -13,6 +13,9 @@
 
 -keepnames class * extends java.lang.Exception
 
+# 判断SVG库是否存在 (io.noties.markwon.image.svg.SvgSupport)
+-keepnames class com.caverock.androidsvg.SVG
+
 # OKIO
 -keep class okio.* { *; }
 
@@ -304,3 +307,5 @@ public *** print(...);
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+-dontwarn org.commonmark.ext.gfm.strikethrough.Strikethrough
+-dontwarn pl.droidsonroids.gif.GifDrawable
