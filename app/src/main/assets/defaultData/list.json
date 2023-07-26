@@ -1,0 +1,56 @@
+[
+  {
+    "group": {
+      "id": 12333,
+      "name": "示例-旁白对话BGM",
+      "isExpanded": true
+    },
+    "list": [
+      {
+        "id": 1690331046541,
+        "displayName": "⚠️请在右上角打开多语音！晓晓（zh-CN-XiaoxiaoNeural）",
+        "groupId": "12333",
+        "isEnabled": true,
+        "speechRule": {
+          "target": 4,
+          "tag": "dialogue",
+          "tagRuleId": "ttsrv.multi_voice"
+        },
+        "tts": {
+          "#type": "internal"
+        }
+      },
+      {
+        "id": 1690331074092,
+        "displayName": "云健（zh-CN-YunjianNeural）",
+        "groupId": "12333",
+        "isEnabled": true,
+        "speechRule": {
+          "target": 4,
+          "tag": "narration",
+          "tagRuleId": "ttsrv.multi_voice"
+        },
+        "tts": {
+          "#type": "internal",
+          "voiceName": "zh-CN-YunjianNeural"
+        }
+      },
+      {
+        "id": 1681521093149,
+        "displayName": "bgm",
+        "groupId": "12333",
+        "isEnabled": true,
+        "speechRule": {
+          "target": 3
+        },
+        "tts": {
+          "#type": "bgm",
+          "volume": 50,
+          "audioFormat": {
+          }
+        },
+        "order": 3
+      }
+    ]
+  }
+]

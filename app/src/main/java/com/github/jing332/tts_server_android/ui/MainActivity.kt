@@ -35,9 +35,16 @@ import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ShortCuts
 import com.github.jing332.tts_server_android.constant.AppTheme
+import com.github.jing332.tts_server_android.constant.SpeechTarget
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.SpeechRule
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.databinding.MainActivityBinding
 import com.github.jing332.tts_server_android.databinding.MainDrawerNavHeaderBinding
 import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
+import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory.newEditorFromJS
 import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initExitSharedTransition
@@ -136,6 +143,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
         initDrawerView()
         addBackPressedCallback()
     }
+
 
     // 抽屉View
     private fun initDrawerView() {
@@ -268,31 +276,34 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-        val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
-        if (handled) {
-            AppConfig.fragmentIndex = when (menuItem.itemId) {
-                R.id.nav_systts -> INDEX_SYS_TTS
-                R.id.nav_systts_forwarder -> INDEX_FORWARDER_SYS
-                R.id.nav_server -> INDEX_FORWARDER_MS
-                else -> 0
+        when (menuItem.itemId) {
+            R.id.nav_killBattery -> killBattery()
+            R.id.nav_checkUpdate -> lifecycleScope.runOnIO {
+                MyTools.checkUpdate(
+                    this,
+                    isFromUser = true
+                )
             }
-        } else {
-            when (menuItem.itemId) {
-                R.id.nav_killBattery -> killBattery()
-                R.id.nav_checkUpdate -> lifecycleScope.runOnIO {
-                    MyTools.checkUpdate(
-                        this,
-                        isFromUser = true
-                    )
+
+            R.id.nav_about -> displayAboutDialog()
+            else -> {
+                val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
+                if (handled) {
+                    AppConfig.fragmentIndex = when (menuItem.itemId) {
+                        R.id.nav_systts -> INDEX_SYS_TTS
+                        R.id.nav_systts_forwarder -> INDEX_FORWARDER_SYS
+                        R.id.nav_server -> INDEX_FORWARDER_MS
+                        else -> 0
+                    }
                 }
 
-                R.id.nav_about -> displayAboutDialog()
+                return handled
             }
         }
 
         binding.navView.parent.let { if (it is DrawerLayout) it.closeDrawer(binding.navView) }
 
-        return handled
+        return false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

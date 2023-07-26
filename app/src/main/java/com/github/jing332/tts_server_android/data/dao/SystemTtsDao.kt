@@ -13,6 +13,9 @@ interface SystemTtsDao {
     @get:Query("SELECT * FROM sysTts")
     val allTts: List<SystemTts>
 
+    @get:Query("SELECT count(*) FROM sysTts")
+    val ttsCount: Int
+
     @get:Query("SELECT * FROM sysTts")
     val flowAllTts: Flow<List<SystemTts>>
 
@@ -43,6 +46,10 @@ interface SystemTtsDao {
 
     @get:Query("SELECT count(*) FROM SystemTtsGroup")
     val groupCount: Int
+
+    @Transaction
+    @Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")
+    fun getAllGroupWithTts(): List<GroupWithSystemTts>
 
     @Transaction
     @Query("SELECT * FROM SystemTtsGroup ORDER BY `order` ASC")

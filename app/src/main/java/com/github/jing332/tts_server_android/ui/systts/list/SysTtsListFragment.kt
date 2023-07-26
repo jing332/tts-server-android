@@ -22,13 +22,16 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
+import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
+import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBgmSettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.databinding.SysttsListHostFragmentBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
+import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
 import com.github.jing332.tts_server_android.model.speech.tts.*
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
@@ -44,16 +47,19 @@ import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerAct
 import com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.*
+import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.serialization.decodeFromString
+import java.util.Locale
 import kotlin.math.min
 
 
 @Suppress("DEPRECATION")
 class SysTtsListFragment : Fragment(R.layout.systts_list_host_fragment) {
     companion object {
-        const val TAG = "TtsConfigFragment"
+        const val TAG = "SysTtsListFragment"
         const val ACTION_ADD_TTS = "com.github.jing332.tts_server_android.ui.systts.list.ADD_TTS"
         const val KEY_MENU_ID = "menu_id"
         const val KEY_SYSTEM_TTS_DATA = "system_tts_data"
@@ -96,17 +102,34 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_host_fragment) {
 
         // 插入默认分组
         if (appDb.systemTtsDao.getGroup() == null) {
+            if (appDb.systemTtsDao.ttsCount == 0) {
+                fillDefaultSpeechRuleDataBase()
+                val ttsWithGroup: List<GroupWithSystemTts> = AppConst.jsonBuilder.decodeFromString(
+                    requireContext().assets.open("defaultData/list.json").readAllText()
+                )
+                appDb.systemTtsDao.insertGroupWithTts(*ttsWithGroup.toTypedArray())
+            }
+
             appDb.systemTtsDao.insertGroup(
                 SystemTtsGroup(id = DEFAULT_GROUP_ID, name = getString(R.string.default_group))
             )
         }
-
         requireActivity().addMenuProvider(
             MyMenuProvider(),
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
         )
 
+    }
+
+    private fun fillDefaultSpeechRuleDataBase() {
+        if (appDb.speechRule.count > 0) return
+
+        val speechRuleJs = requireContext().assets.open("defaultData/speech_rule.js").readAllText()
+        val speechRule = SpeechRule(code = speechRuleJs, isEnabled = true)
+        val engine = SpeechRuleEngine(requireContext(), speechRule, speechRuleJs)
+        engine.evalInfo()
+        appDb.speechRule.insert(speechRule)
     }
 
     override fun onDestroyView() {
@@ -190,7 +213,12 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_host_fragment) {
                 }
 
                 R.id.menu_replace_manager -> {
-                    startActivity(Intent(requireContext(), ReplaceManagerActivity::class.java))
+                    startActivity(
+                        Intent(
+                            requireContext(),
+                            ReplaceManagerActivity::class.java
+                        )
+                    )
                     true
                 }
 
@@ -218,7 +246,8 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_host_fragment) {
                     findItem(R.id.menu_switch_multi_voice)?.isChecked = isMultiVoiceEnabled
                     findItem(R.id.menu_do_split)?.isChecked = isSplitEnabled
                     findItem(R.id.menu_replace_manager)?.isChecked = isReplaceEnabled
-                    findItem(R.id.menu_builtin_player_settings)?.isChecked = isInAppPlayAudio
+                    findItem(R.id.menu_builtin_player_settings)?.isChecked =
+                        isInAppPlayAudio
                 }
             }
         }
@@ -275,7 +304,10 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_host_fragment) {
 
     private fun importConfig() {
         val fragment = ImportConfigBottomSheetFragment()
-        fragment.show(requireActivity().supportFragmentManager, ImportConfigBottomSheetFragment.TAG)
+        fragment.show(
+            requireActivity().supportFragmentManager,
+            ImportConfigBottomSheetFragment.TAG
+        )
     }
 
     private fun exportConfig() {
@@ -283,7 +315,10 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_host_fragment) {
             onGetConfig = { vm.exportConfig() },
             onGetName = { "ttsrv-list.json" }
         )
-        fragment.show(requireActivity().supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
+        fragment.show(
+            requireActivity().supportFragmentManager,
+            ConfigExportBottomSheetFragment.TAG
+        )
     }
 
     private fun displayBgmSettings() {
@@ -311,7 +346,8 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_host_fragment) {
     @Suppress("DEPRECATION")
     private fun displayBuiltinPlayerSettings() {
         val view = FrameLayout(requireContext())
-        val inAppBinding = SysttsBuiltinPlayerSettingsBinding.inflate(layoutInflater, view, true)
+        val inAppBinding =
+            SysttsBuiltinPlayerSettingsBinding.inflate(layoutInflater, view, true)
         inAppBinding.apply {
             tvTip.text = Html.fromHtml(getString(R.string.systts_in_app_play_info_html))
             switchOnOff.setOnCheckedChangeListener { _, isChecked ->
@@ -447,7 +483,11 @@ class SysTtsListFragment : Fragment(R.layout.systts_list_host_fragment) {
             intent.putExtra(
                 BaseTtsEditActivity.KEY_DATA,
                 data.clone<SystemTts>()!!
-                    .copy(id = System.currentTimeMillis(), displayName = "", isEnabled = false)
+                    .copy(
+                        id = System.currentTimeMillis(),
+                        displayName = "",
+                        isEnabled = false
+                    )
             )
         }
         startForResult.launch(intent)

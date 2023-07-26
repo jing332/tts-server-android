@@ -35,6 +35,7 @@ import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.conflate
 import kotlinx.serialization.encodeToString
 
@@ -163,6 +164,13 @@ class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
         lifecycleScope.launch {
             appDb.systemTtsDao.getFlowAllGroupWithTts().conflate().collect { list ->
                 updateModels(list)
+            }
+        }
+
+        // 监听朗读规则变化
+        lifecycleScope.launch {
+            appDb.speechRule.flowAll().collect {
+                updateModels(appDb.systemTtsDao.getAllGroupWithTts())
             }
         }
 
