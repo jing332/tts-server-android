@@ -13,7 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class GroupListHelper<M : IGroupModel>(val context: Context) {
     interface Callback<M : IGroupModel> {
         fun onGroupClick(v: View, model: M)
-        fun onGroupMoveButtonClick(v: View, model: M)
+        fun onGroupMoreButtonClick(v: View, model: M)
         fun onCheckedChange(v: MaterialCheckBox, model: M)
     }
 
@@ -103,7 +103,7 @@ class GroupListHelper<M : IGroupModel>(val context: Context) {
                             callback?.onCheckedChange(checkBox, getModel())
                         }
                         btnMore.clickWithThrottle {
-                            callback?.onGroupMoveButtonClick(it, getModel())
+                            callback?.onGroupMoreButtonClick(it, getModel())
                         }
                     }
 

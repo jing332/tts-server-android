@@ -9,21 +9,26 @@ class TextReplacer {
         const val TAG = "ReplaceHelper"
     }
 
-    private val rules: MutableList<ReplaceRule> = mutableListOf()
+    private var map: MutableMap<Int, List<ReplaceRule>> = mutableMapOf()
 
     fun load() {
-        rules.clear()
+        map.clear()
         appDb.replaceRuleDao.allGroupWithReplaceRules().forEach { groupWithRules ->
-            rules.addAll(groupWithRules.list.filter { it.isEnabled }.sortedBy { it.order })
+            map[groupWithRules.group.onExecution] =
+                groupWithRules.list.filter { it.isEnabled }.sortedBy { it.order }
         }
     }
 
     /**
      * 执行替换
      */
-    fun replace(text: String, onReplaceError: (t: TextReplacerException) -> Unit): String {
+    fun replace(
+        text: String,
+        onExecution: Int,
+        onReplaceError: (t: TextReplacerException) -> Unit
+    ): String {
         var s = text
-        rules.forEach { rule ->
+        map[onExecution]?.forEach { rule ->
             kotlin.runCatching {
                 s = if (rule.isRegex)
                     s.replace(Regex(rule.pattern), rule.replacement)

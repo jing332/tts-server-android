@@ -404,4 +404,5 @@
     <string name="theme_beautiful_person_orange">美人焦橙</string>
     <string name="theme_magenta">紫红</string>
     <string name="app_help_document">帮助文档</string>
+    <string name="replace_rule_after_execute">在朗读规则后执行</string>
 </resources>

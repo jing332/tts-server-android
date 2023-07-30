@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppPattern
+import com.github.jing332.tts_server_android.constant.ReplaceExecution
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
@@ -70,9 +71,21 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     }
                     list
                 } else this).run {
-                    if (SysTtsConfig.isSkipSilentText) filterNot {
-                        AppPattern.notReadAloudRegex.matches(it.text)
+                    val list = if (SysTtsConfig.isReplaceEnabled) {
+                        val l = mutableListOf<TtsTextPair>()
+                        this.forEach {
+                            mTextReplacer.replace(it.text, ReplaceExecution.BEFORE) { e ->
+                                listener?.onError(e)
+                            }.also { text ->
+                                l.add(TtsTextPair(it.tts, text))
+                            }
+                        }
+                        l
                     } else this
+
+                    if (SysTtsConfig.isSkipSilentText) list.filterNot {
+                        AppPattern.notReadAloudRegex.matches(it.text)
+                    } else list
                 }
 
             }
@@ -340,7 +353,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
         isSynthesizing = true
 
         val replaced = if (SysTtsConfig.isReplaceEnabled)
-            mTextReplacer.replace(text) { listener?.onError(it) } else text
+            mTextReplacer.replace(text, ReplaceExecution.BEFORE) { listener?.onError(it) } else text
 
         if (ttsId == -1L) {
             mBgmPlayer?.play()

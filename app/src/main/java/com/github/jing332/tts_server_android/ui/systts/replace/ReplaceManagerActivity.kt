@@ -27,12 +27,14 @@ import com.drake.brv.utils.setup
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.KeyConst
+import com.github.jing332.tts_server_android.constant.ReplaceExecution
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup
 import com.github.jing332.tts_server_android.data.entities.replace.GroupWithReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceActivityBinding
+import com.github.jing332.tts_server_android.databinding.SysttsReplaceEditGroupBinding
 import com.github.jing332.tts_server_android.databinding.SysttsReplaceRuleItemBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
@@ -44,6 +46,7 @@ import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 import com.github.jing332.tts_server_android.utils.*
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
@@ -90,24 +93,18 @@ class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activit
                         }
                     }
 
-                    override fun onGroupMoveButtonClick(v: View, model: GroupModel) {
+                    override fun onGroupMoreButtonClick(v: View, model: GroupModel) {
                         PopupMenu(this@ReplaceManagerActivity, v).apply {
                             this.setForceShowIcon(true)
                             MenuCompat.setGroupDividerEnabled(menu, true)
                             menuInflater.inflate(R.menu.systts_replace_group, menu)
                             setOnMenuItemClickListener { item ->
                                 when (item.itemId) {
-                                    R.id.menu_rename_group -> {
-                                        AppDialogs.displayInputDialog(
-                                            this@ReplaceManagerActivity,
-                                            getString(R.string.edit_group_name),
-                                            getString(R.string.name),
-                                            model.name
-                                        ) {text->
-                                            appDb.replaceRuleDao.insertGroup(model.data.copy(name = text))
-                                        }
+                                    R.id.menu_edit_group -> {
+                                        editGroup(model.data)
                                     }
-                                    R.id.menu_export ->{
+
+                                    R.id.menu_export -> {
                                         displayExport(
                                             "ttsrv-replaces-${model.data.name}.json",
                                             vm.exportGroup(model)
@@ -115,7 +112,10 @@ class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activit
                                     }
 
                                     R.id.menu_remove_group -> {
-                                        AppDialogs.displayDeleteDialog(this@ReplaceManagerActivity, model.name) {
+                                        AppDialogs.displayDeleteDialog(
+                                            this@ReplaceManagerActivity,
+                                            model.name
+                                        ) {
                                             appDb.replaceRuleDao.deleteGroup(model.data)
                                             appDb.replaceRuleDao.deleteAllByGroup(model.data.id)
                                         }
@@ -399,6 +399,27 @@ class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activit
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun editGroup(group: ReplaceRuleGroup) {
+        val viewBinding = SysttsReplaceEditGroupBinding.inflate(layoutInflater, null, false)
+        viewBinding.apply {
+            tilName.editText!!.setText(group.name)
+            cbAfter.isChecked = group.onExecution == ReplaceExecution.AFTER
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.edit)
+            .setView(viewBinding.root)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                appDb.replaceRuleDao.updateGroup(
+                    group.copy(
+                        name = viewBinding.tilName.editText!!.text.toString(),
+                        onExecution = if (viewBinding.cbAfter.isChecked) ReplaceExecution.AFTER else ReplaceExecution.BEFORE
+                    )
+                )
+            }
+            .show()
     }
 
     private fun displayExport(name: String, config: String) {

@@ -69,7 +69,7 @@ class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
                     SystemTtsService.notifyUpdateConfig()
                 }
 
-                override fun onGroupMoveButtonClick(v: View, model: GroupModel) {
+                override fun onGroupMoreButtonClick(v: View, model: GroupModel) {
                     PopupMenu(requireContext(), v).apply {
                         this.setForceShowIcon(true)
                         MenuCompat.setGroupDividerEnabled(menu, true)

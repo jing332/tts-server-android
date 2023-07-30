@@ -4,9 +4,9 @@
 
     <group android:id="@+id/group1">
         <item
-            android:id="@+id/menu_rename_group"
+            android:id="@+id/menu_edit_group"
             android:icon="@drawable/ic_baseline_edit_24"
-            android:title="@string/rename" />
+            android:title="@string/edit" />
         <item
             android:id="@+id/menu_export"
             android:icon="@drawable/ic_baseline_output_24"
