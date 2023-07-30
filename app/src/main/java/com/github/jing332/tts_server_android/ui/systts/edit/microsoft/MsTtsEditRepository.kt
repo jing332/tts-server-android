@@ -27,6 +27,7 @@ class MsTtsEditRepository() {
     /**
      * 根据api获取数据
      */
+    @Suppress("UNUSED_PARAMETER")
     suspend fun voicesByApi(@MsTtsApiType api: Int): List<GeneralVoiceData> {
         return withDefault {
             edgeVoices()

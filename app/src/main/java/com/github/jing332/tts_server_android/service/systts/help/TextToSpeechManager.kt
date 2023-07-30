@@ -74,12 +74,13 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     val list = if (SysTtsConfig.isReplaceEnabled) {
                         val l = mutableListOf<TtsTextPair>()
                         this.forEach {
-                            mTextReplacer.replace(it.text, ReplaceExecution.BEFORE) { e ->
+                            mTextReplacer.replace(it.text, ReplaceExecution.AFTER) { e ->
                                 listener?.onError(e)
                             }.also { text ->
                                 l.add(TtsTextPair(it.tts, text))
                             }
                         }
+
                         l
                     } else this
 

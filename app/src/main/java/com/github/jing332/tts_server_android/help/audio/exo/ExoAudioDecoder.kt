@@ -2,17 +2,21 @@ package com.github.jing332.tts_server_android.help.audio.exo
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.source.MediaSource
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.help.audio.AudioDecoderException
 import com.github.jing332.tts_server_android.help.audio.ExoPlayerHelper
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.audio.AudioSink
-import com.google.android.exoplayer2.source.MediaSource
 import kotlinx.coroutines.*
 import java.io.InputStream
 import java.nio.ByteBuffer
 
-class ExoAudioDecoder(val context: Context) {
+@UnstableApi class ExoAudioDecoder(val context: Context) {
     companion object {
         private const val CANCEL_MESSAGE_ENDED = "CANCEL_MESSAGE_ENDED"
         private const val CANCEL_MESSAGE_ERROR = "CANCEL_MESSAGE_ERROR"

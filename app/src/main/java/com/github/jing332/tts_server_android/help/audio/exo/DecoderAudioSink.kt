@@ -1,14 +1,15 @@
 package com.github.jing332.tts_server_android.help.audio.exo
 
-import com.google.android.exoplayer2.Format
-import com.google.android.exoplayer2.PlaybackParameters
-import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.audio.AudioSink
-import com.google.android.exoplayer2.audio.AudioSink.SINK_FORMAT_SUPPORTED_DIRECTLY
-import com.google.android.exoplayer2.audio.AudioSink.SINK_FORMAT_SUPPORTED_WITH_TRANSCODING
-import com.google.android.exoplayer2.audio.AuxEffectInfo
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.AuxEffectInfo
+import androidx.media3.common.Format
+import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.audio.AudioSink.SINK_FORMAT_SUPPORTED_WITH_TRANSCODING
 import java.nio.ByteBuffer
 
+@UnstableApi
 /**
  * 用于接收从 ExoPlayer 解码后的 PCM 数据，而不是播放到 AudioTrack。
  */

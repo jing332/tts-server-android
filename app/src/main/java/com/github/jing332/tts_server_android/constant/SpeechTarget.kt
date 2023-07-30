@@ -7,8 +7,8 @@ import com.github.jing332.tts_server_android.app
 
 @IntDef(
     SpeechTarget.ALL,
-    SpeechTarget.ASIDE,
-    SpeechTarget.DIALOGUE,
+//    SpeechTarget.ASIDE,
+//    SpeechTarget.DIALOGUE,
     SpeechTarget.BGM,
     SpeechTarget.CUSTOM_TAG
 )

@@ -1,16 +1,17 @@
 package com.github.jing332.tts_server_android.help.audio
 
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.ByteArrayDataSource
+import androidx.media3.datasource.DataSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.MediaSource
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.help.audio.exo.InputStreamDataSource
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.upstream.ByteArrayDataSource
-import com.google.android.exoplayer2.upstream.DataSource
 import java.io.InputStream
 
 
-object ExoPlayerHelper {
+@UnstableApi object ExoPlayerHelper {
     fun createMediaSourceFromInputStream(inputStream: InputStream): MediaSource {
         val factory = DataSource.Factory {
             InputStreamDataSource(inputStream)

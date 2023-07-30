@@ -14,8 +14,12 @@ class TextReplacer {
     fun load() {
         map.clear()
         appDb.replaceRuleDao.allGroupWithReplaceRules().forEach { groupWithRules ->
-            map[groupWithRules.group.onExecution] =
+            if (map[groupWithRules.group.onExecution] == null)
+                map[groupWithRules.group.onExecution] = mutableListOf()
+
+            (map[groupWithRules.group.onExecution] as MutableList).addAll(
                 groupWithRules.list.filter { it.isEnabled }.sortedBy { it.order }
+            )
         }
     }
 

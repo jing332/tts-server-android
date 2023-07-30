@@ -23,7 +23,6 @@ import io.noties.markwon.LinkResolverDef
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
 import io.noties.markwon.MarkwonPlugin
-import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.image.AsyncDrawableScheduler
 import io.noties.markwon.image.DefaultMediaDecoder
 import io.noties.markwon.image.ImagesPlugin
@@ -52,7 +51,7 @@ class AppHelpDocumentActivity : BackActivity() {
                     null
                 }
             })
-            .usePlugin(HtmlPlugin.create())
+//            .usePlugin(HtmlPlugin.create())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { view, link ->

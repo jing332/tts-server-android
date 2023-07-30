@@ -1,9 +1,9 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'kotlinx-serialization'
-    id 'kotlin-kapt'
-    id 'kotlin-parcelize'
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("kotlinx-serialization")
+    id("kotlin-kapt")
+    id("kotlin-parcelize")
     id("com.google.devtools.ksp")
 }
 
@@ -115,6 +115,12 @@ android {
 
     kotlin {
         jvmToolchain(17)
+
+        /*sourceSets.all {
+            languageSettings {
+                languageVersion = "2.0"
+            }
+        }*/
     }
 
     // 修改apk文件名
@@ -159,12 +165,12 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 
     def markwon_version = '4.6.2'
+    implementation "com.caverock:androidsvg:1.4"
     implementation "io.noties.markwon:core:$markwon_version"
     implementation "io.noties.markwon:image:$markwon_version"
-    implementation "io.noties.markwon:html:$markwon_version"
+//    implementation "io.noties.markwon:html:$markwon_version"
     implementation "io.noties.markwon:linkify:$markwon_version"
 
-    implementation "com.caverock:androidsvg:1.4"
 
     // RecyclerView
     implementation 'com.github.liangjingkanji:BRV:1.4.3'
@@ -178,11 +184,10 @@ dependencies {
     implementation 'io.github.Rosemoe.sora-editor:language-textmate:0.21.1'
 
     // Room
+    ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
     androidTestImplementation("androidx.room:room-testing:$room_version")
-
 
     // IO & NET
     implementation 'com.squareup.okio:okio:3.3.0'
@@ -195,14 +200,14 @@ dependencies {
     implementation 'com.chibatching.kotpref:kotpref:2.13.2'
     implementation 'com.chibatching.kotpref:enum-support:2.13.2'
 
-    implementation 'cn.hutool:hutool-crypto:5.8.17'
+    implementation 'cn.hutool:hutool-crypto:5.8.19'
 
     // Media
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.19.0'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.19.0'
+    implementation("androidx.media3:media3-exoplayer:1.1.0")
+    implementation("androidx.media3:media3-ui:1.1.0")
 
     // Logcat (Debug)
-    debugImplementation 'com.github.getActivity:Logcat:11.2'
+//    debugImplementation 'com.github.getActivity:Logcat:11.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

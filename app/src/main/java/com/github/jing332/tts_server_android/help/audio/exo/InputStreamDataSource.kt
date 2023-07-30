@@ -1,9 +1,10 @@
 package com.github.jing332.tts_server_android.help.audio.exo
 
 import android.net.Uri
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.upstream.BaseDataSource
-import com.google.android.exoplayer2.upstream.DataSpec
+import androidx.media3.common.C
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.BaseDataSource
+import androidx.media3.datasource.DataSpec
 import okio.buffer
 import okio.source
 import java.io.EOFException
@@ -12,6 +13,7 @@ import java.io.InputStream
 import kotlin.math.min
 
 
+@UnstableApi
 class InputStreamDataSource(
     private val inputStream: InputStream,
 ) : BaseDataSource(/* isNetwork = */ false) {

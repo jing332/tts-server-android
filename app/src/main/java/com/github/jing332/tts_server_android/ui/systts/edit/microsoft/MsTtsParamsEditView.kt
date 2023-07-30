@@ -46,6 +46,7 @@ class MsTtsParamsEditView @JvmOverloads constructor(
 
     var formatValue: String = MsTtsAudioFormat.DEFAULT
 
+    @Suppress("UNUSED_PARAMETER")
     fun setFormatByApi(@MsTtsApiType api: Int, currentFormat: String? = null) {
         mFormatItems =
             MsTtsFormatManger.getFormatsByApiType(MsTtsApiType.EDGE).map { SpinnerItem(it, it) }
