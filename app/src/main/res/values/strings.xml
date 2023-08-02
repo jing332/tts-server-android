@@ -417,4 +417,5 @@
     <string name="theme_magenta">紫红</string>
     <string name="app_help_document">帮助文档</string>
     <string name="replace_rule_after_execute">在朗读规则后执行</string>
+    <string name="voice_name_bad_format">voiceName格式错误</string>
 </resources>

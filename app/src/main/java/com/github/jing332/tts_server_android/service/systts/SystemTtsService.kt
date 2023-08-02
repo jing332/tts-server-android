@@ -10,7 +10,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
-import android.media.AudioFormat
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.PowerManager
@@ -211,22 +210,19 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
         mNotificationJob?.cancel()
         reNewWakeLock()
         startForegroundService()
-        val text = request?.charSequenceText.toString().trim()
+        val text = request.charSequenceText.toString().trim()
         mCurrentText = text
         updateNotification(getString(R.string.systts_state_synthesizing), text)
 
-        if (StringUtils.isSilent(text)) {
-            callback.start(16000, AudioFormat.ENCODING_PCM_16BIT, 1)
-            callback.done()
-            return
-        }
-
         // 调用者指定ID
         var ttsId = -1L
-        if (request.voiceName.isNotEmpty() && request.voiceName.contains("_")) {
+        if (request.voiceName.isNotEmpty()) {
             val voiceSplitList = request.voiceName.split("_")
-            voiceSplitList.getOrNull(voiceSplitList.size - 1)?.let { idStr ->
-                ttsId = idStr.toLongOrNull() ?: -1L
+            if (voiceSplitList.isEmpty()) {
+                longToast(R.string.voice_name_bad_format)
+                voiceSplitList.getOrNull(voiceSplitList.size - 1)?.let { idStr ->
+                    ttsId = idStr.toLongOrNull() ?: -1L
+                }
             }
         }
 
@@ -235,7 +231,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                 mTtsManager.textToAudio(
                     ttsId = ttsId,
                     text = text,
-                    sysRate = (request!!.speechRate * 100) / 500, // < 100
+                    sysRate = (request.speechRate * 100) / 500, // < 100
                     sysPitch = request.pitch - 100, // 默认0,
                     onStart = { sampleRate, bitRate ->
                         callback.start(sampleRate, bitRate, 1)
@@ -266,13 +262,13 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                 offset += bytesToWrite
             }
         } catch (e: Exception) {
+            logE("writeToCallBack: ${e.toString()}")
             e.printStackTrace()
         }
     }
 
     private fun reNewWakeLock() {
         if (mWakeLock != null && mWakeLock?.isHeld == false) {
-            Log.i(TAG, "刷新WakeLock 20分钟")
             mWakeLock?.acquire(60 * 20 * 1000)
         }
         GcManager.doGC()
