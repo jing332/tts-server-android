@@ -12,7 +12,6 @@ class WaitDialog(context: Context) : Dialog(context) {
         setCanceledOnTouchOutside(false)
         setContentView(binding.root)
 
-
         binding.pb.setIndicatorColor(
             *binding.pb.indicatorColor,
             Color.RED,

@@ -9,12 +9,15 @@
 # 插件相关
 -keep class com.github.jing332.tts_server_android.model.rhino.core.** { *; }
 -keep class cn.hutool.crypto.** { *; }
+-keep class com.hankcs.hanlp.** { *; }
+
 #-keep class cn.hutool.core.** { *; }
 
 -keepnames class * extends java.lang.Exception
 
 # 判断SVG库是否存在 (io.noties.markwon.image.svg.SvgSupport)
 -keepnames class com.caverock.androidsvg.SVG
+
 
 # OKIO
 -keep class okio.* { *; }

@@ -7,6 +7,10 @@ import android.content.Intent
 import android.os.Process
 import com.chibatching.kotpref.Kotpref
 import com.drake.brv.utils.BRV
+import com.github.jing332.tts_server_android.model.hanlp.HanlpManager
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -26,6 +30,8 @@ class App : Application() {
         super.attachBaseContext(base.apply { AppLocale.setLocale(base) })
     }
 
+    @SuppressLint("SdCardPath")
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
         instance = this
@@ -35,6 +41,13 @@ class App : Application() {
 
         // RecyclerView
         BRV.modelId = BR.m
+
+        GlobalScope.launch {
+            HanlpManager.initDir(
+                context.getExternalFilesDir("hanlp")?.absolutePath
+                    ?: "/data/data/$packageName/files/hanlp"
+            )
+        }
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")

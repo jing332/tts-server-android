@@ -1,6 +1,9 @@
 package com.github.jing332.tts_server_android.utils
 
+import android.util.Log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -86,5 +89,58 @@ object ZipUtils {
             entry = zis.nextEntry
         }
         zis.close()
+    }
+
+
+    /**
+     * @param onProgress readCompressedSize 已经解压的压缩大小
+     */
+    suspend fun unzipFile(
+        zis: ZipInputStream,
+        destFolder: File,
+        bufferSize: Int = 4096,
+
+        onProgress: (readCompressedSize: Long, entry: ZipEntry?) -> Unit
+    ) {
+        val buffer = ByteArray(bufferSize)
+        var bytesRead = 0
+        var totalBytesRead = 0L
+
+        withContext(Dispatchers.IO) {
+            var entry: ZipEntry? = zis.nextEntry
+            while (coroutineContext.isActive && entry != null) {
+                val entryName = entry.name
+                val entryPath = destFolder.absolutePath + File.separator + entryName
+
+                onProgress(totalBytesRead, entry)
+                Log.d(TAG, "unzipFile: $entryName")
+                if (entry.isDirectory) {
+                    File(entryPath).mkdirs()
+                } else {
+                    val file = File(entryPath)
+                    file.parentFile?.mkdirs()
+                    file.delete()
+                    file.createNewFile()
+                    FileOutputStream(file).use { fos ->
+                        BufferedOutputStream(fos).use { bos ->
+                            while (coroutineContext.isActive && zis.read(buffer)
+                                    .also { bytesRead = it } != -1
+                            ) {
+                                bos.write(buffer, 0, bytesRead)
+                            }
+                        }
+                    }
+                }
+                zis.closeEntry()
+
+                totalBytesRead += entry.compressedSize
+                val next = zis.nextEntry
+                if (next == null)
+                    onProgress(totalBytesRead, null)
+
+                entry = next
+            }
+            zis.close()
+        }
     }
 }
