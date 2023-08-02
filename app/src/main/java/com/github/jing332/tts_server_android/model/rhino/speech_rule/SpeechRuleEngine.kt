@@ -15,7 +15,7 @@ class SpeechRuleEngine(
     override var code: String = rule.code,
     override val logger: Logger = Logger.global
 ) :
-    BaseScriptEngine(ttsrvObject = BaseScriptEngineContext(context = context, "ReadRule")) {
+    BaseScriptEngine(ttsrvObject = ScriptEngineContext(context = context, "ReadRule")) {
     companion object {
         const val OBJ_JS = "SpeechRuleJS"
 

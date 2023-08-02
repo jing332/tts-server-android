@@ -7,8 +7,7 @@ import com.hankcs.hanlp.seg.Segment
 
 class ScriptEngineContext(
     override val context: Context, override val engineId: String
-) :
-    BaseScriptEngineContext(context, engineId) {
+) : BaseScriptEngineContext(context, engineId) {
 
     /**
      * 创建一个分词器， 这是一个工厂方法
