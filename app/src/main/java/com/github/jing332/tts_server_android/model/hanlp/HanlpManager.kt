@@ -22,7 +22,7 @@ object HanlpManager {
             if (field.type == String::class.java) {
                 field.isAccessible = true
                 val value = field.get(null) as String
-                val newValue = dir + File.separator + value
+                val newValue = dir + File.separator + value.removePrefix("data/")
                 field.set(null, newValue)
                 Log.d(TAG, "set config: $newValue")
             }

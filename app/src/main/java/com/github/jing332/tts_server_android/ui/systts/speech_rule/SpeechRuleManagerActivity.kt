@@ -258,7 +258,7 @@ class SpeechRuleManagerActivity : BackActivity() {
                                     getExternalFilesDir("hanlp")!!,
                                     onProgress = { readCompressedSize, entry ->
                                         val progress =
-                                            (readCompressedSize.toFloat() / zipSize.toFloat()) * 10
+                                            (readCompressedSize.toFloat() / zipSize.toFloat()) * 100
                                         println("${readCompressedSize}, $zipSize")
                                         runMain {
                                             loadingDialogBuilder.setProgress(progress.toInt())
