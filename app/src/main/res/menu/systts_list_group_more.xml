@@ -9,6 +9,10 @@
             android:title="@string/rename" />
 
         <item
+            android:id="@+id/menu_copy_group"
+            android:icon="@drawable/ic_baseline_content_copy_24"
+            android:title="@string/copy" />
+        <item
             android:id="@+id/menu_audio_params"
             android:icon="@drawable/baseline_speed_24"
             android:title="@string/audio_params"

@@ -409,4 +409,5 @@
     <string name="import_hanlp_zip">导入Hanlp语法分析包</string>
     <string name="hanlp_settings">Hanlp设置</string>
     <string name="hanlp_tips">或手动解压到 外部存储/Android/data/com.github.jing332.tts_server_android/files/hanlp 中，\n注意：请确保hanlp目录下有 dictionary 文件夹。</string>
+    <string name="copy_group">复制分组</string>
 </resources>

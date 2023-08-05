@@ -35,6 +35,9 @@ interface SystemTtsDao {
         isStandbyType: Boolean = false,
     ): List<SystemTts>
 
+    @Query("SELECT * FROM sysTts WHERE groupId = :groupId")
+    fun getTtsByGroup(groupId: Long): List<SystemTts>
+
     @Query("SELECT * FROM sysTts WHERE id = :id")
     fun getTts(id: Long): SystemTts?
 

@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.list
 
 import android.os.Bundle
-import android.speech.tts.TextToSpeechService
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuCompat
@@ -35,7 +34,6 @@ import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.conflate
 import kotlinx.serialization.encodeToString
 
@@ -77,9 +75,9 @@ class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
                         setOnMenuItemClickListener { item ->
                             when (item.itemId) {
                                 R.id.menu_rename_group -> displayGroupRename(model.data)
-                                R.id.menu_export -> displayGroupExport(model)
+                                R.id.menu_copy_group -> displayCopyGroup(model.data)
                                 R.id.menu_audio_params -> displayGroupAudioParams(model.data)
-
+                                R.id.menu_export -> displayGroupExport(model)
                                 R.id.menu_remove_group -> removeGroup(model.data)
                             }
                             true
@@ -176,6 +174,7 @@ class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
 
     }
 
+
     private var mLastDataSet: List<GroupWithSystemTts>? = null
     private suspend fun updateModels(list: List<GroupWithSystemTts>? = mLastDataSet) {
         withDefault {
@@ -256,6 +255,27 @@ class ListGroupPageFragment : Fragment(R.layout.systts_list_group_fragment) {
             }
             .show()
 
+    }
+
+    private fun displayCopyGroup(data: SystemTtsGroup) {
+        AppDialogs.displayInputDialog(
+            requireContext(), getString(R.string.copy_group), getString(R.string.name), data.name
+        ) {
+            lifecycleScope.launch {
+                val group = data.copy(id = System.currentTimeMillis(),
+                    name = it.ifEmpty { getString(R.string.unnamed) }
+                )
+                appDb.systemTtsDao.insertGroup(group)
+                appDb.systemTtsDao.getTtsByGroup(data.id).forEachIndexed { index, tts ->
+                    appDb.systemTtsDao.insertTts(
+                        tts.copy(
+                            id = System.currentTimeMillis() + index,
+                            groupId = group.id
+                        )
+                    )
+                }
+            }
+        }
     }
 
     private fun removeGroup(data: SystemTtsGroup) {
