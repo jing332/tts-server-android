@@ -6,6 +6,7 @@ let region = ttsrv.userVars['region'] || 'eastus'
 
 let format = "audio-24khz-48kbitrate-mono-mp3"
 let sampleRate = 24000 // 对应24khz. 格式后带有opus的实际采样率是其2倍
+let isNeedDecode = false // 是否需要解码，如 format 为 raw 请设为 true
 
 let PluginJS = {
     "name": "Azure",
@@ -111,9 +112,11 @@ let seekStyle
 let EditorJS = {
     //音频的采样率 编辑TTS界面保存时调用
     "getAudioSampleRate": function (locale, voice) {
-        // 根据voice判断返回的采样率
-        // 也可以动态获取：
         return sampleRate
+    },
+
+    "isNeedDecode": function (locale, voice) {
+        return isNeedDecode
     },
 
     "getLocales": function () {

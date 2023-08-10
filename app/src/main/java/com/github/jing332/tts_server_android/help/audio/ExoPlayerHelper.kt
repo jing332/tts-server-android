@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.help.audio
 
+import android.annotation.SuppressLint
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.ByteArrayDataSource
@@ -11,7 +12,8 @@ import com.github.jing332.tts_server_android.help.audio.exo.InputStreamDataSourc
 import java.io.InputStream
 
 
-@UnstableApi object ExoPlayerHelper {
+object ExoPlayerHelper {
+    @SuppressLint("UnsafeOptInUsageError")
     fun createMediaSourceFromInputStream(inputStream: InputStream): MediaSource {
         val factory = DataSource.Factory {
             InputStreamDataSource(inputStream)
@@ -21,6 +23,7 @@ import java.io.InputStream
     }
 
     // 创建音频媒体源
+    @SuppressLint("UnsafeOptInUsageError")
     fun createMediaSourceFromByteArray(data: ByteArray): MediaSource {
         val factory = DataSource.Factory { ByteArrayDataSource(data) }
         return DefaultMediaSourceFactory(App.context).setDataSourceFactory(factory)

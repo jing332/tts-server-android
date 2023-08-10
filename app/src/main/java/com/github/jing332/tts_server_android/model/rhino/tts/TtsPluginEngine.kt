@@ -64,7 +64,6 @@ open class TtsPluginEngine(
             mPlugin.pluginId = get("id").toString()
             mPlugin.author = get("author").toString()
 
-
             try {
                 mPlugin.defVars = get("vars") as Map<String, Map<String, String>>
 

@@ -93,11 +93,13 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
     override fun onSave() {
         lifecycleScope.launch(Dispatchers.Main) {
             systemTts.displayName = vm.checkDisplayName(basicEditView.displayName)
+            mWaitDialog.show()
             kotlin.runCatching {
-                mWaitDialog.show()
                 withIO {
                     tts.audioFormat.sampleRate =
                         engine.getSampleRate(tts.locale, tts.voice) ?: 16000
+
+                    tts.audioFormat.isNeedDecode = engine.isNeedDecode(tts.locale, tts.voice)
                 }
             }.onFailure {
                 displayErrorDialog(
@@ -106,10 +108,10 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
                         ""
                     )
                 )
-
             }.onSuccess {
                 super.onSave()
             }
+
             mWaitDialog.dismiss()
         }
     }

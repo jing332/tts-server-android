@@ -1,7 +1,10 @@
 package com.github.jing332.tts_server_android.service.systts.help
 
 import android.content.Context
+import android.media.AudioFormat
+import android.media.AudioTrack
 import android.util.Log
+import cn.hutool.core.util.ArrayUtil.min
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppPattern
 import com.github.jing332.tts_server_android.constant.ReplaceExecution
@@ -124,6 +127,13 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             }
         }
     }
+
+    private fun getBufferSize(sampleRate: Int): Int =
+        AudioTrack.getMinBufferSize(
+            sampleRate,
+            AudioFormat.CHANNEL_OUT_MONO,
+            AudioFormat.ENCODING_PCM_16BIT
+        )
 
     override suspend fun getAudio(
         tts: ITextToSpeechEngine,
@@ -481,8 +491,19 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     }
                 }
             } else {
+                val bufferSize = getBufferSize(tts.audioFormat.sampleRate)
+                Log.d(TAG, "raw buffer: $bufferSize")
+                val buffer = ByteArray(min(1024, bufferSize * 2))
+                var length: Int
+                audioResult.inputStream?.use { ins ->
+                    ins.buffered(1024 * 12).use { bufferIns ->
+                        while (bufferIns.read(buffer).also { length = it } != -1) {
+                            // 读取的数据放入 a 缓冲区，将 a 缓冲区数据写入到 audioTrack 中
+                            onPcmAudio(buffer.copyOf(length))
+                        }
+                    }
+                }
                 onDone.invoke()
-                throw TtsManagerException("暂不支持流播放下的raw音频")
             }
         } else { // 全部加载到内存
             val audio = audioResult.bytes

@@ -1,8 +1,8 @@
 package com.github.jing332.tts_server_android.help.audio.exo
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.media3.common.C
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.BaseDataSource
 import androidx.media3.datasource.DataSpec
 import okio.buffer
@@ -13,7 +13,7 @@ import java.io.InputStream
 import kotlin.math.min
 
 
-@UnstableApi
+@SuppressLint("UnsafeOptInUsageError")
 class InputStreamDataSource(
     private val inputStream: InputStream,
 ) : BaseDataSource(/* isNetwork = */ false) {

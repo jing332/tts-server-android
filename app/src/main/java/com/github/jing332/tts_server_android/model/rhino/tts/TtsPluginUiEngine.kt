@@ -15,6 +15,8 @@ class TtsPluginUiEngine(
     TtsPluginEngine(pluginTTS = pluginTts, context = context) {
     companion object {
         const val FUNC_SAMPLE_RATE = "getAudioSampleRate"
+        const val FUNC_IS_NEED_DECODE = "isNeedDecode"
+
         const val FUNC_LOCALES = "getLocales"
         const val FUNC_VOICES = "getVoices"
 
@@ -53,6 +55,24 @@ class TtsPluginUiEngine(
         }
     }
 
+    fun isNeedDecode(locale: String, voice: String): Boolean {
+        logger.d("isNeedDecode()...")
+
+        return try {
+            rhino.invokeMethod(
+                editUiJsObject,
+                FUNC_IS_NEED_DECODE,
+                locale,
+                voice
+            )?.run {
+                if (this is Boolean) this
+                else (this as Double).toInt() == 1
+            } ?: true
+        } catch (_: NoSuchMethodException) {
+            true
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     fun getLocales(): List<String> {
         return rhino.invokeMethod(editUiJsObject, FUNC_LOCALES).run {
@@ -61,7 +81,6 @@ class TtsPluginUiEngine(
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun getVoices(locale: String): Map<String, String> {
         val nati = NativeMap()
 
@@ -72,16 +91,16 @@ class TtsPluginUiEngine(
                         key.toString() to value.toString()
                     }.toMap()
                 }
-               /* is NativeMap -> {
-                    val entries = NativeMap::class.java.getDeclaredField("entries").apply {
-                        isAccessible = true
-                    }.get(this) as Hashtable
-                    entries.forEach {
-                        println(it)
-                    }
+                /* is NativeMap -> {
+                     val entries = NativeMap::class.java.getDeclaredField("entries").apply {
+                         isAccessible = true
+                     }.get(this) as Hashtable
+                     entries.forEach {
+                         println(it)
+                     }
 
-                    emptyMap()
-                }*/
+                     emptyMap()
+                 }*/
                 else -> emptyMap()
             }
         }

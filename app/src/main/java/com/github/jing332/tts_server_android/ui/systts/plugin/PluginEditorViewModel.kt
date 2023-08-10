@@ -85,6 +85,13 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
                 writeErrorLog(it)
             }
 
+            runCatching {
+                val isNeedDecode = pluginEngine.isNeedDecode(pluginTTS.locale, pluginTTS.voice)
+                pluginEngine.logger.d("需要解码: $isNeedDecode")
+            }.onFailure {
+                writeErrorLog(it)
+            }
+
             kotlin.runCatching {
                 pluginTTS.onLoad()
                 val audio = pluginTTS.getAudioWithSystemParams(PluginConfig.sampleText)

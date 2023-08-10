@@ -16,7 +16,7 @@ import com.github.jing332.tts_server_android.help.audio.ExoPlayerHelper.createMe
 import kotlinx.coroutines.*
 import java.io.InputStream
 
-@UnstableApi
+
 class AudioPlayer(val context: Context) {
     companion object {
         const val TAG = "AudioPlayer"

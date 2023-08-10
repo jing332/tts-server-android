@@ -16,7 +16,8 @@ import kotlinx.coroutines.*
 import java.io.InputStream
 import java.nio.ByteBuffer
 
-@UnstableApi class ExoAudioDecoder(val context: Context) {
+@SuppressLint("UnsafeOptInUsageError")
+class ExoAudioDecoder(val context: Context) {
     companion object {
         private const val CANCEL_MESSAGE_ENDED = "CANCEL_MESSAGE_ENDED"
         private const val CANCEL_MESSAGE_ERROR = "CANCEL_MESSAGE_ERROR"
@@ -90,7 +91,12 @@ import java.nio.ByteBuffer
         mWaitJob?.join()
         mWaitJob = null
 
-        throwable?.let { throw AudioDecoderException(message = "ExoPlayer解码失败：${it.message}", cause = it) }
+        throwable?.let {
+            throw AudioDecoderException(
+                message = "ExoPlayer解码失败：${it.message}",
+                cause = it
+            )
+        }
     }
 
 
