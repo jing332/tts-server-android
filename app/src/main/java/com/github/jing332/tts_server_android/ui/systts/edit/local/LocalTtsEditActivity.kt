@@ -30,7 +30,7 @@ class LocalTtsEditActivity : BaseTtsEditActivity<LocalTTS>({ LocalTTS() }) {
         if (waitDialog.isShowing) waitDialog.dismiss()
     }
 
-    override fun onTest(text: String) {
+    override fun onAudition(text: String) {
         waitDialog.show()
         vm.doTest(text, { // 直接播放模式
             waitDialog.dismiss()

@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.SystemClock
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
-import com.github.jing332.tts_server_android.model.speech.TtsTextPair
+import com.github.jing332.tts_server_android.model.speech.TtsTextSegment
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import java.util.Random
 
@@ -26,9 +26,9 @@ class SpeechRuleHelper {
         text: String,
         config: Map<String, List<ITextToSpeechEngine>>,
         defaultConfig: ITextToSpeechEngine,
-    ): List<TtsTextPair> {
-        if (!this::engine.isInitialized) return listOf(TtsTextPair(defaultConfig, text))
-        val resultList = mutableListOf<TtsTextPair>()
+    ): List<TtsTextSegment> {
+        if (!this::engine.isInitialized) return listOf(TtsTextSegment(defaultConfig, text))
+        val resultList = mutableListOf<TtsTextSegment>()
 
         val list = config.entries.map { it.value }.flatten().map { it.speechRule }
         engine.handleText(text, list).forEach { txtWithTag ->
@@ -37,7 +37,7 @@ class SpeechRuleHelper {
                 val ttsFromId = sameTagList.find { it.speechRule.configId == txtWithTag.id }
 
                 val tts = ttsFromId ?: sameTagList[random.nextInt(sameTagList.size)]
-                resultList.add(TtsTextPair(text = txtWithTag.text, tts = tts))
+                resultList.add(TtsTextSegment(text = txtWithTag.text, tts = tts))
             }
         }
 

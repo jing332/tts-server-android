@@ -179,7 +179,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
 
         fragment.lifecycleScope.launch(Dispatchers.Main) {
             val tts = model.tts
-            val audio = try {
+            val audioStream = try {
                 withIO {
                     tts.onLoad()
                     tts.getAudioWithSystemParams(AppConfig.testSampleText)
@@ -192,7 +192,7 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                 model.tts.onDestroy()
             }
 
-            if (audio == null) {
+            if (audioStream == null) {
                 context.displayErrorDialog(
                     Exception(
                         context.getString(
@@ -213,7 +213,14 @@ class SysTtsListItemHelper(val fragment: Fragment, val hasGroup: Boolean = false
                     tts.onDestroy()
                 }.show()
 
-            withIO { audioPlayer.play(audio.readBytes()) }
+
+            withIO {
+                if (model.tts.audioFormat.isNeedDecode)
+                    audioPlayer.play(audioStream)
+                else {
+                    audioPlayer.play(audioStream, model.tts.audioFormat.sampleRate)
+                }
+            }
             dlg.dismiss()
         }
     }

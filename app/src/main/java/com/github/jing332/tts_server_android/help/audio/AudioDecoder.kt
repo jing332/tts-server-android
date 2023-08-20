@@ -14,8 +14,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
-import okio.buffer
-import okio.source
 import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
@@ -26,6 +24,33 @@ import kotlin.coroutines.coroutineContext
 class AudioDecoder {
     companion object {
         const val TAG = "AudioDecode"
+
+        suspend fun InputStream.readPcmChunk(
+            bufferSize: Int = 4096,
+            chunkSize: Int = 2048,
+            onRead: suspend (ByteArray) -> Unit
+        ) {
+            var bufferFilledCount = 0
+            val buffer = ByteArray(bufferSize)
+
+            while (coroutineContext.isActive) {
+                val readLen =
+                    this.read(buffer, bufferFilledCount, chunkSize - bufferFilledCount)
+                if (readLen == -1) break
+                if (readLen == 0) {
+                    delay(100)
+                    continue
+                }
+
+                bufferFilledCount += readLen
+                if (bufferFilledCount >= chunkSize) {
+                    val chunkData = buffer.copyOfRange(0, chunkSize)
+
+                    onRead.invoke(chunkData)
+                    bufferFilledCount = 0
+                }
+            }
+        }
 
         /**
          * 获取音频采样率
@@ -124,6 +149,7 @@ class AudioDecoder {
         }
     }
 
+
     /**
      * @param sampleRate opus音频必须设置采样率
      */
@@ -140,36 +166,14 @@ class AudioDecoder {
 
             if (len == -1) throw AudioDecoderException(message = "读取音频流前15字节失败: len == -1")
             if (bytes.decodeToString().endsWith("WAVEfmt")) {
-                val bis = ins.source().buffer()
-                val buffer = ByteArray(4096)
-                val chunkSize = 2048
-
-                var bufferFilledCount = 0
-                var isFirst = true
-                while (coroutineContext.isActive) {
-                    if (isFirst) {
-                        bis.skip(29)
-                        isFirst = false
+                ins.buffered().use { buffered ->
+                    buffered.skip(29)
+                    buffered.readPcmChunk { pcmData ->
+                        onRead.invoke(pcmData)
                     }
 
-                    val readLen =
-                        bis.read(buffer, bufferFilledCount, chunkSize - bufferFilledCount)
-                    if (readLen == -1) break
-                    if (readLen == 0) {
-                        delay(100)
-                        continue
-                    }
-
-                    bufferFilledCount += readLen
-                    if (bufferFilledCount >= chunkSize) {
-                        val chunkData = buffer.copyOfRange(0, chunkSize)
-
-                        onRead.invoke(chunkData)
-                        bufferFilledCount = 0
-                    }
+                    buffered.close()
                 }
-
-                bis.close()
                 return
             }
 

@@ -18,7 +18,6 @@ import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initEnterSharedTransition
 import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 import com.google.android.material.textfield.TextInputLayout
-import java.io.InputStream
 
 open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : BackActivity() {
     companion object {
@@ -32,13 +31,22 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
 
     suspend fun playAudio(audio: ByteArray) {
         mAudioPlayer = mAudioPlayer ?: AudioPlayer(this)
-        mAudioPlayer?.play(audio)
+        if (systemTts.tts.audioFormat.isNeedDecode) {
+            mAudioPlayer?.play(audio)
+        } else {
+            mAudioPlayer?.play(audio, systemTts.tts.audioFormat.sampleRate)
+        }
     }
 
-    suspend fun playAudio(inputStream: InputStream) {
-        mAudioPlayer = mAudioPlayer ?: AudioPlayer(this)
-        mAudioPlayer?.play(inputStream)
-    }
+    /*    suspend fun playAudio(inputStream: InputStream) {
+            mAudioPlayer = mAudioPlayer ?: AudioPlayer(this)
+
+            if (systemTts.tts.audioFormat.isNeedDecode) {
+                mAudioPlayer?.play(inputStream)
+            } else {
+                mAudioPlayer?.play(inputStream, systemTts.tts.audioFormat.sampleRate)
+            }
+        }*/
 
     fun stopPlay() {
         systemTts.tts.onStop()
@@ -57,9 +65,9 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
         finishAfterTransition()
     }
 
-    open fun onTest(text: String) {}
+    open fun onAudition(text: String) {}
 
-    protected var testInputLayout: TextInputLayout? = null
+    private var testInputLayout: TextInputLayout? = null
     protected val basicEditView: BasicInfoEditView by lazy { binding.basicEdit }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +102,7 @@ open class BaseTtsEditActivity<T : ITextToSpeechEngine>(val factory: () -> T) : 
             testInputLayout?.setEndIconOnClickListener {
                 val textStr = text.toString()
                 if (textStr.isBlank()) setText(AppConfig.testSampleText)
-                onTest(textStr)
+                onAudition(textStr)
             }
         }
     }

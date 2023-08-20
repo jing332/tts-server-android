@@ -65,7 +65,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
-    override fun onTest(text: String) {
+    override fun onAudition(text: String) {
         mWaitDialog.show()
         vm.doTest(text,
             { audio, sampleRate, mime ->
@@ -78,7 +78,7 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
                             audio.size / 1024,
                             sampleRate,
                             mime
-                        )
+                        ) + if (sampleRate == 0 && mime.isBlank()) "\n" + getString(R.string.no_audio_data_head_warn) else ""
                     )
                     .setOnDismissListener { stopPlay() }
                     .setPositiveButton(android.R.string.ok, null)

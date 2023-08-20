@@ -4,26 +4,38 @@ import android.content.Context
 import android.media.AudioFormat
 import android.media.AudioTrack
 import android.util.Log
-import cn.hutool.core.util.ArrayUtil.min
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppPattern
 import com.github.jing332.tts_server_android.constant.ReplaceExecution
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
-import com.github.jing332.tts_server_android.help.audio.AudioPlayer
+import com.github.jing332.tts_server_android.help.audio.AudioDecoder.Companion.readPcmChunk
+import com.github.jing332.tts_server_android.help.audio.ExoAudioPlayer
 import com.github.jing332.tts_server_android.help.audio.Sonic
 import com.github.jing332.tts_server_android.help.audio.exo.ExoAudioDecoder
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.speech.ITextToSpeechSynthesizer
-import com.github.jing332.tts_server_android.model.speech.TtsTextPair
-import com.github.jing332.tts_server_android.model.speech.tts.*
-import com.github.jing332.tts_server_android.service.systts.help.exception.*
+import com.github.jing332.tts_server_android.model.speech.TtsTextSegment
+import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
+import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
+import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
+import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException
+import com.github.jing332.tts_server_android.service.systts.help.exception.PlayException
+import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
+import com.github.jing332.tts_server_android.service.systts.help.exception.SpeechRuleException
+import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.utils.StringUtils
 import com.github.jing332.tts_server_android.utils.longToast
 import com.github.jing332.tts_server_android.utils.toast
-import kotlinx.coroutines.*
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlin.coroutines.coroutineContext
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
@@ -51,7 +63,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     private val mSpeechRuleHelper = SpeechRuleHelper()
     private val mRandom = Random(System.currentTimeMillis())
 
-    override suspend fun handleText(text: String): List<TtsTextPair> {
+    override suspend fun handleText(text: String): List<TtsTextSegment> {
         kotlin.runCatching {
             return if (SysTtsConfig.isMultiVoiceEnabled) {
                 val tagTtsMap = mutableMapOf<String, MutableList<ITextToSpeechEngine>>()
@@ -65,22 +77,22 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 mSpeechRuleHelper.handleText(text, tagTtsMap, defaultTtsConfig)
             } else {
                 val list = mConfigMap[SpeechTarget.ALL] ?: listOf(defaultTtsConfig)
-                listOf(TtsTextPair(list[mRandom.nextInt(list.size)], text))
+                listOf(TtsTextSegment(list[mRandom.nextInt(list.size)], text))
             }.run {
                 (if (SysTtsConfig.isSplitEnabled) {
-                    val list = mutableListOf<TtsTextPair>()
+                    val list = mutableListOf<TtsTextSegment>()
                     forEach { ttsText ->
                         splitText(list, ttsText.text, ttsText.tts, SysTtsConfig.isMultiVoiceEnabled)
                     }
                     list
                 } else this).run {
                     val list = if (SysTtsConfig.isReplaceEnabled) {
-                        val l = mutableListOf<TtsTextPair>()
+                        val l = mutableListOf<TtsTextSegment>()
                         this.forEach {
                             mTextReplacer.replace(it.text, ReplaceExecution.AFTER) { e ->
                                 listener?.onError(e)
                             }.also { text ->
-                                l.add(TtsTextPair(it.tts, text))
+                                l.add(TtsTextSegment(it.tts, text))
                             }
                         }
 
@@ -103,7 +115,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     }
 
     private fun splitText(
-        list: MutableList<TtsTextPair>,
+        list: MutableList<TtsTextSegment>,
         text: String,
         tts: ITextToSpeechEngine,
         isMultiVoice: Boolean
@@ -119,11 +131,11 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                     SpeechRuleException(text = text, tts = tts, message = "splittedTexts is empty.")
                 )
             else
-                texts.forEach { list.add(TtsTextPair(tts, it)) }
+                texts.forEach { list.add(TtsTextSegment(tts, it)) }
         } else {
             Log.d(TAG, "使用内置分割规则...")
             StringUtils.splitSentences(text).forEach {
-                list.add(TtsTextPair(tts, it))
+                list.add(TtsTextSegment(tts, it))
             }
         }
     }
@@ -239,7 +251,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     private val mTextReplacer = TextReplacer()
     private val mAudioDecoder = AudioDecoder()
     private val mExoDecoder by lazy { ExoAudioDecoder(context) }
-    private var mAudioPlayer: AudioPlayer? = null
+    private var mAudioPlayer: ExoAudioPlayer? = null
     private var mBgmPlayer: BgmPlayer? = null
 
     private fun getEnabledList(target: Int, isStandby: Boolean): List<ITextToSpeechEngine> {
@@ -441,7 +453,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
     }
 
     @Suppress("UNCHECKED_CAST")
-    private suspend fun TtsTextPair.playAudio(
+    private suspend fun TtsTextSegment.playAudio(
         sysRate: Int,
         sysPitch: Int,
         audioResult: AudioResult?,
@@ -493,13 +505,13 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             } else {
                 val bufferSize = getBufferSize(tts.audioFormat.sampleRate)
                 Log.d(TAG, "raw buffer: $bufferSize")
-                val buffer = ByteArray(min(1024, bufferSize * 2))
+//                val buffer = ByteArray(min(1024, bufferSize * 2))
                 var length: Int
                 audioResult.inputStream?.use { ins ->
-                    ins.buffered(1024 * 12).use { bufferIns ->
-                        while (bufferIns.read(buffer).also { length = it } != -1) {
-                            // 读取的数据放入 a 缓冲区，将 a 缓冲区数据写入到 audioTrack 中
-                            onPcmAudio(buffer.copyOf(length))
+                    ins.buffered().use {
+                        it.readPcmChunk(bufferSize = bufferSize * 2, chunkSize = bufferSize) {pcm->
+                            println("pcm  ${pcm.size}")
+                            onPcmAudio(pcm)
                         }
                     }
                 }
@@ -534,7 +546,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             SysTtsConfig.inAppPlayPitch
         )
 
-        mAudioPlayer = mAudioPlayer ?: AudioPlayer(context)
+        mAudioPlayer = mAudioPlayer ?: ExoAudioPlayer(context)
         if (SysTtsConfig.isStreamPlayModeEnabled)
             mAudioPlayer?.play(inputStream!!, params.rate, params.volume, params.pitch)
         else

@@ -80,7 +80,7 @@ class HttpTtsEditActivity : BaseTtsEditActivity<HttpTTS>({ HttpTTS() }) {
 
     private val waitDialog by lazy { WaitDialog(this) }
 
-    override fun onTest(text: String) {
+    override fun onAudition(text: String) {
         updateValueToTts()
         waitDialog.show()
         vm.doTest(tts, text,

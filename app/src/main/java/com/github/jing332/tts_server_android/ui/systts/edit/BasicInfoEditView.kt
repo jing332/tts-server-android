@@ -17,13 +17,13 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
+import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.databinding.SysttsBasicInfoEditViewBinding
 import com.github.jing332.tts_server_android.databinding.SysttsBuiltinPlayerSettingsBinding
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
-import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
 import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -38,7 +38,9 @@ import com.github.jing332.tts_server_android.utils.layoutInflater
 import com.github.jing332.tts_server_android.utils.runOnUI
 import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import java.lang.Integer.max
 
@@ -203,7 +205,9 @@ class BasicInfoEditView @JvmOverloads constructor(
                             ) {
                                 mData?.speechRule?.resetTag()
                             }
-                        }
+                        } else
+                            mData?.speechRule?.resetTag()
+
                     }
                 }
             }
@@ -264,8 +268,9 @@ class BasicInfoEditView @JvmOverloads constructor(
 
     private fun updateTagUI() {
         mData?.apply {
-            if (raTarget != SpeechTarget.CUSTOM_TAG) return
-            if (currentRule == null) return
+            if (raTarget != SpeechTarget.CUSTOM_TAG || currentRule == null) {
+                return
+            }
             currentRule?.let {
                 speechRule.tagRuleId = it.ruleId
                 speechRule.tag = currentTag.key

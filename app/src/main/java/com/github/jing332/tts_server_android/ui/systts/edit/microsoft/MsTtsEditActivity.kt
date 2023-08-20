@@ -77,7 +77,7 @@ class MsTtsEditActivity : BaseTtsEditActivity<MsTTS>({
         vm.initUserData(systemTts)
     }
 
-    override fun onTest(text: String) {
+    override fun onAudition(text: String) {
         waitDialog.show()
         vm.doTest(text, { audio, sampleRate, mime ->
             waitDialog.dismiss()

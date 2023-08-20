@@ -37,7 +37,7 @@ abstract class ITextToSpeechSynthesizer<T> {
     open fun stop() {}
     open fun destroy() {}
 
-    open suspend fun handleText(text: String): List<TtsTextPair> = emptyList()
+    open suspend fun handleText(text: String): List<TtsTextSegment> = emptyList()
 
     open suspend fun getAudio(
         tts: ITextToSpeechEngine,
@@ -55,7 +55,7 @@ abstract class ITextToSpeechSynthesizer<T> {
         onAudioAvailable: suspend (AudioData<T>) -> Unit
     ){
         getAudio(tts, text, sysRate, sysPitch)?.let {
-            onAudioAvailable.invoke(AudioData(txtTts = TtsTextPair(tts, text), audio = it, done = {}))
+            onAudioAvailable.invoke(AudioData(txtTts = TtsTextSegment(tts, text), audio = it, done = {}))
         }
     }
 
@@ -117,7 +117,7 @@ abstract class ITextToSpeechSynthesizer<T> {
     }
 
     data class AudioData<T>(
-        val txtTts: TtsTextPair,
+        val txtTts: TtsTextSegment,
         val audio: AudioResult? = null,
         val done: () -> Unit,
     )

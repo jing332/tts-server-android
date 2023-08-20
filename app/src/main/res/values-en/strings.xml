@@ -421,9 +421,10 @@
     <string name="theme_magenta">紫红</string>
     <string name="app_help_document">Help Document</string>
     <string name="replace_rule_after_execute">Execute after Speech-Rule</string>
-    <string name="voice_name_bad_format">voiceName格式错误</string>
-    <string name="import_hanlp_zip">导入Hanlp语法分析包</string>
+    <string name="voice_name_bad_format">voiceName bad format</string>
+    <string name="import_hanlp_zip">Import the Hanlp syntax analysis package</string>
     <string name="hanlp_settings">Hanlp Settings</string>
     <string name="hanlp_tips">或手动解压到 外部存储/Android/data/com.github.jing332.tts_server_android/files/hanlp 中，\n注意：请确保hanlp目录下有 dictionary 文件夹。</string>
     <string name="copy_group">Copy Group</string>
+    <string name="no_audio_data_head_warn">⚠️ This audio has no data header, so no information can be obtained.</string>
 </resources>
