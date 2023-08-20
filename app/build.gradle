@@ -8,12 +8,12 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
     namespace 'com.github.jing332.tts_server_android'
     defaultConfig {
         applicationId 'com.github.jing332.tts_server_android'
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         versionCode 9
         versionName "0.9"
 
@@ -138,6 +138,13 @@ android {
     buildFeatures {
         viewBinding true
         dataBinding true
+
+        compose true
+        buildConfig true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
 
@@ -149,8 +156,8 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     //noinspection GradleDependency
@@ -158,7 +165,7 @@ dependencies {
 
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
@@ -205,6 +212,34 @@ dependencies {
     // Media
     implementation("androidx.media3:media3-exoplayer:1.1.0")
     implementation("androidx.media3:media3-ui:1.1.0")
+
+    def accompanistVersion = "0.31.3-beta"
+    implementation("com.google.accompanist:accompanist-systemuicontroller:${accompanistVersion}")
+    implementation("com.google.accompanist:accompanist-navigation-animation:${accompanistVersion}")
+
+
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("androidx.navigation:navigation-compose:2.7.0")
+
+    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
+    def composeBom = platform('androidx.compose:compose-bom:2023.06.01')
+//    def composeBom = platform("dev.chrisbanes.compose:compose-bom:2023.07.00-alpha02")
+    implementation composeBom
+    androidTestImplementation composeBom
+
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.ui:ui")
+
+    implementation 'androidx.compose.material:material-icons-core'
+    implementation 'androidx.compose.material:material-icons-extended'
+    implementation 'androidx.compose.material3:material3-window-size-class'
+
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
 
     // Logcat (Debug)
 //    debugImplementation 'com.github.getActivity:Logcat:11.2'

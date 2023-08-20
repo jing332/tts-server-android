@@ -65,29 +65,34 @@ class PluginTtsEditActivity : BaseTtsEditActivity<PluginTTS>({ PluginTTS() }) {
         AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
+    fun displayAudioInfoDialog(size: Int, sampleRate: Int, mime: String) {
+        MaterialAlertDialogBuilder(this@PluginTtsEditActivity)
+            .setTitle(R.string.systts_test_success)
+            .setMessage(
+                getString(
+                    R.string.systts_test_success_info,
+                    size / 1024,
+                    sampleRate,
+                    mime
+                ) + if (sampleRate == 0 && mime.isBlank()) "\n" + getString(R.string.no_audio_data_head_warn) else ""
+            )
+            .setOnDismissListener { stopPlay() }
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
+    }
+
     override fun onAudition(text: String) {
         mWaitDialog.show()
         vm.doTest(text,
             { audio, sampleRate, mime ->
                 mWaitDialog.dismiss()
-                MaterialAlertDialogBuilder(this@PluginTtsEditActivity)
-                    .setTitle(R.string.systts_test_success)
-                    .setMessage(
-                        getString(
-                            R.string.systts_test_success_info,
-                            audio.size / 1024,
-                            sampleRate,
-                            mime
-                        ) + if (sampleRate == 0 && mime.isBlank()) "\n" + getString(R.string.no_audio_data_head_warn) else ""
-                    )
-                    .setOnDismissListener { stopPlay() }
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show()
+                displayAudioInfoDialog(audio.size, sampleRate, mime)
                 playAudio(audio)
             }, { err ->
                 mWaitDialog.dismiss()
                 displayErrorDialog(err, getString(R.string.test_failed))
-            })
+            }
+        )
     }
 
     override fun onSave() {
