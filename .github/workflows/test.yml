@@ -4,10 +4,9 @@ on:
   push:
     branches:
       - "master"
-      - "dev"
+      - "compose"
     paths-ignore:
       - "**.md"
-      - "crowdin.yml"
   workflow_dispatch:
 
 jobs:

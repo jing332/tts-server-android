@@ -103,6 +103,9 @@
             android:label="@string/edit_plugin_tts" />
         <activity
             android:name=".ui.MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".compose.ComposeMainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.TtsServer.NoActionBar">

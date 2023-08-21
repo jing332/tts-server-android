@@ -427,4 +427,18 @@
     <string name="hanlp_tips">或手动解压到 外部存储/Android/data/com.github.jing332.tts_server_android/files/hanlp 中，\n注意：请确保hanlp目录下有 dictionary 文件夹。</string>
     <string name="copy_group">Copy Group</string>
     <string name="no_audio_data_head_warn">⚠️ This audio has no data header, so no information can be obtained.</string>
+
+    <string name="theme_default">默认</string>
+    <string name="dynamic_color">动态颜色</string>
+    <string name="orange">橙色</string>
+    <string name="green">绿色</string>
+    <string name="red">红色</string>
+    <string name="pink">粉色</string>
+    <string name="blue">蓝色</string>
+    <string name="cyan">青色</string>
+    <string name="purple">紫色</string>
+    <string name="brown">棕色</string>
+    <string name="gray">灰色</string>
+    <string name="desc_expand_group">展开分组：%1$s</string>
+    <string name="desc_collapse_group">折叠分组：%1$s</string>
 </resources>

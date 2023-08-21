@@ -7,6 +7,18 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+static def buildTime() {
+    def t = new Date().time / 1000
+    return (long) t
+}
+
+static def releaseTime() {
+    return new Date().format("yy.MMddHH", TimeZone.getTimeZone("GMT+8"))
+}
+
+def version = "1." + releaseTime()
+def gitCommits = Integer.parseInt('git rev-list HEAD --count'.execute().text.trim())
+
 android {
     compileSdk 34
     namespace 'com.github.jing332.tts_server_android'
@@ -14,8 +26,8 @@ android {
         applicationId 'com.github.jing332.tts_server_android'
         minSdk 21
         targetSdk 34
-        versionCode 9
-        versionName "0.9"
+        versionCode gitCommits
+        versionName version
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas".toString())
@@ -42,6 +54,7 @@ android {
             buildConfigField "String[]", "TRANSLATION_ARRAY", foundLocalesString
         }
         preBuild.dependsOn buildTranslationArray
+        buildConfigField "long", "BUILD_TIME", buildTime().toString()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -61,7 +74,6 @@ android {
 
     buildTypes {
         release {
-            versionNameSuffix "_${releaseTime()}"
             signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
@@ -134,6 +146,14 @@ android {
                 output.outputFileName = "TTS-Server-v${variant.versionName}_${abiName}.apk"
         }
     }
+
+//    sourceSets {
+//        main {
+//            java {
+//                exclude 'tts_server_android/ui'
+//            }
+//        }
+//    }
 
     buildFeatures {
         viewBinding true
@@ -213,9 +233,19 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.1.0")
     implementation("androidx.media3:media3-ui:1.1.0")
 
+    // https://github.com/gyf-dev/ImmersionBar
+    implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
+    implementation 'com.geyifeng.immersionbar:immersionbar-ktx:3.2.2'
+
+    // https://github.com/FunnySaltyFish/ComposeDataSaver
+    implementation "com.github.FunnySaltyFish.ComposeDataSaver:data-saver:v1.1.5"
+
     def accompanistVersion = "0.31.3-beta"
     implementation("com.google.accompanist:accompanist-systemuicontroller:${accompanistVersion}")
     implementation("com.google.accompanist:accompanist-navigation-animation:${accompanistVersion}")
+
+    implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
+    implementation("com.github.ireward:compose-html:1.0.2")
 
 
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
@@ -231,6 +261,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.ui:ui")
+//    implementation("androidx.compose.ui:ui-viewBinding")
 
     implementation 'androidx.compose.material:material-icons-core'
     implementation 'androidx.compose.material:material-icons-extended'
@@ -247,8 +278,4 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-}
-
-static def releaseTime() {
-    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
 }
