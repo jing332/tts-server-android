@@ -28,6 +28,8 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -37,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,12 +59,14 @@ import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.nav.MsTtsForwarderScreen
 import com.github.jing332.tts_server_android.compose.nav.NavRoutes
-import com.github.jing332.tts_server_android.compose.nav.SettingsScreen
 import com.github.jing332.tts_server_android.compose.nav.SystemTtsForwarderScreen
+import com.github.jing332.tts_server_android.compose.nav.settings.SettingsScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.SystemTtsScreen
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
+import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 val LocalNavController = compositionLocalOf<NavController> { error("No nav controller") }
 val LocalDrawerState = compositionLocalOf<DrawerState> { error("No drawer state") }
@@ -86,10 +91,11 @@ class ComposeMainActivity : AppCompatActivity() {
 private fun NavHostScreen() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val snackbarState = remember { SnackbarHostState() }
 
     CompositionLocalProvider(
         LocalNavController provides navController,
-        LocalDrawerState provides drawerState
+        LocalDrawerState provides drawerState,
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -104,9 +110,16 @@ private fun NavHostScreen() {
                         .padding(12.dp)
                 )
             }) {
-            NavHost(navController = navController, startDestination = NavRoutes.SystemTTS.id) {
+            NavHost(
+                navController = navController,
+                startDestination = NavRoutes.SystemTTS.id
+            ) {
                 composable(NavRoutes.SystemTTS.id) { SystemTtsScreen(drawerState) }
-                composable(NavRoutes.SystemTtsForwarder.id) { SystemTtsForwarderScreen(drawerState) }
+                composable(NavRoutes.SystemTtsForwarder.id) {
+                    SystemTtsForwarderScreen(
+                        drawerState
+                    )
+                }
                 composable(NavRoutes.MsTtsForwarder.id) { MsTtsForwarderScreen(drawerState) }
                 composable(NavRoutes.Settings.id) { SettingsScreen(drawerState) }
             }
@@ -122,25 +135,36 @@ fun NavDrawerContent(
     drawerState: DrawerState,
     modifier: Modifier = Modifier
 ) {
+    val scope = rememberCoroutineScope()
+    var selected by rememberSaveable { mutableStateOf(NavRoutes.SystemTTS.id) }
+
     @Composable
     fun drawerItem(
         icon: @Composable () -> Unit,
         targetScreen: NavRoutes,
-        onClick: () -> Unit = { navController.navigate(targetScreen.id) }
+        onClick: () -> Unit = {
+            scope.launch {
+                drawerState.close()
+            }
+            navController.navigate(targetScreen.id)
+            selected = targetScreen.id
+        }
     ) {
+        val isSelected = selected == targetScreen.id
         NavigationDrawerItem(
             icon = { icon() },
             label = { Text(text = stringResource(id = targetScreen.strId)) },
-            selected = false,
+            selected = isSelected,
             onClick = onClick,
         )
     }
+
+
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         Spacer(modifier = Modifier.height(24.dp))
         val context = LocalContext.current
         val clipboardManager = LocalClipboardManager.current
 //        val snackBarState = LocalSnackbarHostState.current
-        val scope = rememberCoroutineScope()
 
         var isBuildTimeExpanded by remember { mutableStateOf(false) }
         val versionNameText = remember {
@@ -157,11 +181,7 @@ fun NavDrawerContent(
                 },
                 onLongClick = {
                     clipboardManager.setText(AnnotatedString(versionNameText))
-                    scope.launch {
-                        withTimeout(2000) {
-//                            snackBarState.showSnackbar(context.getString(R.string.copied_to_clipboard))
-                        }
-                    }
+                    context.longToast(R.string.copied)
                 }
             )) {
             Row {
@@ -183,10 +203,9 @@ fun NavDrawerContent(
             }
             AnimatedVisibility(visible = isBuildTimeExpanded) {
                 Text(
-                    text = "构建于 "/* + SimpleDateFormat(
-                        "yyyy-MM-dd HH:mm:ss",
-                        Locale.getDefault()
-                    ).format(BuildConfig.BUILD_TIME * 1000)*/,
+                    text = SimpleDateFormat(
+                        "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
+                    ).format(BuildConfig.BUILD_TIME * 1000),
                     modifier = Modifier.padding(4.dp)
                 )
             }

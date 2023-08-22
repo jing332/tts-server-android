@@ -49,4 +49,11 @@ object AppConfig {
         key = "theme",
         initialValue = AppTheme.DEFAULT
     )
+
+    val isSwapListenAndEditButton = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "isSwapListenAndEditButton",
+        initialValue = false
+    )
+
 }

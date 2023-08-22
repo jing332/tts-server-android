@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.R
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@ExperimentalMaterial3Api
 @Composable
 fun NavTopAppBar(
     title: @Composable () -> Unit,
