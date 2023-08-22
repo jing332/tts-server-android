@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        fetch-depth: 0
 
       - uses: actions/setup-go@v4
         with:
