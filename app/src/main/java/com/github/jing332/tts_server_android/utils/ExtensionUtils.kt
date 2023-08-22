@@ -12,7 +12,12 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.WindowManager
+import android.view.WindowMetrics
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -22,6 +27,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.constant.KeyConst
 import java.lang.reflect.ParameterizedType
 
+fun Context.startActivity(clz: Class<*>) {
+    startActivity(Intent(this, clz).apply { action = Intent.ACTION_VIEW })
+}
 
 fun Uri.grantReadWritePermission(contentResolver: ContentResolver) {
     contentResolver.takePersistableUriPermission(

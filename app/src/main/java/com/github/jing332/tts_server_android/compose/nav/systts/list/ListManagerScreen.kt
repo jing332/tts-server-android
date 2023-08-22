@@ -17,14 +17,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ContentCut
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Http
 import androidx.compose.material.icons.filled.Input
+import androidx.compose.material.icons.filled.ManageSearch
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Output
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -41,24 +46,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalDrawerState
 import com.github.jing332.tts_server_android.compose.asAppCompatactivity
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.nav.systts.ConfigDeleteDialog
+import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
+import com.github.jing332.tts_server_android.conf.SystemTtsConfig
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
-import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.AudioParamsSettingsView
@@ -72,12 +78,14 @@ import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEdit
 import com.github.jing332.tts_server_android.ui.systts.list.GroupModel
 import com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.list.ItemModel
+import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
+import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
+import com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleManagerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
-import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.clone
+import com.github.jing332.tts_server_android.utils.startActivity
 import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -350,6 +358,68 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                         DropdownMenu(
                             expanded = showOptions,
                             onDismissRequest = { showOptions = false }) {
+
+                            var isSplit by remember { com.github.jing332.tts_server_android.conf.SystemTtsConfig.isSplitEnabled }
+                            CheckedMenuItem(
+                                text = { Text(stringResource(id = R.string.systts_split_long_sentences)) },
+                                checked = isSplit,
+                                onClick = {
+                                    showOptions = false
+                                    isSplit = it
+                                },
+                                leadingIcon = {
+                                    Icon(Icons.Default.ContentCut, null)
+                                }
+                            )
+
+                            var isMultiVoice by remember { com.github.jing332.tts_server_android.conf.SystemTtsConfig.isMultiVoiceEnabled }
+                            CheckedMenuItem(
+                                text = { Text(stringResource(id = R.string.systts_multi_voice_option)) },
+                                checked = isMultiVoice,
+                                onClick = {
+                                    showOptions = false
+                                    isMultiVoice = it
+                                },
+                                leadingIcon = {
+                                    Icon(Icons.Default.Group, null)
+                                },
+                            )
+                            HorizontalDivider()
+                            DropdownMenuItem(
+                                text = { Text(stringResource(id = R.string.speech_rule_manager)) },
+                                onClick = {
+                                    context.startActivity(SpeechRuleManagerActivity::class.java)
+                                },
+                                leadingIcon = {
+                                    Icon(Icons.Default.MenuBook, null)
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(id = R.string.plugin_manager)) },
+                                onClick = {
+                                    context.startActivity(PluginManagerActivity::class.java)
+                                },
+                                leadingIcon = {
+                                    Icon(painterResource(id = R.drawable.ic_plugin), null)
+                                }
+                            )
+
+                            CheckedMenuItem(
+                                text = { Text(stringResource(id = R.string.replace_rule_manager)) },
+                                checked = SystemTtsConfig.isReplaceEnabled.value,
+                                onClick = {
+                                    context.startActivity(ReplaceManagerActivity::class.java)
+                                },
+                                onClickCheckBox = {
+                                    SystemTtsConfig.isReplaceEnabled.value = it
+                                },
+                                leadingIcon = {
+                                    Icon(Icons.Default.ManageSearch, null)
+                                }
+                            )
+
+                            HorizontalDivider()
                             DropdownMenuItem(text = {
                                 Text(stringResource(id = R.string.import_config))
                             }, onClick = {

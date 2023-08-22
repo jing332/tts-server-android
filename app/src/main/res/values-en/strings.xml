@@ -116,7 +116,7 @@
     <string name="sample_text">Sample text</string>
 
     <!-- 替换管理 -->
-    <string name="systts_replace_rule_manager">Replace rule manager</string>
+    <string name="replace_rule_manager">Replace rule manager</string>
     <string name="systts_replace_add_rule">Add replace rule</string>
     <string name="systts_replace_rule">Replace rule</string>
     <string name="systts_replace_as">Replace with</string>
@@ -336,7 +336,7 @@
     <string name="check_update_summary">Check for updates when you open the main interface</string>
 
     <string name="edit_read_rule">Edit Reading Rule</string>
-    <string name="read_rule_manager">Reading Rule Manager</string>
+    <string name="speech_rule_manager">Reading Rule Manager</string>
     <string name="tag">Tag</string>
     <string name="speech_rule_script">Rule Script</string>
     <string name="empty_list">List is Empty</string>

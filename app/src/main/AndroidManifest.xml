@@ -72,7 +72,7 @@
         <activity
             android:name=".ui.systts.speech_rule.SpeechRuleManagerActivity"
             android:exported="true"
-            android:label="@string/read_rule_manager"
+            android:label="@string/speech_rule_manager"
             android:taskAffinity="com.github.jing332.tts_server_android.plugin.speech_rule" />
         <activity
             android:name=".ui.systts.speech_rule.SpeechRuleEditorActivity"

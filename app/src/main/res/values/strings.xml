@@ -117,7 +117,7 @@
     <string name="sample_text">测试文本</string>
 
     <!-- 替换管理 -->
-    <string name="systts_replace_rule_manager">替换规则管理</string>
+    <string name="replace_rule_manager">替换规则管理</string>
     <string name="systts_replace_add_rule">添加替换规则</string>
     <string name="systts_replace_rule">替换规则</string>
     <string name="systts_replace_as">替换为</string>
@@ -333,7 +333,7 @@
     <string name="code_editor">代码编辑器</string>
     <string name="check_update_summary">打开主界面时检查更新</string>
     <string name="edit_read_rule">编辑朗读规则</string>
-    <string name="read_rule_manager">朗读规则管理</string>
+    <string name="speech_rule_manager">朗读规则管理</string>
     <string name="speech_rule_script">规则脚本</string>
     <string name="empty_list">列表为空</string>
     <string name="max_retry_count">最大重试次数</string>

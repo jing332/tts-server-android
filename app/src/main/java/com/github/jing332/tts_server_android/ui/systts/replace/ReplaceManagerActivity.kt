@@ -365,7 +365,7 @@ class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activit
             R.id.menu_shortcut -> {
                 MyTools.addShortcut(
                     this,
-                    getString(R.string.systts_replace_rule_manager),
+                    getString(R.string.replace_rule_manager),
                     "replace_manager",
                     R.drawable.ic_baseline_find_replace_24,
                     Intent(this, ReplaceManagerActivity::class.java)

@@ -42,8 +42,8 @@ object ShortCuts {
 
     private fun buildReplaceManagerShortCutInfo(context: Context): ShortcutInfoCompat {
         return ShortcutInfoCompat.Builder(context, "replace_manager")
-            .setShortLabel(context.getString(R.string.systts_replace_rule_manager))
-            .setLongLabel(context.getString(R.string.systts_replace_rule_manager))
+            .setShortLabel(context.getString(R.string.replace_rule_manager))
+            .setLongLabel(context.getString(R.string.replace_rule_manager))
             .setIcon(IconCompat.createWithResource(context, R.drawable.ic_shortcut_replace))
             .setIntent(buildIntent<ReplaceManagerActivity>(context))
             .build()
