@@ -17,13 +17,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.LocalDrawerState
 import kotlinx.coroutines.launch
 
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavTopAppBar(
     title: @Composable () -> Unit,
-    drawerState: DrawerState,
+    drawerState: DrawerState = LocalDrawerState.current,
     modifier: Modifier = Modifier,
     navigationIcon: @Composable() (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},

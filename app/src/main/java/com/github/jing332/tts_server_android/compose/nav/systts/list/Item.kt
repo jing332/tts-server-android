@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.nav.systts
+package com.github.jing332.tts_server_android.compose.nav.systts.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.jing332.tts_server_android.R
-import com.ireward.htmlcompose.HtmlText
+import com.github.jing332.tts_server_android.compose.widgets.htmlcompose.HtmlText
 import org.burnoutcrew.reorderable.ReorderableLazyListState
 import org.burnoutcrew.reorderable.detectReorder
 

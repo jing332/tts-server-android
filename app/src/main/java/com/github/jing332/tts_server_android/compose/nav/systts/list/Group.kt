@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.nav.systts
+package com.github.jing332.tts_server_android.compose.nav.systts.list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.nav.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 
 

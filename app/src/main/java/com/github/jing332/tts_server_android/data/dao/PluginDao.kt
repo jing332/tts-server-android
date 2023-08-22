@@ -10,7 +10,7 @@ interface PluginDao {
     @get:Query("SELECT * FROM plugin ORDER BY `order` ASC")
     val all: List<Plugin>
 
-    @get:Query("SELECT * FROM plugin WHERE isEnabled = '1'")
+    @get:Query("SELECT * FROM plugin WHERE isEnabled = '1' ORDER BY `order` ASC")
     val allEnabled: List<Plugin>
 
     @Query("SELECT * FROM plugin ORDER BY `order` ASC")
