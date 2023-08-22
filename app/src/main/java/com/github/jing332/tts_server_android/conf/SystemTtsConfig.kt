@@ -40,7 +40,7 @@ object SystemTtsConfig {
     //    var isStreamPlayModeEnabled by booleanPref(false)
     //    var isExoDecoderEnabled by booleanPref(false)
 
-    val isInAppPlayAudio = mutableDataSaverStateOf(
+    val isInternalPlayerEnabled = mutableDataSaverStateOf(
         dataSaverInterface = dataSaverPref,
         key = "isInAppPlayAudio",
         initialValue = false

@@ -26,6 +26,8 @@ import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Output
 import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.material.icons.filled.SmartDisplay
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,7 +57,9 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalDrawerState
 import com.github.jing332.tts_server_android.compose.asAppCompatactivity
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.nav.systts.AudioParamsDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.ConfigDeleteDialog
+import com.github.jing332.tts_server_android.compose.nav.systts.InternalPlayerDialog
 import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
@@ -271,6 +275,17 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             showAuditionDialog = null
         }
 
+    var showInternalPlayerDialog by remember { mutableStateOf(false) }
+    if (showInternalPlayerDialog)
+        InternalPlayerDialog {
+            showInternalPlayerDialog = false
+        }
+
+    var showAudioParamsDialog by remember { mutableStateOf(false) }
+    if (showAudioParamsDialog)
+        AudioParamsDialog {
+            showAudioParamsDialog = false
+        }
 
     var showOptions by rememberSaveable { mutableStateOf(false) }
 
@@ -349,7 +364,6 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                         }
                     }
 
-
                     IconButton(onClick = {
                         showOptions = true
                     }) {
@@ -359,7 +373,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                             expanded = showOptions,
                             onDismissRequest = { showOptions = false }) {
 
-                            var isSplit by remember { com.github.jing332.tts_server_android.conf.SystemTtsConfig.isSplitEnabled }
+                            var isSplit by remember { SystemTtsConfig.isSplitEnabled }
                             CheckedMenuItem(
                                 text = { Text(stringResource(id = R.string.systts_split_long_sentences)) },
                                 checked = isSplit,
@@ -372,7 +386,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                 }
                             )
 
-                            var isMultiVoice by remember { com.github.jing332.tts_server_android.conf.SystemTtsConfig.isMultiVoiceEnabled }
+                            var isMultiVoice by remember { SystemTtsConfig.isMultiVoiceEnabled }
                             CheckedMenuItem(
                                 text = { Text(stringResource(id = R.string.systts_multi_voice_option)) },
                                 checked = isMultiVoice,
@@ -384,6 +398,27 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     Icon(Icons.Default.Group, null)
                                 },
                             )
+                            HorizontalDivider()
+
+                            var isInternalPlayer by remember { SystemTtsConfig.isInternalPlayerEnabled }
+                            CheckedMenuItem(
+                                text = { Text(stringResource(id = R.string.systts_use_internal_audio_player)) },
+                                checked = isInternalPlayer,
+                                onClick = { showInternalPlayerDialog = true },
+                                onClickCheckBox = { isInternalPlayer = it },
+                                leadingIcon = {
+                                    Icon(Icons.Default.SmartDisplay, null)
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(id = R.string.audio_params)) },
+                                onClick = { showAudioParamsDialog = true },
+                                leadingIcon = {
+                                    Icon(Icons.Default.Speed, null)
+                                }
+                            )
+
                             HorizontalDivider()
                             DropdownMenuItem(
                                 text = { Text(stringResource(id = R.string.speech_rule_manager)) },
