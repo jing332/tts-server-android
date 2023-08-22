@@ -103,19 +103,14 @@
             android:label="@string/edit_plugin_tts" />
         <activity
             android:name=".ui.MainActivity"
-            android:exported="true" />
-        <activity
-            android:name=".compose.ComposeMainActivity"
             android:exported="true"
-            android:launchMode="singleTask"
-            android:theme="@style/Theme.TtsServer.NoActionBar">
+            android:label="旧版TTS Server">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -159,6 +154,20 @@
                 <data android:pathPattern=".*\\.js" />
                 <data android:pathPattern=".*\\.JS" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".compose.ComposeMainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TtsServer.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".ui.systts.edit.microsoft.MsTtsEditActivity"
