@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.conf
 import com.funny.data_saver.core.DataSaverConverter.registerTypeConverters
 import com.funny.data_saver.core.DataSaverPreferences
 import com.funny.data_saver.core.mutableDataSaverStateOf
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -54,6 +55,48 @@ object AppConfig {
         dataSaverInterface = dataSaverPref,
         key = "isSwapListenAndEditButton",
         initialValue = false
+    )
+
+    val isAutoCheckUpdateEnabled = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "isAutoCheckUpdateEnabled",
+        initialValue = true
+    )
+
+    val isEdgeDnsEnabled = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "isEdgeDnsEnabled",
+        initialValue = true
+    )
+
+    val testSampleText = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "testSampleText",
+        initialValue = app.getString(R.string.systts_sample_test_text)
+    )
+
+    val fragmentIndex = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "fragmentIndex",
+        initialValue = 0
+    )
+
+    val filePickerMode = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "filePickerMode",
+        initialValue = 0
+    )
+
+    val spinnerMaxDropDownCount = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "spinnerMaxDropDownCount",
+        initialValue = 20
+    )
+
+    val lastReadHelpDocumentVersion = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "lastReadHelpDocumentVersion",
+        initialValue = 0
     )
 
 }

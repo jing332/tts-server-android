@@ -13,11 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        fetch-depth: 0
 
       - uses: actions/setup-go@v4
         with:
-          go-version: 1.19.1
+          go-version: 1.20
           cache-dependency-path: ${{ github.workspace }}/tts-server-lib
 
       - name: Build tts-server-lib
@@ -26,7 +25,7 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           go get golang.org/x/mobile/bind
-          gomobile bind -ldflags "-s -w" -v -androidapi=19
+          gomobile bind -ldflags "-s -w" -v -androidapi=21
           cp -f *.aar $GITHUB_WORKSPACE/app/libs
 
       - uses: actions/upload-artifact@v3.1.0
@@ -38,8 +37,8 @@ jobs:
     needs: golib
     strategy:
       matrix:
-        product: [ {name: "App原版", value: app} ]
-        
+        product: [ { name: "App原版", value: app } ]
+
       fail-fast: false
     runs-on: ubuntu-latest
     env:
@@ -50,11 +49,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - uses: actions/download-artifact@v3
         with:
-            name: tts-server-lib
-            path: ${{ github.workspace }}/app/libs
+          name: tts-server-lib
+          path: ${{ github.workspace }}/app/libs
 
       - uses: actions/setup-java@v3
         with:
@@ -82,7 +83,7 @@ jobs:
       - name: Init environment variable
         run: |
           echo "ver_name=$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
-        
+
       - name: Upload Mappings to Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -94,8 +95,8 @@ jobs:
         with:
           name: "TTS-Server_${{ env.product }}_${{ env.ver_name }}"
           path: ${{env.outputs_dir}}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk
-  
-        
+
+
       - uses: softprops/action-gh-release@v0.1.15
         with:
           name: ${{ env.ver_name }}

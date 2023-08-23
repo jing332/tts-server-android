@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,9 +24,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
+
+@Composable
+fun PreferenceDivider(title: @Composable () -> Unit) {
+    Column(Modifier.padding(top = 4.dp)) {
+        HorizontalDivider(thickness = 0.5.dp)
+        Row(
+            Modifier
+                .padding(vertical = 8.dp)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            CompositionLocalProvider(
+                LocalTextStyle provides MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                ),
+            ) {
+                title()
+            }
+        }
+    }
+
+}
 
 @Composable
 internal fun PreferenceSwitch(
@@ -66,7 +90,11 @@ internal fun PreferenceSwitch(
                 subTitle()
             }
         }
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            Modifier.align(Alignment.CenterVertically)
+        )
     }
 }
 

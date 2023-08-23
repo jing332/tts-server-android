@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.nav.systts.list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 
 @Composable
 fun Group(
+    modifier: Modifier,
     name: String,
     isExpanded: Boolean,
     toggleableState: ToggleableState,
@@ -64,8 +66,9 @@ fun Group(
     }
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
             .clickable(
                 onClickLabel = stringResource(
                     id = if (isExpanded) R.string.desc_collapse_group

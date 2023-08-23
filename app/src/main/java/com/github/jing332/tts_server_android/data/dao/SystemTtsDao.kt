@@ -61,7 +61,7 @@ interface SystemTtsDao {
     @Query("SELECT * FROM SystemTtsGroup WHERE groupId = :id")
     fun getGroup(id: Long = DEFAULT_GROUP_ID): SystemTtsGroup?
 
-    @Query("SELECT * FROM sysTts WHERE groupId = :groupId")
+    @Query("SELECT * FROM sysTts WHERE groupId = :groupId ORDER BY `order` ASC")
     fun getTtsListByGroupId(groupId: Long): List<SystemTts>
 
     /**

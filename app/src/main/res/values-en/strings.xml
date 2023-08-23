@@ -160,10 +160,10 @@
     <string name="systts_secondaryLocale">Language secondary（language skill）</string>
     <string name="systts_voice_data_load_failed">Voice failed to load</string>
     <string name="systts_help_sample_rate">The system TTS needs to specify the sample rate when starting to play. If [built-in player] is turned on, this option can be ignored.</string>
-    <string name="systts_voice_multiple_option">Config can multiple</string>
-    <string name="systts_voice_multiple_hint">⚠️The same reading target will no longer be excluded, and a random rotation will be used. (Single voice does not support this function)</string>
-    <string name="systts_groups_multiple">Group can multiple</string>
-    <string name="systts_groups_multiple_hint">⚠️Checking groups will no longer be mutually exclusive</string>
+    <string name="voice_multiple_option">Config can multiple</string>
+    <string name="voice_multiple_summary">⚠️The same reading target will no longer be excluded, and a random rotation will be used. (Single voice does not support this function)</string>
+    <string name="groups_multiple">Group can multiple</string>
+    <string name="groups_multiple_summary">⚠️Checking groups will no longer be mutually exclusive</string>
 
     <string name="systts_test_success">Test was successful</string>
     <string name="systts_test_success_info">Size: %1$dKiB \nSample rate: %2$d \nMime: %3$s</string>
@@ -288,7 +288,7 @@
     <string name="select_plugin">Select the plugin</string>
     <string name="audition">Audition</string>
     <string name="no_plugins">No plugins</string>
-    <string name="sys_tts_interface_preference">System TTS - Interface</string>
+    <string name="systts_interface_preference">System TTS - Interface</string>
     <string name="pref_swap_listen_and_edit_button">Swap audition and edit button positions</string>
     <string name="plugin_bad_format">Version is bad format and must be an integer</string>
     <string name="import_replace_rule">Import replacement rules</string>

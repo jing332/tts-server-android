@@ -113,7 +113,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/sys_tts_interface_preference">
+    <PreferenceCategory android:title="@string/systts_interface_preference">
 
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_headset_24"
@@ -124,15 +124,15 @@
             android:icon="@drawable/ic_baseline_select_all_24"
             android:key="@string/key_is_voice_multiple"
             android:persistent="false"
-            android:summary="@string/systts_voice_multiple_hint"
-            android:title="@string/systts_voice_multiple_option" />
+            android:summary="@string/voice_multiple_summary"
+            android:title="@string/voice_multiple_option" />
 
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_groups_24"
             android:key="@string/key_is_group_multiple"
             android:persistent="false"
-            android:summary="@string/systts_groups_multiple_hint"
-            android:title="@string/systts_groups_multiple" />
+            android:summary="@string/groups_multiple_summary"
+            android:title="@string/groups_multiple" />
 
     </PreferenceCategory>
 

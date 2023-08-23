@@ -150,10 +150,10 @@
     <string name="systts_secondaryLocale">二級語言（語言技能）</string>
     <string name="systts_voice_data_load_failed">語音數據載入失敗</string>
     <string name="systts_help_sample_rate">系統TTS在開始播放時需指定取樣速率，如已啟用【內置播放器】、【直接播放】則可忽略此選項。</string>
-    <string name="systts_voice_multiple_option">相同朗讀目標可多選</string>
-    <string name="systts_voice_multiple_hint">相同朗讀目標將不再排斥，並使用隨機輪播。 （單語音不支持此功能）</string>
-    <string name="systts_groups_multiple">分組可多選</string>
-    <string name="systts_groups_multiple_hint">⚠ ️勾選分組時將不再互相排斥。</string>
+    <string name="voice_multiple_option">相同朗讀目標可多選</string>
+    <string name="voice_multiple_summary">相同朗讀目標將不再排斥，並使用隨機輪播。 （單語音不支持此功能）</string>
+    <string name="groups_multiple">分組可多選</string>
+    <string name="groups_multiple_summary">⚠ ️勾選分組時將不再互相排斥。</string>
 
     <string name="systts_test_success">測試成功</string>
     <string name="systts_test_success_info">音频大小: %1$dKiB \n音频采样率：%2$d \n音频格式: %3$s</string>
@@ -275,7 +275,7 @@
     <string name="select_plugin">選擇外掛程式</string>
     <string name="audition">试听</string>
     <string name="no_plugins">无插件</string>
-    <string name="sys_tts_interface_preference">系統TTS - 介面</string>
+    <string name="systts_interface_preference">系統TTS - 介面</string>
     <string name="pref_swap_listen_and_edit_button">交換試聽和編輯按鈕位置</string>
     <string name="plugin_bad_format">版本(version)格式错误，必须为整数</string>
     <string name="import_replace_rule">导入替换规则</string>
