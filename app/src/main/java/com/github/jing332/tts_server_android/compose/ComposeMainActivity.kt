@@ -56,9 +56,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.nav.MsTtsForwarderScreen
+import com.github.jing332.tts_server_android.compose.nav.forwarder.ms.MsTtsForwarderScreen
 import com.github.jing332.tts_server_android.compose.nav.NavRoutes
-import com.github.jing332.tts_server_android.compose.nav.SystemTtsForwarderScreen
+import com.github.jing332.tts_server_android.compose.nav.forwarder.systts.SystemTtsForwarderScreen
 import com.github.jing332.tts_server_android.compose.nav.settings.SettingsScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.SystemTtsScreen
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
@@ -115,9 +115,7 @@ private fun NavHostScreen() {
             ) {
                 composable(NavRoutes.SystemTTS.id) { SystemTtsScreen(drawerState) }
                 composable(NavRoutes.SystemTtsForwarder.id) {
-                    SystemTtsForwarderScreen(
-                        drawerState
-                    )
+                    SystemTtsForwarderScreen()
                 }
                 composable(NavRoutes.MsTtsForwarder.id) { MsTtsForwarderScreen(drawerState) }
                 composable(NavRoutes.Settings.id) { SettingsScreen(drawerState) }

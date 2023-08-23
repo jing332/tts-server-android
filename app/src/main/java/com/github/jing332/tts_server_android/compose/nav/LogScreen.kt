@@ -12,15 +12,18 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,13 +61,13 @@ fun LogScreen(
     val scope = rememberCoroutineScope()
     val view = LocalView.current
     val context = LocalContext.current
-    Box(Modifier.fillMaxSize()) {
+    Box(modifier) {
         val isAtBottom by remember {
             derivedStateOf {
                 val layoutInfo = lazyListState.layoutInfo
                 val visibleItemsInfo = layoutInfo.visibleItemsInfo
                 if (layoutInfo.totalItemsCount <= 0) {
-                    false
+                    true
                 } else {
                     val lastVisibleItem = visibleItemsInfo.last()
                     lastVisibleItem.index > layoutInfo.totalItemsCount - 5
@@ -79,7 +82,7 @@ fun LogScreen(
                 }
         }
 
-        LazyColumn(modifier, state = lazyListState) {
+        LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
             itemsIndexed(list, key = { index, _ -> index }) { _, item ->
                 val style = MaterialTheme.typography.bodyMedium
                 val spanned = remember {
@@ -110,10 +113,11 @@ fun LogScreen(
 
         AnimatedVisibility(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
+                .align(Alignment.BottomCenter)
                 .padding(12.dp), visible = !isAtBottom
         ) {
-            FloatingActionButton(
+            SmallFloatingActionButton(
+                shape = CircleShape,
                 onClick = {
                     scope.launch {
                         kotlin.runCatching {

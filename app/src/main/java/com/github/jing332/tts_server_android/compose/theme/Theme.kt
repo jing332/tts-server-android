@@ -90,7 +90,7 @@ fun AppTheme(
         .transparentNavigationBar()
         .statusBarDarkFont(!darkTheme)
         .navigationBarDarkIcon(!darkTheme)
-//        .keyboardEnable(true)
+        .keyboardEnable(true)
         .keyboardMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         .init()
 

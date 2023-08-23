@@ -240,9 +240,11 @@ dependencies {
     // https://github.com/FunnySaltyFish/ComposeDataSaver
     implementation "com.github.FunnySaltyFish.ComposeDataSaver:data-saver:v1.1.5"
 
-    def accompanistVersion = "0.31.3-beta"
+    def accompanistVersion = "0.33.0-alpha"
     implementation("com.google.accompanist:accompanist-systemuicontroller:${accompanistVersion}")
     implementation("com.google.accompanist:accompanist-navigation-animation:${accompanistVersion}")
+    implementation("com.google.accompanist:accompanist-webview:${accompanistVersion}")
+
 
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
