@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun CheckedMenuItem(
+    modifier: Modifier = Modifier,
     text: @Composable () -> Unit,
     checked: Boolean,
     onClick: (Boolean) -> Unit,
     onClickCheckBox: (Boolean) -> Unit = onClick,
-    modifier: Modifier = Modifier,
     leadingIcon: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
     colors: MenuItemColors = MenuDefaults.itemColors(),

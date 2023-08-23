@@ -117,7 +117,7 @@ private fun NavHostScreen() {
                 composable(NavRoutes.SystemTtsForwarder.id) {
                     SystemTtsForwarderScreen()
                 }
-                composable(NavRoutes.MsTtsForwarder.id) { MsTtsForwarderScreen(drawerState) }
+                composable(NavRoutes.MsTtsForwarder.id) { MsTtsForwarderScreen() }
                 composable(NavRoutes.Settings.id) { SettingsScreen(drawerState) }
             }
         }

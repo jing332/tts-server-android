@@ -65,7 +65,6 @@ internal fun MenuMoreOptions(
             text = { Text(stringResource(id = R.string.systts_split_long_sentences)) },
             checked = isSplit,
             onClick = {
-                onDismissRequest()
                 isSplit = it
             },
             leadingIcon = {
@@ -78,7 +77,6 @@ internal fun MenuMoreOptions(
             text = { Text(stringResource(id = R.string.systts_multi_voice_option)) },
             checked = isMultiVoice,
             onClick = {
-                onDismissRequest()
                 isMultiVoice = it
             },
             leadingIcon = {
@@ -110,6 +108,7 @@ internal fun MenuMoreOptions(
         DropdownMenuItem(
             text = { Text(stringResource(id = R.string.speech_rule_manager)) },
             onClick = {
+                onDismissRequest()
                 context.startActivity(SpeechRuleManagerActivity::class.java)
             },
             leadingIcon = {
@@ -120,6 +119,7 @@ internal fun MenuMoreOptions(
         DropdownMenuItem(
             text = { Text(stringResource(id = R.string.plugin_manager)) },
             onClick = {
+                onDismissRequest()
                 context.startActivity(PluginManagerActivity::class.java)
             },
             leadingIcon = {
@@ -131,6 +131,7 @@ internal fun MenuMoreOptions(
             text = { Text(stringResource(id = R.string.replace_rule_manager)) },
             checked = SystemTtsConfig.isReplaceEnabled.value,
             onClick = {
+                onDismissRequest()
                 context.startActivity(ReplaceManagerActivity::class.java)
             },
             onClickCheckBox = {

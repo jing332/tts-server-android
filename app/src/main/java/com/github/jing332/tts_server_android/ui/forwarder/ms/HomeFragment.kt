@@ -6,7 +6,7 @@ import com.github.jing332.tts_server_android.ui.forwarder.AbsForwarderHomePageFr
 
 internal class HomeFragment(
 ) : AbsForwarderHomePageFragment(
-    MsTtsForwarderService.ACTION_ON_STARTED,
+    MsTtsForwarderService.ACTION_ON_STARTING,
     MsTtsForwarderService.ACTION_ON_CLOSED,
     MsTtsForwarderService.ACTION_ON_LOG
 ) {

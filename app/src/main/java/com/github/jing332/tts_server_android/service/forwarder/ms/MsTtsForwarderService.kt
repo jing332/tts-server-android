@@ -14,7 +14,7 @@ class MsTtsForwarderService(override val isWakeLockEnabled: Boolean = ServerConf
         name = "MsTtsForwarderService",
         id = 1233,
         actionLog = ACTION_ON_LOG,
-        actionStarting = ACTION_ON_STARTED,
+        actionStarting = ACTION_ON_STARTING,
         actionClosed = ACTION_ON_CLOSED,
         notificationChanId = "server_status",
         notificationChanTitle = R.string.forwarder_ms,
@@ -22,7 +22,7 @@ class MsTtsForwarderService(override val isWakeLockEnabled: Boolean = ServerConf
         notificationIcon = R.drawable.ic_microsoft
     ) {
     companion object {
-        const val ACTION_ON_STARTED = "ACTION_ON_STARTED"
+        const val ACTION_ON_STARTING = "ACTION_ON_STARTED"
         const val ACTION_ON_CLOSED = "ACTION_ON_CLOSED"
         const val ACTION_ON_LOG = "ACTION_ON_LOG"
 

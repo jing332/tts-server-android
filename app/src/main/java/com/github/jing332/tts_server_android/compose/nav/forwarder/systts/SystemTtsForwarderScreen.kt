@@ -1,94 +1,71 @@
 package com.github.jing332.tts_server_android.compose.nav.forwarder.systts
 
+import android.content.Intent
 import android.content.IntentFilter
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.TextSnippet
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
-import com.github.jing332.tts_server_android.compose.nav.forwarder.WebScreen
-import com.github.jing332.tts_server_android.compose.widgets.LocalBroadcastReceiver
+import com.github.jing332.tts_server_android.compose.nav.forwarder.BasicConfigScreen
+import com.github.jing332.tts_server_android.compose.nav.forwarder.BasicForwarderScreen
+import com.github.jing332.tts_server_android.compose.nav.forwarder.ConfigViewModel
+import com.github.jing332.tts_server_android.compose.nav.forwarder.ForwarderTopAppBar
 import com.github.jing332.tts_server_android.conf.SysttsForwarderConfig
+import com.github.jing332.tts_server_android.service.forwarder.ForwarderServiceManager.switchSysTtsForwarder
 import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService
-import com.google.accompanist.web.rememberWebViewNavigator
-import com.google.accompanist.web.rememberWebViewState
-import kotlinx.coroutines.launch
+import com.github.jing332.tts_server_android.ui.forwarder.sys.ScSwitchActivity
+import com.github.jing332.tts_server_android.utils.MyTools
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun SystemTtsForwarderScreen(vm: SysttsForwarderViewModel = viewModel()) {
-    val pages = remember { listOf(R.string.log, R.string.web) }
-    val state = rememberPagerState { pages.size }
-    val scope = rememberCoroutineScope()
-    Scaffold(
+fun SystemTtsForwarderScreen(cfgVM: ConfigViewModel = viewModel()) {
+    val context = LocalContext.current
+    var port by remember { SysttsForwarderConfig.port }
+    BasicForwarderScreen(
         topBar = {
-            NavTopAppBar(title = { Text(stringResource(id = R.string.forwarder_systts)) })
+            var wakeLockEnabled by remember { SysttsForwarderConfig.isWakeLockEnabled }
+            ForwarderTopAppBar(
+                title = { Text(text = stringResource(id = R.string.forwarder_systts)) },
+                wakeLockEnabled = wakeLockEnabled,
+                onWakeLockEnabledChange = { wakeLockEnabled = it },
+                onOpenWeb = { "http://localhost:${port}" }
+            ) {
+                MyTools.addShortcut(
+                    ctx = context,
+                    name = context.getString(R.string.forwarder_systts),
+                    id = "switch_systts_forwarder",
+                    iconResId = R.mipmap.ic_launcher_round,
+                    launcherIntent = Intent(context, ScSwitchActivity::class.java)
+                )
+            }
         },
-        bottomBar = {
-            NavigationBar {
-                pages.forEachIndexed { index, strId ->
-                    val selected = state.currentPage == index
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = {
-                            scope.launch {
-                                state.animateScrollToPage(index)
-                            }
-                        },
-                        icon = {
-                            if (index == 0)
-                                Icon(Icons.Default.TextSnippet, null)
-                            else
-                                Icon(painter = painterResource(R.drawable.ic_web), null)
-                        },
-                        alwaysShowLabel = false,
-                        label = {
-                            Text(stringResource(id = strId))
-                        }
-                    )
-                }
-            }
-        }) { paddingValues ->
-        HorizontalPager(
-            modifier = Modifier.padding(paddingValues),
-            state = state,
-            userScrollEnabled = false
-        ) {
-            when (it) {
-                0 -> ForwarderConfigScreen(Modifier.fillMaxSize(), vm)
-                1 -> {
-                    fun url() = "http://localhost:${SysttsForwarderConfig.port.value}"
-
-                    val webState = rememberWebViewState(url = url())
-                    val navigator = rememberWebViewNavigator()
-                    LocalBroadcastReceiver(intentFilter = IntentFilter(SysTtsForwarderService.ACTION_ON_STARTING)) {
-                        navigator.loadUrl(url())
-                    }
-
-                    WebScreen(
-                        modifier = Modifier.fillMaxSize(),
-                        state = webState,
-                        navigator = navigator
-                    )
-                }
-            }
-        }
+        configScreen = {
+            var isRunning by remember { mutableStateOf(SysTtsForwarderService.isRunning) }
+            BasicConfigScreen(
+                modifier = Modifier.fillMaxSize(),
+                vm = cfgVM,
+                intentFilter = IntentFilter().apply {
+                    addAction(SysTtsForwarderService.ACTION_ON_LOG)
+                    addAction(SysTtsForwarderService.ACTION_ON_CLOSED)
+                    addAction(SysTtsForwarderService.ACTION_ON_STARTING)
+                },
+                actionOnLog = SysTtsForwarderService.ACTION_ON_LOG,
+                actionOnClosed = SysTtsForwarderService.ACTION_ON_CLOSED,
+                actionOnStarting = SysTtsForwarderService.ACTION_ON_STARTING,
+                isRunning = isRunning,
+                onRunningChange = { isRunning = it },
+                switch = { context.switchSysTtsForwarder() },
+                port = port,
+                onPortChange = { port = it }
+            )
+        }) {
+        "http://localhost:${port}"
     }
 }

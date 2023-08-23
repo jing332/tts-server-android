@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -131,24 +129,24 @@ internal fun WebScreen(
             )
 
         var lastTitle by remember { mutableStateOf("") }
+        val refreshState = rememberPullRefreshState(refreshing = state.isLoading, onRefresh = {
+            navigator.reload()
+        })
         Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .pullRefresh(refreshState),
             text = state.pageTitle?.apply { lastTitle = this } ?: lastTitle,
             maxLines = 1,
             style = MaterialTheme.typography.titleMedium,
         )
 
-        val refreshState = rememberPullRefreshState(refreshing = state.isLoading, onRefresh = {
-            navigator.reload()
-        })
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .pullRefresh(refreshState)
         ) {
-            val scrollState = rememberScrollState()
             WebView(
-                modifier = Modifier.verticalScroll(scrollState),
+                modifier = Modifier.fillMaxSize(),
                 state = state,
                 navigator = navigator,
                 onCreated = {

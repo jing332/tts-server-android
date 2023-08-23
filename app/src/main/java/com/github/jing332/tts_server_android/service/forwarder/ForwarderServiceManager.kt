@@ -6,6 +6,22 @@ import com.github.jing332.tts_server_android.service.forwarder.ms.MsTtsForwarder
 import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService
 
 object ForwarderServiceManager {
+    fun Context.switchMsTtsForwarder() {
+        if (MsTtsForwarderService.isRunning) {
+            closeMsTtsForwarder()
+        } else {
+            startMsTtsForwarder()
+        }
+    }
+
+    fun Context.switchSysTtsForwarder() {
+        if (SysTtsForwarderService.isRunning) {
+            closeSysTtsForwarder()
+        } else {
+            startSysTtsForwarder()
+        }
+    }
+
     fun Context.startMsTtsForwarder() {
         startService(Intent(this, MsTtsForwarderService::class.java))
     }
