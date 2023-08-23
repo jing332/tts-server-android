@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.asAppCompatactivity
+import com.github.jing332.tts_server_android.compose.asAppCompatActivity
 import com.github.jing332.tts_server_android.compose.nav.systts.AudioParamsDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.InternalPlayerDialog
 import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
@@ -54,7 +54,7 @@ internal fun MenuMoreOptions(
         }
 
     val context = LocalContext.current
-    val activity = remember { context.asAppCompatactivity() }
+    val activity = remember { context.asAppCompatActivity() }
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest

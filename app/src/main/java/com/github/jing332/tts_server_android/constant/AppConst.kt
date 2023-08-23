@@ -18,7 +18,7 @@ object AppConst {
 
     val localBroadcast by lazy { LocalBroadcastManager.getInstance(App.context) }
 
-    var isSysTtsLogEnabled = false
+    var isSysTtsLogEnabled = true
     var isServerLogEnabled = false
 
     @OptIn(ExperimentalSerializationApi::class)

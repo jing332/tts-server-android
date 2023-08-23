@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalDrawerState
-import com.github.jing332.tts_server_android.compose.asAppCompatactivity
+import com.github.jing332.tts_server_android.compose.asAppCompatActivity
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.nav.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
@@ -79,7 +79,7 @@ import org.burnoutcrew.reorderable.reorderable
 internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val activity = context.asAppCompatactivity()
+    val activity = context.asAppCompatActivity()
     val view = LocalView.current
     val drawerState = LocalDrawerState.current
 

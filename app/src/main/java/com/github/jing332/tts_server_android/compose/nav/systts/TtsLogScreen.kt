@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.compose.nav.systts
 
 import android.content.IntentFilter
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -27,6 +28,7 @@ internal fun TtsLogScreen() {
     LocalBroadcastReceiver(intentFilter = IntentFilter(SystemTtsService.ACTION_ON_LOG)) {
         if (it?.action == SystemTtsService.ACTION_ON_LOG) {
             it.getParcelableExtra<AppLog>(KeyConst.KEY_DATA)?.let { log ->
+                println("ACTION_ON_LOG ${log.msg}")
                 list.add(log)
             }
         }
@@ -39,6 +41,10 @@ internal fun TtsLogScreen() {
             })
         }
     ) { paddingValues ->
-        LogScreen(modifier = Modifier.padding(paddingValues), list = list)
+        LogScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues), list = list
+        )
     }
 }

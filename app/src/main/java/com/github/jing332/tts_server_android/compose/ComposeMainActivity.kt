@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
@@ -71,7 +70,7 @@ import java.util.Locale
 val LocalNavController = compositionLocalOf<NavController> { error("No nav controller") }
 val LocalDrawerState = compositionLocalOf<DrawerState> { error("No drawer state") }
 
-fun Context.asAppCompatactivity(): AppCompatActivity {
+fun Context.asAppCompatActivity(): AppCompatActivity {
     return this as? AppCompatActivity ?: error("Context is not an AppCompatActivity")
 }
 
