@@ -30,7 +30,9 @@ fun AudioParamsDialog(onDismissRequest: () -> Unit) {
                     },
                     valueRange = 0.1f..3.0f
                 ) {
-                    Text(stringResource(id = R.string.label_speed) + speed)
+                    val str = stringResource(id = R.string.label_speed) + speed
+                    Text(str)
+                    str
                 }
 
 
@@ -41,7 +43,9 @@ fun AudioParamsDialog(onDismissRequest: () -> Unit) {
                     },
                     valueRange = 0.1f..3.0f
                 ) {
-                    Text(stringResource(id = R.string.label_volume) + volume)
+                    val str = stringResource(id = R.string.label_volume) + volume
+                    Text(str)
+                    str
                 }
 
                 LabelSlider(
@@ -51,7 +55,9 @@ fun AudioParamsDialog(onDismissRequest: () -> Unit) {
                     },
                     valueRange = 0.1f..3.0f
                 ) {
-                    Text(stringResource(id = R.string.label_pitch) + pitch)
+                    val str = stringResource(id = R.string.label_pitch) + pitch
+                    Text(str)
+                    str
                 }
 
             }

@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +32,29 @@ import androidx.compose.ui.window.Dialog
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
 
 @Composable
-fun PreferenceDivider(title: @Composable () -> Unit) {
+internal fun DropdownPreference(
+    modifier: Modifier = Modifier,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    icon: @Composable () -> Unit,
+    title: @Composable () -> Unit,
+    subTitle: @Composable () -> Unit,
+    actions: @Composable ColumnScope. () -> Unit = {}
+) {
+    BasePreferenceWidget(modifier = modifier, icon = icon, onClick = {
+        onExpandedChange(true)
+    }, title = title, subTitle = subTitle) {
+        DropdownMenu(
+            modifier = Modifier.align(Alignment.Top),
+            expanded = expanded,
+            onDismissRequest = { onExpandedChange(false) }) {
+            actions()
+        }
+    }
+}
+
+@Composable
+internal fun DividerPreference(title: @Composable () -> Unit) {
     Column(Modifier.padding(top = 4.dp)) {
         HorizontalDivider(thickness = 0.5.dp)
         Row(
@@ -52,50 +76,29 @@ fun PreferenceDivider(title: @Composable () -> Unit) {
 }
 
 @Composable
-internal fun PreferenceSwitch(
+internal fun SwitchPreference(
     modifier: Modifier = Modifier,
-    title: @Composable ColumnScope.() -> Unit,
-    subTitle: @Composable ColumnScope.() -> Unit,
+    title: @Composable () -> Unit,
+    subTitle: @Composable () -> Unit,
     icon: @Composable () -> Unit = {},
 
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    Row(modifier = modifier
-        .minimumInteractiveComponentSize()
-        .clip(MaterialTheme.shapes.extraSmall)
-        .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = rememberRipple()
-        ) {
-            onCheckedChange(!checked)
+    BasePreferenceWidget(
+        modifier = modifier,
+        onClick = { onCheckedChange(!checked) },
+        title = title,
+        subTitle = subTitle,
+        icon = icon,
+        content = {
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                Modifier.align(Alignment.CenterVertically)
+            )
         }
-        .padding(8.dp)
-    ) {
-        Column(Modifier.align(Alignment.CenterVertically)) {
-            icon();
-        }
-
-        Column(
-            Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-                .padding(start = 8.dp)
-        ) {
-            CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.titleMedium) {
-                title()
-            }
-
-            CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.titleSmall) {
-                subTitle()
-            }
-        }
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            Modifier.align(Alignment.CenterVertically)
-        )
-    }
+    )
 }
 
 @Composable
@@ -103,12 +106,13 @@ internal fun BasePreferenceWidget(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     title: @Composable () -> Unit,
-    subTitle: @Composable () -> Unit,
+    subTitle: @Composable () -> Unit = {},
     icon: @Composable () -> Unit = {},
-    content: @Composable RowScope.() -> Unit,
+    content: @Composable RowScope.() -> Unit = {},
 ) {
     Row(modifier = modifier
         .minimumInteractiveComponentSize()
+        .defaultMinSize(minHeight = 64.dp)
         .clip(MaterialTheme.shapes.extraSmall)
         .clickable(
             interactionSource = remember { MutableInteractionSource() },
@@ -118,12 +122,17 @@ internal fun BasePreferenceWidget(
         }
         .padding(8.dp)
     ) {
-        icon()
+        Column(
+            Modifier.align(Alignment.CenterVertically)
+        ) {
+            icon()
+        }
 
         Column(
             Modifier
                 .weight(1f)
                 .align(Alignment.CenterVertically)
+                .padding(horizontal = 8.dp)
         ) {
             CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.titleLarge) {
                 title()
@@ -148,7 +157,7 @@ internal fun PreferenceSlider(
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
-    label: @Composable (title: @Composable () -> Unit) -> Unit,
+    label: @Composable (title: @Composable () -> Unit) -> String,
 ) {
     PreferenceDialog(title = title, subTitle = subTitle, dialogContent = {
         LabelSlider(

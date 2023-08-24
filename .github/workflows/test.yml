@@ -86,11 +86,11 @@ jobs:
         run: |
           echo "ver_name=$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
 
-      - name: Upload Mappings to Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: mappings_${{ env.product }}_${{ env.ver_name }}
-          path: ${{ env.outputs_dir }}/mapping/*/*.txt
+#      - name: Upload Mappings to Artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: mappings_${{ env.product }}_${{ env.ver_name }}
+#          path: ${{ env.outputs_dir }}/mapping/*/*.txt
 
       - name: Upload APK To Artifact
         uses: actions/upload-artifact@v3

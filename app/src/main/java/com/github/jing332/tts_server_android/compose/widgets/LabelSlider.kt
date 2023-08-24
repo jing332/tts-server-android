@@ -14,8 +14,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -34,8 +42,10 @@ fun LabelSlider(
     showButton: Boolean = true,
     onValueRemove: (Boolean) -> Unit = { onValueChange(value - if (it) 0.1f else 0.01f) },
     onValueAdd: (Boolean) -> Unit = { onValueChange(value + if (it) 0.1f else 0.01f) },
+    a11yDescription: String = "",
     text: @Composable BoxScope.() -> Unit,
 ) {
+    val view = LocalView.current
     ConstraintLayout(modifier) {
         val (textRef, sliderRef) = createRefs()
         Box(
@@ -46,7 +56,9 @@ fun LabelSlider(
                     end.linkTo(parent.end)
                 }
                 .wrapContentHeight()
-        ) { text() }
+        ) {
+            text()
+        }
         Row(Modifier.constrainAs(sliderRef) {
             start.linkTo(parent.start)
             end.linkTo(parent.end)
@@ -56,14 +68,24 @@ fun LabelSlider(
                 IconButton(
                     onClick = { onValueRemove(false) },
                     enabled = value > valueRange.start,
-                    modifier = Modifier.combinedClickable(onLongClick = {
-                        onValueRemove(true)
-                    }) { onValueRemove(false) }
+                    modifier = Modifier
+                        .combinedClickable(onLongClick = {
+                            onValueRemove(true)
+                        }) { onValueRemove(false) }
+                        .semantics {
+                            stateDescription = a11yDescription
+                            contentDescription = a11yDescription
+                        }
                 ) {
                     Icon(Icons.Default.Remove, stringResource(id = R.string.desc_seekbar_remove))
                 }
             Slider(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .semantics {
+                        stateDescription = a11yDescription
+                        contentDescription = a11yDescription
+                    },
                 value = value,
                 onValueChange = onValueChange,
                 enabled = enabled,
@@ -75,9 +97,14 @@ fun LabelSlider(
                 IconButton(
                     onClick = { onValueAdd(false) },
                     enabled = value < valueRange.endInclusive,
-                    modifier = Modifier.combinedClickable(onLongClick = {
-                        onValueAdd(true)
-                    }) { onValueAdd(false) }
+                    modifier = Modifier
+                        .combinedClickable(onLongClick = {
+                            onValueAdd(true)
+                        }) { onValueAdd(false) }
+                        .semantics {
+                            stateDescription = a11yDescription
+                            contentDescription = a11yDescription
+                        }
                 ) {
                     Icon(Icons.Default.Add, stringResource(id = R.string.desc_seekbar_add))
                 }
@@ -89,7 +116,15 @@ fun LabelSlider(
 @Preview
 @Composable
 fun PreviewSlider() {
-    LabelSlider(value = 0f, onValueChange = {}) {
-        Text("Hello World")
+    var value by remember { mutableFloatStateOf(0f) }
+    val str = "语速: $value"
+    LabelSlider(
+        value = value,
+        onValueChange = { value = it },
+        valueRange = 0.1f..3.0f,
+        a11yDescription = str,
+    ) {
+        Text(str)
+        str
     }
 }
