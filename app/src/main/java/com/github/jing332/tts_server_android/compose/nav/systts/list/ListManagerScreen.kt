@@ -46,6 +46,7 @@ import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.nav.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -66,6 +67,7 @@ import com.github.jing332.tts_server_android.ui.systts.list.GroupModel
 import com.github.jing332.tts_server_android.ui.systts.list.ItemModel
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.clone
+import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -167,6 +169,40 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             )
         }
         systtsEditor.launch(intent)
+    }
+
+    var hasShownTip by rememberSaveable { mutableStateOf(false) }
+
+    fun switchSpeechTarget(systts:SystemTts){
+        if (!hasShownTip) {
+            hasShownTip = true
+            context.longToast(R.string.systts_drag_tip_msg)
+        }
+
+        val model = systts.clone<SystemTts>() ?: return
+        if (model.speechRule.target == SpeechTarget.BGM) return
+
+        if (model.speechRule.target == SpeechTarget.CUSTOM_TAG)
+            appDb.speechRule.getByRuleId(model.speechRule.tagRuleId)?.let {
+                val keys = it.tags.keys.toList()
+                val idx = keys.indexOf(model.speechRule.tag)
+
+                val newTag = keys.getOrNull(idx + 1)
+                if (newTag == null) {
+                    model.speechRule.target = SpeechTarget.ALL
+                } else {
+                    model.speechRule.tag = newTag
+                }
+            }
+        else {
+            appDb.speechRule.getByRuleId(model.speechRule.tagRuleId)?.let {
+                model.speechRule.target = SpeechTarget.CUSTOM_TAG
+                model.speechRule.tag = it.tags.keys.first()
+            }
+        }
+
+        appDb.systemTtsDao.updateTts(model)
+        if (model.isEnabled) SystemTtsService.notifyUpdateConfig()
     }
 
     var deleteTts by remember { mutableStateOf<SystemTts?>(null) }
@@ -410,6 +446,8 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     reorderState = reorderState,
                                     modifier = Modifier.padding(vertical = 4.dp),
                                     name = item.displayName ?: "",
+                                    speechTarget = item.speechRule.tagName,
+                                    type = item.tts.getType(),
                                     enabled = item.isEnabled,
                                     onEnabledChange = {
                                         appDb.systemTtsDao.updateTts(item.copy(isEnabled = it))
@@ -417,6 +455,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     desc = item.tts.getDescription(),
                                     params = item.tts.getBottomContent(),
                                     onClick = { displayQuickEditBottomSheet(item) },
+                                    onLongClick = { switchSpeechTarget(item) },
                                     onCopy = {
                                         startTtsEditor(
                                             item.tts.getEditActivity(),

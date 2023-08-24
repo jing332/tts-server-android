@@ -3,6 +3,8 @@ package com.github.jing332.tts_server_android.compose.nav.settings
 import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.Groups
@@ -47,7 +49,11 @@ fun SettingsScreen(drawerState: DrawerState) {
         }
     ) { paddingValues ->
         val context = LocalContext.current
-        Column(Modifier.padding(paddingValues)) {
+        Column(
+            Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+        ) {
             BasePreferenceWidget(
                 icon = {
                     Icon(Icons.Default.SettingsBackupRestore, null)

@@ -134,11 +134,11 @@ internal fun BasePreferenceWidget(
                 .align(Alignment.CenterVertically)
                 .padding(horizontal = 8.dp)
         ) {
-            CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.titleLarge) {
+            CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.titleMedium) {
                 title()
             }
 
-            CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.titleSmall) {
+            CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.bodyMedium) {
                 subTitle()
             }
         }

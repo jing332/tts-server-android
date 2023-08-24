@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.DisplayMetrics
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,11 @@ import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.constant.KeyConst
 import java.lang.reflect.ParameterizedType
+
+fun View.performLongPress() {
+    this.isHapticFeedbackEnabled = true
+    this.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+}
 
 fun Context.startActivity(clz: Class<*>) {
     startActivity(Intent(this, clz).apply { action = Intent.ACTION_VIEW })
