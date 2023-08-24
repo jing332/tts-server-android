@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="-4dp"
-                    android:text="@string/set_built_in_player_params"
+                    android:text="@string/internal_player"
                     app:icon="@drawable/ic_baseline_smart_display_24" />
 
                 <androidx.appcompat.widget.AppCompatCheckBox

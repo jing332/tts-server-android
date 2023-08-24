@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.compose.widgets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
@@ -9,8 +8,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.FloatRange
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.utils.performLongPress
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -39,9 +39,14 @@ fun LabelSlider(
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
+
     showButton: Boolean = true,
-    onValueRemove: (Boolean) -> Unit = { onValueChange(value - if (it) 0.1f else 0.01f) },
-    onValueAdd: (Boolean) -> Unit = { onValueChange(value + if (it) 0.1f else 0.01f) },
+    buttonSteps: Float = 0.01f,
+    buttonLongSteps: Float = 0.1f,
+
+    onValueRemove: (Boolean) -> Unit = { onValueChange(value - if (it) buttonLongSteps else buttonSteps) },
+    onValueAdd: (Boolean) -> Unit = { onValueChange(value + if (it) buttonLongSteps else buttonSteps) },
+
     a11yDescription: String = "",
     text: @Composable BoxScope.() -> Unit,
 ) {
@@ -65,13 +70,14 @@ fun LabelSlider(
             top.linkTo(textRef.bottom, margin = (-16).dp)
         }) {
             if (showButton)
-                IconButton(
+                LongClickIconButton(
                     onClick = { onValueRemove(false) },
+                    onLongClick = {
+                        view.performLongPress()
+                        onValueRemove(true)
+                    },
                     enabled = value > valueRange.start,
                     modifier = Modifier
-                        .combinedClickable(onLongClick = {
-                            onValueRemove(true)
-                        }) { onValueRemove(false) }
                         .semantics {
                             stateDescription = a11yDescription
                             contentDescription = a11yDescription
@@ -94,13 +100,14 @@ fun LabelSlider(
                 onValueChangeFinished = onValueChangeFinished
             )
             if (showButton)
-                IconButton(
+                LongClickIconButton(
                     onClick = { onValueAdd(false) },
+                    onLongClick = {
+                        view.performLongPress()
+                        onValueAdd(true)
+                    },
                     enabled = value < valueRange.endInclusive,
                     modifier = Modifier
-                        .combinedClickable(onLongClick = {
-                            onValueAdd(true)
-                        }) { onValueAdd(false) }
                         .semantics {
                             stateDescription = a11yDescription
                             contentDescription = a11yDescription

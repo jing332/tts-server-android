@@ -1,12 +1,11 @@
-package com.github.jing332.text_searcher.ui.widgets
+package com.github.jing332.tts_server_android.compose.widgets
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -34,7 +33,7 @@ fun ExposedDropTextField(
     var selectedText = values.getOrNull(max(0, keys.indexOf(key))) ?: ""
     var expanded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(keys){
+    LaunchedEffect(keys) {
         keys.getOrNull(values.indexOf(selectedText))?.let(onKeyChange)
     }
 
@@ -47,7 +46,7 @@ fun ExposedDropTextField(
                 expanded = !expanded
             },
         ) {
-            TextField(
+            OutlinedTextField(
                 modifier = modifier.menuAnchor(),
                 readOnly = true,
                 value = selectedText,
@@ -56,7 +55,6 @@ fun ExposedDropTextField(
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                 },
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
             )
             ExposedDropdownMenu(
                 expanded = expanded,

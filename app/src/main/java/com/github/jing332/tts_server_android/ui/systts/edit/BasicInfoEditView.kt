@@ -41,7 +41,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.decodeFromString
 import java.lang.Integer.max
 
 class BasicInfoEditView @JvmOverloads constructor(
@@ -397,7 +396,7 @@ class BasicInfoEditView @JvmOverloads constructor(
             }
 
             MaterialAlertDialogBuilder(context)
-                .setTitle(R.string.set_built_in_player_params)
+                .setTitle(R.string.internal_player)
                 .setView(binding.root)
                 .setNegativeButton(R.string.reset) { _, _ ->
                     binding.apply {

@@ -243,7 +243,7 @@
     <string name="systts_local_test_msg">直接播放已關閉\n大小：%1$d KiB \n取樣速率：%2$d HZ</string>
     <string name="systts_set_standby">設定備用TTS</string>
     <string name="systts_local_params_int_must">必須為true或1，false或0</string>
-    <string name="set_built_in_player_params">內置播放器設定</string>
+    <string name="internal_player">內置播放器設定</string>
     <string name="built_in_player_not_enabled">⚠ ️內置播放器未啟用，請前往右上角選單手動啟用。</string>
     <string name="please_turn_off_direct_play">請關閉【直接播放】選項</string>
     <string name="systts_as_standby_help">關於【作為備用】</string>
@@ -425,4 +425,7 @@
     <string name="gray">灰色</string>
     <string name="desc_expand_group">展开分组：%1$s</string>
     <string name="desc_collapse_group">折叠分组：%1$s</string>
+    <string name="label_speech_rate">语速：%1$s</string>
+    <string name="label_speech_volume">音量：%1$s</string>
+    <string name="label_speech_pitch">音高：%1$s</string>
 </resources>

@@ -256,7 +256,7 @@
     <string name="systts_local_test_msg">Direct-Play is off \nSize: %1$d Kib \nSample rate: %2$d</string>
     <string name="systts_set_standby">Set standby TTS</string>
     <string name="systts_local_params_int_must">Must be true or 1, false or 0</string>
-    <string name="set_built_in_player_params">Built-in player settings</string>
+    <string name="internal_player">Built-in player settings</string>
     <string name="built_in_player_not_enabled">⚠️[Built-in player] is not enabled</string>
     <string name="please_turn_off_direct_play">⚠️Please turn off the [Direct Play] option</string>
     <string name="systts_as_standby_help">About [as standby]</string>
@@ -441,4 +441,7 @@
     <string name="gray">灰色</string>
     <string name="desc_expand_group">展开分组：%1$s</string>
     <string name="desc_collapse_group">折叠分组：%1$s</string>
+    <string name="label_speech_rate">语速：%1$s</string>
+    <string name="label_speech_volume">音量：%1$s</string>
+    <string name="label_speech_pitch">音高：%1$s</string>
 </resources>

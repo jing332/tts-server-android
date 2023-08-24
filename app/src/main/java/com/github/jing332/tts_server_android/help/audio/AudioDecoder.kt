@@ -36,7 +36,13 @@ class AudioDecoder {
             while (coroutineContext.isActive) {
                 val readLen =
                     this.read(buffer, bufferFilledCount, chunkSize - bufferFilledCount)
-                if (readLen == -1) break
+                if (readLen == -1) {
+                    if (bufferFilledCount > 0) {
+                        val chunkData = buffer.copyOfRange(0, bufferFilledCount)
+                        onRead.invoke(chunkData)
+                    }
+                    break
+                }
                 if (readLen == 0) {
                     delay(100)
                     continue
