@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -37,7 +38,7 @@ class MsTtsUI : TtsUI() {
                 key = tts.format,
                 keys = formats,
                 values = formats,
-                onSelectedChange = {k, v ->
+                onSelectedChange = { k, v ->
                     onSysttsChange(systts.copy(tts = tts.copy(format = k as String)))
                 }
             )
@@ -100,17 +101,23 @@ class MsTtsUI : TtsUI() {
         onSave: () -> Unit,
         onCancel: () -> Unit
     ) {
+
+        val saveSignal = remember { mutableStateOf<(() -> Unit)?>(null) }
         Scaffold(topBar = {
             TtsTopAppBar(
                 title = { Text(text = stringResource(id = R.string.edit_builtin_tts)) },
                 onBackAction = onCancel,
-                onSaveAction = onSave
+                onSaveAction = {
+                    saveSignal.value?.invoke()
+                    onSave()
+                }
             )
         }) { paddingValues ->
             Column(Modifier.padding(paddingValues)) {
                 BasicInfoEditScreen(
                     modifier = Modifier.fillMaxWidth(),
                     systts = systts,
+                    saveEvent = saveSignal,
                     onSysttsChange = onSysttsChange
                 )
 

@@ -3,13 +3,12 @@ package com.github.jing332.tts_server_android.compose.nav.systts.edit.ui
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.BaseViewModel
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 
-class PluginTtsViewModel : ViewModel() {
-    val player by lazy { AudioPlayer(app) }
-
+class PluginTtsViewModel : BaseViewModel() {
     lateinit var engine: TtsPluginUiEngine
 
     fun initEngine(tts: PluginTTS) {

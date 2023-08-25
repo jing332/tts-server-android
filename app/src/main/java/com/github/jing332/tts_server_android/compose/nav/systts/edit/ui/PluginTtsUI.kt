@@ -30,6 +30,7 @@ import com.github.jing332.tts_server_android.compose.nav.systts.edit.BasicInfoEd
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.IntSlider
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.AuditionTextField
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.TtsTopAppBar
+import com.github.jing332.tts_server_android.compose.nav.systts.list.AuditionDialog
 import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
 import com.github.jing332.tts_server_android.compose.widgets.LoadingDialog
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -113,6 +114,7 @@ class PluginTtsUI : TtsUI() {
         onSave: () -> Unit,
         onCancel: () -> Unit,
     ) {
+        val saveEvent = rememberCallbackState()
         var name by remember { mutableStateOf("") }
         Scaffold(
             modifier = modifier,
@@ -123,6 +125,8 @@ class PluginTtsUI : TtsUI() {
                     onSaveAction = {
                         if (systts.displayName?.isBlank() == true)
                             onSysttsChange(systts.copy(displayName = name))
+
+                        saveEvent.value?.invoke()
                         onSave()
                     }
                 )
@@ -134,9 +138,8 @@ class PluginTtsUI : TtsUI() {
                     .verticalScroll(
                         rememberScrollState()
                     ),
-                voiceName = {
-                    name = it
-                },
+                voiceName = { name = it },
+                saveEvent = saveEvent,
                 systts = systts, onSysttsChange = onSysttsChange,
             )
         }
@@ -147,12 +150,19 @@ class PluginTtsUI : TtsUI() {
         modifier: Modifier,
         systts: SystemTts,
         voiceName: (String) -> Unit,
+        saveEvent: CallbackState,
         onSysttsChange: (SystemTts) -> Unit,
         vm: PluginTtsViewModel = viewModel(),
     ) {
         var showLoadingDialog by remember { mutableStateOf(false) }
         if (showLoadingDialog)
             LoadingDialog(onDismissRequest = { showLoadingDialog = false })
+
+        var showAuditionDialog by remember { mutableStateOf(false) }
+        if (showAuditionDialog)
+            AuditionDialog(systts = systts) {
+                showAuditionDialog = false
+            }
 
         val tts by rememberUpdatedState(newValue = systts.tts as PluginTTS)
         val context = LocalContext.current
@@ -165,6 +175,7 @@ class PluginTtsUI : TtsUI() {
                 BasicInfoEditScreen(
                     Modifier.fillMaxWidth(),
                     systts = systts,
+                    saveEvent = saveEvent,
                     onSysttsChange = onSysttsChange
                 )
 
@@ -216,7 +227,7 @@ class PluginTtsUI : TtsUI() {
                         .fillMaxWidth()
                         .padding(top = 8.dp),
                     onAudition = {
-
+                        showAuditionDialog = true
                     }
                 )
 
