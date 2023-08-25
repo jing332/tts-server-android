@@ -50,7 +50,7 @@
     <string name="label_audio_sample_rate">音频采样率(hz)：</string>
     <string name="label_port">端口:</string>
 
-    <string name="systts_api_edge">微软Edge-大声朗读接口</string>
+    <string name="systts_api_edge">微软Edge - Go</string>
     <string name="systts_state_idle">TTS空闲中</string>
     <string name="systts_state_synthesizing">TTS合成中</string>
     <string name="systts_service">系统TTS服务</string>
@@ -440,4 +440,5 @@
     <string name="label_speech_rate">语速：%1$s</string>
     <string name="label_speech_volume">音量：%1$s</string>
     <string name="label_speech_pitch">音高：%1$s</string>
+    <string name="systts_api_edge_okhttp">微软Edge  - Java (音频流)</string>
 </resources>

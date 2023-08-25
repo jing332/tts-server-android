@@ -15,8 +15,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCard
+import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.Http
+import androidx.compose.material.icons.filled.Javascript
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -55,18 +59,17 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
+import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
+import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.base.QuickEditBottomSheet
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.GroupModel
 import com.github.jing332.tts_server_android.ui.systts.list.ItemModel
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
@@ -141,7 +144,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
         ) {
             scope.launch {
                 val group = data.copy(id = System.currentTimeMillis(),
-                    name = it.ifEmpty { context.getString(R.string.unnamed) }
+                    name = it.ifBlank { context.getString(R.string.unnamed) }
                 )
                 appDb.systemTtsDao.insertGroup(group)
                 appDb.systemTtsDao.getTtsByGroup(data.id).forEachIndexed { index, tts ->
@@ -154,6 +157,15 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                 }
             }
         }
+    }
+
+    fun navigateToEdit(systts: SystemTts) {
+        navController.navigateSingleTop(
+            NavRoutes.TtsEdit.id,
+            Bundle().apply {
+                putParcelable(NavRoutes.TtsEdit.DATA, systts)
+            }
+        )
     }
 
     fun startTtsEditor(cls: Class<*>, data: SystemTts? = null, isCopy: Boolean = false) {
@@ -298,10 +310,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     var addPluginDialog by remember { mutableStateOf(false) }
     if (addPluginDialog) {
         PluginSelectionDialog(onDismissRequest = { addPluginDialog = false }) {
-            startTtsEditor(
-                PluginTtsEditActivity::class.java,
-                SystemTts(tts = PluginTTS(pluginId = it.pluginId))
-            )
+            navigateToEdit(SystemTts(tts = PluginTTS(pluginId = it.pluginId)))
         }
     }
 
@@ -348,14 +357,14 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                 icon = { Icon(Icons.Default.PlaylistAdd, null) },
                                 title = R.string.systts_add_internal_tts
                             ) {
-                                startTtsEditor(MsTtsEditActivity::class.java)
+                                navigateToEdit(SystemTts(tts = MsTTS()))
                             }
 
                             MenuItem(
-                                icon = { Icon(Icons.Default.PlaylistAdd, null) },
+                                icon = { Icon(Icons.Default.PhoneAndroid, null) },
                                 title = R.string.add_local_tts
                             ) {
-                                startTtsEditor(LocalTtsEditActivity::class.java)
+                                navigateToEdit(SystemTts(tts = LocalTTS()))
                             }
 
                             MenuItem(
@@ -366,21 +375,21 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                             }
 
                             MenuItem(
-                                icon = { Icon(Icons.Default.PlaylistAdd, null) },
+                                icon = { Icon(Icons.Default.Javascript, null) },
                                 title = R.string.systts_add_plugin_tts
                             ) {
                                 addPluginDialog = true
                             }
 
                             MenuItem(
-                                icon = { Icon(Icons.Default.PlaylistAdd, null) },
+                                icon = { Icon(Icons.Default.Audiotrack, null) },
                                 title = R.string.add_bgm_tts
                             ) {
-                                startTtsEditor(BgmTtsEditActivity::class.java)
+                                navigateToEdit(SystemTts(tts = BgmTTS()))
                             }
 
                             MenuItem(
-                                icon = { Icon(Icons.Default.PlaylistAdd, null) },
+                                icon = { Icon(Icons.Default.AddCard, null) },
                                 title = R.string.add_group
                             ) {
                                 addGroupDialog = true

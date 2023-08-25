@@ -234,7 +234,7 @@ fun BasicInfoEditScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
-            value = systts.displayName ?: "'", onValueChange = {
+            value = systts.displayName ?: "", onValueChange = {
                 onSysttsChange(systts.copy(displayName = it))
             }
         )

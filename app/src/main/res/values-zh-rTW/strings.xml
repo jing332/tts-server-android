@@ -428,4 +428,5 @@
     <string name="label_speech_rate">语速：%1$s</string>
     <string name="label_speech_volume">音量：%1$s</string>
     <string name="label_speech_pitch">音高：%1$s</string>
+    <string name="systts_api_edge_okhttp">微软Edge  - Java (音频流)</string>
 </resources>

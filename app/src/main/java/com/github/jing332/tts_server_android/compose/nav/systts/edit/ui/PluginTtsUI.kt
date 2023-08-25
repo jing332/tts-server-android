@@ -243,13 +243,14 @@ class PluginTtsUI : TtsUI() {
                         withIO { vm.engine.onLoadData() }
 
                         vm.engine.onLoadUI(context, linearLayout)
+
+                        vm.onLocaleChanged(tts.locale)
+                        vm.initData()
                     }.onFailure {
                         it.printStackTrace()
                         context.displayErrorDialog(it)
                     }
 
-                    vm.onLocaleChanged(tts.locale)
-                    vm.initData()
 
                     showLoadingDialog = false
                 }

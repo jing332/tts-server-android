@@ -180,7 +180,6 @@ class LocalTtsUI : TtsUI() {
 
         Column(modifier) {
             Column(Modifier.padding(horizontal = 8.dp)) {
-
                 BasicInfoEditScreen(
                     modifier = Modifier.fillMaxWidth(),
                     systts = systts,
@@ -195,6 +194,8 @@ class LocalTtsUI : TtsUI() {
 
                 LaunchedEffect(tts.engine) {
                     vm.setEngine(tts.engine ?: "")
+                    vm.updateLocales()
+                    vm.updateVoices(tts.locale)
                 }
 
                 ExposedDropTextField(
@@ -221,7 +222,11 @@ class LocalTtsUI : TtsUI() {
                     label = { Text(stringResource(id = R.string.label_voice)) },
                     key = tts.voiceName ?: "",
                     keys = vm.voices.map { it.name },
-                    values = vm.voices.map { it.name },
+                    values = vm.voices.map {
+                        val featureStr =
+                            if (it.features == null || it.features.isEmpty()) "" else it.features.toString()
+                        "${it.name} $featureStr"
+                    },
                     onSelectedChange = { k, _ ->
                         onSysttsChange(systts.copy(tts = tts.copy(voiceName = k as String)))
                     }

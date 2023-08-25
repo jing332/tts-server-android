@@ -26,20 +26,23 @@ class LocalTtsViewModel : ViewModel() {
 
         engines.clear()
         engines.addAll(TtsEngineHelper.getEngines())
-
-        updateLocales()
     }
 
     fun updateLocales() {
         locales.clear()
         locales.addAll(engineHelper.locales)
-
-        updateVoices()
     }
 
-    fun updateVoices() {
+    fun updateVoices(locale: String) {
         voices.clear()
-        voices.addAll(engineHelper.voices)
+        voices.addAll(engineHelper.voices.filter { it.locale.toLanguageTag() == locale }
+            .sortedBy { it.name })
     }
 
+
+    override fun onCleared() {
+        super.onCleared()
+
+        engineHelper.shutdown()
+    }
 }
