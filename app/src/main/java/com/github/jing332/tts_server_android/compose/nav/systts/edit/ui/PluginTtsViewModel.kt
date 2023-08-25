@@ -32,6 +32,9 @@ class PluginTtsViewModel : BaseViewModel() {
     }
 
     fun onVoiceChanged(locale: String, voice: String) {
-        engine.onVoiceChanged(locale, voice)
+        try {
+            engine.onVoiceChanged(locale, voice)
+        } catch (_: NoSuchMethodException) {
+        }
     }
 }

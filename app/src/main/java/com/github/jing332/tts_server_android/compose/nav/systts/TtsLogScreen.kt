@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.nav.LogScreen
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
@@ -26,14 +27,12 @@ import com.github.jing332.tts_server_android.ui.AppLog
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun TtsLogScreen() {
-    val list = remember { mutableStateListOf<AppLog>() }
-
+internal fun TtsLogScreen(vm:TtsLogViewModel = viewModel()) {
     LocalBroadcastReceiver(intentFilter = IntentFilter(SystemTtsService.ACTION_ON_LOG)) {
         if (it?.action == SystemTtsService.ACTION_ON_LOG) {
             it.getParcelableExtra<AppLog>(KeyConst.KEY_DATA)?.let { log ->
                 println("ACTION_ON_LOG ${log.msg}")
-                list.add(log)
+                vm.logs.add(log)
             }
         }
     }
@@ -41,7 +40,7 @@ internal fun TtsLogScreen() {
     Scaffold(
         topBar = {
             NavTopAppBar(title = { Text(stringResource(id = R.string.log)) }, actions = {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { vm.logs.clear() }) {
                     Icon(Icons.Default.DeleteOutline, stringResource(id = R.string.clear_log))
                 }
             })
@@ -50,7 +49,7 @@ internal fun TtsLogScreen() {
         LogScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = paddingValues.calculateTopPadding()), list = list
+                .padding(top = paddingValues.calculateTopPadding()), list = vm.logs
         )
     }
 }

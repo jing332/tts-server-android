@@ -108,6 +108,7 @@ private fun NavHostScreen() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val snackbarState = remember { SnackbarHostState() }
+    val gesturesEnabled = !drawerState.isClosed
 
     CompositionLocalProvider(
         LocalNavController provides navController,
@@ -115,7 +116,7 @@ private fun NavHostScreen() {
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
-            gesturesEnabled = NavRoutes.routes.find { it.id == navController.currentDestination?.route } != null,
+            gesturesEnabled = gesturesEnabled,
             drawerContent = {
                 NavDrawerContent(
                     navController,

@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,6 +34,8 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.IntSlider
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.TtsTopAppBar
+import com.github.jing332.tts_server_android.constant.SpeechTarget
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
@@ -49,6 +52,10 @@ class BgmUI : TtsUI() {
         onSysttsChange: (SystemTts) -> Unit
     ) {
         val tts = systts.tts as BgmTTS
+        LaunchedEffect(Unit) {
+            onSysttsChange(systts.copy(speechRule = SpeechRuleInfo(target = SpeechTarget.BGM)))
+        }
+
         val volStr = stringResource(id = R.string.label_speech_volume, tts.volume.toString())
         IntSlider(label = volStr, value = tts.volume.toFloat(), onValueChange = {
             onSysttsChange(systts.copy(tts = tts.copy(volume = it.toInt())))
@@ -100,7 +107,8 @@ class BgmUI : TtsUI() {
                 BasicInfoEditScreen(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp), systts = systts,
+                        .padding(horizontal = 8.dp),
+                    systts = systts,
                     saveEvent = saveSignal, onSysttsChange = onSysttsChange,
                     showSpeechTarget = false,
                 )

@@ -216,7 +216,11 @@ class PluginTtsUI : TtsUI() {
                                 tts = tts.copy(voice = key as String)
                             )
                         )
-                        vm.onVoiceChanged(tts.locale, key)
+                        runCatching {
+                            vm.onVoiceChanged(tts.locale, key)
+                        }.onFailure {
+                            context.displayErrorDialog(it)
+                        }
 
                         voiceName(name)
                     }
