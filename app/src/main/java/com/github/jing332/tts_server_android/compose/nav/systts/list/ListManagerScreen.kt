@@ -402,7 +402,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             )
         },
     ) { paddingValues ->
-        Box(Modifier.padding(paddingValues)) {
+        Box(Modifier.padding(top = paddingValues.calculateTopPadding())) {
             LazyColumn(
                 Modifier
                     .fillMaxSize()

@@ -1,7 +1,7 @@
 package com.github.jing332.tts_server_android.compose.nav.systts
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -9,7 +9,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.TextSnippet
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -28,7 +27,7 @@ import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.nav.systts.list.ListManagerScreen
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SystemTtsScreen(drawerState: DrawerState, vm: SystemTtsViewModel = viewModel()) {
     val navController = LocalNavController.current
@@ -85,13 +84,17 @@ fun SystemTtsScreen(drawerState: DrawerState, vm: SystemTtsViewModel = viewModel
                 }
             }
         }
-    ) {
-        Column(Modifier.padding(bottom = it.calculateBottomPadding())) {
-            HorizontalPager(state = pagerState, userScrollEnabled = false) { index ->
-                when (index) {
-                    0 -> ListManagerScreen()
-                    1 -> TtsLogScreen()
-                }
+    ) { paddingValues ->
+        HorizontalPager(
+            modifier = Modifier
+                .padding(bottom = paddingValues.calculateBottomPadding())
+                .fillMaxSize(),
+            state = pagerState,
+            userScrollEnabled = false
+        ) { index ->
+            when (index) {
+                0 -> ListManagerScreen()
+                1 -> TtsLogScreen()
             }
         }
     }

@@ -18,7 +18,7 @@ import java.io.InputStream
 @Parcelize
 @Serializable
 @SerialName("bgm")
-class BgmTTS(
+data class BgmTTS(
     var musicList: MutableSet<String> = mutableSetOf(),
 
     override var pitch: Int = 0,

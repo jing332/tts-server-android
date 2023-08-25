@@ -225,7 +225,7 @@
     <string name="local_tts_engine">本地TTS引擎</string>
     <string name="add_local_tts">添加本地TTS</string>
     <string name="local">本地</string>
-    <string name="systts_local_edit_title">編輯本地TTS</string>
+    <string name="edit_local_tts">編輯本地TTS</string>
     <string name="label_tts_engine">TTS引擎：</string>
     <string name="type_of_data">資料類型</string>
     <string name="str_key">鍵</string>
@@ -293,7 +293,7 @@
     <string name="theme">主题</string>
     <string name="add_folder">添加音频文件</string>
     <string name="add_bgm_tts">添加背景音乐TTS</string>
-    <string name="edit_bgm_tts_title">编辑背景音乐TTS</string>
+    <string name="edit_bgm_tts">编辑背景音乐TTS</string>
     <string name="add_bgm_tip">请添加一个含有音频的文件夹以作为BGM使用</string>
     <string name="grant_permission_all_file">请授予【所有文件访问权限】</string>
     <string name="go_to_settings">前往设置</string>

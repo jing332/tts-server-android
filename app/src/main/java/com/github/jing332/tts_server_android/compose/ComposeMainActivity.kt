@@ -25,10 +25,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -63,6 +66,7 @@ import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.nav.NavRoutes
@@ -74,6 +78,7 @@ import com.github.jing332.tts_server_android.compose.nav.systts.edit.TtsEditCont
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.utils.MyTools
 import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -185,7 +190,7 @@ fun NavDrawerContent(
     ) {
         val isSelected = selected == targetScreen.id
         NavigationDrawerItem(
-            icon = { icon() },
+            icon = icon,
             label = { Text(text = stringResource(id = targetScreen.strId)) },
             selected = isSelected,
             onClick = onClick,
@@ -249,9 +254,27 @@ fun NavDrawerContent(
         )
 
         for (route in NavRoutes.routes) {
-            drawerItem(icon = { }, targetScreen = route)
+            drawerItem(icon = route.icon, targetScreen = route)
             Spacer(modifier = Modifier.height(4.dp))
         }
+
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp, horizontal = 4.dp)
+        )
+
+        NavigationDrawerItem(
+            icon = { Icon(Icons.Default.ArrowCircleUp, null) },
+            label = { Text(stringResource(id = R.string.check_update)) },
+            selected = false,
+            onClick = {
+                scope.launch {
+                    drawerState.close()
+                    withIO { MyTools.checkUpdate(context, true) }
+                }
+            }
+        )
     }
 }
 

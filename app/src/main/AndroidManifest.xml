@@ -177,10 +177,10 @@
             android:label="@string/systts_http_edit_title" />
         <activity
             android:name=".ui.systts.edit.local.LocalTtsEditActivity"
-            android:label="@string/systts_local_edit_title" />
+            android:label="@string/edit_local_tts" />
         <activity
             android:name=".ui.systts.edit.bgm.BgmTtsEditActivity"
-            android:label="@string/edit_bgm_tts_title" />
+            android:label="@string/edit_bgm_tts" />
         <activity
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:exported="true"

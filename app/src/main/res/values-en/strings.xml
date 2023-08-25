@@ -238,7 +238,7 @@
     <string name="local_tts_engine">Local TTS engine</string>
     <string name="add_local_tts">Add local TTS</string>
     <string name="local">Local</string>
-    <string name="systts_local_edit_title">Edit local TTS</string>
+    <string name="edit_local_tts">Edit local TTS</string>
     <string name="label_tts_engine">TTS Engine:</string>
     <string name="type_of_data">Data type</string>
     <string name="str_key">Key</string>
@@ -306,7 +306,7 @@
     <string name="theme">Theme</string>
     <string name="add_folder">Add folder</string>
     <string name="add_bgm_tts">Add BGM</string>
-    <string name="edit_bgm_tts_title">Edit BGM</string>
+    <string name="edit_bgm_tts">Edit BGM</string>
     <string name="add_bgm_tip">Please add a folder with audio to use as BGM</string>
     <string name="grant_permission_all_file">Please grant [All file access permissions]</string>
     <string name="go_to_settings">Go settings</string>

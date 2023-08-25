@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SmartDisplay
@@ -49,6 +50,7 @@ fun BasicInfoEditScreen(
     onSysttsChange: (SystemTts) -> Unit,
     saveEvent: CallbackState,
 
+    showSpeechTarget: Boolean = true,
     group: SystemTtsGroup = remember { appDb.systemTtsDao.getGroup(systts.groupId) }
         ?: SystemTtsGroup(id = DEFAULT_GROUP_ID, name = ""),
     groups: List<SystemTtsGroup> = remember { appDb.systemTtsDao.allGroup },
@@ -98,118 +100,124 @@ fun BasicInfoEditScreen(
         )
 
     Column(modifier) {
-        Row(
-            Modifier
-                .align(Alignment.CenterHorizontally)
-                .horizontalScroll(rememberScrollState())
-        ) {
-            TextButton(onClick = { showParamsDialog = true }) {
-                Row {
-                    Icon(Icons.Default.Speed, null)
-                    Text(stringResource(id = R.string.audio_params))
+        if (showSpeechTarget)
+            Column {
+                Row(
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .horizontalScroll(rememberScrollState())
+                ) {
+                    TextButton(onClick = { showParamsDialog = true }) {
+                        Row {
+                            Icon(Icons.Default.Speed, null)
+                            Text(stringResource(id = R.string.audio_params))
+                        }
+                    }
+
+                    TextButton(onClick = { }) {
+                        Row {
+                            Icon(Icons.Default.SmartDisplay, null)
+                            Text(stringResource(id = R.string.internal_player))
+                        }
+                    }
                 }
-            }
 
-            TextButton(onClick = { }) {
-                Row {
-                    Icon(Icons.Default.SmartDisplay, null)
-                    Text(stringResource(id = R.string.internal_player))
-                }
-            }
-        }
-
-        RowToggleButtonGroup(
-            primarySelection = if (systts.speechRule.target == SpeechTarget.ALL) 0 else 1,
-            buttonCount = 2,
-            buttonIcons = arrayOf(
-                painterResource(id = R.drawable.ic_baseline_select_all_24),
-                painterResource(id = R.drawable.baseline_tag_24)
-            ),
-            buttonTexts = arrayOf(
-                stringResource(id = R.string.ra_all),
-                stringResource(id = R.string.tag)
-            ),
-            onButtonClick = {
-                onSysttsChange(
-                    systts.copy(
-                        speechRule = systts.speechRule.copy(
-                            target = if (it == 0) SpeechTarget.ALL else SpeechTarget.CUSTOM_TAG
-                        )
-                    )
-                )
-            },
-        )
-
-        AnimatedVisibility(visible = systts.speechRule.target == SpeechTarget.CUSTOM_TAG) {
-            Row {
-                ExposedDropTextField(
+                RowToggleButtonGroup(
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 4.dp),
-                    label = { Text(stringResource(id = R.string.speech_rule_script)) },
-                    key = systts.speechRule.tagRuleId,
-                    keys = speechRules.map { it.ruleId },
-                    values = speechRules.map { it.name },
-                    onSelectedChange = { k, v ->
+                        .wrapContentWidth()
+                        .align(Alignment.CenterHorizontally),
+                    primarySelection = if (systts.speechRule.target == SpeechTarget.ALL) 0 else 1,
+                    buttonCount = 2,
+                    buttonIcons = arrayOf(
+                        painterResource(id = R.drawable.ic_baseline_select_all_24),
+                        painterResource(id = R.drawable.baseline_tag_24)
+                    ),
+                    buttonTexts = arrayOf(
+                        stringResource(id = R.string.ra_all),
+                        stringResource(id = R.string.tag)
+                    ),
+                    onButtonClick = {
                         onSysttsChange(
                             systts.copy(
                                 speechRule = systts.speechRule.copy(
-                                    tagRuleId = k as String
+                                    target = if (it == 0) SpeechTarget.ALL else SpeechTarget.CUSTOM_TAG
                                 )
                             )
                         )
-                    }
+                    },
                 )
 
-                speechRule?.let { speechRule ->
-                    ExposedDropTextField(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 4.dp),
-                        label = { Text(stringResource(id = R.string.tag)) },
-                        key = systts.speechRule.tag,
-                        keys = speechRule.tags.keys.toList(),
-                        values = speechRule.tags.values.toList(),
-                        onSelectedChange = { k, _ ->
-                            onSysttsChange(
-                                systts.copy(
-                                    speechRule = systts.speechRule.copy(tag = k as String)
-                                )
-                            )
-                        }
-                    )
-
-                    Column(Modifier.padding(vertical = 4.dp)) {
-                        speechRule.tagsData[systts.speechRule.tag]?.forEach { defTag ->
-                            val key = defTag.key
-                            val label = defTag.value["label"]
-                            val hint = defTag.value["hint"]
-
-                            val items = defTag.value["items"]
-                            if (items.isNullOrEmpty()) {
-                                DenseOutlinedField(
-                                    value = systts.speechRule.mutableTagData[key] ?: "",
-                                    onValueChange = {
-                                        onSysttsChange(
-                                            systts.copy(
-                                                speechRule = systts.speechRule.copy(
-                                                    tagData = systts.speechRule.mutableTagData.apply {
-                                                        this[key] = it
-                                                    }
-                                                )
-                                            )
+                AnimatedVisibility(visible = systts.speechRule.target == SpeechTarget.CUSTOM_TAG) {
+                    Row(Modifier.padding(top = 4.dp)) {
+                        ExposedDropTextField(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 4.dp),
+                            label = { Text(stringResource(id = R.string.speech_rule_script)) },
+                            key = systts.speechRule.tagRuleId,
+                            keys = speechRules.map { it.ruleId },
+                            values = speechRules.map { it.name },
+                            onSelectedChange = { k, v ->
+                                onSysttsChange(
+                                    systts.copy(
+                                        speechRule = systts.speechRule.copy(
+                                            tagRuleId = k as String
                                         )
-                                    })
-                            } else {
-
+                                    )
+                                )
                             }
+                        )
 
+                        speechRule?.let { speechRule ->
+                            ExposedDropTextField(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 4.dp),
+                                label = { Text(stringResource(id = R.string.tag)) },
+                                key = systts.speechRule.tag,
+                                keys = speechRule.tags.keys.toList(),
+                                values = speechRule.tags.values.toList(),
+                                onSelectedChange = { k, _ ->
+                                    onSysttsChange(
+                                        systts.copy(
+                                            speechRule = systts.speechRule.copy(tag = k as String)
+                                        )
+                                    )
+                                }
+                            )
+
+                            Column(Modifier.padding(vertical = 4.dp)) {
+                                speechRule.tagsData[systts.speechRule.tag]?.forEach { defTag ->
+                                    val key = defTag.key
+                                    val label = defTag.value["label"]
+                                    val hint = defTag.value["hint"]
+
+                                    val items = defTag.value["items"]
+                                    if (items.isNullOrEmpty()) {
+                                        DenseOutlinedField(
+                                            value = systts.speechRule.mutableTagData[key] ?: "",
+                                            onValueChange = {
+                                                onSysttsChange(
+                                                    systts.copy(
+                                                        speechRule = systts.speechRule.copy(
+                                                            tagData = systts.speechRule.mutableTagData.apply {
+                                                                this[key] = it
+                                                            }
+                                                        )
+                                                    )
+                                                )
+                                            })
+                                    } else {
+
+                                    }
+
+                                }
+                            }
                         }
+
                     }
                 }
-
             }
-        }
 
         ExposedDropTextField(
             modifier = Modifier.fillMaxWidth(),
