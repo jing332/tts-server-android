@@ -22,7 +22,10 @@ fun AudioParamsDialog(
         title = { Text(stringResource(id = R.string.audio_params)) },
         content = {
             Column {
-                val str = stringResource(id = R.string.label_speech_rate, params.speed.toString())
+                val str = stringResource(
+                    id = R.string.label_speech_rate,
+                    if (params.speed == AudioParams.FOLLOW_GLOBAL_VALUE) stringResource(R.string.follow) else params.speed.toString()
+                )
                 LabelSlider(
                     value = params.speed,
                     onValueChange = {
@@ -32,13 +35,16 @@ fun AudioParamsDialog(
                             )
                         )
                     },
-                    valueRange = 0.1f..3.0f
+                    valueRange = 0.0f..3.0f
                 ) {
                     Text(str)
                 }
 
                 val volStr =
-                    stringResource(id = R.string.label_speech_volume, params.volume.toString())
+                    stringResource(
+                        id = R.string.label_speech_volume,
+                        if (params.volume == AudioParams.FOLLOW_GLOBAL_VALUE) stringResource(R.string.follow) else params.volume.toString()
+                    )
                 LabelSlider(
                     value = params.volume,
                     onValueChange = {
@@ -48,11 +54,14 @@ fun AudioParamsDialog(
                             )
                         )
                     },
-                    valueRange = 0.1f..3.0f
+                    valueRange = 0.0f..3.0f
                 ) { Text(volStr) }
 
                 val pitchStr =
-                    stringResource(id = R.string.label_speech_pitch, params.pitch.toString())
+                    stringResource(
+                        id = R.string.label_speech_pitch,
+                        if (params.pitch == AudioParams.FOLLOW_GLOBAL_VALUE) stringResource(R.string.follow) else params.pitch.toString()
+                    )
                 LabelSlider(
                     value = params.pitch,
                     onValueChange = {
@@ -60,7 +69,7 @@ fun AudioParamsDialog(
                             params.copy(pitch = DecimalFormat("#.00").format(it).toFloat())
                         )
                     },
-                    valueRange = 0.1f..3.0f
+                    valueRange = 0.0f..3.0f
                 ) {
                     Text(pitchStr)
                 }

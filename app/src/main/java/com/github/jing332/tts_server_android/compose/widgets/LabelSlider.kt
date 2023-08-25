@@ -67,7 +67,7 @@ fun LabelSlider(
         Row(Modifier.constrainAs(sliderRef) {
             start.linkTo(parent.start)
             end.linkTo(parent.end)
-            top.linkTo(textRef.bottom, margin = (-16).dp)
+            top.linkTo(textRef.bottom, margin = (-12).dp)
         }) {
             if (showButton)
                 LongClickIconButton(

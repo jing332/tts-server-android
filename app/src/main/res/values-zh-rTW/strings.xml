@@ -71,7 +71,7 @@
     <string name="check_update_failed">檢查更新失敗</string>
     <string name="current_is_last_version">當前已是最新版</string>
 
-    <string name="title_activity_tts_config_edit">編輯內置TTS</string>
+    <string name="edit_builtin_tts">編輯內置TTS</string>
     <string name="title_activity_replace_edit">編輯替換規則</string>
     <string name="title_activity_replace_manager">替換規則管理</string>
 
@@ -111,7 +111,7 @@
     <string name="import_from_url">從上方URL導入</string>
     <string name="retry">重試</string>
     <string name="test">測試</string>
-    <string name="sample_text">測試文字</string>
+    <string name="audition_text">測試文字</string>
 
     <!-- 替換管理 -->
     <string name="replace_rule_manager">替換規則管理</string>

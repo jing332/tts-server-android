@@ -28,13 +28,15 @@ fun ExposedDropTextField(
     key: Any,
     keys: List<Any>,
     values: List<String>,
-    onKeyChange: (key: Any) -> Unit,
+    onSelectedChange: (key: Any, value: String) -> Unit,
 ) {
     var selectedText = values.getOrNull(max(0, keys.indexOf(key))) ?: ""
     var expanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(keys) {
-        keys.getOrNull(values.indexOf(selectedText))?.let(onKeyChange)
+        keys.getOrNull(values.indexOf(selectedText))?.let {
+            onSelectedChange.invoke(it, selectedText)
+        }
     }
 
     CompositionLocalProvider(
@@ -72,7 +74,7 @@ fun ExposedDropTextField(
                         onClick = {
                             expanded = false
                             selectedText = text
-                            onKeyChange.invoke(keys[index])
+                            onSelectedChange.invoke(keys[index], text)
                         }/*, modifier = Modifier.background(
                         if (checked) MaterialTheme.colorScheme.surfaceVariant
                         else Color.TRANSPARENT*/
@@ -93,7 +95,7 @@ private fun ExposedDropTextFieldPreview() {
         key = key,
         keys = listOf(1, 2, 3),
         values = listOf("1", "2", "3"),
-    ) {
-        key = it as Int
+    ) { k, v ->
+        key = k as Int
     }
 }

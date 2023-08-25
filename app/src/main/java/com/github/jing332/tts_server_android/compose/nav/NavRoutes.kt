@@ -11,7 +11,7 @@ import com.github.jing332.tts_server_android.R
 sealed class NavRoutes(
     val id: String,
     @StringRes val strId: Int,
-    val icon: @Composable () -> Unit
+    val icon: @Composable () -> Unit = {},
 ) {
     companion object {
         val routes by lazy {
@@ -40,4 +40,9 @@ sealed class NavRoutes(
     data object Settings : NavRoutes("settings", R.string.settings, icon = {
         Icon(Icons.Default.Settings, null)
     })
+
+    // =============
+    data object TtsEdit : NavRoutes("tts_edit", 0) {
+        const val DATA = "data"
+    }
 }

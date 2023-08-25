@@ -73,7 +73,7 @@
     <string name="check_update_failed">Check for updates failed</string>
     <string name="current_is_last_version">Currently the latest version</string>
 
-    <string name="title_activity_tts_config_edit">Edit built-in TTS</string>
+    <string name="edit_builtin_tts">Edit built-in TTS</string>
     <string name="title_activity_replace_edit">Edit replace rule</string>
     <string name="title_activity_replace_manager">Replace manager</string>
 
@@ -113,7 +113,7 @@
     <string name="import_from_url">import from URL</string>
     <string name="retry">Retry</string>
     <string name="test">Test</string>
-    <string name="sample_text">Sample text</string>
+    <string name="audition_text">Sample text</string>
 
     <!-- 替换管理 -->
     <string name="replace_rule_manager">Replace rule manager</string>

@@ -133,7 +133,7 @@
                     android:id="@+id/et_testText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/sample_text"
+                    android:hint="@string/audition_text"
                     android:importantForAutofill="no"
                     android:inputType="textMultiLine|text"
                     app:layout_constraintTop_toBottomOf="@+id/switch_isRegex"

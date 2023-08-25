@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.github.jing332.tts_server_android.compose
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -49,25 +53,33 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.nav.forwarder.ms.MsTtsForwarderScreen
 import com.github.jing332.tts_server_android.compose.nav.NavRoutes
+import com.github.jing332.tts_server_android.compose.nav.forwarder.ms.MsTtsForwarderScreen
 import com.github.jing332.tts_server_android.compose.nav.forwarder.systts.SystemTtsForwarderScreen
 import com.github.jing332.tts_server_android.compose.nav.settings.SettingsScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.SystemTtsScreen
+import com.github.jing332.tts_server_android.compose.nav.systts.edit.TtsEditContainerScreen
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
+import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-val LocalNavController = compositionLocalOf<NavController> { error("No nav controller") }
+val LocalNavController = compositionLocalOf<NavHostController> { error("No nav controller") }
 val LocalDrawerState = compositionLocalOf<DrawerState> { error("No drawer state") }
 
 fun Context.asAppCompatActivity(): AppCompatActivity {
@@ -98,6 +110,7 @@ private fun NavHostScreen() {
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
+            gesturesEnabled = NavRoutes.routes.find { it.id == navController.currentDestination?.route } != null,
             drawerContent = {
                 NavDrawerContent(
                     navController,
@@ -119,6 +132,29 @@ private fun NavHostScreen() {
                 }
                 composable(NavRoutes.MsTtsForwarder.id) { MsTtsForwarderScreen() }
                 composable(NavRoutes.Settings.id) { SettingsScreen(drawerState) }
+
+                composable(NavRoutes.TtsEdit.id) { stackEntry ->
+                    val systts: SystemTts =
+                        stackEntry.arguments?.getParcelable(NavRoutes.TtsEdit.DATA)
+                            ?: return@composable
+                    var stateSystts by rememberSaveable { mutableStateOf(systts) }
+                    TtsEditContainerScreen(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        systts = stateSystts,
+                        onSysttsChange = {
+                            stateSystts = it
+                            println("UpdateSystemTTS: ${it}")
+                        },
+                        onSave = {
+                            navController.popBackStack()
+                            appDb.systemTtsDao.insertTts(stateSystts)
+                        },
+                        onCancel = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
         }
 
@@ -155,7 +191,6 @@ fun NavDrawerContent(
             onClick = onClick,
         )
     }
-
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -218,4 +253,55 @@ fun NavDrawerContent(
             Spacer(modifier = Modifier.height(4.dp))
         }
     }
+}
+
+/*
+* 可传递 Bundle 到 Navigation
+* */
+@SuppressLint("RestrictedApi")
+fun NavController.navigate(
+    route: String,
+    args: Bundle,
+    navOptions: NavOptions? = null,
+    navigatorExtras: Navigator.Extras? = null
+) {
+    val routeLink = NavDeepLinkRequest
+        .Builder
+        .fromUri(NavDestination.createRoute(route).toUri())
+        .build()
+
+    val deepLinkMatch = graph.matchDeepLink(routeLink)
+    if (deepLinkMatch != null) {
+        val destination = deepLinkMatch.destination
+        val id = destination.id
+        navigate(id, args, navOptions, navigatorExtras)
+    } else {
+        navigate(route, navOptions, navigatorExtras)
+    }
+}
+
+/**
+ * 单例并清空其他栈
+ */
+fun NavHostController.navigateSingleTop(
+    route: String,
+    args: Bundle? = null,
+    popUpToMain: Boolean = false
+) {
+    val navController = this
+    val navOptions = NavOptions.Builder()
+        .setLaunchSingleTop(true)
+        .apply {
+            if (popUpToMain) setPopUpTo(
+                navController.graph.startDestinationId,
+                inclusive = false,
+                saveState = true
+            )
+        }
+        .setRestoreState(true)
+        .build()
+    if (args == null)
+        navController.navigate(route, navOptions)
+    else
+        navController.navigate(route, args, navOptions)
 }

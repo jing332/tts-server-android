@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.compose.nav.systts.list
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -41,9 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalDrawerState
+import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.asAppCompatActivity
+import com.github.jing332.tts_server_android.compose.nav.NavRoutes
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.nav.systts.ConfigDeleteDialog
+import com.github.jing332.tts_server_android.compose.navigateSingleTop
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
@@ -79,6 +83,7 @@ import org.burnoutcrew.reorderable.reorderable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
+    val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val activity = context.asAppCompatActivity()
@@ -173,13 +178,13 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
 
     var hasShownTip by rememberSaveable { mutableStateOf(false) }
 
-    fun switchSpeechTarget(systts:SystemTts){
+    fun switchSpeechTarget(systts: SystemTts) {
         if (!hasShownTip) {
             hasShownTip = true
             context.longToast(R.string.systts_drag_tip_msg)
         }
 
-        val model = systts.clone<SystemTts>() ?: return
+        val model = systts.copy()
         if (model.speechRule.target == SpeechTarget.BGM) return
 
         if (model.speechRule.target == SpeechTarget.CUSTOM_TAG)
@@ -465,7 +470,12 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     },
                                     onDelete = { deleteTts = item },
                                     onEdit = {
-                                        startTtsEditor(item.tts.getEditActivity(), item)
+                                        navController.navigateSingleTop(
+                                            NavRoutes.TtsEdit.id,
+                                            Bundle().apply {
+                                                putParcelable(NavRoutes.TtsEdit.DATA, item)
+                                            }
+                                        )
                                     },
                                     onAudition = { showAuditionDialog = item }
                                 )

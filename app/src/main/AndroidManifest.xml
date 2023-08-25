@@ -171,7 +171,7 @@
         </activity>
         <activity
             android:name=".ui.systts.edit.microsoft.MsTtsEditActivity"
-            android:label="@string/title_activity_tts_config_edit" />
+            android:label="@string/edit_builtin_tts" />
         <activity
             android:name=".ui.systts.edit.http.HttpTtsEditActivity"
             android:label="@string/systts_http_edit_title" />

@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -22,12 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.widgets.DenseOutlinedField
 import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.utils.clone
 
 @Composable
 fun BasicInfoEditScreen(
@@ -35,9 +37,9 @@ fun BasicInfoEditScreen(
     systts: SystemTts,
     onSysttsChange: (SystemTts) -> Unit,
 
-    group: SystemTtsGroup = appDb.systemTtsDao.getGroup(systts.groupId)
+    group: SystemTtsGroup = remember { appDb.systemTtsDao.getGroup(systts.groupId) }
         ?: SystemTtsGroup(id = DEFAULT_GROUP_ID, name = ""),
-    groups: List<SystemTtsGroup> = appDb.systemTtsDao.allGroup
+    groups: List<SystemTtsGroup> = remember { appDb.systemTtsDao.allGroup }
 ) {
     var showParamsDialog by remember { mutableStateOf(false) }
     if (showParamsDialog)
@@ -45,7 +47,7 @@ fun BasicInfoEditScreen(
             onDismissRequest = { showParamsDialog = false },
             params = systts.tts.audioParams,
             onParamsChange = {
-                onSysttsChange(systts.copy(tts = systts.tts.apply {
+                onSysttsChange(systts.copy(tts = systts.tts.clone<ITextToSpeechEngine>()!!.apply {
                     audioParams = it
                 }))
             }
@@ -78,17 +80,16 @@ fun BasicInfoEditScreen(
             key = group,
             keys = groups,
             values = groups.map { it.name },
-            onKeyChange = {
-                onSysttsChange(systts.copy(groupId = (it as SystemTtsGroup).id))
+            onSelectedChange = { k, _ ->
+                onSysttsChange(systts.copy(groupId = (k as SystemTtsGroup).id))
             }
         )
-        var name by remember { mutableStateOf(systts.displayName ?: "") }
-        DenseOutlinedField(
+        OutlinedTextField(
+            label = { Text(stringResource(id = R.string.display_name)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
-            value = name, onValueChange = {
-                name = it
+            value = systts.displayName ?: "'", onValueChange = {
                 onSysttsChange(systts.copy(displayName = it))
             }
         )

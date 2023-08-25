@@ -13,14 +13,6 @@ open class TtsUI {
     ) {
     }
 
-    @Composable
-    open fun FullEditScreen(
-        modifier: Modifier,
-        systts: SystemTts,
-        onSysttsChange: (SystemTts) -> Unit,
-        onSave: () -> Unit
-    ) {
-    }
 
     @Composable
     open fun FullEditScreen(

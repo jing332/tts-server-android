@@ -76,7 +76,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
                 AppDialogs.displayInputDialog(
                     this,
                     getString(R.string.set_sample_text_param),
-                    getString(R.string.sample_text),
+                    getString(R.string.audition_text),
                     PluginConfig.sampleText
                 ) {
                     PluginConfig.sampleText = it

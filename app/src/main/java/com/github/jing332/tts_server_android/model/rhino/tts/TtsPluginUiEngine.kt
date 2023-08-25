@@ -11,8 +11,7 @@ import org.mozilla.javascript.NativeObject
 class TtsPluginUiEngine(
     private val pluginTts: PluginTTS,
     val context: Context,
-) :
-    TtsPluginEngine(pluginTTS = pluginTts, context = context) {
+) : TtsPluginEngine(pluginTTS = pluginTts, context = context) {
     companion object {
         const val FUNC_SAMPLE_RATE = "getAudioSampleRate"
         const val FUNC_IS_NEED_DECODE = "isNeedDecode"
@@ -82,8 +81,6 @@ class TtsPluginUiEngine(
     }
 
     fun getVoices(locale: String): Map<String, String> {
-        val nati = NativeMap()
-
         return rhino.invokeMethod(editUiJsObject, FUNC_VOICES, locale).run {
             when (this) {
                 is Map<*, *> -> {

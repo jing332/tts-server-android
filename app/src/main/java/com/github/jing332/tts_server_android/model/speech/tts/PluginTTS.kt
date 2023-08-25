@@ -52,7 +52,6 @@ data class PluginTTS(
             throw Exception(context.getString(R.string.not_found_plugin, pluginId))
         }
 
-
     override fun getDescription(): String {
         return "$voice <br>${super.getDescription()}"
     }

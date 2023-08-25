@@ -4,7 +4,7 @@
     android:id="@+id/til_test"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:hint="@string/sample_text"
+    android:hint="@string/audition_text"
     app:endIconContentDescription="@string/test"
     app:endIconDrawable="@drawable/ic_baseline_smart_display_24"
     app:endIconMode="custom"
