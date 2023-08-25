@@ -72,7 +72,6 @@ import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
 import com.github.jing332.tts_server_android.ui.systts.list.GroupModel
 import com.github.jing332.tts_server_android.ui.systts.list.ItemModel
-import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.utils.clone
 import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.flow.conflate
@@ -135,29 +134,6 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
         }
     }
 
-    fun displayCopyGroup(data: SystemTtsGroup) {
-        AppDialogs.displayInputDialog(
-            context,
-            context.getString(R.string.copy_group),
-            context.getString(R.string.name),
-            data.name
-        ) {
-            scope.launch {
-                val group = data.copy(id = System.currentTimeMillis(),
-                    name = it.ifBlank { context.getString(R.string.unnamed) }
-                )
-                appDb.systemTtsDao.insertGroup(group)
-                appDb.systemTtsDao.getTtsByGroup(data.id).forEachIndexed { index, tts ->
-                    appDb.systemTtsDao.insertTts(
-                        tts.copy(
-                            id = System.currentTimeMillis() + index,
-                            groupId = group.id
-                        )
-                    )
-                }
-            }
-        }
-    }
 
     fun navigateToEdit(systts: SystemTts) {
         navController.navigateSingleTop(
@@ -231,6 +207,21 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             appDb.systemTtsDao.deleteTts(deleteTts!!)
             deleteTts = null
         }
+    }
+
+    var groupAudioParamsDialog by remember { mutableStateOf<SystemTtsGroup?>(null) }
+    if (groupAudioParamsDialog != null) {
+        GroupAudioParamsDialog(
+            onDismissRequest = { groupAudioParamsDialog = null },
+            params = groupAudioParamsDialog!!.audioParams,
+            onConfirm = {
+                appDb.systemTtsDao.updateGroup(
+                    groupAudioParamsDialog!!.copy(audioParams = it)
+                )
+
+                groupAudioParamsDialog = null
+            }
+        )
     }
 
     val flow = remember { appDb.systemTtsDao.getFlowAllGroupWithTts().conflate() }
@@ -447,6 +438,26 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                 },
                                 onRename = {
                                     appDb.systemTtsDao.updateGroup(g.copy(name = it))
+                                },
+                                onCopy = {
+                                    scope.launch {
+                                        val group = g.copy(id = System.currentTimeMillis(),
+                                            name = it.ifBlank { context.getString(R.string.unnamed) }
+                                        )
+                                        appDb.systemTtsDao.insertGroup(group)
+                                        appDb.systemTtsDao.getTtsByGroup(g.id)
+                                            .forEachIndexed { index, tts ->
+                                                appDb.systemTtsDao.insertTts(
+                                                    tts.copy(
+                                                        id = System.currentTimeMillis() + index,
+                                                        groupId = group.id
+                                                    )
+                                                )
+                                            }
+                                    }
+                                },
+                                onEditAudioParams = {
+                                    groupAudioParamsDialog = g
                                 }
                             )
                         }

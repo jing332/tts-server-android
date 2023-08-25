@@ -24,7 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.asAppCompatActivity
-import com.github.jing332.tts_server_android.compose.nav.systts.AudioParamsDialog
+import com.github.jing332.tts_server_android.compose.nav.systts.GlobalAudioParamsDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.InternalPlayerDialog
 import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
@@ -49,7 +49,7 @@ internal fun MenuMoreOptions(
 
     var showAudioParamsDialog by remember { mutableStateOf(false) }
     if (showAudioParamsDialog)
-        AudioParamsDialog {
+        GlobalAudioParamsDialog {
             showAudioParamsDialog = false
         }
 

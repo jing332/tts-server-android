@@ -428,21 +428,23 @@
     <string name="copy_group">Copy Group</string>
     <string name="no_audio_data_head_warn">⚠️ This audio has no data header, so no information can be obtained.</string>
 
-    <string name="theme_default">默认</string>
-    <string name="dynamic_color">动态颜色</string>
-    <string name="orange">橙色</string>
-    <string name="green">绿色</string>
-    <string name="red">红色</string>
-    <string name="pink">粉色</string>
-    <string name="blue">蓝色</string>
-    <string name="cyan">青色</string>
-    <string name="purple">紫色</string>
-    <string name="brown">棕色</string>
-    <string name="gray">灰色</string>
-    <string name="desc_expand_group">展开分组：%1$s</string>
-    <string name="desc_collapse_group">折叠分组：%1$s</string>
-    <string name="label_speech_rate">语速：%1$s</string>
-    <string name="label_speech_volume">音量：%1$s</string>
-    <string name="label_speech_pitch">音高：%1$s</string>
-    <string name="systts_api_edge_okhttp">微软Edge  - Java (音频流)</string>
+    <string name="theme_default">Default (Green)</string>
+    <string name="dynamic_color">Dynamic Color</string>
+    <string name="orange">Orange</string>
+    <string name="green">Green</string>
+    <string name="red">Red</string>
+    <string name="pink">Pink</string>
+    <string name="blue">Blue</string>
+    <string name="cyan">Cyan</string>
+    <string name="purple">Purple</string>
+    <string name="brown">Brown</string>
+    <string name="gray">Gray</string>
+
+    <string name="desc_expand_group">Expand Group: %1$s</string>
+    <string name="desc_collapse_group">Collapse Group: %1$s</string>
+    <string name="label_speech_rate">Speed: %1$s</string>
+    <string name="label_speech_volume">Volume: %1$s</string>
+    <string name="label_speech_pitch">Pitch: %1$s</string>
+    <string name="systts_api_edge_okhttp">Microsoft Edge  - Java (Stream)</string>
+    <string name="confirm">OK</string>
 </resources>

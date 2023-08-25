@@ -15,7 +15,7 @@ import com.github.jing332.tts_server_android.conf.SystemTtsConfig
 import java.text.DecimalFormat
 
 @Composable
-fun AudioParamsDialog(onDismissRequest: () -> Unit) {
+fun GlobalAudioParamsDialog(onDismissRequest: () -> Unit) {
     var speed by remember { SystemTtsConfig.audioParamsSpeed }
     var volume by remember { SystemTtsConfig.audioParamsVolume }
     var pitch by remember { SystemTtsConfig.audioParamsPitch }

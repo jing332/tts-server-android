@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +45,8 @@ fun Group(
     onClick: () -> Unit,
     onDelete: () -> Unit,
     onRename: (newName: String) -> Unit,
+    onCopy: (newName: String) -> Unit,
+    onEditAudioParams: () -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     if (showDeleteDialog) {
@@ -62,6 +66,19 @@ fun Group(
             onDismissRequest = { showRenameDialog = false }) {
             showRenameDialog = false
             onRename(nameValue)
+        }
+    }
+
+    var showCopyDialog by remember { mutableStateOf(false) }
+    if (showCopyDialog) {
+        var nameValue by remember { mutableStateOf(name) }
+        TextFieldDialog(
+            title = stringResource(id = R.string.copy),
+            text = nameValue,
+            onTextChange = { nameValue = it },
+            onDismissRequest = { showCopyDialog = false }) {
+            showCopyDialog = false
+            onCopy(nameValue)
         }
     }
 
@@ -109,14 +126,32 @@ fun Group(
                             showRenameDialog = true
                         },
                         leadingIcon = {
-                            Icon(
-                                Icons.Default.DriveFileRenameOutline,
-                                contentDescription = stringResource(id = R.string.rename)
-                            )
+                            Icon(Icons.Default.DriveFileRenameOutline, null)
                         }
                     )
 
-                    Divider()
+                    DropdownMenuItem(text = { Text(stringResource(id = R.string.copy)) },
+                        onClick = {
+                            showOptions = false
+                            showCopyDialog = true
+                        },
+                        leadingIcon = {
+                            Icon(Icons.Default.ContentCopy, null)
+                        }
+                    )
+
+                    DropdownMenuItem(text = { Text(stringResource(id = R.string.audio_params)) },
+                        onClick = {
+                            showOptions = false
+                            onEditAudioParams()
+                        },
+                        leadingIcon = {
+                            Icon(Icons.Default.Speed, null)
+                        }
+                    )
+
+                    HorizontalDivider()
+
                     DropdownMenuItem(text = {
                         Text(
                             stringResource(id = R.string.delete),
@@ -126,7 +161,7 @@ fun Group(
                         leadingIcon = {
                             Icon(
                                 Icons.Default.DeleteForever,
-                                contentDescription = stringResource(id = R.string.delete),
+                                contentDescription = null,
                                 tint = MaterialTheme.colorScheme.error
                             )
                         },
