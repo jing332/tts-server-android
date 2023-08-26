@@ -101,7 +101,7 @@ fun BasicInfoEditScreen(
 
     Column(modifier) {
         if (showSpeechTarget)
-            Column {
+            Column(Modifier.fillMaxWidth()) {
                 Row(
                     Modifier
                         .align(Alignment.CenterHorizontally)

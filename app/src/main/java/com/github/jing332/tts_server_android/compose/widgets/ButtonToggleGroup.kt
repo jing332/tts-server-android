@@ -141,7 +141,7 @@ fun RowToggleButtonGroup(
 
             ToggleButton(
                 modifier = Modifier
-                    .weight(weight = 1f)
+//                    .weight(weight = 1f)
                     .defaultMinSize(minHeight = buttonHeight)
                     .offset(x = offset),
                 buttonShape = buttonShape,
@@ -228,7 +228,7 @@ private fun RowScope.ButtonContent(
         )
 
         buttonTexts.all { it == "" } && buttonIcons.all { it != emptyPainter } -> IconContent(
-            modifier = Modifier.align(Alignment.CenterVertically),
+            modifier = Modifier.align(Alignment.CenterVertically).padding(start = 4.dp),
             iconTintColor = iconTintColor,
             buttonIcons = buttonIcons,
             index = index,
@@ -317,13 +317,13 @@ private fun IconContent(
 ) {
     if (iconTintColor == Color.Transparent || iconTintColor == Color.Unspecified) {
         Image(
-            modifier = modifier.size(24.dp),
+            modifier = modifier.size(24.dp).padding(start = 4.dp),
             painter = buttonIcons[index],
             contentDescription = null,
         )
     } else {
         Image(
-            modifier = modifier.size(24.dp),
+            modifier = modifier.size(24.dp).padding(start = 4.dp),
             painter = buttonIcons[index],
             contentDescription = null,
             colorFilter = ColorFilter.tint(iconTintColor),

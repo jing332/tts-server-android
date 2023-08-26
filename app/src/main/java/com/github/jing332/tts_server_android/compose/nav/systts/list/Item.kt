@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CopyAll
 import androidx.compose.material.icons.filled.DeleteForever
@@ -16,7 +17,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -70,6 +70,7 @@ internal fun Item(
         ConstraintLayout(
             Modifier
                 .fillMaxWidth()
+                .wrapContentHeight()
                 .combinedClickable(
                     onClick = onClick,
                     onLongClick = {
@@ -89,8 +90,8 @@ internal fun Item(
                 Modifier
                     .constrainAs(checkRef) {
                         start.linkTo(parent.start)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+                        top.linkTo(nameRef.top)
+                        bottom.linkTo(contentRef.bottom)
                     }
                     .detectReorder(reorderState)) {
                 Checkbox(
@@ -119,7 +120,6 @@ internal fun Item(
                         start.linkTo(checkRef.end)
                         top.linkTo(nameRef.bottom)
                         bottom.linkTo(parent.bottom)
-//                        end.linkTo(buttonsRef.start)
                     }
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
@@ -139,9 +139,8 @@ internal fun Item(
                 OutlinedCard(
                     Modifier
                         .constrainAs(targetRef) {
-                            end.linkTo(parent.end)
                             top.linkTo(nameRef.top)
-                            bottom.linkTo(nameRef.bottom)
+                            end.linkTo(parent.end)
                         }
                         .padding(end = 4.dp),
                     shape = MaterialTheme.shapes.extraSmall
@@ -151,7 +150,7 @@ internal fun Item(
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.padding(4.dp),
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
                         textAlign = TextAlign.Center,
                         maxLines = 1,
                     )
@@ -226,16 +225,16 @@ internal fun Item(
                 }
             }
 
-
             Text(
                 text = type,
                 modifier = Modifier
                     .constrainAs(typeRef) {
                         end.linkTo(parent.end)
-                        bottom.linkTo(contentRef.bottom)
+//                        top.linkTo(buttonsRef.bottom)
+                        bottom.linkTo(parent.bottom)
                     }
                     .padding(end = 4.dp),
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.tertiary,
             )
 

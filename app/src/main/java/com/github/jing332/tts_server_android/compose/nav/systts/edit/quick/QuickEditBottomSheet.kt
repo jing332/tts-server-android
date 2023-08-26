@@ -19,6 +19,7 @@ import com.github.jing332.tts_server_android.compose.nav.systts.edit.BasicInfoEd
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.TtsUiFactory
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.rememberCallbackState
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +44,8 @@ fun QuickEditBottomSheet(
                     .padding(horizontal = 4.dp),
                 systts = systts,
                 onSysttsChange = onSysttsChange,
-                saveEvent = saveEvent
+                saveEvent = saveEvent,
+                showSpeechTarget = systts.tts !is BgmTTS
             )
             ui.ParamsEditScreen(
                 modifier = Modifier

@@ -485,7 +485,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                             ShadowReorderableItem(reorderableState = reorderState, key = item.id) {
                                 Item(
                                     reorderState = reorderState,
-                                    modifier = Modifier.padding(vertical = 4.dp),
+                                    modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp),
                                     name = item.displayName ?: "",
                                     speechTarget = item.speechRule.tagName,
                                     type = item.tts.getType(),
