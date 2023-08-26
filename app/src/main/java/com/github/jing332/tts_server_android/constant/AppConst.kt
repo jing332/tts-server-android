@@ -43,6 +43,9 @@ object AppConst {
     val locale: Locale
         get() = App.context.resources.configuration.locale
 
+    val localeCode: String
+        get() = locale.run { "$language-$country" }
+
     val timeFormat: SimpleDateFormat by lazy {
         SimpleDateFormat("HH:mm")
     }

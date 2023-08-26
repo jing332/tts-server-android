@@ -76,9 +76,12 @@ import com.github.jing332.tts_server_android.compose.nav.settings.SettingsScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.SystemTtsScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.TtsEditContainerScreen
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.utils.MyTools
+import com.github.jing332.tts_server_android.utils.clone
 import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -143,14 +146,24 @@ private fun NavHostScreen() {
                     val systts: SystemTts =
                         stackEntry.arguments?.getParcelable(NavRoutes.TtsEdit.DATA)
                             ?: return@composable
-                    var stateSystts by rememberSaveable { mutableStateOf(systts) }
+                    var stateSystts by rememberSaveable {
+                        mutableStateOf(systts.run {
+                            if (tts.locale.isBlank()) {
+                                copy(
+                                    tts = tts.clone<ITextToSpeechEngine>()!!
+                                        .apply { locale = AppConst.localeCode }
+                                )
+                            } else
+                                this
+                        })
+                    }
                     TtsEditContainerScreen(
                         modifier = Modifier
                             .fillMaxSize(),
                         systts = stateSystts,
                         onSysttsChange = {
                             stateSystts = it
-                            println("UpdateSystemTTS: ${it}")
+                            println("UpdateSystemTTS: $it")
                         },
                         onSave = {
                             navController.popBackStack()

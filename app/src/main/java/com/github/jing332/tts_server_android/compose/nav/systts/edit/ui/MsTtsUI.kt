@@ -3,6 +3,8 @@ package com.github.jing332.tts_server_android.compose.nav.systts.edit.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -111,20 +113,26 @@ class MsTtsUI : TtsUI() {
     ) {
         val saveSignal = remember { mutableStateOf<(() -> Unit)?>(null) }
         var name by remember { mutableStateOf(systts.displayName ?: "") }
-        Scaffold(topBar = {
-            TtsTopAppBar(
-                title = { Text(text = stringResource(id = R.string.edit_builtin_tts)) },
-                onBackAction = onCancel,
-                onSaveAction = {
-                    saveSignal.value?.invoke()
-                    if (systts.displayName.isNullOrBlank())
-                        onSysttsChange(systts.copy(displayName = name))
+        Scaffold(
+            modifier = modifier,
+            topBar = {
+                TtsTopAppBar(
+                    title = { Text(text = stringResource(id = R.string.edit_builtin_tts)) },
+                    onBackAction = onCancel,
+                    onSaveAction = {
+                        saveSignal.value?.invoke()
+                        if (systts.displayName.isNullOrBlank())
+                            onSysttsChange(systts.copy(displayName = name))
 
-                    onSave()
-                }
-            )
-        }) { paddingValues ->
-            Column(Modifier.padding(paddingValues)) {
+                        onSave()
+                    }
+                )
+            }) { paddingValues ->
+            Column(
+                Modifier
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
+            ) {
                 BasicInfoEditScreen(
                     modifier = Modifier
                         .fillMaxWidth()

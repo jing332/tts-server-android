@@ -213,8 +213,10 @@ class LocalTtsUI : TtsUI() {
                     key = tts.locale,
                     keys = vm.locales.map { it.toLanguageTag() },
                     values = vm.locales.map { it.displayName },
-                    onSelectedChange = { k, _ ->
-                        onSysttsChange(systts.copy(tts = tts.copy(locale = k as String)))
+                    onSelectedChange = { loc, _ ->
+                        onSysttsChange(systts.copy(tts = tts.copy(locale = loc as String)))
+
+                        vm.updateVoices(loc)
                     }
                 )
 
