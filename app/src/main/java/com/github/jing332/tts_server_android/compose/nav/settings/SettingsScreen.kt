@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.SettingsBackupRestore
+import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +33,8 @@ import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.theme.getAppTheme
+import com.github.jing332.tts_server_android.compose.theme.setAppTheme
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
 import com.github.jing332.tts_server_android.ui.preference.backup_restore.BackupRestoreActivity
@@ -40,6 +43,16 @@ import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploa
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(drawerState: DrawerState) {
+    var showThemeDialog by remember { mutableStateOf(false) }
+    if (showThemeDialog)
+        ThemeSelectionDialog(
+            onDismissRequest = { showThemeDialog = false },
+            currentTheme = getAppTheme(),
+            onChangeTheme = {
+                setAppTheme(it)
+            }
+        )
+
     Scaffold(
         topBar = {
             NavTopAppBar(
@@ -80,6 +93,13 @@ fun SettingsScreen(drawerState: DrawerState) {
                         ).apply { action = Intent.ACTION_VIEW })
                 },
                 title = { Text(stringResource(id = R.string.direct_link_settings)) },
+            )
+
+            BasePreferenceWidget(
+                icon = { Icon(Icons.Default.Style, null) },
+                onClick = { showThemeDialog = true },
+                title = { Text(stringResource(id = R.string.theme)) },
+                subTitle = { Text(stringResource(id = getAppTheme().stringResId)) },
             )
 
             val languageKeys = remember {

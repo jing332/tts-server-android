@@ -445,6 +445,7 @@
     <string name="label_speech_rate">Speed: %1$s</string>
     <string name="label_speech_volume">Volume: %1$s</string>
     <string name="label_speech_pitch">Pitch: %1$s</string>
-    <string name="systts_api_edge_okhttp">Microsoft Edge  - Java (Stream)</string>
+    <string name="systts_api_edge_okhttp">Microsoft Edge - Java (Stream)</string>
     <string name="confirm">OK</string>
+    <string name="dynamic_color_not_support">Dynamic themes require Android 12 and above</string>
 </resources>
