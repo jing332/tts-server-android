@@ -30,7 +30,7 @@ import com.github.jing332.tts_server_android.compose.nav.systts.edit.BasicInfoEd
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.IntSlider
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.AuditionTextField
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.TtsTopAppBar
-import com.github.jing332.tts_server_android.compose.nav.systts.list.AuditionDialog
+import com.github.jing332.tts_server_android.compose.nav.systts.AuditionDialog
 import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
 import com.github.jing332.tts_server_android.compose.widgets.LoadingDialog
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts

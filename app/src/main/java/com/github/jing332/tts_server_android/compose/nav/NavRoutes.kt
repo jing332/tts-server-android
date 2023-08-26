@@ -28,12 +28,12 @@ sealed class NavRoutes(
     }
 
     data object SystemTTS : NavRoutes("system_tts", R.string.system_tts, icon = {
-        Icon(modifier = Modifier.size(32.dp), painter = painterResource(id = R.drawable.ic_tts), contentDescription  = null)
+        Icon(modifier = Modifier.size(24.dp), painter = painterResource(id = R.drawable.ic_tts), contentDescription  = null)
     })
 
     data object SystemTtsForwarder :
         NavRoutes("system_tts_forwarder", R.string.forwarder_systts, icon = {
-            Icon(modifier = Modifier.size(32.dp), painter = painterResource(id = R.drawable.ic_tts), contentDescription = null)
+            Icon(modifier = Modifier.size(24.dp), painter = painterResource(id = R.drawable.ic_tts), contentDescription = null)
         })
 
     data object MsTtsForwarder : NavRoutes("ms_tts_forwarder", R.string.forwarder_ms, icon = {

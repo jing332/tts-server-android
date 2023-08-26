@@ -50,7 +50,9 @@ import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.asAppCompatActivity
 import com.github.jing332.tts_server_android.compose.nav.NavRoutes
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.nav.systts.AuditionDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.ConfigDeleteDialog
+import com.github.jing332.tts_server_android.compose.nav.systts.edit.quick.QuickEditBottomSheet
 import com.github.jing332.tts_server_android.compose.navigateSingleTop
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.constant.AppConst
@@ -111,6 +113,20 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             { "ttsrv-${model.name}.json" }
         )
         fragment.show(activity.supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
+    }
+
+    var showQuickEdit by remember { mutableStateOf<SystemTts?>(null) }
+    if (showQuickEdit != null) {
+        QuickEditBottomSheet(
+            onDismissRequest = {
+                appDb.systemTtsDao.updateTts(showQuickEdit!!)
+                showQuickEdit = null
+            },
+            systts = showQuickEdit!!,
+            onSysttsChange = {
+                showQuickEdit = it
+            }
+        )
     }
 
 
@@ -479,7 +495,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     },
                                     desc = item.tts.getDescription(),
                                     params = item.tts.getBottomContent(),
-                                    onClick = { displayQuickEditBottomSheet(item) },
+                                    onClick = { showQuickEdit = item },
                                     onLongClick = { switchSpeechTarget(item) },
                                     onCopy = {
                                         startTtsEditor(
