@@ -110,7 +110,7 @@ class ComposeMainActivity : AppCompatActivity() {
 private fun NavHostScreen() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val snackbarState = remember { SnackbarHostState() }
+//    val snackbarState = remember { SnackbarHostState() }
     val gesturesEnabled = !drawerState.isClosed
 
     CompositionLocalProvider(

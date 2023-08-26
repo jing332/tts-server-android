@@ -206,7 +206,7 @@
     <string name="systts_log_start_retry">開始第%1$d次重試</string>
     <string name="unlimited">無限制</string>
     <string name="tag">標籤</string>
-    <string name="local_file">文件</string>
+    <string name="file">文件</string>
     <string name="select_file">選擇檔案</string>
     <string name="select_file_hint">按一下右側按鈕選擇檔案 ➡️</string>
     <string name="systts_group_empty_msg"><![CDATA[按一下頂部應用欄右側的 ➕ 按鈕->添加TTS，然後在編輯介面設定所屬群組。]]></string>
@@ -434,4 +434,5 @@
     <string name="plugin_tts_get_sample_rate_failed">获取音频采样率失败</string>
     <string name="plugin_tts_get_need_decode_failed">获取音频是否需解码失败</string>
     <string name="max_retry_count_summary">请求失败后的重试次数</string>
+    <string name="tts_config_not_exist">指定的TTS配置不存在</string>
 </resources>

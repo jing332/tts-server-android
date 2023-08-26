@@ -11,6 +11,9 @@
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -159,8 +162,8 @@
             android:name=".compose.ComposeMainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.TtsServer.NoActionBar">
+            android:theme="@style/Theme.TtsServer.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -222,6 +225,7 @@
         <service
             android:name=".service.systts.SystemTtsService"
             android:exported="true"
+            android:foregroundServiceType="systemExempted"
             android:label="@string/app_name"
             tools:ignore="ExportedService">
             <intent-filter>
@@ -238,6 +242,7 @@
             android:name=".service.forwarder.ms.MsTtsForwarderService"
             android:enabled="true"
             android:exported="true"
+            android:foregroundServiceType="systemExempted"
             tools:ignore="ExportedService,Instantiatable" />
         <service
             android:name=".service.forwarder.ms.QSTileService"
@@ -263,6 +268,7 @@
             android:name=".service.forwarder.system.SysTtsForwarderService"
             android:enabled="true"
             android:exported="true"
+            android:foregroundServiceType="systemExempted"
             tools:ignore="ExportedService,Instantiatable" />
     </application>
 

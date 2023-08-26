@@ -21,6 +21,7 @@ import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
+import com.github.jing332.tts_server_android.utils.registerGlobalReceiver
 import com.github.jing332.tts_server_android.utils.toast
 import splitties.systemservices.powerManager
 import tts_server_lib.Tts_server_lib
@@ -68,11 +69,9 @@ abstract class AbsForwarderService(
 
         initNotification()
 
-        registerReceiver(
-            mNotificationReceiver,
-            IntentFilter(notificationActionCopyUrl).apply {
-                addAction(notificationActionClose)
-            }
+        registerGlobalReceiver(
+            listOf(notificationActionCopyUrl, notificationActionClose),
+            mNotificationReceiver
         )
 
         if (isWakeLockEnabled) {

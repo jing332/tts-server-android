@@ -219,7 +219,7 @@
     <string name="systts_log_finished_playing">Finished playing: %1$s</string>
     <string name="systts_log_start_retry">Start the %1$dth retry</string>
     <string name="unlimited">Unlimited</string>
-    <string name="local_file">File</string>
+    <string name="file">File</string>
     <string name="select_file">Select the file</string>
     <string name="select_file_hint">Click the button on the right to select the file➡️</string>
     <string name="systts_group_empty_msg"><![CDATA[Click the ➕ button on the right side of the top application bar -> Add TTS, and set the group to which it belongs in the editing interface.]]></string>
@@ -451,4 +451,5 @@
     <string name="plugin_tts_get_sample_rate_failed">Failed to get audio sample rate</string>
     <string name="plugin_tts_get_need_decode_failed">Failed to get whether the audio needs to be decoded</string>
     <string name="max_retry_count_summary">The number of retries after a failed request</string>
+    <string name="tts_config_not_exist">The specified TTS configuration does not exist</string>
 </resources>

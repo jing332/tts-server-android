@@ -1,9 +1,11 @@
 package com.github.jing332.tts_server_android.utils
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Resources
 import android.graphics.Rect
 import android.net.Uri
@@ -27,6 +29,15 @@ import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.constant.KeyConst
 import java.lang.reflect.ParameterizedType
+
+fun Context.registerGlobalReceiver(
+    actions: List<String>,
+    receiver: BroadcastReceiver
+) {
+    ContextCompat.registerReceiver(this, receiver, IntentFilter().apply {
+        actions.forEach { addAction(it) }
+    }, ContextCompat.RECEIVER_EXPORTED)
+}
 
 fun View.performLongPress() {
     this.isHapticFeedbackEnabled = true

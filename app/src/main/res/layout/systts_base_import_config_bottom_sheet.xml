@@ -79,7 +79,7 @@
                         style="?attr/materialButtonOutlinedStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/local_file"
+                        android:text="@string/file"
                         app:icon="@drawable/ic_baseline_insert_drive_file_24" />
 
                     <com.google.android.material.button.MaterialButton
@@ -121,7 +121,7 @@
                     android:id="@+id/til_file_path"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/local_file"
+                    android:hint="@string/file"
                     android:visibility="gone"
                     app:endIconContentDescription="@string/select_file"
                     app:endIconDrawable="@drawable/ic_baseline_file_open_24"

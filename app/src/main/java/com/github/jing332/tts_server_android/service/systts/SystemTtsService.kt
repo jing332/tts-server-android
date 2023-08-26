@@ -87,14 +87,12 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
     // 唤醒锁
     private var mWakeLock: PowerManager.WakeLock? = null
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate() {
         super.onCreate()
 
-        IntentFilter(ACTION_NOTIFY_KILL_PROCESS).apply {
-            addAction(ACTION_NOTIFY_CANCEL)
-            registerReceiver(mNotificationReceiver, this)
-        }
+        registerGlobalReceiver(
+            listOf(ACTION_NOTIFY_KILL_PROCESS, ACTION_NOTIFY_CANCEL), mNotificationReceiver
+        )
 
         AppConst.localBroadcast.registerReceiver(
             mLocalReceiver,
