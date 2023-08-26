@@ -443,4 +443,6 @@
     <string name="systts_api_edge_okhttp">微软Edge  - Java (音频流)</string>
     <string name="confirm">确定</string>
     <string name="dynamic_color_not_support">动态主题需要 安卓12及以上版本</string>
+    <string name="plugin_tts_get_sample_rate_failed">获取音频采样率失败</string>
+    <string name="plugin_tts_get_need_decode_failed">获取音频是否需解码失败</string>
 </resources>

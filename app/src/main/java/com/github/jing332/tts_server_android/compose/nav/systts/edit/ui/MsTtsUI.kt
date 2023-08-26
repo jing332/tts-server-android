@@ -138,7 +138,6 @@ class MsTtsUI : TtsUI() {
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
                     systts = systts,
-                    saveEvent = saveSignal,
                     onSysttsChange = onSysttsChange
                 )
 

@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.CallbackState
+import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.SaveActionHandler
 import com.github.jing332.tts_server_android.compose.widgets.DenseOutlinedField
 import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
 import com.github.jing332.tts_server_android.compose.widgets.RowToggleButtonGroup
@@ -48,7 +49,6 @@ fun BasicInfoEditScreen(
     modifier: Modifier,
     systts: SystemTts,
     onSysttsChange: (SystemTts) -> Unit,
-    saveEvent: CallbackState,
 
     showSpeechTarget: Boolean = true,
     group: SystemTtsGroup = remember { appDb.systemTtsDao.getGroup(systts.groupId) }
@@ -59,7 +59,8 @@ fun BasicInfoEditScreen(
 ) {
     val context = LocalContext.current
     val speechRule by rememberUpdatedState(newValue = speechRules.find { it.ruleId == systts.speechRule.tagRuleId })
-    saveEvent.value = {
+
+    SaveActionHandler {
         var tagName = ""
         if (speechRule != null) {
             runCatching {
@@ -82,6 +83,8 @@ fun BasicInfoEditScreen(
                 speechRule = systts.speechRule.copy(tagName = tagName)
             )
         )
+
+        true
     }
 
     var showParamsDialog by remember { mutableStateOf(false) }

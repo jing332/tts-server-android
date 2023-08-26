@@ -12,14 +12,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.BasicInfoEditScreen
+import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.LocalSaveCallBack
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.TtsUiFactory
-import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.rememberCallbackState
+import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.rememberSaveCallBacks
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,23 +34,29 @@ fun QuickEditBottomSheet(
 ) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val ui = remember { TtsUiFactory.from(systts.tts)!! }
-    val saveEvent = rememberCallbackState()
+    val callbacks = rememberSaveCallBacks()
+    val scope = rememberCoroutineScope()
     ModalBottomSheet(
         modifier = Modifier.fillMaxSize(),
         sheetState = state, onDismissRequest = {
-            saveEvent.value?.invoke()
-            onDismissRequest()
+            scope.launch {
+                for (callback in callbacks) {
+                    if (!callback.onSave()) return@launch
+                }
+                onDismissRequest()
+            }
         }) {
         Column(Modifier.verticalScroll(rememberScrollState())) {
-            BasicInfoEditScreen(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp),
-                systts = systts,
-                onSysttsChange = onSysttsChange,
-                saveEvent = saveEvent,
-                showSpeechTarget = systts.tts !is BgmTTS
-            )
+            CompositionLocalProvider(LocalSaveCallBack provides callbacks) {
+                BasicInfoEditScreen(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp),
+                    systts = systts,
+                    onSysttsChange = onSysttsChange,
+                    showSpeechTarget = systts.tts !is BgmTTS
+                )
+            }
             ui.ParamsEditScreen(
                 modifier = Modifier
                     .fillMaxWidth()

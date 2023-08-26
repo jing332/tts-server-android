@@ -26,14 +26,15 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.nav.systts.AuditionDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.IntSlider
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.AuditionTextField
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.TtsTopAppBar
-import com.github.jing332.tts_server_android.compose.nav.systts.AuditionDialog
 import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
 import com.github.jing332.tts_server_android.compose.widgets.LoadingDialog
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import kotlinx.coroutines.launch
@@ -114,8 +115,8 @@ class PluginTtsUI : TtsUI() {
         onSave: () -> Unit,
         onCancel: () -> Unit,
     ) {
-        val saveEvent = rememberCallbackState()
         var name by remember { mutableStateOf("") }
+        val scope = rememberCoroutineScope()
         Scaffold(
             modifier = modifier,
             topBar = {
@@ -123,11 +124,12 @@ class PluginTtsUI : TtsUI() {
                     title = { Text(text = stringResource(id = R.string.edit_plugin_tts)) },
                     onBackAction = onCancel,
                     onSaveAction = {
-                        if (systts.displayName?.isBlank() == true)
-                            onSysttsChange(systts.copy(displayName = name))
+                        scope.launch {
+                            if (systts.displayName?.isBlank() == true)
+                                onSysttsChange(systts.copy(displayName = name))
 
-                        saveEvent.value?.invoke()
-                        onSave()
+                            onSave()
+                        }
                     }
                 )
             }
@@ -139,7 +141,6 @@ class PluginTtsUI : TtsUI() {
                         rememberScrollState()
                     ),
                 voiceName = { name = it },
-                saveEvent = saveEvent,
                 systts = systts, onSysttsChange = onSysttsChange,
             )
         }
@@ -150,10 +151,53 @@ class PluginTtsUI : TtsUI() {
         modifier: Modifier,
         systts: SystemTts,
         voiceName: (String) -> Unit,
-        saveEvent: CallbackState,
         onSysttsChange: (SystemTts) -> Unit,
         vm: PluginTtsViewModel = viewModel(),
     ) {
+        val tts by rememberUpdatedState(newValue = systts.tts as PluginTTS)
+        val context = LocalContext.current
+
+        SaveActionHandler {
+            val sampleRate = try {
+                withIO { vm.engine.getSampleRate(tts.locale, tts.voice) ?: 16000 }
+            } catch (e: Exception) {
+                context.displayErrorDialog(
+                    e,
+                    context.getString(R.string.plugin_tts_get_sample_rate_failed)
+                )
+                null
+            }
+
+            val isNeedDecode = try {
+                withIO { vm.engine.isNeedDecode(tts.locale, tts.voice) }
+            } catch (e: Exception) {
+                context.displayErrorDialog(
+                    e,
+                    context.getString(R.string.plugin_tts_get_need_decode_failed)
+                )
+                null
+            }
+
+            println(sampleRate)
+            println(isNeedDecode)
+            println("---")
+            if (sampleRate != null && isNeedDecode != null) {
+                onSysttsChange(
+                    systts.copy(
+                        tts = tts.copy(
+                            audioFormat = BaseAudioFormat(
+                                sampleRate = sampleRate,
+                                isNeedDecode = isNeedDecode
+                            )
+                        )
+                    )
+                )
+
+                true
+            }else
+                false
+        }
+
         var showLoadingDialog by remember { mutableStateOf(false) }
         if (showLoadingDialog)
             LoadingDialog(onDismissRequest = { showLoadingDialog = false })
@@ -164,8 +208,6 @@ class PluginTtsUI : TtsUI() {
                 showAuditionDialog = false
             }
 
-        val tts by rememberUpdatedState(newValue = systts.tts as PluginTTS)
-        val context = LocalContext.current
         Column(modifier) {
             Column(
                 Modifier
@@ -175,7 +217,6 @@ class PluginTtsUI : TtsUI() {
                 BasicInfoEditScreen(
                     Modifier.fillMaxWidth(),
                     systts = systts,
-                    saveEvent = saveEvent,
                     onSysttsChange = onSysttsChange
                 )
 

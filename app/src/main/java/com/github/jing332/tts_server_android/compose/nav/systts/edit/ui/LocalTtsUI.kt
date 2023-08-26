@@ -19,10 +19,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +44,7 @@ import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextFiel
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
+import kotlinx.coroutines.launch
 
 class LocalTtsUI : TtsUI() {
     @Composable
@@ -139,15 +142,20 @@ class LocalTtsUI : TtsUI() {
         onSave: () -> Unit,
         onCancel: () -> Unit
     ) {
-        val saveEvent = rememberCallbackState()
+        val callbacks = rememberSaveCallBacks()
+        val scope = rememberCoroutineScope()
         Scaffold(
             topBar = {
                 TtsTopAppBar(
                     title = { Text(stringResource(id = R.string.edit_local_tts)) },
                     onBackAction = onCancel,
                     onSaveAction = {
-                        saveEvent.value?.invoke()
-                        onSave()
+                        scope.launch {
+                            for (callback in callbacks) {
+                                if (!callback.onSave()) return@launch
+                            }
+                            onSave()
+                        }
                     }
                 )
             }
@@ -158,7 +166,6 @@ class LocalTtsUI : TtsUI() {
                     .verticalScroll(rememberScrollState()),
                 systts = systts,
                 onSysttsChange = onSysttsChange,
-                saveEvent = saveEvent
             )
         }
     }
@@ -168,7 +175,6 @@ class LocalTtsUI : TtsUI() {
         modifier: Modifier,
         systts: SystemTts,
         onSysttsChange: (SystemTts) -> Unit,
-        saveEvent: CallbackState,
         vm: LocalTtsViewModel = viewModel()
     ) {
         val tts = systts.tts as LocalTTS
@@ -184,7 +190,6 @@ class LocalTtsUI : TtsUI() {
                     modifier = Modifier.fillMaxWidth(),
                     systts = systts,
                     onSysttsChange = onSysttsChange,
-                    saveEvent = saveEvent,
                 )
                 AuditionTextField(modifier = Modifier
                     .fillMaxWidth()

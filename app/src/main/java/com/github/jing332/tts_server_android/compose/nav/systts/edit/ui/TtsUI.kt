@@ -6,11 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import kotlinx.coroutines.CoroutineScope
 
-typealias CallbackState = MutableState<(() -> Unit)?>
+typealias CallbackState = MutableState<(suspend () -> Unit)?>
+typealias CallbackStateWithRet = MutableState<(suspend CoroutineScope.() -> Boolean)?>
 
 @Composable
-fun rememberCallbackState() = remember { mutableStateOf<(() -> Unit)?>(null) }
+fun rememberCallbackState() =
+    remember { mutableStateOf<(suspend () -> Unit)?>(null) }
+
+@Composable
+fun rememberCallbackStateWithRet() =
+    remember { mutableStateOf<(suspend CoroutineScope.() -> Boolean)?>(null) }
 
 open class TtsUI {
     @Composable
