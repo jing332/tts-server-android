@@ -183,7 +183,7 @@ class FilePickerActivity : AppCompatActivity() {
                 doAction()
             }
 
-            FilePickerMode.Builtin -> {
+            FilePickerMode.BUILTIN -> {
                 useSystem = false
                 doAction()
             }

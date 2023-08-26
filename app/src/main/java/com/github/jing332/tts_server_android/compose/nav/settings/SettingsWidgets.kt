@@ -7,18 +7,19 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,9 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
 
 @Composable
@@ -150,25 +154,33 @@ internal fun BasePreferenceWidget(
 }
 
 @Composable
-internal fun PreferenceSlider(
+internal fun SliderPreference(
     title: @Composable () -> Unit,
     subTitle: @Composable () -> Unit,
+    icon: @Composable () -> Unit = {},
     value: Float,
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
-    label: @Composable (title: @Composable () -> Unit) -> String,
+    label: @Composable (title: @Composable () -> Unit) -> Unit,
 ) {
+    val view = LocalView.current
+    LaunchedEffect(value) {
+        view.announceForAccessibility(value.toString())
+    }
+
     PreferenceDialog(title = title, subTitle = subTitle, dialogContent = {
         LabelSlider(
             value = value,
             onValueChange = onValueChange,
             valueRange = valueRange,
-            steps = steps
+            steps = steps,
+            buttonSteps = 1f,
+            buttonLongSteps = 2f
         ) {
             label(title)
         }
-    },
+    }, icon = icon,
         endContent = {
             label(title)
         }
@@ -180,28 +192,26 @@ internal fun PreferenceDialog(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
     subTitle: @Composable () -> Unit,
+    icon: @Composable () -> Unit,
 
     dialogContent: @Composable ColumnScope.() -> Unit,
     endContent: @Composable RowScope.() -> Unit = {},
 ) {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
-        Dialog(onDismissRequest = { showDialog = false }) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                tonalElevation = 4.dp,
-                shape = MaterialTheme.shapes.small,
-            ) {
-                Column(Modifier.padding(8.dp)) {
-                    title()
-                    dialogContent()
-                }
+        AppDialog(title = title, content = {
+            Column {
+                dialogContent()
             }
-        }
+        }, buttons = {
+            TextButton(onClick = { showDialog = false }) {
+                Text(stringResource(id = R.string.close))
+            }
+        }, onDismissRequest = { showDialog = false })
     }
     BasePreferenceWidget(modifier, onClick = {
         showDialog = true
-    }, title = title, subTitle = subTitle) {
+    }, title = title, icon = icon, subTitle = subTitle) {
         endContent()
     }
 }

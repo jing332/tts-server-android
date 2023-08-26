@@ -388,6 +388,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
             val specifiedTts = appDb.systemTtsDao.getTts(ttsId)
             if (specifiedTts == null) {
                 context.longToast("指定的TTS配置不存在")
+                delay(3000)
                 return
             }
 

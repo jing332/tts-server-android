@@ -127,8 +127,8 @@
     <string name="systts_set_dialogue_min_match_word_count">Set Chinese length for dialogue</string>
     <string name="systts_set_dialogue_min_info">The number of Chinese characters (including Chinese symbols) in the character\'s dialogue,
         that is, only when it is greater than or equal to this value, it will be read as a dialogue, otherwise the narration will be used.</string>
-    <string name="systts_set_request_timeout">Set request timeout</string>
-    <string name="systts_set_request_timeout_msg">After the waiting time for requesting audio exceeds the set value, the request will be canceled and retried automatically.</string>
+    <string name="request_timeout">Set request timeout</string>
+    <string name="request_timeout_summary">After the waiting time for requesting audio exceeds the set value, the request will be canceled and retried automatically.</string>
 
     <string name="systts_http_edit_title">Edit custom TTS</string>
     <string name="systts_http_request_header">Http Request header</string>
@@ -263,8 +263,8 @@
     <string name="systts_standby">Standby</string>
     <string name="decode">decode</string>
     <string name="systts_log_replace_failed">Failed to execute replace: %1$s</string>
-    <string name="systts_sby_conditions_for_use">Standby Settings</string>
-    <string name="systts_sby_settings_msg">Standby configuration fires on how many retries? Defaults to 1, i.e. the alternate configuration is used on the first failed retry.</string>
+    <string name="systts_standby_triggered_retry_index">Standby Settings</string>
+    <string name="systts_standby_triggered_retry_index_summary">Standby configuration fires on how many retries? Defaults to 1, i.e. the alternate configuration is used on the first failed retry.</string>
     <string name="systts_ms_webm_warn_msg">After testing, the actual traffic consumption of webm…-24kbps… is more than three times its audio size, so it is not recommended!</string>
     <string name="search_filter">Filter search</string>
     <string name="follow_system">Follow system</string>
@@ -359,7 +359,7 @@
     <string name="app_language_update_warn">Need to force stop the app to fully display the new language!</string>
 
     <string name="wake_lock_summary">Turning on the wake lock can prevent the CPU from sleeping after the screen is locked, but it may cause background app process killing on some systems.</string>
-    <string name="foreground_service_summary">Set as a foreground service and display notifications to increase process priority.</string>
+    <string name="foreground_service_and_notification_summary">Set as a foreground service and display notifications to increase process priority.</string>
     <string name="foreground_service_and_notification">Foreground service and notification</string>
     <string name="grant_permission_all_file_msg">Otherwise, on some systems, it will be unable to read music files, causing playback failure!</string>
     <string name="format_error">Format error</string>
@@ -388,7 +388,7 @@
     <string name="skip_request_silent_text">Skip request for silent text</string>
     <string name="skip_request_silent_text_summary">When enabled, text such as plain symbols will not be requested separately</string>
     <string name="retry_count_when_audio_empty">Number of retries when audio is empty</string>
-    <string name="retry_count_when_audio_empty_msg">This value should be less than or equal to 【Maximum number of retries】</string>
+    <string name="retry_count_when_audio_empty_summary">This value should be less than or equal to 【Maximum number of retries】</string>
     <string name="backup_restore">Backup and Restore</string>
     <string name="backup">Backup</string>
     <string name="preference_settings">Preference</string>
@@ -448,6 +448,7 @@
     <string name="systts_api_edge_okhttp">Microsoft Edge - Java (Stream)</string>
     <string name="confirm">OK</string>
     <string name="dynamic_color_not_support">Dynamic themes require Android 12 and above</string>
-    <string name="plugin_tts_get_sample_rate_failed">获取音频采样率失败</string>
-    <string name="plugin_tts_get_need_decode_failed">获取音频是否需解码失败</string>
+    <string name="plugin_tts_get_sample_rate_failed">Failed to get audio sample rate</string>
+    <string name="plugin_tts_get_need_decode_failed">Failed to get whether the audio needs to be decoded</string>
+    <string name="max_retry_count_summary">The number of retries after a failed request</string>
 </resources>

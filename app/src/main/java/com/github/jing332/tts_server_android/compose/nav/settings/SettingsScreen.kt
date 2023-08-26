@@ -6,14 +6,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.ArrowCircleUp
+import androidx.compose.material.icons.filled.Audiotrack
+import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material.icons.filled.PlayCircleOutline
+import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.SettingsBackupRestore
 import androidx.compose.material.icons.filled.Style
+import androidx.compose.material.icons.filled.TextSnippet
+import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +46,7 @@ import com.github.jing332.tts_server_android.compose.theme.getAppTheme
 import com.github.jing332.tts_server_android.compose.theme.setAppTheme
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
+import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.ui.preference.backup_restore.BackupRestoreActivity
 import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
 
@@ -67,6 +77,8 @@ fun SettingsScreen(drawerState: DrawerState) {
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
+            DividerPreference { Text(stringResource(id = R.string.app_name)) }
+
             BasePreferenceWidget(
                 icon = {
                     Icon(Icons.Default.SettingsBackupRestore, null)
@@ -144,20 +156,49 @@ fun SettingsScreen(drawerState: DrawerState) {
                 }
             }
 
-            var wrapButton by remember { AppConfig.isSwapListenAndEditButton }
-            SwitchPreference(
-                title = { Text(stringResource(id = R.string.pref_swap_listen_and_edit_button)) },
-                subTitle = {},
-                checked = wrapButton,
-                onCheckedChange = { wrapButton = it },
-                icon = {
-                    Icon(Icons.Default.Headset, contentDescription = null)
+            var filePickerMode by remember { AppConfig.filePickerMode }
+            var expanded by remember { mutableStateOf(false) }
+            DropdownPreference(
+                expanded = expanded,
+                onExpandedChange = { expanded = it },
+                icon = { Icon(Icons.Default.FileOpen, null) },
+                title = { Text(stringResource(id = R.string.file_picker_mode)) },
+                subTitle = {
+                    Text(
+                        when (filePickerMode) {
+                            FilePickerMode.PROMPT -> stringResource(id = R.string.file_picker_mode_prompt)
+                            FilePickerMode.BUILTIN -> stringResource(id = R.string.file_picker_mode_builtin)
+                            else -> stringResource(id = R.string.file_picker_mode_system)
+                        }
+                    )
+                },
+                actions = {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(id = R.string.file_picker_mode_prompt)) },
+                        onClick = {
+                            expanded = false
+                            filePickerMode = FilePickerMode.PROMPT
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text(stringResource(id = R.string.file_picker_mode_builtin)) },
+                        onClick = {
+                            expanded = false
+                            filePickerMode = FilePickerMode.BUILTIN
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text(stringResource(id = R.string.file_picker_mode_system)) },
+                        onClick = {
+                            expanded = false
+                            filePickerMode = FilePickerMode.SYSTEM
+                        }
+                    )
                 }
             )
 
-            DividerPreference {
-                Text(stringResource(id = R.string.systts_interface_preference))
-            }
             var autoCheck by remember { AppConfig.isAutoCheckUpdateEnabled }
             SwitchPreference(
                 title = { Text(stringResource(id = R.string.auto_check_update)) },
@@ -166,6 +207,116 @@ fun SettingsScreen(drawerState: DrawerState) {
                 onCheckedChange = { autoCheck = it },
                 icon = {
                     Icon(Icons.Default.ArrowCircleUp, contentDescription = null)
+                }
+            )
+
+            DividerPreference {
+                Text(stringResource(id = R.string.system_tts))
+            }
+
+            var useExoDecoder by remember { SystemTtsConfig.isExoDecoderEnabled }
+            SwitchPreference(
+                title = { Text(stringResource(id = R.string.use_exo_decoder)) },
+                subTitle = { Text(stringResource(id = R.string.use_exo_decoder_summary)) },
+                checked = useExoDecoder,
+                onCheckedChange = { useExoDecoder = it },
+                icon = { Icon(Icons.Default.PlayCircleOutline, null) }
+            )
+
+            var streamPlay by remember { SystemTtsConfig.isStreamPlayModeEnabled }
+            SwitchPreference(
+                title = { Text(stringResource(id = R.string.stream_audio_mode)) },
+                subTitle = { Text(stringResource(id = R.string.stream_audio_mode_summary)) },
+                checked = streamPlay,
+                onCheckedChange = { streamPlay = it },
+                icon = { Icon(Icons.Default.Waves, null) }
+            )
+
+            var skipSilentText by remember { SystemTtsConfig.isSkipSilentText }
+            SwitchPreference(
+                title = { Text(stringResource(id = R.string.skip_request_silent_text)) },
+                subTitle = { Text(stringResource(id = R.string.skip_request_silent_text_summary)) },
+                checked = skipSilentText,
+                onCheckedChange = { skipSilentText = it },
+                icon = { Icon(Icons.Default.TextSnippet, null) }
+            )
+
+            var foregroundService by remember { SystemTtsConfig.isForegroundServiceEnabled }
+            SwitchPreference(
+                title = { Text(stringResource(id = R.string.foreground_service_and_notification)) },
+                subTitle = { Text(stringResource(id = R.string.foreground_service_and_notification_summary)) },
+                checked = foregroundService,
+                onCheckedChange = { foregroundService = it },
+                icon = { Icon(Icons.Default.NotificationsNone, null) }
+            )
+
+            var wakeLock by remember { SystemTtsConfig.isWakeLockEnabled }
+            SwitchPreference(
+                title = { Text(stringResource(id = R.string.wake_lock)) },
+                subTitle = { Text(stringResource(id = R.string.wake_lock_summary)) },
+                checked = wakeLock,
+                onCheckedChange = { wakeLock = it },
+                icon = { Icon(Icons.Default.Lock, null) }
+            )
+
+            var maxRetry by remember { SystemTtsConfig.maxRetryCount }
+            val maxRetryValue =
+                if (maxRetry == 0) stringResource(id = R.string.no_retries) else maxRetry.toString()
+            SliderPreference(
+                title = { Text(stringResource(id = R.string.max_retry_count)) },
+                subTitle = { Text(stringResource(id = R.string.max_retry_count_summary)) },
+                value = maxRetry.toFloat(),
+                onValueChange = { maxRetry = it.toInt() },
+                valueRange = 0f..10f,
+                icon = { Icon(Icons.Default.Repeat, null) },
+            ) { Text(maxRetryValue) }
+
+            var emptyAudioCount by remember { SystemTtsConfig.maxEmptyAudioRetryCount }
+            val emptyAudioCountValue =
+                if (emptyAudioCount == 0) stringResource(id = R.string.no_retries) else emptyAudioCount.toString()
+            SliderPreference(
+                title = { Text(stringResource(id = R.string.retry_count_when_audio_empty)) },
+                subTitle = { Text(stringResource(id = R.string.retry_count_when_audio_empty_summary)) },
+                value = emptyAudioCount.toFloat(),
+                onValueChange = { emptyAudioCount = it.toInt() },
+                valueRange = 0f..10f,
+                icon = { Icon(Icons.Default.Audiotrack, null) },
+            ) { Text(emptyAudioCountValue) }
+
+            var standbyTriggeredIndex by remember { SystemTtsConfig.standbyTriggeredRetryIndex }
+            val standbyTriggeredIndexValue = standbyTriggeredIndex.toString()
+            SliderPreference(
+                title = { Text(stringResource(id = R.string.systts_standby_triggered_retry_index)) },
+                subTitle = { Text(stringResource(id = R.string.systts_standby_triggered_retry_index_summary)) },
+                value = standbyTriggeredIndex.toFloat(),
+                onValueChange = { standbyTriggeredIndex = it.toInt() },
+                valueRange = 0f..10f,
+                icon = { Icon(Icons.Default.Repeat, null) },
+            ) { Text(standbyTriggeredIndexValue) }
+
+
+            var requestTimeout by remember { SystemTtsConfig.requestTimeout }
+            val requestTimeoutValue = "${requestTimeout}s"
+            SliderPreference(
+                title = { Text(stringResource(id = R.string.request_timeout)) },
+                subTitle = { Text(stringResource(id = R.string.request_timeout_summary)) },
+                value = requestTimeout.toFloat(),
+                onValueChange = { requestTimeout = it.toInt() },
+                valueRange = 1f..30f,
+                icon = { Icon(Icons.Default.AccessTime, null) },
+            ) { Text(requestTimeoutValue) }
+
+            DividerPreference {
+                Text(stringResource(id = R.string.systts_interface_preference))
+            }
+            var wrapButton by remember { AppConfig.isSwapListenAndEditButton }
+            SwitchPreference(
+                title = { Text(stringResource(id = R.string.pref_swap_listen_and_edit_button)) },
+                subTitle = {},
+                checked = wrapButton,
+                onCheckedChange = { wrapButton = it },
+                icon = {
+                    Icon(Icons.Default.Headset, contentDescription = null)
                 }
             )
 

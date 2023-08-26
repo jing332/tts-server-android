@@ -127,8 +127,8 @@
     <!-- 系统TTS 设置 -->
     <string name="systts_set_dialogue_min_match_word_count">设置对话最小匹配汉字数</string>
     <string name="systts_set_dialogue_min_info">人物对话的汉字数（包括中文符号），即只有在大于等于此值时才作为对话朗读，反之使用旁白。</string>
-    <string name="systts_set_request_timeout">设置请求超时</string>
-    <string name="systts_set_request_timeout_msg">请求音频的等待时间超过设定值后，将取消请求并自动重试。</string>
+    <string name="request_timeout">设置请求超时</string>
+    <string name="request_timeout_summary">请求音频的等待时间超过设定值后，将取消请求并自动重试。</string>
 
     <string name="systts_http_edit_title">编辑自定义TTS</string>
     <string name="systts_http_request_header">请求头</string>
@@ -262,8 +262,8 @@
     <string name="systts_standby">备</string>
     <string name="decode">解码</string>
     <string name="systts_log_replace_failed">执行替换失败：%1$s</string>
-    <string name="systts_sby_conditions_for_use">备用配置使用条件</string>
-    <string name="systts_sby_settings_msg">备用配置在第几次重试时触发？默认为1，即备用配置在首次失败重试时使用。</string>
+    <string name="systts_standby_triggered_retry_index">备用配置使用条件</string>
+    <string name="systts_standby_triggered_retry_index_summary">备用配置在第几次重试时触发？默认为1，即备用配置在首次失败重试时使用。</string>
     <string name="systts_ms_webm_warn_msg">⚠️经测试，音频格式 webm..-24kbps-.. 的实际所耗流量是其音频大小的三倍有余，不推荐使用！</string>
     <string name="search_filter">搜索过滤</string>
     <string name="follow_system">跟随系统</string>
@@ -355,7 +355,7 @@
     <string name="click_play">点击播放</string>
     <string name="app_language_update_warn">需要强行停止应用后才可完全显示新的语言！</string>
     <string name="wake_lock_summary">开启唤醒锁可防止锁屏后CPU休眠，但部分系统可能会导致杀后台。</string>
-    <string name="foreground_service_summary">设置为前台服务并显示通知以提高进程优先级。</string>
+    <string name="foreground_service_and_notification_summary">设置为前台服务并显示通知以提高进程优先级。</string>
     <string name="foreground_service_and_notification">前台服务与通知</string>
     <string name="grant_permission_all_file_msg">否则在部分系统上将无法读取音乐文件导致无法播放！</string>
     <string name="format_error">格式错误</string>
@@ -384,7 +384,7 @@
     <string name="skip_request_silent_text">跳过请求无声文本</string>
     <string name="skip_request_silent_text_summary">开启后将不会单独请求如纯符号之类的文本</string>
     <string name="retry_count_when_audio_empty">音频为空时重试次数</string>
-    <string name="retry_count_when_audio_empty_msg">此值应小于等于【最大重试次数】</string>
+    <string name="retry_count_when_audio_empty_summary">此值应小于等于【最大重试次数】</string>
     <string name="backup_restore">备份与恢复</string>
     <string name="backup">备份</string>
     <string name="preference_settings">偏好设置</string>
@@ -445,4 +445,5 @@
     <string name="dynamic_color_not_support">动态主题需要 安卓12及以上版本</string>
     <string name="plugin_tts_get_sample_rate_failed">获取音频采样率失败</string>
     <string name="plugin_tts_get_need_decode_failed">获取音频是否需解码失败</string>
+    <string name="max_retry_count_summary">请求失败后的重试次数</string>
 </resources>
