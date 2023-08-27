@@ -36,6 +36,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.io.IOException
 import kotlin.coroutines.coroutineContext
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
@@ -214,11 +215,17 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         }
 
                         audioResult?.inputStream =
-                            tts.getAudioWithSystemParams(text, sysRate, sysPitch)
-                                ?: throw RequestException(
-                                    errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
-                                    tts = tts, text = text
-                                )
+                            try {
+                                tts.getAudioWithSystemParams(text, sysRate, sysPitch)
+                                    ?: throw RequestException(
+                                        errorCode = RequestException.ERROR_CODE_AUDIO_NULL,
+                                        tts = tts, text = text
+                                    )
+                            } catch (e: IOException) {
+                                if (e.message != "Canceled") throw e
+                                null
+                            }
+
                         if (!SysTtsConfig.isStreamPlayModeEnabled) {
                             audioResult?.bytes = audioResult?.inputStream?.readBytes()
                             audioResult?.inputStream?.close()
@@ -230,10 +237,7 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                         }
 
                         if (hasTimeout) {
-                            launch { // 延迟 500ms 以防止 onStop() 后 java.io.IOException: Canceled 导致不抛出Timeout异常
-                                delay(500)
-                                tts.onStop()
-                            }
+                            tts.onStop()
                             throw RequestException(
                                 tts = tts,
                                 text = text,
@@ -510,7 +514,10 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 var length: Int
                 audioResult.inputStream?.use { ins ->
                     ins.buffered().use {
-                        it.readPcmChunk(bufferSize = bufferSize * 2, chunkSize = bufferSize) {pcm->
+                        it.readPcmChunk(
+                            bufferSize = bufferSize * 2,
+                            chunkSize = bufferSize
+                        ) { pcm ->
                             println("pcm  ${pcm.size}")
                             onPcmAudio(pcm)
                         }

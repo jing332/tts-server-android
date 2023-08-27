@@ -1,7 +1,9 @@
 package com.github.jing332.tts_server_android.compose.widgets
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -30,6 +32,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.focused
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -99,6 +108,7 @@ fun ColumnToggleButtonGroup(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowToggleButtonGroup(
     modifier: Modifier = Modifier,
@@ -110,19 +120,19 @@ fun RowToggleButtonGroup(
     unselectedContentColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
     buttonIconTint: Color = selectedContentColor,
     unselectedButtonIconTint: Color = unselectedContentColor,
-    borderColor: Color = MaterialTheme.colorScheme.primary,
+    borderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     buttonTexts: Array<String> = Array(buttonCount) { "" },
     buttonIcons: Array<Painter> = Array(buttonCount) { ColorPainter(Color.Transparent) },
-    shape: CornerBasedShape = MaterialTheme.shapes.large,
+    shape: CornerBasedShape = MaterialTheme.shapes.extraLarge,
     borderSize: Dp = 1.dp,
     border: BorderStroke = BorderStroke(borderSize, borderColor),
     elevation: ButtonElevation = ButtonDefaults.buttonElevation(),
     enabled: Boolean = true,
-    buttonHeight: Dp = 48.dp,
+    buttonHeight: Dp = 40.dp,
     iconPosition: IconPosition = IconPosition.Start,
     onButtonClick: (index: Int) -> Unit,
 ) {
-    Row(modifier = modifier) {
+    Row(modifier = modifier.focusGroup()) {
         val squareCorner = CornerSize(0.dp)
         var selectionIndex by rememberSaveable { mutableIntStateOf(primarySelection) }
 
@@ -141,6 +151,13 @@ fun RowToggleButtonGroup(
 
             ToggleButton(
                 modifier = Modifier
+                    .semantics {
+//                        role = Role.Button
+                        focused = isButtonSelected
+                        selected = isButtonSelected
+                        contentDescription = buttonTexts[index]
+                        stateDescription = buttonTexts[index]
+                    }
 //                    .weight(weight = 1f)
                     .defaultMinSize(minHeight = buttonHeight)
                     .offset(x = offset),
@@ -228,7 +245,9 @@ private fun RowScope.ButtonContent(
         )
 
         buttonTexts.all { it == "" } && buttonIcons.all { it != emptyPainter } -> IconContent(
-            modifier = Modifier.align(Alignment.CenterVertically).padding(start = 4.dp),
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(start = 4.dp),
             iconTintColor = iconTintColor,
             buttonIcons = buttonIcons,
             index = index,
@@ -317,13 +336,17 @@ private fun IconContent(
 ) {
     if (iconTintColor == Color.Transparent || iconTintColor == Color.Unspecified) {
         Image(
-            modifier = modifier.size(24.dp).padding(start = 4.dp),
+            modifier = modifier
+                .size(24.dp)
+                .padding(start = 4.dp),
             painter = buttonIcons[index],
             contentDescription = null,
         )
     } else {
         Image(
-            modifier = modifier.size(24.dp).padding(start = 4.dp),
+            modifier = modifier
+                .size(24.dp)
+                .padding(start = 4.dp),
             painter = buttonIcons[index],
             contentDescription = null,
             colorFilter = ColorFilter.tint(iconTintColor),

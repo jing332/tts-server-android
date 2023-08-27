@@ -8,11 +8,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Resources
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.os.SystemClock
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.util.DisplayMetrics
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -22,6 +27,13 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.WindowMetrics
 import androidx.activity.OnBackPressedCallback
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +41,39 @@ import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.constant.KeyConst
 import java.lang.reflect.ParameterizedType
+
+fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
+    val spanned = this@toAnnotatedString
+    append(spanned.toString())
+    getSpans(0, spanned.length, Any::class.java).forEach { span ->
+        val start = getSpanStart(span)
+        val end = getSpanEnd(span)
+        when (span) {
+            is StyleSpan -> when (span.style) {
+                Typeface.BOLD -> addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
+                Typeface.ITALIC -> addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
+                Typeface.BOLD_ITALIC -> addStyle(
+                    SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontStyle = FontStyle.Italic
+                    ), start, end
+                )
+            }
+
+            is UnderlineSpan -> addStyle(
+                SpanStyle(textDecoration = TextDecoration.Underline),
+                start,
+                end
+            )
+
+            is ForegroundColorSpan -> addStyle(
+                SpanStyle(color = Color(span.foregroundColor)),
+                start,
+                end
+            )
+        }
+    }
+}
 
 fun Context.registerGlobalReceiver(
     actions: List<String>,

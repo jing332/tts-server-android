@@ -124,12 +124,12 @@ internal fun Item(
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
             ) {
-                HtmlText(
+                com.github.jing332.tts_server_android.compose.widgets.HtmlText(
                     text = desc,
                     style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
                 )
 
-                HtmlText(
+                com.github.jing332.tts_server_android.compose.widgets.HtmlText(
                     text = params,
                     style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onBackground),
                 )

@@ -48,6 +48,7 @@ import androidx.core.text.HtmlCompat
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
+import com.github.jing332.tts_server_android.utils.toAnnotatedString
 import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.launch
 
@@ -92,7 +93,7 @@ fun LogScreen(
 
                 Text(
                     text = spanned,
-                    style = style.copy(color = MaterialTheme.colorScheme.onBackground),
+                    style = style,
                     lineHeight = style.lineHeight * 0.75f,
                     modifier = Modifier
                         .combinedClickable(
@@ -130,39 +131,6 @@ fun LogScreen(
                     stringResource(id = R.string.move_to_bottom)
                 )
             }
-        }
-    }
-}
-
-fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
-    val spanned = this@toAnnotatedString
-    append(spanned.toString())
-    getSpans(0, spanned.length, Any::class.java).forEach { span ->
-        val start = getSpanStart(span)
-        val end = getSpanEnd(span)
-        when (span) {
-            is StyleSpan -> when (span.style) {
-                Typeface.BOLD -> addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
-                Typeface.ITALIC -> addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
-                Typeface.BOLD_ITALIC -> addStyle(
-                    SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Italic
-                    ), start, end
-                )
-            }
-
-            is UnderlineSpan -> addStyle(
-                SpanStyle(textDecoration = TextDecoration.Underline),
-                start,
-                end
-            )
-
-            is ForegroundColorSpan -> addStyle(
-                SpanStyle(color = Color(span.foregroundColor)),
-                start,
-                end
-            )
         }
     }
 }
