@@ -59,8 +59,10 @@ fun BasicInfoEditScreen(
     onSysttsChange: (SystemTts) -> Unit,
 
     showSpeechTarget: Boolean = true,
-    group: SystemTtsGroup = remember { appDb.systemTtsDao.getGroup(systts.groupId) }
-        ?: SystemTtsGroup(id = DEFAULT_GROUP_ID, name = ""),
+    group: SystemTtsGroup = rememberUpdatedState(
+        newValue = appDb.systemTtsDao.getGroup(systts.groupId)
+            ?: SystemTtsGroup(id = DEFAULT_GROUP_ID, name = "")
+    ).value,
     groups: List<SystemTtsGroup> = remember { appDb.systemTtsDao.allGroup },
 
     speechRules: List<SpeechRule> = remember { appDb.speechRule.allEnabled },
@@ -301,6 +303,7 @@ private fun CustomTagScreen(
             val hint = defTag.value["hint"] ?: ""
 
             val items = defTag.value["items"]
+            val value by rememberUpdatedState(newValue = systts.speechRule.tagData[key] ?: "")
             if (items.isNullOrEmpty()) {
                 OutlinedTextField(
                     modifier = Modifier
@@ -313,31 +316,31 @@ private fun CustomTagScreen(
                             }
                     },
                     label = { Text(label) },
-                    value = systts.speechRule.tagData[key] ?: "",
+                    value = value,
                     onValueChange = {
                         onSysttsChange(
                             systts.copy(
                                 speechRule = systts.speechRule.copy(
-                                    tagData = systts.speechRule.mutableTagData.apply {
+                                    tagData = systts.speechRule.tagData.toMutableMap().apply {
                                         this[key] = it
                                     }
                                 )
                             )
                         )
-                    })
+                    }
+                )
             } else {
-                val itemsMap: Map<String, String> =
-                    remember { AppConst.jsonBuilder.decodeFromString(items) }
+                val itemsMap by rememberUpdatedState(
+                    newValue = AppConst.jsonBuilder.decodeFromString<Map<String, String>>(items)
+                )
 
                 val defaultValue = remember { defTag.value["default"] ?: "" }
-
-                println(systts.speechRule.mutableTagData[key])
                 ExposedDropTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 4.dp),
                     label = { Text(label) },
-                    key = systts.speechRule.mutableTagData[key] ?: defaultValue,
+                    key = value.ifEmpty { defaultValue },
                     keys = itemsMap.keys.toList(),
                     values = itemsMap.values.toList(),
                     leadingIcon = {
