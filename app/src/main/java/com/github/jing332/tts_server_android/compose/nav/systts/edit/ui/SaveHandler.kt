@@ -19,10 +19,8 @@ internal fun rememberSaveCallBacks() = remember { mutableListOf<SaveCallBack>() 
 internal fun SaveActionHandler(cb: SaveCallBack) {
     val cbs = LocalSaveCallBack.current
     DisposableEffect(Unit) {
-        println("add cb")
         cbs.add(cb)
         onDispose {
-            println("remove cb")
             cbs.remove(cb)
         }
     }

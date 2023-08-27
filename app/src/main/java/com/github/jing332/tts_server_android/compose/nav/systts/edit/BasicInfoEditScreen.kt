@@ -16,6 +16,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +60,10 @@ fun BasicInfoEditScreen(
 ) {
     val context = LocalContext.current
     val speechRule by rememberUpdatedState(newValue = speechRules.find { it.ruleId == systts.speechRule.tagRuleId })
+
+    // 确保在 SaveActionHandler 中始终引用最新的obj
+    @Suppress("NAME_SHADOWING")
+    val systts by rememberUpdatedState(newValue = systts)
 
     SaveActionHandler {
         var tagName = ""
