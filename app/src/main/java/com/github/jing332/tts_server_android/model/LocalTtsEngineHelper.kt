@@ -1,17 +1,16 @@
-package com.github.jing332.tts_server_android.ui.systts.edit.local
+package com.github.jing332.tts_server_android.model
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import com.github.jing332.tts_server_android.App
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import java.util.Locale
 
-class TtsEngineHelper(val context: Context, val scope: CoroutineScope) {
+class LocalTtsEngine(val context: Context) {
     companion object {
         private const val INIT_STATUS_WAITING = -2
 

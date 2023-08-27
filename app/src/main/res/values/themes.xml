@@ -491,10 +491,6 @@
     </style>
 
 
-    <style name="Preference.SwitchPreferenceCompat" parent="Preference.SwitchPreferenceCompat.Material">
-        <item name="widgetLayout">@layout/view_preference_switch</item>
-    </style>
-
     <!--    <style name="Theme.TtsServer" parent="Base.Theme.TtsServer">-->
     <!--        <item name="android:windowTranslucentStatus">false</item>-->
     <!--        <item name="android:windowDrawsSystemBarBackgrounds">true</item>-->

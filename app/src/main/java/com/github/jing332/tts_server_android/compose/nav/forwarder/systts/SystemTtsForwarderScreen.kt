@@ -21,7 +21,7 @@ import com.github.jing332.tts_server_android.compose.nav.forwarder.ForwarderTopA
 import com.github.jing332.tts_server_android.conf.SysttsForwarderConfig
 import com.github.jing332.tts_server_android.service.forwarder.ForwarderServiceManager.switchSysTtsForwarder
 import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService
-import com.github.jing332.tts_server_android.ui.forwarder.sys.ScSwitchActivity
+import com.github.jing332.tts_server_android.ui.forwarder.SystemForwarderSwitchActivity
 import com.github.jing332.tts_server_android.utils.MyTools
 
 @Composable
@@ -42,7 +42,7 @@ fun SystemTtsForwarderScreen(cfgVM: ConfigViewModel = viewModel()) {
                     name = context.getString(R.string.forwarder_systts),
                     id = "switch_systts_forwarder",
                     iconResId = R.mipmap.ic_launcher_round,
-                    launcherIntent = Intent(context, ScSwitchActivity::class.java)
+                    launcherIntent = Intent(context, SystemForwarderSwitchActivity::class.java)
                 )
             }
         },

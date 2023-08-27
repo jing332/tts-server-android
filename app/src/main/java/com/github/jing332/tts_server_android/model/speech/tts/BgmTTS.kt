@@ -5,8 +5,6 @@ import android.content.Context
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
-import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.bgm.BgmTtsParamsEditView
 import com.github.jing332.tts_server_android.utils.toHtmlBold
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -35,7 +33,6 @@ data class BgmTTS(
 
     override var locale: String = ""
 ) : ITextToSpeechEngine() {
-    override fun getEditActivity(): Class<out Activity> = BgmTtsEditActivity::class.java
     override fun getType() = "BGM"
 
     override fun getDescription(): String {
@@ -45,8 +42,6 @@ data class BgmTTS(
 
     override fun getBottomContent(): String =
         context.getString(R.string.total_n_folders, musicList.size.toString())
-
-    override fun getParamsEditView(context: Context) = BgmTtsParamsEditView(context) to true
 
     override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream? {
         throw Exception("请在编辑界面中点击音乐路径进行测试播放")

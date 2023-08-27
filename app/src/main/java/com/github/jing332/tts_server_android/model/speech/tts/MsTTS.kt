@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.model.speech.tts
 
-import android.content.Context
 import android.os.Parcelable
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
@@ -14,8 +13,6 @@ import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
-import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsParamsEditView
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -86,8 +83,6 @@ data class MsTTS(
         return PITCH_FOLLOW_SYSTEM == pitch
     }
 
-    override fun getEditActivity() = MsTtsEditActivity::class.java
-
     override fun getDescription(): String {
         val strFollow by lazy { app.getString(R.string.follow) }
         val strNone by lazy { app.getString(R.string.none) }
@@ -119,8 +114,6 @@ data class MsTTS(
             "<b>${pitchStr}</b>"
         )
     }
-
-    override fun getParamsEditView(context: Context) = MsTtsParamsEditView(context) to false
 
     @IgnoredOnParcel
     private var lastLoadTime: Long = 0

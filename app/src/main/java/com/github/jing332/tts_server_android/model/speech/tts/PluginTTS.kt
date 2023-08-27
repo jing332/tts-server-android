@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.model.speech.tts
 
-import android.content.Context
 import androidx.annotation.Keep
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.appDb
@@ -9,8 +8,6 @@ import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.model.rhino.tts.EngineContext
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginEngine
-import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsParamsEditView
 import com.script.javascript.RhinoScriptEngine
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -56,8 +53,6 @@ data class PluginTTS(
         return "$voice <br>${super.getDescription()}"
     }
 
-    override fun getEditActivity() = PluginTtsEditActivity::class.java
-
     override fun getType(): String {
         return try {
             requirePlugin.name
@@ -65,8 +60,6 @@ data class PluginTTS(
             e.message ?: e.cause?.message
         }.toString()
     }
-
-    override fun getParamsEditView(context: Context) = PluginTtsParamsEditView(context) to false
 
     @IgnoredOnParcel
     @Transient

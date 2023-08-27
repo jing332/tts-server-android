@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fcv_compose_systts_manager"
-    android:name="com.github.jing332.tts_server_android.ui.systts.list.ListGroupPageFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />

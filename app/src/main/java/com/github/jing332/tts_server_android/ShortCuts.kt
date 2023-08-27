@@ -5,7 +5,8 @@ import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.github.jing332.tts_server_android.ui.forwarder.ms.ScSwitchActivity
+import com.github.jing332.tts_server_android.ui.forwarder.SystemForwarderSwitchActivity
+import com.github.jing332.tts_server_android.ui.forwarder.MsForwarderSwitchActivity
 import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 
@@ -18,7 +19,7 @@ object ShortCuts {
 
     private fun buildSysSwitchShortCutInfo(context: Context): ShortcutInfoCompat {
         val msSwitchIntent =
-            buildIntent<com.github.jing332.tts_server_android.ui.forwarder.sys.ScSwitchActivity>(
+            buildIntent<SystemForwarderSwitchActivity>(
                 context
             )
         return ShortcutInfoCompat.Builder(context, "forwarder_sys_switch")
@@ -31,7 +32,7 @@ object ShortCuts {
 
 
     private fun buildMsSwitchShortCutInfo(context: Context): ShortcutInfoCompat {
-        val msSwitchIntent = buildIntent<ScSwitchActivity>(context)
+        val msSwitchIntent = buildIntent<MsForwarderSwitchActivity>(context)
         return ShortcutInfoCompat.Builder(context, "forwarder_ms_switch")
             .setShortLabel(context.getString(R.string.forwarder_ms))
             .setLongLabel(context.getString(R.string.forwarder_ms))

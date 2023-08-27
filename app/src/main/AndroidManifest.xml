@@ -100,19 +100,10 @@
             android:exported="true"
             android:label="@string/plugin_manager"
             android:taskAffinity="com.github.jing332.tts_server_android.plugin" />
-        <activity
-            android:name=".ui.systts.edit.plugin.PluginTtsEditActivity"
-            android:exported="false"
-            android:label="@string/edit_plugin_tts" />
+
         <activity
             android:name=".ui.MainActivity"
-            android:exported="true"
-            android:label="旧版old">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
-            </intent-filter>
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -175,18 +166,7 @@
             </intent-filter>
 
         </activity>
-        <activity
-            android:name=".ui.systts.edit.microsoft.MsTtsEditActivity"
-            android:label="@string/edit_builtin_tts" />
-        <activity
-            android:name=".ui.systts.edit.http.HttpTtsEditActivity"
-            android:label="@string/systts_http_edit_title" />
-        <activity
-            android:name=".ui.systts.edit.local.LocalTtsEditActivity"
-            android:label="@string/edit_local_tts" />
-        <activity
-            android:name=".ui.systts.edit.bgm.BgmTtsEditActivity"
-            android:label="@string/edit_bgm_tts" />
+
         <activity
             android:name=".ui.systts.replace.ReplaceManagerActivity"
             android:exported="true"
@@ -198,11 +178,11 @@
             android:launchMode="singleTask"
             android:theme="@style/Theme.TtsServer.NoActionBar" />
         <activity
-            android:name=".ui.forwarder.ms.ScSwitchActivity"
+            android:name=".ui.forwarder.MsForwarderSwitchActivity"
             android:taskAffinity="sc.switch"
             android:theme="@android:style/Theme.NoDisplay" />
         <activity
-            android:name=".ui.forwarder.sys.ScSwitchActivity"
+            android:name=".ui.forwarder.SystemForwarderSwitchActivity"
             android:taskAffinity="sc.switch"
             android:theme="@android:style/Theme.NoDisplay" />
         <activity

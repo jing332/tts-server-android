@@ -1,7 +1,5 @@
 package com.github.jing332.tts_server_android.model.speech.tts
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.os.SystemClock
@@ -12,10 +10,16 @@ import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
-import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.local.LocalTtsParamsEditView
 import com.github.jing332.tts_server_android.utils.toHtmlBold
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -24,7 +28,7 @@ import kotlinx.serialization.Transient
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
-import java.util.*
+import java.util.Locale
 
 @Parcelize
 @Serializable
@@ -68,8 +72,6 @@ data class LocalTTS(
         audioFormat.isNeedDecode = true
     }
 
-    override fun getEditActivity(): Class<out Activity> = LocalTtsEditActivity::class.java
-
     override fun getType() = App.context.getString(R.string.local)
 
     override fun getBottomContent() = audioFormat.toString()
@@ -85,8 +87,6 @@ data class LocalTTS(
             "$pitchStr".toHtmlBold()
         )
     }
-
-    override fun getParamsEditView(context: Context) = LocalTtsParamsEditView(context) to false
 
     @IgnoredOnParcel
     @Transient
@@ -172,7 +172,7 @@ data class LocalTTS(
 
     private fun setEnginePlayParams(engine: TextToSpeech, rate: Int, pitch: Int): Bundle {
         engine.apply {
-            locale?.let { language = Locale.forLanguageTag(it) }
+            locale.let { language = Locale.forLanguageTag(it) }
             voiceName?.let { selectedVoice ->
                 voices?.toList()?.find { it.name == selectedVoice }?.let {
                     Log.d(TAG, "setVoice: ${it.name}")
@@ -240,7 +240,7 @@ data class LocalTTS(
     }
 
 
-    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream? {
+    override suspend fun getAudio(speakText: String, rate: Int, pitch: Int): InputStream {
         return ByteArrayInputStream(
             getAudioFile(speakText, rate, pitch).run { if (exists()) readBytes() else null }
         )

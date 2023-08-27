@@ -11,8 +11,6 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.model.AnalyzeUrl
-import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.http.HttpTtsParamsEditView
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -52,7 +50,6 @@ data class HttpTTS(
         return false
     }
 
-    override fun getEditActivity(): Class<out Activity> = HttpTtsEditActivity::class.java
 
     override fun getType(): String {
         return app.getString(R.string.custom)
@@ -61,8 +58,6 @@ data class HttpTTS(
     override fun getBottomContent(): String {
         return audioFormat.toString()
     }
-
-    override fun getParamsEditView(context: Context) = HttpTtsParamsEditView(context) to false
 
     @IgnoredOnParcel
     private var requestId: String = ""

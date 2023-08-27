@@ -4,13 +4,12 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.App
-import com.github.jing332.tts_server_android.ui.systts.edit.local.TtsEngineHelper
+import com.github.jing332.tts_server_android.model.LocalTtsEngine
 import java.util.Locale
 
 class LocalTtsViewModel : ViewModel() {
-    private val engineHelper by lazy { TtsEngineHelper(App.context, viewModelScope) }
+    private val engine by lazy { LocalTtsEngine(App.context) }
 
     val engines = mutableStateListOf<TextToSpeech.EngineInfo>()
     val locales = mutableStateListOf<Locale>()
@@ -18,31 +17,30 @@ class LocalTtsViewModel : ViewModel() {
 
     fun init() {
         engines.clear()
-        engines.addAll(TtsEngineHelper.getEngines())
+        engines.addAll(LocalTtsEngine.getEngines())
     }
 
     suspend fun setEngine(engine: String) {
-        engineHelper.setEngine(engine)
+        this.engine.setEngine(engine)
 
         engines.clear()
-        engines.addAll(TtsEngineHelper.getEngines())
+        engines.addAll(LocalTtsEngine.getEngines())
     }
 
     fun updateLocales() {
         locales.clear()
-        locales.addAll(engineHelper.locales)
+        locales.addAll(engine.locales)
     }
 
     fun updateVoices(locale: String) {
         voices.clear()
-        voices.addAll(engineHelper.voices.filter { it.locale.toLanguageTag() == locale }
+        voices.addAll(engine.voices.filter { it.locale.toLanguageTag() == locale }
             .sortedBy { it.name })
     }
-
 
     override fun onCleared() {
         super.onCleared()
 
-        engineHelper.shutdown()
+        engine.shutdown()
     }
 }

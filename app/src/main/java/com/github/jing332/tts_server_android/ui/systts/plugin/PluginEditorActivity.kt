@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.ui.systts.plugin
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.Menu
@@ -11,7 +10,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.compose.nav.NavRoutes
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -19,8 +18,6 @@ import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.systts.base.BaseScriptEditorActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.BaseTtsEditActivity
-import com.github.jing332.tts_server_android.ui.systts.edit.plugin.PluginTtsEditActivity
 import com.github.jing332.tts_server_android.ui.view.ActivityTransitionHelper.initEnterSharedTransition
 import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
@@ -35,7 +32,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
     @Suppress("DEPRECATION")
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            result.data?.getParcelableExtra<SystemTts>(BaseTtsEditActivity.KEY_DATA)?.let {
+            result.data?.getParcelableExtra<SystemTts>(NavRoutes.TtsEdit.DATA)?.let {
                 toast("参数仅本次编辑生效")
                 vm.updateTTS(it.tts as PluginTTS)
             }
@@ -96,7 +93,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
     }
 
     override fun onScriptSyncPush() {
-        AppConst.localBroadcast.sendBroadcast(Intent(PluginTtsEditActivity.ACTION_FINISH))
+//        AppConst.localBroadcast.sendBroadcast(Intent(PluginTtsEditActivity.ACTION_FINISH))
     }
 
     override fun updateCode(code: String) {
@@ -128,10 +125,10 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
 
     private fun previewUi() {
         vm.updatePluginCode(editor.text.toString(), isSave = true)
-        startForResult.launch(Intent(this, PluginTtsEditActivity::class.java).apply {
-            putExtra(BaseTtsEditActivity.KEY_BASIC_VISIBLE, false)
-            putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = vm.pluginTTS))
-        })
+//        startForResult.launch(Intent(this, PluginTtsEditActivity::class.java).apply {
+//            putExtra(BaseTtsEditActivity.KEY_BASIC_VISIBLE, false)
+//            putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = vm.pluginTTS))
+//        })
     }
 
 

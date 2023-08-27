@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.nav.systts.edit.quick
+package com.github.jing332.tts_server_android.compose.nav.systts.edit
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

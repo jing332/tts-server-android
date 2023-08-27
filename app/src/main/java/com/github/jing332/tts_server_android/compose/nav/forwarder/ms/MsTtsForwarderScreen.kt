@@ -27,7 +27,7 @@ import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.conf.MsForwarderConfig
 import com.github.jing332.tts_server_android.service.forwarder.ForwarderServiceManager.switchMsTtsForwarder
 import com.github.jing332.tts_server_android.service.forwarder.ms.MsTtsForwarderService
-import com.github.jing332.tts_server_android.ui.forwarder.ms.ScSwitchActivity
+import com.github.jing332.tts_server_android.ui.forwarder.MsForwarderSwitchActivity
 import com.github.jing332.tts_server_android.utils.MyTools
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +62,7 @@ fun MsTtsForwarderScreen(
                     name = context.getString(R.string.forwarder_ms),
                     id = "switch_ms_forwarder",
                     iconResId = R.mipmap.ic_launcher_round,
-                    launcherIntent = Intent(context, ScSwitchActivity::class.java)
+                    launcherIntent = Intent(context, MsForwarderSwitchActivity::class.java)
                 )
             },
             actions = {

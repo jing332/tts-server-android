@@ -1,13 +1,11 @@
 package com.github.jing332.tts_server_android.model.speech.tts
 
-import android.app.Activity
 import android.content.Context
 import android.os.Parcelable
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
-import com.github.jing332.tts_server_android.ui.systts.edit.BaseParamsEditView
 import com.github.jing332.tts_server_android.utils.toHtmlBold
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -54,9 +52,6 @@ sealed class ITextToSpeechEngine(
      */
     open fun isPitchFollowSystem(): Boolean = pitch == VALUE_FOLLOW_SYSTEM
 
-
-    abstract fun getEditActivity(): Class<out Activity>
-
     /**
      * UI 右下角类型
      */
@@ -81,8 +76,6 @@ sealed class ITextToSpeechEngine(
             if (isPitchFollowSystem()) followStr else "$pitch".toHtmlBold()
         )
     }
-
-    abstract fun getParamsEditView(context: Context): Pair<BaseParamsEditView<*, *>, Boolean>
 
     open fun onLoad() {}
 
