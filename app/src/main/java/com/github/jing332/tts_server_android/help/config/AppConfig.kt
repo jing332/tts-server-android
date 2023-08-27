@@ -1,19 +1,14 @@
 package com.github.jing332.tts_server_android.help.config
 
 import com.chibatching.kotpref.KotprefModel
-import com.chibatching.kotpref.enumpref.enumValuePref
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.constant.AppTheme
 import com.github.jing332.tts_server_android.constant.FilePickerMode
 
-@Suppress("DEPRECATION")
 object AppConfig : KotprefModel() {
 
 
     override val kotprefName: String
         get() = "app"
-
-    var theme by enumValuePref(AppTheme.Default)
 
     var isAutoCheckUpdateEnabled by booleanPref(true)
 

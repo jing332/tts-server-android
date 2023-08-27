@@ -44,14 +44,16 @@ object FileUtils {
      * 按行读取txt
      */
     fun InputStream.readAllText(): String {
-        val bufferedReader = this.bufferedReader()
-        val buffer = StringBuffer("")
-        var str: String?
-        while (bufferedReader.readLine().also { str = it } != null) {
-            buffer.append(str)
-            buffer.append("\n")
+        this.use {
+            bufferedReader().use { reader ->
+                val buffer = StringBuffer("")
+                var str: String?
+                while (reader.readLine().also { str = it } != null) {
+                    buffer.appendLine(str)
+                }
+                return buffer.toString()
+            }
         }
-        return buffer.toString()
     }
 
     fun exists(file: File): Boolean {

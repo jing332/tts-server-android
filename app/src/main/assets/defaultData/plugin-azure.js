@@ -6,7 +6,7 @@ let region = ttsrv.userVars['region'] || 'eastus'
 
 let format = "audio-24khz-48kbitrate-mono-mp3"
 let sampleRate = 24000 // 对应24khz. 格式后带有opus的实际采样率是其2倍
-let isNeedDecode = false // 是否需要解码，如 format 为 raw 请设为 true
+let isNeedDecode = true // 是否需要解码，如 format 为 raw 请设为 false
 
 let PluginJS = {
     "name": "Azure",

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.Audiotrack
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Headset
@@ -108,7 +109,7 @@ fun SettingsScreen(drawerState: DrawerState) {
             )
 
             BasePreferenceWidget(
-                icon = { Icon(Icons.Default.Style, null) },
+                icon = { Icon(Icons.Default.ColorLens, null) },
                 onClick = { showThemeDialog = true },
                 title = { Text(stringResource(id = R.string.theme)) },
                 subTitle = { Text(stringResource(id = getAppTheme().stringResId)) },

@@ -1,6 +1,8 @@
-package com.github.jing332.tts_server_android.ui.view
+package com.github.jing332.text_searcher.ui.plugin
 
 import android.content.Context
+import android.content.res.Configuration
+import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import io.github.rosemoe.sora.langs.textmate.TextMateColorScheme
 import io.github.rosemoe.sora.langs.textmate.TextMateLanguage
 import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry
@@ -11,6 +13,7 @@ import io.github.rosemoe.sora.langs.textmate.registry.model.ThemeModel
 import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver
 import io.github.rosemoe.sora.widget.CodeEditor
 import org.eclipse.tm4e.core.registry.IThemeSource
+
 
 class CodeEditorHelper(val context: Context, val editor: CodeEditor) {
     fun initEditor() {
@@ -44,39 +47,22 @@ class CodeEditorHelper(val context: Context, val editor: CodeEditor) {
 
     }
 
-    fun setTheme(theme: Int) {
+    fun setTheme(theme: CodeEditorTheme) {
         val themeRegistry = ThemeRegistry.getInstance()
-//        when (theme) {
-//        CodeEditorTheme.AUTO
-//        val isNight =
-//            (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-//        setTheme(if (isNight) CodeEditorTheme.DARCULA.id else CodeEditorTheme.QUIET_LIGHT.id)
+        when (theme) {
+            CodeEditorTheme.AUTO -> {
+                val isNight =
+                    (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+                setTheme(if (isNight) CodeEditorTheme.DARCULA else CodeEditorTheme.QUIET_LIGHT)
+                return
+            }
 
-//
-//            CodeEditorTheme.QUIET_LIGHT -> {
-//                themeRegistry.setTheme("quietlight")
-//                ensureTextmateTheme()
-//                return
-//            }
-//
-//            CodeEditorTheme.SOLARIZED_DRAK -> {
-//                themeRegistry.setTheme("solarized_drak")
-//                ensureTextmateTheme()
-//                return
-//            }
-//
-//            CodeEditorTheme.DARCULA -> {
-//                themeRegistry.setTheme("darcula")
-//                ensureTextmateTheme()
-//                return
-//            }
-//
-//            CodeEditorTheme.ABYSS -> {
-//                themeRegistry.setTheme("abyss")
-//                ensureTextmateTheme()
-//                return
-//            }
-//        }
+            else-> {
+                themeRegistry.setTheme(theme.id)
+                ensureTextmateTheme()
+                return
+            }
+        }
     }
 
     private fun ensureTextmateTheme() {

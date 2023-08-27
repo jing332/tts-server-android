@@ -69,6 +69,9 @@
                 <data android:pathPattern=".*\\.ZIP" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".compose.plugin.PluginManagerActivity" android:exported="true" />
+
         <activity
             android:name=".ui.FilePickerActivity"
             android:theme="@style/TranslucentTheme" />

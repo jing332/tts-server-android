@@ -29,6 +29,8 @@ fun ExposedDropTextField(
     key: Any,
     keys: List<Any>,
     values: List<String>,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    onKeySame: (current: Any, new: Any) -> Boolean = { current, new -> current == new },
     onSelectedChange: (key: Any, value: String) -> Unit,
 ) {
     var selectedText = values.getOrNull(max(0, keys.indexOf(key))) ?: ""
@@ -54,6 +56,7 @@ fun ExposedDropTextField(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
+                leadingIcon = leadingIcon,
                 readOnly = true,
                 value = selectedText,
                 onValueChange = { },
@@ -67,7 +70,7 @@ fun ExposedDropTextField(
                 onDismissRequest = { expanded = false }
             ) {
                 values.forEachIndexed { index, text ->
-                    val checked = key == keys[index]
+                    val checked = onKeySame(key, keys[index])
                     DropdownMenuItem(
                         text = {
                             Text(

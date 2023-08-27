@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="colorIconTint">@android:color/white</color>
-    <color name="colorText">@android:color/white</color>
-</resources>

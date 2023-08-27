@@ -20,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,9 +38,9 @@ import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.SaveActionHandler
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
-import com.github.jing332.tts_server_android.compose.widgets.DenseOutlinedField
 import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
 import com.github.jing332.tts_server_android.compose.widgets.RowToggleButtonGroup
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
@@ -242,37 +241,16 @@ fun BasicInfoEditScreen(
                                     )
                                 }
                             )
-
-                            Column(Modifier.padding(vertical = 4.dp)) {
-                                speechRule.tagsData[systts.speechRule.tag]?.forEach { defTag ->
-                                    val key = defTag.key
-                                    val label = defTag.value["label"]
-                                    val hint = defTag.value["hint"]
-
-                                    val items = defTag.value["items"]
-                                    if (items.isNullOrEmpty()) {
-                                        DenseOutlinedField(
-                                            value = systts.speechRule.mutableTagData[key] ?: "",
-                                            onValueChange = {
-                                                onSysttsChange(
-                                                    systts.copy(
-                                                        speechRule = systts.speechRule.copy(
-                                                            tagData = systts.speechRule.mutableTagData.apply {
-                                                                this[key] = it
-                                                            }
-                                                        )
-                                                    )
-                                                )
-                                            })
-                                    } else {
-
-                                    }
-
-                                }
-                            }
                         }
-
                     }
+                }
+
+                speechRule?.let {
+                    CustomTagScreen(
+                        systts = systts,
+                        onSysttsChange = onSysttsChange,
+                        speechRule = it
+                    )
                 }
             }
 
@@ -281,6 +259,7 @@ fun BasicInfoEditScreen(
             label = { Text(stringResource(id = R.string.group)) },
             key = group,
             keys = groups,
+            onKeySame = { current, new -> (current as SystemTtsGroup).id == (new as SystemTtsGroup).id },
             values = groups.map { it.name },
             onSelectedChange = { k, _ ->
                 onSysttsChange(systts.copy(groupId = (k as SystemTtsGroup).id))
@@ -295,5 +274,93 @@ fun BasicInfoEditScreen(
                 onSysttsChange(systts.copy(displayName = it))
             }
         )
+    }
+}
+
+@Composable
+private fun CustomTagScreen(
+    systts: SystemTts,
+    onSysttsChange: (SystemTts) -> Unit,
+    speechRule: SpeechRule
+) {
+    var showHelpDialog by remember { mutableStateOf("" to "") }
+    if (showHelpDialog.first.isNotEmpty()) {
+        AppDialog(title = { Text(showHelpDialog!!.first) }, content = {
+            Text(showHelpDialog.second)
+        }, buttons = {
+            TextButton(onClick = { showHelpDialog = "" to "" }) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        }) { showHelpDialog = "" to "" }
+    }
+
+    Column(Modifier.padding(vertical = 4.dp)) {
+        speechRule.tagsData[systts.speechRule.tag]?.forEach { defTag ->
+            val key = defTag.key
+            val label = defTag.value["label"] ?: ""
+            val hint = defTag.value["hint"] ?: ""
+
+            val items = defTag.value["items"]
+            if (items.isNullOrEmpty()) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
+                    leadingIcon = {
+                        if (hint.isNotEmpty())
+                            IconButton(onClick = { showHelpDialog = label to hint }) {
+                                Icon(Icons.Default.HelpOutline, stringResource(id = R.string.help))
+                            }
+                    },
+                    label = { Text(label) },
+                    value = systts.speechRule.tagData[key] ?: "",
+                    onValueChange = {
+                        onSysttsChange(
+                            systts.copy(
+                                speechRule = systts.speechRule.copy(
+                                    tagData = systts.speechRule.mutableTagData.apply {
+                                        this[key] = it
+                                    }
+                                )
+                            )
+                        )
+                    })
+            } else {
+                val itemsMap: Map<String, String> =
+                    remember { AppConst.jsonBuilder.decodeFromString(items) }
+
+                val defaultValue = remember { defTag.value["default"] ?: "" }
+
+                println(systts.speechRule.mutableTagData[key])
+                ExposedDropTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
+                    label = { Text(label) },
+                    key = systts.speechRule.mutableTagData[key] ?: defaultValue,
+                    keys = itemsMap.keys.toList(),
+                    values = itemsMap.values.toList(),
+                    leadingIcon = {
+                        if (hint.isNotEmpty())
+                            IconButton(onClick = { showHelpDialog = label to hint }) {
+                                Icon(Icons.Default.HelpOutline, stringResource(id = R.string.help))
+                            }
+                    },
+                    onSelectedChange = { k, _ ->
+                        onSysttsChange(
+                            systts.copy(
+                                speechRule = systts.speechRule.copy(
+                                    tagData = systts.speechRule.mutableTagData.apply {
+                                        this[key] = k as String
+                                    }
+                                )
+                            )
+                        )
+                    }
+                )
+
+            }
+
+        }
     }
 }

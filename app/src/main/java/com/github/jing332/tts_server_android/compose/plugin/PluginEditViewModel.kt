@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.systts.plugin
+package com.github.jing332.tts_server_android.compose.plugin
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -24,7 +24,7 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
     }
 
     lateinit var pluginEngine: TtsPluginUiEngine
-    internal lateinit var pluginInfo: Plugin private set
+    internal lateinit var plugin: Plugin private set
     internal lateinit var pluginTTS: PluginTTS private set
 
     private val _displayLoggerLiveData: MutableLiveData<Boolean> = MutableLiveData()
@@ -37,29 +37,29 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
         get() = _updateCodeLiveData
 
     fun init(plugin: Plugin, defaultCode: String) {
-        pluginInfo = plugin.apply { if (code.isEmpty()) code = defaultCode }
-        pluginTTS = PluginTTS(plugin = pluginInfo)
+        this.plugin = plugin.apply { if (code.isEmpty()) code = defaultCode }
+        pluginTTS = PluginTTS(plugin = this.plugin)
         updateTTS(pluginTTS)
 
-        _updateCodeLiveData.postValue(pluginInfo.code)
+        _updateCodeLiveData.postValue(this.plugin.code)
     }
 
     fun updateTTS(tts: PluginTTS) {
         pluginEngine = TtsPluginUiEngine(tts, getApplication())
         pluginTTS = tts.also {
             it.pluginEngine = pluginEngine
-            it.plugin = pluginInfo
+            it.plugin = plugin
         }
     }
 
-    fun updatePluginCode(code: String, isSave: Boolean = false) {
-        pluginInfo.code = code
+    fun updateCode(code: String, isSave: Boolean = false) {
+        plugin.code = code
         pluginEngine.code = code
-        if (isSave) appDb.pluginDao.update()
+//        if (isSave) appDb.pluginDao.update()
     }
 
     fun clearPluginCache() {
-        val file = File("${app.externalCacheDir!!.absolutePath}/${pluginInfo.pluginId}")
+        val file = File("${app.externalCacheDir!!.absolutePath}/${plugin.pluginId}")
         file.deleteRecursively()
     }
 
@@ -101,7 +101,6 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
                     val bytes = audio.readBytes()
                     pluginEngine.logger.i("音频大小: ${bytesToReadable(bytes.size.toLong())}")
                 }
-
             }.onFailure {
                 writeErrorLog(it)
             }

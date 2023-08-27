@@ -9,5 +9,5 @@ object PluginConfig : KotprefModel() {
     override val kotprefName: String
         get() = "plugin"
 
-    var sampleText by stringPref("示例文本。 Sample text.")
+                var sampleText by stringPref("示例文本。 Sample text.")
 }

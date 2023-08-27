@@ -1,7 +1,8 @@
 package com.github.jing332.tts_server_android.utils
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import java.util.regex.Pattern
 
 object StringUtils {
@@ -104,4 +105,16 @@ fun String.appendHtmlBr(count: Int = 1): String {
 
 fun String.toNumberInt(): Int {
     return this.replace(Regex("[^0-9]"), "").toIntOrNull() ?: 0
+}
+
+fun String.bytesToReadable(bytes: Long): String {
+    val kb = 1024
+    val mb = kb * 1024
+    val gb = mb * 1024
+
+    return when {
+        bytes < mb -> "${"%.2f".format(bytes.toDouble() / kb)} KB"
+        bytes < gb -> "${"%.2f".format(bytes.toDouble() / mb)} MB"
+        else -> "$bytes B"
+    }
 }

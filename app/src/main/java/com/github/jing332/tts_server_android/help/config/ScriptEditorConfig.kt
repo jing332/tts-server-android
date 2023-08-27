@@ -11,6 +11,6 @@ object ScriptEditorConfig : KotprefModel() {
     var isRemoteSyncEnabled by booleanPref(false)
     var remoteSyncPort by intPref(4566)
 
-    var codeEditorTheme by intPref(CodeEditorTheme.AUTO)
+    var codeEditorTheme by intPref(0)
     var isCodeEditorWordWrapEnabled by booleanPref(false)
 }

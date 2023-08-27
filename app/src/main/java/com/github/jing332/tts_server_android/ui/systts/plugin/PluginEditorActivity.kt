@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.nav.NavRoutes
+import com.github.jing332.tts_server_android.compose.plugin.PluginEditorViewModel
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -49,7 +50,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
             plugin = intent.getParcelableExtra(KeyConst.KEY_DATA) ?: Plugin(),
             defaultCode = resources.assets.open("defaultData/plugin-azure.js").readAllText()
         )
-        supportActionBar?.subtitle = vm.pluginInfo.name
+        supportActionBar?.subtitle = vm.plugin.name
 
         vm.codeLiveData.observe(this) {
             editor.setText(it)
@@ -97,7 +98,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
     }
 
     override fun updateCode(code: String) {
-        vm.updatePluginCode(code)
+        vm.updateCode(code)
     }
 
     override fun clearCacheFile(): Boolean {
@@ -106,7 +107,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
         return true
     }
 
-    override fun onGetSaveFileName(): String = "ttsrv-${vm.pluginInfo.name}.js"
+    override fun onGetSaveFileName(): String = "ttsrv-${vm.plugin.name}.js"
 
     override fun onSave(): Parcelable? {
         try {
@@ -115,7 +116,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
             displayErrorDialog(e)
             return null
         }
-        return vm.pluginInfo
+        return vm.plugin
     }
 
     override fun getLogger(): Logger = vm.pluginEngine.logger
@@ -124,7 +125,7 @@ class PluginEditorActivity : BaseScriptEditorActivity() {
     }
 
     private fun previewUi() {
-        vm.updatePluginCode(editor.text.toString(), isSave = true)
+        vm.updateCode(editor.text.toString(), isSave = true)
 //        startForResult.launch(Intent(this, PluginTtsEditActivity::class.java).apply {
 //            putExtra(BaseTtsEditActivity.KEY_BASIC_VISIBLE, false)
 //            putExtra(BaseTtsEditActivity.KEY_DATA, SystemTts(tts = vm.pluginTTS))
