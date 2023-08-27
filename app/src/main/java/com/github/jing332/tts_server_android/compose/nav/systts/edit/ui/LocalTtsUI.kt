@@ -19,12 +19,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,17 +34,16 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.nav.systts.AuditionDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.IntSlider
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.AuditionTextField
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.base.TtsTopAppBar
-import com.github.jing332.tts_server_android.compose.nav.systts.AuditionDialog
 import com.github.jing332.tts_server_android.compose.widgets.DenseOutlinedField
 import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
-import kotlinx.coroutines.launch
 
 class LocalTtsUI : TtsUI() {
     @Composable
@@ -142,7 +141,6 @@ class LocalTtsUI : TtsUI() {
         onSave: () -> Unit,
         onCancel: () -> Unit
     ) {
-        val callbacks = rememberSaveCallBacks()
         val scope = rememberCoroutineScope()
         Scaffold(
             topBar = {
@@ -150,12 +148,7 @@ class LocalTtsUI : TtsUI() {
                     title = { Text(stringResource(id = R.string.edit_local_tts)) },
                     onBackAction = onCancel,
                     onSaveAction = {
-                        scope.launch {
-                            for (callback in callbacks) {
-                                if (!callback.onSave()) return@launch
-                            }
-                            onSave()
-                        }
+                        onSave()
                     }
                 )
             }
@@ -177,7 +170,21 @@ class LocalTtsUI : TtsUI() {
         onSysttsChange: (SystemTts) -> Unit,
         vm: LocalTtsViewModel = viewModel()
     ) {
+        var displayName by remember { mutableStateOf("") }
+        val systts by rememberUpdatedState(newValue = systts)
         val tts = systts.tts as LocalTTS
+
+        SaveActionHandler {
+            if (systts.displayName.isNullOrBlank())
+                onSysttsChange(
+                    systts.copy(
+                        displayName = displayName,
+                    )
+                )
+
+            true
+        }
+
         var showAuditionDialog by remember { mutableStateOf(false) }
         if (showAuditionDialog)
             AuditionDialog(systts = systts) {
@@ -208,8 +215,9 @@ class LocalTtsUI : TtsUI() {
                     key = tts.engine ?: "",
                     keys = vm.engines.map { it.name },
                     values = vm.engines.map { it.label },
-                    onSelectedChange = { k, _ ->
+                    onSelectedChange = { k, name ->
                         onSysttsChange(systts.copy(tts = tts.copy(engine = k as String)))
+                        displayName = name
                     }
                 )
 

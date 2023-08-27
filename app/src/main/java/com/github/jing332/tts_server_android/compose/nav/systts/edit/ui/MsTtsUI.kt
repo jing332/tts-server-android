@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -111,8 +112,6 @@ class MsTtsUI : TtsUI() {
         onSave: () -> Unit,
         onCancel: () -> Unit
     ) {
-        val saveSignal = remember { mutableStateOf<(() -> Unit)?>(null) }
-        var name by remember { mutableStateOf(systts.displayName ?: "") }
         Scaffold(
             modifier = modifier,
             topBar = {
@@ -120,10 +119,6 @@ class MsTtsUI : TtsUI() {
                     title = { Text(text = stringResource(id = R.string.edit_builtin_tts)) },
                     onBackAction = onCancel,
                     onSaveAction = {
-                        saveSignal.value?.invoke()
-                        if (systts.displayName.isNullOrBlank())
-                            onSysttsChange(systts.copy(displayName = name))
-
                         onSave()
                     }
                 )
@@ -146,7 +141,6 @@ class MsTtsUI : TtsUI() {
                         .padding(8.dp),
                     systts = systts,
                     onSysttsChange = onSysttsChange,
-                    onVoiceName = { name = it }
                 )
 
                 ParamsEditScreen(
@@ -165,12 +159,26 @@ class MsTtsUI : TtsUI() {
         modifier: Modifier,
         systts: SystemTts,
         onSysttsChange: (SystemTts) -> Unit,
-        onVoiceName: (String) -> Unit,
 
         vm: MsTtsViewModel = viewModel()
     ) {
         val context = LocalContext.current
+        var displayName by remember { mutableStateOf("") }
+
+        @Suppress("NAME_SHADOWING")
+        val systts by rememberUpdatedState(newValue = systts)
         val tts = systts.tts as MsTTS
+        SaveActionHandler {
+            if (systts.displayName.isNullOrBlank())
+                onSysttsChange(
+                    systts.copy(
+                        displayName = displayName
+                    )
+                )
+
+            true
+        }
+
         Column(modifier) {
             val apis = remember {
                 listOf(R.string.systts_api_edge, R.string.systts_api_edge_okhttp)
@@ -224,7 +232,8 @@ class MsTtsUI : TtsUI() {
                             tts = tts.copy(voiceName = voice as String)
                         )
                     )
-                    onVoiceName(name)
+
+                    displayName = name
                 },
                 modifier = Modifier.padding(top = 4.dp)
             )

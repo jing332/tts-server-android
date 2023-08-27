@@ -158,6 +158,8 @@
                 <data android:pathPattern=".*\\.JS" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".compose.LibrariesActivity" />
         <activity
             android:name=".compose.ComposeMainActivity"
             android:exported="true"

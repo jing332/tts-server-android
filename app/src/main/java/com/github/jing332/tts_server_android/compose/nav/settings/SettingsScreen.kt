@@ -296,12 +296,12 @@ fun SettingsScreen(drawerState: DrawerState) {
 
 
             var requestTimeout by remember { SystemTtsConfig.requestTimeout }
-            val requestTimeoutValue = "${requestTimeout}s"
+            val requestTimeoutValue = "${requestTimeout / 1000}s"
             SliderPreference(
                 title = { Text(stringResource(id = R.string.request_timeout)) },
                 subTitle = { Text(stringResource(id = R.string.request_timeout_summary)) },
-                value = requestTimeout.toFloat(),
-                onValueChange = { requestTimeout = it.toInt() },
+                value = (requestTimeout / 1000).toFloat(),
+                onValueChange = { requestTimeout = it.toInt() * 1000 },
                 valueRange = 1f..30f,
                 icon = { Icon(Icons.Default.AccessTime, null) },
             ) { Text(requestTimeoutValue) }

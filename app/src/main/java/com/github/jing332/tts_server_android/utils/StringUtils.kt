@@ -101,3 +101,7 @@ fun String.appendHtmlBr(count: Int = 1): String {
     }
     return strBuilder.toString()
 }
+
+fun String.toNumberInt(): Int {
+    return this.replace(Regex("[^0-9]"), "").toIntOrNull() ?: 0
+}

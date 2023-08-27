@@ -115,8 +115,6 @@ class PluginTtsUI : TtsUI() {
         onSave: () -> Unit,
         onCancel: () -> Unit,
     ) {
-        var name by remember { mutableStateOf("") }
-        val scope = rememberCoroutineScope()
         Scaffold(
             modifier = modifier,
             topBar = {
@@ -124,12 +122,7 @@ class PluginTtsUI : TtsUI() {
                     title = { Text(text = stringResource(id = R.string.edit_plugin_tts)) },
                     onBackAction = onCancel,
                     onSaveAction = {
-                        scope.launch {
-                            if (systts.displayName?.isBlank() == true)
-                                onSysttsChange(systts.copy(displayName = name))
-
-                            onSave()
-                        }
+                        onSave()
                     }
                 )
             }
@@ -140,7 +133,6 @@ class PluginTtsUI : TtsUI() {
                     .verticalScroll(
                         rememberScrollState()
                     ),
-                voiceName = { name = it },
                 systts = systts, onSysttsChange = onSysttsChange,
             )
         }
@@ -150,14 +142,20 @@ class PluginTtsUI : TtsUI() {
     fun EditContentScreen(
         modifier: Modifier,
         systts: SystemTts,
-        voiceName: (String) -> Unit,
         onSysttsChange: (SystemTts) -> Unit,
         vm: PluginTtsViewModel = viewModel(),
     ) {
+        var displayName by remember { mutableStateOf("") }
+
+        @Suppress("NAME_SHADOWING")
+        val systts by rememberUpdatedState(newValue = systts)
         val tts by rememberUpdatedState(newValue = systts.tts as PluginTTS)
         val context = LocalContext.current
 
         SaveActionHandler {
+            if (systts.displayName.isNullOrBlank())
+                onSysttsChange(systts.copy(displayName = displayName))
+
             val sampleRate = try {
                 withIO { vm.engine.getSampleRate(tts.locale, tts.voice) ?: 16000 }
             } catch (e: Exception) {
@@ -178,9 +176,6 @@ class PluginTtsUI : TtsUI() {
                 null
             }
 
-            println(sampleRate)
-            println(isNeedDecode)
-            println("---")
             if (sampleRate != null && isNeedDecode != null) {
                 onSysttsChange(
                     systts.copy(
@@ -194,7 +189,7 @@ class PluginTtsUI : TtsUI() {
                 )
 
                 true
-            }else
+            } else
                 false
         }
 
@@ -263,7 +258,7 @@ class PluginTtsUI : TtsUI() {
                             context.displayErrorDialog(it)
                         }
 
-                        voiceName(name)
+                        displayName = name
                     }
                 )
 

@@ -23,10 +23,10 @@ fun Context.toast(message: CharSequence?) {
     }
 }
 
-fun Context.longToast(@StringRes message: Int) {
+fun Context.longToast(@StringRes message: Int, vararg args: Any) {
     runOnUI {
         kotlin.runCatching {
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(message, *args), Toast.LENGTH_LONG).show()
         }
     }
 }

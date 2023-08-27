@@ -329,7 +329,7 @@
     <string name="direct_link_settings">直链设置</string>
     <string name="set_sample_text_param">设置文本参数</string>
     <string name="import_plugin">导入插件</string>
-    <string name="systts_drag_tip_msg">长按勾选框即可拖拽</string>
+    <string name="systts_drag_tip_msg">拖拽勾选框进行排序</string>
     <string name="code_editor">代码编辑器</string>
     <string name="check_update_summary">打开主界面时检查更新</string>
     <string name="edit_read_rule">编辑朗读规则</string>
@@ -447,4 +447,5 @@
     <string name="plugin_tts_get_need_decode_failed">获取音频是否需解码失败</string>
     <string name="max_retry_count_summary">请求失败后的重试次数</string>
     <string name="tts_config_not_exist">指定的TTS配置不存在</string>
+    <string name="open_source_license">开源许可</string>
 </resources>

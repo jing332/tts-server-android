@@ -27,6 +27,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleUp
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -35,7 +36,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -47,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,7 +67,6 @@ import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.nav.NavRoutes
@@ -76,11 +76,11 @@ import com.github.jing332.tts_server_android.compose.nav.settings.SettingsScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.SystemTtsScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.TtsEditContainerScreen
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
+import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
-import com.github.jing332.tts_server_android.utils.MyTools
 import com.github.jing332.tts_server_android.utils.clone
 import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.launch
@@ -89,6 +89,7 @@ import java.util.Locale
 
 val LocalNavController = compositionLocalOf<NavHostController> { error("No nav controller") }
 val LocalDrawerState = compositionLocalOf<DrawerState> { error("No drawer state") }
+val LocalTriggerAppUpdateChecker = staticCompositionLocalOf { mutableStateOf(false) }
 
 fun Context.asAppCompatActivity(): AppCompatActivity {
     return this as? AppCompatActivity ?: error("Context is not an AppCompatActivity")
@@ -100,6 +101,11 @@ class ComposeMainActivity : AppCompatActivity() {
 
         setContent {
             AppTheme {
+                if (LocalTriggerAppUpdateChecker.current.value || AppConfig.isAutoCheckUpdateEnabled.value){
+                    AutoUpdateCheckerDialog(LocalTriggerAppUpdateChecker.current.value)
+                    LocalTriggerAppUpdateChecker.current.value = false
+                }
+
                 NavHostScreen()
             }
         }
@@ -278,6 +284,7 @@ fun NavDrawerContent(
                 .padding(vertical = 16.dp, horizontal = 4.dp)
         )
 
+        val triggerUpdate = LocalTriggerAppUpdateChecker.current
         NavigationDrawerItem(
             icon = { Icon(Icons.Default.ArrowCircleUp, null) },
             label = { Text(stringResource(id = R.string.check_update)) },
@@ -285,9 +292,20 @@ fun NavDrawerContent(
             onClick = {
                 scope.launch {
                     drawerState.close()
-                    withIO { MyTools.checkUpdate(context, true) }
+                    triggerUpdate.value = true
                 }
             }
+        )
+
+        var showAboutDialog by remember { mutableStateOf(false) }
+        if (showAboutDialog)
+            AboutDialog { showAboutDialog = false }
+
+        NavigationDrawerItem(
+            icon = { Icon(Icons.Default.Info, null) },
+            label = { Text(stringResource(id = R.string.about)) },
+            selected = false,
+            onClick = { showAboutDialog = true }
         )
     }
 }

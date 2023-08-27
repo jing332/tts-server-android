@@ -5,6 +5,7 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
+    id("com.mikepenz.aboutlibraries.plugin")
 }
 
 static def buildTime() {
@@ -183,7 +184,7 @@ dependencies {
     //noinspection GradleDependency
     implementation 'com.google.android.material:material:1.9.0-beta01'
 
-    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'
 
@@ -199,7 +200,7 @@ dependencies {
 
     // RecyclerView
     implementation 'com.github.liangjingkanji:BRV:1.4.3'
-    implementation "androidx.recyclerview:recyclerview:1.3.0"
+    implementation "androidx.recyclerview:recyclerview:1.3.1"
     implementation 'me.zhanghai.android.fastscroll:library:1.2.0'
 
     implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.9'
@@ -230,8 +231,8 @@ dependencies {
     implementation("com.hankcs:hanlp:portable-1.8.4")
 
     // Media
-    implementation("androidx.media3:media3-exoplayer:1.1.0")
-    implementation("androidx.media3:media3-ui:1.1.0")
+    implementation("androidx.media3:media3-exoplayer:1.1.1")
+    implementation("androidx.media3:media3-ui:1.1.1")
 
     // https://github.com/gyf-dev/ImmersionBar
     implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
@@ -239,6 +240,9 @@ dependencies {
 
     // https://github.com/FunnySaltyFish/ComposeDataSaver
     implementation "com.github.FunnySaltyFish.ComposeDataSaver:data-saver:v1.1.5"
+
+    implementation("com.mikepenz:aboutlibraries-core:${about_lib_version}")
+    implementation("com.mikepenz:aboutlibraries-compose:${about_lib_version}")
 
     def accompanistVersion = "0.33.0-alpha"
     implementation("com.google.accompanist:accompanist-systemuicontroller:${accompanistVersion}")

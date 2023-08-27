@@ -452,4 +452,5 @@
     <string name="plugin_tts_get_need_decode_failed">Failed to get whether the audio needs to be decoded</string>
     <string name="max_retry_count_summary">The number of retries after a failed request</string>
     <string name="tts_config_not_exist">The specified TTS configuration does not exist</string>
+    <string name="open_source_license">开源许可</string>
 </resources>

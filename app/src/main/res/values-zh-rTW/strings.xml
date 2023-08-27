@@ -435,4 +435,5 @@
     <string name="plugin_tts_get_need_decode_failed">获取音频是否需解码失败</string>
     <string name="max_retry_count_summary">请求失败后的重试次数</string>
     <string name="tts_config_not_exist">指定的TTS配置不存在</string>
+    <string name="open_source_license">开源许可</string>
 </resources>
