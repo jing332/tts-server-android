@@ -6,5 +6,7 @@ sealed class NavRoutes(val id: String) {
         const val KEY_DATA = "data"
     }
 
-    data object PluginPreview : NavRoutes("plugin_preview")
+    data object PluginPreview : NavRoutes("plugin_preview"){
+        const val KEY_DATA = "data"
+    }
 }

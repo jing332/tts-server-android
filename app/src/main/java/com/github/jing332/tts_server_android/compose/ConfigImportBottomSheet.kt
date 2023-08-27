@@ -1,11 +1,13 @@
-package com.github.jing332.tts_server_android.compose.nav.systts
+package com.github.jing332.tts_server_android.compose
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +25,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -38,7 +41,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.drake.net.Net
 import com.drake.net.okhttp.trustSSLCertificate
@@ -51,6 +53,7 @@ import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
+import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -66,7 +69,7 @@ class ImportSource {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConfigImportBottomSheet(onDismissRequest: () -> Unit) {
+fun ConfigImportBottomSheet(onDismissRequest: () -> Unit, onImport: (json: String) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     suspend fun getConfig(
@@ -91,14 +94,22 @@ fun ConfigImportBottomSheet(onDismissRequest: () -> Unit) {
                 uri?.readAllText(context) ?: throw Exception("file uri is null!")
             }
 
-            else -> withMain { ClipboardUtils.text.toString() } // CLIPBOARD
+            ImportSource.CLIPBOARD -> withMain { ClipboardUtils.text.toString() } // CLIPBOARD
+
+            else -> throw IllegalArgumentException("unknown source: $src")
         }
     }
 
     var source by remember { mutableIntStateOf(0) }
     var path by remember { mutableStateOf("") }
     var url by remember { mutableStateOf("") }
-    ModalBottomSheet(onDismissRequest = onDismissRequest) {
+
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
+        modifier = Modifier.fillMaxSize(),
+        sheetState = state,
+        onDismissRequest = onDismissRequest
+    ) {
         Column(Modifier.padding(horizontal = 8.dp)) {
             Text(
                 stringResource(id = R.string.import_config),
@@ -128,45 +139,43 @@ fun ConfigImportBottomSheet(onDismissRequest: () -> Unit) {
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
 
-                when (source) {
-                    1 -> { // File
-                        val filePicker =
-                            rememberLauncherForActivityResult(contract = AppActivityResultContracts.filePickerActivity()) {
-                                it.second?.let { uri ->
-                                    path = uri.toString()
-                                }
+                AnimatedVisibility(visible = source == ImportSource.FILE) {
+                    val filePicker =
+                        rememberLauncherForActivityResult(contract = AppActivityResultContracts.filePickerActivity()) {
+                            it.second?.let { uri ->
+                                path = uri.toString()
                             }
+                        }
 
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = path,
-                            onValueChange = { path = it },
-                            label = {
-                                Text(stringResource(id = R.string.file))
-                            },
-                            trailingIcon = {
-                                IconButton(onClick = {
-                                    filePicker.launch(FilePickerActivity.RequestSelectFile())
-                                }) {
-                                    Icon(
-                                        Icons.Default.FileOpen,
-                                        stringResource(id = R.string.select_file)
-                                    )
-                                }
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = path,
+                        onValueChange = { path = it },
+                        label = {
+                            Text(stringResource(id = R.string.file))
+                        },
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                filePicker.launch(FilePickerActivity.RequestSelectFile())
+                            }) {
+                                Icon(
+                                    Icons.Default.FileOpen,
+                                    stringResource(id = R.string.select_file)
+                                )
                             }
-                        )
-                    }
+                        }
+                    )
+                }
 
-                    2 -> {
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = url,
-                            onValueChange = { url = it },
-                            label = {
-                                Text(stringResource(id = R.string.url_net))
-                            }
-                        )
-                    }
+                AnimatedVisibility(visible = source == ImportSource.URL) {
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = url,
+                        onValueChange = { url = it },
+                        label = {
+                            Text(stringResource(id = R.string.url_net))
+                        }
+                    )
                 }
             }
 
@@ -178,7 +187,7 @@ fun ConfigImportBottomSheet(onDismissRequest: () -> Unit) {
                             runCatching {
                                 val jsonStr =
                                     getConfig(src = source, url = url, uri = Uri.parse(path))
-                                println(jsonStr)
+                                onImport(jsonStr)
                             }.onFailure {
                                 context.displayErrorDialog(it)
                             }
@@ -206,8 +215,9 @@ data class ConfigModel(
 fun SelectImportConfigDialog(
     onDismissRequest: () -> Unit,
     models: List<ConfigModel>,
-    onSelectedList: (list: List<Any>) -> Unit
+    onSelectedList: (list: List<Any>) -> Int
 ) {
+    val context = LocalContext.current
     val modelsState = remember { mutableStateListOf(*models.toTypedArray()) }
     AppDialog(
         onDismissRequest = onDismissRequest,
@@ -225,8 +235,12 @@ fun SelectImportConfigDialog(
                             }
                             .padding(vertical = 4.dp)
                     ) {
-                        Checkbox(checked = item.isSelected, onCheckedChange = null)
-                        Column {
+                        Checkbox(
+                            checked = item.isSelected,
+                            onCheckedChange = null,
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        )
+                        Column(Modifier.padding(start = 4.dp)) {
                             Text(item.title, style = MaterialTheme.typography.titleMedium)
                             Text(item.subtitle, style = MaterialTheme.typography.bodyMedium)
                         }
@@ -236,21 +250,15 @@ fun SelectImportConfigDialog(
         },
         buttons = {
             TextButton(onClick = {
-                onSelectedList.invoke(modelsState.filter { it.isSelected }.map { it.data })
+                val count =
+                    onSelectedList.invoke(modelsState.filter { it.isSelected }.map { it.data })
+                if (count > 0) {
+                    onDismissRequest()
+                    context.longToast(R.string.config_import_success_msg, count)
+                }
             }) {
                 Text(stringResource(id = R.string.import_config))
             }
         }
     )
-}
-
-@Preview
-@Composable
-fun PreviewImportBottomSheet() {
-    MaterialTheme {
-        var show by remember { mutableStateOf(true) }
-        if (show) {
-            ConfigImportBottomSheet(onDismissRequest = { show = false })
-        }
-    }
 }

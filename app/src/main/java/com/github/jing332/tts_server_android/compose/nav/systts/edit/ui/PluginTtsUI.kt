@@ -143,6 +143,7 @@ class PluginTtsUI : TtsUI() {
         modifier: Modifier,
         systts: SystemTts,
         onSysttsChange: (SystemTts) -> Unit,
+        showBasicInfo: Boolean = true,
         vm: PluginTtsViewModel = viewModel(),
     ) {
         var displayName by remember { mutableStateOf("") }
@@ -209,11 +210,12 @@ class PluginTtsUI : TtsUI() {
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
             ) {
-                BasicInfoEditScreen(
-                    Modifier.fillMaxWidth(),
-                    systts = systts,
-                    onSysttsChange = onSysttsChange
-                )
+                if (showBasicInfo)
+                    BasicInfoEditScreen(
+                        Modifier.fillMaxWidth(),
+                        systts = systts,
+                        onSysttsChange = onSysttsChange
+                    )
 
                 ExposedDropTextField(
                     modifier = Modifier

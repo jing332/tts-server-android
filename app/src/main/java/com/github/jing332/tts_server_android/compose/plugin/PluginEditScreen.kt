@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.plugin
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -14,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -23,11 +25,15 @@ import com.github.jing332.text_searcher.ui.plugin.LoggerBottomSheet
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.codeeditor.CodeEditorScreen
+import com.github.jing332.tts_server_android.compose.navigate
+import com.github.jing332.tts_server_android.compose.navigateSingleTop
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.conf.PluginConfig
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
+import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
+import com.github.jing332.tts_server_android.utils.longToast
 import io.github.rosemoe.sora.widget.CodeEditor
 
 @Composable
@@ -43,6 +49,17 @@ internal fun PluginEditScreen(
 
 //    @Suppress("NAME_SHADOWING")
 //    var plugin by remember { mutableStateOf(plugin) }
+
+    val ttsEditRet by navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<PluginTTS?>(
+        "ret",
+        null
+    )?.collectAsState() ?: rememberUpdatedState(null)
+    LaunchedEffect(ttsEditRet) {
+        ttsEditRet?.let {
+            context.longToast("数据仅本次编辑生效")
+            vm.updateTTS(it)
+        }
+    }
 
     val code by vm.codeLiveData.asFlow().collectAsState(initial = "")
     LaunchedEffect(codeEditor, code) {
@@ -108,6 +125,11 @@ internal fun PluginEditScreen(
                 text = { Text(stringResource(id = R.string.plugin_preview_ui)) },
                 onClick = {
                     dismiss()
+                    navController.navigate(
+                        NavRoutes.PluginPreview.id, Bundle().apply {
+                            putParcelable(NavRoutes.PluginPreview.KEY_DATA, vm.pluginTTS)
+                        }
+                    )
                 },
                 leadingIcon = {
                     Icon(Icons.Default.Settings, null)
