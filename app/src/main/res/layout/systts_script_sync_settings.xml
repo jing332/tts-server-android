@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
-        android:text="@string/script_sync_service_tip"
+        android:text="@string/remote_sync_service_description"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceSubtitle2" />
 

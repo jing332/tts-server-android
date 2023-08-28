@@ -21,10 +21,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.github.jing332.tts_server_android.compose.codeeditor.LoggerBottomSheet
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.codeeditor.CodeEditorScreen
+import com.github.jing332.tts_server_android.compose.codeeditor.LoggerBottomSheet
 import com.github.jing332.tts_server_android.compose.navigate
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.conf.PluginConfig
@@ -118,33 +118,39 @@ internal fun PluginEditScreen(
                 }
             }
         },
-        onUpdate = { codeEditor = it },
-        actions = { dismiss ->
-            DropdownMenuItem(
-                text = { Text(stringResource(id = R.string.plugin_preview_ui)) },
-                onClick = {
-                    dismiss()
-                    navController.navigate(
-                        NavRoutes.PluginPreview.id, Bundle().apply {
-                            putParcelable(NavRoutes.PluginPreview.KEY_DATA, vm.pluginTTS)
-                        }
-                    )
-                },
-                leadingIcon = {
-                    Icon(Icons.Default.Settings, null)
+        onRemoteAction = { name, body ->
+            when (name) {
+                "ui" -> {
+                    context.longToast("TODO 暂未实现")
                 }
-            )
+            }
+        },
+        onUpdate = { codeEditor = it }
+    ) { dismiss ->
+        DropdownMenuItem(
+            text = { Text(stringResource(id = R.string.plugin_preview_ui)) },
+            onClick = {
+                dismiss()
+                navController.navigate(
+                    NavRoutes.PluginPreview.id, Bundle().apply {
+                        putParcelable(NavRoutes.PluginPreview.KEY_DATA, vm.pluginTTS)
+                    }
+                )
+            },
+            leadingIcon = {
+                Icon(Icons.Default.Settings, null)
+            }
+        )
 
-            DropdownMenuItem(
-                text = { Text(stringResource(id = R.string.set_sample_text_param)) },
-                onClick = {
-                    dismiss()
-                    showTextParamDialog = true
-                },
-                leadingIcon = {
-                    Icon(Icons.Default.TextFields, null)
-                }
-            )
-        }
-    )
+        DropdownMenuItem(
+            text = { Text(stringResource(id = R.string.set_sample_text_param)) },
+            onClick = {
+                dismiss()
+                showTextParamDialog = true
+            },
+            leadingIcon = {
+                Icon(Icons.Default.TextFields, null)
+            }
+        )
+    }
 }

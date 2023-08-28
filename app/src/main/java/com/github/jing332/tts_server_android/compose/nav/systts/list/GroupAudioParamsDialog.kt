@@ -104,7 +104,5 @@ fun GroupAudioParamsDialog(
                     Text(stringResource(id = R.string.confirm))
                 }
             }
-        }) {
-        onDismissRequest()
-    }
+        }, onDismissRequest = onDismissRequest)
 }

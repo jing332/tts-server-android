@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
@@ -86,6 +87,12 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
                 },
 
                 actions = {
+                    IconButton(onClick = {
+                        navController.navigate(NavRoutes.SpeechRuleEdit.id)
+                    }) {
+                        Icon(Icons.Default.Add, stringResource(id = R.string.add_config))
+                    }
+
                     var showOptions by remember { mutableStateOf(false) }
                     IconButton(onClick = { showOptions = true }) {
                         Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_options))

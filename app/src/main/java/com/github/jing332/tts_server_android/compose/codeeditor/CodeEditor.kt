@@ -19,8 +19,11 @@ fun CodeEditor(modifier: Modifier, onUpdate: (CodeEditor) -> Unit) {
             tag = helper
         }
     }, update = {
-        val helper = (it.tag as CodeEditorHelper)
-        helper.setTheme(CodeEditorConfig.theme.value)
+//        val helper = (it.tag as CodeEditorHelper)
         onUpdate(it)
     })
+}
+
+fun CodeEditor.helper(): CodeEditorHelper {
+    return tag as CodeEditorHelper
 }

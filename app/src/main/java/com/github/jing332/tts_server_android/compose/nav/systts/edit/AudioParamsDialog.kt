@@ -30,9 +30,7 @@ fun AudioParamsDialog(
                     value = params.speed,
                     onValueChange = {
                         onParamsChange(
-                            params.copy(
-                                speed = DecimalFormat("#.00").format(it).toFloat()
-                            )
+                            params.copy(speed = DecimalFormat("#.00").format(it).toFloat())
                         )
                     },
                     valueRange = 0.0f..3.0f
@@ -49,9 +47,7 @@ fun AudioParamsDialog(
                     value = params.volume,
                     onValueChange = {
                         onParamsChange(
-                            params.copy(
-                                volume = DecimalFormat("#.00").format(it).toFloat()
-                            )
+                            params.copy(volume = DecimalFormat("#.00").format(it).toFloat())
                         )
                     },
                     valueRange = 0.0f..3.0f
@@ -90,7 +86,6 @@ fun AudioParamsDialog(
                     Text(stringResource(id = R.string.close))
                 }
             }
-        }) {
-        onDismissRequest()
-    }
+        }, onDismissRequest = onDismissRequest
+    )
 }

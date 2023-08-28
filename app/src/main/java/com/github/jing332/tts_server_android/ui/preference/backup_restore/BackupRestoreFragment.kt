@@ -47,6 +47,7 @@ class BackupRestoreFragment : PreferenceFragmentCompat() {
         super.onViewCreated(view, savedInstanceState)
 
         findPreference<Preference>(getString(R.string.key_backup))?.apply {
+
             icon?.setTint(requireContext().colorOnBackground)
             setOnPreferenceClickListener {
 

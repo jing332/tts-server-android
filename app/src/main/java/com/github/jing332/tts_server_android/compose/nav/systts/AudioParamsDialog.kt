@@ -76,7 +76,6 @@ fun GlobalAudioParamsDialog(onDismissRequest: () -> Unit) {
                     Text(stringResource(id = R.string.close))
                 }
             }
-        }) {
-        onDismissRequest()
-    }
+        }, onDismissRequest = onDismissRequest
+    )
 }

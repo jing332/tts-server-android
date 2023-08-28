@@ -26,10 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.github.jing332.tts_server_android.R
 import kotlin.math.max
 
 @Preview
@@ -67,12 +69,14 @@ fun PreviewAppDialog() {
 @Composable
 fun AppDialog(
     modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    properties: DialogProperties = DialogProperties(),
     title: @Composable () -> Unit,
     content: @Composable BoxScope.() -> Unit,
     dialogContentPadding: PaddingValues = PaddingValues(12.dp),
-    buttons: @Composable BoxScope.() -> Unit,
-    properties: DialogProperties = DialogProperties(),
-    onDismissRequest: () -> Unit
+    buttons: @Composable BoxScope.() -> Unit = {
+        TextButton(onClick = onDismissRequest) { Text(stringResource(id = R.string.close)) }
+    },
 ) = AlertDialog(modifier = modifier, onDismissRequest = onDismissRequest, properties = properties) {
     Surface(
         tonalElevation = 8.dp, shadowElevation = 8.dp, shape = MaterialTheme.shapes.large

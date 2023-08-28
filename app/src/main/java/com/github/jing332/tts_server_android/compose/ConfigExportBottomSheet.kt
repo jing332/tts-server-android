@@ -129,11 +129,11 @@ fun ConfigExportBottomSheet(
                 TextButton(onClick = { showSelectUploadTargetDialog = false }) {
                     Text(stringResource(id = R.string.cancel))
                 }
-            }
-        ) { showSelectUploadTargetDialog = false }
+            }, onDismissRequest = { showSelectUploadTargetDialog = false }
+        )
     }
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, /*modifier = Modifier.fillMaxSize()*/) {
+    ModalBottomSheet(onDismissRequest = onDismissRequest /*modifier = Modifier.fillMaxSize()*/) {
         Column(
             Modifier
                 .fillMaxWidth()

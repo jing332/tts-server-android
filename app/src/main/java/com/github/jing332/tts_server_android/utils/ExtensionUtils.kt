@@ -27,6 +27,12 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.WindowMetrics
 import androidx.activity.OnBackPressedCallback
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -41,6 +47,14 @@ import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.constant.KeyConst
 import java.lang.reflect.ParameterizedType
+
+@Composable
+fun Modifier.clickableRipple(enabled: Boolean = true, onClick: () -> Unit) = this.clickable(
+    enabled = enabled,
+    indication = rememberRipple(),
+    interactionSource = remember { MutableInteractionSource() },
+    onClick = onClick
+)
 
 fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
     val spanned = this@toAnnotatedString

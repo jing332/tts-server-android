@@ -22,13 +22,11 @@ import com.github.jing332.tts_server_android.constant.CodeEditorTheme
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.databinding.SysttsBaseScriptEditorActivityBinding
 import com.github.jing332.tts_server_android.databinding.SysttsScriptSyncSettingsBinding
-import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.help.config.ScriptEditorConfig
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.base.AppBackActivity
-import com.github.jing332.tts_server_android.ui.view.AppDialogs
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.CodeEditorHelper
 import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
@@ -197,7 +195,7 @@ abstract class BaseScriptEditorActivity :
                     SysttsScriptSyncSettingsBinding.inflate(layoutInflater, view, true)
                 syncBinding.apply {
                     tvTip.text =
-                        Html.fromHtml(getString(R.string.script_sync_service_tip))
+                        Html.fromHtml(getString(R.string.remote_sync_service_description))
 
                     sw.isChecked = ScriptEditorConfig.isRemoteSyncEnabled
                     tilPort.editText!!.setText(ScriptEditorConfig.remoteSyncPort.toString())

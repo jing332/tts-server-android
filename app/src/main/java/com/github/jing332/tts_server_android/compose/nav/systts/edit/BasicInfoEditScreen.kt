@@ -114,8 +114,9 @@ fun BasicInfoEditScreen(
                 TextButton(onClick = { showStandbyHelpDialog = false }) {
                     Text(stringResource(id = R.string.confirm))
                 }
-            }
-        ) { showStandbyHelpDialog = false }
+            },
+            onDismissRequest = { showStandbyHelpDialog = false }
+        )
 
     var showParamsDialog by remember { mutableStateOf(false) }
     if (showParamsDialog)
@@ -293,7 +294,7 @@ private fun CustomTagScreen(
             TextButton(onClick = { showHelpDialog = "" to "" }) {
                 Text(stringResource(id = R.string.confirm))
             }
-        }) { showHelpDialog = "" to "" }
+        }, onDismissRequest = { showHelpDialog = "" to "" })
     }
 
     Column(Modifier.padding(vertical = 4.dp)) {
