@@ -6,10 +6,10 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.github.jing332.tts_server_android.compose.systts.plugin.PluginManagerActivity
+import com.github.jing332.tts_server_android.compose.systts.speechrule.SpeechRuleManagerActivity
 import com.github.jing332.tts_server_android.ui.forwarder.MsForwarderSwitchActivity
 import com.github.jing332.tts_server_android.ui.forwarder.SystemForwarderSwitchActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
-import com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleManagerActivity
 
 object ShortCuts {
     private inline fun <reified T> buildIntent(context: Context): Intent {

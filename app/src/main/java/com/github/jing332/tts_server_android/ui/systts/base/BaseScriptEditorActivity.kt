@@ -248,17 +248,17 @@ abstract class BaseScriptEditorActivity :
                     .setPositiveButton(R.string.cancel, null)
                     .show()
             }
-
-            R.id.menu_set_sample_text -> {
-                AppDialogs.displayInputDialog(
-                    this,
-                    getString(R.string.set_sample_text_param),
-                    getString(R.string.audition_text),
-                    PluginConfig.sampleText
-                ) {
-                    PluginConfig.sampleText = it
-                }
-            }
+//
+//            R.id.menu_set_sample_text -> {
+//                AppDialogs.displayInputDialog(
+//                    this,
+//                    getString(R.string.set_sample_text_param),
+//                    getString(R.string.audition_text),
+//                    PluginConfig.sampleText
+//                ) {
+//                    PluginConfig.sampleText = it
+//                }
+//            }
 
             R.id.menu_save_as_file -> saveAsFile()
             R.id.menu_save -> {

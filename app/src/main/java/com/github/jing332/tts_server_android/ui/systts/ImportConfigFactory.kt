@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ui.base.import1.BaseImportConfigBottomSheetFragment
-import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
-import com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleManagerActivity
 
 object ImportConfigFactory {
     private const val ID_LIST = "list"
@@ -27,9 +25,9 @@ object ImportConfigFactory {
     fun createFragment(type: String): BaseImportConfigBottomSheetFragment? {
         return when (type) {
             ID_LIST -> com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
-            ID_PLUGIN -> com.github.jing332.tts_server_android.ui.systts.plugin.ImportBottomSheetFragment()
+//            ID_PLUGIN -> com.github.jing332.tts_server_android.ui.systts.plugin.ImportBottomSheetFragment()
             ID_REPLACE_RULE -> com.github.jing332.tts_server_android.ui.systts.replace.ImportConfigBottomSheetFragment()
-            ID_SPEECH_RULE -> com.github.jing332.tts_server_android.ui.systts.speech_rule.ImportConfigBottomSheetFragment()
+//            ID_SPEECH_RULE -> com.github.jing332.tts_server_android.ui.systts.speech_rule.ImportConfigBottomSheetFragment()
             else -> null
         }
     }
@@ -38,20 +36,20 @@ object ImportConfigFactory {
      * @return 是否识别成功
      */
     fun Context.newEditorFromJS(js: String): Boolean {
-        if (js.contains("PluginJS")) {
-            startActivity(Intent(this, PluginManagerActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                putExtra("js", js)
-            })
-
-        } else if (js.contains("SpeechRuleJS")) {
-            startActivity(Intent(this, SpeechRuleManagerActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                putExtra("js", js)
-            })
-        } else
+//        if (js.contains("PluginJS")) {
+//            startActivity(Intent(this, PluginManagerActivity::class.java).apply {
+//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                putExtra("js", js)
+//            })
+//
+//        } else if (js.contains("SpeechRuleJS")) {
+//            startActivity(Intent(this, SpeechRuleManagerActivity::class.java).apply {
+//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                putExtra("js", js)
+//            })
+//        } else
             return false
 
-        return true
+//        return true
     }
 }
