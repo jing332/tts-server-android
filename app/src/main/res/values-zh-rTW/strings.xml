@@ -386,23 +386,11 @@
     <string name="spinner_drop_down_max_count_msg">当下拉框内容数超过设置值时将以弹出对话框形式显示。</string>
     <string name="systts_plugin_please_set_vars">请单击此处设置变量</string>
     <string name="clear_log">清空日志</string>
-    <string name="nav_app_bar_open_drawer_description">打开抽屉式导航栏</string>
-    <string name="theme_sky_blue">天蓝</string>
-    <string name="theme_sorghum_red">高粱红</string>
-    <string name="theme_peacock_green">孔雀绿</string>
-    <string name="theme_golden">金黄</string>
-    <string name="theme_lilac_brown">丁香棕</string>
-    <string name="theme_cyan">白青</string>
-    <string name="theme_sakura_pink">樱花粉</string>
-    <string name="theme_ink_grey">墨灰</string>
-    <string name="theme_emerald_green">碧绿</string>
-    <string name="theme_red_gold">赤金</string>
+    <string name="nav_app_bar_open_drawer_description" tools:ignore="PrivateResource">打开抽屉式导航栏</string>
+
     <string name="import_config_type_not_match_msg">格式错误(预期为: 【%1$s】)。\n您输入的格式为 【%2$s】, 请前往对应管理界面进行导入。</string>
     <string name="import_config_type_unknown_msg">格式未知，请输入正确的配置。</string>
     <string name="still_to_import">仍要导入</string>
-    <string name="theme_kite_crown_purple">鹞冠紫</string>
-    <string name="theme_beautiful_person_orange">美人焦橙</string>
-    <string name="theme_magenta">紫红</string>
     <string name="app_help_document">帮助文档</string>
     <string name="replace_rule_after_execute">在朗读规则后执行</string>
     <string name="voice_name_bad_format">voiceName格式错误</string>

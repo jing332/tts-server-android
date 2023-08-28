@@ -29,7 +29,7 @@ import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.model.speech.tts.MsTtsFormatManger
-import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.GeneralVoiceData
+import com.github.jing332.tts_server_android.model.GeneralVoiceData
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 
 class MsTtsUI : TtsUI() {

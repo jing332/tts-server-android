@@ -3,8 +3,8 @@ package com.github.jing332.tts_server_android.compose.systts.list.edit.ui
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
-import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.GeneralVoiceData
-import com.github.jing332.tts_server_android.ui.systts.edit.microsoft.MsTtsEditRepository
+import com.github.jing332.tts_server_android.model.GeneralVoiceData
+import com.github.jing332.tts_server_android.model.MsTtsEditRepository
 
 class MsTtsViewModel : ViewModel() {
     companion object {

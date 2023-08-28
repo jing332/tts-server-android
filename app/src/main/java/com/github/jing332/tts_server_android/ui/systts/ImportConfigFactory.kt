@@ -24,7 +24,7 @@ object ImportConfigFactory {
 
     fun createFragment(type: String): BaseImportConfigBottomSheetFragment? {
         return when (type) {
-            ID_LIST -> com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
+//            ID_LIST -> com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment()
 //            ID_PLUGIN -> com.github.jing332.tts_server_android.ui.systts.plugin.ImportBottomSheetFragment()
             ID_REPLACE_RULE -> com.github.jing332.tts_server_android.ui.systts.replace.ImportConfigBottomSheetFragment()
 //            ID_SPEECH_RULE -> com.github.jing332.tts_server_android.ui.systts.speech_rule.ImportConfigBottomSheetFragment()
