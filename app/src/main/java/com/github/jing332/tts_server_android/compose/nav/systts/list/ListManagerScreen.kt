@@ -27,11 +27,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -62,6 +64,7 @@ import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.utils.clone
 import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
@@ -95,7 +98,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     var showQuickEdit by remember { mutableStateOf<SystemTts?>(null) }
     if (showQuickEdit != null) {
         QuickEditBottomSheet(onDismissRequest = {
-            appDb.systemTtsDao.updateTts(showQuickEdit!!)
+            appDb.systemTtsDao.insertTts(showQuickEdit!!)
             showQuickEdit = null
         }, systts = showQuickEdit!!, onSysttsChange = {
             showQuickEdit = it
@@ -294,12 +297,12 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                             navigateToEdit(SystemTts(tts = LocalTTS()))
                         }
 
-                        MenuItem(
-                            icon = { Icon(Icons.Default.Http, null) },
-                            title = R.string.systts_add_custom_tts
-                        ) {
-//                                startTtsEditor(HttpTtsEditActivity::class.java)
-                        }
+//                        MenuItem(
+//                            icon = { Icon(Icons.Default.Http, null) },
+//                            title = R.string.systts_add_custom_tts
+//                        ) {
+////                                startTtsEditor(HttpTtsEditActivity::class.java)
+//                        }
 
                         MenuItem(
                             icon = { Icon(Icons.Default.Javascript, null) },
@@ -409,7 +412,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     },
                                     desc = item.tts.getDescription(),
                                     params = item.tts.getBottomContent(),
-                                    onClick = { showQuickEdit = item },
+                                    onClick = { showQuickEdit = item.clone() },
                                     onLongClick = { switchSpeechTarget(item) },
                                     onCopy = {
                                         navigateToEdit(item.copy(id = System.currentTimeMillis()))

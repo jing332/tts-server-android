@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.widgets.HtmlText
 import com.github.jing332.tts_server_android.compose.widgets.htmlcompose.HtmlText
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.utils.performLongPress
@@ -124,12 +125,12 @@ internal fun Item(
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
             ) {
-                com.github.jing332.tts_server_android.compose.widgets.HtmlText(
+                HtmlText(
                     text = desc,
                     style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
                 )
 
-                com.github.jing332.tts_server_android.compose.widgets.HtmlText(
+                HtmlText(
                     text = params,
                     style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onBackground),
                 )

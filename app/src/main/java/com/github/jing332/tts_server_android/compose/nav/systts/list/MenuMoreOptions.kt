@@ -27,12 +27,12 @@ import com.github.jing332.tts_server_android.compose.asAppCompatActivity
 import com.github.jing332.tts_server_android.compose.nav.systts.GlobalAudioParamsDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.InternalPlayerDialog
 import com.github.jing332.tts_server_android.compose.systts.plugin.PluginManagerActivity
+import com.github.jing332.tts_server_android.compose.systts.speechrule.SpeechRuleActivity
 import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
-import com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleManagerActivity
 import com.github.jing332.tts_server_android.utils.startActivity
 
 @Composable
@@ -109,7 +109,7 @@ internal fun MenuMoreOptions(
             text = { Text(stringResource(id = R.string.speech_rule_manager)) },
             onClick = {
                 onDismissRequest()
-                context.startActivity(SpeechRuleManagerActivity::class.java)
+                context.startActivity(SpeechRuleActivity::class.java)
             },
             leadingIcon = {
                 Icon(Icons.Default.MenuBook, null)

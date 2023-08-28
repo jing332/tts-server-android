@@ -40,10 +40,9 @@ fun HtmlText(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current
 ) {
-    val spanned = remember {
+    val spanned = remember(text) {
         HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT).toAnnotatedString()
     }
-
     Text(
         modifier = modifier,
         text = spanned,
