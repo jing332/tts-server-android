@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.plugin
+package com.github.jing332.tts_server_android.compose.systts.plugin
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

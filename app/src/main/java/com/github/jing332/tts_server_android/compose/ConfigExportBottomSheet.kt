@@ -3,7 +3,6 @@ package com.github.jing332.tts_server_android.compose
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -117,7 +119,7 @@ fun ConfigExportBottomSheet(
                     AnimatedVisibility(
                         visible = loading, Modifier
                             .align(Alignment.Center)
-                            .size(48.dp)
+                            .size(64.dp)
                     ) {
                         CircularProgressIndicator(strokeWidth = 8.dp)
                     }
@@ -131,7 +133,7 @@ fun ConfigExportBottomSheet(
         ) { showSelectUploadTargetDialog = false }
     }
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxSize()) {
+    ModalBottomSheet(onDismissRequest = onDismissRequest, /*modifier = Modifier.fillMaxSize()*/) {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -171,13 +173,13 @@ fun ConfigExportBottomSheet(
             }
             SelectionContainer(
                 Modifier
-                    .horizontalScroll(rememberScrollState()),
+                    .horizontalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState())
             ) {
                 Text(
                     text = json,
-                    Modifier
-                        .verticalScroll(rememberScrollState()),
-                    style = MaterialTheme.typography.bodySmall
+                    Modifier.width(1000.dp),
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
         }

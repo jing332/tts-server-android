@@ -26,7 +26,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.asAppCompatActivity
 import com.github.jing332.tts_server_android.compose.nav.systts.GlobalAudioParamsDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.InternalPlayerDialog
-import com.github.jing332.tts_server_android.compose.plugin.PluginManagerActivity
+import com.github.jing332.tts_server_android.compose.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
 import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment

@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.plugin
+package com.github.jing332.tts_server_android.compose.systts.plugin
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

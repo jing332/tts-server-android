@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.plugin
+package com.github.jing332.tts_server_android.compose.systts.plugin
 
 import android.os.Bundle
 import androidx.compose.foundation.layout.Column
@@ -21,12 +21,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.github.jing332.text_searcher.ui.plugin.LoggerBottomSheet
+import com.github.jing332.tts_server_android.compose.codeeditor.LoggerBottomSheet
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.codeeditor.CodeEditorScreen
 import com.github.jing332.tts_server_android.compose.navigate
-import com.github.jing332.tts_server_android.compose.navigateSingleTop
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.conf.PluginConfig
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
@@ -73,13 +72,13 @@ internal fun PluginEditScreen(
 
     var showTextParamDialog by remember { mutableStateOf(false) }
     if (showTextParamDialog) {
-        var sampleText by remember { mutableStateOf(PluginConfig.sampleText.value) }
+        var sampleText by remember { mutableStateOf(PluginConfig.textParam.value) }
         TextFieldDialog(
             title = stringResource(id = R.string.set_sample_text_param),
             text = sampleText,
             onTextChange = { sampleText = it },
             onDismissRequest = { showTextParamDialog = false }) {
-            PluginConfig.sampleText.value = sampleText
+            PluginConfig.textParam.value = sampleText
         }
     }
 

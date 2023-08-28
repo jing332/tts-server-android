@@ -7,5 +7,5 @@ import com.github.jing332.tts_server_android.app
 object PluginConfig {
     private val pref = DataSaverPreferences(app.getSharedPreferences("plugin", 0))
 
-    val sampleText = mutableDataSaverStateOf(pref, key = "sampleText", "示例文本。 Sample text.")
+    val textParam = mutableDataSaverStateOf(pref, key = "sampleText", "示例文本。 Sample text.")
 }

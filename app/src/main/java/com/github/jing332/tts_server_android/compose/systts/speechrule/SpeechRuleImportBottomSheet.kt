@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.plugin
+package com.github.jing332.tts_server_android.compose.systts.speechrule
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,24 +10,18 @@ import com.github.jing332.tts_server_android.compose.ConfigModel
 import com.github.jing332.tts_server_android.compose.SelectImportConfigDialog
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
-import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
+import com.github.jing332.tts_server_android.data.entities.SpeechRule
 
 @Composable
-fun PluginImportBottomSheet(onDismissRequest: () -> Unit) {
-    var list by remember { mutableStateOf<List<Plugin>?>(null) }
-    if (list != null) {
+fun SpeechRuleImportBottomSheet(onDismissRequest: () -> Unit) {
+    var showSelectDialog by remember { mutableStateOf<List<SpeechRule>?>(null) }
+    if (showSelectDialog != null) {
+        val list = showSelectDialog!!
         SelectImportConfigDialog(
-            onDismissRequest = { list = null },
-            models = list!!.map {
-                ConfigModel(
-                    isSelected = true,
-                    title = it.name,
-                    subtitle = it.author,
-                    it
-                )
-            },
+            onDismissRequest = { showSelectDialog = null },
+            models = list.map { ConfigModel(true, it.name, "${it.author} - v${it.version}", it) },
             onSelectedList = {
-                appDb.pluginDao.insert(*it.map { plugin -> plugin as Plugin }.toTypedArray())
+                 appDb.speechRule.insert(*it.map { speechRule -> speechRule as SpeechRule }.toTypedArray())
 
                 it.size
             }
@@ -35,6 +29,6 @@ fun PluginImportBottomSheet(onDismissRequest: () -> Unit) {
     }
 
     ConfigImportBottomSheet(onDismissRequest = onDismissRequest, onImport = {
-        list = AppConst.jsonBuilder.decodeFromString<List<Plugin>>(it)
+        showSelectDialog = AppConst.jsonBuilder.decodeFromString<List<SpeechRule>>(it)
     })
 }

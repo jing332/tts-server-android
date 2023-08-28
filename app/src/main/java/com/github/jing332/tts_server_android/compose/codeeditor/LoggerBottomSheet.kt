@@ -1,6 +1,7 @@
-package com.github.jing332.text_searcher.ui.plugin
+package com.github.jing332.tts_server_android.compose.codeeditor
 
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -57,7 +58,7 @@ fun LoggerBottomSheet(
         }
     }
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest) {
+    ModalBottomSheet(modifier = Modifier.fillMaxSize(), onDismissRequest = onDismissRequest) {
         SelectionContainer(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Text(
                 logText, modifier = Modifier
