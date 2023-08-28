@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -66,7 +67,8 @@ fun CodeEditorScreen(
 
     vm: CodeEditorViewModel = viewModel(),
 
-    actions: @Composable ColumnScope.(dismiss: () -> Unit) -> Unit,
+    debugIconContent: @Composable ()->Unit = {},
+    actions: @Composable ColumnScope.(dismiss: () -> Unit) -> Unit = {},
 ) {
     var codeEditor by remember { mutableStateOf<CodeEditor?>(null) }
 
@@ -116,11 +118,12 @@ fun CodeEditorScreen(
                             Icons.Filled.BugReport,
                             contentDescription = stringResource(id = R.string.nav_back)
                         )
+                        debugIconContent()
                     }
                     IconButton(onClick = onSave) {
                         Icon(
                             Icons.Filled.Save,
-                            contentDescription = stringResource(id = R.string.nav_back)
+                            contentDescription = stringResource(id = R.string.save)
                         )
                     }
 
@@ -201,7 +204,7 @@ fun CodeEditorScreen(
                 .padding(paddingValues)
         ) {
             CodeEditor(
-                modifier = Modifier.weight(1f), onUpdate = {
+                modifier = Modifier.weight(1f).fillMaxWidth(), onUpdate = {
                     codeEditor = it
                     onUpdate(it)
                 }

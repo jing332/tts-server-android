@@ -36,6 +36,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".compose.systts.directlink.LinkUploadRuleActivity"
+            android:exported="true"
+            android:label="@string/direct_link_settings" />
+        <activity
             android:name=".ui.AppHelpDocumentActivity"
             android:exported="true" />
         <activity

@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.SettingsBackupRestore
-import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.TextSnippet
 import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material3.DrawerState
@@ -43,13 +42,13 @@ import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.systts.directlink.LinkUploadRuleActivity
 import com.github.jing332.tts_server_android.compose.theme.getAppTheme
 import com.github.jing332.tts_server_android.compose.theme.setAppTheme
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
 import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.ui.preference.backup_restore.BackupRestoreActivity
-import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,8 +100,7 @@ fun SettingsScreen(drawerState: DrawerState) {
                 onClick = {
                     context.startActivity(
                         Intent(
-                            context,
-                            DirectUploadSettingsActivity::class.java
+                            context, LinkUploadRuleActivity::class.java
                         ).apply { action = Intent.ACTION_VIEW })
                 },
                 title = { Text(stringResource(id = R.string.direct_link_settings)) },
