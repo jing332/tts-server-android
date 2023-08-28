@@ -10,11 +10,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.systts.directlink.LinkUploadRuleActivity
 import com.github.jing332.tts_server_android.databinding.SysttsConfigExportBottomSheetBinding
 import com.github.jing332.tts_server_android.model.rhino.direct_link_upload.DirectUploadEngine
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
-import com.github.jing332.tts_server_android.ui.systts.direct_upload.DirectUploadSettingsActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.ui.view.widget.WaitDialog
 import com.github.jing332.tts_server_android.utils.*
@@ -146,9 +146,9 @@ open class ConfigExportBottomSheetFragment(
             .setPositiveButton(R.string.cancel, null)
             .setNeutralButton(R.string.direct_link_settings) { _, _ ->
                 requireContext().startActivity(
-                    Intent(
-                        requireContext(), DirectUploadSettingsActivity::class.java
-                    )
+                    Intent(requireContext(), LinkUploadRuleActivity::class.java).apply {
+                        action = Intent.ACTION_VIEW
+                    }
                 )
             }
             .show()

@@ -30,15 +30,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.widgets.HtmlText
-import com.github.jing332.tts_server_android.compose.widgets.htmlcompose.HtmlText
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.utils.performLongPress
 import org.burnoutcrew.reorderable.ReorderableLazyListState
@@ -66,6 +67,23 @@ internal fun Item(
     onEdit: () -> Unit,
     onAudition: () -> Unit,
 ) {
+    val targetLen = 6
+
+    @Composable
+    fun TargetScreen(modifier: Modifier = Modifier) {
+        OutlinedCard(shape = MaterialTheme.shapes.extraSmall, modifier = modifier) {
+            Text(
+                text = speechTarget,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+            )
+        }
+    }
+
     val view = LocalView.current
     ElevatedCard(modifier) {
         ConstraintLayout(
@@ -100,20 +118,29 @@ internal fun Item(
                     onCheckedChange = onEnabledChange,
                 )
             }
-            Text(
-                name,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
+
+            Column(
+                Modifier
                     .constrainAs(nameRef) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         top.linkTo(parent.top)
                     }
                     .padding(bottom = 4.dp),
-                maxLines = 1,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    name,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Clip,
+                )
+
+                if (speechTarget.isNotEmpty() && speechTarget.length > targetLen)
+                    TargetScreen()
+            }
 
             Column(
                 Modifier
@@ -136,26 +163,14 @@ internal fun Item(
                 )
             }
 
-            if (speechTarget.isNotEmpty())
-                OutlinedCard(
-                    Modifier
-                        .constrainAs(targetRef) {
-                            top.linkTo(nameRef.top)
-                            end.linkTo(parent.end)
-                        }
-                        .padding(end = 4.dp),
-                    shape = MaterialTheme.shapes.extraSmall
-                ) {
-                    Text(
-                        text = speechTarget,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                    )
-                }
+            if (speechTarget.isNotEmpty() && speechTarget.length <= targetLen)
+                TargetScreen(Modifier
+                    .constrainAs(targetRef) {
+                        top.linkTo(nameRef.top)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(end = 4.dp)
+                )
 
             Row(modifier = Modifier.constrainAs(buttonsRef) {
                 top.linkTo(parent.top)

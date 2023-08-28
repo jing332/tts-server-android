@@ -84,18 +84,10 @@
             android:taskAffinity="com.github.jing332.tts_server_android.speechrule" />
 
         <activity
-            android:name=".ui.systts.direct_upload.DirectUploadSettingsActivity"
-            android:label="@string/direct_link_settings"
-            android:launchMode="singleTask" />
-        <activity
             android:name=".ui.ExoPlayerActivity"
             android:exported="false"
             android:label="@string/exo_player_title" />
-        <activity
-            android:name=".ui.systts.plugin.PluginEditorActivity"
-            android:exported="true"
-            android:taskAffinity="com.github.jing332.tts_server_android.plugin"
-            android:theme="@style/Theme.TtsServer.NoActionBar" />
+
         <activity
             android:name=".compose.systts.plugin.PluginManagerActivity"
             android:exported="true"
