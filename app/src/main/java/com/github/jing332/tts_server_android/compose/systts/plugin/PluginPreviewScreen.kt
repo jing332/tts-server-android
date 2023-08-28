@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
-import com.github.jing332.tts_server_android.compose.nav.systts.edit.ui.PluginTtsUI
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.PluginTtsUI
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -75,7 +75,7 @@ import com.github.jing332.tts_server_android.compose.nav.forwarder.ms.MsTtsForwa
 import com.github.jing332.tts_server_android.compose.nav.forwarder.systts.SystemTtsForwarderScreen
 import com.github.jing332.tts_server_android.compose.nav.settings.SettingsScreen
 import com.github.jing332.tts_server_android.compose.nav.systts.SystemTtsScreen
-import com.github.jing332.tts_server_android.compose.nav.systts.edit.TtsEditContainerScreen
+import com.github.jing332.tts_server_android.compose.systts.list.edit.TtsEditContainerScreen
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.constant.AppConst

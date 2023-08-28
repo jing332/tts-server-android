@@ -436,4 +436,8 @@
     <string name="max_retry_count_summary">请求失败后的重试次数</string>
     <string name="tts_config_not_exist">指定的TTS配置不存在</string>
     <string name="open_source_license">开源许可</string>
+    <string name="limit_tag_length">限制标签长度</string>
+    <string name="limit_tag_length_summary">超出的部分忽略</string>
+    <string name="limit_name_length">限制显示名称长度</string>
+    <string name="limit_name_length_summary">名称超出的部分忽略</string>
 </resources>

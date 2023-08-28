@@ -51,6 +51,18 @@ object AppConfig {
         initialValue = AppTheme.DEFAULT
     )
 
+    val limitTagLength = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "limitTagLength",
+        initialValue = 0
+    )
+
+    val limitNameLength = mutableDataSaverStateOf(
+        dataSaverInterface = dataSaverPref,
+        key = "limitNameLength",
+        initialValue = 0
+    )
+
     val isSwapListenAndEditButton = mutableDataSaverStateOf(
         dataSaverInterface = dataSaverPref,
         key = "isSwapListenAndEditButton",

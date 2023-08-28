@@ -403,22 +403,10 @@
     <string name="systts_plugin_please_set_vars">Please click here to set variables</string>
     <string name="clear_log">Clear Log</string>
     <string name="nav_app_bar_open_drawer_description" tools:ignore="PrivateResource">Open drawer navigation bar</string>
-    <string name="theme_sky_blue">天蓝</string>
-    <string name="theme_sorghum_red">高粱红</string>
-    <string name="theme_peacock_green">孔雀绿</string>
-    <string name="theme_golden">金黄</string>
-    <string name="theme_lilac_brown">丁香棕</string>
-    <string name="theme_cyan">白青</string>
-    <string name="theme_sakura_pink">樱花粉</string>
-    <string name="theme_ink_grey">墨灰</string>
-    <string name="theme_emerald_green">碧绿</string>
-    <string name="theme_red_gold">赤金</string>
     <string name="import_config_type_not_match_msg">Format error (expected: {%1$s}).\nThe format you entered is {%2$s}, please go to the corresponding management interface for import.</string>
     <string name="import_config_type_unknown_msg">Unknown format, please enter the correct configuration.</string>
     <string name="still_to_import">Still to Import</string>
-    <string name="theme_kite_crown_purple">鹞冠紫</string>
-    <string name="theme_beautiful_person_orange">美人焦橙</string>
-    <string name="theme_magenta">紫红</string>
+
     <string name="app_help_document">Help Document</string>
     <string name="replace_rule_after_execute">Execute after Speech-Rule</string>
     <string name="voice_name_bad_format">voiceName bad format</string>
@@ -452,5 +440,9 @@
     <string name="plugin_tts_get_need_decode_failed">Failed to get whether the audio needs to be decoded</string>
     <string name="max_retry_count_summary">The number of retries after a failed request</string>
     <string name="tts_config_not_exist">The specified TTS configuration does not exist</string>
-    <string name="open_source_license">开源许可</string>
+    <string name="open_source_license">Open Source License</string>
+    <string name="limit_tag_length">Limit tag length</string>
+    <string name="limit_tag_length_summary">The excess tag is ignored</string>
+    <string name="limit_name_length">Limit the display name length</string>
+    <string name="limit_name_length_summary">The excess of the name is ignored</string>
 </resources>

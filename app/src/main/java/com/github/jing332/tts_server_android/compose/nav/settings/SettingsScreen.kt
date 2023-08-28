@@ -21,6 +21,8 @@ import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.SettingsBackupRestore
+import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material.icons.filled.TextSnippet
 import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material3.DrawerState
@@ -308,6 +310,31 @@ fun SettingsScreen(drawerState: DrawerState) {
             DividerPreference {
                 Text(stringResource(id = R.string.systts_interface_preference))
             }
+
+            var limitTagLen by remember { AppConfig.limitTagLength }
+            val limitTagLenString = if (limitTagLen == 0) stringResource(id = R.string.unlimited) else limitTagLen.toString()
+            SliderPreference(
+                title = { Text(stringResource(id = R.string.limit_tag_length)) },
+                subTitle = { Text(stringResource(id = R.string.limit_tag_length_summary)) },
+                value = limitTagLen.toFloat(),
+                onValueChange = { limitTagLen = it.toInt() },
+                valueRange = 0f..50f,
+                icon = { Icon(Icons.Default.Tag, null) },
+                label = { Text(limitTagLenString) }
+            )
+
+            var limitNameLen by remember { AppConfig.limitNameLength }
+            val limitNameLenString = if (limitNameLen == 0) stringResource(id = R.string.unlimited) else limitNameLen.toString()
+            SliderPreference(
+                title = { Text(stringResource(id = R.string.limit_name_length)) },
+                subTitle = { Text(stringResource(id = R.string.limit_name_length_summary)) },
+                value = limitNameLen.toFloat(),
+                onValueChange = { limitNameLen = it.toInt() },
+                valueRange = 0f..50f,
+                icon = { Icon(Icons.Default.TextFields, null) },
+                label = { Text(limitNameLenString) }
+            )
+
             var wrapButton by remember { AppConfig.isSwapListenAndEditButton }
             SwitchPreference(
                 title = { Text(stringResource(id = R.string.pref_swap_listen_and_edit_button)) },

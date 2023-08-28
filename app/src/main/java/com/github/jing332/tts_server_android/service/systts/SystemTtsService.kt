@@ -36,6 +36,7 @@ import com.github.jing332.tts_server_android.ui.MainActivity
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_SYS_TTS
 import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
 import com.github.jing332.tts_server_android.utils.*
+import com.github.jing332.tts_server_android.utils.StringUtils.limitLength
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.system.exitProcess
@@ -491,7 +492,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
     override fun onPlayFinished(text: String, tts: ITextToSpeechEngine) {
         if (!AppConst.isSysTtsLogEnabled) return
-        logI(getString(R.string.systts_log_finished_playing, text.limitLength().toHtmlBold()))
+        logI(getString(R.string.systts_log_finished_playing, text.limitLength(suffix = "...").toHtmlBold()))
     }
 
     private fun logD(msg: String) = sendLog(LogLevel.DEBUG, msg)
