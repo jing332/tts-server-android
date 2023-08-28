@@ -26,12 +26,11 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.asAppCompatActivity
 import com.github.jing332.tts_server_android.compose.nav.systts.GlobalAudioParamsDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.InternalPlayerDialog
+import com.github.jing332.tts_server_android.compose.systts.list.ListImportBottomSheet
 import com.github.jing332.tts_server_android.compose.systts.plugin.PluginManagerActivity
-import com.github.jing332.tts_server_android.compose.systts.speechrule.SpeechRuleActivity
+import com.github.jing332.tts_server_android.compose.systts.speechrule.SpeechRuleManagerActivity
 import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
-import com.github.jing332.tts_server_android.ui.systts.ConfigExportBottomSheetFragment
-import com.github.jing332.tts_server_android.ui.systts.list.ImportConfigBottomSheetFragment
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.utils.startActivity
 
@@ -39,8 +38,12 @@ import com.github.jing332.tts_server_android.utils.startActivity
 internal fun MenuMoreOptions(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    vm: ListManagerViewModel
+    onExportAll: () -> Unit,
 ) {
+    var showImportSheet by remember { mutableStateOf(false) }
+    if (showImportSheet)
+        ListImportBottomSheet(onDismissRequest = { showImportSheet = false })
+
     var showInternalPlayerDialog by remember { mutableStateOf(false) }
     if (showInternalPlayerDialog)
         InternalPlayerDialog {
@@ -109,7 +112,7 @@ internal fun MenuMoreOptions(
             text = { Text(stringResource(id = R.string.speech_rule_manager)) },
             onClick = {
                 onDismissRequest()
-                context.startActivity(SpeechRuleActivity::class.java)
+                context.startActivity(SpeechRuleManagerActivity::class.java)
             },
             leadingIcon = {
                 Icon(Icons.Default.MenuBook, null)
@@ -146,26 +149,18 @@ internal fun MenuMoreOptions(
         DropdownMenuItem(text = {
             Text(stringResource(id = R.string.import_config))
         }, onClick = {
-            val fragment = ImportConfigBottomSheetFragment()
-            fragment.show(
-                activity.supportFragmentManager,
-                ImportConfigBottomSheetFragment.TAG
-            )
-        }, leadingIcon = {
-            Icon(Icons.Default.Input, null)
-        })
+            onDismissRequest()
+            showImportSheet = true },
+            leadingIcon = {
+                Icon(Icons.Default.Input, null)
+            }
+        )
 
         DropdownMenuItem(text = {
             Text(stringResource(id = R.string.export_config))
         }, onClick = {
-            val fragment = ConfigExportBottomSheetFragment(
-                onGetConfig = { vm.export().getOrElse { it.toString() } },
-                onGetName = { "ttsrv-list.json" }
-            )
-            fragment.show(
-                activity.supportFragmentManager,
-                ConfigExportBottomSheetFragment.TAG
-            )
+            onDismissRequest()
+            onExportAll()
         }, leadingIcon = {
             Icon(Icons.Default.Output, null)
         })

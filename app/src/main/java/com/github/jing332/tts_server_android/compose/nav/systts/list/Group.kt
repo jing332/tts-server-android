@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Output
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -43,6 +44,7 @@ fun Group(
     toggleableState: ToggleableState,
     onCheckedChange: () -> Unit,
     onClick: () -> Unit,
+    onExport: () -> Unit,
     onDelete: () -> Unit,
     onRename: (newName: String) -> Unit,
     onCopy: (newName: String) -> Unit,
@@ -147,6 +149,14 @@ fun Group(
                         },
                         leadingIcon = {
                             Icon(Icons.Default.Speed, null)
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text(stringResource(id = R.string.export_config)) },
+                        onClick = onExport,
+                        leadingIcon = {
+                            Icon(Icons.Default.Output, null)
                         }
                     )
 

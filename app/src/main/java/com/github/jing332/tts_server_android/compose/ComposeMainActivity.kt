@@ -69,6 +69,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.ShortCuts
 import com.github.jing332.tts_server_android.compose.nav.NavRoutes
 import com.github.jing332.tts_server_android.compose.nav.forwarder.ms.MsTtsForwarderScreen
 import com.github.jing332.tts_server_android.compose.nav.forwarder.systts.SystemTtsForwarderScreen
@@ -99,9 +100,10 @@ class ComposeMainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        ShortCuts.buildShortCuts(this)
         setContent {
             AppTheme {
-                if (LocalTriggerAppUpdateChecker.current.value || AppConfig.isAutoCheckUpdateEnabled.value){
+                if (LocalTriggerAppUpdateChecker.current.value || AppConfig.isAutoCheckUpdateEnabled.value) {
                     AutoUpdateCheckerDialog(LocalTriggerAppUpdateChecker.current.value)
                     LocalTriggerAppUpdateChecker.current.value = false
                 }

@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,6 +55,7 @@ import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDial
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import com.github.jing332.tts_server_android.utils.longToast
+import com.github.jing332.tts_server_android.utils.toJsonListString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -69,7 +71,11 @@ class ImportSource {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConfigImportBottomSheet(onDismissRequest: () -> Unit, onImport: (json: String) -> Unit) {
+fun ConfigImportBottomSheet(
+    content: @Composable ColumnScope.() -> Unit = {},
+    onDismissRequest: () -> Unit,
+    onImport: (json: String) -> Unit,
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     suspend fun getConfig(
@@ -114,10 +120,12 @@ fun ConfigImportBottomSheet(onDismissRequest: () -> Unit, onImport: (json: Strin
             Text(
                 stringResource(id = R.string.import_config),
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.displayMedium
             )
 
             Column(Modifier.fillMaxWidth()) {
+                content()
+
                 Text(
                     stringResource(id = R.string.source),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -187,7 +195,7 @@ fun ConfigImportBottomSheet(onDismissRequest: () -> Unit, onImport: (json: Strin
                             runCatching {
                                 val jsonStr =
                                     getConfig(src = source, url = url, uri = Uri.parse(path))
-                                onImport(jsonStr)
+                                onImport(jsonStr.toJsonListString())
                             }.onFailure {
                                 context.displayErrorDialog(it)
                             }

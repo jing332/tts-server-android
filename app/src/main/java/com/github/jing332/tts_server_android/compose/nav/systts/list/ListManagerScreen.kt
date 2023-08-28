@@ -14,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCard
 import androidx.compose.material.icons.filled.Audiotrack
-import androidx.compose.material.icons.filled.Http
 import androidx.compose.material.icons.filled.Javascript
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PhoneAndroid
@@ -27,13 +26,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -54,9 +51,11 @@ import com.github.jing332.tts_server_android.compose.nav.systts.AuditionDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.nav.systts.edit.QuickEditBottomSheet
 import com.github.jing332.tts_server_android.compose.navigateSingleTop
+import com.github.jing332.tts_server_android.compose.systts.list.ListExportBottomSheet
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
@@ -78,8 +77,6 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val activity = context.asAppCompatActivity()
-    val view = LocalView.current
     val drawerState = LocalDrawerState.current
 
 
@@ -208,7 +205,6 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             val target =
                 appDb.systemTtsDao.getTts(to.key as Long) ?: return@rememberReorderableLazyListState
 
-            val g = appDb.systemTtsDao.getGroup(src.groupId)
             val list = appDb.systemTtsDao.getTtsListByGroupId(src.groupId).toMutableList()
 
             val srcIndex = list.indexOfFirst { it.id == src.id }
@@ -239,6 +235,12 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             addGroupDialog = false
             appDb.systemTtsDao.insertGroup(SystemTtsGroup(name = name))
         }
+    }
+
+    var showExportSheet by remember { mutableStateOf<List<GroupWithSystemTts>?>(null) }
+    if (showExportSheet != null) {
+        val list = showExportSheet!!
+        ListExportBottomSheet(onDismissRequest = { showExportSheet = null }, list = list)
     }
 
     var addPluginDialog by remember { mutableStateOf(false) }
@@ -327,14 +329,12 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                     }
                 }
 
-                IconButton(onClick = {
-                    showOptions = true
-                }) {
+                IconButton(onClick = { showOptions = true }) {
                     Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_options))
                     MenuMoreOptions(
                         expanded = showOptions,
                         onDismissRequest = { showOptions = false },
-                        vm = vm
+                        onExportAll = { showExportSheet = models },
                     )
                 }
             })
@@ -347,7 +347,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                     .reorderable(state = reorderState),
                 state = reorderState.listState
             ) {
-                models.forEachIndexed { index, groupWithSystemTts ->
+                models.forEachIndexed { _, groupWithSystemTts ->
                     val g = groupWithSystemTts.group
                     val checkState = when (groupWithSystemTts.list.filter { it.isEnabled }.size) {
                         0 -> ToggleableState.Off           // 全未选
@@ -393,13 +393,17 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                 },
                                 onEditAudioParams = {
                                     groupAudioParamsDialog = g
-                                })
+                                },
+                                onExport = {
+                                    showExportSheet = listOf(groupWithSystemTts)
+                                }
+                            )
                         }
                     }
 
                     if (g.isExpanded) {
                         itemsIndexed(groupWithSystemTts.list.sortedBy { it.order },
-                            key = { _, v -> v.id }) { index, item ->
+                            key = { _, v -> v.id }) { _, item ->
                             ShadowReorderableItem(reorderableState = reorderState, key = item.id) {
                                 Item(reorderState = reorderState,
                                     modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp),

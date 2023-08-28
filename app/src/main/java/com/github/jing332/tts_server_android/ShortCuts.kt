@@ -5,10 +5,11 @@ import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.github.jing332.tts_server_android.ui.forwarder.SystemForwarderSwitchActivity
+import com.github.jing332.tts_server_android.compose.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.ui.forwarder.MsForwarderSwitchActivity
-import com.github.jing332.tts_server_android.ui.systts.plugin.PluginManagerActivity
+import com.github.jing332.tts_server_android.ui.forwarder.SystemForwarderSwitchActivity
 import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
+import com.github.jing332.tts_server_android.ui.systts.speech_rule.SpeechRuleManagerActivity
 
 object ShortCuts {
     private inline fun <reified T> buildIntent(context: Context): Intent {
@@ -50,6 +51,15 @@ object ShortCuts {
             .build()
     }
 
+    private fun buildSpeechManagerShortCutInfo(context: Context): ShortcutInfoCompat {
+        return ShortcutInfoCompat.Builder(context, "speech_rule_manager")
+            .setShortLabel(context.getString(R.string.speech_rule_manager))
+            .setLongLabel(context.getString(R.string.speech_rule_manager))
+            .setIcon(IconCompat.createWithResource(context, R.drawable.baseline_menu_book_24))
+            .setIntent(buildIntent<SpeechRuleManagerActivity>(context))
+            .build()
+    }
+
     private fun buildPluginManagerShortCutInfo(context: Context): ShortcutInfoCompat {
         return ShortcutInfoCompat.Builder(context, "plugin_manager")
             .setShortLabel(context.getString(R.string.plugin_manager))
@@ -65,6 +75,7 @@ object ShortCuts {
                 buildMsSwitchShortCutInfo(context),
                 buildSysSwitchShortCutInfo(context),
                 buildReplaceManagerShortCutInfo(context),
+                buildSpeechManagerShortCutInfo(context),
                 buildPluginManagerShortCutInfo(context)
             )
         )
