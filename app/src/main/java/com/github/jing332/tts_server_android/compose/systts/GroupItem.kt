@@ -34,7 +34,7 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 
-fun Int.sizeToToggleableState(total:Int): ToggleableState = when (this) {
+fun Int.sizeToToggleableState(total: Int): ToggleableState = when (this) {
     0 -> ToggleableState.Off
     total -> ToggleableState.On
     else -> ToggleableState.Indeterminate
@@ -109,7 +109,10 @@ fun GroupItem(
 
                     DropdownMenuItem(
                         text = { Text(stringResource(id = R.string.export_config)) },
-                        onClick = onExport,
+                        onClick = {
+                            showOptions = false
+                            onExport()
+                        },
                         leadingIcon = {
                             Icon(Icons.Default.Output, null)
                         }

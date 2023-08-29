@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
-import com.github.jing332.tts_server_android.compose.systts.list.edit.IntSlider
+import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
 import com.github.jing332.tts_server_android.constant.MsTtsApiType

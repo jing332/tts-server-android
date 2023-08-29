@@ -26,7 +26,11 @@ import com.github.jing332.tts_server_android.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun LoadingContent(modifier: Modifier, isLoading: Boolean, content: @Composable () -> Unit) {
+fun LoadingContent(
+    modifier: Modifier = Modifier,
+    isLoading: Boolean,
+    content: @Composable () -> Unit
+) {
     val context = LocalContext.current
     Box(modifier) {
         Box(

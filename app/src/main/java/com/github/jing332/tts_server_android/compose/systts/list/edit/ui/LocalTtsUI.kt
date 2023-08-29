@@ -36,7 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.AuditionDialog
 import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
-import com.github.jing332.tts_server_android.compose.systts.list.edit.IntSlider
+import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.AuditionTextField
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.DenseOutlinedField

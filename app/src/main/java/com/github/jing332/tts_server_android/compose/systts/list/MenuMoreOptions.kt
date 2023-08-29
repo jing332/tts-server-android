@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.compose.systts.list
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Input
@@ -37,6 +38,10 @@ internal fun MenuMoreOptions(
     onDismissRequest: () -> Unit,
     onExportAll: () -> Unit,
 ) {
+    var showBgmSettingsDialog  by remember { mutableStateOf(false) }
+    if (showBgmSettingsDialog)
+        BgmSettingsDialog { showBgmSettingsDialog = false }
+
     var showImportSheet by remember { mutableStateOf(false) }
     if (showImportSheet)
         ListImportBottomSheet(onDismissRequest = { showImportSheet = false })
@@ -101,6 +106,14 @@ internal fun MenuMoreOptions(
             onClick = { showAudioParamsDialog = true },
             leadingIcon = {
                 Icon(Icons.Default.Speed, null)
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text(stringResource(id = R.string.bgm_settings)) },
+            onClick = { showBgmSettingsDialog = true },
+            leadingIcon = {
+                Icon(Icons.Default.Audiotrack, null)
             }
         )
 
