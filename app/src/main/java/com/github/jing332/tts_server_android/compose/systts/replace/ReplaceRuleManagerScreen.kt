@@ -48,6 +48,7 @@ import com.github.jing332.tts_server_android.data.entities.replace.GroupWithRepl
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import okhttp3.internal.toLongOrDefault
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
@@ -94,6 +95,14 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
             group = group,
             onGroupChange = { group = it },
             onConfirm = { appDb.replaceRuleDao.updateGroup(group) }
+        )
+    }
+
+    var showSortDialog by remember { mutableStateOf<List<ReplaceRule>?>(null) }
+    if (showSortDialog != null) {
+        SortDialog(
+            onDismissRequest = { showSortDialog = null },
+            list = showSortDialog!!
         )
     }
 
@@ -206,9 +215,9 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                         target.copy(order = src.order)
                     )
                 } else {
-                    val src = appDb.replaceRuleDao.get(fromKey.toLong())
+                    val src = appDb.replaceRuleDao.get(fromKey.toLongOrDefault(Long.MIN_VALUE))
                         ?: return@rememberReorderableLazyListState
-                    val target = appDb.replaceRuleDao.get(toKey.toLong())
+                    val target = appDb.replaceRuleDao.get(toKey.toLongOrDefault(Long.MIN_VALUE))
                         ?: return@rememberReorderableLazyListState
 
                     appDb.replaceRuleDao.update(
@@ -245,8 +254,9 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                             },
                             onClick = { appDb.replaceRuleDao.updateGroup(g.copy(isExpanded = !g.isExpanded)) },
                             onEdit = { showGroupEditDialog = g },
-                            onDeleteAction = { appDb.replaceRuleDao.delete(*groupWithRules.list.toTypedArray()) },
-                            onExportAction = { showExportSheet = listOf(groupWithRules) }
+                            onDelete = { appDb.replaceRuleDao.delete(*groupWithRules.list.toTypedArray()) },
+                            onExport = { showExportSheet = listOf(groupWithRules) },
+                            onSort = { showSortDialog = groupWithRules.list}
                         )
                     }
                 }

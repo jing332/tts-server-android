@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.compose.systts.replace
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,8 +23,9 @@ internal fun Group(
     onToggleableStateChange: (Boolean) -> Unit,
     onClick: () -> Unit,
     onEdit: () -> Unit,
-    onDeleteAction: () -> Unit,
-    onExportAction: () -> Unit,
+    onDelete: () -> Unit,
+    onExport: () -> Unit,
+    onSort:()->Unit,
 ) {
     GroupItem(
         modifier = modifier,
@@ -32,8 +34,8 @@ internal fun Group(
         toggleableState = toggleableState,
         onToggleableStateChange = onToggleableStateChange,
         onClick = onClick,
-        onExport = onExportAction,
-        onDelete = onDeleteAction,
+        onExport = onExport,
+        onDelete = onDelete,
         actions = { dismiss ->
             DropdownMenuItem(
                 leadingIcon = {
@@ -46,6 +48,17 @@ internal fun Group(
                 onClick = {
                     dismiss()
                     onEdit.invoke()
+                }
+            )
+
+            DropdownMenuItem(
+                leadingIcon = {
+                    Icon(Icons.Filled.Sort, null)
+                },
+                text = { Text(stringResource(R.string.sort)) },
+                onClick = {
+                    dismiss()
+                    onSort()
                 }
             )
         }

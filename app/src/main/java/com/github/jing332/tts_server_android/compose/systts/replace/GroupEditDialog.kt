@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -46,11 +48,13 @@ internal fun GroupEditDialog(
                 Row(
                     Modifier
                         .height(48.dp)
+                        .clip(MaterialTheme.shapes.small)
                         .clickableRipple(role = Role.Checkbox) {
                             onGroupChange(
                                 group.copy(onExecution = if (group.onExecution == ReplaceExecution.BEFORE) ReplaceExecution.AFTER else ReplaceExecution.BEFORE)
                             )
-                        }
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Checkbox(
                         checked = group.onExecution == ReplaceExecution.AFTER,
