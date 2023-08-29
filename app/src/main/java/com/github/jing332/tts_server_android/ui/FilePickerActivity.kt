@@ -293,5 +293,5 @@ class FilePickerActivity : AppCompatActivity() {
     data class RequestSelectDir(val rootUri: Uri = Uri.EMPTY) : IRequestData
 
     @Parcelize
-    data class RequestSelectFile(val fileMimes: List<String> = listOf("")) : IRequestData
+    data class RequestSelectFile(val fileMimes: List<String> = listOf("*")) : IRequestData
 }

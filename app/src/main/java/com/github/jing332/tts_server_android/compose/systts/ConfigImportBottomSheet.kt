@@ -178,7 +178,11 @@ fun ConfigImportBottomSheet(
                         },
                         trailingIcon = {
                             IconButton(onClick = {
-                                filePicker.launch(FilePickerActivity.RequestSelectFile())
+                                filePicker.launch(
+                                    FilePickerActivity.RequestSelectFile(
+                                        listOf("application/json", "text/*")
+                                    )
+                                )
                             }) {
                                 Icon(
                                     Icons.Default.FileOpen,
