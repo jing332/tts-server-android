@@ -24,9 +24,9 @@
     <string name="about">About</string>
     <string name="config">Configuration</string>
     <string name="log">Log</string>
-    <string name="background_whitelist">Battery optimization whitelist</string>
+    <string name="battery_optimization_whitelist">Battery optimization whitelist</string>
     <string name="desktop_shortcut">desktop shortcuts</string>
-    <string name="added_background_whitelist">Added to background whitelist</string>
+    <string name="added_battery_optimization_whitelist">Added to background whitelist</string>
 
     <string name="kill_process">Kill process</string>
     <string name="cancel">Cancel</string>

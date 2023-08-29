@@ -13,10 +13,10 @@ import androidx.compose.runtime.setValue
 fun LazyListIndexStateSaver(
     models: Any?,
     listState: LazyListState,
-//    key: String,
-//    params: String = "",
 
-    onIndexUpdate: suspend (Int, Int) -> Unit,
+    onIndexUpdate: suspend (Int, Int) -> Unit = { index, offset ->
+        listState.scrollToItem(index, offset)
+    },
 ) {
     var index by rememberSaveable { mutableIntStateOf(0) }
     var offset by rememberSaveable { mutableIntStateOf(0) }

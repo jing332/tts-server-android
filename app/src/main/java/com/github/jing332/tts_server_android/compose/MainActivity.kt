@@ -4,7 +4,10 @@ package com.github.jing332.tts_server_android.compose
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
@@ -27,6 +30,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleUp
+import androidx.compose.material.icons.filled.BatteryFull
+import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.DrawerState
@@ -43,6 +48,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -82,8 +88,11 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.ui.AppHelpDocumentActivity
+import com.github.jing332.tts_server_android.utils.MyTools.killBattery
 import com.github.jing332.tts_server_android.utils.clone
 import com.github.jing332.tts_server_android.utils.longToast
+import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -121,19 +130,33 @@ class ComposeMainActivity : AppCompatActivity() {
                     if (updateCheckTrigger) showAutoCheckUpdaterDialog = true
                 }
 
-                NavHostScreen()
+                MainScreen { finish() }
             }
         }
     }
 }
 
+
 @Composable
-private fun NavHostScreen() {
+private fun MainScreen(finish: () -> Unit) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 //    val snackbarState = remember { SnackbarHostState() }
     val gesturesEnabled = !drawerState.isClosed
+    val context = LocalContext.current
 
+    var lastBackDownTime by remember { mutableLongStateOf(0L) }
+    BackHandler(enabled = drawerState.isClosed) {
+        val duration = 2000
+        SystemClock.elapsedRealtime().let {
+            if (it - lastBackDownTime <= duration) {
+                finish()
+            } else {
+                lastBackDownTime = it
+                context.toast(R.string.app_down_again_to_exit)
+            }
+        }
+    }
     CompositionLocalProvider(
         LocalNavController provides navController,
         LocalDrawerState provides drawerState,
@@ -209,7 +232,9 @@ fun NavDrawerContent(
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
-//    var selected by rememberSaveable { mutableStateOf(NavRoutes.SystemTTS.id) }
+    BackHandler(enabled = drawerState.isOpen) {
+        scope.launch { drawerState.close() }
+    }
 
     @Composable
     fun drawerItem(
@@ -219,7 +244,7 @@ fun NavDrawerContent(
             scope.launch {
                 drawerState.close()
             }
-            navController.navigate(targetScreen.id)
+            navController.navigateSingleTop(targetScreen.id, popUpToMain = true)
         }
     ) {
         val isSelected = navController.currentDestination?.route == targetScreen.id
@@ -308,6 +333,26 @@ fun NavDrawerContent(
                     updateCheckTrigger = true
                 }
             }
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+        NavigationDrawerItem(
+            icon = { Icon(Icons.Default.HelpOutline, null) },
+            label = { Text(stringResource(id = R.string.app_help_document)) },
+            selected = false,
+            onClick = {
+                context.startActivity(Intent(context, AppHelpDocumentActivity::class.java).apply {
+                    action = Intent.ACTION_VIEW
+                })
+            }
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+        NavigationDrawerItem(
+            icon = { Icon(Icons.Default.BatteryFull, null) },
+            label = { Text(stringResource(id = R.string.battery_optimization_whitelist)) },
+            selected = false,
+            onClick = { context.killBattery() }
         )
 
         Spacer(modifier = Modifier.height(4.dp))

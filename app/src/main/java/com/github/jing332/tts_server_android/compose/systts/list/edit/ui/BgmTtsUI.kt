@@ -195,9 +195,9 @@ class BgmTtsUI : TtsUI() {
                         items(tts.musicList.toList()) { item ->
                             Row(
                                 Modifier
-                                    .clip(MaterialTheme.shapes.medium)
+                                    .clip(MaterialTheme.shapes.small)
                                     .clickableRipple {
-
+                                        showMusicList = item
                                     }
                             ) {
                                 Text(

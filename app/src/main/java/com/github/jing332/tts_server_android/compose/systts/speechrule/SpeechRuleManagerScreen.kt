@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,8 +43,9 @@ import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
-import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.navigate
+import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
+import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -128,15 +130,23 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
 
         val flowAll = remember { appDb.speechRuleDao.flowAll() }
         val list by flowAll.collectAsState(initial = emptyList())
-        val reorderState = rememberReorderableLazyListState(onMove = { from, to ->
-            val fromItem = list[from.index]
-            val toItem = list[to.index]
 
-            appDb.speechRuleDao.update(
-                toItem.copy(order = fromItem.order),
-                fromItem.copy(order = toItem.order)
-            )
-        })
+        val listState = remember { LazyListState() }
+        LazyListIndexStateSaver(
+            models = list,
+            listState = listState,
+        )
+
+        val reorderState =
+            rememberReorderableLazyListState(listState = listState, onMove = { from, to ->
+                val fromItem = list[from.index]
+                val toItem = list[to.index]
+
+                appDb.speechRuleDao.update(
+                    toItem.copy(order = fromItem.order),
+                    fromItem.copy(order = toItem.order)
+                )
+            })
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)

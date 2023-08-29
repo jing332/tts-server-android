@@ -79,7 +79,7 @@ fun AppDialog(
     },
 ) = AlertDialog(modifier = modifier, onDismissRequest = onDismissRequest, properties = properties) {
     Surface(
-        tonalElevation = 8.dp, shadowElevation = 8.dp, shape = MaterialTheme.shapes.large
+        tonalElevation = 8.dp, shadowElevation = 8.dp, shape = MaterialTheme.shapes.extraLarge
     ) {
         Column(
             modifier = Modifier

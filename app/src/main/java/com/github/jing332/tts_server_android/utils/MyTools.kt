@@ -12,14 +12,11 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import com.drake.net.Net
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.GithubReleaseApiBean
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.serialization.decodeFromString
-import okhttp3.Response
 import splitties.systemservices.powerManager
 import java.math.BigDecimal
 
@@ -31,7 +28,7 @@ object MyTools {
      fun Context.killBattery() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (powerManager.isIgnoringBatteryOptimizations(packageName)) {
-                toast(R.string.added_background_whitelist)
+                toast(R.string.added_battery_optimization_whitelist)
             } else {
                 kotlin.runCatching {
                     startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {

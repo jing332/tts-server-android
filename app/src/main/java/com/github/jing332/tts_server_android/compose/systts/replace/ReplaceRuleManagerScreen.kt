@@ -45,6 +45,7 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.GroupWithReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
+import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
@@ -246,6 +247,7 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                                 isChecked = rule.isEnabled,
                                 onCheckedChange = { enabled ->
                                     appDb.replaceRuleDao.update(rule.copy(isEnabled = enabled))
+                                    if (enabled) SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)
                                 },
                                 onClick = { },
                                 onEdit = { navigateToEdit(rule) },

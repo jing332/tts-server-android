@@ -51,6 +51,7 @@ import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.systts.list.edit.QuickEditBottomSheet
 import com.github.jing332.tts_server_android.compose.systts.nav.NavRoutes
 import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.systts.sizeToToggleableState
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
@@ -360,11 +361,10 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             ) {
                 models.forEachIndexed { _, groupWithSystemTts ->
                     val g = groupWithSystemTts.group
-                    val checkState = when (groupWithSystemTts.list.filter { it.isEnabled }.size) {
-                        0 -> ToggleableState.Off           // 全未选
-                        groupWithSystemTts.list.size -> ToggleableState.On   // 全选
-                        else -> ToggleableState.Indeterminate    // 部分选
-                    }
+                    val checkState =
+                        groupWithSystemTts.list.filter { it.isEnabled }.size.sizeToToggleableState(
+                            groupWithSystemTts.list.size
+                        )
                     val key = "g_${g.id}"
                     stickyHeader(key = key) {
                         ShadowReorderableItem(reorderableState = reorderState, key = key) {
@@ -429,6 +429,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     enabled = item.isEnabled,
                                     onEnabledChange = {
                                         appDb.systemTtsDao.updateTts(item.copy(isEnabled = it))
+                                        if (it) SystemTtsService.notifyUpdateConfig()
                                     },
                                     desc = item.tts.getDescription(),
                                     params = item.tts.getBottomContent(),
@@ -443,7 +444,8 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                             NavRoutes.TtsEdit.id,
                                             Bundle().apply {
                                                 putParcelable(NavRoutes.TtsEdit.DATA, item)
-                                            })
+                                            }
+                                        )
                                     },
                                     onAudition = { showAuditionDialog = item })
                             }

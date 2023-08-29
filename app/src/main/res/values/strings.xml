@@ -26,9 +26,9 @@
     <string name="about">关于</string>
     <string name="config">配置</string>
     <string name="log">日志</string>
-    <string name="background_whitelist">电池优化白名单</string>
+    <string name="battery_optimization_whitelist">电池优化白名单</string>
     <string name="desktop_shortcut">桌面快捷方式</string>
-    <string name="added_background_whitelist">已加入后台白名单</string>
+    <string name="added_battery_optimization_whitelist">已加入后台白名单</string>
 
     <string name="kill_process">结束进程</string>
     <string name="cancel">取消</string>
