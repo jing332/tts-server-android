@@ -68,6 +68,7 @@ import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
@@ -75,6 +76,12 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val drawerState = LocalDrawerState.current
+
+    var showSortDialog by remember { mutableStateOf<List<SystemTts>?>(null) }
+    if (showSortDialog != null) SortDialog(
+        onDismissRequest = { showSortDialog = null },
+        list = showSortDialog!!
+    )
 
     var showQuickEdit by remember { mutableStateOf<SystemTts?>(null) }
     if (showQuickEdit != null) {
@@ -104,7 +111,9 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
         val model = systts.copy()
         if (model.speechRule.target == SpeechTarget.BGM) return
 
-        if (model.speechRule.target == SpeechTarget.CUSTOM_TAG) appDb.speechRuleDao.getByRuleId(model.speechRule.tagRuleId)
+        if (model.speechRule.target == SpeechTarget.CUSTOM_TAG) appDb.speechRuleDao.getByRuleId(
+            model.speechRule.tagRuleId
+        )
             ?.let {
                 val keys = it.tags.keys.toList()
                 val idx = keys.indexOf(model.speechRule.tag)
@@ -400,6 +409,9 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                 },
                                 onExport = {
                                     showExportSheet = listOf(groupWithSystemTts)
+                                },
+                                onSort = {
+                                    showSortDialog = groupWithSystemTts.list
                                 }
                             )
                         }

@@ -428,6 +428,8 @@
     <string name="limit_tag_length_summary">超出的部分忽略</string>
     <string name="limit_name_length">限制显示名称长度</string>
     <string name="limit_name_length_summary">名称超出的部分忽略</string>
-    <string name="list_soft_settings">排序设置</string>
     <string name="descending">降序</string>
+    <string name="sort">排序</string>
+    <string name="created_time_id">创建时间(ID)</string>
+    <string name="sorting_complete_msg">排序完成，耗时%1$sms</string>
 </resources>

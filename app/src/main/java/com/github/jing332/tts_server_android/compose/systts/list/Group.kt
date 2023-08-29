@@ -1,8 +1,10 @@
 package com.github.jing332.tts_server_android.compose.systts.list
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -17,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.state.ToggleableState
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.GroupItem
+import com.github.jing332.tts_server_android.compose.systts.ListSortSettingsDialog
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
-
 
 @Composable
 fun Group(
@@ -33,6 +35,7 @@ fun Group(
     onRename: (newName: String) -> Unit,
     onCopy: (newName: String) -> Unit,
     onEditAudioParams: () -> Unit,
+    onSort: () -> Unit,
 ) {
     var showRenameDialog by remember { mutableStateOf(false) }
     if (showRenameDialog) {
@@ -97,6 +100,16 @@ fun Group(
                 },
                 leadingIcon = {
                     Icon(Icons.Default.Speed, null)
+                }
+            )
+
+            DropdownMenuItem(text = { Text(stringResource(id = R.string.sort)) },
+                onClick = {
+                    dismiss()
+                    onSort()
+                },
+                leadingIcon = {
+                    Icon(Icons.Default.Sort, null)
                 }
             )
         }

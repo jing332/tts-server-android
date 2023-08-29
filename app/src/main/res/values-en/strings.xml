@@ -445,6 +445,8 @@
     <string name="limit_tag_length_summary">The excess tag is ignored</string>
     <string name="limit_name_length">Limit the display name length</string>
     <string name="limit_name_length_summary">The excess of the name is ignored</string>
-    <string name="list_soft_settings">排序设置</string>
-    <string name="descending">降序</string>
+    <string name="descending">Descending</string>
+    <string name="sort">Sort</string>
+    <string name="created_time_id">Created time (ID)</string>
+    <string name="sorting_complete_msg">Sorting complete, taking %1$sms</string>
 </resources>

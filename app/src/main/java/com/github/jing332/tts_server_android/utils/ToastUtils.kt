@@ -7,10 +7,10 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 
-fun Context.toast(@StringRes message: Int) {
+fun Context.toast(@StringRes message: Int, vararg args: Any) {
     runOnUI {
         kotlin.runCatching {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(message, *args), Toast.LENGTH_SHORT).show()
         }
     }
 }
