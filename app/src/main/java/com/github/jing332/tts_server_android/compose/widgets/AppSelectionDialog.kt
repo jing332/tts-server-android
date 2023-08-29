@@ -53,7 +53,9 @@ fun AppSelectionDialog(
         content = {
             val state = rememberLazyListState()
             LaunchedEffect(Unit) {
-                state.scrollToItem(values.indexOfFirst { onValueSame(it, value) })
+                val index  = values.indexOfFirst { onValueSame(it, value) }
+                if (index >=0 && index < entries.size)
+                    state.animateScrollToItem(index)
             }
             LoadingContent(modifier = Modifier, isLoading = isLoading) {
                 LazyColumn(state = state) {

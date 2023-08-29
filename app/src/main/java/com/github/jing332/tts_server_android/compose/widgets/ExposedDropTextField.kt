@@ -102,7 +102,7 @@ private fun ExposedDropTextFieldPreview() {
         key = key,
         keys = listOf(1, 2, 3),
         values = listOf("1", "2", "3"),
-    ) { k, v ->
+    ) { k, _ ->
         key = k as Int
     }
 }

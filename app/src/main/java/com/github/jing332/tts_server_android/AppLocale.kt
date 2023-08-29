@@ -35,11 +35,11 @@ object AppLocale {
         FileUtils.saveFile(file, lang.toByteArray())
     }
 
-    fun setLocale(context: Context, locale: Locale = getSetLocale(context)) {
+    fun setLocale(context: Context, locale: Locale = getLocaleFromFile(context)) {
         val resources = context.resources
         val metrics = resources.displayMetrics
         val configuration = resources.configuration
-        val newLocale = getSetLocale(context)
+        val newLocale = getLocaleFromFile(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             configuration.setLocale(newLocale)
             val localeList = LocaleList(newLocale)
@@ -88,7 +88,7 @@ object AppLocale {
     /**
      * 当前设置语言
      */
-    fun getSetLocale(context: Context): Locale {
+    fun getLocaleFromFile(context: Context): Locale {
         return localeMap[getLocaleCodeFromFile(context)] ?: getSystemLocale()
     }
 
@@ -99,7 +99,7 @@ object AppLocale {
         val locale = getAppLocale(context)
         val language = locale.language
         val country = locale.country
-        val pfLocale = getSetLocale(context)
+        val pfLocale = getLocaleFromFile(context)
         val pfLanguage = pfLocale.language
         val pfCountry = pfLocale.country
         return language == pfLanguage && country == pfCountry

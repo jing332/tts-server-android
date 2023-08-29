@@ -131,7 +131,10 @@ fun RuleEditScreen(
 //                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
 //            ),
             actions = {
-                IconButton(onClick = { onSave() }) {
+                IconButton(onClick = {
+                    navController.popBackStack()
+                    onSave()
+                }) {
                     Icon(Icons.Filled.Save, stringResource(id = R.string.save))
                 }
 

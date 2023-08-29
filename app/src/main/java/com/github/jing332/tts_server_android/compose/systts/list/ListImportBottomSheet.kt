@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.LegadoHttpTts
@@ -76,7 +75,7 @@ fun ListImportBottomSheet(onDismissRequest: () -> Unit) {
             )
             RowToggleButtonGroup(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                primarySelection = 0,
+                selectionIndex = 0,
                 buttonCount = 2,
                 onButtonClick = {
                     isLegadoType = it == 1

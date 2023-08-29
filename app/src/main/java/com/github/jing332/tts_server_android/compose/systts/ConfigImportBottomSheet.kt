@@ -28,6 +28,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -68,6 +69,9 @@ class ImportSource {
         const val URL = 2
     }
 }
+
+val LocalImportRemoteUrl = compositionLocalOf { mutableStateOf("") }
+val LocalImportFilePath = compositionLocalOf { mutableStateOf("") }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -133,7 +137,7 @@ fun ConfigImportBottomSheet(
                 )
 
                 RowToggleButtonGroup(
-                    primarySelection = 0,
+                    selectionIndex = source,
                     buttonCount = 3,
                     onButtonClick = { source = it },
                     buttonTexts = arrayOf(
@@ -146,6 +150,16 @@ fun ConfigImportBottomSheet(
                     ).map { painterResource(id = it) }.toTypedArray(),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
+
+                if (LocalImportRemoteUrl.current.value.isNotBlank()) {
+                    source = ImportSource.URL
+                    url = LocalImportRemoteUrl.current.value
+                    LocalImportRemoteUrl.current.value = ""
+                } else if (LocalImportFilePath.current.value.isNotBlank()) {
+                    source = ImportSource.FILE
+                    path = LocalImportFilePath.current.value
+                    LocalImportFilePath.current.value = ""
+                }
 
                 AnimatedVisibility(visible = source == ImportSource.FILE) {
                     val filePicker =

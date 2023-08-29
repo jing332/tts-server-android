@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.databinding.ActivityBackBinding
-import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 
 /**
  * 带behavior
@@ -19,7 +17,6 @@ open class BackActivity() : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initAppTheme()
         super.onCreate(savedInstanceState)
         super.setContentView(rootBinding.root)
         setSupportActionBar(rootBinding.toolbar)

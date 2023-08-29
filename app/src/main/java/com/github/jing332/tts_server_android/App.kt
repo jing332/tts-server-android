@@ -39,9 +39,6 @@ class App : Application() {
 
         Kotpref.init(this)
 
-        // RecyclerView
-        BRV.modelId = BR.m
-
         GlobalScope.launch {
             HanlpManager.initDir(
                 context.getExternalFilesDir("hanlp")?.absolutePath

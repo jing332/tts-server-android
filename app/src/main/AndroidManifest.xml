@@ -100,8 +100,10 @@
             android:taskAffinity="com.github.jing332.tts_server_android.plugin" />
 
         <activity
-            android:name=".ui.MainActivity"
-            android:exported="true">
+            android:name=".ui.ImportConfigActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.github.jing332.tts_server_android.import">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

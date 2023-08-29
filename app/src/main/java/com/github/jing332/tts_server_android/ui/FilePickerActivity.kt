@@ -19,7 +19,6 @@ import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.help.ByteArrayBinder
 import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
-import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 import com.github.jing332.tts_server_android.utils.FileUtils
 import com.github.jing332.tts_server_android.utils.FileUtils.mimeType
 import com.github.jing332.tts_server_android.utils.getBinder
@@ -115,7 +114,6 @@ class FilePickerActivity : AppCompatActivity() {
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
-        initAppTheme()
         super.onCreate(savedInstanceState)
         val lp = window.attributes
         lp.alpha = 0.0f

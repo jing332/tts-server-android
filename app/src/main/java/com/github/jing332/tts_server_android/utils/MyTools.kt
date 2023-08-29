@@ -9,6 +9,7 @@ import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import com.drake.net.Net
@@ -19,25 +20,28 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.serialization.decodeFromString
 import okhttp3.Response
+import splitties.systemservices.powerManager
 import java.math.BigDecimal
 
 
 object MyTools {
     const val TAG = "MyTools"
-    private const val GITHUB_RELEASES_LATEST_URL =
-        "https://api.github.com/repos/jing332/tts-server-android/releases/latest"
 
-    /*从Github检查更新*/
-    suspend fun checkUpdate(ctx: Context, isFromUser: Boolean = false) {
-        try {
-            val resp: Response = Net.get(GITHUB_RELEASES_LATEST_URL).execute()
-            val jsonStr = resp.body?.string()
-            checkVersionFromJson(ctx, jsonStr!!, isFromUser)
-        } catch (e: Exception) {
-//            e.printStackTrace()
-            if (isFromUser) ctx.toast(R.string.check_update_failed)
+    @SuppressLint("BatteryLife")
+     fun Context.killBattery() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (powerManager.isIgnoringBatteryOptimizations(packageName)) {
+                toast(R.string.added_background_whitelist)
+            } else {
+                kotlin.runCatching {
+                    startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                        data = Uri.parse("package:$packageName")
+                    })
+                }.onFailure {
+                    toast(R.string.system_not_support_please_manual_set)
+                }
+            }
         }
-
     }
 
     private fun checkVersionFromJson(ctx: Context, s: String, isFromUser: Boolean) {

@@ -14,6 +14,14 @@ import java.net.URLConnection
 
 
 object FileUtils {
+    fun File.audioList(): List<File> {
+        return if ( isFile)
+            listOf(this)
+        else
+            FileUtils.getAllFilesInFolder(this)
+                .filter { it.mimeType?.startsWith("audio") == true }
+    }
+
     /**
      * 复制文件夹
      */

@@ -32,6 +32,7 @@ object SizeUtils {
      * @param spValue The value of sp.
      * @return value of px
      */
+    @Suppress("DEPRECATION")
     fun sp2px(spValue: Float): Int {
         val fontScale: Float = Resources.getSystem().displayMetrics.scaledDensity
         return (spValue * fontScale + 0.5f).toInt()

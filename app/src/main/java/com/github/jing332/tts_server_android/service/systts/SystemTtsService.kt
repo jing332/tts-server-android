@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.service.systts
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -20,7 +19,7 @@ import android.speech.tts.TextToSpeechService
 import android.speech.tts.Voice
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.github.jing332.tts_server_android.*
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.LogLevel
@@ -30,15 +29,30 @@ import com.github.jing332.tts_server_android.help.audio.AudioDecoderException
 import com.github.jing332.tts_server_android.help.config.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
-import com.github.jing332.tts_server_android.service.systts.help.exception.*
+import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException
+import com.github.jing332.tts_server_android.service.systts.help.exception.PlayException
+import com.github.jing332.tts_server_android.service.systts.help.exception.RequestException
+import com.github.jing332.tts_server_android.service.systts.help.exception.SpeechRuleException
+import com.github.jing332.tts_server_android.service.systts.help.exception.TextReplacerException
+import com.github.jing332.tts_server_android.service.systts.help.exception.TtsManagerException
 import com.github.jing332.tts_server_android.ui.AppLog
-import com.github.jing332.tts_server_android.ui.MainActivity
-import com.github.jing332.tts_server_android.ui.MainActivity.Companion.INDEX_SYS_TTS
-import com.github.jing332.tts_server_android.ui.MainActivity.Companion.KEY_FRAGMENT_INDEX
-import com.github.jing332.tts_server_android.utils.*
+import com.github.jing332.tts_server_android.ui.ImportConfigActivity
+import com.github.jing332.tts_server_android.utils.GcManager
 import com.github.jing332.tts_server_android.utils.StringUtils.limitLength
-import kotlinx.coroutines.*
-import java.util.*
+import com.github.jing332.tts_server_android.utils.longToast
+import com.github.jing332.tts_server_android.utils.registerGlobalReceiver
+import com.github.jing332.tts_server_android.utils.rootCause
+import com.github.jing332.tts_server_android.utils.runOnUI
+import com.github.jing332.tts_server_android.utils.toHtmlBold
+import com.github.jing332.tts_server_android.utils.toHtmlItalic
+import com.github.jing332.tts_server_android.utils.toHtmlSmall
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.Locale
 import kotlin.system.exitProcess
 
 
@@ -335,8 +349,8 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             PendingIntent.getActivity(
                 this, 1, Intent(
                     this,
-                    MainActivity::class.java
-                ).apply { putExtra(KEY_FRAGMENT_INDEX, INDEX_SYS_TTS) }, pendingIntentFlags
+                    ImportConfigActivity::class.java
+                ).apply { /*putExtra(KEY_FRAGMENT_INDEX, INDEX_SYS_TTS)*/ }, pendingIntentFlags
             )
 
         val killProcessPendingIntent = PendingIntent.getBroadcast(
@@ -492,7 +506,12 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
     override fun onPlayFinished(text: String, tts: ITextToSpeechEngine) {
         if (!AppConst.isSysTtsLogEnabled) return
-        logI(getString(R.string.systts_log_finished_playing, text.limitLength(suffix = "...").toHtmlBold()))
+        logI(
+            getString(
+                R.string.systts_log_finished_playing,
+                text.limitLength(suffix = "...").toHtmlBold()
+            )
+        )
     }
 
     private fun logD(msg: String) = sendLog(LogLevel.DEBUG, msg)

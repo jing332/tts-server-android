@@ -185,7 +185,7 @@ fun BasicInfoEditScreen(
                     modifier = Modifier
                         .wrapContentWidth()
                         .align(Alignment.CenterHorizontally),
-                    primarySelection = if (systts.speechRule.target == SpeechTarget.ALL) 0 else 1,
+                    selectionIndex = if (systts.speechRule.target == SpeechTarget.ALL) 0 else 1,
                     buttonCount = 2,
                     buttonIcons = arrayOf(
                         painterResource(id = R.drawable.ic_baseline_select_all_24),

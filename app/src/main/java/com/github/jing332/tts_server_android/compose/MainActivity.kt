@@ -156,7 +156,7 @@ private fun NavHostScreen() {
                 navController = navController,
                 startDestination = NavRoutes.SystemTTS.id
             ) {
-                composable(NavRoutes.SystemTTS.id) { SystemTtsScreen(drawerState) }
+                composable(NavRoutes.SystemTTS.id) { SystemTtsScreen() }
                 composable(NavRoutes.SystemTtsForwarder.id) {
                     SystemTtsForwarderScreen()
                 }
@@ -222,7 +222,6 @@ fun NavDrawerContent(
             navController.navigate(targetScreen.id)
         }
     ) {
-
         val isSelected = navController.currentDestination?.route == targetScreen.id
         NavigationDrawerItem(
             icon = icon,
@@ -311,6 +310,7 @@ fun NavDrawerContent(
             }
         )
 
+        Spacer(modifier = Modifier.height(4.dp))
         var showAboutDialog by remember { mutableStateOf(false) }
         if (showAboutDialog)
             AboutDialog { showAboutDialog = false }

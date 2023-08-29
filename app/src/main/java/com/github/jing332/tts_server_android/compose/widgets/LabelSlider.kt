@@ -132,6 +132,5 @@ fun PreviewSlider() {
         a11yDescription = str,
     ) {
         Text(str)
-        str
     }
 }

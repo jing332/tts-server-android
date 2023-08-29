@@ -27,7 +27,6 @@ fun BgmSettingsDialog(onDismissRequest: () -> Unit) {
         title = { Text(stringResource(id = R.string.bgm_settings)) },
         content = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
                 var shuffle by remember { SystemTtsConfig.isBgmShuffleEnabled }
                 Row(
                     Modifier
@@ -42,11 +41,11 @@ fun BgmSettingsDialog(onDismissRequest: () -> Unit) {
                 }
 
                 var volume by remember { SystemTtsConfig.bgmVolume }
-                val volumeStr = stringResource(id = R.string.label_speech_volume, volume.toString())
+                val volumeStr = stringResource(id = R.string.label_speech_volume, (volume * 1000f).toInt().toString())
                 IntSlider(
                     label = volumeStr,
-                    value = volume,
-                    onValueChange = { volume = it },
+                    value = volume * 1000f,
+                    onValueChange = { volume = it / 1000f },
                     valueRange = 1f..1000f
                 )
 

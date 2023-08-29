@@ -29,11 +29,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SystemTtsScreen(drawerState: DrawerState, vm: SystemTtsViewModel = viewModel()) {
-    val navController = LocalNavController.current
+fun SystemTtsScreen( vm: SystemTtsViewModel = viewModel()) {
     val pagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     Scaffold(
         bottomBar = {

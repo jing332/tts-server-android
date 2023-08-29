@@ -276,9 +276,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                 Text(stringResource(id = R.string.system_tts))
             }, actions = {
                 var showAddMenu by remember { mutableStateOf(false) }
-                IconButton(onClick = {
-                    showAddMenu = true
-                }) {
+                IconButton(onClick = { showAddMenu = true }) {
                     Icon(Icons.Default.Add, stringResource(id = R.string.add_config))
 
                     DropdownMenu(expanded = showAddMenu,

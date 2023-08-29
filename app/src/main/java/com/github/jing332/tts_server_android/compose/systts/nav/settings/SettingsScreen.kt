@@ -139,7 +139,7 @@ fun SettingsScreen(drawerState: DrawerState) {
                         if (AppLocale.getLocaleCodeFromFile(context).isEmpty()) {
                             stringResource(id = R.string.follow_system)
                         } else {
-                            AppLocale.getSetLocale(context).displayName
+                            AppLocale.getLocaleFromFile(context).displayName
                         }
                     )
                 }) {

@@ -12,7 +12,7 @@ object TtsUiFactory {
             is PluginTTS -> PluginTtsUI()
             is MsTTS -> MsTtsUI()
             is LocalTTS -> LocalTtsUI()
-            is BgmTTS -> BgmUI()
+            is BgmTTS -> BgmTtsUI()
 
             else -> null
         }

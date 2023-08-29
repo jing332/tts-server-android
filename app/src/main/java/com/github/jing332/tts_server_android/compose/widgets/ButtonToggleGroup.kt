@@ -22,7 +22,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -32,10 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.focused
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -113,7 +110,7 @@ fun ColumnToggleButtonGroup(
 fun RowToggleButtonGroup(
     modifier: Modifier = Modifier,
     buttonCount: Int,
-    primarySelection: Int = 0,
+    selectionIndex: Int,
     selectedColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     unselectedColor: Color = Color.Unspecified,
     selectedContentColor: Color = MaterialTheme.colorScheme.onBackground,
@@ -134,7 +131,6 @@ fun RowToggleButtonGroup(
 ) {
     Row(modifier = modifier.focusGroup()) {
         val squareCorner = CornerSize(0.dp)
-        var selectionIndex by rememberSaveable { mutableIntStateOf(primarySelection) }
 
         repeat(buttonCount) { index ->
             val buttonShape = when (index) {
@@ -173,7 +169,6 @@ fun RowToggleButtonGroup(
                 iconTintColor = iconTintColor,
                 iconPosition = iconPosition,
                 onClick = {
-                    selectionIndex = index
                     onButtonClick.invoke(index)
                 },
             )

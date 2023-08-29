@@ -8,7 +8,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.github.jing332.tts_server_android.databinding.ExoPlayerActivityBinding
 import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
-import com.github.jing332.tts_server_android.ui.view.ThemeExtensions.initAppTheme
 
 class ExoPlayerActivity : BackActivity(), Player.Listener {
     companion object {
@@ -24,7 +23,6 @@ class ExoPlayerActivity : BackActivity(), Player.Listener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initAppTheme()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 

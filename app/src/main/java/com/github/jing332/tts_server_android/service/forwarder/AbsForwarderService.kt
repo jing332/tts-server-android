@@ -7,7 +7,6 @@ import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Build
 import android.os.PowerManager
@@ -19,7 +18,7 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.ui.AppLog
 import com.github.jing332.tts_server_android.constant.LogLevel
-import com.github.jing332.tts_server_android.ui.MainActivity
+import com.github.jing332.tts_server_android.ui.ImportConfigActivity
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.registerGlobalReceiver
 import com.github.jing332.tts_server_android.utils.toast
@@ -137,12 +136,12 @@ abstract class AbsForwarderService(
             PendingIntent.getActivity(
                 this, 0, Intent(
                     this,
-                    MainActivity::class.java
+                    ImportConfigActivity::class.java
                 ).apply {
-                    putExtra(
-                        MainActivity.KEY_FRAGMENT_INDEX,
-                        MainActivity.INDEX_FORWARDER_SYS
-                    )
+//                    putExtra(
+//                        ImportConfigActivity.KEY_FRAGMENT_INDEX,
+//                        ImportConfigActivity.INDEX_FORWARDER_SYS
+//                    )
                 },
                 pendingIntentFlags
             )

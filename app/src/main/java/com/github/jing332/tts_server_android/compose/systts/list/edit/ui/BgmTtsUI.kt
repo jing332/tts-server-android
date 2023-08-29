@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.systts.list.edit.ui
 
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AudioFile
@@ -23,28 +25,37 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
+import com.github.jing332.tts_server_android.compose.widgets.AppSelectionDialog
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
+import com.github.jing332.tts_server_android.ui.ExoPlayerActivity
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.ASFUriUtils.getPath
+import com.github.jing332.tts_server_android.utils.FileUtils.audioList
+import com.github.jing332.tts_server_android.utils.clickableRipple
 import com.github.jing332.tts_server_android.utils.toast
+import java.io.File
 
-class BgmUI : TtsUI() {
+class BgmTtsUI : TtsUI() {
     @Composable
     override fun ParamsEditScreen(
         modifier: Modifier,
@@ -56,10 +67,11 @@ class BgmUI : TtsUI() {
             onSysttsChange(systts.copy(speechRule = SpeechRuleInfo(target = SpeechTarget.BGM)))
         }
 
-        val volStr = stringResource(id = R.string.label_speech_volume, tts.volume.toString())
+        val volStr = if (tts.volume == 0) stringResource(id = R.string.follow)
+        else stringResource(id = R.string.label_speech_volume, tts.volume.toString())
         IntSlider(label = volStr, value = tts.volume.toFloat(), onValueChange = {
             onSysttsChange(systts.copy(tts = tts.copy(volume = it.toInt())))
-        }, valueRange = 1f..1000f)
+        }, valueRange = 0f..1000f)
     }
 
     @Composable
@@ -70,6 +82,10 @@ class BgmUI : TtsUI() {
         onSave: () -> Unit,
         onCancel: () -> Unit
     ) {
+        LaunchedEffect(Unit) {
+
+        }
+
         val tts = systts.tts as BgmTTS
         val context = LocalContext.current
         val filePicker =
@@ -91,6 +107,32 @@ class BgmUI : TtsUI() {
                     context.displayErrorDialog(it)
                 }
             }
+
+        var showMusicList by remember { mutableStateOf("") }
+        if (showMusicList != "") {
+            val audioFiles = remember(showMusicList) {
+                try {
+                    File(showMusicList).audioList()
+                } catch (e: Exception) {
+                    context.displayErrorDialog(e)
+                    null
+                }
+            } ?: return
+
+            AppSelectionDialog(
+                onDismissRequest = { showMusicList = "" },
+                title = { Text(showMusicList) },
+                value = Any(),
+                values = audioFiles,
+                entries = audioFiles.map { it.name },
+                onClick = { value, _ ->
+                    context.startActivity(Intent(context, ExoPlayerActivity::class.java).apply {
+                        action = Intent.ACTION_VIEW
+                        data = (value as File).toUri()
+                    })
+                }
+            )
+        }
 
         val saveSignal = remember { mutableStateOf<(() -> Unit)?>(null) }
         Scaffold(topBar = {
@@ -150,10 +192,14 @@ class BgmUI : TtsUI() {
                     }
 
                     LazyColumn(Modifier.padding(8.dp)) {
-                        itemsIndexed(
-                            tts.musicList.toList(),
-                            key = { index, _ -> index }) { index, item ->
-                            Row {
+                        items(tts.musicList.toList()) { item ->
+                            Row(
+                                Modifier
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .clickableRipple {
+
+                                    }
+                            ) {
                                 Text(
                                     item,
                                     modifier = Modifier.weight(1f),

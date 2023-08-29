@@ -23,41 +23,6 @@ import tts_server_lib.Tts_server_lib
 
 @Suppress("OPT_IN_USAGE")
 object AppDialogs {
-    fun displayInputDialog(
-        context: Context,
-        title: String,
-        hint: String = "",
-        text: String = "",
-        onSave: (text: String) -> Unit
-    ) {
-        val et = MaterialTextInput(context)
-        et.hint = hint
-        et.editText!!.setText(text)
-        et.setPadding(8.dp)
-
-        MaterialAlertDialogBuilder(context)
-            .setTitle(title)
-            .setView(et)
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                onSave.invoke(et.editText!!.text.toString())
-            }.show()
-    }
-
-    fun displayDeleteDialog(context: Context, message: String, onRemove: () -> Unit) {
-        MaterialAlertDialogBuilder(context).setTitle(R.string.is_confirm_delete)
-            .setMessage(message)
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.delete) { _, _ ->
-                onRemove.invoke()
-            }
-            .create().apply {
-                show()
-                getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED)
-            }
-    }
-
-
     fun Context.displayErrorDialog(t: Throwable, title: String? = null) {
         runOnUI {
             val view = FrameLayout(this)

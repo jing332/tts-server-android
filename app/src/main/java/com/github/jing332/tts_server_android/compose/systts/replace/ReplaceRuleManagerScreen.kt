@@ -249,7 +249,7 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                                 },
                                 onClick = { },
                                 onEdit = { navigateToEdit(rule) },
-                                onDelete = { }
+                                onDelete = {  appDb.replaceRuleDao.delete(rule) },
                             )
                         }
                     }
