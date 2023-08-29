@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import com.github.jing332.tts_server_android.compose.widgets.SetupSystemBars
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.gyf.immersionbar.ImmersionBar
 
@@ -86,13 +87,15 @@ fun AppTheme(
 
     //沉浸式状态栏
     ImmersionBar.with(LocalView.current.context as ComponentActivity)
-        .transparentStatusBar()
-        .transparentNavigationBar()
+//        .transparentStatusBar()
+//        .transparentNavigationBar() // BottomSheet 会有问题 多padding了一个输入法的高度
         .statusBarDarkFont(!darkTheme)
         .navigationBarDarkIcon(!darkTheme)
         .keyboardEnable(true)
         .keyboardMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         .init()
+
+    SetupSystemBars()
 
     MaterialTheme(
         colorScheme = themeAnimation(targetTheme = targetTheme),

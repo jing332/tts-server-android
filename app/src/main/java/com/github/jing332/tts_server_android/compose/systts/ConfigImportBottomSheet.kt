@@ -121,91 +121,103 @@ fun ConfigImportBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         Column(Modifier.padding(horizontal = 8.dp)) {
-            Text(
-                stringResource(id = R.string.import_config),
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.displayMedium
-            )
-
-            Column(Modifier.fillMaxWidth()) {
-                content()
-
+            Column(
+                Modifier
+                    .weight(weight = 1f, fill = false)
+                    .align(Alignment.Start)
+            ) {
                 Text(
-                    stringResource(id = R.string.source),
+                    stringResource(id = R.string.import_config),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.displayMedium
                 )
 
-                RowToggleButtonGroup(
-                    selectionIndex = source,
-                    buttonCount = 3,
-                    onButtonClick = { source = it },
-                    buttonTexts = arrayOf(
-                        R.string.clipboard, R.string.file, R.string.url_net
-                    ).map { stringResource(id = it) }.toTypedArray(),
-                    buttonIcons = arrayOf(
-                        R.drawable.ic_baseline_select_all_24,
-                        R.drawable.ic_baseline_insert_drive_file_24,
-                        R.drawable.ic_web
-                    ).map { painterResource(id = it) }.toTypedArray(),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
+                Column(Modifier.fillMaxWidth()) {
+                    content()
 
-                if (LocalImportRemoteUrl.current.value.isNotBlank()) {
-                    source = ImportSource.URL
-                    url = LocalImportRemoteUrl.current.value
-                    LocalImportRemoteUrl.current.value = ""
-                } else if (LocalImportFilePath.current.value.isNotBlank()) {
-                    source = ImportSource.FILE
-                    path = LocalImportFilePath.current.value
-                    LocalImportFilePath.current.value = ""
-                }
+                    Text(
+                        stringResource(id = R.string.source),
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        style = MaterialTheme.typography.titleMedium
+                    )
 
-                AnimatedVisibility(visible = source == ImportSource.FILE) {
-                    val filePicker =
-                        rememberLauncherForActivityResult(contract = AppActivityResultContracts.filePickerActivity()) {
-                            it.second?.let { uri ->
-                                path = uri.toString()
+                    RowToggleButtonGroup(
+                        selectionIndex = source,
+                        buttonCount = 3,
+                        onButtonClick = { source = it },
+                        buttonTexts = arrayOf(
+                            R.string.clipboard, R.string.file, R.string.url_net
+                        ).map { stringResource(id = it) }.toTypedArray(),
+                        buttonIcons = arrayOf(
+                            R.drawable.ic_baseline_select_all_24,
+                            R.drawable.ic_baseline_insert_drive_file_24,
+                            R.drawable.ic_web
+                        ).map { painterResource(id = it) }.toTypedArray(),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+
+                    if (LocalImportRemoteUrl.current.value.isNotBlank()) {
+                        source = ImportSource.URL
+                        url = LocalImportRemoteUrl.current.value
+                        LocalImportRemoteUrl.current.value = ""
+                    } else if (LocalImportFilePath.current.value.isNotBlank()) {
+                        source = ImportSource.FILE
+                        path = LocalImportFilePath.current.value
+                        LocalImportFilePath.current.value = ""
+                    }
+
+                    AnimatedVisibility(visible = source == ImportSource.FILE) {
+                        val filePicker =
+                            rememberLauncherForActivityResult(contract = AppActivityResultContracts.filePickerActivity()) {
+                                it.second?.let { uri ->
+                                    path = uri.toString()
+                                }
                             }
-                        }
 
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = path,
-                        onValueChange = { path = it },
-                        label = {
-                            Text(stringResource(id = R.string.file))
-                        },
-                        trailingIcon = {
-                            IconButton(onClick = {
-                                filePicker.launch(
-                                    FilePickerActivity.RequestSelectFile(
-                                        listOf("application/json", "text/*")
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = path,
+                            onValueChange = { path = it },
+                            label = {
+                                Text(stringResource(id = R.string.file))
+                            },
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    filePicker.launch(
+                                        FilePickerActivity.RequestSelectFile(
+                                            listOf("application/json", "text/*")
+                                        )
                                     )
-                                )
-                            }) {
-                                Icon(
-                                    Icons.Default.FileOpen,
-                                    stringResource(id = R.string.select_file)
-                                )
+                                }) {
+                                    Icon(
+                                        Icons.Default.FileOpen,
+                                        stringResource(id = R.string.select_file)
+                                    )
+                                }
                             }
-                        }
-                    )
-                }
+                        )
+                    }
 
-                AnimatedVisibility(visible = source == ImportSource.URL) {
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = url,
-                        onValueChange = { url = it },
-                        label = {
-                            Text(stringResource(id = R.string.url_net))
-                        }
-                    )
+//                    AnimatedVisibility(visible = source == ImportSource.URL) {
+                    if (source == ImportSource.URL)
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = url,
+                            onValueChange = { url = it },
+                            label = {
+                                Text(stringResource(id = R.string.url_net))
+                            }
+                        )
+//                    }
                 }
             }
 
-            Box(Modifier.fillMaxWidth()) {
+
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.End)
+            ) {
                 TextButton(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     onClick = {
@@ -225,7 +237,6 @@ fun ConfigImportBottomSheet(
                     }
                 }
             }
-
         }
     }
 }

@@ -154,9 +154,7 @@
         <activity
             android:name=".compose.ComposeMainActivity"
             android:exported="true"
-            android:launchMode="singleTask"
-            android:theme="@style/Theme.TtsServer.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

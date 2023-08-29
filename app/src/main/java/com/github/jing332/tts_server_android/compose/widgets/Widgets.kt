@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
@@ -18,14 +19,13 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
-fun TransparentSystemBars() {
+fun SetupSystemBars() {
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = !isSystemInDarkTheme()
     SideEffect {
         systemUiController.setSystemBarsColor(
             color = Color.Transparent,
             darkIcons = useDarkIcons,
-            isNavigationBarContrastEnforced = false,
         )
     }
 }
