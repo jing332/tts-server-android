@@ -2,8 +2,6 @@ package com.github.jing332.tts_server_android.ui.preference.backup_restore
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import cn.hutool.core.io.FileUtil
-import cn.hutool.core.util.ZipUtil
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
@@ -13,11 +11,9 @@ import com.github.jing332.tts_server_android.data.entities.replace.GroupWithRepl
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.utils.FileUtils
 import com.github.jing332.tts_server_android.utils.ZipUtils
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import java.io.ByteArrayInputStream
 import java.io.File
-import java.nio.charset.Charset
 import java.util.zip.ZipInputStream
 
 class BackupRestoreViewModel(application: Application) : AndroidViewModel(application) {
@@ -71,7 +67,7 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
             appDb.systemTtsDao.insertGroupWithTts(*list.toTypedArray())
         } else if (file.name.endsWith("speechRules.json")) {
             val list: List<SpeechRule> = AppConst.jsonBuilder.decodeFromString(jsonStr)
-            appDb.speechRule.insert(*list.toTypedArray())
+            appDb.speechRuleDao.insert(*list.toTypedArray())
         } else if (file.name.endsWith("replaceRules.json")) {
             val list: List<GroupWithReplaceRule> =
                 AppConst.jsonBuilder.decodeFromString(jsonStr)
@@ -126,7 +122,7 @@ class BackupRestoreViewModel(application: Application) : AndroidViewModel(applic
             }
 
             is Type.SpeechRule -> {
-                encodeJsonAndCopyToTmpZipPath(appDb.speechRule.all, "speechRules")
+                encodeJsonAndCopyToTmpZipPath(appDb.speechRuleDao.all, "speechRules")
             }
 
             is Type.ReplaceRule -> {

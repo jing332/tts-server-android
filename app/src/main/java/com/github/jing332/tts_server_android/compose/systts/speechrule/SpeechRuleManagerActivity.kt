@@ -37,7 +37,7 @@ class SpeechRuleManagerActivity : AppCompatActivity() {
                                     ?: SpeechRule()
                             }
                             SpeechRuleEditScreen(rule, onSave = {
-                                appDb.speechRule.insert(it)
+                                appDb.speechRuleDao.insert(it)
                             })
                         }
                     }

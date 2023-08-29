@@ -113,7 +113,7 @@ fun ConfigExportBottomSheet(
             ) {
                 Text(
                     text = json,
-                    Modifier.width(1000.dp),
+                    Modifier.size(2000.dp), // compose  Can't represent a size of xxx in Constraints
                     style = MaterialTheme.typography.bodySmall,
                 )
             }

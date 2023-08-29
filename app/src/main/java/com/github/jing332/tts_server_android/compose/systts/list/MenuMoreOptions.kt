@@ -25,10 +25,10 @@ import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.asAppCompatActivity
 import com.github.jing332.tts_server_android.compose.systts.plugin.PluginManagerActivity
+import com.github.jing332.tts_server_android.compose.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.compose.systts.speechrule.SpeechRuleManagerActivity
 import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
-import com.github.jing332.tts_server_android.ui.systts.replace.ReplaceManagerActivity
 import com.github.jing332.tts_server_android.utils.startActivity
 
 @Composable

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.DeleteColumn
-import androidx.room.RenameColumn
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
@@ -17,7 +16,6 @@ import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
-import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 
@@ -56,7 +54,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val replaceRuleDao: ReplaceRuleDao
     abstract val systemTtsDao: SystemTtsDao
     abstract val pluginDao: PluginDao
-    abstract val speechRule: SpeechRuleDao
+    abstract val speechRuleDao: SpeechRuleDao
 
     companion object {
         private const val DATABASE_NAME = "systts.db"

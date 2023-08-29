@@ -134,10 +134,13 @@ interface SystemTtsDao {
         return list
     }
 
-    fun updateAllOrder(){
-        getAllGroupWithTts().forEach {
-            it.list.sortedBy { tts -> tts.order }.forEachIndexed { index, systemTts ->
-                updateTts(systemTts.copy(order = index))
+    fun updateAllOrder() {
+        getAllGroupWithTts().forEachIndexed { index, groupWithSystemTts ->
+            val g = groupWithSystemTts.group
+            if (g.order != index) updateGroup(g.copy(order = index))
+
+            groupWithSystemTts.list.sortedBy { it.order }.forEachIndexed { subIndex, systemTts ->
+                if (systemTts.order != subIndex) updateTts(systemTts.copy(order = subIndex))
             }
         }
     }

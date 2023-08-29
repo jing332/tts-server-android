@@ -104,7 +104,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
         val model = systts.copy()
         if (model.speechRule.target == SpeechTarget.BGM) return
 
-        if (model.speechRule.target == SpeechTarget.CUSTOM_TAG) appDb.speechRule.getByRuleId(model.speechRule.tagRuleId)
+        if (model.speechRule.target == SpeechTarget.CUSTOM_TAG) appDb.speechRuleDao.getByRuleId(model.speechRule.tagRuleId)
             ?.let {
                 val keys = it.tags.keys.toList()
                 val idx = keys.indexOf(model.speechRule.tag)
@@ -117,7 +117,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                 }
             }
         else {
-            appDb.speechRule.getByRuleId(model.speechRule.tagRuleId)?.let {
+            appDb.speechRuleDao.getByRuleId(model.speechRule.tagRuleId)?.let {
                 model.speechRule.target = SpeechTarget.CUSTOM_TAG
                 model.speechRule.tag = it.tags.keys.first()
             }
@@ -365,7 +365,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                 name = g.name,
                                 isExpanded = g.isExpanded,
                                 toggleableState = checkState,
-                                onCheckedChange = {
+                                onToggleableStateChange = {
                                     appDb.systemTtsDao.updateTts(*groupWithSystemTts.list.map { tts ->
                                         tts.copy(isEnabled = checkState != ToggleableState.On)
                                     }.toTypedArray())

@@ -72,7 +72,7 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
             onDismissRequest = { showDeleteDialog = null },
             name = showDeleteDialog!!.name
         ) {
-            appDb.speechRule.delete(showDeleteDialog!!)
+            appDb.speechRuleDao.delete(showDeleteDialog!!)
         }
 
 
@@ -108,7 +108,7 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
 
                             DropdownMenuItem(
                                 text = { Text(text = stringResource(id = R.string.export_config)) },
-                                onClick = { showExportSheet = appDb.speechRule.allEnabled },
+                                onClick = { showExportSheet = appDb.speechRuleDao.allEnabled },
                                 leadingIcon = {
                                     Icon(Icons.Default.Output, null)
                                 }
@@ -121,18 +121,18 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
         }
     ) { paddingValues ->
         LaunchedEffect(Unit) {
-            appDb.speechRule.all.forEachIndexed { index, speechRule ->
-                appDb.speechRule.update(speechRule.copy(order = index))
+            appDb.speechRuleDao.all.forEachIndexed { index, speechRule ->
+                appDb.speechRuleDao.update(speechRule.copy(order = index))
             }
         }
 
-        val flowAll = remember { appDb.speechRule.flowAll() }
+        val flowAll = remember { appDb.speechRuleDao.flowAll() }
         val list by flowAll.collectAsState(initial = emptyList())
         val reorderState = rememberReorderableLazyListState(onMove = { from, to ->
             val fromItem = list[from.index]
             val toItem = list[to.index]
 
-            appDb.speechRule.update(
+            appDb.speechRuleDao.update(
                 toItem.copy(order = fromItem.order),
                 fromItem.copy(order = toItem.order)
             )
@@ -153,7 +153,7 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
                         name = item.name,
                         desc = "${item.author} - v${item.version}",
                         isEnabled = item.isEnabled,
-                        onEnabledChange = { appDb.speechRule.update(item.copy(isEnabled = it)) },
+                        onEnabledChange = { appDb.speechRuleDao.update(item.copy(isEnabled = it)) },
                         onClick = {
 
                         },

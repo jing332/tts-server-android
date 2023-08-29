@@ -172,7 +172,7 @@
     <string name="group">群組</string>
     <string name="belonging_group">所屬群組</string>
     <string name="msg_group_is_empty">群組為空，請添加配置</string>
-    <string name="edit_group_name">編輯群組名稱</string>
+    <string name="group_name">群組名稱</string>
     <string name="default_group">預設群組</string>
 
     <string name="content">內容</string>

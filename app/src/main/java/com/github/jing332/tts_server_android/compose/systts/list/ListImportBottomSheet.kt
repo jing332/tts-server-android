@@ -81,10 +81,10 @@ fun ListImportBottomSheet(onDismissRequest: () -> Unit) {
                 onButtonClick = {
                     isLegadoType = it == 1
                 },
-                buttonIcons = arrayOf(
-                    painterResource(id = R.mipmap.ic_launcher),
-                    painterResource(id = R.mipmap.ic_legado_launcher)
-                ),
+//                buttonIcons = arrayOf(
+//                    painterResource(id = R.mipmap.ic_launcher),
+//                    painterResource(id = R.mipmap.ic_legado_launcher)
+//                ),
                 buttonTexts = arrayOf(
                     stringResource(id = R.string.app_name),
                     stringResource(id = R.string.legado)

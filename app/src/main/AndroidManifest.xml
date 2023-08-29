@@ -36,6 +36,11 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".compose.systts.replace.ReplaceManagerActivity"
+            android:exported="true"
+            android:label="@string/replace_rule_manager"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".compose.systts.directlink.LinkUploadRuleActivity"
             android:exported="true"
             android:label="@string/direct_link_settings" />
@@ -160,16 +165,6 @@
 
         </activity>
 
-        <activity
-            android:name=".ui.systts.replace.ReplaceManagerActivity"
-            android:exported="true"
-            android:label="@string/title_activity_replace_manager"
-            android:theme="@style/Theme.TtsServer.NoActionBar" />
-        <activity
-            android:name=".ui.systts.replace.ReplaceRuleEditActivity"
-            android:label="@string/title_activity_replace_edit"
-            android:launchMode="singleTask"
-            android:theme="@style/Theme.TtsServer.NoActionBar" />
         <activity
             android:name=".ui.forwarder.MsForwarderSwitchActivity"
             android:taskAffinity="sc.switch"

@@ -187,7 +187,7 @@
     <string name="default_group">Default group</string>
     <string name="content">Content</string>
     <string name="name">Name</string>
-    <string name="edit_group_name">Edit group name</string>
+    <string name="group_name">Group name</string>
     <string name="unnamed">unnamed</string>
     <string name="rename">Rename</string>
     <string name="test_failed">Test failed</string>

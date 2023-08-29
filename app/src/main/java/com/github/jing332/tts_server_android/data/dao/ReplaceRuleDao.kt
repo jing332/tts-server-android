@@ -75,6 +75,19 @@ interface ReplaceRuleDao {
         update(*list.toTypedArray())
     }
 
+    fun updateAllOrder() {
+        allGroupWithReplaceRules().forEachIndexed { index, groupWithReplaceRule ->
+            val g = groupWithReplaceRule.group
+            if (g.order != index) updateGroup(g.copy(order = index))
+
+            groupWithReplaceRule.list.forEachIndexed { index, replaceRule ->
+                if (replaceRule.order != index)
+                    update(replaceRule.copy(order = index))
+
+            }
+        }
+    }
+
     fun insertRuleWithGroup(vararg args: GroupWithReplaceRule) {
         for (v in args) {
             insertGroup(v.group)

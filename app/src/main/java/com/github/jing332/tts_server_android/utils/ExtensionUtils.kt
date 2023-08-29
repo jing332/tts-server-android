@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -49,12 +50,14 @@ import com.github.jing332.tts_server_android.constant.KeyConst
 import java.lang.reflect.ParameterizedType
 
 @Composable
-fun Modifier.clickableRipple(enabled: Boolean = true, onClick: () -> Unit) = this.clickable(
-    enabled = enabled,
-    indication = rememberRipple(),
-    interactionSource = remember { MutableInteractionSource() },
-    onClick = onClick
-)
+fun Modifier.clickableRipple(enabled: Boolean = true, role: Role? = null, onClick: () -> Unit) =
+    this.clickable(
+        enabled = enabled,
+        role = role,
+        indication = rememberRipple(),
+        interactionSource = remember { MutableInteractionSource() },
+        onClick = onClick
+    )
 
 fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
     val spanned = this@toAnnotatedString

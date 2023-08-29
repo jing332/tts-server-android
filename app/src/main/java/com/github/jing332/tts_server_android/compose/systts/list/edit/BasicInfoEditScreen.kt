@@ -65,7 +65,7 @@ fun BasicInfoEditScreen(
     ).value,
     groups: List<SystemTtsGroup> = remember { appDb.systemTtsDao.allGroup },
 
-    speechRules: List<SpeechRule> = remember { appDb.speechRule.allEnabled },
+    speechRules: List<SpeechRule> = remember { appDb.speechRuleDao.allEnabled },
 ) {
     val context = LocalContext.current
     val speechRule by rememberUpdatedState(newValue = speechRules.find { it.ruleId == systts.speechRule.tagRuleId })

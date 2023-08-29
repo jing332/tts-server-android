@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.ui.*
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.drake.net.utils.fileName
 import com.github.jing332.tts_server_android.R

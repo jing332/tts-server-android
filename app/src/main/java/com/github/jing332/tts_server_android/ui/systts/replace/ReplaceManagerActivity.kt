@@ -374,7 +374,7 @@ class ReplaceManagerActivity : AppCompatActivity(R.layout.systts_replace_activit
 
             R.id.menu_add_group -> {
                 AppDialogs.displayInputDialog(
-                    this, getString(R.string.edit_group_name), getString(R.string.name)
+                    this, getString(R.string.group_name), getString(R.string.name)
                 ) { text ->
                     appDb.replaceRuleDao.insertGroup(ReplaceRuleGroup(name = text.ifEmpty {
                         getString(R.string.unnamed)

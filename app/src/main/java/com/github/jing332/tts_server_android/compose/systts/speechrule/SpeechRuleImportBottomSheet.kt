@@ -21,7 +21,7 @@ fun SpeechRuleImportBottomSheet(onDismissRequest: () -> Unit) {
             onDismissRequest = { showSelectDialog = null },
             models = list.map { ConfigModel(true, it.name, "${it.author} - v${it.version}", it) },
             onSelectedList = {
-                 appDb.speechRule.insert(*it.map { speechRule -> speechRule as SpeechRule }.toTypedArray())
+                 appDb.speechRuleDao.insert(*it.map { speechRule -> speechRule as SpeechRule }.toTypedArray())
 
                 it.size
             }

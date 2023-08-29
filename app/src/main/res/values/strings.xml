@@ -185,7 +185,7 @@
     <string name="group">分组</string>
     <string name="belonging_group">所属分组</string>
     <string name="msg_group_is_empty">分组为空，请添加配置</string>
-    <string name="edit_group_name">编辑分组名称</string>
+    <string name="group_name">分组名称</string>
     <string name="default_group">默认分组</string>
 
     <string name="content">内容</string>
