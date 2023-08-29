@@ -4,10 +4,21 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.regex.Pattern
+import kotlin.math.ln
+import kotlin.math.pow
 
 object StringUtils {
     private val silentPattern by lazy { Pattern.compile("[\\s\\p{C}\\p{P}\\p{Z}\\p{S}]") }
     private val splitSentencesRegex by lazy { Pattern.compile("[。？?！!;；]") }
+
+    fun Long.sizeToReadable(): String {
+        val bytes = this
+        val unit = 1024
+        if (bytes < unit) return "$bytes B"
+        val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
+        val pre = "KMGTPE"[exp - 1] + "i"
+        return String.format("%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
+    }
 
     fun formattedDate(): String =
         SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
@@ -42,9 +53,9 @@ object StringUtils {
     /**
      * 限制字符串长度
      */
-    fun String.limitLength(maxLength: Int = 20, suffix:String = ""): String {
+    fun String.limitLength(maxLength: Int = 20, suffix: String = ""): String {
         return if (length >= maxLength)
-            substring(0, maxLength ) + suffix
+            substring(0, maxLength) + suffix
         else this
     }
 
@@ -59,7 +70,6 @@ fun String.toJsonListString(): String {
     if (!endsWith("]")) s += "]"
     return s
 }
-
 
 
 /**

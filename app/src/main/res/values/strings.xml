@@ -168,7 +168,7 @@
     <string name="groups_multiple_summary">勾选分组时将不再互相排斥。</string>
 
     <string name="systts_test_success">测试成功</string>
-    <string name="systts_test_success_info">音频大小: %1$dKiB \n音频采样率：%2$d \n音频格式: %3$s</string>
+    <string name="systts_test_success_info">音频大小: %1$s \n音频采样率：%2$d \n音频格式: %3$s</string>
 
     <string name="systts_http_test_msg">音频大小：%1$d Kib \n格式：%2$s \n采样率：%3$d HZ \nContent-Type：%4$s</string>
 
