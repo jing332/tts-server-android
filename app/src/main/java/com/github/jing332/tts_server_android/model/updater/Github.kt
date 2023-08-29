@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 
 object Github {
-    fun getLatestRelease(repo: String = "jing332/frpandroid"): Release {
+    fun getLatestRelease(repo: String = "jing332/tts-server-android"): Release {
         val str = Net.get("https://api.github.com/repos/$repo/releases/latest") {
         }.execute<String>()
 

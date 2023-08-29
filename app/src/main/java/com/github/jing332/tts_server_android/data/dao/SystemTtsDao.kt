@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.data.dao
 
 import androidx.room.*
 import com.github.jing332.tts_server_android.constant.SpeechTarget
+import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
@@ -131,5 +132,13 @@ interface SystemTtsDao {
         }
 
         return list
+    }
+
+    fun updateAllOrder(){
+        getAllGroupWithTts().forEach {
+            it.list.sortedBy { tts -> tts.order }.forEachIndexed { index, systemTts ->
+                updateTts(systemTts.copy(order = index))
+            }
+        }
     }
 }

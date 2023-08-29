@@ -2,10 +2,10 @@ package com.github.jing332.tts_server_android.compose.widgets
 
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -14,7 +14,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -30,6 +29,17 @@ fun AppSelectionDialog(
     value: Any,
     values: List<Any>,
     entries: List<String>,
+    isLoading: Boolean = false,
+
+    itemContent: @Composable RowScope.(Boolean, String, Any) -> Unit = { isSelected, entry, _ ->
+        Text(
+            entry,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(4.dp),
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Unspecified
+        )
+    },
 
     buttons: @Composable BoxScope.() -> Unit = {
         TextButton(onClick = onDismissRequest) { Text(stringResource(id = R.string.close)) }
@@ -45,27 +55,20 @@ fun AppSelectionDialog(
             LaunchedEffect(Unit) {
                 state.scrollToItem(values.indexOfFirst { onValueSame(it, value) })
             }
-
-            LazyColumn(state = state) {
-                itemsIndexed(entries) { i, v ->
-                    val current = values[i]
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .clip(MaterialTheme.shapes.medium)
-                            .clickableRipple {
-                                onClick(current, v)
-                            }
-                            .minimumInteractiveComponentSize()
-                    ) {
-                        val isSelected = onValueSame(value, current)
-                        Text(
-                            v,
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.padding(4.dp),
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Unspecified
-                        )
+            LoadingContent(modifier = Modifier, isLoading = isLoading) {
+                LazyColumn(state = state) {
+                    itemsIndexed(entries) { i, entry ->
+                        val current = values[i]
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(MaterialTheme.shapes.medium)
+                                .clickableRipple { onClick(current, entry) }
+                                .minimumInteractiveComponentSize()
+                        ) {
+                            val isSelected = onValueSame(value, current)
+                            itemContent(isSelected, entry, value)
+                        }
                     }
                 }
             }

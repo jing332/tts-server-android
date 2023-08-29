@@ -42,7 +42,6 @@ private fun PreviewAppUpdateDialog() {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppUpdateDialog(
     onDismissRequest: () -> Unit,

@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.nav.systts
+package com.github.jing332.tts_server_android.compose.systts.nav.systts
 
 import android.content.IntentFilter
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.nav.LogScreen
-import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.systts.nav.LogScreen
+import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.LocalBroadcastReceiver
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService

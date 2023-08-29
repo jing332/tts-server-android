@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.nav.forwarder
+package com.github.jing332.tts_server_android.compose.systts.nav.forwarder
 
 import android.content.IntentFilter
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.nav.LogScreen
+import com.github.jing332.tts_server_android.compose.systts.nav.LogScreen
 import com.github.jing332.tts_server_android.compose.widgets.DenseOutlinedField
 import com.github.jing332.tts_server_android.compose.widgets.LocalBroadcastReceiver
 import com.github.jing332.tts_server_android.compose.widgets.SwitchFloatingButton

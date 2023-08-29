@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.nav.settings
+package com.github.jing332.tts_server_android.compose.systts.nav.settings
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Column
@@ -43,7 +43,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.systts.directlink.LinkUploadRuleActivity
 import com.github.jing332.tts_server_android.compose.theme.getAppTheme
 import com.github.jing332.tts_server_android.compose.theme.setAppTheme

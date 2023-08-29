@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.ConfigExportBottomSheet
+import com.github.jing332.tts_server_android.compose.systts.ConfigExportBottomSheet
 
 @Composable
 internal fun PluginExportBottomSheet(

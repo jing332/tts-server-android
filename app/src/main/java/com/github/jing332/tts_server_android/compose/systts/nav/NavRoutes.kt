@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.nav
+package com.github.jing332.tts_server_android.compose.systts.nav
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.size

@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.github.jing332.tts_server_android.compose.ConfigImportBottomSheet
-import com.github.jing332.tts_server_android.compose.ConfigModel
-import com.github.jing332.tts_server_android.compose.SelectImportConfigDialog
+import com.github.jing332.tts_server_android.compose.systts.ConfigImportBottomSheet
+import com.github.jing332.tts_server_android.compose.systts.ConfigModel
+import com.github.jing332.tts_server_android.compose.systts.SelectImportConfigDialog
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule

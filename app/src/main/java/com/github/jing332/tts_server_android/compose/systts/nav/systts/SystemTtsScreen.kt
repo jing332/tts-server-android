@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.nav.systts
+package com.github.jing332.tts_server_android.compose.systts.nav.systts
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize

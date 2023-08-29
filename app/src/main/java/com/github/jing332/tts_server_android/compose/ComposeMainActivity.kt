@@ -40,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +48,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -70,12 +70,12 @@ import androidx.navigation.compose.rememberNavController
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ShortCuts
-import com.github.jing332.tts_server_android.compose.nav.NavRoutes
-import com.github.jing332.tts_server_android.compose.nav.forwarder.ms.MsTtsForwarderScreen
-import com.github.jing332.tts_server_android.compose.nav.forwarder.systts.SystemTtsForwarderScreen
-import com.github.jing332.tts_server_android.compose.nav.settings.SettingsScreen
-import com.github.jing332.tts_server_android.compose.nav.systts.SystemTtsScreen
 import com.github.jing332.tts_server_android.compose.systts.list.edit.TtsEditContainerScreen
+import com.github.jing332.tts_server_android.compose.systts.nav.NavRoutes
+import com.github.jing332.tts_server_android.compose.systts.nav.forwarder.ms.MsTtsForwarderScreen
+import com.github.jing332.tts_server_android.compose.systts.nav.forwarder.systts.SystemTtsForwarderScreen
+import com.github.jing332.tts_server_android.compose.systts.nav.settings.SettingsScreen
+import com.github.jing332.tts_server_android.compose.systts.nav.systts.SystemTtsScreen
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.constant.AppConst
@@ -90,11 +90,12 @@ import java.util.Locale
 
 val LocalNavController = compositionLocalOf<NavHostController> { error("No nav controller") }
 val LocalDrawerState = compositionLocalOf<DrawerState> { error("No drawer state") }
-val LocalTriggerAppUpdateChecker = staticCompositionLocalOf { mutableStateOf(false) }
 
 fun Context.asAppCompatActivity(): AppCompatActivity {
     return this as? AppCompatActivity ?: error("Context is not an AppCompatActivity")
 }
+
+private var updateCheckTrigger by mutableStateOf(false)
 
 class ComposeMainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,9 +104,21 @@ class ComposeMainActivity : AppCompatActivity() {
         ShortCuts.buildShortCuts(this)
         setContent {
             AppTheme {
-                if (LocalTriggerAppUpdateChecker.current.value || AppConfig.isAutoCheckUpdateEnabled.value) {
-                    AutoUpdateCheckerDialog(LocalTriggerAppUpdateChecker.current.value)
-                    LocalTriggerAppUpdateChecker.current.value = false
+                var showAutoCheckUpdaterDialog by remember { mutableStateOf(false) }
+                if (showAutoCheckUpdaterDialog) {
+                    val fromUser by remember { mutableStateOf(updateCheckTrigger) }
+                    AutoUpdateCheckerDialog(fromUser) {
+                        showAutoCheckUpdaterDialog = false
+                        updateCheckTrigger = false
+                    }
+                }
+
+                LaunchedEffect(Unit) {
+                    showAutoCheckUpdaterDialog = AppConfig.isAutoCheckUpdateEnabled.value
+                }
+
+                LaunchedEffect(updateCheckTrigger) {
+                    if (updateCheckTrigger) showAutoCheckUpdaterDialog = true
                 }
 
                 NavHostScreen()
@@ -196,7 +209,7 @@ fun NavDrawerContent(
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
-    var selected by rememberSaveable { mutableStateOf(NavRoutes.SystemTTS.id) }
+//    var selected by rememberSaveable { mutableStateOf(NavRoutes.SystemTTS.id) }
 
     @Composable
     fun drawerItem(
@@ -207,10 +220,10 @@ fun NavDrawerContent(
                 drawerState.close()
             }
             navController.navigate(targetScreen.id)
-            selected = targetScreen.id
         }
     ) {
-        val isSelected = selected == targetScreen.id
+
+        val isSelected = navController.currentDestination?.route == targetScreen.id
         NavigationDrawerItem(
             icon = icon,
             label = { Text(text = stringResource(id = targetScreen.strId)) },
@@ -286,7 +299,6 @@ fun NavDrawerContent(
                 .padding(vertical = 16.dp, horizontal = 4.dp)
         )
 
-        val triggerUpdate = LocalTriggerAppUpdateChecker.current
         NavigationDrawerItem(
             icon = { Icon(Icons.Default.ArrowCircleUp, null) },
             label = { Text(stringResource(id = R.string.check_update)) },
@@ -294,7 +306,7 @@ fun NavDrawerContent(
             onClick = {
                 scope.launch {
                     drawerState.close()
-                    triggerUpdate.value = true
+                    updateCheckTrigger = true
                 }
             }
         )

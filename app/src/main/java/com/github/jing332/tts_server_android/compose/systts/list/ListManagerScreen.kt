@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCard
@@ -26,7 +27,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,17 +40,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalDrawerState
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
-import com.github.jing332.tts_server_android.compose.nav.NavRoutes
-import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.navigate
 import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.systts.list.edit.QuickEditBottomSheet
-import com.github.jing332.tts_server_android.compose.navigateSingleTop
+import com.github.jing332.tts_server_android.compose.systts.nav.NavRoutes
+import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
@@ -60,9 +62,7 @@ import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
-import com.github.jing332.tts_server_android.utils.clone
 import com.github.jing332.tts_server_android.utils.longToast
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -76,19 +76,6 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     val context = LocalContext.current
     val drawerState = LocalDrawerState.current
 
-
-    /*     @Suppress("UNCHECKED_CAST")
-         fun displayGroupExport(model: GroupModel) {
-             val subList = (model.itemSublist as List<ItemModel>).map { it.data }
-             val obj =
-                 GroupWithSystemTts(group = model.data, list = subList)
-             val fragment = ConfigExportBottomSheetFragment(
-                 { AppConst.jsonBuilder.encodeToString(obj) },
-                 { "ttsrv-${model.name}.json" }
-             )
-             fragment.show(activity.supportFragmentManager, ConfigExportBottomSheetFragment.TAG)
-         }*/
-
     var showQuickEdit by remember { mutableStateOf<SystemTts?>(null) }
     if (showQuickEdit != null) {
         QuickEditBottomSheet(onDismissRequest = {
@@ -99,9 +86,8 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
         })
     }
 
-
     fun navigateToEdit(systts: SystemTts) {
-        navController.navigateSingleTop(NavRoutes.TtsEdit.id, Bundle().apply {
+        navController.navigate(NavRoutes.TtsEdit.id, Bundle().apply {
             putParcelable(NavRoutes.TtsEdit.DATA, systts)
         })
     }
@@ -164,63 +150,84 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             })
     }
 
-    val flow = remember { appDb.systemTtsDao.getFlowAllGroupWithTts().conflate() }
-    val models by flow.collectAsState(initial = emptyList())
+    val listState = rememberLazyListState()
+    DisposableEffect(Unit) {
+        onDispose {
+            vm.listItemIndex = listState.firstVisibleItemIndex
+            vm.listItemOffset = listState.firstVisibleItemScrollOffset
+        }
+    }
 
-    val reorderState = rememberReorderableLazyListState(onMove = { from, to ->
-        if (from.key is String && to.key is String) {
-            val fromKey = from.key as String
-            val toKey = to.key as String
+    val models by vm.list.collectAsStateWithLifecycle()
 
-            if (fromKey.startsWith("g_") && toKey.startsWith("g_")) {
-                val list = models.map { it.group }.toMutableList()
+    LaunchedEffect(models) {
+        if (listState.firstVisibleItemIndex <= 0)
+            listState.scrollToItem(vm.listItemIndex, vm.listItemOffset)
+    }
 
-                val srcId = fromKey.substring(2).toLong()
-                val src = list.find { it.id == srcId } ?: return@rememberReorderableLazyListState
+    val reorderState = rememberReorderableLazyListState(listState = listState,
+        onMove = { from, to ->
+            if (from.key is String && to.key is String) {
+                val fromKey = from.key as String
+                val toKey = to.key as String
 
-                val targetId = toKey.substring(2).toLong()
-                val target =
-                    list.find { it.id == targetId } ?: return@rememberReorderableLazyListState
+                if (fromKey.startsWith("g_") && toKey.startsWith("g_")) {
+                    val list = models.map { it.group }.toMutableList()
 
-                val srcIndex = list.indexOfFirst { it.id == src.id }
-                if (srcIndex == -1) return@rememberReorderableLazyListState
-                val targetIndex = list.indexOfFirst { it.id == target.id }
-                if (targetIndex == -1) return@rememberReorderableLazyListState
+                    val srcId = fromKey.substring(2).toLong()
+                    val src =
+                        list.find { it.id == srcId } ?: return@rememberReorderableLazyListState
 
-                list.removeAt(srcIndex)
-                list.add(targetIndex, src)
-                list.forEachIndexed { index, systemTtsGroup ->
-                    appDb.systemTtsDao.updateGroup(systemTtsGroup.copy(order = index))
+                    val targetId = toKey.substring(2).toLong()
+                    val target =
+                        list.find { it.id == targetId } ?: return@rememberReorderableLazyListState
+
+                    val srcIndex = list.indexOfFirst { it.id == src.id }
+                    if (srcIndex == -1) return@rememberReorderableLazyListState
+                    val targetIndex = list.indexOfFirst { it.id == target.id }
+                    if (targetIndex == -1) return@rememberReorderableLazyListState
+
+                    list.removeAt(srcIndex)
+                    list.add(targetIndex, src)
+                    list.forEachIndexed { index, systemTtsGroup ->
+                        appDb.systemTtsDao.updateGroup(systemTtsGroup.copy(order = index))
+                    }
                 }
+                return@rememberReorderableLazyListState
             }
-            return@rememberReorderableLazyListState
-        }
 
-        if (from.key is Long && to.key is Long) {
-            val src = appDb.systemTtsDao.getTts(from.key as Long)
-                ?: return@rememberReorderableLazyListState
-            val target =
-                appDb.systemTtsDao.getTts(to.key as Long) ?: return@rememberReorderableLazyListState
+            if (from.key is Long && to.key is Long) {
+                val src = appDb.systemTtsDao.getTts(from.key as Long)
+                    ?: return@rememberReorderableLazyListState
+                val target =
+                    appDb.systemTtsDao.getTts(to.key as Long)
+                        ?: return@rememberReorderableLazyListState
 
-            val list = appDb.systemTtsDao.getTtsListByGroupId(src.groupId).toMutableList()
+                appDb.systemTtsDao.updateTts(
+                    src.copy(order = target.order),
+                    target.copy(order = src.order),
+                )
 
-            val srcIndex = list.indexOfFirst { it.id == src.id }
-            if (srcIndex == -1) return@rememberReorderableLazyListState
-            val targetIndex = list.indexOfFirst { it.id == target.id }
-            if (targetIndex == -1) return@rememberReorderableLazyListState
-
-            println("fromIndex; ${srcIndex}, toIndex $targetIndex")
-
-            println(list.joinToString { it.displayName.toString() })
-            list.removeAt(srcIndex)
-            list.add(targetIndex, src)
-            println(list.joinToString { it.displayName.toString() })
-            list.forEachIndexed { index, systemTts ->
-                appDb.systemTtsDao.updateTts(systemTts.copy(order = index))
+//                val list = appDb.systemTtsDao.getTtsListByGroupId(src.groupId).toMutableList()
+//
+//                val srcIndex = list.indexOfFirst { it.id == src.id }
+//                if (srcIndex == -1) return@rememberReorderableLazyListState
+//                val targetIndex = list.indexOfFirst { it.id == target.id }
+//                if (targetIndex == -1) return@rememberReorderableLazyListState
+//
+//                println("fromIndex; ${srcIndex}, toIndex $targetIndex")
+//
+//                println(list.joinToString { it.displayName.toString() })
+//                list.removeAt(srcIndex)
+//                list.add(targetIndex, src)
+//                println(list.joinToString { it.displayName.toString() })
+//                list.forEachIndexed { index, systemTts ->
+//                    if (index != systemTts.order)
+//                        appDb.systemTtsDao.updateTts(systemTts.copy(order = index))
+//                }
             }
-        }
 
-    })
+        })
 
     var addGroupDialog by remember { mutableStateOf(false) }
     if (addGroupDialog) {
@@ -401,6 +408,8 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                     if (g.isExpanded) {
                         itemsIndexed(groupWithSystemTts.list.sortedBy { it.order },
                             key = { _, v -> v.id }) { _, item ->
+                            if (g.id == 1L) println(item.displayName + ", " + item.order)
+
                             ShadowReorderableItem(reorderableState = reorderState, key = item.id) {
                                 Item(reorderState = reorderState,
                                     modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp),
@@ -413,7 +422,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     },
                                     desc = item.tts.getDescription(),
                                     params = item.tts.getBottomContent(),
-                                    onClick = { showQuickEdit = item.clone() },
+                                    onClick = { showQuickEdit = item },
                                     onLongClick = { switchSpeechTarget(item) },
                                     onCopy = {
                                         navigateToEdit(item.copy(id = System.currentTimeMillis()))
