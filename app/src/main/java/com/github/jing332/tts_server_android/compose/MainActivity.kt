@@ -41,6 +41,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -57,6 +58,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -237,18 +239,34 @@ fun NavDrawerContent(
     }
 
     @Composable
-    fun drawerItem(
+    fun DrawerItem(
+        selected: Boolean = false,
+        icon: @Composable () -> Unit,
+        label: @Composable () -> Unit,
+        onClick: () -> Unit
+    ) {
+        NavigationDrawerItem(
+            modifier = Modifier.padding(vertical = 2.dp),
+            icon = icon,
+            label = label,
+            selected = selected,
+            onClick = onClick,
+            colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent)
+        )
+    }
+
+
+    @Composable
+    fun NavDrawerItem(
         icon: @Composable () -> Unit,
         targetScreen: NavRoutes,
         onClick: () -> Unit = {
-            scope.launch {
-                drawerState.close()
-            }
+            scope.launch { drawerState.close() }
             navController.navigateSingleTop(targetScreen.id, popUpToMain = true)
         }
     ) {
         val isSelected = navController.currentDestination?.route == targetScreen.id
-        NavigationDrawerItem(
+        DrawerItem(
             icon = icon,
             label = { Text(text = stringResource(id = targetScreen.strId)) },
             selected = isSelected,
@@ -313,8 +331,7 @@ fun NavDrawerContent(
         )
 
         for (route in NavRoutes.routes) {
-            drawerItem(icon = route.icon, targetScreen = route)
-            Spacer(modifier = Modifier.height(4.dp))
+            NavDrawerItem(icon = route.icon, targetScreen = route)
         }
 
         HorizontalDivider(
@@ -323,7 +340,14 @@ fun NavDrawerContent(
                 .padding(vertical = 16.dp, horizontal = 4.dp)
         )
 
-        NavigationDrawerItem(
+        DrawerItem(
+            icon = { Icon(Icons.Default.BatteryFull, null) },
+            label = { Text(stringResource(id = R.string.battery_optimization_whitelist)) },
+            selected = false,
+            onClick = { context.killBattery() }
+        )
+
+        DrawerItem(
             icon = { Icon(Icons.Default.ArrowCircleUp, null) },
             label = { Text(stringResource(id = R.string.check_update)) },
             selected = false,
@@ -332,11 +356,10 @@ fun NavDrawerContent(
                     drawerState.close()
                     updateCheckTrigger = true
                 }
-            }
+            },
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
-        NavigationDrawerItem(
+        DrawerItem(
             icon = { Icon(Icons.Default.HelpOutline, null) },
             label = { Text(stringResource(id = R.string.app_help_document)) },
             selected = false,
@@ -344,23 +367,14 @@ fun NavDrawerContent(
                 context.startActivity(Intent(context, AppHelpDocumentActivity::class.java).apply {
                     action = Intent.ACTION_VIEW
                 })
-            }
+            },
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
-        NavigationDrawerItem(
-            icon = { Icon(Icons.Default.BatteryFull, null) },
-            label = { Text(stringResource(id = R.string.battery_optimization_whitelist)) },
-            selected = false,
-            onClick = { context.killBattery() }
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
         var showAboutDialog by remember { mutableStateOf(false) }
         if (showAboutDialog)
             AboutDialog { showAboutDialog = false }
 
-        NavigationDrawerItem(
+        DrawerItem(
             icon = { Icon(Icons.Default.Info, null) },
             label = { Text(stringResource(id = R.string.about)) },
             selected = false,
