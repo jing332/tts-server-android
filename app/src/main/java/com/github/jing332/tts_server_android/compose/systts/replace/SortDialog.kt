@@ -16,7 +16,7 @@ internal enum class SortType(@StringRes val strId: Int) {
     CREATE_TIME(R.string.created_time_id),
     NAME(R.string.display_name),
     PATTERN(R.string.replace_rule),
-    REPLACEMENT(R.string.systts_replace_as),
+    REPLACEMENT(R.string.replacement),
 
     ENABLED(R.string.enabled),
     USE_REGEX(R.string.systts_replace_use_regex),

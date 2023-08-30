@@ -329,7 +329,7 @@ private fun Screen(
                     Icon(Icons.Filled.Abc, stringResource(R.string.systts_replace_insert_pinyin))
                 }
             })
-        OutlinedTextField(label = { Text(stringResource(R.string.systts_replace_as)) },
+        OutlinedTextField(label = { Text(stringResource(R.string.replacement)) },
             value = replacementTextFieldValue,
             onValueChange = {
                 replacementTextFieldValue = it

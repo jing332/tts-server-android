@@ -117,7 +117,7 @@
     <string name="replace_rule_manager">替換規則管理</string>
     <string name="systts_replace_add_rule">新增替換規則</string>
     <string name="systts_replace_rule">替換規則</string>
-    <string name="systts_replace_as">替換為</string>
+    <string name="replacement">替換為</string>
     <string name="systts_replace_insert_pinyin">插入拼音聲調</string>
     <string name="systts_replace_use_regex">使用正則表達式</string>
 

@@ -119,7 +119,7 @@
     <string name="replace_rule_manager">Replace rule manager</string>
     <string name="systts_replace_add_rule">Add replace rule</string>
     <string name="systts_replace_rule">Replace rule</string>
-    <string name="systts_replace_as">Replace with</string>
+    <string name="replacement">Replace with</string>
     <string name="systts_replace_insert_pinyin">Insert pinyin tone</string>
     <string name="systts_replace_use_regex">Use regular expressions</string>
 

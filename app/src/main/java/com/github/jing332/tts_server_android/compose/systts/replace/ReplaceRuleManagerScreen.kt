@@ -2,12 +2,17 @@ package com.github.jing332.tts_server_android.compose.systts.replace
 
 import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCard
@@ -21,6 +26,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -29,9 +35,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -107,24 +113,56 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
     }
 
 
-
     val models by vm.list.collectAsStateWithLifecycle()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = {
-                    var type by rememberSaveable { mutableStateOf(SearchType.NAME) }
-                    var text by rememberSaveable { mutableStateOf("") }
-                    LaunchedEffect(text, type) {
-                        vm.updateSearchResult(text, type)
+                    LaunchedEffect(vm.searchText, vm.searchType) {
+                        vm.updateSearchResult()
                     }
-                    SearchTextField(
-                        value = text,
-                        onValueChange = { text = it },
-                        searchType = type,
-                        onSearchTypeChange = { type = it }
-                    )
+                    Row(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceContainer)
+                    ) {
+                        SearchTextField(
+                            modifier = Modifier.weight(1f),
+                            value = vm.searchText,
+                            onValueChange = { vm.searchText = it },
+                            searchType = vm.searchType,
+                            onSearchTypeChange = { vm.searchType = it }
+                        )
+                        var showAddOptions by remember { mutableStateOf(false) }
+                        IconButton(onClick = { showAddOptions = true }) {
+                            Icon(Icons.Default.Add, stringResource(id = R.string.add_config))
+                            DropdownMenu(
+                                expanded = showAddOptions,
+                                onDismissRequest = { showAddOptions = false }) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(id = R.string.add_config)) },
+                                    onClick = {
+                                        showAddOptions = false
+                                        navigateToEdit()
+                                    },
+                                    leadingIcon = {
+                                        Icon(Icons.Default.PlaylistAdd, null)
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(id = R.string.add_group)) },
+                                    onClick = {
+                                        showAddOptions = false
+                                        showAddGroupDialog = true
+                                    },
+                                    leadingIcon = {
+                                        Icon(Icons.Default.AddCard, null)
+                                    }
+                                )
+                            }
+                        }
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = finish) {
@@ -132,34 +170,7 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                     }
                 },
                 actions = {
-                    var showAddOptions by remember { mutableStateOf(false) }
-                    IconButton(onClick = { showAddOptions = true }) {
-                        Icon(Icons.Default.Add, stringResource(id = R.string.add_config))
-                        DropdownMenu(
-                            expanded = showAddOptions,
-                            onDismissRequest = { showAddOptions = false }) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(id = R.string.add_config)) },
-                                onClick = {
-                                    showAddOptions = false
-                                    navigateToEdit()
-                                },
-                                leadingIcon = {
-                                    Icon(Icons.Default.PlaylistAdd, null)
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(id = R.string.add_group)) },
-                                onClick = {
-                                    showAddOptions = false
-                                    showAddGroupDialog = true
-                                },
-                                leadingIcon = {
-                                    Icon(Icons.Default.AddCard, null)
-                                }
-                            )
-                        }
-                    }
+
 
                     var showOptions by remember { mutableStateOf(false) }
                     IconButton(onClick = { showOptions = true }) {
@@ -256,7 +267,7 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                             onEdit = { showGroupEditDialog = g },
                             onDelete = { appDb.replaceRuleDao.delete(*groupWithRules.list.toTypedArray()) },
                             onExport = { showExportSheet = listOf(groupWithRules) },
-                            onSort = { showSortDialog = groupWithRules.list}
+                            onSort = { showSortDialog = groupWithRules.list }
                         )
                     }
                 }

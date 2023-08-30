@@ -1,5 +1,8 @@
 package com.github.jing332.tts_server_android.compose.systts.replace
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.data.appDb
@@ -12,27 +15,37 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 internal class ManagerViewModel : ViewModel() {
+    private var allList = listOf<GroupWithReplaceRule>()
+
     private val _list = MutableStateFlow<List<GroupWithReplaceRule>>(emptyList())
     val list: MutableStateFlow<List<GroupWithReplaceRule>>
         get() = _list
+
+    var searchType by mutableStateOf(SearchType.GROUP_NAME)
+    var searchText by mutableStateOf("")
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             appDb.replaceRuleDao.updateAllOrder()
             appDb.replaceRuleDao.flowAllGroupWithReplaceRules().conflate().collectLatest {
-                _list.value = it
+                allList = it
+                updateSearchResult()
             }
         }
     }
 
-    fun updateSearchResult(text: String, type: SearchType) {
-        if (list.value.isEmpty() || text.isBlank()) {
-            _list.value = appDb.replaceRuleDao.allGroupWithReplaceRules()
+    fun updateSearchResult(
+        text: String = searchText,
+        type: SearchType = searchType,
+        src: List<GroupWithReplaceRule> = allList
+    ) {
+        if (src.isEmpty() || text.isBlank()) {
+            _list.value = src
             return
         }
 
         val resultList = mutableListOf<GroupWithReplaceRule>()
-        list.value.forEach {
+        src.forEach {
             val subList = mutableListOf<ReplaceRule>()
             val groupWithRules = GroupWithReplaceRule(it.group, subList)
             resultList.add(groupWithRules)

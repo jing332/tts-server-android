@@ -120,7 +120,7 @@
     <string name="replace_rule_manager">替换规则管理</string>
     <string name="systts_replace_add_rule">添加替换规则</string>
     <string name="systts_replace_rule">替换规则</string>
-    <string name="systts_replace_as">替换为</string>
+    <string name="replacement">替换为</string>
     <string name="systts_replace_insert_pinyin">插入拼音声调</string>
     <string name="systts_replace_use_regex">使用正则表达式</string>
 
