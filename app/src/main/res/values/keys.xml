@@ -1,30 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="key_activity_shared_container_trans" translatable="false">shared_element_container</string>
-
-    <string name="key_language" translatable="false">language</string>
-    <string name="key_spinner_max_drop_down_count" translatable="false">spinnerMaxDropDownCount</string>
     <string name="key_backup_and_restore" translatable="false">backup_restore</string>
     <string name="key_backup" translatable="false">key_backup</string>
     <string name="key_restore" translatable="false">key_restore</string>
-    <string name="key_direct_link_settings" translatable="false">key_direct_link_settings</string>
-    <string name="key_file_picker_mode" translatable="false">file_picker_mode</string>
-
-    <string name="key_is_swap_listen_and_edit_button" translatable="false">isSwapListenAndEditButton</string>
-    <string name="key_is_foreground_service" translatable="false">isForegroundServiceEnabled</string>
-    <string name="key_is_wake_lock" translatable="false">isWakeLockEnabled</string>
-    <string name="key_is_skip_silent_text" translatable="false">isSkipSilentTextEnabled</string>
-    <string name="key_is_stream_play_mode" translatable="false">isStreamPlayModeEnabled</string>
-    <string name="key_is_exo_decoder" translatable="false">isExoDecoderEnabled</string>
-    <string name="key_is_edge_dns" translatable="false">isEdgeDnsEnabled</string>
-    <string name="key_is_voice_multiple" translatable="false">isVoiceMultiple</string>
-    <string name="key_is_group_multiple" translatable="false">isGroupMultiple</string>
-    <string name="key_is_auto_check_update" translatable="false">isAutoCheckUpdateEnabled</string>
-    <string name="key_max_empty_audio_retry_count" translatable="false">maxEmptyAudioRetryCount</string>
-    <string name="key_max_retry_count" translatable="false">maxRetryCount</string>
-    <string name="key_standby_triggered_retry_index" translatable="false">standbyTriggeredRetryIndex</string>
-    <string name="key_request_timeout" translatable="false">requestTimeout</string>
-
-    <string name="key_code_editor_theme" translatable="false">codeEditorTheme</string>
-    <string name="key_is_code_editor_word_wrap" translatable="false">isCodeEditorWordWrapEnabled</string>
 </resources>

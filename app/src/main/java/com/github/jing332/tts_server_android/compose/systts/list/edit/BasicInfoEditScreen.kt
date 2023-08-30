@@ -362,7 +362,7 @@ private fun CustomTagScreen(
 ) {
     var showHelpDialog by remember { mutableStateOf("" to "") }
     if (showHelpDialog.first.isNotEmpty()) {
-        AppDialog(title = { Text(showHelpDialog!!.first) }, content = {
+        AppDialog(title = { Text(showHelpDialog.first) }, content = {
             Text(showHelpDialog.second)
         }, buttons = {
             TextButton(onClick = { showHelpDialog = "" to "" }) {

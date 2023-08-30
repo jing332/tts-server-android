@@ -1,9 +1,0 @@
-The format is the same as the Legado APP network TTS engine：
-<br><i><u>http://url, {"method":"POST", "body": "POST body. support using {{js code or variable}} "}</i></u>
-
-<br><br>Built-in variables：
-<br> - Text：<b>{{speakText}}</b>
-<br> - Speed：<b>{{speakSpeed}}</b>
-<br> - Volume：<b>{{speakVolume}}</b>
-<br><br> Baidu Example：
-<br><i><u> http://tsn.baidu.com/text2audio,{"method": "POST", "body": "tex={{encodeURI(speakText)}}&spd={{speakSpeed}}&per=4114&cuid=baidu_speech_demo&idx=1&cod=2&lan=zh&ctp=1&pdt=220&vol={{speakVolume}}&aue=6&pit=5&res_tag=audio"}  </u></i>

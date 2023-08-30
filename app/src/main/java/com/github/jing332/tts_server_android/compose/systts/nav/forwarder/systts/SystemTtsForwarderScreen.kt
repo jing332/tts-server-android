@@ -41,7 +41,7 @@ fun SystemTtsForwarderScreen(cfgVM: ConfigViewModel = viewModel()) {
                     ctx = context,
                     name = context.getString(R.string.forwarder_systts),
                     id = "switch_systts_forwarder",
-                    iconResId = R.mipmap.ic_launcher_round,
+                    iconResId = R.mipmap.ic_app_launcher_round,
                     launcherIntent = Intent(context, SystemForwarderSwitchActivity::class.java)
                 )
             }

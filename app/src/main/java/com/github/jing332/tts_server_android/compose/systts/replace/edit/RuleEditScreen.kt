@@ -58,6 +58,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
+import com.github.jing332.tts_server_android.compose.widgets.TextCheckBox
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
@@ -347,22 +348,9 @@ private fun Screen(
                 }
             })
 
-        Row(modifier = Modifier
-            .minimumInteractiveComponentSize()
-            .clickable {
-                onIsRegexChange(!isRegex)
-            }) {
-            Checkbox(
-                checked = isRegex,
-                onCheckedChange = onIsRegexChange,
-            )
-            Text(
-                text = stringResource(R.string.systts_replace_use_regex),
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(end = 8.dp)
-            )
-        }
+        TextCheckBox(text = {
+            Text(text = stringResource(R.string.systts_replace_use_regex))
+        }, checked = isRegex, onCheckedChange = onIsRegexChange)
 
         HorizontalDivider(
             modifier = Modifier

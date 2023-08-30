@@ -136,7 +136,7 @@ internal fun MenuMoreOptions(
                 context.startActivity(PluginManagerActivity::class.java)
             },
             leadingIcon = {
-                Icon(painterResource(id = R.drawable.ic_plugin), null)
+                Icon(painterResource(id = R.drawable.ic_shortcut_plugin), null)
             }
         )
 

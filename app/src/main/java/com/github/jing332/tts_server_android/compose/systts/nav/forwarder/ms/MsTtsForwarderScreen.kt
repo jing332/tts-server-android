@@ -61,7 +61,7 @@ fun MsTtsForwarderScreen(
                     ctx = context,
                     name = context.getString(R.string.forwarder_ms),
                     id = "switch_ms_forwarder",
-                    iconResId = R.mipmap.ic_launcher_round,
+                    iconResId = R.mipmap.ic_app_launcher_round,
                     launcherIntent = Intent(context, MsForwarderSwitchActivity::class.java)
                 )
             },

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +25,7 @@ import androidx.core.net.toUri
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
+import com.github.jing332.tts_server_android.compose.widgets.AppLauncherIcon
 
 @Composable
 fun AboutDialog(onDismissRequest: () -> Unit) {
@@ -32,12 +34,8 @@ fun AboutDialog(onDismissRequest: () -> Unit) {
     AppDialog(
         onDismissRequest = onDismissRequest,
         title = {
-            Row {
-                Image(
-                    painter = painterResource(id = R.mipmap.ic_launcher_round),
-                    contentDescription = "Logo",
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                AppLauncherIcon(modifier = Modifier.size(64.dp))
                 Text(
                     stringResource(id = R.string.app_name),
                     modifier = Modifier

@@ -13,7 +13,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -62,7 +61,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
@@ -86,6 +84,7 @@ import com.github.jing332.tts_server_android.compose.systts.nav.forwarder.systts
 import com.github.jing332.tts_server_android.compose.systts.nav.settings.SettingsScreen
 import com.github.jing332.tts_server_android.compose.systts.nav.systts.SystemTtsScreen
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
+import com.github.jing332.tts_server_android.compose.widgets.AppLauncherIcon
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
@@ -303,13 +302,13 @@ fun NavDrawerContent(
                     context.longToast(R.string.copied)
                 }
             )) {
-            Row {
-                Image(
-                    painterResource(id = R.mipmap.ic_launcher_round),
-                    stringResource(id = R.string.app_name),
-                    modifier = Modifier.size(64.dp)
-                )
-                Column(modifier = Modifier.align(Alignment.CenterVertically)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                AppLauncherIcon(Modifier.size(64.dp))
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+
+                ) {
                     Text(
                         text = stringResource(id = R.string.app_name),
                         style = MaterialTheme.typography.titleMedium

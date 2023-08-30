@@ -1,21 +1,14 @@
 package com.github.jing332.tts_server_android.compose.systts.list
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.bean.LegadoHttpTts
 import com.github.jing332.tts_server_android.compose.systts.ConfigImportBottomSheet
 import com.github.jing332.tts_server_android.compose.systts.ConfigModel
 import com.github.jing332.tts_server_android.compose.systts.SelectImportConfigDialog
-import com.github.jing332.tts_server_android.compose.widgets.RowToggleButtonGroup
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.CompatSystemTts
@@ -50,11 +43,10 @@ fun ListImportBottomSheet(onDismissRequest: () -> Unit) {
         )
     }
 
-    var isLegadoType by remember { mutableStateOf(false) }
     ConfigImportBottomSheet(onDismissRequest = onDismissRequest,
         onImport = { json ->
             val allList = mutableListOf<ConfigModel>()
-            getImportList(json, isLegadoType)?.forEach { groupWithTts ->
+            getImportList(json, false)?.forEach { groupWithTts ->
                 val group = groupWithTts.group
                 groupWithTts.list.forEach { sysTts ->
                     allList.add(
@@ -66,29 +58,6 @@ fun ListImportBottomSheet(onDismissRequest: () -> Unit) {
                 }
             }
             selectDialog = allList
-        },
-        content = {
-            Text(
-                text = stringResource(id = R.string.type),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-            RowToggleButtonGroup(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                selectionIndex = 0,
-                buttonCount = 2,
-                onButtonClick = {
-                    isLegadoType = it == 1
-                },
-//                buttonIcons = arrayOf(
-//                    painterResource(id = R.mipmap.ic_launcher),
-//                    painterResource(id = R.mipmap.ic_legado_launcher)
-//                ),
-                buttonTexts = arrayOf(
-                    stringResource(id = R.string.app_name),
-                    stringResource(id = R.string.legado)
-                )
-            )
         }
     )
 }

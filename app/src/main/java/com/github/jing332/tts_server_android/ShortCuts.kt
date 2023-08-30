@@ -55,7 +55,7 @@ object ShortCuts {
         return ShortcutInfoCompat.Builder(context, "speech_rule_manager")
             .setShortLabel(context.getString(R.string.speech_rule_manager))
             .setLongLabel(context.getString(R.string.speech_rule_manager))
-            .setIcon(IconCompat.createWithResource(context, R.drawable.baseline_menu_book_24))
+            .setIcon(IconCompat.createWithResource(context, R.drawable.ic_shortcut_speech_rule))
             .setIntent(buildIntent<SpeechRuleManagerActivity>(context))
             .build()
     }
