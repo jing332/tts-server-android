@@ -387,6 +387,16 @@ fun NavDrawerContent(
     }
 }
 
+@SuppressLint("RestrictedApi")
+fun NavController.navigate(
+    route: String,
+    argsBuilder: Bundle.() -> Unit = {},
+    navOptions: NavOptions? = null,
+    navigatorExtras: Navigator.Extras? = null
+) {
+    navigate(route, Bundle().apply(argsBuilder), navOptions, navigatorExtras)
+}
+
 /*
 * 可传递 Bundle 到 Navigation
 * */

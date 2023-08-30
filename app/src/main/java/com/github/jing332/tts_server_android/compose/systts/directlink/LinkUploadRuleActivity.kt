@@ -18,7 +18,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.codeeditor.CodeEditorScreen
 import com.github.jing332.tts_server_android.compose.codeeditor.LoggerBottomSheet
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
-import com.github.jing332.tts_server_android.help.config.DirectUploadConfig
+import com.github.jing332.tts_server_android.conf.DirectUploadConfig
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 import com.github.jing332.tts_server_android.model.rhino.direct_link_upload.DirectUploadEngine
 import com.github.jing332.tts_server_android.model.rhino.direct_link_upload.DirectUploadFunction
@@ -47,7 +47,7 @@ class LinkUploadRuleActivity : AppCompatActivity() {
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(editor) {
-            editor?.setText(DirectUploadConfig.code)
+            editor?.setText(DirectUploadConfig.code.value)
         }
 
         var showDebugLogger by remember { mutableStateOf("") }
@@ -89,7 +89,7 @@ class LinkUploadRuleActivity : AppCompatActivity() {
             onSave = {
                 runCatching {
                     obtainFunctionList()
-                    DirectUploadConfig.code = editor!!.text.toString()
+                    DirectUploadConfig.code.value = editor!!.text.toString()
 
                     finishAfterTransition()
                 }.onFailure {

@@ -5,8 +5,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.Process
-import com.chibatching.kotpref.Kotpref
-import com.drake.brv.utils.BRV
 import com.github.jing332.tts_server_android.model.hanlp.HanlpManager
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -36,8 +34,6 @@ class App : Application() {
         super.onCreate()
         instance = this
         CrashHandler(this)
-
-        Kotpref.init(this)
 
         GlobalScope.launch {
             HanlpManager.initDir(

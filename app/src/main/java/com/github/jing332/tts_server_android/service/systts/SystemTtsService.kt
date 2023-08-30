@@ -26,7 +26,7 @@ import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.constant.SystemNotificationConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.help.audio.AudioDecoderException
-import com.github.jing332.tts_server_android.help.config.SysTtsConfig
+import com.github.jing332.tts_server_android.conf.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.service.systts.help.TextToSpeechManager
 import com.github.jing332.tts_server_android.service.systts.help.exception.ConfigLoadException

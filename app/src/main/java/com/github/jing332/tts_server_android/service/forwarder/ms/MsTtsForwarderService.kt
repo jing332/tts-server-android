@@ -1,15 +1,16 @@
 package com.github.jing332.tts_server_android.service.forwarder.ms
 
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.help.config.AppConfig
-import com.github.jing332.tts_server_android.help.config.ServerConfig
+import com.github.jing332.tts_server_android.conf.MsTtsForwarderConfig
 import com.github.jing332.tts_server_android.service.forwarder.AbsForwarderService
 import com.github.jing332.tts_server_android.ui.AppLog
 import tts_server_lib.LogCallback
 import tts_server_lib.Tts_server_lib
 
-@Suppress("DEPRECATION")
-class MsTtsForwarderService(override val isWakeLockEnabled: Boolean = ServerConfig.isWakeLockEnabled) :
+class MsTtsForwarderService(
+    override val port: Int = MsTtsForwarderConfig.port.value,
+    override val isWakeLockEnabled: Boolean = MsTtsForwarderConfig.isWakeLockEnabled.value
+) :
     AbsForwarderService(
         name = "MsTtsForwarderService",
         id = 1233,
@@ -32,8 +33,6 @@ class MsTtsForwarderService(override val isWakeLockEnabled: Boolean = ServerConf
         var instance: MsTtsForwarderService? = null
     }
 
-    override val port: Int = ServerConfig.port
-
     @Deprecated("Deprecated in Java")
     override fun onCreate() {
         super.onCreate()
@@ -55,7 +54,7 @@ class MsTtsForwarderService(override val isWakeLockEnabled: Boolean = ServerConf
 
     override fun startServer() {
         Tts_server_lib.runServer(
-            ServerConfig.port.toLong(), ServerConfig.token, AppConfig.isEdgeDnsEnabled
+            port.toLong(), MsTtsForwarderConfig.token.value, true
         )
     }
 

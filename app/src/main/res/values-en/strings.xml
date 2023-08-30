@@ -450,4 +450,6 @@
     <string name="created_time_id">Created time (ID)</string>
     <string name="sorting_complete_msg">Sorting complete, taking %1$sms</string>
     <string name="tag_data_clear_warn">Do you want to continue with the current Tag data?</string>
+    <string name="keyboard_toolbar_settings">Keyboard toolbar</string>
+    <string name="keyboard_toolbar_settings_tips">Insert Value = Display Name \n⚠️Note there should be a space on both sides of the equal sign.</string>
 </resources>

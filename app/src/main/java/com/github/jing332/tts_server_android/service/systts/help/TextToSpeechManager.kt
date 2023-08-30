@@ -14,7 +14,7 @@ import com.github.jing332.tts_server_android.help.audio.AudioDecoder.Companion.r
 import com.github.jing332.tts_server_android.help.audio.ExoAudioPlayer
 import com.github.jing332.tts_server_android.help.audio.Sonic
 import com.github.jing332.tts_server_android.help.audio.exo.ExoAudioDecoder
-import com.github.jing332.tts_server_android.help.config.SysTtsConfig
+import com.github.jing332.tts_server_android.conf.SysTtsConfig
 import com.github.jing332.tts_server_android.model.SysTtsLib
 import com.github.jing332.tts_server_android.model.speech.ITextToSpeechSynthesizer
 import com.github.jing332.tts_server_android.model.speech.TtsTextSegment
@@ -511,7 +511,6 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 val bufferSize = getBufferSize(tts.audioFormat.sampleRate)
                 Log.d(TAG, "raw buffer: $bufferSize")
 //                val buffer = ByteArray(min(1024, bufferSize * 2))
-                var length: Int
                 audioResult.inputStream?.use { ins ->
                     ins.buffered().use {
                         it.readPcmChunk(

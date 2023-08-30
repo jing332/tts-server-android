@@ -1,15 +1,14 @@
-@file:Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
+@file:Suppress("OVERRIDE_DEPRECATION")
 
 package com.github.jing332.tts_server_android.service.forwarder.system
 
-import android.app.*
 import android.speech.tts.TextToSpeech
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.conf.SysttsForwarderConfig
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.help.LocalTtsEngineHelper
-import com.github.jing332.tts_server_android.help.config.SysTtsForwarderConfig
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
 import com.github.jing332.tts_server_android.service.forwarder.AbsForwarderService
 import kotlinx.coroutines.runBlocking
@@ -17,8 +16,8 @@ import kotlinx.serialization.encodeToString
 import tts_server_lib.SysTtsForwarder
 
 class SysTtsForwarderService(
-    override val port: Int = SysTtsForwarderConfig.port,
-    override val isWakeLockEnabled: Boolean = SysTtsForwarderConfig.isWakeLockEnabled
+    override val port: Int = SysttsForwarderConfig.port.value,
+    override val isWakeLockEnabled: Boolean = SysttsForwarderConfig.isWakeLockEnabled.value
 ) :
     AbsForwarderService(
         "SysTtsForwarderService",
@@ -46,8 +45,6 @@ class SysTtsForwarderService(
     private var mServer: SysTtsForwarder? = null
     private var mLocalTTS: LocalTTS? = null
     private val mLocalTtsHelper by lazy { LocalTtsEngineHelper(this) }
-
-    private val mCfg = SysTtsForwarderConfig
 
     override fun onCreate() {
         super.onCreate()
@@ -115,7 +112,7 @@ class SysTtsForwarderService(
     }
 
     override fun startServer() {
-        mServer?.start(mCfg.port.toLong())
+        mServer?.start(port.toLong())
     }
 
     override fun closeServer() {

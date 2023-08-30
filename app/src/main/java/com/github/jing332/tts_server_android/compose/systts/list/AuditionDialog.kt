@@ -25,10 +25,10 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.compose.widgets.LoadingContent
+import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.help.audio.AudioDecoder
 import com.github.jing332.tts_server_android.help.audio.AudioPlayer
-import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.StringUtils.sizeToReadable
 import com.github.jing332.tts_server_android.utils.clickableRipple
@@ -36,7 +36,6 @@ import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Suppress("UnstableApiUsage")
 @Composable
 fun AuditionDialog(systts: SystemTts, onDismissRequest: () -> Unit) {
     val scope = rememberCoroutineScope()
@@ -51,20 +50,21 @@ fun AuditionDialog(systts: SystemTts, onDismissRequest: () -> Unit) {
         scope.launch(Dispatchers.IO) {
             kotlin.runCatching {
                 systts.tts.onLoad()
-                systts.tts.getAudioWithSystemParams(AppConfig.testSampleText)?.use { ins ->
-                    val audio = ins.readBytes()
-                    val info = AudioDecoder.getSampleRateAndMime(audio)
-                    if (audio.isEmpty()){
-                        error = context.getString(R.string.systts_log_audio_empty, "")
-                        return@launch
-                    }
-                    audioInfo = Triple(audio.size, info.first, info.second)
+                systts.tts.getAudioWithSystemParams(com.github.jing332.tts_server_android.conf.AppConfig.testSampleText.value)
+                    ?.use { ins ->
+                        val audio = ins.readBytes()
+                        val info = AudioDecoder.getSampleRateAndMime(audio)
+                        if (audio.isEmpty()) {
+                            error = context.getString(R.string.systts_log_audio_empty, "")
+                            return@launch
+                        }
+                        audioInfo = Triple(audio.size, info.first, info.second)
 
-                    if (systts.tts.audioFormat.isNeedDecode)
-                        audioPlayer.play(audio)
-                    else
-                        audioPlayer.play(audio, systts.tts.audioFormat.sampleRate)
-                }
+                        if (systts.tts.audioFormat.isNeedDecode)
+                            audioPlayer.play(audio)
+                        else
+                            audioPlayer.play(audio, systts.tts.audioFormat.sampleRate)
+                    }
             }.onFailure {
                 withMain { error = it.stackTraceToString() }
 
@@ -86,7 +86,7 @@ fun AuditionDialog(systts: SystemTts, onDismissRequest: () -> Unit) {
         content = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 Text(
-                    error.ifEmpty { AppConfig.testSampleText },
+                    error.ifEmpty { AppConfig.testSampleText.value },
                     color = if (error.isEmpty()) Color.Unspecified else MaterialTheme.colorScheme.error,
 //                    maxLines = if (error.isEmpty()) Int.MAX_VALUE else 1,
                     style = MaterialTheme.typography.bodySmall

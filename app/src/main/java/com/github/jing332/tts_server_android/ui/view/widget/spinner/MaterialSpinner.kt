@@ -8,7 +8,7 @@ import android.view.accessibility.AccessibilityManager
 import android.widget.*
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.help.config.AppConfig
+import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.ui.view.widget.AppMaterialDialogBuilder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -66,7 +66,7 @@ class MaterialSpinner(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     override fun showDropDown() {
         requestFocus()
         val items = adapter?.items?.map { it as SpinnerItem } ?: emptyList()
-        if (accessibilityManager.isTouchExplorationEnabled || items.size > AppConfig.spinnerMaxDropDownCount) {
+        if (accessibilityManager.isTouchExplorationEnabled || items.size > AppConfig.spinnerMaxDropDownCount.value) {
             displayChooseDialog(items)
         } else {
             super.showDropDown()

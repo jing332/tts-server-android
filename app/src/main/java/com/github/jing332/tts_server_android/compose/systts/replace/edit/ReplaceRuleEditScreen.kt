@@ -2,7 +2,6 @@
 
 package com.github.jing332.tts_server_android.compose.systts.replace.edit
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +20,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialogDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -33,7 +31,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -59,6 +56,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.compose.widgets.TextCheckBox
+import com.github.jing332.tts_server_android.conf.ReplaceRuleConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
@@ -105,16 +103,23 @@ fun RuleEditScreen(
 //        key = ConfigConst.KEY_SOFT_KEYBOARD_TOOLBAR,
 //        default = emptyList()
 //    )
+    var toolBarSymbols by remember { ReplaceRuleConfig.symbols }
+    var showToolbarSettingsDialog by remember { mutableStateOf(false) }
+    if (showToolbarSettingsDialog) {
+        ToolBarSettingsDialog(
+            onDismissRequest = { showToolbarSettingsDialog = false },
+            symbols = toolBarSymbols,
+            onSave = {
+                toolBarSymbols = it
+                showToolbarSettingsDialog = false
+            },
+            onReset = {
+                toolBarSymbols = ReplaceRuleConfig.defaultSymbols
+                showToolbarSettingsDialog = false
+            }
+        )
+    }
 
-//    var isVisibleEditToolbarDialog by remember { mutableStateOf(false) }
-//    if (isVisibleEditToolbarDialog)
-//        EditToolbarKeyDialog(keys = toolbarKeyList, onResult = {
-//            isVisibleEditToolbarDialog = false
-//            it?.let { list ->
-//                println(list.getOrNull(0))
-//                toolbarKeyList = list
-//            }
-//        })
     val navController = LocalNavController.current
     Scaffold(modifier = Modifier, topBar = {
         TopAppBar(modifier = Modifier.fillMaxWidth(),
@@ -146,23 +151,15 @@ fun RuleEditScreen(
                 }
             })
     }, bottomBar = {
-//        if (LocalSoftKeyboardVisible.current.value) {
-//            if (toolbarKeyList.none { it.first.isNotBlank() && it.second.isNotBlank() }) {
-//                // @formatter:off
-//                toolbarKeyList = listOf("(", ")", "[", "]", "{", "}", "<", ">", "!", "@", "#", "$", "%", "^", "&", "*", "-", "+", "=", "|", "\\", "/", "?", ",", ":", ";", "\"", "'").map { it to it }
-//                // @formatter:on
-//            }
-//
-//            SoftKeyboardInputToolbar(items = toolbarKeyList, onClick = {
-//                inputKeyState.value = it
-//            }, onSettings = {
-//                isVisibleEditToolbarDialog = true
-//            })
-//        }
-    }, content = { pad ->
+        SoftKeyboardInputToolbar(symbols = toolBarSymbols, onClick = {
+            inputKeyState.value = it
+        }, onSettings = {
+            showToolbarSettingsDialog = true
+        })
+    }, content = { paddingValues ->
         Surface(
             modifier = Modifier
-                .padding(pad)
+                .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
             Screen(
@@ -194,10 +191,9 @@ fun RuleEditScreen(
                     onRuleChange.invoke(rule.copy(isRegex = it))
                 },
 
-
                 onTest = {
                     (try {
-                        vm.doReplace(it)
+                        vm.doReplace(rule, it)
                     } catch (e: Exception) {
                         e.message ?: ""
                     })

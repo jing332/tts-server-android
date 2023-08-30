@@ -6,9 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.conf.PluginConfig
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
-import com.github.jing332.tts_server_android.help.config.PluginConfig
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.utils.readableString
@@ -94,7 +93,7 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
 
             kotlin.runCatching {
                 pluginTTS.onLoad()
-                val audio = pluginTTS.getAudioWithSystemParams(PluginConfig.sampleText)
+                val audio = pluginTTS.getAudioWithSystemParams(PluginConfig.textParam.value)
                 if (audio == null)
                     pluginEngine.logger.w("音频为空！")
                 else{

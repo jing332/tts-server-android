@@ -15,9 +15,9 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.help.ByteArrayBinder
-import com.github.jing332.tts_server_android.help.config.AppConfig
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.FileUtils
 import com.github.jing332.tts_server_android.utils.FileUtils.mimeType
@@ -153,7 +153,7 @@ class FilePickerActivity : AppCompatActivity() {
                 }
         }
 
-        when (AppConfig.filePickerMode) {
+        when (AppConfig.filePickerMode.value) {
             FilePickerMode.PROMPT -> {
                 MaterialAlertDialogBuilder(this)
                     .setIcon(R.drawable.ic_baseline_file_open_24)
