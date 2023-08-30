@@ -72,7 +72,6 @@ fun getAppTheme(): AppTheme = themeTypeState.value
 /**
  * 根Context
  */
-@Suppress("DEPRECATION")
 @Composable
 fun AppTheme(
     modifier: Modifier = Modifier,
@@ -92,7 +91,7 @@ fun AppTheme(
         .statusBarDarkFont(!darkTheme)
         .navigationBarDarkIcon(!darkTheme)
         .keyboardEnable(true)
-        .keyboardMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+//        .keyboardMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         .init()
 
     SetupSystemBars()

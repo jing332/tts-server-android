@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.SaveActionHandler
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
-import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
+import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.compose.widgets.RowToggleButtonGroup
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
@@ -208,14 +208,14 @@ fun BasicInfoEditScreen(
 
                 AnimatedVisibility(visible = systts.speechRule.target == SpeechTarget.CUSTOM_TAG) {
                     Row(Modifier.padding(top = 4.dp)) {
-                        ExposedDropTextField(
+                        AppSpinner(
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(end = 4.dp),
                             label = { Text(stringResource(id = R.string.speech_rule_script)) },
-                            key = systts.speechRule.tagRuleId,
-                            keys = speechRules.map { it.ruleId },
-                            values = speechRules.map { it.name },
+                            value = systts.speechRule.tagRuleId,
+                            values = speechRules.map { it.ruleId },
+                            entries = speechRules.map { it.name },
                             onSelectedChange = { k, v ->
                                 onSysttsChange(
                                     systts.copy(
@@ -228,14 +228,14 @@ fun BasicInfoEditScreen(
                         )
 
                         speechRule?.let { speechRule ->
-                            ExposedDropTextField(
+                            AppSpinner(
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(start = 4.dp),
                                 label = { Text(stringResource(id = R.string.tag)) },
-                                key = systts.speechRule.tag,
-                                keys = speechRule.tags.keys.toList(),
-                                values = speechRule.tags.values.toList(),
+                                value = systts.speechRule.tag,
+                                values = speechRule.tags.keys.toList(),
+                                entries = speechRule.tags.values.toList(),
                                 onSelectedChange = { k, _ ->
                                     onSysttsChange(
                                         systts.copy(
@@ -257,13 +257,13 @@ fun BasicInfoEditScreen(
                 }
             }
 
-        ExposedDropTextField(
+        AppSpinner(
             modifier = Modifier.fillMaxWidth(),
             label = { Text(stringResource(id = R.string.group)) },
-            key = group,
-            keys = groups,
+            value = group,
+            values = groups,
             onKeySame = { current, new -> (current as SystemTtsGroup).id == (new as SystemTtsGroup).id },
-            values = groups.map { it.name },
+            entries = groups.map { it.name },
             onSelectedChange = { k, _ ->
                 onSysttsChange(systts.copy(groupId = (k as SystemTtsGroup).id))
             }
@@ -336,14 +336,14 @@ private fun CustomTagScreen(
                 )
 
                 val defaultValue = remember { defTag.value["default"] ?: "" }
-                ExposedDropTextField(
+                AppSpinner(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 4.dp),
                     label = { Text(label) },
-                    key = value.ifEmpty { defaultValue },
-                    keys = itemsMap.keys.toList(),
-                    values = itemsMap.values.toList(),
+                    value = value.ifEmpty { defaultValue },
+                    values = itemsMap.keys.toList(),
+                    entries = itemsMap.values.toList(),
                     leadingIcon = {
                         if (hint.isNotEmpty())
                             IconButton(onClick = { showHelpDialog = label to hint }) {

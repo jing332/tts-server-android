@@ -24,7 +24,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
-import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
+import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
@@ -43,11 +43,11 @@ class MsTtsUI : TtsUI() {
         val tts = (systts.tts as MsTTS)
         Column {
             val formats = remember { MsTtsFormatManger.getFormatsByApiType(MsTtsApiType.EDGE) }
-            ExposedDropTextField(
+            AppSpinner(
                 label = { Text(stringResource(id = R.string.label_audio_format)) },
-                key = tts.format,
-                keys = formats,
+                value = tts.format,
                 values = formats,
+                entries = formats,
                 onSelectedChange = { k, v ->
                     onSysttsChange(systts.copy(tts = tts.copy(format = k as String)))
                 },
@@ -193,22 +193,22 @@ class MsTtsUI : TtsUI() {
                 }
             }
 
-            ExposedDropTextField(
+            AppSpinner(
                 label = { Text(stringResource(id = R.string.label_api)) },
-                key = tts.api,
-                keys = listOf(MsTtsApiType.EDGE, MsTtsApiType.EDGE_OKHTTP),
-                values = apis.map { stringResource(id = it) },
+                value = tts.api,
+                values = listOf(MsTtsApiType.EDGE, MsTtsApiType.EDGE_OKHTTP),
+                entries = apis.map { stringResource(id = it) },
                 onSelectedChange = { api, _ ->
                     onSysttsChange(systts.copy(tts = tts.copy(api = api as Int)))
                 },
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            ExposedDropTextField(
+            AppSpinner(
                 label = { Text(stringResource(id = R.string.language)) },
-                key = tts.locale,
-                keys = vm.locales.map { it.first },
-                values = vm.locales.map { it.second },
+                value = tts.locale,
+                values = vm.locales.map { it.first },
+                entries = vm.locales.map { it.second },
                 onSelectedChange = { lang, _ ->
                     onSysttsChange(systts.copy(tts = tts.copy(locale = lang as String)))
 
@@ -219,11 +219,11 @@ class MsTtsUI : TtsUI() {
 
             fun GeneralVoiceData.name() = localVoiceName + " (${voiceName})"
 
-            ExposedDropTextField(
+            AppSpinner(
                 label = { Text(stringResource(id = R.string.label_voice)) },
-                key = tts.voiceName,
-                keys = vm.voices.map { it.voiceName },
-                values = vm.voices.map { it.name() },
+                value = tts.voiceName,
+                values = vm.voices.map { it.voiceName },
+                entries = vm.voices.map { it.name() },
                 onSelectedChange = { voice, name ->
                     val lastName = vm.voices.find { it.voiceName == tts.voiceName }?.name() ?: ""
                     onSysttsChange(

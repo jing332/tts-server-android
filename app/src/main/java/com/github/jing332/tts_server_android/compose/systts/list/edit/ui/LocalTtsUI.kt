@@ -40,7 +40,7 @@ import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.AuditionTextField
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.DenseOutlinedField
-import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
+import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
@@ -210,22 +210,22 @@ class LocalTtsUI : TtsUI() {
                     vm.updateVoices(tts.locale)
                 }
 
-                ExposedDropTextField(
+                AppSpinner(
                     label = { Text(stringResource(id = R.string.label_tts_engine)) },
-                    key = tts.engine ?: "",
-                    keys = vm.engines.map { it.name },
-                    values = vm.engines.map { it.label },
+                    value = tts.engine ?: "",
+                    values = vm.engines.map { it.name },
+                    entries = vm.engines.map { it.label },
                     onSelectedChange = { k, name ->
                         onSysttsChange(systts.copy(tts = tts.copy(engine = k as String)))
                         displayName = name
                     }
                 )
 
-                ExposedDropTextField(
+                AppSpinner(
                     label = { Text(stringResource(id = R.string.label_language)) },
-                    key = tts.locale,
-                    keys = vm.locales.map { it.toLanguageTag() },
-                    values = vm.locales.map { it.displayName },
+                    value = tts.locale,
+                    values = vm.locales.map { it.toLanguageTag() },
+                    entries = vm.locales.map { it.displayName },
                     onSelectedChange = { loc, _ ->
                         onSysttsChange(systts.copy(tts = tts.copy(locale = loc as String)))
 
@@ -233,11 +233,11 @@ class LocalTtsUI : TtsUI() {
                     }
                 )
 
-                ExposedDropTextField(
+                AppSpinner(
                     label = { Text(stringResource(id = R.string.label_voice)) },
-                    key = tts.voiceName ?: "",
-                    keys = vm.voices.map { it.name },
-                    values = vm.voices.map {
+                    value = tts.voiceName ?: "",
+                    values = vm.voices.map { it.name },
+                    entries = vm.voices.map {
                         val featureStr =
                             if (it.features == null || it.features.isEmpty()) "" else it.features.toString()
                         "${it.name} $featureStr"

@@ -43,8 +43,8 @@ import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.systts.directlink.LinkUploadRuleActivity
+import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.theme.getAppTheme
 import com.github.jing332.tts_server_android.compose.theme.setAppTheme
 import com.github.jing332.tts_server_android.conf.AppConfig
@@ -211,6 +211,18 @@ fun SettingsScreen(drawerState: DrawerState) {
                 }
             )
 
+            var maxDropdownCount by remember { AppConfig.spinnerMaxDropDownCount }
+            SliderPreference(
+                title = { Text(stringResource(id = R.string.spinner_drop_down_max_count)) },
+                subTitle = { Text(stringResource(id = R.string.spinner_drop_down_max_count_summary)) },
+                value = maxDropdownCount.toFloat(),
+                onValueChange = {
+                    maxDropdownCount = it.toInt()
+                },
+                label = { Text(if (maxDropdownCount == 0) stringResource(id = R.string.unlimited) else maxDropdownCount.toString()) },
+                valueRange = 0f..50f,
+            )
+
             DividerPreference {
                 Text(stringResource(id = R.string.system_tts))
             }
@@ -312,7 +324,8 @@ fun SettingsScreen(drawerState: DrawerState) {
             }
 
             var limitTagLen by remember { AppConfig.limitTagLength }
-            val limitTagLenString = if (limitTagLen == 0) stringResource(id = R.string.unlimited) else limitTagLen.toString()
+            val limitTagLenString =
+                if (limitTagLen == 0) stringResource(id = R.string.unlimited) else limitTagLen.toString()
             SliderPreference(
                 title = { Text(stringResource(id = R.string.limit_tag_length)) },
                 subTitle = { Text(stringResource(id = R.string.limit_tag_length_summary)) },
@@ -324,7 +337,8 @@ fun SettingsScreen(drawerState: DrawerState) {
             )
 
             var limitNameLen by remember { AppConfig.limitNameLength }
-            val limitNameLenString = if (limitNameLen == 0) stringResource(id = R.string.unlimited) else limitNameLen.toString()
+            val limitNameLenString =
+                if (limitNameLen == 0) stringResource(id = R.string.unlimited) else limitNameLen.toString()
             SliderPreference(
                 title = { Text(stringResource(id = R.string.limit_name_length)) },
                 subTitle = { Text(stringResource(id = R.string.limit_name_length_summary)) },

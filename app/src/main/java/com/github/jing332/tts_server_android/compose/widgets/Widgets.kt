@@ -54,7 +54,6 @@ fun BasicBroadcastReceiver(
     }
 }
 
-@Suppress("DEPRECATION")
 @Composable
 fun LocalBroadcastReceiver(intentFilter: IntentFilter, onReceive: (Intent?) -> Unit) {
     BasicBroadcastReceiver(

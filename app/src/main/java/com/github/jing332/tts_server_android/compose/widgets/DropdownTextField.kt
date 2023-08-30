@@ -21,9 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import kotlin.math.max
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExposedDropTextField(
+@OptIn(ExperimentalMaterial3Api::class)
+fun DropdownTextField(
     modifier: Modifier = Modifier,
     label: @Composable() (() -> Unit),
     key: Any,
@@ -95,13 +95,13 @@ fun ExposedDropTextField(
 
 @Preview
 @Composable
-private fun ExposedDropTextFieldPreview() {
+private fun PreviewDropdownTextField() {
     var key by remember { mutableIntStateOf(1) }
-    ExposedDropTextField(
+    AppSpinner(
         label = { Text("所属分组") },
-        key = key,
-        keys = listOf(1, 2, 3),
-        values = listOf("1", "2", "3"),
+        value = key,
+        values = listOf(1, 2, 3),
+        entries = listOf("1", "2", "3"),
     ) { k, _ ->
         key = k as Int
     }

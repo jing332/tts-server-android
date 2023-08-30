@@ -31,7 +31,7 @@ import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoE
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.AuditionTextField
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
-import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
+import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.compose.widgets.LoadingDialog
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
@@ -217,14 +217,14 @@ class PluginTtsUI : TtsUI() {
                         onSysttsChange = onSysttsChange
                     )
 
-                ExposedDropTextField(
+                AppSpinner(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 4.dp),
                     label = { Text(stringResource(id = R.string.language)) },
-                    key = tts.locale,
-                    keys = vm.locales,
-                    values = vm.locales.map { Locale.forLanguageTag(it).displayName },
+                    value = tts.locale,
+                    values = vm.locales,
+                    entries = vm.locales.map { Locale.forLanguageTag(it).displayName },
                     onSelectedChange = { key, _ ->
                         onSysttsChange(
                             systts.copy(tts = tts.copy(locale = key as String))
@@ -238,14 +238,14 @@ class PluginTtsUI : TtsUI() {
                     }
                 }
 
-                ExposedDropTextField(
+                AppSpinner(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 4.dp),
                     label = { Text(stringResource(id = R.string.label_voice)) },
-                    key = tts.voice,
-                    keys = vm.voices.map { it.first },
-                    values = vm.voices.map { it.second },
+                    value = tts.voice,
+                    values = vm.voices.map { it.first },
+                    entries = vm.voices.map { it.second },
                     onSelectedChange = { key, name ->
                         val lastName = vm.voices.find { it.first == tts.voice }?.second ?: ""
                         onSysttsChange(

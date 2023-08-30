@@ -57,7 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
-import com.github.jing332.tts_server_android.compose.widgets.ExposedDropTextField
+import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
@@ -296,10 +296,11 @@ private fun Screen(
             .padding(horizontal = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ExposedDropTextField(label = { Text(text = stringResource(R.string.belonging_group)) },
-            key = group,
-            keys = groupKeys,
-            values = groupValues,
+        AppSpinner(
+            label = { Text(text = stringResource(R.string.belonging_group)) },
+            value = group,
+            values = groupKeys,
+            entries = groupValues,
             onSelectedChange = { value, _ ->
                 onGroupChange.invoke(value as ReplaceRuleGroup)
             }
