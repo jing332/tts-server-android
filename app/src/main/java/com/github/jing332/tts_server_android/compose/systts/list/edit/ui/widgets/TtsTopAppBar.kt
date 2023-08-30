@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base
+package com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack

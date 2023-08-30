@@ -27,11 +27,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.AuditionDialog
-import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
-import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.AuditionTextField
-import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
+import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.AuditionTextField
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.TtsTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
+import com.github.jing332.tts_server_android.compose.widgets.LoadingContent
 import com.github.jing332.tts_server_android.compose.widgets.LoadingDialog
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
@@ -217,53 +218,6 @@ class PluginTtsUI : TtsUI() {
                         onSysttsChange = onSysttsChange
                     )
 
-                AppSpinner(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                    label = { Text(stringResource(id = R.string.language)) },
-                    value = tts.locale,
-                    values = vm.locales,
-                    entries = vm.locales.map { Locale.forLanguageTag(it).displayName },
-                    onSelectedChange = { key, _ ->
-                        onSysttsChange(
-                            systts.copy(tts = tts.copy(locale = key as String))
-                        )
-                    },
-                )
-
-                LaunchedEffect(key1 = tts.locale) {
-                    runCatching {
-                        vm.onLocaleChanged(tts.locale)
-                    }
-                }
-
-                AppSpinner(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                    label = { Text(stringResource(id = R.string.label_voice)) },
-                    value = tts.voice,
-                    values = vm.voices.map { it.first },
-                    entries = vm.voices.map { it.second },
-                    onSelectedChange = { key, name ->
-                        val lastName = vm.voices.find { it.first == tts.voice }?.second ?: ""
-                        onSysttsChange(
-                            systts.copy(
-                                displayName = if (lastName == systts.displayName) name else systts.displayName,
-                                tts = tts.copy(voice = key as String)
-                            )
-                        )
-                        runCatching {
-                            vm.onVoiceChanged(tts.locale, key)
-                        }.onFailure {
-                            context.displayErrorDialog(it)
-                        }
-
-                        displayName = name
-                    }
-                )
-
                 AuditionTextField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -273,39 +227,81 @@ class PluginTtsUI : TtsUI() {
                     }
                 )
 
-                val scope = rememberCoroutineScope()
-                suspend fun load(linearLayout: LinearLayout) {
-                    showLoadingDialog = true
-                    runCatching {
-                        vm.initEngine(systts.tts as PluginTTS)
-                        withIO { vm.engine.onLoadData() }
+                LoadingContent(isLoading = vm.isLoading) {
+                    Column {
+                        AppSpinner(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            label = { Text(stringResource(id = R.string.language)) },
+                            value = tts.locale,
+                            values = vm.locales,
+                            entries = vm.locales.map { Locale.forLanguageTag(it).displayName },
+                            onSelectedChange = { locale, _ ->
+                                if (locale.toString().isBlank()) return@AppSpinner
+                                onSysttsChange(
+                                    systts.copy(tts = tts.copy(locale = locale as String))
+                                )
+                            },
+                        )
 
-                        vm.engine.onLoadUI(context, linearLayout)
-
-                        vm.onLocaleChanged(tts.locale)
-                        vm.initData()
-                    }.onFailure {
-                        it.printStackTrace()
-                        context.displayErrorDialog(it)
-                    }
-
-
-                    showLoadingDialog = false
-                }
-
-                AndroidView(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    factory = {
-                        LinearLayout(it).apply {
-                            orientation = LinearLayout.VERTICAL
-                            scope.launch { load(this@apply) }
+                        LaunchedEffect(key1 = tts.locale) {
+                            runCatching {
+                                vm.onLocaleChanged(tts.locale)
+                            }
                         }
-                    }
-                )
-            }
 
+                        AppSpinner(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            label = { Text(stringResource(id = R.string.label_voice)) },
+                            value = tts.voice,
+                            values = vm.voices.map { it.first },
+                            entries = vm.voices.map { it.second },
+                            onSelectedChange = { voice, name ->
+                                val lastName =
+                                    vm.voices.find { it.first == tts.voice }?.second ?: ""
+                                onSysttsChange(
+                                    systts.copy(
+                                        displayName = if (lastName == systts.displayName) name else systts.displayName,
+                                        tts = tts.copy(voice = voice as String)
+                                    )
+                                )
+                                runCatching {
+                                    vm.onVoiceChanged(tts.locale, voice)
+                                }.onFailure {
+                                    context.displayErrorDialog(it)
+                                }
+
+                                displayName = name
+                            }
+                        )
+
+                        val scope = rememberCoroutineScope()
+                        suspend fun load(linearLayout: LinearLayout) {
+                            runCatching {
+                                vm.load(context, systts.tts as PluginTTS, linearLayout)
+                            }.onFailure {
+                                it.printStackTrace()
+                                context.displayErrorDialog(it)
+                            }
+                        }
+
+                        AndroidView(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize(),
+                            factory = {
+                                LinearLayout(it).apply {
+                                    orientation = LinearLayout.VERTICAL
+                                    scope.launch { load(this@apply) }
+                                }
+                            }
+                        )
+                    }
+                }
+            }
 
             ParamsEditScreen(
                 Modifier

@@ -379,6 +379,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     appDb.systemTtsDao.updateGroup(g.copy(isExpanded = !g.isExpanded))
                                 },
                                 onDelete = {
+                                    appDb.systemTtsDao.deleteTts(*groupWithSystemTts.list.toTypedArray())
                                     appDb.systemTtsDao.deleteGroup(g)
                                 },
                                 onRename = {

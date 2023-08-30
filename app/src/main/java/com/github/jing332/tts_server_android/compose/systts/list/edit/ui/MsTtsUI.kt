@@ -19,14 +19,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.AuditionDialog
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
 import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
-import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.AuditionTextField
-import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.AuditionTextField
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.TtsTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
+import com.github.jing332.tts_server_android.compose.widgets.LoadingContent
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.GeneralVoiceData
@@ -196,7 +196,7 @@ class MsTtsUI : TtsUI() {
 
             LaunchedEffect(vm) {
                 runCatching {
-                    withIO { vm.load() }
+                    vm.load()
                     vm.updateLocales()
                 }.onFailure {
                     context.displayErrorDialog(it)
@@ -214,41 +214,49 @@ class MsTtsUI : TtsUI() {
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            AppSpinner(
-                label = { Text(stringResource(id = R.string.language)) },
-                value = tts.locale,
-                values = vm.locales.map { it.first },
-                entries = vm.locales.map { it.second },
-                onSelectedChange = { lang, _ ->
-                    onSysttsChange(systts.copy(tts = tts.copy(locale = lang as String)))
-                },
-                modifier = Modifier.padding(top = 4.dp)
-            )
-
-            LaunchedEffect(tts.locale) {
-                vm.onLocaleChanged(tts.locale)
-            }
-
-            fun GeneralVoiceData.name() = localVoiceName + " (${voiceName})"
-
-            AppSpinner(
-                label = { Text(stringResource(id = R.string.label_voice)) },
-                value = tts.voiceName,
-                values = vm.voices.map { it.voiceName },
-                entries = vm.voices.map { it.name() },
-                onSelectedChange = { voice, name ->
-                    val lastName = vm.voices.find { it.voiceName == tts.voiceName }?.name() ?: ""
-                    onSysttsChange(
-                        systts.copy(
-                            displayName = if (lastName == systts.displayName) name else systts.displayName,
-                            tts = tts.copy(voiceName = voice as String)
-                        )
+            LoadingContent(isLoading = vm.isLoading) {
+                Column {
+                    AppSpinner(
+                        label = { Text(stringResource(id = R.string.language)) },
+                        value = tts.locale,
+                        values = vm.locales.map { it.first },
+                        entries = vm.locales.map { it.second },
+                        onSelectedChange = { lang, _ ->
+                            onSysttsChange(systts.copy(tts = tts.copy(locale = lang as String)))
+                            vm.onLocaleChanged(lang)
+                        },
+                        modifier = Modifier.padding(top = 4.dp)
                     )
 
-                    displayName = name
-                },
-                modifier = Modifier.padding(top = 4.dp)
-            )
+                    LaunchedEffect(tts.locale) {
+                        vm.onLocaleChanged(tts.locale)
+                    }
+
+                    fun GeneralVoiceData.name() = localVoiceName + " (${voiceName})"
+
+                    AppSpinner(
+                        label = { Text(stringResource(id = R.string.label_voice)) },
+                        value = tts.voiceName,
+                        values = vm.voices.map { it.voiceName },
+                        entries = vm.voices.map { it.name() },
+                        onSelectedChange = { voice, name ->
+                            val lastName =
+                                vm.voices.find { it.voiceName == tts.voiceName }?.name() ?: ""
+                            onSysttsChange(
+                                systts.copy(
+                                    displayName = if (lastName == systts.displayName) name else systts.displayName,
+                                    tts = tts.copy(voiceName = voice as String)
+                                )
+                            )
+
+                            displayName = name
+                        },
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+
+                }
+            }
         }
+
     }
 }

@@ -275,7 +275,10 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                             },
                             onClick = { appDb.replaceRuleDao.updateGroup(g.copy(isExpanded = !g.isExpanded)) },
                             onEdit = { showGroupEditDialog = g },
-                            onDelete = { appDb.replaceRuleDao.delete(*groupWithRules.list.toTypedArray()) },
+                            onDelete = {
+                                appDb.replaceRuleDao.delete(*groupWithRules.list.toTypedArray())
+                                appDb.replaceRuleDao.deleteGroup(g)
+                            },
                             onExport = { showExportSheet = listOf(groupWithRules) },
                             onSort = { showSortDialog = groupWithRules.list }
                         )

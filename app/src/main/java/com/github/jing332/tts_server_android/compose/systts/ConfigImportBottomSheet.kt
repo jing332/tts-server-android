@@ -175,17 +175,16 @@ fun ConfigImportBottomSheet(
                         visible = source != ImportSource.CLIPBOARD
                     ) {
                         when (source) {
-                            ImportSource.FILE -> OutlinedTextField(
+                            ImportSource.URL -> OutlinedTextField(
                                 modifier = Modifier.fillMaxWidth(),
                                 value = url,
                                 onValueChange = { url = it },
                                 label = {
                                     Text(stringResource(id = R.string.url_net))
                                 },
-                                readOnly = true,
                             )
 
-                            ImportSource.URL -> {
+                            ImportSource.FILE -> {
                                 val filePicker =
                                     rememberLauncherForActivityResult(contract = AppActivityResultContracts.filePickerActivity()) {
                                         it.second?.let { uri ->
@@ -194,6 +193,7 @@ fun ConfigImportBottomSheet(
                                     }
 
                                 OutlinedTextField(
+                                    readOnly = true,
                                     modifier = Modifier.fillMaxWidth(),
                                     value = path,
                                     onValueChange = { path = it },
@@ -226,6 +226,7 @@ fun ConfigImportBottomSheet(
                 Modifier
                     .fillMaxWidth()
                     .align(Alignment.End)
+                    .padding(top = 8.dp)
             ) {
                 TextButton(
                     modifier = Modifier.align(Alignment.CenterEnd),

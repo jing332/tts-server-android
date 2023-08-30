@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.compose.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +22,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -134,7 +134,11 @@ private fun TextFieldSelectionDialog(
 
     Box(
         modifier = modifier
-            .clickable(role = Role.DropdownList) { expanded = !expanded }
+            .clickable(
+                role = Role.DropdownList,
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) { expanded = !expanded }
     ) {
         CompositionLocalProvider(
             LocalTextInputService provides null,

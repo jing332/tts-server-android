@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.CreateNewFolder
@@ -39,7 +38,7 @@ import androidx.core.net.toUri
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
-import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.TtsTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.AppSelectionDialog
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo

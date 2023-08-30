@@ -1,10 +1,14 @@
 package com.github.jing332.tts_server_android.compose.systts.list.edit.ui
 
+import android.content.Context
+import android.widget.LinearLayout
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.app
-import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.BaseViewModel
-import com.github.jing332.tts_server_android.help.audio.AudioPlayer
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.BaseViewModel
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 
@@ -17,11 +21,29 @@ class PluginTtsViewModel : BaseViewModel() {
         engine = TtsPluginUiEngine(tts, app)
     }
 
+    var isLoading by mutableStateOf(true)
 
     val locales = mutableStateListOf<String>()
     val voices = mutableStateListOf<Pair<String, String>>()
 
-    fun initData() {
+    suspend fun load(context: Context, tts: PluginTTS, linearLayout: LinearLayout) {
+        isLoading = true
+        try {
+            initEngine(tts)
+            withIO { engine.onLoadData() }
+
+            engine.onLoadUI(context, linearLayout)
+
+            onLocaleChanged(tts.locale)
+            updateLocales()
+        } catch (t: Throwable) {
+            throw t
+        } finally {
+            isLoading = false
+        }
+    }
+
+    private fun updateLocales() {
         locales.clear()
         locales.addAll(engine.getLocales())
     }

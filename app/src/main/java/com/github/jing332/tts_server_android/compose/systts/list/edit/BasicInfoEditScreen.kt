@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.BasicAudioParamsDialog
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.SaveActionHandler
-import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.InternalPlayerDialog
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.InternalPlayerDialog
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.compose.widgets.RowToggleButtonGroup

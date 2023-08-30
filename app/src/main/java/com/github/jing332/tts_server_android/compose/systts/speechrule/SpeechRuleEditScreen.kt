@@ -83,6 +83,7 @@ internal fun SpeechRuleEditScreen(
                 vm.code = codeEditor!!.text.toString()
                 vm.evalRuleInfo()
 
+                onSave(vm.speechRule)
                 navController.popBackStack()
             }.onFailure {
                 context.displayErrorDialog(it)
