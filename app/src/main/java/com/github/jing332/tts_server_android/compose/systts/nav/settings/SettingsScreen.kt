@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.MenuOpen
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.filled.Repeat
@@ -221,6 +222,7 @@ fun SettingsScreen(drawerState: DrawerState) {
                 },
                 label = { Text(if (maxDropdownCount == 0) stringResource(id = R.string.unlimited) else maxDropdownCount.toString()) },
                 valueRange = 0f..50f,
+                icon = { Icon(Icons.Default.MenuOpen, null) }
             )
 
             DividerPreference {

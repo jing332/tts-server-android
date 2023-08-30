@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.widgets.HtmlText
 import com.github.jing332.tts_server_android.conf.AppConfig
@@ -57,6 +59,7 @@ internal fun Item(
     params: String,
     reorderState: ReorderableLazyListState,
 
+    standby: Boolean,
     enabled: Boolean,
     onEnabledChange: (Boolean) -> Unit,
     onClick: () -> Unit,
@@ -94,9 +97,12 @@ internal fun Item(
                         start.linkTo(parent.start)
                         top.linkTo(nameRef.top)
                         bottom.linkTo(contentRef.bottom)
+
+                        height = Dimension.fillToConstraints
                     }
                     .detectReorder(reorderState)) {
                 Checkbox(
+                    modifier = Modifier.fillMaxHeight(),
                     checked = enabled,
                     onCheckedChange = onEnabledChange,
                 )
@@ -223,8 +229,7 @@ internal fun Item(
                 }
             }
 
-            Text(
-                text = type,
+            Row(
                 modifier = Modifier
                     .constrainAs(typeRef) {
                         end.linkTo(parent.end)
@@ -232,9 +237,24 @@ internal fun Item(
                         bottom.linkTo(parent.bottom)
                     }
                     .padding(end = 4.dp),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.tertiary,
-            )
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (standby) {
+                    Text(
+                        modifier = Modifier.padding(end = 4.dp),
+                        text = stringResource(id = R.string.systts_standby),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+
+                Text(
+                    text = type,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            }
 
         }
 

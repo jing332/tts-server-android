@@ -373,9 +373,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                 isExpanded = g.isExpanded,
                                 toggleableState = checkState,
                                 onToggleableStateChange = {
-                                    appDb.systemTtsDao.updateTts(*groupWithSystemTts.list.map { tts ->
-                                        tts.copy(isEnabled = checkState != ToggleableState.On)
-                                    }.toTypedArray())
+                                    vm.updateGroupEnable(groupWithSystemTts, it)
                                 },
                                 onClick = {
                                     appDb.systemTtsDao.updateGroup(g.copy(isExpanded = !g.isExpanded))
@@ -426,9 +424,10 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     name = item.displayName ?: "",
                                     tagName = item.speechRule.tagName,
                                     type = item.tts.getType(),
+                                    standby = item.speechRule.isStandby,
                                     enabled = item.isEnabled,
                                     onEnabledChange = {
-                                        appDb.systemTtsDao.updateTts(item.copy(isEnabled = it))
+                                        vm.updateTtsEnabled(item, it)
                                         if (it) SystemTtsService.notifyUpdateConfig()
                                     },
                                     desc = item.tts.getDescription(),

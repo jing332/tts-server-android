@@ -64,7 +64,7 @@ fun ListSortSettingsDialog(
                             .padding(vertical = 4.dp),
                         style = MaterialTheme.typography.titleMedium
                     )
-                    FlowRow {
+                    FlowRow(Modifier.align(Alignment.CenterHorizontally)) {
                         entries.forEachIndexed { i, s ->
                             val selected = i == index
                             FilterChip(
