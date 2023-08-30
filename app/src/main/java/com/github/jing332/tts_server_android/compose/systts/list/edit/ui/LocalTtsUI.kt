@@ -29,21 +29,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.AuditionDialog
-import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
+import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.AuditionTextField
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.TtsTopAppBar
-import com.github.jing332.tts_server_android.compose.widgets.DenseOutlinedField
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
+import com.github.jing332.tts_server_android.compose.widgets.DenseOutlinedField
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
+import com.github.jing332.tts_server_android.compose.widgets.LoadingContent
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 
 class LocalTtsUI : TtsUI() {
     @Composable
@@ -204,50 +208,63 @@ class LocalTtsUI : TtsUI() {
                     showAuditionDialog = true
                 })
 
-                LaunchedEffect(tts.engine) {
-                    vm.setEngine(tts.engine ?: "")
-                    vm.updateLocales()
-                    vm.updateVoices(tts.locale)
+                val context = LocalContext.current
+                var isLoading by remember { mutableStateOf(false) }
+                LoadingContent(isLoading = isLoading) {
+                    Column {
+                        LaunchedEffect(tts.engine) {
+                            isLoading = true
+
+                            runCatching {
+                                withIO { vm.setEngine(tts.engine ?: "") }
+                                vm.updateLocales()
+                                vm.updateVoices(tts.locale)
+                            }.onFailure {
+                                context.displayErrorDialog(it, tts.engine)
+                            }
+
+                            isLoading = false
+                        }
+
+                        AppSpinner(
+                            label = { Text(stringResource(id = R.string.label_tts_engine)) },
+                            value = tts.engine ?: "",
+                            values = vm.engines.map { it.name },
+                            entries = vm.engines.map { it.label },
+                            onSelectedChange = { k, name ->
+                                onSysttsChange(systts.copy(tts = tts.copy(engine = k as String)))
+                                displayName = name
+                            }
+                        )
+
+                        AppSpinner(
+                            label = { Text(stringResource(id = R.string.label_language)) },
+                            value = tts.locale,
+                            values = vm.locales.map { it.toLanguageTag() },
+                            entries = vm.locales.map { it.displayName },
+                            onSelectedChange = { loc, _ ->
+                                onSysttsChange(systts.copy(tts = tts.copy(locale = loc as String)))
+
+                                vm.updateVoices(loc)
+                            }
+                        )
+
+                        AppSpinner(
+                            label = { Text(stringResource(id = R.string.label_voice)) },
+                            value = tts.voiceName ?: "",
+                            values = vm.voices.map { it.name },
+                            entries = vm.voices.map {
+                                val featureStr =
+                                    if (it.features == null || it.features.isEmpty()) "" else it.features.toString()
+                                "${it.name} $featureStr"
+                            },
+                            onSelectedChange = { k, _ ->
+                                onSysttsChange(systts.copy(tts = tts.copy(voiceName = k as String)))
+                            }
+                        )
+                    }
                 }
-
-                AppSpinner(
-                    label = { Text(stringResource(id = R.string.label_tts_engine)) },
-                    value = tts.engine ?: "",
-                    values = vm.engines.map { it.name },
-                    entries = vm.engines.map { it.label },
-                    onSelectedChange = { k, name ->
-                        onSysttsChange(systts.copy(tts = tts.copy(engine = k as String)))
-                        displayName = name
-                    }
-                )
-
-                AppSpinner(
-                    label = { Text(stringResource(id = R.string.label_language)) },
-                    value = tts.locale,
-                    values = vm.locales.map { it.toLanguageTag() },
-                    entries = vm.locales.map { it.displayName },
-                    onSelectedChange = { loc, _ ->
-                        onSysttsChange(systts.copy(tts = tts.copy(locale = loc as String)))
-
-                        vm.updateVoices(loc)
-                    }
-                )
-
-                AppSpinner(
-                    label = { Text(stringResource(id = R.string.label_voice)) },
-                    value = tts.voiceName ?: "",
-                    values = vm.voices.map { it.name },
-                    entries = vm.voices.map {
-                        val featureStr =
-                            if (it.features == null || it.features.isEmpty()) "" else it.features.toString()
-                        "${it.name} $featureStr"
-                    },
-                    onSelectedChange = { k, _ ->
-                        onSysttsChange(systts.copy(tts = tts.copy(voiceName = k as String)))
-                    }
-                )
             }
-
             ParamsEditScreen(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.model
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
+import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.App
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
@@ -32,7 +33,7 @@ class LocalTtsEngine(val context: Context) {
         shutdown()
 
         var status = INIT_STATUS_WAITING
-        tts = TextToSpeech(context, { status = it }, name)
+        withMain { tts = TextToSpeech(context, { status = it }, name) }
 
         while (isActive) {
             if (status == TextToSpeech.SUCCESS) break

@@ -21,7 +21,8 @@ class LocalTtsViewModel : ViewModel() {
     }
 
     suspend fun setEngine(engine: String) {
-        this.engine.setEngine(engine)
+        val ok = this.engine.setEngine(engine)
+        if (!ok) return
 
         engines.clear()
         engines.addAll(LocalTtsEngine.getEngines())
@@ -34,8 +35,10 @@ class LocalTtsViewModel : ViewModel() {
 
     fun updateVoices(locale: String) {
         voices.clear()
-        voices.addAll(engine.voices.filter { it.locale.toLanguageTag() == locale }
-            .sortedBy { it.name })
+        voices.addAll(engine.voices
+            .filter { it.locale.toLanguageTag() == locale }
+            .sortedBy { it.name }
+        )
     }
 
     override fun onCleared() {
