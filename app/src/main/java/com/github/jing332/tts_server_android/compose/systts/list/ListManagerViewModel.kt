@@ -15,8 +15,6 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 class ListManagerViewModel : ViewModel() {
-    var listItemIndex: Int = 0
-    var listItemOffset: Int = 0
 
     private val _list = MutableStateFlow<List<GroupWithSystemTts>>(emptyList())
     val list: StateFlow<List<GroupWithSystemTts>> get() = _list

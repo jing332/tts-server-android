@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.BasicAudioParamsDialog
@@ -214,6 +215,36 @@ fun BasicInfoEditScreen(
                     }
                 }
 
+                var showTagClearDialog by remember { mutableStateOf(false) }
+                if (showTagClearDialog) {
+                    AppDialog(
+                        title = { Text(stringResource(id = R.string.tag_data_clear_warn)) },
+                        content = {
+                            Text(systts.speechRule.tagData.toString())
+                        },
+                        buttons = {
+                            TextButton(onClick = { showTagClearDialog = false }) {
+                                Text(stringResource(id = R.string.cancel))
+                            }
+                            TextButton(onClick = {
+                                onSysttsChange(
+                                    systts.copy(
+                                        speechRule = systts.speechRule.copy(target = SpeechTarget.ALL)
+                                            .apply { resetTag() }
+                                    )
+                                )
+                                showTagClearDialog = false
+                            }) {
+                                Text(
+                                    stringResource(id = R.string.delete),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        },
+                        onDismissRequest = { showTagClearDialog = false }
+                    )
+                }
+
                 RowToggleButtonGroup(
                     modifier = Modifier
                         .wrapContentWidth()
@@ -229,13 +260,23 @@ fun BasicInfoEditScreen(
                         stringResource(id = R.string.tag)
                     ),
                     onButtonClick = {
-                        onSysttsChange(
-                            systts.copy(
-                                speechRule = systts.speechRule.copy(
-                                    target = if (it == 0) SpeechTarget.ALL else SpeechTarget.CUSTOM_TAG
+                        if (it == 1)
+                            onSysttsChange(
+                                systts.copy(
+                                    speechRule = systts.speechRule.copy(target = SpeechTarget.CUSTOM_TAG)
                                 )
                             )
-                        )
+                        else {
+                            if (systts.speechRule.tagData.filterValues { it.isNotEmpty() }
+                                    .isEmpty())
+                                onSysttsChange(
+                                    systts.copy(
+                                        speechRule = systts.speechRule.copy(target = SpeechTarget.ALL)
+                                    )
+                                )
+                            else
+                                showTagClearDialog = true
+                        }
                     },
                 )
 

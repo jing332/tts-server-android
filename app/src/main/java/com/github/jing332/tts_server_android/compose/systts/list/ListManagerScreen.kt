@@ -38,7 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -52,6 +51,7 @@ import com.github.jing332.tts_server_android.compose.systts.list.edit.QuickEditB
 import com.github.jing332.tts_server_android.compose.systts.nav.NavRoutes
 import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.systts.sizeToToggleableState
+import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
@@ -160,20 +160,9 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
             })
     }
 
-    val listState = rememberLazyListState()
-    DisposableEffect(Unit) {
-        onDispose {
-            vm.listItemIndex = listState.firstVisibleItemIndex
-            vm.listItemOffset = listState.firstVisibleItemScrollOffset
-        }
-    }
-
     val models by vm.list.collectAsStateWithLifecycle()
-
-    LaunchedEffect(models) {
-        if (listState.firstVisibleItemIndex <= 0)
-            listState.scrollToItem(vm.listItemIndex, vm.listItemOffset)
-    }
+    val listState = rememberLazyListState()
+    LazyListIndexStateSaver(models = models, listState = listState)
 
     val reorderState = rememberReorderableLazyListState(listState = listState,
         onMove = { from, to ->

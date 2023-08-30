@@ -449,4 +449,5 @@
     <string name="sort">Sort</string>
     <string name="created_time_id">Created time (ID)</string>
     <string name="sorting_complete_msg">Sorting complete, taking %1$sms</string>
+    <string name="tag_data_clear_warn">Do you want to continue with the current Tag data?</string>
 </resources>

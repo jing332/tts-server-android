@@ -432,4 +432,5 @@
     <string name="sort">排序</string>
     <string name="created_time_id">创建时间(ID)</string>
     <string name="sorting_complete_msg">排序完成，耗时%1$sms</string>
+    <string name="tag_data_clear_warn">当前有数据，是否继续？</string>
 </resources>
