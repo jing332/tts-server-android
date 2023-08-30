@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.compose.widgets
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -77,12 +79,9 @@ private fun TextFieldSelectionDialog(
                         label = { Text(stringResource(id = R.string.search)) },
                     )
 
-                    val listState = rememberLazyListState()
-                    LaunchedEffect(values) {
-                        val index = values.indexOf(value)
-                        if (index >= 0 && index < listState.layoutInfo.totalItemsCount)
-                            listState.scrollToItem(index)
-                    }
+                    val listState = rememberLazyListState(
+                        initialFirstVisibleItemIndex = max(0, values.indexOf(value))
+                    )
 
                     LazyColumn(
                         Modifier
@@ -135,9 +134,7 @@ private fun TextFieldSelectionDialog(
 
     Box(
         modifier = modifier
-            .clickableRipple {
-                expanded = !expanded
-            }
+            .clickable(role = Role.DropdownList) { expanded = !expanded }
     ) {
         CompositionLocalProvider(
             LocalTextInputService provides null,

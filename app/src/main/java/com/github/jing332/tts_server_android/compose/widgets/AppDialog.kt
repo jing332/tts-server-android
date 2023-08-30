@@ -18,20 +18,29 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.asActivity
+import com.github.jing332.tts_server_android.compose.asAppCompatActivity
+import com.github.jing332.tts_server_android.compose.systts.replace.edit.SoftKeyboardInputToolbar
+import com.github.jing332.tts_server_android.utils.SoftKeyboardUtils
 import kotlin.math.max
 
 @Preview
@@ -81,6 +90,8 @@ fun AppDialog(
     Surface(
         tonalElevation = 8.dp, shadowElevation = 8.dp, shape = MaterialTheme.shapes.extraLarge
     ) {
+        val context = LocalContext.current
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()

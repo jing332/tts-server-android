@@ -3,6 +3,7 @@ package com.github.jing332.tts_server_android.compose.systts
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -40,6 +42,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalTextToolbar
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -166,49 +170,54 @@ fun ConfigImportBottomSheet(
                         LocalImportFilePath.current.value = ""
                     }
 
-                    AnimatedVisibility(visible = source == ImportSource.FILE) {
-                        val filePicker =
-                            rememberLauncherForActivityResult(contract = AppActivityResultContracts.filePickerActivity()) {
-                                it.second?.let { uri ->
-                                    path = uri.toString()
-                                }
-                            }
+                    AnimatedVisibility(
+                        modifier = Modifier.animateContentSize(),
+                        visible = source != ImportSource.CLIPBOARD
+                    ) {
+                        when (source) {
+                            ImportSource.FILE -> OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = url,
+                                onValueChange = { url = it },
+                                label = {
+                                    Text(stringResource(id = R.string.url_net))
+                                },
+                                readOnly = true,
+                            )
 
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = path,
-                            onValueChange = { path = it },
-                            label = {
-                                Text(stringResource(id = R.string.file))
-                            },
-                            trailingIcon = {
-                                IconButton(onClick = {
-                                    filePicker.launch(
-                                        FilePickerActivity.RequestSelectFile(
-                                            listOf("application/json", "text/*")
-                                        )
-                                    )
-                                }) {
-                                    Icon(
-                                        Icons.Default.FileOpen,
-                                        stringResource(id = R.string.select_file)
-                                    )
-                                }
+                            ImportSource.URL -> {
+                                val filePicker =
+                                    rememberLauncherForActivityResult(contract = AppActivityResultContracts.filePickerActivity()) {
+                                        it.second?.let { uri ->
+                                            path = uri.toString()
+                                        }
+                                    }
+
+                                OutlinedTextField(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    value = path,
+                                    onValueChange = { path = it },
+                                    label = {
+                                        Text(stringResource(id = R.string.file))
+                                    },
+                                    trailingIcon = {
+                                        IconButton(onClick = {
+                                            filePicker.launch(
+                                                FilePickerActivity.RequestSelectFile(
+                                                    listOf("application/json", "text/*")
+                                                )
+                                            )
+                                        }) {
+                                            Icon(
+                                                Icons.Default.FileOpen,
+                                                stringResource(id = R.string.select_file)
+                                            )
+                                        }
+                                    }
+                                )
                             }
-                        )
+                        }
                     }
-
-//                    AnimatedVisibility(visible = source == ImportSource.URL) {
-                    if (source == ImportSource.URL)
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = url,
-                            onValueChange = { url = it },
-                            label = {
-                                Text(stringResource(id = R.string.url_net))
-                            }
-                        )
-//                    }
                 }
             }
 

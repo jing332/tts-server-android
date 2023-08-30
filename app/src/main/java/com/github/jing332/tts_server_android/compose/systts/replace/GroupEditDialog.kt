@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
+import com.github.jing332.tts_server_android.compose.widgets.TextCheckBox
 import com.github.jing332.tts_server_android.constant.ReplaceExecution
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.utils.clickableRipple
@@ -45,23 +46,13 @@ internal fun GroupEditDialog(
                     }
                 )
 
-                Row(
-                    Modifier
-                        .height(48.dp)
-                        .clip(MaterialTheme.shapes.small)
-                        .clickableRipple(role = Role.Checkbox) {
-                            onGroupChange(
-                                group.copy(onExecution = if (group.onExecution == ReplaceExecution.BEFORE) ReplaceExecution.AFTER else ReplaceExecution.BEFORE)
-                            )
-                        },
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Checkbox(
-                        checked = group.onExecution == ReplaceExecution.AFTER,
-                        onCheckedChange = null
-                    )
+                TextCheckBox(text = {
                     Text(stringResource(id = R.string.replace_rule_after_execute))
-                }
+                }, checked = group.onExecution == ReplaceExecution.AFTER, onCheckedChange = {
+                    onGroupChange(
+                        group.copy(onExecution = if (group.onExecution == ReplaceExecution.BEFORE) ReplaceExecution.AFTER else ReplaceExecution.BEFORE)
+                    )
+                })
             }
         }, buttons = {
             Row {
@@ -69,6 +60,7 @@ internal fun GroupEditDialog(
                     Text(stringResource(id = R.string.cancel))
                 }
                 TextButton(onClick = onConfirm) {
+
                     Text(stringResource(id = R.string.confirm))
                 }
             }

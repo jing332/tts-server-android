@@ -31,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +39,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,6 +49,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
+import com.github.jing332.tts_server_android.compose.asActivity
 import com.github.jing332.tts_server_android.compose.navigate
 import com.github.jing332.tts_server_android.compose.systts.sizeToToggleableState
 import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
@@ -54,6 +59,7 @@ import com.github.jing332.tts_server_android.data.entities.replace.GroupWithRepl
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.utils.SoftKeyboardUtils
 import okhttp3.internal.toLongOrDefault
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -62,6 +68,7 @@ import org.burnoutcrew.reorderable.reorderable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Unit) {
+    val context = LocalContext.current
     val navController = LocalNavController.current
 
     fun navigateToEdit(rule: ReplaceRule = ReplaceRule()) {
@@ -97,7 +104,9 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
     if (showGroupEditDialog != null) {
         var group by remember { mutableStateOf(showGroupEditDialog!!) }
         GroupEditDialog(
-            onDismissRequest = { showGroupEditDialog = null },
+            onDismissRequest = {
+                showGroupEditDialog = null
+            },
             group = group,
             onGroupChange = { group = it },
             onConfirm = { appDb.replaceRuleDao.updateGroup(group) }
@@ -239,6 +248,7 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
             })
         LazyColumn(
             Modifier
+                .fillMaxSize()
                 .padding(paddingValues)
                 .reorderable(reorderState),
             state = listState,

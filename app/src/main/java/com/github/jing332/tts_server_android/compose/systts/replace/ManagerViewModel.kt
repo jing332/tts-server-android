@@ -21,7 +21,7 @@ internal class ManagerViewModel : ViewModel() {
     val list: MutableStateFlow<List<GroupWithReplaceRule>>
         get() = _list
 
-    var searchType by mutableStateOf(SearchType.GROUP_NAME)
+    var searchType by mutableStateOf(SearchType.NAME)
     var searchText by mutableStateOf("")
 
     init {

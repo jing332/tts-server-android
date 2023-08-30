@@ -28,8 +28,9 @@ class MsTtsViewModel : ViewModel() {
         )
     }
 
-    fun updateVoices(locale: String) {
+    fun onLocaleChanged(locale: String) {
         voices.clear()
+        if (locale.isEmpty()) return
         voices.addAll(mAllList.filter { it.locale == locale }.sortedBy { it.voiceName })
     }
 }

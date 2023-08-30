@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -22,16 +20,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.compose.widgets.LoadingContent
-import com.github.jing332.tts_server_android.utils.clickableRipple
+import com.github.jing332.tts_server_android.compose.widgets.TextCheckBox
 import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.launch
 import kotlin.system.measureTimeMillis
@@ -85,20 +81,11 @@ fun ListSortSettingsDialog(
         },
         buttons = {
             Row(Modifier.fillMaxWidth()) {
-                Row(
-                    Modifier
-                        .height(48.dp)
-                        .padding(end = 16.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                        .clickableRipple(role = Role.Checkbox) { descending = !descending },
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Checkbox(checked = descending, onCheckedChange = { descending = it })
-                    Text(
-                        stringResource(id = R.string.descending),
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                }
+                TextCheckBox(
+                    text = {
+                        Text(stringResource(id = R.string.descending), modifier = Modifier.padding(end = 8.dp))
+                    }, checked = descending, onCheckedChange = { descending = it }
+                )
 
                 Row(Modifier.weight(1f)) {
                     Spacer(modifier = Modifier.weight(1f))

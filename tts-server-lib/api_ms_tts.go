@@ -14,7 +14,7 @@ import (
 func init() {
 	// 跳过证书验证
 	http.DefaultClient.Transport = &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
-	http.DefaultClient.Timeout = time.Second * 5
+	http.DefaultClient.Timeout = time.Second * 15
 }
 
 type VoiceProperty tts.VoiceProperty

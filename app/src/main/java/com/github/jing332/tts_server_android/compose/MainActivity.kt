@@ -3,6 +3,7 @@
 package com.github.jing332.tts_server_android.compose
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -104,6 +105,10 @@ val LocalDrawerState = compositionLocalOf<DrawerState> { error("No drawer state"
 
 fun Context.asAppCompatActivity(): AppCompatActivity {
     return this as? AppCompatActivity ?: error("Context is not an AppCompatActivity")
+}
+
+fun Context.asActivity(): Activity {
+    return this as? Activity ?: error("Context is not an Activity")
 }
 
 private var updateCheckTrigger by mutableStateOf(false)

@@ -21,15 +21,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
+import com.github.jing332.tts_server_android.compose.systts.list.AuditionDialog
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
+import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.AuditionTextField
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.TtsTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.constant.MsTtsApiType
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.model.GeneralVoiceData
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.model.speech.tts.MsTtsFormatManger
-import com.github.jing332.tts_server_android.model.GeneralVoiceData
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 
 class MsTtsUI : TtsUI() {
@@ -71,9 +73,7 @@ class MsTtsUI : TtsUI() {
             )
 
             val volume = tts.prosody.volume
-            val volStr = stringResource(
-                id = R.string.label_speech_volume, volume.toString()
-            )
+            val volStr = stringResource(id = R.string.label_speech_volume, volume.toString())
             IntSlider(
                 value = volume.toFloat(),
                 onValueChange = {
@@ -179,10 +179,20 @@ class MsTtsUI : TtsUI() {
             true
         }
 
+        var showAudition by remember { mutableStateOf(false) }
+        if (showAudition) {
+            AuditionDialog(systts = systts) { showAudition = false }
+        }
+
         Column(modifier) {
-            val apis = remember {
-                listOf(R.string.systts_api_edge, R.string.systts_api_edge_okhttp)
-            }
+            AuditionTextField(modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp), onAudition = {
+                showAudition = true
+            })
+
+            val apis =
+                remember { listOf(R.string.systts_api_edge, R.string.systts_api_edge_okhttp) }
 
             LaunchedEffect(vm) {
                 runCatching {
@@ -211,11 +221,13 @@ class MsTtsUI : TtsUI() {
                 entries = vm.locales.map { it.second },
                 onSelectedChange = { lang, _ ->
                     onSysttsChange(systts.copy(tts = tts.copy(locale = lang as String)))
-
-                    vm.updateVoices(lang)
                 },
                 modifier = Modifier.padding(top = 4.dp)
             )
+
+            LaunchedEffect(tts.locale) {
+                vm.onLocaleChanged(tts.locale)
+            }
 
             fun GeneralVoiceData.name() = localVoiceName + " (${voiceName})"
 

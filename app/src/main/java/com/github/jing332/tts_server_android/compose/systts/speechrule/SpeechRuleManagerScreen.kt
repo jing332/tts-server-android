@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -75,6 +76,7 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
             name = showDeleteDialog!!.name
         ) {
             appDb.speechRuleDao.delete(showDeleteDialog!!)
+            showDeleteDialog = null
         }
 
 
@@ -149,6 +151,7 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
             })
         LazyColumn(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(paddingValues)
                 .reorderable(reorderState),
             state = reorderState.listState,
