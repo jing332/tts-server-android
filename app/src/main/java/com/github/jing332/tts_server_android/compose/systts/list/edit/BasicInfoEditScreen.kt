@@ -36,7 +36,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.systts.list.BasicAudioParamsDialog
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.SaveActionHandler
+import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.base.InternalPlayerDialog
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.compose.widgets.RowToggleButtonGroup
@@ -45,6 +47,7 @@ import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
+import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
@@ -118,20 +121,50 @@ fun BasicInfoEditScreen(
             onDismissRequest = { showStandbyHelpDialog = false }
         )
 
-    var showParamsDialog by remember { mutableStateOf(false) }
-    if (showParamsDialog)
-        AudioParamsDialog(
-            onDismissRequest = { showParamsDialog = false },
-            params = systts.tts.audioParams,
+
+    var showPlayerParamsDialog by remember { mutableStateOf(false) }
+    if (showPlayerParamsDialog)
+        InternalPlayerDialog(
+            onDismissRequest = { showPlayerParamsDialog = false },
+            params = systts.tts.audioPlayer,
             onParamsChange = {
                 onSysttsChange(
                     systts.copy(
-                        tts = systts.tts.clone<ITextToSpeechEngine>()!!.apply {
-                            audioParams = it
-                        })
+                        tts = systts.tts.clone<ITextToSpeechEngine>()!!.apply { audioPlayer = it }
+                    )
                 )
             }
         )
+
+    var showParamsDialog by remember { mutableStateOf(false) }
+    if (showParamsDialog) {
+        val params = systts.tts.audioParams
+        fun changeParams(
+            speed: Float = params.speed,
+            volume: Float = params.volume,
+            pitch: Float = params.pitch
+        ) {
+            onSysttsChange(
+                systts.copy(
+                    tts = systts.tts.clone<ITextToSpeechEngine>()!!.apply {
+                        audioParams = AudioParams(speed, volume, pitch)
+                    }
+                )
+            )
+        }
+        BasicAudioParamsDialog(
+            onDismissRequest = { showParamsDialog = false },
+            speed = params.speed,
+            volume = params.volume,
+            pitch = params.pitch,
+
+            onSpeedChange = { changeParams(speed = it) },
+            onVolumeChange = { changeParams(volume = it) },
+            onPitchChange = { changeParams(pitch = it) },
+
+            onReset = { changeParams(0f, 0f, 0f) }
+        )
+    }
 
     Column(modifier) {
         if (showSpeechTarget)
@@ -148,7 +181,7 @@ fun BasicInfoEditScreen(
                         }
                     }
 
-                    TextButton(onClick = { }) {
+                    TextButton(onClick = { showPlayerParamsDialog = true }) {
                         Row {
                             Icon(Icons.Default.SmartDisplay, null)
                             Text(stringResource(id = R.string.internal_player))
