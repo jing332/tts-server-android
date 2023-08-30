@@ -54,6 +54,10 @@ fun AuditionDialog(systts: SystemTts, onDismissRequest: () -> Unit) {
                 systts.tts.getAudioWithSystemParams(AppConfig.testSampleText)?.use { ins ->
                     val audio = ins.readBytes()
                     val info = AudioDecoder.getSampleRateAndMime(audio)
+                    if (audio.isEmpty()){
+                        error = context.getString(R.string.systts_log_audio_empty, "")
+                        return@launch
+                    }
                     audioInfo = Triple(audio.size, info.first, info.second)
 
                     if (systts.tts.audioFormat.isNeedDecode)

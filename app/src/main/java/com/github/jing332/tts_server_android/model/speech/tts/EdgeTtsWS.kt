@@ -4,7 +4,6 @@ import android.util.Log
 import cn.hutool.core.lang.UUID
 import com.drake.net.utils.withIO
 import com.github.jing332.tts_server_android.model.rhino.core.type.ws.internal.WebSocketException
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
@@ -76,9 +75,8 @@ class EdgeTtsWS : WebSocketListener() {
                 else -> {}
             }
         }
-        if (connectStatus != Status.Connecting) return@withIO true
 
-        return@withIO false
+        return@withIO connectStatus != Status.Connecting
     }
 
     private var outputStream: PipedOutputStream? = null
@@ -100,14 +98,26 @@ class EdgeTtsWS : WebSocketListener() {
         sendConfig(format)
         sendSSML(ssml)
 
-        waitJob = launch {
-            try {
-                awaitCancellation()
-            } catch (_: CancellationException) {
-                cancelConnect()
-            }
-        }.job
+        waitJob = launch { awaitCancellation() }.job
         waitJob?.join() // 等待响应: Path:turn.start
+
+        if (outputStream == null) {
+            when (connectStatus) {
+                is Status.Failure ->
+                    (connectStatus as Status.Failure).apply {
+                        throw WebSocketException(response).initCause(t)
+                    }
+
+                is Status.Closing ->
+                    (connectStatus as Status.Closing).apply {
+                        throw Exception("WebSocket is closing: $code $reason")
+                    }
+
+                else -> {
+                    throw Exception("outputStream is null")
+                }
+            }
+        }
 
         return@coroutineScope PipedInputStream(outputStream)
     }
@@ -167,6 +177,15 @@ class EdgeTtsWS : WebSocketListener() {
         Log.d(TAG, "onOpen: $response")
     }
 
+    override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+        super.onClosing(webSocket, code, reason)
+        Log.d(TAG, "onClosing: $code $reason")
+
+        connectStatus = Status.Closing(code, reason)
+        outputStream?.close()
+        outputStream = null
+    }
+
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
         connectStatus = Status.Closed
         Log.d(TAG, "onClosed: $code $reason")
@@ -176,6 +195,7 @@ class EdgeTtsWS : WebSocketListener() {
         Log.w(TAG, "onFailure: $response", t)
         connectStatus = Status.Failure(t, response)
         outputStream?.close()
+        outputStream = null
         waitJob?.cancel()
     }
 
@@ -204,10 +224,10 @@ class EdgeTtsWS : WebSocketListener() {
     }
 
     sealed class Status {
-        object Connecting : Status()
-        object Opened : Status()
-        object Closed : Status()
-        object Closing : Status()
+        data object Connecting : Status()
+        data object Opened : Status()
+        data object Closed : Status()
+        data class Closing(val code: Int, val reason: String) : Status()
         data class Failure(val t: Throwable, val response: Response?) : Status()
     }
 
