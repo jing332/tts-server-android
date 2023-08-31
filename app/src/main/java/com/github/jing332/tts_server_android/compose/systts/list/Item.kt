@@ -31,8 +31,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -71,6 +77,13 @@ internal fun Item(
     onAudition: () -> Unit,
 ) {
     val view = LocalView.current
+    val context = LocalContext.current
+
+    val limitNameLen by remember { AppConfig.limitNameLength }
+    val limitedName = remember(name, limitNameLen) {
+        if (limitNameLen == 0) name else name.limitLength(limitNameLen)
+    }
+
     ElevatedCard(modifier) {
         ConstraintLayout(
             Modifier
@@ -102,17 +115,24 @@ internal fun Item(
                     }
                     .detectReorder(reorderState)) {
                 Checkbox(
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .semantics {
+                            role = Role.Switch
+                            context
+                                .getString(
+                                    if (enabled) R.string.config_enabled_desc else R.string.config_disabled_desc,
+                                    limitedName
+                                )
+                                .let {
+                                    contentDescription = it
+                                    stateDescription = it
+                                }
+                        },
                     checked = enabled,
                     onCheckedChange = onEnabledChange,
                 )
             }
-
-            val limitNameLen by remember { AppConfig.limitNameLength }
-            val limitedName = remember(name, limitNameLen) {
-                if (limitNameLen == 0) name else name.limitLength(limitNameLen)
-            }
-
             Text(
                 limitedName,
                 style = MaterialTheme.typography.titleMedium,
@@ -177,14 +197,17 @@ internal fun Item(
                     if (swapButton)
                         Icon(Icons.Default.Headphones, stringResource(id = R.string.audition))
                     else
-                        Icon(Icons.Default.Edit, stringResource(id = R.string.edit))
+                        Icon(Icons.Default.Edit, stringResource(id = R.string.edit_desc, name))
                 }
 
                 var showOptions by remember { mutableStateOf(false) }
                 IconButton(
                     modifier = Modifier,
                     onClick = { showOptions = true }) {
-                    Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_options))
+                    Icon(
+                        Icons.Default.MoreVert,
+                        stringResource(id = R.string.more_options_desc, name)
+                    )
 
                     DropdownMenu(
                         expanded = showOptions,

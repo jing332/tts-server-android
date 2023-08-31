@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.systts.list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
@@ -13,8 +14,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
+import org.burnoutcrew.reorderable.ItemPosition
+import java.util.Collections
 
 class ListManagerViewModel : ViewModel() {
+    companion object {
+        const val TAG = "ListManagerViewModel"
+    }
 
     private val _list = MutableStateFlow<List<GroupWithSystemTts>>(emptyList())
     val list: StateFlow<List<GroupWithSystemTts>> get() = _list
@@ -64,4 +70,59 @@ class ListManagerViewModel : ViewModel() {
                 .toTypedArray()
         )
     }
+
+    fun reorder(from: ItemPosition, to: ItemPosition) {
+        if (from.key is String && to.key is String) {
+            val fromKey = from.key as String
+            val toKey = to.key as String
+
+            if (fromKey.startsWith("g") && toKey.startsWith("g")) {
+                val mList = list.value.map { it.group }.toMutableList()
+
+                val fromId = fromKey.substring(2).toLong()
+                val fromIndex = mList.indexOfFirst { it.id == fromId }
+
+                val toId = toKey.substring(2).toLong()
+                val toIndex = mList.indexOfFirst { it.id == toId }
+
+                try {
+                    Collections.swap(mList, fromIndex, toIndex)
+                } catch (_: IndexOutOfBoundsException) {
+                    return
+                }
+                mList.forEachIndexed { index, systemTtsGroup ->
+                    if (systemTtsGroup.order != index)
+                        appDb.systemTtsDao.updateGroup(systemTtsGroup.copy(order = index))
+                }
+            } else if (!fromKey.startsWith("g") && !toKey.startsWith("g")) {
+                val (fromGId, fromId) = fromKey.split("_").map { it.toLong() }
+                val (toGId, toId) = toKey.split("_").map { it.toLong() }
+                if (fromGId != toGId) return
+
+                val listInGroup = findListInGroup(fromGId).toMutableList()
+                val fromIndex = listInGroup.indexOfFirst { it.id == fromId }
+                val toIndex = listInGroup.indexOfFirst { it.id == toId }
+                Log.d(TAG, "fromIndex: $fromIndex, toIndex: $toIndex")
+
+                try {
+                    Collections.swap(listInGroup, fromIndex, toIndex)
+                } catch (_: IndexOutOfBoundsException) {
+                    return
+                }
+
+                listInGroup.forEachIndexed { index, systts ->
+                    Log.d(TAG, "$index ${systts.displayName}")
+                    if (systts.order != index)
+                        appDb.systemTtsDao.updateTts(systts.copy(order = index))
+                }
+            }
+
+        }
+    }
+
+    private fun findListInGroup(groupId: Long): List<SystemTts> {
+        return list.value.find { it.group.id == groupId }?.list?.sortedBy { it.order }
+            ?: emptyList()
+    }
+
 }

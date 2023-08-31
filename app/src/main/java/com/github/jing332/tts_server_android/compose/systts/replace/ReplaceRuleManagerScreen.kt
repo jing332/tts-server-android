@@ -3,8 +3,6 @@ package com.github.jing332.tts_server_android.compose.systts.replace
 import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +29,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,8 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,7 +44,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
-import com.github.jing332.tts_server_android.compose.asActivity
 import com.github.jing332.tts_server_android.compose.navigate
 import com.github.jing332.tts_server_android.compose.systts.sizeToToggleableState
 import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
@@ -59,7 +53,6 @@ import com.github.jing332.tts_server_android.data.entities.replace.GroupWithRepl
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
-import com.github.jing332.tts_server_android.utils.SoftKeyboardUtils
 import okhttp3.internal.toLongOrDefault
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -292,9 +285,9 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                                 name = rule.name,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 2.dp, vertical = 4.dp)
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
                                     .detectReorderAfterLongPress(reorderState),
-                                isChecked = rule.isEnabled,
+                                isEnabled = rule.isEnabled,
                                 onCheckedChange = { enabled ->
                                     appDb.replaceRuleDao.update(rule.copy(isEnabled = enabled))
                                     if (enabled) SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)

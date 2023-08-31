@@ -175,8 +175,8 @@
     <string name="systts_please_check_multi_voice_option">请先在右上角菜单勾选多语音选项！</string>
     <string name="systts_sample_rate_different_in_enabled_list">检测到已启用配置中的格式/采样率不同，
         这将会导致音调异常(声音粗重或尖细)，请手动换为相同格式/采样率或在右上角将【使用内置播放器】选项打开。</string>
-    <string name="group_expanded">分组 已展开</string>
-    <string name="group_collapsed">分组 已折叠</string>
+    <string name="group_expanded">已展开 %1$s</string>
+    <string name="group_collapsed">已折叠 %1$s</string>
     <string name="systts_desc_list_count_info">共%1$d项，已启用%2$d项</string>
     <string name="systts_list_item_desc">目标%1$s，接口%2$s，属性：%3$s，格式：%4$s</string>
 
@@ -446,4 +446,15 @@
     <string name="tag_data_clear_warn">当前有数据，是否继续？</string>
     <string name="keyboard_toolbar_settings">输入法工具栏设置</string>
     <string name="keyboard_toolbar_settings_tips">插入值 = 显示名称 \n⚠️注意等号两侧要空格</string>
+    <string name="more_options_desc">更多选项：%1$s</string>
+    <string name="group_part_enabled">部分启用: %1$s</string>
+    <string name="group_all_enabled">全部启用 %1$s</string>
+    <string name="group_all_disabled">未启用：%1$s</string>
+    <string name="edit_desc">编辑：%1$s</string>
+    <string name="config_enabled_desc">已启用配置：%1$s</string>
+    <string name="config_disabled_desc">已禁用配置：%1$s</string>
+    <string name="plugin_enabled_desc">已启用插件：%1$s</string>
+    <string name="plugin_disabled_desc">已禁用插件：%1$s</string>
+    <string name="rule_enabled_desc">已启用规则：%1$s</string>
+    <string name="rule_disabled_desc">已禁用规则：%1$s</string>
 </resources>

@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TriStateCheckbox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,7 +30,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
@@ -52,34 +57,62 @@ fun GroupItem(
     onDelete: () -> Unit,
     actions: @Composable ColumnScope.(() -> Unit) -> Unit,
 ) {
+    val view = LocalView.current
+    val context = LocalContext.current
+
+    var expandedFirst by remember { mutableStateOf(true) }
+    LaunchedEffect(isExpanded) {
+        if (expandedFirst) expandedFirst = false
+        else {
+            val msg =
+                if (isExpanded) context.getString(
+                    R.string.group_expanded,
+                    name
+                ) else context.getString(R.string.group_collapsed, name)
+            view.announceForAccessibility(msg)
+        }
+    }
+
+    var checkFirst by remember { mutableStateOf(true) }
+    LaunchedEffect(toggleableState) {
+        if (checkFirst) checkFirst = false
+        else {
+            val msg = when (toggleableState) {
+                ToggleableState.On -> context.getString(R.string.group_all_enabled, name)
+                ToggleableState.Off -> context.getString(R.string.group_all_disabled, name)
+                else -> context.getString(R.string.group_part_enabled, name)
+            }
+            view.announceForAccessibility(msg)
+        }
+    }
+
     var showDeleteDialog by remember { mutableStateOf(false) }
     if (showDeleteDialog)
         ConfigDeleteDialog(
             onDismissRequest = { showDeleteDialog = false }, name = name, onConfirm = onDelete
         )
 
-
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
-            .clickable(
-                onClickLabel = stringResource(
-                    id = if (isExpanded) R.string.desc_collapse_group
-                    else R.string.desc_expand_group, name
+            .semantics(true) {
+                contentDescription = context.getString(
+                    if (isExpanded) R.string.group_expanded
+                    else R.string.group_collapsed, " "
                 )
-            ) { onClick() }
+            }
+            .clickable { onClick() }
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         val rotationAngle by animateFloatAsState(
             targetValue = if (isExpanded) 0f else -45f,
             label = ""
         )
         Icon(
             Icons.Default.ExpandCircleDown,
-            contentDescription = stringResource(id = if (isExpanded) R.string.group_expanded else R.string.group_collapsed),
+            contentDescription = null,
             modifier = Modifier
                 .rotate(rotationAngle)
                 .graphicsLayer { rotationZ = rotationAngle }
@@ -93,15 +126,27 @@ fun GroupItem(
                 .weight(1f)
         )
         Row {
-            TriStateCheckbox(state = toggleableState, onClick = {
-                onToggleableStateChange(toggleableState != ToggleableState.On)
-            })
+            TriStateCheckbox(
+                state = toggleableState,
+                onClick = {
+                    onToggleableStateChange(toggleableState != ToggleableState.On)
+                },
+                modifier = Modifier.semantics {
+                    contentDescription = context.getString(
+                        when (toggleableState) {
+                            ToggleableState.On -> R.string.group_all_enabled
+                            ToggleableState.Off -> R.string.group_all_disabled
+                            else -> R.string.group_part_enabled
+                        }, name
+                    )
+                }
+            )
 
             var showOptions by remember { mutableStateOf(false) }
             IconButton(onClick = { showOptions = true }) {
                 Icon(
                     Icons.Default.MoreVert,
-                    contentDescription = stringResource(id = R.string.more_options)
+                    contentDescription = stringResource(id = R.string.more_options_desc, name)
                 )
 
                 DropdownMenu(expanded = showOptions, onDismissRequest = { showOptions = false }) {

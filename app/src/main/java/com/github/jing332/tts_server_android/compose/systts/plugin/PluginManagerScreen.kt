@@ -1,6 +1,7 @@
 package com.github.jing332.tts_server_android.compose.systts.plugin
 
 import android.os.Bundle
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,32 +32,39 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
-import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.navigateSingleTop
+import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
+import kotlinx.coroutines.flow.conflate
 import kotlinx.serialization.encodeToString
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
+import java.util.Collections
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun PluginManagerScreen(onFinishActivity: () -> Unit) {
     var showImportConfig by remember { mutableStateOf(false) }
@@ -151,22 +159,17 @@ fun PluginManagerScreen(onFinishActivity: () -> Unit) {
             }
         )
     }) { paddingValues ->
-        val flowAll = remember { appDb.pluginDao.flowAll() }
-        val list by flowAll.collectAsState(initial = emptyList())
-
-        LaunchedEffect(Unit) {
-            appDb.pluginDao.all.forEachIndexed { index, plugin ->
-                appDb.pluginDao.update(plugin.copy(order = index))
-            }
-        }
+        val flowAll = remember { appDb.pluginDao.flowAll().conflate() }
+        val list by flowAll.collectAsStateWithLifecycle(emptyList())
 
         val reorderState = rememberReorderableLazyListState(onMove = { from, to ->
-            val fromItem = list[from.index]
-            val toItem = list[to.index]
-            appDb.pluginDao.update(
-                toItem.copy(order = fromItem.order),
-                fromItem.copy(order = toItem.order),
-            )
+            val mutList = list.toMutableList()
+            Collections.swap(mutList, from.index, to.index)
+
+            mutList.forEachIndexed { index, plugin ->
+                if (index != plugin.order)
+                    appDb.pluginDao.update(plugin.copy(order = index))
+            }
         })
 
         LazyColumn(
@@ -183,7 +186,8 @@ fun PluginManagerScreen(onFinishActivity: () -> Unit) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp, horizontal = 8.dp)
-                            .detectReorderAfterLongPress(reorderState),
+                            .detectReorderAfterLongPress(reorderState)
+                            .animateItemPlacement(),
                         hasDefVars = item.defVars.isNotEmpty(),
                         needSetVars = item.defVars.isNotEmpty() && item.userVars.isEmpty(),
                         name = item.name,
@@ -227,24 +231,43 @@ internal fun Item(
     onExport: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val context = LocalContext.current
     ElevatedCard(modifier = modifier, onClick = {
         if (hasDefVars) onSetVars()
     }) {
         Box(modifier = Modifier.padding(4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = isEnabled, onCheckedChange = onEnabledChange)
+                Checkbox(
+                    checked = isEnabled,
+                    onCheckedChange = onEnabledChange,
+                    modifier = Modifier.semantics {
+                        role = Role.Switch
+                        context
+                            .getString(
+                                if (isEnabled) R.string.plugin_enabled_desc else R.string.plugin_disabled_desc,
+                                name
+                            )
+                            .let {
+                                contentDescription = it
+                                stateDescription = it
+                            }
+                    }
+                )
                 Column(Modifier.weight(1f)) {
                     Text(text = name, style = MaterialTheme.typography.titleMedium)
                     Text(text = desc, style = MaterialTheme.typography.bodyMedium)
                 }
                 Row {
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Default.Edit, stringResource(id = R.string.edit))
+                        Icon(Icons.Default.Edit, stringResource(id = R.string.edit_desc, name))
                     }
 
                     var showOptions by remember { mutableStateOf(false) }
                     IconButton(onClick = { showOptions = true }) {
-                        Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_options))
+                        Icon(
+                            Icons.Default.MoreVert,
+                            stringResource(id = R.string.more_options_desc, name)
+                        )
                         DropdownMenu(
                             expanded = showOptions,
                             onDismissRequest = { showOptions = false }) {

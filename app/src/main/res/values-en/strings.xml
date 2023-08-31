@@ -173,8 +173,8 @@
     <string name="systts_sample_rate_different_in_enabled_list">A different format/sample rate was detected in the enabled configuration,
         This will cause abnormal pitch (thick or thin sound), please manually change to the same format/sampling rate or turn on the [Use built-in player] option in the upper right corner.</string>
 
-    <string name="group_expanded">Group expanded</string>
-    <string name="group_collapsed">Group collapsed</string>
+    <string name="group_expanded">Expanded %1$s</string>
+    <string name="group_collapsed">Collapsed %1$s</string>
     <string name="systts_desc_list_count_info">%1$d items in total, ，%2$d items enabled</string>
     <string name="systts_list_item_desc">Target %1$s，API %2$s，Property：%3$s，Format：%4$s</string>
 
@@ -452,4 +452,15 @@
     <string name="tag_data_clear_warn">Do you want to continue with the current Tag data?</string>
     <string name="keyboard_toolbar_settings">Keyboard toolbar</string>
     <string name="keyboard_toolbar_settings_tips">Insert Value = Display Name \n⚠️Note there should be a space on both sides of the equal sign.</string>
+    <string name="more_options_desc">More options: %1$s</string>
+    <string name="group_part_enabled">Part enabled: %1$s</string>
+    <string name="group_all_enabled">All enabled: %1$s</string>
+    <string name="group_all_disabled">Not enabled：%1$s</string>
+    <string name="edit_desc">编辑：%1$s</string>
+    <string name="config_enabled_desc">已启用配置：%1$s</string>
+    <string name="config_disabled_desc">未启用配置：%1$s</string>
+    <string name="plugin_enabled_desc">插件已启用：%1$s</string>
+    <string name="plugin_disabled_desc">插件未启用：%1$s</string>
+    <string name="rule_enabled_desc">规则已启用：%1$s</string>
+    <string name="rule_disabled_desc">规则已禁用：%1$s</string>
 </resources>

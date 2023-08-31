@@ -162,8 +162,8 @@
 
     <string name="systts_please_check_multi_voice_option">請先在右上角選單勾選多語音選項！</string>
     <string name="systts_sample_rate_different_in_enabled_list">檢測到已啟用配置中的格式/取樣速率不同，</string>
-    <string name="group_expanded">分組已展開</string>
-    <string name="group_collapsed">分組已收合</string>
+    <string name="group_expanded">已展開 %1$s</string>
+    <string name="group_collapsed">已收合 %1$s</string>
     <string name="systts_desc_list_count_info">共%1$d項，已啟用%2$d項</string>
     <string name="systts_list_item_desc">目標%1$s，介面%2$s，内容：%3$s，格式：%4$s</string>
 
@@ -435,4 +435,15 @@
     <string name="tag_data_clear_warn">当前有数据，是否继续？</string>
     <string name="keyboard_toolbar_settings">输入法工具栏设置</string>
     <string name="keyboard_toolbar_settings_tips">插入值 = 显示名称 \n⚠️注意等号两侧要空格</string>
+    <string name="more_options_desc">更多选项：%1$s</string>
+    <string name="group_part_enabled">部分启用: %1$s</string>
+    <string name="group_all_enabled">全部启用 %1$s</string>
+    <string name="group_all_disabled">未启用：%1$s</string>
+    <string name="edit_desc">编辑：%1$s</string>
+    <string name="config_enabled_desc">已启用配置：%1$s</string>
+    <string name="config_disabled_desc">未启用配置：%1$s</string>
+    <string name="plugin_enabled_desc">插件已启用：%1$s</string>
+    <string name="plugin_disabled_desc">插件未启用：%1$s</string>
+    <string name="rule_enabled_desc">规则已启用：%1$s</string>
+    <string name="rule_disabled_desc">规则已禁用：%1$s</string>
 </resources>

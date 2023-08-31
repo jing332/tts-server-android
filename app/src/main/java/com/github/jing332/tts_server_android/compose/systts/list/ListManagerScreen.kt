@@ -27,7 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -164,69 +163,13 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     val listState = rememberLazyListState()
     LazyListIndexStateSaver(models = models, listState = listState)
 
-    val reorderState = rememberReorderableLazyListState(listState = listState,
-        onMove = { from, to ->
-            if (from.key is String && to.key is String) {
-                val fromKey = from.key as String
-                val toKey = to.key as String
-
-                if (fromKey.startsWith("g_") && toKey.startsWith("g_")) {
-                    val list = models.map { it.group }.toMutableList()
-
-                    val srcId = fromKey.substring(2).toLong()
-                    val src =
-                        list.find { it.id == srcId } ?: return@rememberReorderableLazyListState
-
-                    val targetId = toKey.substring(2).toLong()
-                    val target =
-                        list.find { it.id == targetId } ?: return@rememberReorderableLazyListState
-
-                    val srcIndex = list.indexOfFirst { it.id == src.id }
-                    if (srcIndex == -1) return@rememberReorderableLazyListState
-                    val targetIndex = list.indexOfFirst { it.id == target.id }
-                    if (targetIndex == -1) return@rememberReorderableLazyListState
-
-                    list.removeAt(srcIndex)
-                    list.add(targetIndex, src)
-                    list.forEachIndexed { index, systemTtsGroup ->
-                        appDb.systemTtsDao.updateGroup(systemTtsGroup.copy(order = index))
-                    }
-                }
-                return@rememberReorderableLazyListState
-            }
-
-            if (from.key is Long && to.key is Long) {
-                val src = appDb.systemTtsDao.getTts(from.key as Long)
-                    ?: return@rememberReorderableLazyListState
-                val target =
-                    appDb.systemTtsDao.getTts(to.key as Long)
-                        ?: return@rememberReorderableLazyListState
-
-                appDb.systemTtsDao.updateTts(
-                    src.copy(order = target.order),
-                    target.copy(order = src.order),
-                )
-
-//                val list = appDb.systemTtsDao.getTtsListByGroupId(src.groupId).toMutableList()
-//
-//                val srcIndex = list.indexOfFirst { it.id == src.id }
-//                if (srcIndex == -1) return@rememberReorderableLazyListState
-//                val targetIndex = list.indexOfFirst { it.id == target.id }
-//                if (targetIndex == -1) return@rememberReorderableLazyListState
-//
-//                println("fromIndex; ${srcIndex}, toIndex $targetIndex")
-//
-//                println(list.joinToString { it.displayName.toString() })
-//                list.removeAt(srcIndex)
-//                list.add(targetIndex, src)
-//                println(list.joinToString { it.displayName.toString() })
-//                list.forEachIndexed { index, systemTts ->
-//                    if (index != systemTts.order)
-//                        appDb.systemTtsDao.updateTts(systemTts.copy(order = index))
-//                }
-            }
-
-        })
+    val reorderState = rememberReorderableLazyListState(
+        listState = listState, onMove = vm::reorder
+    )
+    
+    LaunchedEffect(models){
+        println("update models: ${models.size}")
+    }
 
     var addGroupDialog by remember { mutableStateOf(false) }
     if (addGroupDialog) {
@@ -405,12 +348,15 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
 
                     if (g.isExpanded) {
                         itemsIndexed(groupWithSystemTts.list.sortedBy { it.order },
-                            key = { _, v -> v.id }) { _, item ->
+                            key = { _, v -> "${g.id}_${v.id}" }) { _, item ->
                             if (g.id == 1L) println(item.displayName + ", " + item.order)
 
-                            ShadowReorderableItem(reorderableState = reorderState, key = item.id) {
+                            ShadowReorderableItem(
+                                reorderableState = reorderState,
+                                key = "${g.id}_${item.id}"
+                            ) {
                                 Item(reorderState = reorderState,
-                                    modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp),
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                     name = item.displayName ?: "",
                                     tagName = item.speechRule.tagName,
                                     type = item.tts.getType(),

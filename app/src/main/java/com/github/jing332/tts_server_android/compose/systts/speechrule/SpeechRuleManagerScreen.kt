@@ -39,7 +39,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
@@ -49,9 +55,11 @@ import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
+import kotlinx.coroutines.flow.conflate
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
+import java.util.Collections
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -136,7 +144,7 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
             }
         }
 
-        val flowAll = remember { appDb.speechRuleDao.flowAll() }
+        val flowAll = remember { appDb.speechRuleDao.flowAll().conflate() }
         val list by flowAll.collectAsState(initial = emptyList())
 
         val listState = remember { LazyListState() }
@@ -147,13 +155,12 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
 
         val reorderState =
             rememberReorderableLazyListState(listState = listState, onMove = { from, to ->
-                val fromItem = list[from.index]
-                val toItem = list[to.index]
-
-                appDb.speechRuleDao.update(
-                    toItem.copy(order = fromItem.order),
-                    fromItem.copy(order = toItem.order)
-                )
+                val mutList = list.toMutableList()
+                Collections.swap(mutList, from.index, to.index)
+                mutList.forEachIndexed { index, speechRule ->
+                    if (speechRule.order != index)
+                        appDb.speechRuleDao.update(speechRule.copy(order = index))
+                }
             })
         LazyColumn(
             modifier = Modifier
@@ -204,22 +211,41 @@ internal fun Item(
     onExport: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val context = LocalContext.current
     ElevatedCard(modifier = modifier, onClick = onClick) {
         Box(modifier = Modifier.padding(4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = isEnabled, onCheckedChange = onEnabledChange)
+                Checkbox(
+                    checked = isEnabled,
+                    onCheckedChange = onEnabledChange,
+                    modifier = Modifier.semantics {
+                        role = Role.Switch
+                        context
+                            .getString(
+                                if (isEnabled) R.string.rule_enabled_desc else R.string.rule_disabled_desc,
+                                name
+                            )
+                            .let {
+                                contentDescription = it
+                                stateDescription = it
+                            }
+                    }
+                )
                 Column(Modifier.weight(1f)) {
                     Text(text = name, style = MaterialTheme.typography.titleMedium)
                     Text(text = desc, style = MaterialTheme.typography.bodyMedium)
                 }
                 Row {
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Default.Edit, stringResource(id = R.string.edit))
+                        Icon(Icons.Default.Edit, stringResource(id = R.string.edit_desc, name))
                     }
 
                     var showOptions by remember { mutableStateOf(false) }
                     IconButton(onClick = { showOptions = true }) {
-                        Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_options))
+                        Icon(
+                            Icons.Default.MoreVert,
+                            stringResource(id = R.string.more_options_desc, name)
+                        )
                         DropdownMenu(
                             expanded = showOptions,
                             onDismissRequest = { showOptions = false }) {

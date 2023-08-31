@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
@@ -25,7 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
@@ -38,9 +43,10 @@ internal fun Item(
     onClick: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
-    isChecked: Boolean,
+    isEnabled: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
+    val context = LocalContext.current
     var deleteDialog by remember { mutableStateOf(false) }
     if (deleteDialog)
         ConfigDeleteDialog(onDismissRequest = { deleteDialog = false }, name = name) {
@@ -53,8 +59,21 @@ internal fun Item(
     ) {
         Row(modifier = modifier.fillMaxSize()) {
             Checkbox(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                checked = isChecked,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .semantics {
+                        role = Role.Switch
+                        context
+                            .getString(
+                                if (isEnabled) R.string.rule_enabled_desc else R.string.rule_disabled_desc,
+                                name
+                            )
+                            .let {
+                                contentDescription = it
+                                stateDescription = it
+                            }
+                    },
+                checked = isEnabled,
                 onCheckedChange = onCheckedChange
             )
             Text(
@@ -68,7 +87,7 @@ internal fun Item(
             )
             Row {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, stringResource(id = R.string.edit))
+                    Icon(Icons.Default.Edit, stringResource(id = R.string.edit_desc, name))
                 }
                 var isMoreOptionsVisible by remember { mutableStateOf(false) }
                 IconButton(onClick = {
@@ -76,7 +95,7 @@ internal fun Item(
                 }, modifier = Modifier.padding(end = 10.dp)) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
-                        contentDescription = stringResource(id = R.string.more_options),
+                        contentDescription = stringResource(id = R.string.more_options_desc, name),
                         tint = MaterialTheme.colorScheme.onBackground
                     )
 
