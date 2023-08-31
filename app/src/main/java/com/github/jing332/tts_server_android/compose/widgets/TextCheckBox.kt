@@ -20,15 +20,18 @@ fun TextCheckBox(
     modifier: Modifier = Modifier,
     text: @Composable RowScope.() -> Unit,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.Center,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
 ) {
     Row(
         modifier
             .height(48.dp)
             .clip(MaterialTheme.shapes.small)
             .clickableRipple(role = Role.Checkbox) { onCheckedChange(!checked) },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = verticalAlignment,
+        horizontalArrangement = horizontalArrangement,
     ) {
         Row(Modifier.padding(horizontal = 8.dp)) {
             Checkbox(checked = checked, onCheckedChange = null)

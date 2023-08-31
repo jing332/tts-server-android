@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.preference.backup_restore
+package com.github.jing332.tts_server_android.compose.backup
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

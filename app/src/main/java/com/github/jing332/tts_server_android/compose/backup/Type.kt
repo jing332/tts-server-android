@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.ui.preference.backup_restore
+package com.github.jing332.tts_server_android.compose.backup
 
 import com.github.jing332.tts_server_android.R
 
@@ -15,10 +15,10 @@ sealed class Type(val nameStrId: Int) {
         )
     }
 
-    object Preference : Type(R.string.preference_settings)
-    object List : Type(R.string.config_list)
-    object SpeechRule : Type(R.string.speech_rule)
-    object ReplaceRule : Type(R.string.replace_rule)
+    data object Preference : Type(R.string.preference_settings)
+    data object List : Type(R.string.config_list)
+    data object SpeechRule : Type(R.string.speech_rule)
+    data object ReplaceRule : Type(R.string.replace_rule)
 
     abstract class IPlugin(val id: Int, val includeVars: Boolean) : Type(id)
     object Plugin : IPlugin(R.string.plugin, false)

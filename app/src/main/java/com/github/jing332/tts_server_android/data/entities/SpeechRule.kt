@@ -17,7 +17,7 @@ import kotlinx.serialization.json.JsonElement
 @TypeConverters(SpeechRule.Converters::class, MapConverters::class)
 @Serializable
 data class SpeechRule(
-    @Transient
+//    @Transient
     @PrimaryKey(autoGenerate = true)
     val id: Long = System.currentTimeMillis(),
 

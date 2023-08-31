@@ -456,11 +456,11 @@
     <string name="group_part_enabled">Part enabled: %1$s</string>
     <string name="group_all_enabled">All enabled: %1$s</string>
     <string name="group_all_disabled">Not enabled：%1$s</string>
-    <string name="edit_desc">编辑：%1$s</string>
-    <string name="config_enabled_desc">已启用配置：%1$s</string>
-    <string name="config_disabled_desc">未启用配置：%1$s</string>
-    <string name="plugin_enabled_desc">插件已启用：%1$s</string>
-    <string name="plugin_disabled_desc">插件未启用：%1$s</string>
-    <string name="rule_enabled_desc">规则已启用：%1$s</string>
-    <string name="rule_disabled_desc">规则已禁用：%1$s</string>
+    <string name="edit_desc">Edit：%1$s</string>
+    <string name="config_enabled_desc">Enabled：%1$s</string>
+    <string name="config_disabled_desc">Enabled：%1$s</string>
+    <string name="plugin_enabled_desc">Plugin enabled：%1$s</string>
+    <string name="plugin_disabled_desc">Plugin disabled：%1$s</string>
+    <string name="rule_enabled_desc">Rule enabled：%1$s</string>
+    <string name="rule_disabled_desc">Rule disabled：%1$s</string>
 </resources>

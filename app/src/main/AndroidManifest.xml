@@ -48,7 +48,7 @@
             android:name=".ui.AppHelpDocumentActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.preference.backup_restore.BackupRestoreActivity"
+            android:name=".compose.backup.BackupRestoreActivity"
             android:exported="true"
             android:label="@string/backup_restore">
             <intent-filter>

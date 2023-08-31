@@ -44,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
+import com.github.jing332.tts_server_android.compose.backup.BackupRestoreActivity
 import com.github.jing332.tts_server_android.compose.systts.directlink.LinkUploadRuleActivity
 import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.theme.getAppTheme
@@ -51,7 +52,6 @@ import com.github.jing332.tts_server_android.compose.theme.setAppTheme
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
 import com.github.jing332.tts_server_android.constant.FilePickerMode
-import com.github.jing332.tts_server_android.ui.preference.backup_restore.BackupRestoreActivity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
