@@ -71,11 +71,7 @@ internal fun SearchTextField(
             ),
             shape = MaterialTheme.shapes.extraLarge,
             placeholder = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(stringResource(id = R.string.search_filter))
-                    HorizontalDivider(Modifier.width(4.dp).padding(horizontal = 2.dp), thickness = 1.dp)
-                    Text(stringResource(id = searchType.strId), fontStyle = FontStyle.Italic)
-                }
+                Text(stringResource(id = searchType.strId), maxLines = 1)
             },
             singleLine = true,
             leadingIcon = {

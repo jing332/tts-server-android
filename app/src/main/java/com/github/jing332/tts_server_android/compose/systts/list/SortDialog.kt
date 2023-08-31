@@ -16,6 +16,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 internal enum class SortFields(@StringRes val strResId: Int) {
     NAME(R.string.name),
     TAG_NAME(R.string.tag),
+    TYPE(R.string.type),
     ENABLE(R.string.enabled),
     ID(R.string.created_time_id)
 }
@@ -34,6 +35,7 @@ internal fun SortDialog(onDismissRequest: () -> Unit, list: List<SystemTts>) {
                 val sortedList = when (SortFields.values()[index]) {
                     SortFields.NAME -> list.sortedBy { it.displayName }
                     SortFields.TAG_NAME -> list.sortedBy { it.speechRule.tagName }
+                    SortFields.TYPE -> list.sortedBy { it.tts.getType() }
                     SortFields.ENABLE -> list.sortedBy { it.isEnabled }
                     SortFields.ID -> list.sortedBy { it.id }
                 }.run {

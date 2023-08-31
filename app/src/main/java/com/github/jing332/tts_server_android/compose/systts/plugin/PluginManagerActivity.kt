@@ -39,7 +39,7 @@ class PluginManagerActivity : AppCompatActivity() {
                         if (jsCode.isNotBlank()) {
                             navController.navigate(NavRoutes.PluginEdit.id, argsBuilder = {
                                 putParcelable(
-                                    NavRoutes.PluginEdit.KEY_DATA, SpeechRule(code = jsCode)
+                                    NavRoutes.PluginEdit.KEY_DATA, Plugin(code = jsCode)
                                 )
                             })
                         }

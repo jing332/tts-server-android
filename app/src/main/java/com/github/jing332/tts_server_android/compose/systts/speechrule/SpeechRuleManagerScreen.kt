@@ -106,13 +106,19 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
                             onDismissRequest = { showOptions = false }) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(id = R.string.import_config)) },
-                                onClick = { showImportSheet = true },
+                                onClick = {
+                                    showOptions = false
+                                    showImportSheet = true
+                                },
                                 leadingIcon = { Icon(Icons.Default.Input, null) }
                             )
 
                             DropdownMenuItem(
                                 text = { Text(text = stringResource(id = R.string.export_config)) },
-                                onClick = { showExportSheet = appDb.speechRuleDao.allEnabled },
+                                onClick = {
+                                    showOptions = false
+                                    showExportSheet = appDb.speechRuleDao.allEnabled
+                                },
                                 leadingIcon = {
                                     Icon(Icons.Default.Output, null)
                                 }

@@ -89,7 +89,10 @@ internal fun SpeechRuleEditScreen(
                 context.displayErrorDialog(it)
             }
         },
-        onUpdate = { codeEditor = it }
+        onUpdate = { codeEditor = it },
+        onSaveFile = {
+            "ttsrv-speechRule-${vm.speechRule.name}.js" to codeEditor!!.text.toString().toByteArray()
+        }
     ) { dismiss ->
         DropdownMenuItem(
             text = { Text(stringResource(id = R.string.set_sample_text_param)) },

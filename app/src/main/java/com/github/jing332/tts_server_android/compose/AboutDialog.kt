@@ -1,7 +1,6 @@
 package com.github.jing332.tts_server_android.compose
 
 import android.content.Intent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,10 +15,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextAlign.Companion
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.github.jing332.tts_server_android.BuildConfig
@@ -53,10 +54,10 @@ fun AboutDialog(onDismissRequest: () -> Unit) {
                 )
             }
 
-            Column {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 SelectionContainer {
-                    Column {
-                        Text("APP - ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})")
+                    Column(Modifier.padding(vertical = 4.dp)) {
+                        Text("${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})")
                     }
                 }
                 HorizontalDivider(Modifier.padding(vertical = 8.dp))
@@ -65,11 +66,13 @@ fun AboutDialog(onDismissRequest: () -> Unit) {
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
+                        .clip(MaterialTheme.shapes.small)
                         .clickable {
                             openUrl("https://github.com/jing332/tts-server-android")
                         }
                         .padding(vertical = 8.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
             }
         },

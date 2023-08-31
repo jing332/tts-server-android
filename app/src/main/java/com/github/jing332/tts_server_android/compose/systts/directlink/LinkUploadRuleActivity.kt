@@ -100,7 +100,6 @@ class LinkUploadRuleActivity : AppCompatActivity() {
             onDebug = {
                 targets = obtainFunctionList()
             },
-
             debugIconContent = {
                 DropdownMenu(expanded = targets != null, onDismissRequest = { targets = null }) {
                     targets?.forEach {
@@ -110,6 +109,9 @@ class LinkUploadRuleActivity : AppCompatActivity() {
                         })
                     }
                 }
+            },
+            onSaveFile = {
+                "ttsrv-directLink.js" to editor!!.text.toString().toByteArray()
             }
         )
     }

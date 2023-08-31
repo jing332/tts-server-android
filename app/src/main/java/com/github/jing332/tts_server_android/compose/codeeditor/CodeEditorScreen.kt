@@ -60,7 +60,7 @@ fun CodeEditorScreen(
     onBack: () -> Unit,
     onSave: () -> Unit,
     onUpdate: (CodeEditor) -> Unit,
-    onSaveFile: (() -> Pair<String, ByteArray>)? = null,
+    onSaveFile: (() -> Pair<String, ByteArray>)? ,
 
     onDebug: () -> Unit,
     onRemoteAction: (name: String, body: ByteArray?) -> Unit = { _, _ -> },

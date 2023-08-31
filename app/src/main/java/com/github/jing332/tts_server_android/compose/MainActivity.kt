@@ -306,8 +306,8 @@ fun NavDrawerContent(
                 AppLauncherIcon(Modifier.size(64.dp))
                 Column(
                     modifier = Modifier
+                        .padding(start = 8.dp)
                         .align(Alignment.CenterVertically)
-
                 ) {
                     Text(
                         text = stringResource(id = R.string.app_name),

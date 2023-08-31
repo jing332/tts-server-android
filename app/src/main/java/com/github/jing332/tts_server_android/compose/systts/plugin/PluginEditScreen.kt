@@ -125,7 +125,10 @@ internal fun PluginEditScreen(
                 }
             }
         },
-        onUpdate = { codeEditor = it }
+        onUpdate = { codeEditor = it },
+        onSaveFile = {
+            "ttsrv-plugin-${vm.plugin.name}.js" to codeEditor!!.text.toString().toByteArray()
+        }
     ) { dismiss ->
         DropdownMenuItem(
             text = { Text(stringResource(id = R.string.plugin_preview_ui)) },
