@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.nav
+package com.github.jing332.tts_server_android.compose.systts
 
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility

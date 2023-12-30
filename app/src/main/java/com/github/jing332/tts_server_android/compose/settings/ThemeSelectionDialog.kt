@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.nav.settings
+package com.github.jing332.tts_server_android.compose.settings
 
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility

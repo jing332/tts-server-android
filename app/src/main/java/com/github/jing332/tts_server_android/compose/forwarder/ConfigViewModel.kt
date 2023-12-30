@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.nav.forwarder
+package com.github.jing332.tts_server_android.compose.forwarder
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.mutableStateListOf

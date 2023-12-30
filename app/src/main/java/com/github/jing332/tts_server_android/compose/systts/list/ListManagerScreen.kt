@@ -47,8 +47,8 @@ import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
 import com.github.jing332.tts_server_android.compose.navigate
 import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.systts.list.edit.QuickEditBottomSheet
-import com.github.jing332.tts_server_android.compose.systts.nav.NavRoutes
-import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.nav.NavRoutes
+import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.systts.sizeToToggleableState
 import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog

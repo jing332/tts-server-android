@@ -78,11 +78,11 @@ import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.ShortCuts
 import com.github.jing332.tts_server_android.compose.systts.list.edit.TtsEditContainerScreen
-import com.github.jing332.tts_server_android.compose.systts.nav.NavRoutes
-import com.github.jing332.tts_server_android.compose.systts.nav.forwarder.ms.MsTtsForwarderScreen
-import com.github.jing332.tts_server_android.compose.systts.nav.forwarder.systts.SystemTtsForwarderScreen
-import com.github.jing332.tts_server_android.compose.systts.nav.settings.SettingsScreen
-import com.github.jing332.tts_server_android.compose.systts.nav.systts.SystemTtsScreen
+import com.github.jing332.tts_server_android.compose.nav.NavRoutes
+import com.github.jing332.tts_server_android.compose.forwarder.ms.MsTtsForwarderScreen
+import com.github.jing332.tts_server_android.compose.forwarder.systts.SystemTtsForwarderScreen
+import com.github.jing332.tts_server_android.compose.settings.SettingsScreen
+import com.github.jing332.tts_server_android.compose.systts.SystemTtsScreen
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.compose.widgets.AppLauncherIcon
 import com.github.jing332.tts_server_android.conf.AppConfig

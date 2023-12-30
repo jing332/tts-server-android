@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.nav.forwarder
+package com.github.jing332.tts_server_android.compose.forwarder
 
 import android.content.Intent
 import android.webkit.CookieManager
@@ -26,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.systts.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
 import com.github.jing332.tts_server_android.utils.toast
 

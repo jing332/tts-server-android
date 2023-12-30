@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.nav.systts
+package com.github.jing332.tts_server_android.compose.systts
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel

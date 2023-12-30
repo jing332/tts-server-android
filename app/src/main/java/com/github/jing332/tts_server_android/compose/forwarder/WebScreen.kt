@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.nav.forwarder
+package com.github.jing332.tts_server_android.compose.forwarder
 
 import android.annotation.SuppressLint
 import android.content.Intent

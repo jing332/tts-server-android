@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.systts.nav.settings.BasePreferenceWidget
+import com.github.jing332.tts_server_android.compose.settings.BasePreferenceWidget
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.utils.FileUtils.readBytes
 

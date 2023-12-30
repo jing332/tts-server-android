@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.nav.forwarder.systts
+package com.github.jing332.tts_server_android.compose.forwarder.systts
 
 import android.content.Intent
 import android.content.IntentFilter
@@ -14,10 +14,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.systts.nav.forwarder.BasicConfigScreen
-import com.github.jing332.tts_server_android.compose.systts.nav.forwarder.BasicForwarderScreen
-import com.github.jing332.tts_server_android.compose.systts.nav.forwarder.ConfigViewModel
-import com.github.jing332.tts_server_android.compose.systts.nav.forwarder.ForwarderTopAppBar
+import com.github.jing332.tts_server_android.compose.forwarder.BasicConfigScreen
+import com.github.jing332.tts_server_android.compose.forwarder.BasicForwarderScreen
+import com.github.jing332.tts_server_android.compose.forwarder.ConfigViewModel
+import com.github.jing332.tts_server_android.compose.forwarder.ForwarderTopAppBar
 import com.github.jing332.tts_server_android.conf.SysttsForwarderConfig
 import com.github.jing332.tts_server_android.service.forwarder.ForwarderServiceManager.switchSysTtsForwarder
 import com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService

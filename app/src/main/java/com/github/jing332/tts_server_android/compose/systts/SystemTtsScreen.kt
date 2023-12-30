@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.nav.systts
+package com.github.jing332.tts_server_android.compose.systts
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +8,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.TextSnippet
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -17,13 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.systts.list.ListManagerScreen
 import kotlinx.coroutines.launch
 
