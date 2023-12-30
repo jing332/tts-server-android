@@ -213,7 +213,7 @@ dependencies {
     // IO & NET
     implementation 'com.squareup.okio:okio:3.3.0'
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-    implementation 'com.github.liangjingkanji:Net:3.5.8'
+    implementation 'com.github.liangjingkanji:Net:3.6.4'
 
     implementation 'me.rosuh:AndroidFilePicker:0.8.3'
     implementation 'com.louiscad.splitties:splitties-systemservices:3.0.0'
