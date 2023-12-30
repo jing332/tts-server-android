@@ -110,9 +110,6 @@ class DecoderAudioSink(private val onPcmBuffer: (ByteBuffer) -> Unit) : AudioSin
 
     }
 
-    override fun experimentalFlushWithoutAudioTrackRelease() {
-
-    }
 
     override fun reset() {
 

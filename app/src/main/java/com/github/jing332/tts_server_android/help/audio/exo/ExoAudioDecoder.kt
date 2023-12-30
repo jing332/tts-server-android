@@ -31,9 +31,8 @@ class ExoAudioDecoder(val context: Context) {
             override fun buildAudioSink(
                 context: Context,
                 enableFloatOutput: Boolean,
-                enableAudioTrackPlaybackParams: Boolean,
-                enableOffload: Boolean
-            ): AudioSink {
+                enableAudioTrackPlaybackParams: Boolean
+            ): AudioSink? {
                 return DecoderAudioSink { callback?.onReadPcmAudio(it) }
             }
         }
