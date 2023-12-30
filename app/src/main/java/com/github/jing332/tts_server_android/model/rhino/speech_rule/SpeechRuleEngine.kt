@@ -6,7 +6,6 @@ import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.TagsDataMap
 import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngine
-import com.github.jing332.tts_server_android.model.rhino.core.BaseScriptEngineContext
 import com.github.jing332.tts_server_android.model.rhino.core.Logger
 
 class SpeechRuleEngine(
@@ -22,6 +21,19 @@ class SpeechRuleEngine(
         const val FUNC_GET_TAG_NAME = "getTagName"
         const val FUNC_HANDLE_TEXT = "handleText"
         const val FUNC_SPLIT_TEXT = "splitText"
+
+        fun getTagName(context: Context, speechRule: SpeechRule, info: SpeechRuleInfo): String {
+            val engine = SpeechRuleEngine(context, speechRule)
+            engine.eval()
+
+            val tagName = try {
+                engine.getTagName(info.tag, info.tagData)
+            } catch (_: NoSuchMethodException) {
+                speechRule.tags[info.tag] ?: ""
+            }
+
+            return tagName
+        }
     }
 
     private val objJS

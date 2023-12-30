@@ -90,12 +90,8 @@ fun BasicInfoEditScreen(
         var tagName = ""
         if (speechRule != null) {
             runCatching {
-                val engine = SpeechRuleEngine(context, speechRule!!)
-                engine.eval()
-                try {
-                    tagName = engine.getTagName(systts.speechRule.tag, systts.speechRule.tagData)
-                } catch (_: NoSuchMethodException) {
-                }
+                tagName =
+                    SpeechRuleEngine.getTagName(context, speechRule!!, info = systts.speechRule)
             }.onFailure {
                 context.displayErrorDialog(it, "获取标签名失败")
             }
@@ -225,34 +221,20 @@ fun BasicInfoEditScreen(
 
                 var showTagClearDialog by remember { mutableStateOf(false) }
                 if (showTagClearDialog) {
-                    AppDialog(
-                        title = { Text(stringResource(id = R.string.tag_data_clear_warn)) },
-                        content = {
-                            Text(systts.speechRule.tagData.toString())
-                        },
-                        buttons = {
-                            TextButton(onClick = { showTagClearDialog = false }) {
-                                Text(stringResource(id = R.string.cancel))
-                            }
-                            TextButton(onClick = {
-                                onSysttsChange(
-                                    systts.copy(
-                                        speechRule = systts.speechRule.copy(
-                                            tagName = "",
-                                            target = SpeechTarget.ALL
-                                        ).apply { resetTag() }
-                                    )
+                    TagDataClearConfirmDialog(
+                        systts.speechRule.tagData.toString(),
+                        onDismissRequest = { showTagClearDialog = false },
+                        onConfirm = {
+                            onSysttsChange(
+                                systts.copy(
+                                    speechRule = systts.speechRule.copy(
+                                        tagName = "",
+                                        target = SpeechTarget.ALL
+                                    ).apply { resetTag() }
                                 )
-                                showTagClearDialog = false
-                            }) {
-                                Text(
-                                    stringResource(id = R.string.delete),
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        },
-                        onDismissRequest = { showTagClearDialog = false }
-                    )
+                            )
+                            showTagClearDialog = false
+                        })
                 }
                 Column(
                     modifier = Modifier
@@ -307,34 +289,38 @@ fun BasicInfoEditScreen(
                             style = MaterialTheme.typography.bodyLarge
                         )
                         HorizontalDivider()
-                        DropdownMenuItem(text = { Text(stringResource(id = R.string.copy)) }, onClick = {
-                            showTagOptions = false
-                            val info = systts.speechRule
-                            val jStr = AppConst.jsonBuilder.encodeToString(info)
-                            ClipboardUtils.copyText(jStr)
-                            context.toast(R.string.copied)
-                        })
-                        DropdownMenuItem(text = { Text(stringResource(id = R.string.paste)) }, onClick = {
-                            showTagOptions = false
-                            val jStr = ClipboardUtils.text.toString()
-                            if (jStr.isBlank()) {
-                                context.toast(R.string.format_error)
-                                return@DropdownMenuItem
-                            }
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.copy)) },
+                            onClick = {
+                                showTagOptions = false
+                                val info = systts.speechRule
+                                val jStr = AppConst.jsonBuilder.encodeToString(info)
+                                ClipboardUtils.copyText(jStr)
+                                context.toast(R.string.copied)
+                            })
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.paste)) },
+                            onClick = {
+                                showTagOptions = false
+                                val jStr = ClipboardUtils.text.toString()
+                                if (jStr.isBlank()) {
+                                    context.toast(R.string.format_error)
+                                    return@DropdownMenuItem
+                                }
 
-                            runCatching {
-                                val info =
-                                    AppConst.jsonBuilder.decodeFromString<SpeechRuleInfo>(jStr)
-                                onSysttsChange(systts.copy(speechRule = info))
-                            }.onSuccess {
-                                context.longToast(R.string.save_success)
-                            }.onFailure {
-                                context.displayErrorDialog(
-                                    it,
-                                    context.getString(R.string.format_error)
-                                )
-                            }
-                        })
+                                runCatching {
+                                    val info =
+                                        AppConst.jsonBuilder.decodeFromString<SpeechRuleInfo>(jStr)
+                                    onSysttsChange(systts.copy(speechRule = info))
+                                }.onSuccess {
+                                    context.longToast(R.string.save_success)
+                                }.onFailure {
+                                    context.displayErrorDialog(
+                                        it,
+                                        context.getString(R.string.format_error)
+                                    )
+                                }
+                            })
                     }
                 }
 

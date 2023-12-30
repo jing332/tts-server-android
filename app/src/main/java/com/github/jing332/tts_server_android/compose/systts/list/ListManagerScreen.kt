@@ -44,11 +44,12 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalDrawerState
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
+import com.github.jing332.tts_server_android.compose.nav.NavRoutes
+import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.navigate
 import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.compose.systts.list.edit.QuickEditBottomSheet
-import com.github.jing332.tts_server_android.compose.nav.NavRoutes
-import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.systts.list.edit.TagDataClearConfirmDialog
 import com.github.jing332.tts_server_android.compose.systts.sizeToToggleableState
 import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
@@ -57,11 +58,13 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
+import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
 import com.github.jing332.tts_server_android.model.speech.tts.BgmTTS
 import com.github.jing332.tts_server_android.model.speech.tts.LocalTTS
 import com.github.jing332.tts_server_android.model.speech.tts.MsTTS
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -102,6 +105,22 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     // 长按Item拖拽提示
     var hasShownTip by rememberSaveable { mutableStateOf(false) }
 
+    var showTagClearDialog by remember { mutableStateOf<SystemTts?>(null) }
+    if (showTagClearDialog != null) {
+        val systts = showTagClearDialog!!
+        TagDataClearConfirmDialog(
+            tagData = systts.speechRule.tagData.toString(),
+            onDismissRequest = { showTagClearDialog = null },
+            onConfirm = {
+                systts.speechRule.target = SpeechTarget.ALL
+                systts.speechRule.resetTag()
+                appDb.systemTtsDao.updateTts(systts)
+                if (systts.isEnabled) SystemTtsService.notifyUpdateConfig()
+                showTagClearDialog = null
+            }
+        )
+    }
+
     fun switchSpeechTarget(systts: SystemTts) {
         if (!hasShownTip) {
             hasShownTip = true
@@ -113,18 +132,32 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
 
         if (model.speechRule.target == SpeechTarget.CUSTOM_TAG) appDb.speechRuleDao.getByRuleId(
             model.speechRule.tagRuleId
-        )
-            ?.let {
-                val keys = it.tags.keys.toList()
-                val idx = keys.indexOf(model.speechRule.tag)
+        )?.let { speechRule ->
+            val keys = speechRule.tags.keys.toList()
+            val idx = keys.indexOf(model.speechRule.tag)
 
-                val newTag = keys.getOrNull(idx + 1)
-                if (newTag == null) {
+            val nextIndex = (idx + 1)
+            val newTag = keys.getOrNull(nextIndex)
+            if (newTag == null) {
+                if (model.speechRule.isTagDataEmpty()) {
                     model.speechRule.target = SpeechTarget.ALL
+                    model.speechRule.resetTag()
                 } else {
-                    model.speechRule.tag = newTag
+                    showTagClearDialog = model
+                    return
                 }
+            } else {
+                model.speechRule.tag = newTag
+                runCatching {
+                    model.speechRule.tagName =
+                        SpeechRuleEngine.getTagName(context, speechRule, info = model.speechRule)
+                }.onFailure {
+                    model.speechRule.tagName = ""
+                    context.displayErrorDialog(it)
+                }
+
             }
+        }
         else {
             appDb.speechRuleDao.getByRuleId(model.speechRule.tagRuleId)?.let {
                 model.speechRule.target = SpeechTarget.CUSTOM_TAG
@@ -166,8 +199,8 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     val reorderState = rememberReorderableLazyListState(
         listState = listState, onMove = vm::reorder
     )
-    
-    LaunchedEffect(models){
+
+    LaunchedEffect(models) {
         println("update models: ${models.size}")
     }
 
