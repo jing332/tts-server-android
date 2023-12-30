@@ -21,14 +21,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.github.jing332.tts_server_android.utils.performLongPress
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LongClickIconButton(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
+    onLongClickLabel: String? = null,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
@@ -36,6 +40,8 @@ fun LongClickIconButton(
     content: @Composable () -> Unit
 ) {
     val stateLayerSize = 40.0.dp
+    val context = LocalContext.current
+    val view = LocalView.current
     Box(
         modifier = modifier
             .minimumInteractiveComponentSize()
@@ -44,7 +50,11 @@ fun LongClickIconButton(
             .background(color = colors.mContainerColor(enabled).value)
             .combinedClickable(
                 onClick = onClick,
-                onLongClick = onLongClick,
+                onLongClick = {
+                    onLongClick()
+                    view.performLongPress()
+                },
+                onLongClickLabel = onLongClickLabel,
                 enabled = enabled,
                 role = Role.Button,
                 interactionSource = interactionSource,

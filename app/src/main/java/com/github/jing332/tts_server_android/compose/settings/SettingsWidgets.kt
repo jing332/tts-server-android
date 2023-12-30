@@ -171,6 +171,7 @@ internal fun SliderPreference(
 
     PreferenceDialog(title = title, subTitle = subTitle, dialogContent = {
         LabelSlider(
+            modifier = Modifier.padding(vertical = 16.dp),
             value = value,
             onValueChange = onValueChange,
             valueRange = valueRange,

@@ -7,20 +7,45 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FileOpen
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.theme.AppTheme
+import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.help.ByteArrayBinder
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.FileUtils
 import com.github.jing332.tts_server_android.utils.FileUtils.mimeType
+import com.github.jing332.tts_server_android.utils.clickableRipple
 import com.github.jing332.tts_server_android.utils.getBinder
 import com.github.jing332.tts_server_android.utils.grantReadWritePermission
 import com.github.jing332.tts_server_android.utils.toast
@@ -153,27 +178,59 @@ class FilePickerActivity : AppCompatActivity() {
                 }
         }
 
+        var showPromptDialog by mutableStateOf(false)
+        setContent {
+            AppTheme {
+                @Composable
+                fun Item(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
+                    Row(
+                        modifier
+                            .fillMaxWidth()
+                            .clip(MaterialTheme.shapes.medium)
+                            .clickableRipple { onClick() }) {
+                        Text(
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                .minimumInteractiveComponentSize()
+                                .align(Alignment.CenterVertically),
+                            text = text
+                        )
+                    }
+                }
+
+                AppDialog(
+                    onDismissRequest = {
+                        showPromptDialog = false
+                        finish()
+                    },
+                    title = {
+                        Row(verticalAlignment = Alignment.CenterVertically){
+                            Icon(Icons.Default.FileOpen, null )
+                            Text(stringResource(id = R.string.file_picker))
+                        }
+                    },
+                    content = {
+                        Column {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Item(text = stringResource(id = R.string.file_picker_mode_system)) {
+                                showPromptDialog = false
+                                useSystem = true
+                                doAction()
+                            }
+                            Item(text = stringResource(id = R.string.file_picker_mode_builtin)) {
+                                showPromptDialog = false
+                                useSystem = false
+                                doAction()
+                            }
+                        }
+                    }
+                )
+            }
+        }
+
         when (AppConfig.filePickerMode.value) {
             FilePickerMode.PROMPT -> {
-                MaterialAlertDialogBuilder(this)
-                    .setIcon(R.drawable.ic_baseline_file_open_24)
-                    .setTitle(R.string.file_picker)
-                    .setItems(
-                        arrayOf(
-                            getString(R.string.file_picker_mode_system),
-                            getString(R.string.file_picker_mode_builtin)
-                        )
-                    ) { _, which ->
-                        useSystem = which == 0
-                        doAction()
-                    }
-                    .setPositiveButton(R.string.cancel) { _, _ ->
-                        finish()
-                    }
-                    .setOnCancelListener {
-                        finish()
-                    }
-                    .show()
+                showPromptDialog = true
             }
 
             FilePickerMode.SYSTEM -> {

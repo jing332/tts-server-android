@@ -12,13 +12,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCard
 import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.Javascript
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PhoneAndroid
-import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,13 +48,16 @@ import com.github.jing332.tts_server_android.compose.nav.NavRoutes
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
 import com.github.jing332.tts_server_android.compose.navigate
 import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
+import com.github.jing332.tts_server_android.compose.systts.ConfigExportBottomSheet
 import com.github.jing332.tts_server_android.compose.systts.list.edit.QuickEditBottomSheet
 import com.github.jing332.tts_server_android.compose.systts.list.edit.TagDataClearConfirmDialog
 import com.github.jing332.tts_server_android.compose.systts.sizeToToggleableState
 import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.AbstractListGroup
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
@@ -67,6 +70,7 @@ import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.longToast
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
@@ -216,10 +220,16 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
         }
     }
 
-    var showExportSheet by remember { mutableStateOf<List<GroupWithSystemTts>?>(null) }
+    var showGroupExportSheet by remember { mutableStateOf<List<GroupWithSystemTts>?>(null) }
+    if (showGroupExportSheet != null) {
+        val list = showGroupExportSheet!!
+        ListExportBottomSheet(onDismissRequest = { showGroupExportSheet = null }, list = list)
+    }
+
+    var showExportSheet by remember { mutableStateOf<List<SystemTts>?>(null) }
     if (showExportSheet != null) {
-        val list = showExportSheet!!
-        ListExportBottomSheet(onDismissRequest = { showExportSheet = null }, list = list)
+        val jStr = remember { AppConst.jsonBuilder.encodeToString(showExportSheet!!) }
+        ConfigExportBottomSheet(json = jStr) { showExportSheet = null }
     }
 
     var addPluginDialog by remember { mutableStateOf(false) }
@@ -263,7 +273,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                         }
 
                         MenuItem(
-                            icon = { Icon(Icons.Default.PlaylistAdd, null) },
+                            icon = { Icon(Icons.AutoMirrored.Default.PlaylistAdd, null) },
                             title = R.string.systts_add_internal_tts
                         ) {
                             navigateToEdit(SystemTts(tts = MsTTS()))
@@ -311,7 +321,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                     MenuMoreOptions(
                         expanded = showOptions,
                         onDismissRequest = { showOptions = false },
-                        onExportAll = { showExportSheet = models },
+                        onExportAll = { showGroupExportSheet = models },
                     )
                 }
             })
@@ -370,7 +380,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                     groupAudioParamsDialog = g
                                 },
                                 onExport = {
-                                    showExportSheet = listOf(groupWithSystemTts)
+                                    showGroupExportSheet = listOf(groupWithSystemTts)
                                 },
                                 onSort = {
                                     showSortDialog = groupWithSystemTts.list
@@ -415,7 +425,9 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                             }
                                         )
                                     },
-                                    onAudition = { showAuditionDialog = item })
+                                    onAudition = { showAuditionDialog = item },
+                                    onExport = { showExportSheet = listOf(item.copy(groupId = AbstractListGroup.DEFAULT_GROUP_ID)) }
+                                )
                             }
                         }
                     }

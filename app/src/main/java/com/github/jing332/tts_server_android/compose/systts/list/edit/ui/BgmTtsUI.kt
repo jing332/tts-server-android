@@ -81,9 +81,13 @@ class BgmTtsUI : TtsUI() {
 
         val volStr = if (tts.volume == 0) stringResource(id = R.string.follow)
         else stringResource(id = R.string.label_speech_volume, tts.volume.toString())
-        IntSlider(label = volStr, value = tts.volume.toFloat(), onValueChange = {
-            onSysttsChange(systts.copy(tts = tts.copy(volume = it.toInt())))
-        }, valueRange = 0f..1000f)
+        IntSlider(
+            modifier = Modifier.padding(top = 8.dp),
+            label = volStr, value = tts.volume.toFloat(),
+            onValueChange = {
+                onSysttsChange(systts.copy(tts = tts.copy(volume = it.toInt())))
+            }, valueRange = 0f..1000f
+        )
     }
 
     @Composable

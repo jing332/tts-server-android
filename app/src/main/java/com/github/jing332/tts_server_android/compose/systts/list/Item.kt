@@ -2,6 +2,7 @@ package com.github.jing332.tts_server_android.compose.systts.list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -14,6 +15,8 @@ import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Output
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -47,8 +50,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.widgets.HtmlText
+import com.github.jing332.tts_server_android.compose.widgets.LongClickIconButton
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.utils.StringUtils.limitLength
+import com.github.jing332.tts_server_android.utils.clickableRipple
 import com.github.jing332.tts_server_android.utils.performLongPress
 import org.burnoutcrew.reorderable.ReorderableLazyListState
 import org.burnoutcrew.reorderable.detectReorder
@@ -75,6 +80,7 @@ internal fun Item(
     onDelete: () -> Unit,
     onEdit: () -> Unit,
     onAudition: () -> Unit,
+    onExport: () -> Unit,
 ) {
     val view = LocalView.current
     val context = LocalContext.current
@@ -201,9 +207,11 @@ internal fun Item(
                 }
 
                 var showOptions by remember { mutableStateOf(false) }
-                IconButton(
-                    modifier = Modifier,
-                    onClick = { showOptions = true }) {
+                LongClickIconButton(
+                    onClick = { showOptions = true },
+                    onLongClick = { if (swapButton) onEdit() else onAudition() },
+                    onLongClickLabel = stringResource(id = if (swapButton) R.string.edit else R.string.audition)
+                ) {
                     Icon(
                         Icons.Default.MoreVert,
                         stringResource(id = R.string.more_options_desc, name)
@@ -216,6 +224,7 @@ internal fun Item(
                         DropdownMenuItem(
                             text = { Text(stringResource(id = if (swapButton) R.string.edit else R.string.audition)) },
                             onClick = {
+                                showOptions = false
                                 if (swapButton)
                                     onEdit()
                                 else
@@ -231,15 +240,31 @@ internal fun Item(
 
                         DropdownMenuItem(
                             text = { Text(stringResource(id = R.string.copy)) },
-                            onClick = onCopy,
+                            onClick = {
+                                showOptions = false
+                                onCopy()
+                            },
                             leadingIcon = {
                                 Icon(Icons.Default.CopyAll, null)
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.export_config)) },
+                            onClick = {
+                                showOptions = false
+                                onExport()
+                            },
+                            leadingIcon = {
+                                Icon(Icons.Default.Output, null)
                             }
                         )
                         HorizontalDivider()
                         DropdownMenuItem(
                             text = { Text(stringResource(id = R.string.delete)) },
-                            onClick = onDelete,
+                            onClick = {
+                                showOptions = false
+                                onDelete()
+                            },
                             leadingIcon = {
                                 Icon(
                                     Icons.Default.DeleteForever,
