@@ -5,14 +5,16 @@ import com.github.jing332.tts_server_android.R
 
 sealed class Type(val nameStrId: Int) {
     companion object {
-        val typeList = listOf(
-            Preference,
-            List,
-            SpeechRule,
-            ReplaceRule,
-            Plugin,
-            PluginVars
-        )
+        val typeList by lazy {
+            listOf(
+                Preference,
+                List,
+                SpeechRule,
+                ReplaceRule,
+                Plugin,
+                PluginVars
+            )
+        }
     }
 
     data object Preference : Type(R.string.preference_settings)

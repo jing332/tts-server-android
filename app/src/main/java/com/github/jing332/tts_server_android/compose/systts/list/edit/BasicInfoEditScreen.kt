@@ -229,8 +229,10 @@ fun BasicInfoEditScreen(
                             TextButton(onClick = {
                                 onSysttsChange(
                                     systts.copy(
-                                        speechRule = systts.speechRule.copy(target = SpeechTarget.ALL)
-                                            .apply { resetTag() }
+                                        speechRule = systts.speechRule.copy(
+                                            tagName = "",
+                                            target = SpeechTarget.ALL
+                                        ).apply { resetTag() }
                                     )
                                 )
                                 showTagClearDialog = false
@@ -259,19 +261,21 @@ fun BasicInfoEditScreen(
                         stringResource(id = R.string.ra_all),
                         stringResource(id = R.string.tag)
                     ),
-                    onButtonClick = {
-                        if (it == 1)
+                    onButtonClick = { index ->
+                        if (index == 1)
                             onSysttsChange(
                                 systts.copy(
                                     speechRule = systts.speechRule.copy(target = SpeechTarget.CUSTOM_TAG)
                                 )
                             )
-                        else {
-                            if (systts.speechRule.tagData.filterValues { it.isNotEmpty() }
-                                    .isEmpty())
+                        else { // 朗读全部
+                            if (systts.speechRule.isTagDataEmpty())
                                 onSysttsChange(
                                     systts.copy(
-                                        speechRule = systts.speechRule.copy(target = SpeechTarget.ALL)
+                                        speechRule = systts.speechRule.copy(
+                                            tagName = "",
+                                            target = SpeechTarget.ALL
+                                        ).apply { resetTag() }
                                     )
                                 )
                             else

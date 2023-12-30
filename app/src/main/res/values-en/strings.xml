@@ -166,7 +166,7 @@
     <string name="groups_multiple_summary">⚠️Checking groups will no longer be mutually exclusive</string>
 
     <string name="systts_test_success">Test was successful</string>
-    <string name="systts_test_success_info">Size: %1$dKiB \nSample rate: %2$d \nMime: %3$s</string>
+    <string name="systts_test_success_info">Size: %1$s \nSample rate: %2$d \nMime: %3$s</string>
     <string name="systts_http_test_msg">Audio size：%1$s \nFormat：%2$s \nSample rate：%3$d hz \nContent-Type：%4$s</string>
 
     <string name="systts_please_check_multi_voice_option">Please Enable multi-voice</string>

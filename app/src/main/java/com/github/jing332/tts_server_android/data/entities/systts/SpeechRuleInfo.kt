@@ -59,4 +59,6 @@ data class SpeechRuleInfo(
         tagName = ""
         mutableTagData.clear()
     }
+
+    fun isTagDataEmpty(): Boolean = tagData.filterValues { it.isNotEmpty() }.isEmpty()
 }

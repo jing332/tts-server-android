@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.FloatRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -29,7 +28,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.utils.performLongPress
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabelSlider(
     value: Float,
