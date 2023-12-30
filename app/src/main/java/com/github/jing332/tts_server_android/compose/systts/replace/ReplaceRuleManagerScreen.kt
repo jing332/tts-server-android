@@ -88,9 +88,11 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
             title = stringResource(id = R.string.add_group),
             text = text,
             onTextChange = { text = it },
-            onDismissRequest = { showAddGroupDialog = false }) {
-            appDb.replaceRuleDao.insert(ReplaceRule(name = text))
-        }
+            onDismissRequest = { showAddGroupDialog = false },
+            onConfirm = {
+                appDb.replaceRuleDao.insertGroup(ReplaceRuleGroup(name = text))
+            }
+        )
     }
 
     var showGroupEditDialog by remember { mutableStateOf<ReplaceRuleGroup?>(null) }
