@@ -105,7 +105,6 @@ fun ColumnToggleButtonGroup(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowToggleButtonGroup(
     modifier: Modifier = Modifier,

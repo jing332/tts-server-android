@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.WrapText
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.ColorLens
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.SettingsRemote
+import androidx.compose.material.icons.filled.WrapText
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -176,7 +178,7 @@ fun CodeEditorScreen(
                                 checked = wordWrap,
                                 onClick = { wordWrap = it },
                                 leadingIcon = {
-                                    Icon(Icons.Default.ColorLens, null)
+                                    Icon(Icons.AutoMirrored.Default.WrapText, null)
                                 }
                             )
 

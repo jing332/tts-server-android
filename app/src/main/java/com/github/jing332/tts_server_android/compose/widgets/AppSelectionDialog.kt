@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.widgets
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -37,7 +38,6 @@ fun AppSelectionDialog(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(4.dp),
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Unspecified
         )
     },
 
@@ -53,22 +53,23 @@ fun AppSelectionDialog(
         content = {
             val state = rememberLazyListState()
             LaunchedEffect(Unit) {
-                val index  = values.indexOfFirst { onValueSame(it, value) }
-                if (index >=0 && index < entries.size)
+                val index = values.indexOfFirst { onValueSame(it, value) }
+                if (index >= 0 && index < entries.size)
                     state.animateScrollToItem(index)
             }
             LoadingContent(modifier = Modifier, isLoading = isLoading) {
                 LazyColumn(state = state) {
                     itemsIndexed(entries) { i, entry ->
                         val current = values[i]
+                        val isSelected = onValueSame(value, current)
                         Row(
                             Modifier
                                 .fillMaxWidth()
                                 .clip(MaterialTheme.shapes.medium)
+                                .background(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Unspecified)
                                 .clickableRipple { onClick(current, entry) }
-                                .minimumInteractiveComponentSize()
+                                .minimumInteractiveComponentSize(),
                         ) {
-                            val isSelected = onValueSame(value, current)
                             itemContent(isSelected, entry, value)
                         }
                     }

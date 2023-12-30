@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.widgets
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +22,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.conf.AppConfig
@@ -83,6 +85,23 @@ private fun TextFieldSelectionDialog(
                         initialFirstVisibleItemIndex = max(0, values.indexOf(value))
                     )
 
+                    val isEmpty by remember {
+                        derivedStateOf { listState.layoutInfo.viewportSize == IntSize.Zero }
+                    }
+
+                    if (searchText.isNotBlank() && isEmpty)
+                        Text(
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                .minimumInteractiveComponentSize()
+                                .align(Alignment.CenterHorizontally),
+                            text = stringResource(id = R.string.empty_list),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
                     LazyColumn(
                         Modifier
                             .padding(top = 4.dp)
@@ -100,10 +119,8 @@ private fun TextFieldSelectionDialog(
                                     .fillMaxWidth()
                                     .clip(MaterialTheme.shapes.medium)
                                     .background(
-                                        if (selected) LocalRippleTheme.current
-                                            .defaultColor()
-                                            .copy(alpha = LocalRippleTheme.current.rippleAlpha().focusedAlpha)
-                                        else Color.Transparent
+                                        if (selected) MaterialTheme.colorScheme.secondaryContainer
+                                        else Color.Unspecified
                                     )
                                     .clickableRipple {
                                         onSelectedChange.invoke(current, str)
