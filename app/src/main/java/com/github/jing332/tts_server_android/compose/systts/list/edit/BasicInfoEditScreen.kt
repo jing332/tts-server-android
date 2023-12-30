@@ -14,6 +14,9 @@ import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -49,12 +52,17 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
 import com.github.jing332.tts_server_android.data.entities.systts.AudioParams
+import com.github.jing332.tts_server_android.data.entities.systts.SpeechRuleInfo
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.model.rhino.speech_rule.SpeechRuleEngine
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
+import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.clone
+import com.github.jing332.tts_server_android.utils.longToast
+import com.github.jing332.tts_server_android.utils.toast
+import kotlinx.serialization.encodeToString
 
 @Composable
 fun BasicInfoEditScreen(
@@ -246,43 +254,89 @@ fun BasicInfoEditScreen(
                         onDismissRequest = { showTagClearDialog = false }
                     )
                 }
-
-                RowToggleButtonGroup(
+                Column(
                     modifier = Modifier
                         .wrapContentWidth()
                         .align(Alignment.CenterHorizontally),
-                    selectionIndex = if (systts.speechRule.target == SpeechTarget.ALL) 0 else 1,
-                    buttonCount = 2,
-                    buttonIcons = arrayOf(
-                        painterResource(id = R.drawable.ic_baseline_select_all_24),
-                        painterResource(id = R.drawable.baseline_tag_24)
-                    ),
-                    buttonTexts = arrayOf(
-                        stringResource(id = R.string.ra_all),
-                        stringResource(id = R.string.tag)
-                    ),
-                    onButtonClick = { index ->
-                        if (index == 1)
-                            onSysttsChange(
-                                systts.copy(
-                                    speechRule = systts.speechRule.copy(target = SpeechTarget.CUSTOM_TAG)
-                                )
-                            )
-                        else { // 朗读全部
-                            if (systts.speechRule.isTagDataEmpty())
-                                onSysttsChange(
-                                    systts.copy(
-                                        speechRule = systts.speechRule.copy(
-                                            tagName = "",
-                                            target = SpeechTarget.ALL
-                                        ).apply { resetTag() }
+                ) {
+
+                    var showTagOptions by remember { mutableStateOf(false) }
+                    RowToggleButtonGroup(
+                        selectionIndex = if (systts.speechRule.target == SpeechTarget.ALL) 0 else 1,
+                        buttonCount = 2,
+                        buttonIcons = arrayOf(
+                            painterResource(id = R.drawable.ic_baseline_select_all_24),
+                            painterResource(id = R.drawable.baseline_tag_24)
+                        ),
+                        buttonTexts = arrayOf(
+                            stringResource(id = R.string.ra_all),
+                            stringResource(id = R.string.tag)
+                        ),
+                        onButtonClick = { index ->
+                            if (index == 1) {
+                                if (systts.speechRule.target == SpeechTarget.CUSTOM_TAG)
+                                    showTagOptions = true
+                                else
+                                    onSysttsChange(
+                                        systts.copy(
+                                            speechRule = systts.speechRule.copy(target = SpeechTarget.CUSTOM_TAG)
+                                        )
                                     )
+                            } else { // 朗读全部
+                                if (systts.speechRule.isTagDataEmpty())
+                                    onSysttsChange(
+                                        systts.copy(
+                                            speechRule = systts.speechRule.copy(
+                                                tagName = "",
+                                                target = SpeechTarget.ALL
+                                            ).apply { resetTag() }
+                                        )
+                                    )
+                                else
+                                    showTagClearDialog = true
+                            }
+                        },
+                    )
+
+                    DropdownMenu(
+                        expanded = showTagOptions,
+                        onDismissRequest = { showTagOptions = false }) {
+                        Text(
+                            text = stringResource(R.string.tag_data),
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        HorizontalDivider()
+                        DropdownMenuItem(text = { Text(stringResource(id = R.string.copy)) }, onClick = {
+                            showTagOptions = false
+                            val info = systts.speechRule
+                            val jStr = AppConst.jsonBuilder.encodeToString(info)
+                            ClipboardUtils.copyText(jStr)
+                            context.toast(R.string.copied)
+                        })
+                        DropdownMenuItem(text = { Text(stringResource(id = R.string.paste)) }, onClick = {
+                            showTagOptions = false
+                            val jStr = ClipboardUtils.text.toString()
+                            if (jStr.isBlank()) {
+                                context.toast(R.string.format_error)
+                                return@DropdownMenuItem
+                            }
+
+                            runCatching {
+                                val info =
+                                    AppConst.jsonBuilder.decodeFromString<SpeechRuleInfo>(jStr)
+                                onSysttsChange(systts.copy(speechRule = info))
+                            }.onSuccess {
+                                context.longToast(R.string.save_success)
+                            }.onFailure {
+                                context.displayErrorDialog(
+                                    it,
+                                    context.getString(R.string.format_error)
                                 )
-                            else
-                                showTagClearDialog = true
-                        }
-                    },
-                )
+                            }
+                        })
+                    }
+                }
 
                 AnimatedVisibility(visible = systts.speechRule.target == SpeechTarget.CUSTOM_TAG) {
                     Row(Modifier.padding(top = 4.dp)) {

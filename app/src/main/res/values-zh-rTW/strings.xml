@@ -446,4 +446,6 @@
     <string name="plugin_disabled_desc">插件未启用：%1$s</string>
     <string name="rule_enabled_desc">规则已启用：%1$s</string>
     <string name="rule_disabled_desc">规则已禁用：%1$s</string>
+    <string name="paste">粘贴</string>
+    <string name="tag_data">标签数据</string>
 </resources>

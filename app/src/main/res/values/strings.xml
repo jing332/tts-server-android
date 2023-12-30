@@ -457,4 +457,6 @@
     <string name="plugin_disabled_desc">已禁用插件：%1$s</string>
     <string name="rule_enabled_desc">已启用规则：%1$s</string>
     <string name="rule_disabled_desc">已禁用规则：%1$s</string>
+    <string name="paste">粘贴</string>
+    <string name="tag_data">标签数据</string>
 </resources>

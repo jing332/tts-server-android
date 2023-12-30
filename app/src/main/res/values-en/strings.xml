@@ -463,4 +463,6 @@
     <string name="plugin_disabled_desc">Plugin disabled：%1$s</string>
     <string name="rule_enabled_desc">Rule enabled：%1$s</string>
     <string name="rule_disabled_desc">Rule disabled：%1$s</string>
+    <string name="paste">Paste</string>
+    <string name="tag_data">Tag data</string>
 </resources>
