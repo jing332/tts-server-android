@@ -1,8 +1,15 @@
 package com.github.jing332.tts_server_android.compose.systts.list.edit.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.CreateNewFolder
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -27,17 +35,22 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
+import com.github.jing332.tts_server_android.compose.asActivity
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
+import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.TtsTopAppBar
 import com.github.jing332.tts_server_android.compose.widgets.AppSelectionDialog
 import com.github.jing332.tts_server_android.constant.SpeechTarget
@@ -165,6 +178,8 @@ class BgmTtsUI : TtsUI() {
                         .fillMaxWidth()
                         .padding(8.dp)
                 ) {
+                    FilesAccessPermissionContent(Modifier.fillMaxWidth())
+
                     Row(
                         Modifier.align(Alignment.CenterHorizontally),
                         verticalAlignment = Alignment.CenterVertically
@@ -226,5 +241,76 @@ class BgmTtsUI : TtsUI() {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun FilesAccessPermissionContent(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
+    @Composable
+    fun ColumnScope.warnButton(text: String, onClick: () -> Unit) {
+        FilledTonalButton(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 8.dp),
+            onClick = onClick,
+            content = {
+                Text(
+                    text,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        )
+    }
+
+    Column(modifier) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // A11
+            if (!Environment.isExternalStorageManager()) {
+                warnButton(text = stringResource(id = R.string.grant_permission_all_file)) {
+                    context.startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+                        setData(Uri.parse("package:${context.packageName}"))
+                    })
+                }
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // A13
+            val audioDenied by rememberUpdatedState(
+                newValue = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_MEDIA_AUDIO
+                ) == PackageManager.PERMISSION_DENIED
+            )
+
+            if (audioDenied)
+                warnButton(text = stringResource(R.string.grant_permission_audio_file)) {
+                    ActivityCompat.requestPermissions(
+                        context.asActivity(),
+                        arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_MEDIA_AUDIO
+                        ),
+                        0
+                    )
+                }
+        } else {
+            val denied = ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_DENIED
+            if (denied)
+                warnButton(text = stringResource(R.string.grant_permission_storage_file)) {
+                    ActivityCompat.requestPermissions(
+                        context.asActivity(),
+                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                        0
+                    )
+                }
+        }
+
+
     }
 }

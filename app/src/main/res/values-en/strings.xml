@@ -308,7 +308,7 @@
     <string name="add_bgm_tts">Add BGM</string>
     <string name="edit_bgm_tts">Edit BGM</string>
     <string name="add_bgm_tip">Please add a folder with audio to use as BGM</string>
-    <string name="grant_permission_all_file">Please grant [All file access permissions]</string>
+    <string name="grant_permission_all_file">grant [All file access permissions]</string>
     <string name="go_to_settings">Go settings</string>
     <string name="shuffle">Shuffle</string>
 
@@ -465,4 +465,6 @@
     <string name="rule_disabled_desc">Rule disabled：%1$s</string>
     <string name="paste">Paste</string>
     <string name="tag_data">Tag data</string>
+    <string name="grant_permission_audio_file">"Grant [Read Audio File Permission]  "</string>
+    <string name="grant_permission_storage_file">"Grant [Read Storage File Permission]  "</string>
 </resources>

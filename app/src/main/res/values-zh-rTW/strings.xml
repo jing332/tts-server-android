@@ -295,7 +295,7 @@
     <string name="add_bgm_tts">添加背景音乐TTS</string>
     <string name="edit_bgm_tts">编辑背景音乐TTS</string>
     <string name="add_bgm_tip">请添加一个含有音频的文件夹以作为BGM使用</string>
-    <string name="grant_permission_all_file">请授予【所有文件访问权限】</string>
+    <string name="grant_permission_all_file">授予【所有文件访问权限】</string>
     <string name="go_to_settings">前往设置</string>
     <string name="shuffle">随机播放</string>
     <string name="bgm_settings">背景音乐设置</string>
@@ -448,4 +448,6 @@
     <string name="rule_disabled_desc">规则已禁用：%1$s</string>
     <string name="paste">粘贴</string>
     <string name="tag_data">标签数据</string>
+    <string name="grant_permission_audio_file">授予【读取音频文件权限】</string>
+    <string name="grant_permission_storage_file">授予【读取存储文件权限】</string>
 </resources>
