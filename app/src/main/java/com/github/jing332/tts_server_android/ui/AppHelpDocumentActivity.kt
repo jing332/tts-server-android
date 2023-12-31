@@ -5,6 +5,7 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -20,11 +21,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.setPadding
+import androidx.core.widget.NestedScrollView
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
-import com.github.jing332.tts_server_android.databinding.AppHelpDocumentActivityBinding
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
+import com.github.jing332.tts_server_android.utils.dp
 import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -43,10 +46,6 @@ import io.noties.markwon.linkify.LinkifyPlugin
 class AppHelpDocumentActivity : AppCompatActivity() {
     companion object {
         const val TAG = "AppHelpDocumentActivity"
-    }
-
-    private val binding by lazy {
-        AppHelpDocumentActivityBinding.inflate(layoutInflater)
     }
 
     private val markwon by lazy {
@@ -103,6 +102,22 @@ class AppHelpDocumentActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val scrollView = NestedScrollView(this)
+        scrollView.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        scrollView.setPadding(8.dp)
+
+        val text = TextView(this)
+        text.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        text.setTextIsSelectable(true)
+        text.movementMethod = LinkMovementMethod.getInstance()
+        scrollView.addView(text)
+
         setContent {
             AppTheme {
                 Scaffold(
@@ -119,15 +134,14 @@ class AppHelpDocumentActivity : AppCompatActivity() {
                 ) {
                     AndroidView(modifier = Modifier.padding(it),
                         factory = {
-                            binding.scrollView
+                            scrollView
                         }
                     )
                 }
             }
         }
 
-        binding.text.movementMethod = LinkMovementMethod.getInstance()
-        markwon.setMarkdown(binding.text, assets.open("help/app.md").readAllText())
+        markwon.setMarkdown(text, assets.open("help/app.md").readAllText())
     }
 
 }

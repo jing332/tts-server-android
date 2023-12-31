@@ -1,6 +1,8 @@
 package com.github.jing332.tts_server_android.compose.systts.plugin
 
-import android.os.Bundle
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -25,7 +27,6 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.codeeditor.CodeEditorScreen
 import com.github.jing332.tts_server_android.compose.codeeditor.LoggerBottomSheet
-import com.github.jing332.tts_server_android.compose.navigate
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.conf.PluginConfig
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
@@ -94,6 +95,24 @@ internal fun PluginEditScreen(
             }
         }
     }
+    
+    val previewLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+        it.data?.let{intent->
+            val tts = intent.getParcelableExtra<PluginTTS>(PluginPreviewActivity.KEY_DATA)
+            if (tts == null) {
+                context.longToast("空返回值")
+                return@let
+            }
+
+            vm.updateTTS(tts)
+        }
+    }
+
+    fun previewUi(){
+        previewLauncher.launch(Intent(context, PluginPreviewActivity::class.java).apply {
+            putExtra(PluginPreviewActivity.KEY_DATA, vm.pluginTTS)
+        })
+    }
 
     CodeEditorScreen(
         title = {
@@ -128,17 +147,15 @@ internal fun PluginEditScreen(
         onUpdate = { codeEditor = it },
         onSaveFile = {
             "ttsrv-plugin-${vm.plugin.name}.js" to codeEditor!!.text.toString().toByteArray()
-        }
+        },
+        onLongClickMoreLabel = stringResource(id = R.string.plugin_preview_ui),
+        onLongClickMore = {previewUi()}
     ) { dismiss ->
         DropdownMenuItem(
             text = { Text(stringResource(id = R.string.plugin_preview_ui)) },
             onClick = {
                 dismiss()
-                navController.navigate(
-                    NavRoutes.PluginPreview.id, Bundle().apply {
-                        putParcelable(NavRoutes.PluginPreview.KEY_DATA, vm.pluginTTS)
-                    }
-                )
+                previewUi()
             },
             leadingIcon = {
                 Icon(Icons.Default.Settings, null)

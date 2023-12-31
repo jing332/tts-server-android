@@ -22,6 +22,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -66,6 +67,11 @@ private fun TextFieldSelectionDialog(
     val selectedText = entries.getOrNull(max(0, values.indexOf(value))) ?: ""
     var expanded by rememberSaveable { mutableStateOf(false) }
 
+    LaunchedEffect(values) {
+        values.getOrNull(entries.indexOf(selectedText))?.let {
+            onSelectedChange.invoke(it, selectedText)
+        }
+    }
     if (expanded) {
         AppDialog(onDismissRequest = { expanded = false },
             title = label,
@@ -119,7 +125,7 @@ private fun TextFieldSelectionDialog(
                                     .fillMaxWidth()
                                     .clip(MaterialTheme.shapes.medium)
                                     .background(
-                                        if (selected) MaterialTheme.colorScheme.secondaryContainer
+                                        if (selected) MaterialTheme.colorScheme.primaryContainer
                                         else Color.Unspecified
                                     )
                                     .clickableRipple {
@@ -206,6 +212,10 @@ fun AppSpinner(
     onKeySame: (current: Any, new: Any) -> Boolean = { current, new -> current == new },
     onSelectedChange: (key: Any, value: String) -> Unit,
 ) {
+    if (values.isNotEmpty() && !values.contains(value)){
+        onSelectedChange.invoke(values[0], entries[0])
+    }
+
     if (maxDropDownCount > 0 && values.size > maxDropDownCount) {
         TextFieldSelectionDialog(
             modifier = modifier,

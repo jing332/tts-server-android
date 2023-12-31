@@ -5,8 +5,4 @@ internal sealed class NavRoutes(val id: String) {
     data object PluginEdit : NavRoutes("plugin_edit") {
         const val KEY_DATA = "data"
     }
-
-    data object PluginPreview : NavRoutes("plugin_preview") {
-        const val KEY_DATA = "data"
-    }
 }

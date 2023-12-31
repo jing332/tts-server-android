@@ -227,6 +227,8 @@ class PluginTtsUI : TtsUI() {
                     }
                 )
 
+
+
                 LoadingContent(isLoading = vm.isLoading) {
                     Column {
                         AppSpinner(
@@ -251,6 +253,10 @@ class PluginTtsUI : TtsUI() {
                             }
                         }
 
+                        LaunchedEffect(key1 = tts.voice) {
+
+                        }
+
                         AppSpinner(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -268,8 +274,9 @@ class PluginTtsUI : TtsUI() {
                                         tts = tts.copy(voice = voice as String)
                                     )
                                 )
+
                                 runCatching {
-                                    vm.onVoiceChanged(tts.locale, voice)
+                                    vm.onVoiceChanged(tts.locale, tts.voice)
                                 }.onFailure {
                                     context.displayErrorDialog(it)
                                 }

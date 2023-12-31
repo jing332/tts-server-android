@@ -11,15 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.WrapText
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.SettingsRemote
-import androidx.compose.material.icons.filled.WrapText
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
+import com.github.jing332.tts_server_android.compose.widgets.LongClickIconButton
 import com.github.jing332.tts_server_android.conf.CodeEditorConfig
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
@@ -62,14 +62,16 @@ fun CodeEditorScreen(
     onBack: () -> Unit,
     onSave: () -> Unit,
     onUpdate: (CodeEditor) -> Unit,
-    onSaveFile: (() -> Pair<String, ByteArray>)? ,
+    onSaveFile: (() -> Pair<String, ByteArray>)?,
 
     onDebug: () -> Unit,
     onRemoteAction: (name: String, body: ByteArray?) -> Unit = { _, _ -> },
 
     vm: CodeEditorViewModel = viewModel(),
 
-    debugIconContent: @Composable ()->Unit = {},
+    debugIconContent: @Composable () -> Unit = {},
+    onLongClickMore: () -> Unit = {},
+    onLongClickMoreLabel: String? = null,
     actions: @Composable ColumnScope.(dismiss: () -> Unit) -> Unit = {},
 ) {
     var codeEditor by remember { mutableStateOf<CodeEditor?>(null) }
@@ -109,7 +111,7 @@ fun CodeEditorScreen(
             TopAppBar(title = title, navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(
-                        Icons.Filled.ArrowBack,
+                        Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = R.string.nav_back)
                     )
                 }
@@ -131,7 +133,11 @@ fun CodeEditorScreen(
 
                     var showOptions by remember { mutableStateOf(false) }
 
-                    IconButton(onClick = { showOptions = true }) {
+                    LongClickIconButton(
+                        onClick = { showOptions = true },
+                        onLongClick = onLongClickMore,
+                        onLongClickLabel = onLongClickMoreLabel
+                    ) {
                         Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_options))
 
                         DropdownMenu(
@@ -206,7 +212,9 @@ fun CodeEditorScreen(
                 .padding(paddingValues)
         ) {
             CodeEditor(
-                modifier = Modifier.weight(1f).fillMaxWidth(), onUpdate = {
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(), onUpdate = {
                     codeEditor = it
                     onUpdate(it)
                 }
@@ -249,7 +257,12 @@ fun CodeEditorScreen(
                                             editor.insertText(text, 1)
                                 }
                             }) {
-                        Text(text = it.second, Modifier.minimumInteractiveComponentSize().align(Alignment.Center))
+                        Text(
+                            text = it.second,
+                            Modifier
+                                .minimumInteractiveComponentSize()
+                                .align(Alignment.Center)
+                        )
                     }
                 }
 

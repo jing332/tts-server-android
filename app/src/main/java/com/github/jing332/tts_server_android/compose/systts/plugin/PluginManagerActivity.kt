@@ -60,14 +60,6 @@ class PluginManagerActivity : AppCompatActivity() {
 
                             PluginEditScreen(plugin, onSave = { appDb.pluginDao.insert(it) })
                         }
-
-                        composable(NavRoutes.PluginPreview.id) {
-                            val tts =
-                                remember { it.arguments?.getParcelable<PluginTTS>(NavRoutes.PluginPreview.KEY_DATA) }
-                                    ?: return@composable
-                            var systts by remember { mutableStateOf(SystemTts(tts = tts)) }
-                            PluginPreviewScreen(systts = systts, onSysttsChange = { systts = it })
-                        }
                     }
                 }
             }

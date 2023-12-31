@@ -13,7 +13,6 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -36,6 +35,9 @@
         android:theme="@style/Theme.TtsServer"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
+        <activity
+            android:name=".compose.systts.plugin.PluginPreviewActivity"
+            android:exported="false" />
         <activity
             android:name=".compose.systts.replace.ReplaceManagerActivity"
             android:exported="true"
@@ -79,7 +81,6 @@
                 <data android:pathPattern=".*\\.ZIP" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.FilePickerActivity"
             android:theme="@style/TranslucentTheme" />
@@ -88,24 +89,20 @@
             android:exported="true"
             android:label="@string/speech_rule_manager"
             android:taskAffinity="com.github.jing332.tts_server_android.speechrule" />
-
         <activity
             android:name=".ui.ExoPlayerActivity"
             android:exported="false"
             android:label="@string/exo_player_title" />
-
         <activity
             android:name=".compose.systts.plugin.PluginManagerActivity"
             android:exported="true"
             android:label="@string/plugin_manager"
             android:taskAffinity="com.github.jing332.tts_server_android.plugin" />
-
         <activity
             android:name=".ui.ImportConfigActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:taskAffinity="com.github.jing332.tts_server_android.import">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -150,7 +147,6 @@
                 <data android:pathPattern=".*\\.JS" />
             </intent-filter>
         </activity>
-
         <activity android:name=".compose.LibrariesActivity" />
         <activity
             android:name=".compose.MainActivity"
@@ -163,9 +159,7 @@
 
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".ui.forwarder.MsForwarderSwitchActivity"
             android:taskAffinity="sc.switch"
