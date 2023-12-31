@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -86,12 +87,10 @@ fun AppDialog(
     buttons: @Composable BoxScope.() -> Unit = {
         TextButton(onClick = onDismissRequest) { Text(stringResource(id = R.string.close)) }
     },
-) = AlertDialog(modifier = modifier, onDismissRequest = onDismissRequest, properties = properties) {
+) = BasicAlertDialog(modifier = modifier, onDismissRequest = onDismissRequest, properties = properties) {
     Surface(
         tonalElevation = 8.dp, shadowElevation = 8.dp, shape = MaterialTheme.shapes.extraLarge
     ) {
-        val context = LocalContext.current
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()

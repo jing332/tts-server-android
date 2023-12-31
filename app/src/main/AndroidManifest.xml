@@ -36,6 +36,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name=".ui.view.ErrorDialogActivity"
+            android:theme="@style/TranslucentTheme"
+            android:exported="false" />
+        <activity
             android:name=".compose.systts.plugin.PluginPreviewActivity"
             android:exported="false" />
         <activity
