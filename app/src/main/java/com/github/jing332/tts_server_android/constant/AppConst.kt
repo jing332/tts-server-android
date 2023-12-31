@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.app
 import com.script.javascript.RhinoScriptEngine
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -16,7 +17,9 @@ import java.util.*
 object AppConst {
     const val PACKET_NAME = "com.github.jing332.tts_server_android"
 
+    val fileProviderAuthor = BuildConfig.APPLICATION_ID + ".fileprovider"
     val localBroadcast by lazy { LocalBroadcastManager.getInstance(App.context) }
+
 
     var isSysTtsLogEnabled = true
     var isServerLogEnabled = false

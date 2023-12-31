@@ -10,6 +10,7 @@ import com.github.jing332.tts_server_android.conf.PluginConfig
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.model.rhino.tts.TtsPluginUiEngine
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
+import com.github.jing332.tts_server_android.utils.StringUtils.sizeToReadable
 import com.github.jing332.tts_server_android.utils.readableString
 import com.github.jing332.tts_server_android.utils.rootCause
 import com.script.ScriptException
@@ -25,10 +26,6 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
     lateinit var pluginEngine: TtsPluginUiEngine
     internal lateinit var plugin: Plugin private set
     internal lateinit var pluginTTS: PluginTTS private set
-
-    private val _displayLoggerLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val displayLoggerLiveData: LiveData<Boolean>
-        get() = _displayLoggerLiveData
 
     private val _updateCodeLiveData = MutableLiveData<String>()
 
@@ -62,8 +59,7 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
         file.deleteRecursively()
     }
 
-    fun evalInfo(): Boolean {
-        _displayLoggerLiveData.value = true
+    private fun evalInfo(): Boolean {
         val plugin = try {
             pluginEngine.evalPluginInfo()
         } catch (e: Exception) {
@@ -79,14 +75,14 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch(Dispatchers.IO) {
             kotlin.runCatching {
                 val sampleRate = pluginEngine.getSampleRate(pluginTTS.locale, pluginTTS.voice)
-                pluginEngine.logger.d("采样率: $sampleRate")
+                pluginEngine.logger.d("SampleRate: $sampleRate")
             }.onFailure {
                 writeErrorLog(it)
             }
 
             runCatching {
                 val isNeedDecode = pluginEngine.isNeedDecode(pluginTTS.locale, pluginTTS.voice)
-                pluginEngine.logger.d("需要解码: $isNeedDecode")
+                pluginEngine.logger.d("NeedDecode: $isNeedDecode")
             }.onFailure {
                 writeErrorLog(it)
             }
@@ -95,10 +91,10 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
                 pluginTTS.onLoad()
                 val audio = pluginTTS.getAudioWithSystemParams(PluginConfig.textParam.value)
                 if (audio == null)
-                    pluginEngine.logger.w("音频为空！")
+                    pluginEngine.logger.w("Audio is empty!")
                 else{
                     val bytes = audio.readBytes()
-                    pluginEngine.logger.i("音频大小: ${bytesToReadable(bytes.size.toLong())}")
+                    pluginEngine.logger.i("Audio size: ${bytes.size.toLong().sizeToReadable()}")
                 }
             }.onFailure {
                 writeErrorLog(it)
@@ -108,22 +104,10 @@ class PluginEditorViewModel(application: Application) : AndroidViewModel(applica
 
     private fun writeErrorLog(t: Throwable) {
         val errStr = if (t is ScriptException) {
-            "第 ${t.lineNumber} 行错误：${t.rootCause?.message ?: t}"
+            "${t.lineNumber}Line: ${t.rootCause?.message ?: t}"
         } else {
             t.message + "(${t.readableString})"
         }
         pluginEngine.logger.e(errStr)
-    }
-
-    private fun bytesToReadable(bytes: Long): String {
-        val kb = 1024
-        val mb = kb * 1024
-        val gb = mb * 1024
-
-        return when {
-            bytes < mb -> "${"%.2f".format(bytes.toDouble() / kb)} KB"
-            bytes < gb -> "${"%.2f".format(bytes.toDouble() / mb)} MB"
-            else -> "$bytes B"
-        }
     }
 }

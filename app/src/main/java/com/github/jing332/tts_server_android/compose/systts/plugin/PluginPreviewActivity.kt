@@ -1,16 +1,22 @@
 package com.github.jing332.tts_server_android.compose.systts.plugin
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.DeveloperMode
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,15 +29,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.PluginTtsUI
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
+import com.github.jing332.tts_server_android.compose.widgets.AppDialog
+import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
+import com.github.jing332.tts_server_android.conf.PluginConfig
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
+import com.github.jing332.tts_server_android.utils.clickableRipple
+import com.github.jing332.tts_server_android.utils.longToast
 
 @Suppress("DEPRECATION")
 class PluginPreviewActivity : AppCompatActivity() {
@@ -66,6 +81,7 @@ class PluginPreviewActivity : AppCompatActivity() {
         onSysttsChange: (SystemTts) -> Unit,
         onSave: () -> Unit
     ) {
+        val context = LocalContext.current
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -84,6 +100,66 @@ class PluginPreviewActivity : AppCompatActivity() {
                         }) {
                             Icon(Icons.Default.Save, stringResource(id = R.string.save))
                         }
+
+                        var showSaveLogTips by remember { mutableStateOf(false) }
+                        if (showSaveLogTips)
+                            AppDialog(
+                                onDismissRequest = { showSaveLogTips = false },
+                                title = { Text(stringResource(R.string.write_plugin_log_to_file)) },
+                                content = {
+                                    Text(modifier = Modifier.clickableRipple {
+//                                            runCatching {
+//                                                val uri =
+//                                                    FileProvider.getUriForFile(
+//                                                        /* context = */ context,
+//                                                        /* authority = */ AppConst.fileProviderAuthor,
+//                                                        /* file = */ File(onIniFilePath())
+//                                                    )
+//                                                val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+//                                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                                    setDataAndType(uri, "text/*")
+//                                                }
+//
+//                                                context.startActivity(
+//                                                    Intent.createChooser(
+//                                                        intent,"")
+//                                                    )
+//                                            }.onFailure {
+//                                                context.longToast(it.toString())
+//                                            }
+                                    },
+                                        text =
+                                        App.context.getExternalFilesDir("logs")?.absolutePath
+                                            ?: "/data/data/$packageName/files/logs"
+                                    )
+                                }
+                            )
+
+//                        var showOptions by remember { mutableStateOf(false) }
+//                        IconButton(onClick = { showOptions = false }) {
+//                            Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_options))
+//
+//                            DropdownMenu(
+//                                expanded = showOptions,
+//                                onDismissRequest = { showOptions = false }) {
+//                                var isSaveRhinoLog by remember { PluginConfig.isSaveRhinoLog }
+//                                CheckedMenuItem(
+//                                    text = { Text(stringResource(R.string.write_plugin_log_to_file)) },
+//                                    checked = isSaveRhinoLog,
+//                                    onClick = {
+//                                        isSaveRhinoLog = !isSaveRhinoLog
+//                                        if (isSaveRhinoLog)
+//                                            showSaveLogTips = true
+//                                    },
+//                                    leadingIcon = {
+//                                        Icon(Icons.Default.DeveloperMode, null)
+//                                    }
+//                                )
+//
+//
+//                            }
+//                        }
                     }
                 )
             }) { paddingValues ->

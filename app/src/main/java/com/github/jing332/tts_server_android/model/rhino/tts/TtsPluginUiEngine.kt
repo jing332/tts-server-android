@@ -106,21 +106,27 @@ class TtsPluginUiEngine(
     fun onLoadData() {
         logger.d("onLoadData()...")
 
-        rhino.invokeMethod(
-            editUiJsObject,
-            FUNC_ON_LOAD_DATA
-        )
+        try {
+            rhino.invokeMethod(
+                editUiJsObject,
+                FUNC_ON_LOAD_DATA
+            )
+        } catch (_: NoSuchMethodException) {
+        }
     }
 
     fun onLoadUI(context: Context, container: LinearLayout) {
         logger.d("onLoadUI()...")
 
-        rhino.invokeMethod(
-            editUiJsObject,
-            FUNC_ON_LOAD_UI,
-            context,
-            container
-        )
+        try {
+            rhino.invokeMethod(
+                editUiJsObject,
+                FUNC_ON_LOAD_UI,
+                context,
+                container
+            )
+        } catch (_: NoSuchMethodException) {
+        }
     }
 
     fun onVoiceChanged(locale: String, voice: String) {

@@ -461,4 +461,5 @@
     <string name="tag_data">标签数据</string>
     <string name="grant_permission_audio_file">授予【读取音频文件权限】</string>
     <string name="grant_permission_storage_file">授予【读取存储文件权限】</string>
+    <string name="write_plugin_log_to_file">写入插件日志到文件</string>
 </resources>

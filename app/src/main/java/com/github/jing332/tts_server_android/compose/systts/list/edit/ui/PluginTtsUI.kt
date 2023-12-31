@@ -227,8 +227,6 @@ class PluginTtsUI : TtsUI() {
                     }
                 )
 
-
-
                 LoadingContent(isLoading = vm.isLoading) {
                     Column {
                         AppSpinner(
