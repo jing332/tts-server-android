@@ -29,6 +29,7 @@ import com.github.jing332.tts_server_android.compose.codeeditor.CodeEditorScreen
 import com.github.jing332.tts_server_android.compose.codeeditor.LoggerBottomSheet
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
 import com.github.jing332.tts_server_android.conf.PluginConfig
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
@@ -112,6 +113,7 @@ internal fun PluginEditScreen(
         }
 
     fun previewUi() {
+        AppConst.localBroadcast.sendBroadcastSync(Intent(PluginPreviewActivity.ACTION_FINISH))
         vm.updateCode(codeEditor!!.text.toString())
         previewLauncher.launch(Intent(context, PluginPreviewActivity::class.java).apply {
             putExtra(PluginPreviewActivity.KEY_DATA, vm.pluginTTS)

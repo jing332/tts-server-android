@@ -1,22 +1,19 @@
 package com.github.jing332.tts_server_android.compose.systts.plugin
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.DeveloperMode
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,31 +28,42 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.FileProvider
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.PluginTtsUI
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
-import com.github.jing332.tts_server_android.compose.widgets.CheckedMenuItem
-import com.github.jing332.tts_server_android.conf.PluginConfig
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.utils.clickableRipple
-import com.github.jing332.tts_server_android.utils.longToast
 
 @Suppress("DEPRECATION")
 class PluginPreviewActivity : AppCompatActivity() {
     companion object {
         const val KEY_DATA = "data"
+        const val ACTION_FINISH = "finish"
+    }
+
+    private val mReceiver by lazy{ MyBroadcastReceiver() }
+
+    inner class MyBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == ACTION_FINISH) {
+                finish()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AppConst.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_FINISH))
 
         val tts = intent.getParcelableExtra<PluginTTS>(KEY_DATA)
         if (tts == null) {
@@ -107,7 +115,8 @@ class PluginPreviewActivity : AppCompatActivity() {
                                 onDismissRequest = { showSaveLogTips = false },
                                 title = { Text(stringResource(R.string.write_plugin_log_to_file)) },
                                 content = {
-                                    Text(modifier = Modifier.clickableRipple {
+                                    Text(
+                                        modifier = Modifier.clickableRipple {
 //                                            runCatching {
 //                                                val uri =
 //                                                    FileProvider.getUriForFile(
@@ -128,7 +137,7 @@ class PluginPreviewActivity : AppCompatActivity() {
 //                                            }.onFailure {
 //                                                context.longToast(it.toString())
 //                                            }
-                                    },
+                                        },
                                         text =
                                         App.context.getExternalFilesDir("logs")?.absolutePath
                                             ?: "/data/data/$packageName/files/logs"
