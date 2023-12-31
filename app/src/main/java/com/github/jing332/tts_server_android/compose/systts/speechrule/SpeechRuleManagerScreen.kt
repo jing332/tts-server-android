@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.systts.speechrule
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AppShortcut
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
@@ -52,9 +54,11 @@ import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
 import com.github.jing332.tts_server_android.compose.navigate
 import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
+import com.github.jing332.tts_server_android.compose.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.SpeechRule
+import com.github.jing332.tts_server_android.utils.MyTools
 import kotlinx.coroutines.flow.conflate
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -65,6 +69,7 @@ import java.util.Collections
 @Composable
 fun SpeechRuleManagerScreen(finish: () -> Unit) {
     val navController = LocalNavController.current
+    val context = LocalContext.current
 
     var showImportSheet by remember { mutableStateOf(false) }
     if (showImportSheet)
@@ -130,6 +135,21 @@ fun SpeechRuleManagerScreen(finish: () -> Unit) {
                                 leadingIcon = {
                                     Icon(Icons.Default.Output, null)
                                 }
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(id = R.string.desktop_shortcut)) },
+                                onClick = {
+                                    showOptions = false
+                                    MyTools.addShortcut(
+                                        context,
+                                        context.getString(R.string.speech_rule_manager),
+                                        "speech_rule",
+                                        R.drawable.ic_shortcut_speech_rule,
+                                        Intent(context, SpeechRuleManagerActivity::class.java)
+                                    )
+                                },
+                                leadingIcon = { Icon(Icons.Default.AppShortcut, null) }
                             )
                         }
                     }

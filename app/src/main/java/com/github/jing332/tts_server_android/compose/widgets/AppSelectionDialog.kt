@@ -36,7 +36,7 @@ fun AppSelectionDialog(
         Text(
             entry,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(4.dp),
+            modifier = Modifier.padding(8.dp),
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
         )
     },

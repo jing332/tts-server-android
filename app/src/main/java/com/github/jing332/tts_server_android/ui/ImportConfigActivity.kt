@@ -1,12 +1,8 @@
 package com.github.jing332.tts_server_android.ui
 
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.Text
@@ -23,13 +19,11 @@ import com.github.jing332.tts_server_android.compose.widgets.AppSelectionDialog
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory
 import com.github.jing332.tts_server_android.ui.systts.ImportConfigFactory.gotoEditorFromJS
 import com.github.jing332.tts_server_android.ui.systts.ImportType
-import com.github.jing332.tts_server_android.utils.*
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
-import splitties.systemservices.powerManager
-import java.util.*
+import com.github.jing332.tts_server_android.utils.longToast
 
 
-class ImportConfigActivity : AppCompatActivity(R.layout.main_activity) {
+class ImportConfigActivity : AppCompatActivity() {
     companion object {
         const val TAG = "ImportConfigActivity"
     }
@@ -39,7 +33,6 @@ class ImportConfigActivity : AppCompatActivity(R.layout.main_activity) {
     private var type = mutableStateOf("")
     private var url = mutableStateOf("")
     private var path = mutableStateOf("")
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

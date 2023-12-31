@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material3.Icon
@@ -182,26 +183,31 @@ class FilePickerActivity : AppCompatActivity() {
         var showPromptDialog by mutableStateOf(false)
         setContent {
             AppTheme {
-                AppSelectionDialog(
-                    onDismissRequest = { showPromptDialog = false },
-                    title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.FileOpen, null)
-                            Text(stringResource(id = R.string.file_picker))
+                if (showPromptDialog)
+                    AppSelectionDialog(
+                        onDismissRequest = {
+                            showPromptDialog = false
+                            finish()
+                        },
+                        title = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.FileOpen, null)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(stringResource(id = R.string.file_picker))
+                            }
+                        },
+                        value = Unit,
+                        values = listOf(0, 1),
+                        entries = listOf(
+                            stringResource(id = R.string.file_picker_mode_system),
+                            stringResource(id = R.string.file_picker_mode_builtin)
+                        ),
+                        onClick = { index, _ ->
+                            showPromptDialog = false
+                            useSystem = index == 0
+                            doAction()
                         }
-                    },
-                    value = Unit,
-                    values = listOf(0, 1),
-                    entries = listOf(
-                        stringResource(id = R.string.file_picker_mode_system),
-                        stringResource(id = R.string.file_picker_mode_builtin)
-                    ),
-                    onClick = { index, _ ->
-                        showPromptDialog = false
-                        useSystem = index == 0
-                        doAction()
-                    }
-                )
+                    )
             }
         }
 

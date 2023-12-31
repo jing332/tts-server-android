@@ -105,8 +105,8 @@ object MyTools {
         iconResId: Int,
         launcherIntent: Intent
     ) {
+        ctx.longToast(R.string.add_shortcut_if_fail_tips)
         if (Build.VERSION.SDK_INT < 26) { /* Android8.0 */
-            Toast.makeText(ctx, "如失败 请手动授予权限", Toast.LENGTH_SHORT).show()
             val addShortcutIntent = Intent("com.android.launcher.action.INSTALL_SHORTCUT")
             // 不允许重复创建
             addShortcutIntent.putExtra("duplicate", false) // 经测试不是根据快捷方式的名字判断重复的

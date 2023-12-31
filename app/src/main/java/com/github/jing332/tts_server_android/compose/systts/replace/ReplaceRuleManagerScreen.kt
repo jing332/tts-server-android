@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.systts.replace
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -12,8 +13,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCard
+import androidx.compose.material.icons.filled.AppShortcut
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Input
 import androidx.compose.material.icons.filled.MoreVert
@@ -46,6 +49,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
 import com.github.jing332.tts_server_android.compose.navigate
+import com.github.jing332.tts_server_android.compose.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.compose.systts.sizeToToggleableState
 import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
@@ -54,6 +58,7 @@ import com.github.jing332.tts_server_android.data.entities.replace.GroupWithRepl
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
+import com.github.jing332.tts_server_android.utils.MyTools
 import okhttp3.internal.toLongOrDefault
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -172,12 +177,10 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                 },
                 navigationIcon = {
                     IconButton(onClick = finish) {
-                        Icon(Icons.Default.ArrowBack, stringResource(id = R.string.nav_back))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.nav_back))
                     }
                 },
                 actions = {
-
-
                     var showOptions by remember { mutableStateOf(false) }
                     IconButton(onClick = { showOptions = true }) {
                         Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_options))
@@ -201,6 +204,21 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                                     showExportSheet = models
                                 },
                                 leadingIcon = { Icon(Icons.Default.Output, null) }
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(id = R.string.desktop_shortcut)) },
+                                onClick = {
+                                    showOptions = false
+                                    MyTools.addShortcut(
+                                        context,
+                                        context.getString(R.string.replace_rule_manager),
+                                        "replace",
+                                        R.drawable.ic_shortcut_replace,
+                                        Intent(context, ReplaceManagerActivity::class.java)
+                                    )
+                                },
+                                leadingIcon = { Icon(Icons.Default.AppShortcut, null) }
                             )
                         }
                     }

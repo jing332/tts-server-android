@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.systts.plugin
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AppShortcut
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
@@ -57,6 +60,7 @@ import com.github.jing332.tts_server_android.compose.systts.ConfigDeleteDialog
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.plugin.Plugin
+import com.github.jing332.tts_server_android.utils.MyTools
 import kotlinx.coroutines.flow.conflate
 import kotlinx.serialization.encodeToString
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -110,12 +114,16 @@ fun PluginManagerScreen(onFinishActivity: () -> Unit) {
     }
 
     val navController = LocalNavController.current
+    val context = LocalContext.current
     Scaffold(Modifier.fillMaxSize(), topBar = {
         TopAppBar(
             title = { Text(stringResource(id = R.string.plugin_manager)) },
             navigationIcon = {
                 IconButton(onClick = onFinishActivity) {
-                    Icon(Icons.Default.ArrowBack, stringResource(id = R.string.nav_back))
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        stringResource(id = R.string.nav_back)
+                    )
                 }
             },
             actions = {
@@ -153,6 +161,20 @@ fun PluginManagerScreen(onFinishActivity: () -> Unit) {
                             leadingIcon = {
                                 Icon(Icons.Default.Output, null)
                             }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.desktop_shortcut)) },
+                            onClick = {
+                                showOptions = false
+                                MyTools.addShortcut(
+                                    context,
+                                    context.getString(R.string.plugin_manager),
+                                    "plugin",
+                                    R.drawable.ic_shortcut_plugin,
+                                    Intent(context, PluginManagerActivity::class.java)
+                                )
+                            },
+                            leadingIcon = { Icon(Icons.Default.AppShortcut, null) }
                         )
                     }
                 }
