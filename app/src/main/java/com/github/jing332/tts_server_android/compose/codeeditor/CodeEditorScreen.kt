@@ -61,6 +61,7 @@ fun CodeEditorScreen(
     title: @Composable () -> Unit,
     onBack: () -> Unit,
     onSave: () -> Unit,
+    onLongClickSave: () -> Unit = {},
     onUpdate: (CodeEditor) -> Unit,
     onSaveFile: (() -> Pair<String, ByteArray>)?,
 
@@ -124,7 +125,7 @@ fun CodeEditorScreen(
                         )
                         debugIconContent()
                     }
-                    IconButton(onClick = onSave) {
+                    LongClickIconButton(onClick = onSave, onLongClick = onLongClickSave) {
                         Icon(
                             Icons.Filled.Save,
                             contentDescription = stringResource(id = R.string.save)

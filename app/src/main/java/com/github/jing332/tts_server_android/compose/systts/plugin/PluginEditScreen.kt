@@ -36,6 +36,7 @@ import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import com.github.jing332.tts_server_android.utils.longToast
 import io.github.rosemoe.sora.widget.CodeEditor
 
+@Suppress("DEPRECATION")
 @Composable
 internal fun PluginEditScreen(
     plugin: Plugin,
@@ -89,26 +90,29 @@ internal fun PluginEditScreen(
             logger = vm.pluginEngine.logger,
             onDismissRequest = { showDebugLogger = false }) {
             runCatching {
+                vm.updateCode(codeEditor!!.text.toString())
                 vm.debug()
             }.onFailure {
                 context.displayErrorDialog(it)
             }
         }
     }
-    
-    val previewLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
-        it.data?.let{intent->
-            val tts = intent.getParcelableExtra<PluginTTS>(PluginPreviewActivity.KEY_DATA)
-            if (tts == null) {
-                context.longToast("空返回值")
-                return@let
+
+    val previewLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+            it.data?.let { intent ->
+                val tts = intent.getParcelableExtra<PluginTTS>(PluginPreviewActivity.KEY_DATA)
+                if (tts == null) {
+                    context.longToast("空返回值")
+                    return@let
+                }
+
+                vm.updateTTS(tts)
             }
-
-            vm.updateTTS(tts)
         }
-    }
 
-    fun previewUi(){
+    fun previewUi() {
+        vm.updateCode(codeEditor!!.text.toString())
         previewLauncher.launch(Intent(context, PluginPreviewActivity::class.java).apply {
             putExtra(PluginPreviewActivity.KEY_DATA, vm.pluginTTS)
         })
@@ -126,6 +130,7 @@ internal fun PluginEditScreen(
         },
         onBack = { navController.popBackStack() },
         onDebug = { showDebugLogger = true },
+
         onSave = {
             if (codeEditor != null) {
                 vm.updateCode(codeEditor!!.text.toString())
@@ -137,10 +142,15 @@ internal fun PluginEditScreen(
                 }
             }
         },
-        onRemoteAction = { name, body ->
+        onLongClickSave = { // 仅保存
+            onSave(vm.plugin.copy(code = codeEditor!!.text.toString()))
+            navController.popBackStack()
+        },
+
+        onRemoteAction = { name, _ ->
             when (name) {
                 "ui" -> {
-                    context.longToast("TODO 暂未实现")
+                    previewUi()
                 }
             }
         },
@@ -149,7 +159,7 @@ internal fun PluginEditScreen(
             "ttsrv-plugin-${vm.plugin.name}.js" to codeEditor!!.text.toString().toByteArray()
         },
         onLongClickMoreLabel = stringResource(id = R.string.plugin_preview_ui),
-        onLongClickMore = {previewUi()}
+        onLongClickMore = { previewUi() }
     ) { dismiss ->
         DropdownMenuItem(
             text = { Text(stringResource(id = R.string.plugin_preview_ui)) },

@@ -39,6 +39,7 @@ import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
+import com.github.jing332.tts_server_android.compose.widgets.AppSelectionDialog
 import com.github.jing332.tts_server_android.conf.AppConfig
 import com.github.jing332.tts_server_android.constant.FilePickerMode
 import com.github.jing332.tts_server_android.help.ByteArrayBinder
@@ -181,48 +182,24 @@ class FilePickerActivity : AppCompatActivity() {
         var showPromptDialog by mutableStateOf(false)
         setContent {
             AppTheme {
-                @Composable
-                fun Item(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
-                    Row(
-                        modifier
-                            .fillMaxWidth()
-                            .clip(MaterialTheme.shapes.medium)
-                            .clickableRipple { onClick() }) {
-                        Text(
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                                .minimumInteractiveComponentSize()
-                                .align(Alignment.CenterVertically),
-                            text = text
-                        )
-                    }
-                }
-
-                AppDialog(
-                    onDismissRequest = {
-                        showPromptDialog = false
-                        finish()
-                    },
+                AppSelectionDialog(
+                    onDismissRequest = { showPromptDialog = false },
                     title = {
-                        Row(verticalAlignment = Alignment.CenterVertically){
-                            Icon(Icons.Default.FileOpen, null )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.FileOpen, null)
                             Text(stringResource(id = R.string.file_picker))
                         }
                     },
-                    content = {
-                        Column {
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Item(text = stringResource(id = R.string.file_picker_mode_system)) {
-                                showPromptDialog = false
-                                useSystem = true
-                                doAction()
-                            }
-                            Item(text = stringResource(id = R.string.file_picker_mode_builtin)) {
-                                showPromptDialog = false
-                                useSystem = false
-                                doAction()
-                            }
-                        }
+                    value = Unit,
+                    values = listOf(0, 1),
+                    entries = listOf(
+                        stringResource(id = R.string.file_picker_mode_system),
+                        stringResource(id = R.string.file_picker_mode_builtin)
+                    ),
+                    onClick = { index, _ ->
+                        showPromptDialog = false
+                        useSystem = index == 0
+                        doAction()
                     }
                 )
             }

@@ -57,7 +57,7 @@ fun AppSelectionDialog(
                 if (index >= 0 && index < entries.size)
                     state.animateScrollToItem(index)
             }
-            LoadingContent(modifier = Modifier, isLoading = isLoading) {
+            LoadingContent(modifier = Modifier.padding(vertical = 16.dp), isLoading = isLoading) {
                 LazyColumn(state = state) {
                     itemsIndexed(entries) { i, entry ->
                         val current = values[i]
@@ -66,7 +66,7 @@ fun AppSelectionDialog(
                             Modifier
                                 .fillMaxWidth()
                                 .clip(MaterialTheme.shapes.medium)
-                                .background(if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Unspecified)
+                                .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Unspecified)
                                 .clickableRipple { onClick(current, entry) }
                                 .minimumInteractiveComponentSize(),
                         ) {

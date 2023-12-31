@@ -66,9 +66,10 @@ open class TtsPluginEngine(
 
             try {
                 mPlugin.defVars = get("vars") as Map<String, Map<String, String>>
-
-            } catch (_: NullPointerException) {
+//            } catch (_: NullPointerException) {
             } catch (t: Throwable) {
+                mPlugin.defVars = emptyMap()
+
                 throw ClassCastException("vars解析失败").initCause(t)
             }
 

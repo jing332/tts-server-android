@@ -98,7 +98,11 @@ class LinkUploadRuleActivity : AppCompatActivity() {
             },
             onUpdate = { editor = it },
             onDebug = {
-                targets = obtainFunctionList()
+                kotlin.runCatching {
+                    targets = obtainFunctionList()
+                }.onFailure {
+                    this.displayErrorDialog(it)
+                }
             },
             debugIconContent = {
                 DropdownMenu(expanded = targets != null, onDismissRequest = { targets = null }) {
