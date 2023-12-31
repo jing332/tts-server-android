@@ -1,21 +1,30 @@
 package com.github.jing332.tts_server_android.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
-import android.view.accessibility.AccessibilityManager
 import android.widget.TextView
+import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.databinding.AppHelpDocumentActivityBinding
-import com.github.jing332.tts_server_android.ui.base.BackActivity
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
-import com.github.jing332.tts_server_android.utils.addOnBackPressed
-import com.github.jing332.tts_server_android.utils.dp
 import com.github.jing332.tts_server_android.utils.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -30,7 +39,8 @@ import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler
 import io.noties.markwon.image.svg.SvgMediaDecoder
 import io.noties.markwon.linkify.LinkifyPlugin
 
-class AppHelpDocumentActivity : BackActivity() {
+@OptIn(ExperimentalMaterial3Api::class)
+class AppHelpDocumentActivity : AppCompatActivity() {
     companion object {
         const val TAG = "AppHelpDocumentActivity"
     }
@@ -91,68 +101,33 @@ class AppHelpDocumentActivity : BackActivity() {
             .build()
     }
 
-    private val accessibilityManager by lazy {
-        getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-    }
-
-    private var bottom = false
-    private var backTimes = 0
-
-    private fun back(): Boolean {
-        if (accessibilityManager.isTouchExplorationEnabled) return true
-        if (bottom) return true
-
-        MaterialAlertDialogBuilder(this).setTitle("想退出？")
-            .setMessage("淦！读完了吗就想退！没门！\n╰（‵□′）╯")
-            .apply {
-                if (backTimes > 1)
-                    setNeutralButton("我错了") { _, _ -> finish() }
-            }
-            .setPositiveButton("看！") { _, _ ->
-                backTimes++
-            }
-            .show()
-
-        return false
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setContent {
+            AppTheme {
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = { Text(stringResource(id = R.string.app_help_document)) },
+                            navigationIcon = {
+                                IconButton(onClick = { finish() }) {
+                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                                }
+                            }
+                        )
+                    }
+                ) {
+                    AndroidView(modifier = Modifier.padding(it),
+                        factory = {
+                            binding.scrollView
+                        }
+                    )
+                }
+            }
+        }
 
         binding.text.movementMethod = LinkMovementMethod.getInstance()
         markwon.setMarkdown(binding.text, assets.open("help/app.md").readAllText())
-
-
-        bottom = false
-        binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
-            if (!bottom)
-                bottom = isBottom()
-        }
-        addOnBackPressed {
-            return@addOnBackPressed !back()
-        }
-
     }
 
-    private fun isBottom(): Boolean {
-        val scrollView = binding.scrollView
-        // 获取ScrollView的高度
-        val scrollViewHeight = scrollView.height
-        // 获取ScrollView的子View
-        val lastChild = scrollView.getChildAt(scrollView.childCount - 1)
-        // 获取ScrollView的子View的Y轴坐标
-        val lastChildBottomY = lastChild.bottom
-        // 获取ScrollView的滚动位置
-        val scrollY = scrollView.scrollY
-        // 判断滚动位置是否到达底部
-        return scrollY + scrollViewHeight + 48.dp >= lastChildBottomY
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            if (back()) finish()
-            true
-        } else super.onOptionsItemSelected(item)
-    }
 }

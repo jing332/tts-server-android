@@ -20,6 +20,7 @@ import android.speech.tts.Voice
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.MainActivity
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.KeyConst
 import com.github.jing332.tts_server_android.constant.LogLevel
@@ -349,7 +350,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
             PendingIntent.getActivity(
                 this, 1, Intent(
                     this,
-                    ImportConfigActivity::class.java
+                    MainActivity::class.java
                 ).apply { /*putExtra(KEY_FRAGMENT_INDEX, INDEX_SYS_TTS)*/ }, pendingIntentFlags
             )
 

@@ -153,7 +153,7 @@
 
         <activity android:name=".compose.LibrariesActivity" />
         <activity
-            android:name=".compose.ComposeMainActivity"
+            android:name=".compose.MainActivity"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>

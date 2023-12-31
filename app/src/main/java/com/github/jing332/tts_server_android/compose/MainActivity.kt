@@ -112,7 +112,7 @@ fun Context.asActivity(): Activity {
 
 private var updateCheckTrigger by mutableStateOf(false)
 
-class ComposeMainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

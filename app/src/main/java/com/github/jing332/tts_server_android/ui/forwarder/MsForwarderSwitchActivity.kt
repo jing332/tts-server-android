@@ -10,7 +10,6 @@ import com.github.jing332.tts_server_android.service.forwarder.ms.MsTtsForwarder
 class MsForwarderSwitchActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_none)
         if (MsTtsForwarderService.isRunning)
             MsTtsForwarderService.instance?.close()
         else
