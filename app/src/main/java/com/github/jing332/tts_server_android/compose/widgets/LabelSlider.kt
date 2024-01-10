@@ -1,6 +1,6 @@
 package com.github.jing332.tts_server_android.compose.widgets
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.utils.performLongPress
 
 @Composable
 fun LabelSlider(
@@ -42,8 +41,12 @@ fun LabelSlider(
     buttonSteps: Float = 0.01f,
     buttonLongSteps: Float = 0.1f,
 
-    onValueRemove: (Boolean) -> Unit = { onValueChange(value - if (it) buttonLongSteps else buttonSteps) },
-    onValueAdd: (Boolean) -> Unit = { onValueChange(value + if (it) buttonLongSteps else buttonSteps) },
+    onValueRemove: (Boolean) -> Unit = {
+        onValueChange(value - (if (it) buttonLongSteps else buttonSteps))
+    },
+    onValueAdd: (Boolean) -> Unit = {
+        onValueChange(value + if (it) buttonLongSteps else buttonSteps)
+    },
 
     a11yDescription: String = "",
     text: @Composable BoxScope.() -> Unit,
@@ -69,9 +72,12 @@ fun LabelSlider(
         }) {
             if (showButton)
                 LongClickIconButton(
-                    onClick = { onValueRemove(false) },
+                    onClick = {
+                        Log.e("BUG大无语事件", value.toString())
+                        onValueRemove(false)
+                    },
                     onLongClick = {
-                        view.performLongPress()
+                        Log.e("BUG大无语事件", value.toString())
                         onValueRemove(true)
                     },
                     enabled = value > valueRange.start,
@@ -99,9 +105,12 @@ fun LabelSlider(
             )
             if (showButton)
                 LongClickIconButton(
-                    onClick = { onValueAdd(false) },
+                    onClick = {
+                        Log.e("BUG大无语事件", value.toString())
+                        onValueAdd(false)
+                    },
                     onLongClick = {
-                        view.performLongPress()
+                        Log.e("BUG大无语事件", value.toString())
                         onValueAdd(true)
                     },
                     enabled = value < valueRange.endInclusive,
@@ -128,6 +137,7 @@ fun PreviewSlider() {
         onValueChange = { value = it },
         valueRange = 0.1f..3.0f,
         a11yDescription = str,
+        buttonSteps = 0.1f
     ) {
         Text(str)
     }

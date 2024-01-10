@@ -30,10 +30,10 @@ import com.github.jing332.tts_server_android.utils.performLongPress
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LongClickIconButton(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     onLongClickLabel: String? = null,
-    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -51,8 +51,8 @@ fun LongClickIconButton(
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = {
-                    onLongClick()
                     view.performLongPress()
+                    onLongClick()
                 },
                 onLongClickLabel = onLongClickLabel,
                 enabled = enabled,
