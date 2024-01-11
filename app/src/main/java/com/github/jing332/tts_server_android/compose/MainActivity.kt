@@ -6,8 +6,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
+import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -61,9 +64,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
@@ -91,14 +96,18 @@ import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
 import com.github.jing332.tts_server_android.ui.AppHelpDocumentActivity
-import com.github.jing332.tts_server_android.ui.view.ErrorDialogActivity
 import com.github.jing332.tts_server_android.utils.MyTools.killBattery
 import com.github.jing332.tts_server_android.utils.clone
 import com.github.jing332.tts_server_android.utils.longToast
+import com.github.jing332.tts_server_android.utils.performLongPress
 import com.github.jing332.tts_server_android.utils.toast
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
+
 
 val LocalNavController = compositionLocalOf<NavHostController> { error("No nav controller") }
 val LocalDrawerState = compositionLocalOf<DrawerState> { error("No drawer state") }
@@ -114,6 +123,7 @@ fun Context.asActivity(): Activity {
 private var updateCheckTrigger by mutableStateOf(false)
 
 class MainActivity : AppCompatActivity() {
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -129,8 +139,26 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // A13
+                    val notificationPermission =
+                        rememberPermissionState(permission = android.Manifest.permission.POST_NOTIFICATIONS)
+                    if (!notificationPermission.status.isGranted) {
+                        LaunchedEffect(notificationPermission) {
+                            notificationPermission.launchPermissionRequest()
+                        }
+                    }
+                }/* else {
+                    val enabled = NotificationManagerCompat.from(this).areNotificationsEnabled()
+                    if (!enabled) {
+                        LaunchedEffect(Unit) {
+                            gotoNotificationManager(this@MainActivity)
+                        }
+                    }
+                }*/
                 LaunchedEffect(Unit) {
                     showAutoCheckUpdaterDialog = AppConfig.isAutoCheckUpdateEnabled.value
+
+
                 }
 
                 LaunchedEffect(updateCheckTrigger) {
@@ -143,6 +171,26 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+//private fun gotoNotificationManager(context: Context) {
+//    try {
+//        val intent = Intent()
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { //A8.0
+//            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+//            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+//            intent.putExtra(Settings.EXTRA_CHANNEL_ID, context.applicationInfo.uid)
+//        }
+//        intent.putExtra("app_package", context.packageName)
+//        intent.putExtra("app_uid", context.applicationInfo.uid)
+//        context.startActivity(intent)
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//        val intent = Intent()
+//        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+//        val uri = Uri.fromParts("package", context.packageName, null)
+//        intent.setData(uri)
+//        context.startActivity(intent)
+//    }
+//}
 
 @Composable
 private fun MainScreen(finish: () -> Unit) {
@@ -283,7 +331,7 @@ fun NavDrawerContent(
         Spacer(modifier = Modifier.height(24.dp))
         val context = LocalContext.current
         val clipboardManager = LocalClipboardManager.current
-//        val snackBarState = LocalSnackbarHostState.current
+        val view = LocalView.current
 
         var isBuildTimeExpanded by remember { mutableStateOf(false) }
         val versionNameText = remember {
@@ -299,6 +347,7 @@ fun NavDrawerContent(
                     isBuildTimeExpanded = !isBuildTimeExpanded
                 },
                 onLongClick = {
+                    view.performLongPress()
                     clipboardManager.setText(AnnotatedString(versionNameText))
                     context.longToast(R.string.copied)
                 }
