@@ -2,7 +2,6 @@ package com.github.jing332.tts_server_android.compose.systts.list.edit.ui
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -31,7 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,14 +42,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.asActivity
 import com.github.jing332.tts_server_android.compose.systts.list.IntSlider
 import com.github.jing332.tts_server_android.compose.systts.list.edit.BasicInfoEditScreen
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets.TtsTopAppBar
@@ -65,6 +66,10 @@ import com.github.jing332.tts_server_android.utils.ASFUriUtils.getPath
 import com.github.jing332.tts_server_android.utils.FileUtils.audioList
 import com.github.jing332.tts_server_android.utils.clickableRipple
 import com.github.jing332.tts_server_android.utils.toast
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import java.io.File
 
 class BgmTtsUI : TtsUI() {
@@ -248,6 +253,7 @@ class BgmTtsUI : TtsUI() {
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun FilesAccessPermissionContent(modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -272,7 +278,21 @@ private fun FilesAccessPermissionContent(modifier: Modifier = Modifier) {
 
     Column(modifier) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // A11
-            if (!Environment.isExternalStorageManager()) {
+            var isGranted by remember { mutableStateOf(Environment.isExternalStorageManager()) }
+            val permissionCheckerObserver = remember {
+                LifecycleEventObserver { _, event ->
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        isGranted = Environment.isExternalStorageManager()
+                    }
+                }
+            }
+            val lifecycle = LocalLifecycleOwner.current.lifecycle
+            DisposableEffect(lifecycle, permissionCheckerObserver) {
+                lifecycle.addObserver(permissionCheckerObserver)
+                onDispose { lifecycle.removeObserver(permissionCheckerObserver) }
+            }
+
+            if (!isGranted) {
                 warnButton(text = stringResource(id = R.string.grant_permission_all_file)) {
                     context.startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
                         setData(Uri.parse("package:${context.packageName}"))
@@ -281,37 +301,18 @@ private fun FilesAccessPermissionContent(modifier: Modifier = Modifier) {
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // A13
-            val audioDenied by rememberUpdatedState(
-                newValue = ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.READ_MEDIA_AUDIO
-                ) == PackageManager.PERMISSION_DENIED
-            )
+        val storagePermission = rememberPermissionState(Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (!storagePermission.status.isGranted)
+            warnButton(text = stringResource(R.string.grant_permission_storage_file)) {
+                storagePermission.launchPermissionRequest()
+            }
 
-            if (audioDenied)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // A13
+            val audioPermission = rememberPermissionState(Manifest.permission.READ_MEDIA_AUDIO)
+
+            if (!audioPermission.status.isGranted)
                 warnButton(text = stringResource(R.string.grant_permission_audio_file)) {
-                    ActivityCompat.requestPermissions(
-                        context.asActivity(),
-                        arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_MEDIA_AUDIO
-                        ),
-                        0
-                    )
-                }
-        } else {
-            val denied = ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_DENIED
-            if (denied)
-                warnButton(text = stringResource(R.string.grant_permission_storage_file)) {
-                    ActivityCompat.requestPermissions(
-                        context.asActivity(),
-                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                        0
-                    )
+                    audioPermission.launchPermissionRequest()
                 }
         }
 

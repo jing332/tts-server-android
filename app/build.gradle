@@ -241,6 +241,8 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:${accompanistVersion}")
     implementation("com.google.accompanist:accompanist-navigation-animation:${accompanistVersion}")
     implementation("com.google.accompanist:accompanist-webview:${accompanistVersion}")
+    implementation("com.google.accompanist:accompanist-permissions:${accompanistVersion}")
+
 
 
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
