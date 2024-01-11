@@ -143,7 +143,7 @@ internal fun Item(
                 limitedName,
                 style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Bold,
                 overflow = TextOverflow.Clip,
                 modifier = Modifier

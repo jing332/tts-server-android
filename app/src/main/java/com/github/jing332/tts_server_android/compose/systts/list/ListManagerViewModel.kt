@@ -1,13 +1,16 @@
 package com.github.jing332.tts_server_android.compose.systts.list
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -123,6 +126,14 @@ class ListManagerViewModel : ViewModel() {
     private fun findListInGroup(groupId: Long): List<SystemTts> {
         return list.value.find { it.group.id == groupId }?.list?.sortedBy { it.order }
             ?: emptyList()
+    }
+
+    fun importDefaultListData(context: Context) {
+        val json = context.assets.open("defaultData/list.json").readAllText()
+        val list = AppConst.jsonBuilder.decodeFromString<List<GroupWithSystemTts>>(json)
+        viewModelScope.launch(Dispatchers.IO) {
+            appDb.systemTtsDao.insertGroupWithTts(*list.toTypedArray())
+        }
     }
 
 }

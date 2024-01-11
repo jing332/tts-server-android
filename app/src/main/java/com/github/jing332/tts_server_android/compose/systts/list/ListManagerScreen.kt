@@ -2,7 +2,9 @@ package com.github.jing332.tts_server_android.compose.systts.list
 
 import android.os.Bundle
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,8 +26,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,9 +38,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -69,6 +76,7 @@ import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import com.github.jing332.tts_server_android.utils.longToast
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -332,7 +340,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                 Modifier
                     .fillMaxSize()
                     .reorderable(state = reorderState),
-                state = reorderState.listState
+                state = listState
             ) {
                 models.forEachIndexed { _, groupWithSystemTts ->
                     val g = groupWithSystemTts.group
@@ -426,7 +434,10 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                                         )
                                     },
                                     onAudition = { showAuditionDialog = item },
-                                    onExport = { showExportSheet = listOf(item.copy(groupId = AbstractListGroup.DEFAULT_GROUP_ID)) }
+                                    onExport = {
+                                        showExportSheet =
+                                            listOf(item.copy(groupId = AbstractListGroup.DEFAULT_GROUP_ID))
+                                    }
                                 )
                             }
                         }
@@ -436,6 +447,33 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
                 item {
                     Spacer(Modifier.height(60.dp))
                 }
+            }
+
+
+            var showImportTips by remember { mutableStateOf(false) }
+            LaunchedEffect(key1 = models) {
+                delay(1500)
+                showImportTips = models.isEmpty()
+            }
+
+            AnimatedVisibility(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .align(Alignment.TopCenter),
+                visible = showImportTips
+            ) {
+                Text(
+                    modifier = Modifier
+                        .minimumInteractiveComponentSize()
+                        .clip(MaterialTheme.shapes.small)
+                        .clickable {
+                            vm.importDefaultListData(context)
+                            showImportTips = false
+                        },
+                    text = "空空如也 (￣▽￣) \n点按即可导入默认配置",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium,
+                )
             }
         }
     }
