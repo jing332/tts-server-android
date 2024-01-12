@@ -6,11 +6,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
-import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleUp
@@ -68,7 +67,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
@@ -221,13 +219,17 @@ private fun MainScreen(finish: () -> Unit) {
             gesturesEnabled = gesturesEnabled,
             drawerContent = {
                 NavDrawerContent(
-                    navController,
-                    drawerState,
                     Modifier
                         .fillMaxHeight()
                         .width(300.dp)
+                        .clip(MaterialTheme.shapes.large.copy(
+                            topStart = CornerSize(0.dp),
+                            bottomStart = CornerSize(0.dp)
+                        ))
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(12.dp)
+                        .padding(12.dp),
+                    navController,
+                    drawerState,
                 )
             }) {
             NavHost(
@@ -282,9 +284,9 @@ private fun MainScreen(finish: () -> Unit) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NavDrawerContent(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
     drawerState: DrawerState,
-    modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
     BackHandler(enabled = drawerState.isOpen) {

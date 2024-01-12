@@ -2,14 +2,18 @@ package com.github.jing332.tts_server_android.compose.systts.list
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.graphics.vector.DefaultGroupName
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.conf.SystemTtsConfig
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.constant.SpeechTarget
 import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.systts.GroupWithSystemTts
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 import com.github.jing332.tts_server_android.utils.FileUtils.readAllText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -128,7 +132,22 @@ class ListManagerViewModel : ViewModel() {
             ?: emptyList()
     }
 
-    fun importDefaultListData(context: Context) {
+    fun checkListData(context: Context) {
+        appDb.systemTtsDao.getGroup(DEFAULT_GROUP_ID) ?: kotlin.run {
+            appDb.systemTtsDao.insertGroup(
+                SystemTtsGroup(
+                    DEFAULT_GROUP_ID,
+                    context.getString(R.string.default_group),
+                    appDb.systemTtsDao.groupCount
+                )
+            )
+        }
+
+        if (appDb.systemTtsDao.ttsCount == 0)
+            importDefaultListData(context)
+    }
+
+    private fun importDefaultListData(context: Context) {
         val json = context.assets.open("defaultData/list.json").readAllText()
         val list = AppConst.jsonBuilder.decodeFromString<List<GroupWithSystemTts>>(json)
         viewModelScope.launch(Dispatchers.IO) {
