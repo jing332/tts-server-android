@@ -5,16 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.data.appDb
+import com.github.jing332.tts_server_android.data.entities.AbstractListGroup.Companion.DEFAULT_GROUP_ID
 import com.github.jing332.tts_server_android.data.entities.replace.GroupWithReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
+import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
-internal class ManagerViewModel : ViewModel() {
+internal class ReplaceRuleManagerViewModel : ViewModel() {
     private var allList = listOf<GroupWithReplaceRule>()
 
     private val _list = MutableStateFlow<List<GroupWithReplaceRule>>(emptyList())
@@ -26,6 +30,15 @@ internal class ManagerViewModel : ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            appDb.replaceRuleDao.getGroup(DEFAULT_GROUP_ID) ?: run {
+                appDb.replaceRuleDao.insertGroup(
+                    ReplaceRuleGroup(
+                        DEFAULT_GROUP_ID,
+                        app.getString(R.string.default_group)
+                    )
+                )
+            }
+
             appDb.replaceRuleDao.updateAllOrder()
             appDb.replaceRuleDao.flowAllGroupWithReplaceRules().conflate().collectLatest {
                 allList = it
@@ -33,6 +46,7 @@ internal class ManagerViewModel : ViewModel() {
             }
         }
     }
+
 
     fun updateSearchResult(
         text: String = searchText,
@@ -75,5 +89,22 @@ internal class ManagerViewModel : ViewModel() {
         }
 
         _list.value = resultList
+    }
+
+    fun moveTop(rule: ReplaceRule) {
+        appDb.replaceRuleDao.update(rule.copy(order = 0))
+    }
+
+    fun moveBottom(rule: ReplaceRule) {
+        appDb.replaceRuleDao.update(rule.copy(order = appDb.replaceRuleDao.count))
+    }
+
+    fun deleteRule(rule: ReplaceRule) {
+        appDb.replaceRuleDao.delete(rule)
+    }
+
+    fun deleteGroup(groupWithRules: GroupWithReplaceRule) {
+        appDb.replaceRuleDao.delete(*groupWithRules.list.toTypedArray())
+        appDb.replaceRuleDao.deleteGroup(groupWithRules.group)
     }
 }

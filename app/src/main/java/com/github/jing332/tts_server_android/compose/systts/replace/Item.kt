@@ -8,11 +8,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.VerticalAlignBottom
+import androidx.compose.material.icons.filled.VerticalAlignTop
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +46,8 @@ internal fun Item(
     onClick: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
+    onMoveTop: () -> Unit,
+    onMoveBottom: () -> Unit,
     isEnabled: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
@@ -103,6 +108,35 @@ internal fun Item(
                         onDismissRequest = { isMoreOptionsVisible = false }) {
 
                         DropdownMenuItem(
+                            text = { Text(stringResource(R.string.move_to_top)) },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.VerticalAlignTop,
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                onMoveTop()
+                                isMoreOptionsVisible = false
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.move_to_bottom)) },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.VerticalAlignBottom,
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                onMoveBottom()
+                                isMoreOptionsVisible = false
+                            }
+                        )
+
+                        HorizontalDivider()
+                        DropdownMenuItem(
                             text = { Text(stringResource(R.string.delete)) },
                             leadingIcon = {
                                 Icon(
@@ -111,7 +145,10 @@ internal fun Item(
                                     tint = MaterialTheme.colorScheme.error
                                 )
                             },
-                            onClick = { deleteDialog = true }
+                            onClick = {
+                                isMoreOptionsVisible = false
+                                deleteDialog = true
+                            }
                         )
 
                     }

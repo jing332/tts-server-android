@@ -17,7 +17,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCard
 import androidx.compose.material.icons.filled.AppShortcut
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Input
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Output
@@ -49,7 +48,6 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
 import com.github.jing332.tts_server_android.compose.ShadowReorderableItem
 import com.github.jing332.tts_server_android.compose.navigate
-import com.github.jing332.tts_server_android.compose.systts.plugin.PluginManagerActivity
 import com.github.jing332.tts_server_android.compose.systts.sizeToToggleableState
 import com.github.jing332.tts_server_android.compose.widgets.LazyListIndexStateSaver
 import com.github.jing332.tts_server_android.compose.widgets.TextFieldDialog
@@ -66,7 +64,7 @@ import org.burnoutcrew.reorderable.reorderable
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Unit) {
+internal fun ManagerScreen(vm: ReplaceRuleManagerViewModel = viewModel(), finish: () -> Unit) {
     val context = LocalContext.current
     val navController = LocalNavController.current
 
@@ -177,7 +175,10 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                 },
                 navigationIcon = {
                     IconButton(onClick = finish) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.nav_back))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            stringResource(id = R.string.nav_back)
+                        )
                     }
                 },
                 actions = {
@@ -278,7 +279,9 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                 stickyHeader(key = key) {
                     ShadowReorderableItem(reorderableState = reorderState, key = key) {
                         Group(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .detectReorderAfterLongPress(reorderState),
                             name = g.name,
                             isExpanded = g.isExpanded,
                             toggleableState = toggleableState,
@@ -291,8 +294,7 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                             onClick = { appDb.replaceRuleDao.updateGroup(g.copy(isExpanded = !g.isExpanded)) },
                             onEdit = { showGroupEditDialog = g },
                             onDelete = {
-                                appDb.replaceRuleDao.delete(*groupWithRules.list.toTypedArray())
-                                appDb.replaceRuleDao.deleteGroup(g)
+                                vm.deleteGroup(groupWithRules)
                             },
                             onExport = { showExportSheet = listOf(groupWithRules) },
                             onSort = { showSortDialog = groupWithRules.list }
@@ -316,7 +318,9 @@ internal fun ManagerScreen(vm: ManagerViewModel = viewModel(), finish: () -> Uni
                                 },
                                 onClick = { },
                                 onEdit = { navigateToEdit(rule) },
-                                onDelete = { appDb.replaceRuleDao.delete(rule) },
+                                onDelete = { vm.deleteRule(rule) },
+                                onMoveTop = { vm.moveTop(rule) },
+                                onMoveBottom = { vm.moveBottom(rule) }
                             )
                         }
                     }
