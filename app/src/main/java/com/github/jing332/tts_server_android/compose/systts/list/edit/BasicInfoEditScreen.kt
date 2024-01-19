@@ -37,7 +37,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.BasicAudioParamsDialog
@@ -380,7 +379,7 @@ fun BasicInfoEditScreen(
             label = { Text(stringResource(id = R.string.group)) },
             value = group,
             values = groups,
-            onKeySame = { current, new -> (current as SystemTtsGroup).id == (new as SystemTtsGroup).id },
+            onValueSame = { current, new -> (current as SystemTtsGroup).id == (new as SystemTtsGroup).id },
             entries = groups.map { it.name },
             onSelectedChange = { k, _ ->
                 onSysttsChange(systts.copy(groupId = (k as SystemTtsGroup).id))

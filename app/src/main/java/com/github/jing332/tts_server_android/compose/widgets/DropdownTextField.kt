@@ -29,18 +29,18 @@ import kotlin.math.max
 fun DropdownTextField(
     modifier: Modifier = Modifier,
     label: @Composable() (() -> Unit),
-    key: Any,
-    keys: List<Any>,
-    values: List<String>,
+    value: Any,
+    values: List<Any>,
+    entries: List<String>,
     leadingIcon: @Composable (() -> Unit)? = null,
-    onKeySame: (current: Any, new: Any) -> Boolean = { current, new -> current == new },
-    onSelectedChange: (key: Any, value: String) -> Unit,
+    onValueSame: (current: Any, new: Any) -> Boolean = { current, new -> current == new },
+    onSelectedChange: (value: Any, entry: String) -> Unit,
 ) {
-    var selectedText = values.getOrNull(max(0, keys.indexOf(key))) ?: ""
+    var selectedText = entries.getOrNull(max(0, values.indexOf(value))) ?: ""
     var expanded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(keys) {
-        keys.getOrNull(values.indexOf(selectedText))?.let {
+    LaunchedEffect(values, entries) {
+        values.getOrNull(entries.indexOf(selectedText))?.let {
             onSelectedChange.invoke(it, selectedText)
         }
     }
@@ -72,8 +72,8 @@ fun DropdownTextField(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                values.forEachIndexed { index, text ->
-                    val checked = onKeySame(key, keys[index])
+                entries.forEachIndexed { index, text ->
+                    val checked = onValueSame(value, values[index])
                     DropdownMenuItem(
                         text = {
                             Text(
@@ -84,7 +84,7 @@ fun DropdownTextField(
                         onClick = {
                             expanded = false
                             selectedText = text
-                            onSelectedChange.invoke(keys[index], text)
+                            onSelectedChange.invoke(values[index], text)
                         }, modifier = Modifier.background(
                             if (checked) MaterialTheme.colorScheme.secondaryContainer
                             else Color.Unspecified
