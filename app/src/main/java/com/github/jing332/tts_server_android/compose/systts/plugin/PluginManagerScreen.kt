@@ -238,7 +238,6 @@ fun PluginManagerScreen(onFinishActivity: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Item(
     modifier: Modifier,

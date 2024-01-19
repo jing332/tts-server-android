@@ -13,5 +13,5 @@ fun ReplaceRuleExportBottomSheet(onDismissRequest: () -> Unit, list: List<GroupW
         AppConst.jsonBuilder.encodeToString(list)
     }
 
-    ConfigExportBottomSheet(json = json, onDismissRequest = onDismissRequest)
+    ConfigExportBottomSheet(json = json, onDismissRequest = onDismissRequest, fileName = "ttsrv-replaces.json")
 }

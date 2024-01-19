@@ -10,6 +10,7 @@ import kotlinx.serialization.encodeToString
 fun ListExportBottomSheet(onDismissRequest: () -> Unit, list: List<GroupWithSystemTts>) {
     ConfigExportBottomSheet(
         json = AppConst.jsonBuilder.encodeToString(list),
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        fileName = "ttsrv-list.json"
     )
 }
