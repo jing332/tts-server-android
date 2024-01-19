@@ -34,9 +34,9 @@ class PluginTtsViewModel : BaseViewModel() {
 
             engine.onLoadUI(context, linearLayout)
 
-            onLocaleChanged(tts.locale)
             updateLocales()
-        } catch (t: Throwable) {
+//            updateVoices(tts.locale)
+         } catch (t: Throwable) {
             throw t
         } finally {
             isLoading = false
@@ -48,12 +48,12 @@ class PluginTtsViewModel : BaseViewModel() {
         locales.addAll(engine.getLocales())
     }
 
-    fun onLocaleChanged(locale: String) {
+    fun updateVoices(locale: String) {
         voices.clear()
         voices.addAll(engine.getVoices(locale).toList())
     }
 
-    fun onVoiceChanged(locale: String, voice: String) {
+    fun updateCustomUI(locale: String, voice: String) {
         try {
             engine.onVoiceChanged(locale, voice)
         } catch (_: NoSuchMethodException) {

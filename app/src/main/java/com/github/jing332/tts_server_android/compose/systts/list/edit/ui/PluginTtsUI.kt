@@ -1,5 +1,6 @@
 package com.github.jing332.tts_server_android.compose.systts.list.edit.ui
 
+import android.util.Log
 import android.widget.LinearLayout
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,9 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 class PluginTtsUI : TtsUI() {
+    companion object {
+        const val TAG = "PluginTtsUI"
+    }
 
     @Composable
     override fun ParamsEditScreen(
@@ -238,22 +242,19 @@ class PluginTtsUI : TtsUI() {
                             values = vm.locales,
                             entries = vm.locales.map { Locale.forLanguageTag(it).displayName },
                             onSelectedChange = { locale, _ ->
+                                Log.d("PluginTtsUI", "locale onSelectedChange: $locale")
                                 if (locale.toString().isBlank()) return@AppSpinner
                                 onSysttsChange(
                                     systts.copy(tts = tts.copy(locale = locale as String))
                                 )
+                                runCatching {
+                                    Log.d("PluginTtsUI", "updateVoices: locale=${locale}")
+                                    vm.updateVoices(locale)
+                                }
                             },
                         )
 
-                        LaunchedEffect(key1 = tts.locale) {
-                            runCatching {
-                                vm.onLocaleChanged(tts.locale)
-                            }
-                        }
 
-                        LaunchedEffect(key1 = tts.voice) {
-
-                        }
 
                         AppSpinner(
                             modifier = Modifier
@@ -264,6 +265,11 @@ class PluginTtsUI : TtsUI() {
                             values = vm.voices.map { it.first },
                             entries = vm.voices.map { it.second },
                             onSelectedChange = { voice, name ->
+                                Log.d(
+                                    "PluginTtsUI",
+                                    "voice onSelectedChange: voice=$voice, name=$name"
+                                )
+
                                 val lastName =
                                     vm.voices.find { it.first == tts.voice }?.second ?: ""
                                 onSysttsChange(
@@ -274,7 +280,11 @@ class PluginTtsUI : TtsUI() {
                                 )
 
                                 runCatching {
-                                    vm.onVoiceChanged(tts.locale, tts.voice)
+                                    Log.d(
+                                        "PluginTtsUI",
+                                        "updateCustomUI: locale=${tts.locale}, voice=$voice"
+                                    )
+                                    vm.updateCustomUI(tts.locale, voice)
                                 }.onFailure {
                                     context.displayErrorDialog(it)
                                 }

@@ -24,11 +24,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.toLowerCase
 import com.github.jing332.tts_server_android.App
+import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.edit.ui.PluginTtsUI
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
@@ -37,6 +40,7 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.utils.clickableRipple
+import java.util.Locale
 
 @Suppress("DEPRECATION")
 class PluginPreviewActivity : AppCompatActivity() {
@@ -45,7 +49,7 @@ class PluginPreviewActivity : AppCompatActivity() {
         const val ACTION_FINISH = "finish"
     }
 
-    private val mReceiver by lazy{ MyBroadcastReceiver() }
+    private val mReceiver by lazy { MyBroadcastReceiver() }
 
     inner class MyBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -70,9 +74,13 @@ class PluginPreviewActivity : AppCompatActivity() {
             finish()
             return
         }
+        if (tts.locale.isBlank()) {
+            val l = AppLocale.getAppLocale(this)
+            tts.locale = "${l.language}-${l.country}" // eg: en-US, zh-CN
+        }
         setContent {
             AppTheme {
-                var systts by remember { mutableStateOf(SystemTts(tts = tts)) }
+                var systts by rememberSaveable { mutableStateOf(SystemTts(tts = tts)) }
                 PluginPreviewScreen(systts = systts, onSysttsChange = { systts = it }, onSave = {
                     intent.putExtra(KEY_DATA, systts.tts)
                     setResult(RESULT_OK, intent)
@@ -172,7 +180,8 @@ class PluginPreviewActivity : AppCompatActivity() {
                     }
                 )
             }) { paddingValues ->
-            PluginTtsUI().EditContentScreen(
+            val ui = remember { PluginTtsUI() }
+            ui.EditContentScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
