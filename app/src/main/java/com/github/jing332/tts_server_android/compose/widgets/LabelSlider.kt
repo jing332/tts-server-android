@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.utils.performLongPress
 
 @Composable
 fun LabelSlider(
@@ -41,11 +42,17 @@ fun LabelSlider(
     buttonSteps: Float = 0.01f,
     buttonLongSteps: Float = 0.1f,
 
-    onValueRemove: (Boolean) -> Unit = {
-        onValueChange(value - (if (it) buttonLongSteps else buttonSteps))
+    valueChange: (Float) -> Unit = {
+        if (it < valueRange.start) onValueChange(valueRange.start)
+        else if (it > valueRange.endInclusive) onValueChange(valueRange.endInclusive)
+        else onValueChange(it)
     },
-    onValueAdd: (Boolean) -> Unit = {
-        onValueChange(value + if (it) buttonLongSteps else buttonSteps)
+
+    onValueRemove: (longClick: Boolean) -> Unit = {
+        valueChange(value - (if (it) buttonLongSteps else buttonSteps))
+    },
+    onValueAdd: (longClick: Boolean) -> Unit = {
+        valueChange(value + if (it) buttonLongSteps else buttonSteps)
     },
 
     a11yDescription: String = "",
@@ -73,11 +80,9 @@ fun LabelSlider(
             if (showButton)
                 LongClickIconButton(
                     onClick = {
-                        Log.e("BUG大无语事件", value.toString())
                         onValueRemove(false)
                     },
                     onLongClick = {
-                        Log.e("BUG大无语事件", value.toString())
                         onValueRemove(true)
                     },
                     enabled = value > valueRange.start,
@@ -97,7 +102,12 @@ fun LabelSlider(
                         contentDescription = a11yDescription
                     },
                 value = value,
-                onValueChange = onValueChange,
+                onValueChange = {
+                    onValueChange(it)
+
+                    if (it == valueRange.start || it == valueRange.endInclusive)
+                        view.performLongPress()
+                },
                 enabled = enabled,
                 valueRange = valueRange,
                 steps = steps,
@@ -106,11 +116,9 @@ fun LabelSlider(
             if (showButton)
                 LongClickIconButton(
                     onClick = {
-                        Log.e("BUG大无语事件", value.toString())
                         onValueAdd(false)
                     },
                     onLongClick = {
-                        Log.e("BUG大无语事件", value.toString())
                         onValueAdd(true)
                     },
                     enabled = value < valueRange.endInclusive,

@@ -4,18 +4,31 @@ package com.github.jing332.tts_server_android.model.rhino.core.type.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
+import android.widget.FrameLayout
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.AbstractComposeView
+import androidx.compose.ui.platform.ComposeView
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 
 @SuppressLint("ViewConstructor")
-class JSpinner(context: Context, val hint: CharSequence) : AbstractComposeView(context) {
+class JSpinner(context: Context, val hint: CharSequence) : FrameLayout(context) {
+    companion object {
+        const val TAG = "JSpinner"
+    }
 
-    var items: List<Item> = listOf()
+    private val mItems = mutableStateListOf<Item>()
+    var items: List<Item>
+        get() = mItems
+        set(value) {
+            mItems.clear()
+            mItems += value
+        }
 
     private var mSelectedPosition by mutableIntStateOf(0)
 
@@ -35,21 +48,27 @@ class JSpinner(context: Context, val hint: CharSequence) : AbstractComposeView(c
         mListener = listener
     }
 
+    init {
+        val composeView = ComposeView(context)
+        addView(composeView)
+        composeView.setContent {
+            Content()
+        }
+    }
+
     @Composable
-    override fun Content() {
-        val item = items.getOrNull(mSelectedPosition) ?: return
+    fun Content() {
+        val item = mItems.getOrElse(mSelectedPosition) { mItems.getOrNull(0) } ?: Item("null", Unit)
         AppSpinner(
             label = { Text(hint.toString()) },
             value = item.value,
-            values = items.map { it.value },
-            entries = items.map { it.name.toString() },
+            values = mItems.map { it.value },
+            entries = mItems.map { it.name.toString() },
             onSelectedChange = { value, _ ->
-                val index = items.indexOfFirst { it.value == value }
+                val index = mItems.indexOfFirst { it.value == value }
                 mSelectedPosition = index
                 mListener?.onItemSelected(
-                    this@JSpinner,
-                    index,
-                    items[index]
+                    spinner = this@JSpinner, position = index, item = mItems[index]
                 )
             }
         )
