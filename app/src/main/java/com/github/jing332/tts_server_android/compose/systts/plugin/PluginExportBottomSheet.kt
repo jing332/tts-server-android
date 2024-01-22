@@ -19,11 +19,12 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.ConfigExportBottomSheet
+import com.github.jing332.tts_server_android.compose.widgets.TextCheckBox
 
 @Composable
 internal fun PluginExportBottomSheet(
     onDismissRequest: () -> Unit,
-    fileName:String,
+    fileName: String,
     onGetJson: (isExportVars: Boolean) -> String,
 ) {
     var isExportVars by remember { mutableStateOf(false) }
@@ -32,16 +33,12 @@ internal fun PluginExportBottomSheet(
         json = onGetJson(isExportVars),
         onDismissRequest = onDismissRequest,
         content = {
-            Row(
-                Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable(role = Role.Checkbox) { isExportVars = !isExportVars }
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 8.dp)
-            ) {
-                Checkbox(checked = isExportVars, onCheckedChange = null)
-                Text(stringResource(id = R.string.export_vars))
-            }
+            TextCheckBox(modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(vertical = 8.dp),
+                text = { Text(stringResource(id = R.string.export_vars)) },
+                checked = isExportVars,
+                onCheckedChange = { isExportVars = !isExportVars })
         }
     )
 }

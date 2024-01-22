@@ -248,6 +248,10 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.navigation:navigation-compose:2.7.6")
 
+    implementation("io.github.dokar3:sheets-m3:0.5.4")
+
+
+
 
     def lifecycle_version = "2.7.0"
     implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")

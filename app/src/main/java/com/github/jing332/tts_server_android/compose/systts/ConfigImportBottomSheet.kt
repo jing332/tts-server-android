@@ -52,6 +52,7 @@ import com.drake.net.Net
 import com.drake.net.okhttp.trustSSLCertificate
 import com.drake.net.utils.withMain
 import com.github.jing332.tts_server_android.R
+import com.github.jing332.tts_server_android.compose.widgets.AppBottomSheet
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.compose.widgets.RowToggleButtonGroup
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
@@ -118,10 +119,7 @@ fun ConfigImportBottomSheet(
     var path by remember { mutableStateOf("") }
     var url by remember { mutableStateOf("") }
 
-    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(
-        modifier = Modifier.fillMaxSize(),
-        sheetState = state,
+    AppBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         Column(Modifier.padding(horizontal = 8.dp)) {

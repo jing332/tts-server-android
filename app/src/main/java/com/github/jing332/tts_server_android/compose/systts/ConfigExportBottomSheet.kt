@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.directlink.LinkUploadSelectionDialog
+import com.github.jing332.tts_server_android.compose.widgets.AppBottomSheet
 import com.github.jing332.tts_server_android.ui.AppActivityResultContracts
 import com.github.jing332.tts_server_android.ui.FilePickerActivity
 import com.github.jing332.tts_server_android.ui.view.BigTextView
@@ -60,7 +61,7 @@ fun ConfigExportBottomSheet(
             json = json
         )
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest) {
+    AppBottomSheet(onDismissRequest = onDismissRequest) {
         Column(
             Modifier
                 .fillMaxWidth()
