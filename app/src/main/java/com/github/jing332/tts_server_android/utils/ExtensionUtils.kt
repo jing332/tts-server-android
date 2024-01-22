@@ -29,7 +29,8 @@ import android.view.WindowMetrics
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ripple.rememberRipple
@@ -83,7 +84,8 @@ fun Modifier.simpleVerticalScrollbar(
         if (needDrawScrollbar && firstVisibleElementIndex != null) {
             val elementHeight = this.size.height / state.layoutInfo.totalItemsCount
 
-            val scrollbarOffsetY = firstVisibleElementIndex * elementHeight + state.firstVisibleItemScrollOffset / 4
+            val scrollbarOffsetY =
+                firstVisibleElementIndex * elementHeight + state.firstVisibleItemScrollOffset / 4
 
 //            val scrollbarOffsetY = firstVisibleElementIndex * elementHeight
             val scrollbarHeight = state.layoutInfo.visibleItemsInfo.size * elementHeight
@@ -98,14 +100,25 @@ fun Modifier.simpleVerticalScrollbar(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Modifier.clickableRipple(enabled: Boolean = true, role: Role? = null, onClick: () -> Unit) =
-    this.clickable(
+fun Modifier.clickableRipple(
+    enabled: Boolean = true,
+    role: Role? = null,
+    onLongClick: (() -> Unit)? = null,
+    onLongClickLabel: String? = null,
+    onClickLabel: String? = null,
+    onClick: () -> Unit,
+) =
+    this.combinedClickable(
         enabled = enabled,
         role = role,
         indication = rememberRipple(),
         interactionSource = remember { MutableInteractionSource() },
-        onClick = onClick
+        onClickLabel = onClickLabel,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        onLongClickLabel = onLongClickLabel,
     )
 
 fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {

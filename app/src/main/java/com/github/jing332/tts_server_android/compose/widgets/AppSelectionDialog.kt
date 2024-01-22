@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -37,13 +38,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
-import com.github.jing332.tts_server_android.compose.asActivity
-import com.github.jing332.tts_server_android.compose.systts.replace.edit.SoftKeyboardInputToolbar
-import com.github.jing332.tts_server_android.utils.SoftKeyboardUtils
+import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.clickableRipple
+import com.github.jing332.tts_server_android.utils.performLongPress
+import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlin.math.max
 
 @Composable
@@ -72,11 +72,12 @@ fun AppSelectionDialog(
     onClick: (Any, String) -> Unit,
 ) {
     val context = LocalContext.current
+    val view = LocalView.current
     AppDialog(
         title = title,
         content = {
             val state = rememberLazyListState()
-            LaunchedEffect(Unit) {
+            LaunchedEffect(values) {
                 val index = values.indexOfFirst { onValueSame(it, value) }
                 if (index >= 0 && index < entries.size)
                     state.scrollToItem(index)
@@ -107,9 +108,7 @@ fun AppSelectionDialog(
                     }
                 }
 
-                val listState = rememberLazyListState(
-                    initialFirstVisibleItemIndex = max(0, values.indexOf(value))
-                )
+                val listState = rememberLazyListState()
 
                 val isEmpty by remember {
                     derivedStateOf { listState.layoutInfo.viewportSize == IntSize.Zero }
@@ -145,7 +144,14 @@ fun AppSelectionDialog(
                                     .fillMaxWidth()
                                     .clip(MaterialTheme.shapes.medium)
                                     .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Unspecified)
-                                    .clickableRipple { onClick(current, entry) }
+                                    .clickableRipple(
+                                        onClick = { onClick(current, entry) },
+                                        onLongClick = {
+                                            view.performLongPress()
+                                            ClipboardUtils.copyText(entry)
+                                            context.toast(R.string.copied)
+                                        }
+                                    )
                                     .minimumInteractiveComponentSize(),
                             ) {
                                 itemContent(isSelected, entry, value)

@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.BasicAudioParamsDialog
+import com.github.jing332.tts_server_android.conf.SysTtsConfig
 import com.github.jing332.tts_server_android.model.speech.tts.PlayerParams
 import com.github.jing332.tts_server_android.utils.longToast
 
@@ -15,7 +16,8 @@ fun InternalPlayerDialog(
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        context.longToast(R.string.built_in_player_not_enabled)
+        if (!SysTtsConfig.isInAppPlayAudio)
+            context.longToast(R.string.built_in_player_not_enabled)
     }
 
     BasicAudioParamsDialog(

@@ -2,42 +2,87 @@ package com.github.jing332.tts_server_android.model.rhino.core.type.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
-import com.github.jing332.tts_server_android.ui.view.widget.Seekbar
+import android.widget.FrameLayout
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
+import com.github.jing332.tts_server_android.utils.ThrottleUtil
+import java.math.BigDecimal
+import java.math.RoundingMode
 
+@Suppress("unused")
 @SuppressLint("ViewConstructor")
-class JSeekBar(context: Context, hint: CharSequence) : Seekbar(context), Seekbar.OnSeekBarChangeListener {
-    init {
-        super.hint = hint.toString()
+class JSeekBar(context: Context, val hint: CharSequence) : FrameLayout(context) {
+
+    interface OnSeekBarChangeListener {
+        fun onStartTrackingTouch(seekBar: JSeekBar)
+        fun onProgressChanged(seekBar: JSeekBar, progress: Int, fromUser: Boolean)
+        fun onStopTrackingTouch(seekBar: JSeekBar)
     }
+
+    private var mListener: OnSeekBarChangeListener? = null
 
     fun setOnChangeListener(listener: OnSeekBarChangeListener?) {
-        super.onSeekBarChangeListener = object : OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(seekBar: Seekbar) {
-                kotlin.runCatching {
-                    listener?.onStartTrackingTouch(seekBar)
-                }.onFailure {
-                    context.displayErrorDialog(it)
-                }
-            }
+        mListener = listener
+    }
 
-            override fun onProgressChanged(seekBar: Seekbar, progress: Int, fromUser: Boolean) {
-                kotlin.runCatching {
-                    listener?.onProgressChanged(seekBar, progress, fromUser)
-                }.onFailure {
-                    context.displayErrorDialog(it)
-                }
-            }
-
-            override fun onStopTrackingTouch(seekBar: Seekbar) {
-                kotlin.runCatching {
-                    listener?.onStopTrackingTouch(seekBar)
-                }.onFailure {
-                    context.displayErrorDialog(it)
-                }
-            }
+    init {
+        val compose = ComposeView(context)
+        addView(compose)
+        compose.setContent {
+            Content()
         }
 
-
     }
+
+    @JvmField
+    var max = 0
+
+
+    private var n = 0
+    private var x = 1f
+    fun setFloatType(n: Int) {
+        this.n = n
+        x = 1f
+        for (i in 1..n) {
+            x *= 10f
+        }
+    }
+
+    var value: Float
+        get() = mValue / x
+        set(value) {
+            mValue = value * x
+            mListener?.onProgressChanged(this@JSeekBar, value.toInt(), false)
+        }
+
+    private var mValue by mutableFloatStateOf(0f)
+    private val throttleUtils = ThrottleUtil()
+
+    @Composable
+    fun Content() {
+        LabelSlider(
+            value = mValue,
+            valueRange = 0f..max.toFloat(),
+            buttonSteps = 1f,
+            buttonLongSteps = 10f,
+            onValueChange = {
+                mValue = it
+                mListener?.onProgressChanged(this@JSeekBar, value.toInt(), true)
+
+                throttleUtils.runAction {
+                    mListener?.onStopTrackingTouch(this@JSeekBar)
+                }
+            },
+        ) {
+            Text(
+                hint.toString() + BigDecimal(value.toDouble()).setScale(n, RoundingMode.HALF_UP)
+            )
+        }
+    }
+
 }

@@ -29,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.toLowerCase
 import com.github.jing332.tts_server_android.App
 import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
@@ -40,7 +39,6 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.utils.clickableRipple
-import java.util.Locale
 
 @Suppress("DEPRECATION")
 class PluginPreviewActivity : AppCompatActivity() {
