@@ -7,7 +7,16 @@ import kotlinx.serialization.Serializable
 
 
 object Github {
-    fun getLatestRelease(repo: String = "jing332/tts-server-android"): Release {
+    private const val repo = "jing332/tts-server-android"
+
+    fun getActions(repo: String = this.repo): WorkflowRuns {
+        val str = Net.get("https://api.github.com/repos/${repo}/actions/runs") {
+        }.execute<String>()
+
+        return AppConst.jsonBuilder.decodeFromString<WorkflowRuns>(str)
+    }
+
+    fun getLatestRelease(repo: String = this.repo): Release {
         val str = Net.get("https://api.github.com/repos/$repo/releases/latest") {
         }.execute<String>()
 

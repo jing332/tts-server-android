@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.compose.widgets.Markdown
+import com.github.jing332.tts_server_android.constant.AppConst
+import com.github.jing332.tts_server_android.model.updater.AppUpdateChecker
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 
 @Preview
@@ -40,6 +41,44 @@ private fun PreviewAppUpdateDialog() {
             }, version = "1.0.0", content = "## 更新内容\n\n- 123", downloadUrl = "url"
         )
 
+}
+
+@Composable
+fun AppUpdateActionDialog(onDismissRequest: () -> Unit, result: AppUpdateChecker.ActionResult) {
+    val context = LocalContext.current
+    fun openDownloadUrl(url: String) {
+        ClipboardUtils.copyText("TTS Server", url)
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+    AppDialog(onDismissRequest = onDismissRequest, title = {
+        Text(
+            stringResource(id = R.string.check_update) + " (Github Actions)",
+            style = MaterialTheme.typography.titleLarge,
+        )
+    }, content = {
+        Column {
+            Text(text = result.title, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = AppConst.dateFormatSec.format(result.updateAt * 1000),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    },
+        buttons = {
+            Row {
+                TextButton(onClick = {
+                    onDismissRequest()
+                    openDownloadUrl(result.url)
+                }) {
+                    Text("跳转 Github")
+                }
+
+                TextButton(onClick = { onDismissRequest() }) {
+                    Text(stringResource(id = R.string.cancel))
+                }
+            }
+        }
+    )
 }
 
 @Composable

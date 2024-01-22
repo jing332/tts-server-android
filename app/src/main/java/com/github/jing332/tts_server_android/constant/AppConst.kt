@@ -10,7 +10,7 @@ import com.script.javascript.RhinoScriptEngine
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 @SuppressLint("SimpleDateFormat")
 @Suppress("DEPRECATION")
@@ -55,6 +55,10 @@ object AppConst {
 
     val dateFormat: SimpleDateFormat by lazy {
         SimpleDateFormat("yyyy/MM/dd HH:mm")
+    }
+
+    val dateFormatSec: SimpleDateFormat by lazy {
+        SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     }
 
     val fileNameFormat: SimpleDateFormat by lazy {

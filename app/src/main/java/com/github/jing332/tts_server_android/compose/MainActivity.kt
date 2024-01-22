@@ -68,6 +68,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavDestination
@@ -93,6 +94,7 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
+import com.github.jing332.tts_server_android.model.updater.AppUpdateChecker
 import com.github.jing332.tts_server_android.ui.AppHelpDocumentActivity
 import com.github.jing332.tts_server_android.utils.MyTools.killBattery
 import com.github.jing332.tts_server_android.utils.clone
@@ -102,9 +104,8 @@ import com.github.jing332.tts_server_android.utils.toast
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
 val LocalNavController = compositionLocalOf<NavHostController> { error("No nav controller") }
@@ -131,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                 var showAutoCheckUpdaterDialog by remember { mutableStateOf(false) }
                 if (showAutoCheckUpdaterDialog) {
                     val fromUser by remember { mutableStateOf(updateCheckTrigger) }
-                    AutoUpdateCheckerDialog(fromUser) {
+                    AutoUpdateCheckerDialog(fromUser, fromAction = true) {
                         showAutoCheckUpdaterDialog = false
                         updateCheckTrigger = false
                     }
@@ -222,10 +223,12 @@ private fun MainScreen(finish: () -> Unit) {
                     Modifier
                         .fillMaxHeight()
                         .width(300.dp)
-                        .clip(MaterialTheme.shapes.large.copy(
-                            topStart = CornerSize(0.dp),
-                            bottomStart = CornerSize(0.dp)
-                        ))
+                        .clip(
+                            MaterialTheme.shapes.large.copy(
+                                topStart = CornerSize(0.dp),
+                                bottomStart = CornerSize(0.dp)
+                            )
+                        )
                         .background(MaterialTheme.colorScheme.background)
                         .padding(12.dp),
                     navController,
@@ -373,9 +376,7 @@ fun NavDrawerContent(
             }
             AnimatedVisibility(visible = isBuildTimeExpanded) {
                 Text(
-                    text = SimpleDateFormat(
-                        "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
-                    ).format(BuildConfig.BUILD_TIME * 1000),
+                    text = AppConst.dateFormatSec.format(BuildConfig.BUILD_TIME * 1000),
                     modifier = Modifier.padding(4.dp)
                 )
             }
