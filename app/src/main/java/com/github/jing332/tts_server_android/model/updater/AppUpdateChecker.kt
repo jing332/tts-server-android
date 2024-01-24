@@ -60,16 +60,16 @@ object AppUpdateChecker {
         val run = workflowRuns.workflowRuns.find { it.path == path }
 
         if (run != null && run.status == "completed" && run.conclusion == "success") {
-            val actionTs = toTimestamp(run.updatedAt)
+            val actionTs = toTimestamp(run.createdAt)
             Log.i(
                 TAG,
                 "checkUpdateFromActions: actionTs=$actionTs, buildTs=${BuildConfig.BUILD_TIME}"
             )
-            if (actionTs <= BuildConfig.BUILD_TIME) return null
+            if (false && actionTs <= BuildConfig.BUILD_TIME) return null
             return ActionResult(
                 url = run.htmlUrl,
                 title = run.displayTitle,
-                updateAt = actionTs
+                time = actionTs
             )
         }
 
@@ -79,6 +79,6 @@ object AppUpdateChecker {
     data class ActionResult(
         val url: String,
         val title: String,
-        val updateAt: Long,
+        val time: Long,
     )
 }

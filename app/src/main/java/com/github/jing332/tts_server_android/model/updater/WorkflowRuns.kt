@@ -27,8 +27,8 @@ data class WorkflowRuns(
 //        val checkSuiteUrl: String = "", // https://api.github.com/repos/jing332/tts-server-android/check-suites/19988906797
         @SerialName("conclusion")
         val conclusion: String? = "", // success
-//        @SerialName("created_at")
-//        val createdAt: String = "", // 2024-01-22T01:49:46Z
+        @SerialName("created_at")
+        val createdAt: String = "", // 2024-01-22T01:49:46Z
         @SerialName("display_title")
         val displayTitle: String = "", // refactor: 插件UI 滑动条
 //        @SerialName("event")

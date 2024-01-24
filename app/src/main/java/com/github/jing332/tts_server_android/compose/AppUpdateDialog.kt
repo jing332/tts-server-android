@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
@@ -51,16 +52,22 @@ fun AppUpdateActionDialog(onDismissRequest: () -> Unit, result: AppUpdateChecker
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
     AppDialog(onDismissRequest = onDismissRequest, title = {
-        Text(
-            stringResource(id = R.string.check_update) + " (Github Actions)",
-            style = MaterialTheme.typography.titleLarge,
-        )
-    }, content = {
         Column {
-            Text(text = result.title, style = MaterialTheme.typography.bodyMedium)
             Text(
-                text = AppConst.dateFormatSec.format(result.updateAt * 1000),
-                style = MaterialTheme.typography.bodyMedium
+                stringResource(id = R.string.check_update) + " (Github Actions)",
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(
+                text = AppConst.dateFormatSec.format(result.time * 1000),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
+            )
+        }
+    }, content = {
+        Column(Modifier.padding(12.dp)) {
+            Text(
+                text = result.title,
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     },
@@ -70,7 +77,7 @@ fun AppUpdateActionDialog(onDismissRequest: () -> Unit, result: AppUpdateChecker
                     onDismissRequest()
                     openDownloadUrl(result.url)
                 }) {
-                    Text("跳转 Github")
+                    Text("Github")
                 }
 
                 TextButton(onClick = { onDismissRequest() }) {
