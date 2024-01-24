@@ -1,8 +1,17 @@
 package com.github.jing332.tts_server_android.compose.systts.list.edit.ui.widgets
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SmartDisplay
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.systts.list.BasicAudioParamsDialog
 import com.github.jing332.tts_server_android.conf.SysTtsConfig
@@ -21,6 +30,13 @@ fun InternalPlayerDialog(
     }
 
     BasicAudioParamsDialog(
+        title = {
+            Row(Modifier.padding(bottom = 8.dp)) {
+                Icon(imageVector = Icons.Default.SmartDisplay, contentDescription = null)
+                Text(stringResource(id = R.string.internal_player))
+            }
+        },
+
         onDismissRequest = onDismissRequest,
         speed = params.rate,
         onSpeedChange = { onParamsChange(params.copy(rate = it)) },

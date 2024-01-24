@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.utils.clickableRipple
 
@@ -29,7 +30,8 @@ fun TextCheckBox(
         modifier
             .height(48.dp)
             .clip(MaterialTheme.shapes.small)
-            .clickableRipple(role = Role.Checkbox) { onCheckedChange(!checked) },
+            .clickableRipple(role = Role.Checkbox) { onCheckedChange(!checked) }
+        ,
         verticalAlignment = verticalAlignment,
         horizontalArrangement = horizontalArrangement,
     ) {

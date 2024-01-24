@@ -29,6 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.jing332.tts_server_android.R
@@ -90,7 +93,9 @@ internal fun SwitchPreference(
     onCheckedChange: (Boolean) -> Unit
 ) {
     BasePreferenceWidget(
-        modifier = modifier,
+        modifier = modifier.semantics(mergeDescendants = true) {
+            role = Role.Switch
+        },
         onClick = { onCheckedChange(!checked) },
         title = title,
         subTitle = subTitle,
