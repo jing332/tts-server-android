@@ -7,7 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Input
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Input
+import androidx.compose.material.icons.filled.Output
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,7 +57,7 @@ class BackupRestoreActivity : AppCompatActivity() {
                         navigationIcon = {
                             IconButton(onClick = { finish() }) {
                                 Icon(
-                                    Icons.Default.ArrowBack,
+                                    Icons.AutoMirrored.Filled.ArrowBack,
                                     stringResource(id = R.string.nav_back)
                                 )
                             }
@@ -62,12 +66,14 @@ class BackupRestoreActivity : AppCompatActivity() {
                     Column(Modifier.padding(it)) {
                         BasePreferenceWidget(
                             onClick = { showBackupDialog = true },
-                            title = { Text(stringResource(id = R.string.backup)) }
+                            title = { Text(stringResource(id = R.string.backup)) },
+                            icon = { Icon(Icons.Default.Output, null) }
                         )
 
                         BasePreferenceWidget(
                             onClick = { showRestoreDialog = true },
-                            title = { Text(stringResource(id = R.string.restore)) }
+                            title = { Text(stringResource(id = R.string.restore)) },
+                            icon = { Icon(Icons.AutoMirrored.Filled.Input, null) }
                         )
                     }
                 }

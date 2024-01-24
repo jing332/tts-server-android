@@ -2,6 +2,7 @@
 
 package com.github.jing332.tts_server_android.compose
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -77,6 +78,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.jing332.tts_server_android.BuildConfig
 import com.github.jing332.tts_server_android.R
@@ -102,6 +104,7 @@ import com.github.jing332.tts_server_android.utils.longToast
 import com.github.jing332.tts_server_android.utils.performLongPress
 import com.github.jing332.tts_server_android.utils.toast
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.Dispatchers
@@ -140,7 +143,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // A13
                     val notificationPermission =
-                        rememberPermissionState(permission = android.Manifest.permission.POST_NOTIFICATIONS)
+                        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
                     if (!notificationPermission.status.isGranted) {
                         LaunchedEffect(notificationPermission) {
                             notificationPermission.launchPermissionRequest()
@@ -154,10 +157,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }*/
+
                 LaunchedEffect(Unit) {
                     showAutoCheckUpdaterDialog = AppConfig.isAutoCheckUpdateEnabled.value
-
-
                 }
 
                 LaunchedEffect(updateCheckTrigger) {
@@ -193,11 +195,14 @@ class MainActivity : AppCompatActivity() {
 
 @Composable
 private fun MainScreen(finish: () -> Unit) {
+    val context = LocalContext.current
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-//    val snackbarState = remember { SnackbarHostState() }
-    val gesturesEnabled = !drawerState.isClosed
-    val context = LocalContext.current
+    val entryState by navController.currentBackStackEntryAsState()
+
+    val gesturesEnabled = remember(entryState) {
+        NavRoutes.routes.find { it.id == entryState?.destination?.route } != null
+    }
 
     var lastBackDownTime by remember { mutableLongStateOf(0L) }
     BackHandler(enabled = drawerState.isClosed) {
