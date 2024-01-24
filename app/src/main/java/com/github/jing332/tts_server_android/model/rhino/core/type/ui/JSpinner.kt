@@ -4,18 +4,18 @@ package com.github.jing332.tts_server_android.model.rhino.core.type.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.widget.FrameLayout
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
+import kotlin.math.max
 
+@Suppress("MemberVisibilityCanBePrivate")
 @SuppressLint("ViewConstructor")
 class JSpinner(context: Context, val hint: CharSequence) : FrameLayout(context) {
     companion object {
@@ -36,6 +36,12 @@ class JSpinner(context: Context, val hint: CharSequence) : FrameLayout(context) 
         get() = mSelectedPosition
         set(value) {
             mSelectedPosition = value
+        }
+
+    var value: Any
+        get() = items[selectedPosition]
+        set(value) {
+            selectedPosition = max(0, mItems.indexOfFirst { it.value == value })
         }
 
     private var mListener: OnItemSelectedListener? = null
