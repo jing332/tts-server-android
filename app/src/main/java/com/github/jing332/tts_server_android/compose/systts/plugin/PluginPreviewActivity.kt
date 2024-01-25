@@ -38,6 +38,7 @@ import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
+import com.github.jing332.tts_server_android.ui.view.ErrorDialogActivity
 import com.github.jing332.tts_server_android.utils.clickableRipple
 
 @Suppress("DEPRECATION")
@@ -60,6 +61,7 @@ class PluginPreviewActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         AppConst.localBroadcast.unregisterReceiver(mReceiver)
+        AppConst.localBroadcast.sendBroadcastSync(Intent(ErrorDialogActivity.ACTION_FINISH))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

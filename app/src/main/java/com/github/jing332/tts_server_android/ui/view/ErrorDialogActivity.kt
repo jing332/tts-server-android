@@ -1,13 +1,14 @@
 package com.github.jing332.tts_server_android.ui.view
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
-import android.widget.FrameLayout
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,7 @@ import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.compose.widgets.AppDialog
 import com.github.jing332.tts_server_android.compose.widgets.LoadingContent
-import com.github.jing332.tts_server_android.databinding.BigTextViewBinding
+import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.longToast
 import com.github.jing332.tts_server_android.utils.rootCause
@@ -52,6 +53,8 @@ import java.util.UUID
 @Suppress("DEPRECATION")
 class ErrorDialogActivity : AppCompatActivity() {
     companion object {
+        const val ACTION_FINISH = "com.github.jing332.tts_server_android.ui.view.ErrorDialogActivity.ACTION_FINISH"
+
         const val KEY_T_DATA = "throwable"
         const val KEY_TITLE = "title"
         private const val KEY_ID = "id"
@@ -60,7 +63,7 @@ class ErrorDialogActivity : AppCompatActivity() {
 
         fun start(context: Context, title: String, t: Throwable) {
             val id = UUID.randomUUID().toString()
-            vm.throwables[id] = t
+            vm.throwableList[id] = t
             context.startActivity(Intent(context, ErrorDialogActivity::class.java).apply {
                 putExtra(KEY_TITLE, title)
                 putExtra(KEY_ID, id)
@@ -68,10 +71,22 @@ class ErrorDialogActivity : AppCompatActivity() {
         }
     }
 
+    private val mReceiver by lazy { MyReceiver() }
+
+    inner class MyReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ACTION_FINISH) {
+                finish()
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         val id = intent.getStringExtra(KEY_ID) ?: return
-        vm.throwables.remove(id)
+        vm.throwableList.remove(id)
+
+        AppConst.localBroadcast.unregisterReceiver(mReceiver)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,8 +95,10 @@ class ErrorDialogActivity : AppCompatActivity() {
         lp.alpha = 0.0f
         window.attributes = lp
 
+        AppConst.localBroadcast.registerReceiver(mReceiver, IntentFilter(ACTION_FINISH))
+
         val title = intent.getStringExtra(KEY_TITLE) ?: getString(R.string.error)
-        val t = vm.throwables[intent.getStringExtra(KEY_ID) ?: ""]
+        val t = vm.throwableList[intent.getStringExtra(KEY_ID) ?: ""]
             ?: intent.getSerializableExtra(KEY_T_DATA) as? Throwable
 
         if (t == null) {
