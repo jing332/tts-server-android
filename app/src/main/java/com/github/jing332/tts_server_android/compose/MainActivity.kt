@@ -69,7 +69,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavDestination
@@ -96,7 +95,7 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import com.github.jing332.tts_server_android.model.speech.tts.ITextToSpeechEngine
-import com.github.jing332.tts_server_android.model.updater.AppUpdateChecker
+import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 import com.github.jing332.tts_server_android.ui.AppHelpDocumentActivity
 import com.github.jing332.tts_server_android.utils.MyTools.killBattery
 import com.github.jing332.tts_server_android.utils.clone
@@ -104,10 +103,8 @@ import com.github.jing332.tts_server_android.utils.longToast
 import com.github.jing332.tts_server_android.utils.performLongPress
 import com.github.jing332.tts_server_android.utils.toast
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -277,6 +274,7 @@ private fun MainScreen(finish: () -> Unit) {
                         onSave = {
                             navController.popBackStack()
                             appDb.systemTtsDao.insertTts(stateSystts)
+                            if (stateSystts.isEnabled) SystemTtsService.notifyUpdateConfig()
                         },
                         onCancel = {
                             navController.popBackStack()

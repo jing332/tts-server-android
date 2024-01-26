@@ -95,6 +95,7 @@ internal fun ListManagerScreen(vm: ListManagerViewModel = viewModel()) {
     if (showQuickEdit != null) {
         QuickEditBottomSheet(onDismissRequest = {
             appDb.systemTtsDao.insertTts(showQuickEdit!!)
+            if (showQuickEdit?.isEnabled == true) SystemTtsService.notifyUpdateConfig()
             showQuickEdit = null
         }, systts = showQuickEdit!!, onSysttsChange = {
             showQuickEdit = it
