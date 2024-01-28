@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about">درباره</string>
+    <string name="edit_bgm_tts">1</string>
+    <string name="add_bgm_tip">اضافه‌کردن تیپ‌موسیقی پس‌زمینه</string>
+    <string name="add_bgm_tts">اضافه‌کردن موسیقی پس‌زمینه</string>
+    <string name="add_config">اضافه‌کردن تنظیمات</string>
+    <string name="add_extra_params">ایجاد پارامترهای اضافی جدید</string>
+    <string name="add_file">فایل ها را اضافه کنید</string>
+    <string name="add_folder">اضافه کردن پوشه</string>
+    <string name="add_group">اضافه کردن گروه</string>
+    <string name="add_local_tts">موتور محلی را اضافه کنید</string>
+    <string name="all">همه</string>
+    <string name="app_down_again_to_exit">دوباره فشار دهید تا از برنامه خارج شوید</string>
+    <string name="app_help_document">اسناد راهنما</string>
+    <string name="app_language_desc">یک زبان: %1$s</string>
+    <string name="app_language_to_follow_tip_msg">اگر به روز رسانی زبان انجام نشد، لطفاً برنامه را به صورت دستی پایان دهید و مجدداً راه اندازی کنید.</string>
+    <string name="app_language_update_warn">قبل از اینکه زبان جدید به طور کامل نمایش داده شود، باید برنامه را به اجبار متوقف کنید!</string>
+    <string name="app_name">TTSFarsi Server</string>
+    <string name="app_name_dev">سرور دی‌تی‌تی‌اس</string>
+    <string name="app_switch">تعویض</string>
+    <string name="as_standby">به عنوان پشتیبان</string>
+    <string name="aside">روایت</string>
+    <string name="audio_params">پارامترهای صوتی</string>
+    <string name="audio_params_settings">تنظیم پارامترهای صوتی</string>
+    <string name="audition">آزمون</string>
+    <string name="auto_check_update">به‌طور خودکار به‌روزرسانی‌ها را بررسی کنید</string>
+    <string name="backup">پشتیبان گیری</string>
+    <string name="retry_count_when_audio_empty_summary">1</string>
+    <string name="backup_restore">پشتیبان گیری و بازیابی</string>
+    <string name="belonging_group">گروهی که به آن تعلق دارد</string>
+    <string name="bgm">موسیقی پس زمینه</string>
+    <string name="bgm_settings">تنظیمات موسیقی پس زمینه</string>
+    <string name="bgm_settings_tip">نکته: موسیقی پس‌زمینه را با علامت مثبت در گوشه سمت راست بالا اضافه کنید.</string>
+    <string name="internal_player">1</string>
+    <string name="built_in_player_not_enabled">⚠️پخش داخلی فعال نیست، لطفا به منوی گوشه سمت راست بالا بروید تا به صورت دستی فعال شود.</string>
+    <string name="builtin_player_settings_tip_msg">هنگامی که پخش کننده داخلی فعال است، از این تنظیم برای لغو جهانی استفاده کنید.</string>
+    <string name="cancel">لغو کنید</string>
+    <string name="cannot_empty">نمیتواند خالی باشد!</string>
+
+    <string name="check_update">به روز رسانی را بررسی کنید</string>
+    <string name="check_update_failed">بررسی به‌روزرسانی انجام نشد</string>
+    <string name="check_update_summary">هنگام باز کردن رابط اصلی، به‌روزرسانی‌ها را بررسی کنید</string>
+    <string name="choice_item">انتخاب کنید %1$s</string>
+    <string name="choose_an_upload_target">مقصد بارگذاری را انتخاب کنید</string>
+    <string name="clear_cache">کش را خالی کنید</string>
+    <string name="clear_log">پاک کردن گزارش</string>
+    <string name="clear_web_data">پاک کردن داده های صفحه وب</string>
+    <string name="cleared">پاک شد</string>
+    <string name="click_play">برای پخش کلیک کنید</string>
+    <string name="clipboard">کلیپ بورد</string>
+    <string name="close">بسته</string>
+    <string name="code_editor">ویرایشگر کد</string>
+    <string name="config">پیکربندی</string>
+    <string name="config_import">واردات پیکربندی</string>
+    <string name="config_import_success_msg">در مجموع %1$d پیکربندی وارد شد</string>
+    <string name="config_list">لیست پیکربندی</string>
+    <string name="content">محتوا</string>
+    <string name="copied">کپی شده</string>
+    <string name="copied_url">لینک کپی شد</string>
+    <string name="copy">کپی 🀄</string>
+    <string name="copy_address">آدرس را کپی کنید</string>
+    <string name="current_is_last_version">در حال حاضر آخرین نسخه است</string>
+    <string name="custom">شخصی سازی</string>
+    <string name="debug">اشکال زدایی</string>
+    <string name="decode">رمزگشایی</string>
+    <string name="group_name">1</string>
+    <string name="default_group">گروه بندی پیش فرض</string>
+    <string name="default_str">پیش فرض</string>
+    <string name="delete">حذف</string>
+    <string name="desc_add_config">اضافه کردن پیکربندی</string>
+    <string name="desc_delete_item">این ورودی را حذف کنید</string>
+    <string name="desc_edit_item">ویرایش مدخل</string>
+    <string name="desc_seekbar_add">لغزنده +1</string>
+    <string name="desc_seekbar_remove">لغزنده -1</string>
+    <string name="desc_switch_item">این مورد را فعال یا غیرفعال کنید</string>
+    <string name="battery_optimization_whitelist">1</string>
+    <string name="desktop_shortcut">میانبر دسکتاپ</string>
+    <string name="dialogue">گفتگو</string>
+    <string name="direct_link_settings">تنظیم زنجیره مستقیم</string>
+    <string name="direct_play">مستقیم پخش کنید</string>
+    <string name="direct_upload_settings">تنظیمات آپلود لینک مستقیم</string>
+    <string name="display_name">نام نمایشی</string>
+    <string name="drawer_interface">رابط</string>
+    <string name="edit">ویرایش کنید</string>
+    <string name="edit_extra_parameter">ویرایش پارامترهای اضافی</string>
+    <string name="edit_plugin_tts">ویرایش پلاگین تی‌تی‌اس</string>
+    <string name="edit_read_rule">قوانین خواندن با صدای بلند را ویرایش کنید</string>
+
+    <string name="empty_list">لیست خالی است</string>
+    <string name="enabled">فعال شد</string>
+    <string name="error">اشتباه</string>
+
+    <string name="exit">ترک کردن</string>
+
+    <string name="export_config">صادرات</string>
+    <string name="export_vars">متغیرهای صادراتی</string>
+    <string name="failed_timed_out">زمان تمام شد: %1$dms</string>
+    <string name="file_save_failed">ذخیره فایل انجام نشد: %1$s</string>
+    <string name="follow">دنبال کردن</string>
+    <string name="follow_system">سیستم را دنبال کنید</string>
+    <string name="follow_system_or_read_aloud_app">سیستم را دنبال کنید یا برنامه را با صدای بلند بخوانید</string>
+    <string name="foreground_service_and_notification_summary">1</string>
+    <string name="foreground_service_and_notification">خدمات و اطلاعیه های میز جلو</string>
+    <string name="format_error">فرمت اشتباه</string>
+    <string name="forwarder_ms">جلوبرنده متن‌به‌گفتار مایکروسافت</string>
+    <string name="forwarder_sys_fail_audio_file">سنتز انجام نشد: فایل صوتی یافت نشد</string>
+    <string name="forwarder_sys_running">موتور فرستنده در حال اجرا است</string>
+    <string name="forwarder_systts">"موتور فرستنده سیستم  "</string>
+    <string name="global_settings">تنظیمات جهانی</string>
+    <string name="go_to_settings">به تنظیمات بروید</string>
+    <string name="grant_permission_all_file">لطفاً به [تمام دسترسی به فایل] اجازه دهید</string>
+    <string name="grant_permission_all_file_msg">در غیر این صورت در برخی از سیستم ها فایل های موسیقی خوانده نمی شود و پخش نمی شود!</string>
+    <string name="group">گروه</string>
+    <string name="group_collapsed">گروه سقوط کرد</string>
+    <string name="group_expanded">گروه گسترش یافته است</string>
+    <string name="group_move_a11y_msg">گروه از %1$d به %2$d منتقل شد</string>
+    <string name="help">کمک</string>
+
+    <string name="import_config">وارد كردن</string>
+    <string name="import_config_type_not_match_msg">"خطای قالب (مورد انتظار: [%1$s]).
+قالبی که وارد کردید [%2$s] است، لطفاً برای وارد کردن آن به رابط مدیریت مربوطه بروید."</string>
+    <string name="import_config_type_unknown_msg">قالب ناشناخته است، لطفاً پیکربندی صحیح را وارد کنید.</string>
+    <string name="import_failed">واردات انجام نشد</string>
+    <string name="import_file_as">فایل واردات …</string>
+    <string name="import_from_clipboard">وارد کردن از کلیپ بورد</string>
+    <string name="import_from_url">از URL بالا وارد کنید</string>
+    <string name="import_plugin">وارد کردن افزونه</string>
+    <string name="import_replace_rule">قوانین جایگزینی واردات</string>
+    <string name="invalid_path_msg">مسیر نامعتبر: %1$s</string>
+    <string name="invalid_scheme_msg">طرح نامعتبر: %1$s</string>
+    <string name="invalid_url_msg">URL نامعتبر: %1$s</string>
+    <string name="is_confirm_delete">تایید حذف؟</string>
+    <string name="js_file_type_not_recognized">نوع فایل JS شناسایی نشد</string>
+    <string name="added_battery_optimization_whitelist">1</string>
+    <string name="kill_process">پایان فرآیند</string>
+    <string name="label_api">رابط:</string>
+    <string name="label_audio_format">فرمت صوتی:</string>
+    <string name="label_audio_sample_rate">نرخ نمونه برداری صوتی (هرتز):</string>
+    <string name="label_language">زبان:</string>
+    <string name="label_pitch">گام صدا:</string>
+    <string name="label_play_pitch">پخش لحن:</string>
+    <string name="label_play_speed">سرعت پخش:</string>
+    <string name="label_port">بندر:</string>
+    <string name="label_rate">سرعت صحبت کردن:</string>
+    <string name="label_read_aloud_target">اهداف خواندن:</string>
+    <string name="label_result">نتیجه:</string>
+    <string name="label_speed">سرعت:</string>
+    <string name="label_styleDegree">شدت سبک:</string>
+    <string name="edit_local_tts">1</string>
+    <string name="label_tts_engine">موتور:</string>
+    <string name="label_voice">صدا:</string>
+    <string name="label_voice_role">نقش:</string>
+    <string name="label_voice_style">سبک:</string>
+    <string name="label_volume">جلد:</string>
+    <string name="language">زبان</string>
+    <string name="remote_sync_service_description">1</string>
+    <string name="learn_more">بیشتر بدانید</string>
+    <string name="legado">لگادو را بخوانید</string>
+    <string name="list_move_a11y_msg">از %1$d به %2$d منتقل شد</string>
+    <string name="listen_port">پورت گوش دادن</string>
+    <string name="loading">بارگذاری</string>
+    <string name="local">محلی</string>
+    <string name="local_tts_engine">موتور محلی</string>
+    <string name="log">ورود به سیستم</string>
+    <string name="more_options">گزینه های بیشتر</string>
+    <string name="move_to_bottom">به پایین حرکت کنید</string>
+    <string name="move_to_top">حرکت به بالا</string>
+    <string name="msg_group_is_empty">گروه خالی است، لطفاً پیکربندی را اضافه کنید</string>
+    <string name="name">نام</string>
+    <string name="nav_app_bar_open_drawer_description">کشوی ناوبری را باز کنید</string>
+    <string name="nav_back">برگشت</string>
+
+    <string name="systts_group_empty_msg">1</string>
+    <string name="new_version_available">یک نسخه جدید وجود دارد: %1$s</string>
+    <string name="no_files_in_dir">هیچ فایلی در این فهرست وجود ندارد</string>
+    <string name="no_plugins">بدون پلاگین</string>
+    <string name="file_picker_mode">1</string>
+    <string name="file_picker">1</string>
+    <string name="file_picker_mode_system">1</string>
+    <string name="file_picker_mode_builtin">1</string>
+    <string name="file_picker_mode_prompt">1</string>
+    <string name="no_retries">دوباره امتحان نکنید</string>
+    <string name="none">هیچ یک</string>
+    <string name="not_found_plugin">⚠️افزونه یافت نشد: %1$s</string>
+    <string name="off_multi_voice_use_global">لطفاً گزینه چند صدایی را برای استفاده از حالت تک صدایی خاموش کنید</string>
+    <string name="ok_reset">بازنشانی کنید</string>
+    <string name="open_web">باز کردن نسخه وب</string>
+    <string name="other">دیگر</string>
+    <string name="path_is_empty">مسیر خالی است</string>
+    <string name="playing">بازی کردن</string>
+    <string name="please_choose">لطفا انتخاب کنید</string>
+    <string name="please_turn_off_direct_play">لطفاً گزینه [پخش مستقیم] را خاموش کنید</string>
+    <string name="plugin">پلاگین</string>
+    <string name="plugin_bad_format">خطای قالب نسخه، باید یک عدد صحیح باشد</string>
+    <string name="plugin_manager">مدیریت پلاگین</string>
+    <string name="plugin_not_define_vars">این افزونه هیچ متغیر تعریف شده ای ندارد</string>
+    <string name="plugin_preview_ui">پیش نمایش UI و راه اندازی</string>
+    <string name="plugin_set_vars">متغیرها را تنظیم کنید</string>
+    <string name="plugin_tts_get_sample_rate_fail_msg">نرخ نمونه صوتی دریافت نشد: %1$s</string>
+    <string name="plugin_vars">متغیرهای افزونه</string>
+    <string name="pref_edge_dns_summary">به جای ساخته شده در پکن مایکروسافت گره ابری</string>
+    <string name="systts_interface_preference">1</string>
+    <string name="pref_swap_listen_and_edit_button">جای دکمه های گوش دادن و ویرایش را عوض کنید</string>
+    <string name="pref_title_global_edge">رابط Global-Edge</string>
+    <string name="preference_settings">اولویت ها</string>
+    <string name="ra_all">همه اش را بخوان</string>
+    <string name="ra_aside">فقط روایت</string>
+    <string name="ra_dialogue">فقط مکالمه</string>
+    <string name="raw_format_is_play_while_downloading">فرمت خام حالت پخش در حین دانلود است</string>
+    <string name="exo_player_title">1</string>
+    <string name="remote_sync_service">همگام سازی از راه دور</string>
+    <string name="rename">دو نام گذاری</string>
+
+    <string name="replace_rule">قوانین تعویض</string>
+    <string name="replace_rule_search">قوانین جایگزینی - جستجو</string>
+    <string name="replacement">جایگزینی</string>
+
+    <string name="reset">تنظیم مجدد</string>
+    <string name="restart">راه اندازی مجدد</string>
+    <string name="restore">بهبود می یابند</string>
+    <string name="restore_confirm">داده ها را از این فایل بازیابی کنید؟</string>
+    <string name="restore_finished">بازیابی تکمیل شد</string>
+    <string name="restore_restart_msg">تنظیمات برگزیده باید دوباره راه اندازی شوند تا اعمال شوند</string>
+    <string name="retry">دوباره امتحان کنید</string>
+    <string name="retry_count_when_audio_empty">تعداد دفعات تکرار وقتی صدا خالی است</string>
+
+    <string name="save">نگاه داشتن</string>
+    <string name="save_as_file">ذخیره به عنوان فایل</string>
+    <string name="save_success">با موفقیت ذخیره شد</string>
+
+    <string name="search">جستجو کردن</string>
+    <string name="search_filter">فیلتر جستجو</string>
+
+    <string name="file">1</string>
+    <string name="select_file">یک سند را انتخاب کنید</string>
+    <string name="select_file_hint">برای انتخاب فایل روی دکمه سمت راست کلیک کنید ➡️</string>
+    <string name="select_import">واردات را انتخاب کنید</string>
+    <string name="select_plugin">افزونه را انتخاب کنید</string>
+    <string name="selected">انتخاب شده است</string>
+    <string name="server_listen_address_local">آدرس گوش دادن: %s</string>
+    <string name="server_log_service_running">سرویس از قبل در حال اجرا است، آدرس گوش دادن: %1$s</string>
+    <string name="server_log_tips">"1. روی دکمه شروع کلیک کنید
+2. صفحه وب را باز کرده و تنظیمات را انتخاب کنید
+3. در نهایت لینک را تولید کنید و آن را به برنامه خواندن وارد کنید
+⚠️هنگام خواندن با صدای بلند، سرویس باید در پس زمینه اجرا شود!
+⚠️این تابع و سیستم TTS مستقل از هم هستند و هیچ تداخلی با هم ندارند!"</string>
+    <string name="server_please_start_service">لطفا ابتدا سرویس را شروع کنید</string>
+    <string name="server_restart_service_to_update">سرویس را مجدداً راه اندازی کنید تا اعمال شود</string>
+    <string name="server_set_token">توکن را تنظیم کنید</string>
+    <string name="server_token_set_to">توکن به صورت زیر تنظیم شده است:</string>
+    <string name="service_closed">سرویس قطع است</string>
+    <string name="service_started">خدمات شروع شده است</string>
+    <string name="set_sample_text_param">تنظیم پارامترهای متن</string>
+    <string name="settings">برپایی</string>
+    <string name="shuffle">پخش مختلط</string>
+    <string name="skip_request_silent_text">از درخواست متن بی‌صدا رد شوید</string>
+    <string name="skip_request_silent_text_summary">وقتی روشن است، متنی مانند نمادهای خالص به طور جداگانه درخواست نمی شود.</string>
+    <string name="source">منبع</string>
+    <string name="speech_rule">قوانین را با صدای بلند بخوانید</string>
+    <string name="speech_rule_manager">1</string>
+    <string name="speech_rule_script">اسکریپت قانون</string>
+    <string name="spinner_drop_down_max_count">حداکثر تعداد محتویات جعبه کشویی</string>
+    <string name="start">استارت آپ</string>
+    <string name="still_to_import">هنوز هم می خواهید وارد کنید</string>
+    <string name="str_import">وارد كردن</string>
+    <string name="str_key">کلید</string>
+    <string name="str_value">ارزش</string>
+    <string name="stream_audio_mode">پخش جریانی صدا</string>
+    <string name="stream_audio_mode_summary">یعنی پخش در حین دانلود که مستلزم پایداری شبکه بالاست. (بعد از فعال شدن، امتحان مجدد خودکار شکست / پشتیبان گیری TTS امکان پذیر نخواهد بود)</string>
+    <string name="max_retry_count">1</string>
+    <string name="sys_doc_picker_error">انتخابگر فایل سیستم باز نشد، به طور خودکار از انتخابگر داخلی استفاده می کند.</string>
+    <string name="system_not_support_please_manual_set">سیستم از آن پشتیبانی نمی کند، لطفا به صورت دستی کار کنید.</string>
+    <string name="system_tts">تی‌تی‌اس‌فارسی سرور</string>
+    <string name="systts_add_custom_tts">موتور سفارشی را اضافه کنید</string>
+    <string name="systts_add_internal_tts">موتور داخلی را اضافه کنید</string>
+    <string name="systts_add_plugin_tts">افزونه TTS را اضافه کنید</string>
+    <string name="systts_api_edge">رابط خواندن با صدای بلند مایکروسافت اج</string>
+    <string name="systts_as_standby_help">درباره 【به عنوان پشتیبان】</string>
+    <string name="systts_bgm_description">حجم:%1$s</string>
+    <string name="systts_copied_config">پیکربندی کپی شد</string>
+    <string name="systts_decode_audio">رمزگشایی صدا</string>
+    <string name="systts_desc_list_count_info">در مجموع %1$d مورد، %2$d مورد فعال شده است</string>
+    <string name="systts_direct_play_help">درباره [پخش مستقیم]</string>
+    <string name="systts_direct_play_help_msg">"پس از روشن شدن گزینه، مستقیماً توسط موتور TTS آن پخش می شود.
+پس از خاموش کردن گزینه، صدا از طریق سرور TTS رله می شود که باعث کاهش عملکرد (خواندن و نوشتن حافظه پنهان) می شود، اما در شرایط چندصدایی، می تواند تاخیر اولیه سازی ناشی از همان موتور را هنگام تعویض صداها کاهش دهد. ."</string>
+    <string name="systts_drag_tip_msg">برای کشیدن، کادر انتخاب را طولانی فشار دهید</string>
+    <string name="systts_engine_init_failed_timeout">مقداردهی اولیه موتور ناموفق بود: زمان تمام شد</string>
+    <string name="systts_help_sample_rate">سیستم TTS باید نرخ نمونه‌برداری را هنگام شروع پخش مشخص کند. اگر [پخش داخلی] یا [پخش مستقیم] فعال باشد، می‌توانید این گزینه را نادیده بگیرید.</string>
+    <string name="systts_help_secondary_locale">زبان سطح دوم را انتخاب کنید، یعنی هنگام خواندن با صدای بلند از این زبان استفاده کنید.در حال حاضر، مایکروسافت فقط از en-US-JennyMultilingualNeural پشتیبانی می کند.</string>
+    <string name="request_timeout">1</string>
+    <string name="request_timeout_summary">1</string>
+    <string name="systts_http_edit_title">موتور سفارشی را ویرایش کنید</string>
+    <string name="systts_http_request_header">هدر درخواست</string>
+    <string name="systts_http_test_msg">"اندازه صدا: %1$d کیلوبایت
+قالب: %2$s
+نرخ نمونه برداری: %3$d هرتز
+نوع محتوا: %4$s"</string>
+    <string name="systts_in_app_play_info_html">" پس از روشن کردن این گزینه، پخش کننده صوتی تعبیه شده در این برنامه به جای پخش شدن توسط مؤلفه TTS سیستم &lt;b>مستقیماً&lt;/b> استفاده می شود. &lt;br>از آنجایی که نیازی به رمزگشایی دستی نیست و نرخ نمونه‌برداری را نیز می‌توان در حین پخش تغییر داد، می‌تواند مشکل پخش غیرعادی &lt;b>صداهای متعدد با نرخ نمونه‌برداری متفاوت&lt;/b> و &lt;b>وب را حل کند. قالب&lt;/b>در برخی از دستگاه ها. &lt;br>&lt;br>البته پخش مستقیم مشکلات سازگاری نیز دارد: &lt;br> - از آنجایی که صدای اصلی به مؤلفه TTS سیستم ارسال نمی شود، اگر تماس گیرنده TTS ابتدا حافظه پنهان کند و سپس مکانیسم را پخش کند، یعنی، توسط سیستم پخش نمی شود،"</string>
+    <string name="systts_list_item_desc">هدف %1$s، رابط %2$s، ویژگی‌ها: %3$s، قالب: %4$s</string>
+    <string name="systts_local_params_int_must">باید درست یا 1، نادرست یا 0 باشد</string>
+    <string name="md_checkbox_checked">1</string>
+    <string name="md_checkbox_unchecked">1</string>
+    <string name="md_checkbox_indeterminate">1</string>
+    <string name="systts_local_test_msg">"پخش مستقیم بسته است
+اندازه: %1$d کیلوبایت
+نرخ نمونه برداری: %2$d هرتز"</string>
+    <string name="systts_log_audio_empty">صدا خالی است: %1$s</string>
+    <string name="systts_log_canceled">لغو شد: %1$s</string>
+    <string name="systts_log_decode_failed">رمزگشایی انجام نشد: %1$s</string>
+    <string name="systts_log_failed">دریافت نشد: %1$s</string>
+    <string name="systts_log_finished_playing">پخش تمام شد: %1$s</string>
+    <string name="systts_log_replace_failed">جایگزینی انجام نشد: %1$s</string>
+    <string name="systts_log_request_audio">درخواست صدا: %1$s</string>
+    <string name="systts_log_start_retry">شروع %1$d تلاش مجدد</string>
+    <string name="systts_log_success">با موفقیت به دست آمد، اندازه: %1$s، زمان صرف شده: %2$s</string>
+    <string name="systts_log_text_handle_failed">پردازش متن انجام نشد: %1$s</string>
+    <string name="systts_ms_express_as_description">%1$s-%2$s | قدرت:%3$s</string>
+    <string name="systts_standby_triggered_retry_index">1</string>
+    <string name="systts_standby_triggered_retry_index_summary">1</string>
+    <string name="systts_ms_webm_warn_msg">⚠️پس از تست، ترافیک واقعی مصرف شده توسط فرمت صوتی webm..-24kbps-.. بیش از سه برابر حجم صداست توصیه نمی شود!</string>
+    <string name="systts_multi_voice_option">چندصدایی (روایت/گفتگو)</string>
+    <string name="systts_no_custom_tag_config_warn">⚠️بدون پیکربندی برچسب، لطفا تنظیمات را اضافه کنید یا گزینه چند صدایی را خاموش کنید!</string>
+    <string name="systts_no_speech_target_all">⚠️ {Read All} وجود ندارد، از پیش‌فرض استفاده کنید! حتما گزینه چند صدایی را روشن کنید.</string>
+    <string name="systts_not_found_speech_rule_tag">⚠️قانون خواندن پیدا نشد</string>
+    <string name="systts_play_params_description">سرعت صحبت کردن:%1$s | میزان صدا:%2$s | زیر و بم:%3$s</string>
+    <string name="systts_please_check_multi_voice_option">لطفاً ابتدا گزینه چند صدایی را در منوی گوشه سمت راست بالا بررسی کنید!</string>
+    <string name="spinner_drop_down_max_count_summary">1</string>
+    <string name="systts_plugin_please_set_vars">لطفا برای تنظیم متغیرها اینجا را کلیک کنید</string>
+    <string name="audition_text">1</string>
+    <string name="replace_rule_manager">1</string>
+    <string name="systts_replace_add_rule">قوانین جایگزین را اضافه کنید</string>
+    <string name="systts_replace_insert_pinyin">زنگ های پینیین را وارد کنید</string>
+    <string name="systts_replace_please_on_switch">⚠️منوی را در گوشه سمت راست بالا باز کنید [سوئیچ اصلی]</string>
+    <string name="systts_replace_rule">قوانین تعویض</string>
+    <string name="systts_replace_use_regex">از عبارات منظم استفاده کنید</string>
+    <string name="systts_sample_rate">نرخ نمونه برداری (هرتز)</string>
+    <string name="systts_sample_rate_different_in_enabled_list">تشخیص داده شده است که فرمت/نرخ نمونه برداری در پیکربندی فعال متفاوت است، که باعث ایجاد زنگ های غیرعادی (صدای ضخیم یا کوچک) می شود. لطفاً به صورت دستی به همان قالب/نرخ نمونه برداری تغییر دهید یا گزینه [استفاده از پخش کننده داخلی] را روشن کنید. در گوشه سمت راست بالا</string>
+    <string name="systts_sample_test_text">برای تست و بازی روی دکمه سمت راست کلیک کنید</string>
+    <string name="systts_secondaryLocale">زبان متوسطه (مهارت های زبانی)</string>
+    <string name="systts_service">سرویس TTS سیستم</string>
+    <string name="systts_set_dialogue_min_info">تعداد حروف چینی در دیالوگ کاراکترها (شامل نمادهای چینی) یعنی فقط در صورتی که بیشتر یا مساوی این مقدار باشد به صورت دیالوگ خوانده می شود و در غیر این صورت از نریشن استفاده می شود.</string>
+    <string name="systts_set_dialogue_min_match_word_count">حداقل تعداد حروف چینی منطبق را در گفتگو تنظیم کنید</string>
+    <string name="systts_set_standby">موتور پشتیبان را تنظیم کنید</string>
+    <string name="systts_split_long_sentences">جملات طولانی را تقسیم کنید</string>
+    <string name="systts_split_text_tip_msg">هنگامی که گزینه چند صدایی روشن است، ابتدا از اسکریپت تقسیم بندی در قانون خواندن استفاده می شود؛ زمانی که آن خاموش می شود، از قوانین تقسیم بندی داخلی استفاده می شود.</string>
+    <string name="systts_standby">آماده کردن</string>
+    <string name="systts_standby_help_msg">"به عنوان یک بازگشت، این پیکربندی بر اساس [همه/روایت/گفتگو] هنگامی که درخواست با شکست مواجه می‌شود، گفته می‌شود.
+به عبارت دیگر، پشتیبان را می توان به صورت جداگانه با توجه به هدف خواندن پیکربندی کرد.
+توجه: پیکربندی پشتیبان‌گیری عملکرد امتحان مجدد خودکار ندارد. خواندن مستقیماً پس از اولین شکست حذف می‌شود، بنابراین توصیه می‌شود از نوع TTS محلی به عنوان پشتیبان استفاده کنید."</string>
+    <string name="systts_state_idle">موتور بیکار است</string>
+    <string name="systts_state_synthesizing">سنتز TTS در حال انجام است</string>
+    <string name="voice_multiple_option">1</string>
+    <string name="voice_multiple_summary">1</string>
+    <string name="groups_multiple">1</string>
+    <string name="groups_multiple_summary">1</string>
+    <string name="systts_test_success">موفقیت در آزمون</string>
+    <string name="systts_test_success_info">"اندازه صدا: %1$dKiB
+نرخ نمونه صوتی: %2$d
+قالب صوتی: %3$s"</string>
+    <string name="systts_use_internal_audio_player">از پخش کننده داخلی استفاده کنید</string>
+    <string name="systts_voice_data_load_failed">بارگیری داده های صوتی انجام نشد</string>
+    <string name="tag">برچسب</string>
+    <string name="test">تست</string>
+    <string name="test_failed">تست شکست خورد</string>
+    <string name="theme">موضوع</string>
+    <string name="replace_rule_after_execute">1</string>
+    <string name="voice_name_bad_format">1</string>
+    <string name="import_hanlp_zip">1</string>
+    <string name="hanlp_settings">1</string>
+    <string name="hanlp_tips">1</string>
+    <string name="copy_group">1</string>
+    <string name="no_audio_data_head_warn">1</string>
+    <string name="theme_default">1</string>
+    <string name="dynamic_color">1</string>
+    <string name="orange">پرتقال سوخته زیبایی</string>
+    <string name="green">1</string>
+    <string name="red">1</string>
+    <string name="pink">1</string>
+    <string name="blue">1</string>
+    <string name="cyan">بای چینگ</string>
+    <string name="tip">اشاره</string>
+    <string name="edit_builtin_tts">1</string>
+    <string name="title_activity_replace_edit">قوانین جایگزینی را ویرایش کنید</string>
+    <string name="title_activity_replace_manager">مدیریت قوانین جایگزین</string>
+    <string name="total_n_folders">کل پوشه %1$s</string>
+    <string name="type">نوع</string>
+    <string name="type_of_data">نوع داده</string>
+    <string name="unknown">ناشناخته</string>
+    <string name="unlimited">نامحدود</string>
+    <string name="unnamed">بی نام</string>
+    <string name="upload_failed">آپلود انجام نشد: %1$s</string>
+    <string name="master_switch">1</string>
+    <string name="upload_to_url">به URL آپلود کنید</string>
+    <string name="url_net">اتصال اینترنت</string>
+    <string name="use_dns_lookup_ip">از DNS برای حل IP رابط استفاده کنید</string>
+    <string name="use_exo_decoder">استفاده از رمزگشای ExoPlayer</string>
+    <string name="use_exo_decoder_summary">ExoPlayer یک مدیا پلیر است که توسط گوگل توسعه یافته و سازگاری بالاتری دارد. پس از روشن شدن، رسیور داخلی آن مستقیماً برای رمزگشایی صدا استفاده می شود.</string>
+    <string name="wake_lock">ویک لاک</string>
+    <string name="wake_lock_summary">روشن کردن wake lock می تواند از خوابیدن CPU پس از قفل کردن صفحه جلوگیری کند، اما برخی از سیستم ها ممکن است باعث از بین رفتن پس زمینه شوند.</string>
+    <string name="warn_returned_url_is_empty">لینک برگشتی خالی است!</string>
+    <string name="warning">هشدار دهد</string>
+    <string name="web">صفحه وب</string>
+    <string name="word_wrap">بسته بندی خودکار خط</string>
+    <string name="purple">1</string>
+    <string name="brown">1</string>
+    <string name="gray">1</string>
+    <string name="desc_expand_group">1</string>
+    <string name="desc_collapse_group">1</string>
+    <string name="label_speech_rate">1</string>
+    <string name="label_speech_volume">1</string>
+    <string name="label_speech_pitch">1</string>
+    <string name="systts_api_edge_okhttp">1</string>
+    <string name="confirm">1</string>
+    <string name="dynamic_color_not_support">1</string>
+    <string name="plugin_tts_get_sample_rate_failed">1</string>
+    <string name="plugin_tts_get_need_decode_failed">1</string>
+    <string name="max_retry_count_summary">1</string>
+    <string name="tts_config_not_exist">1</string>
+    <string name="open_source_license">1</string>
+    <string name="limit_tag_length">1</string>
+    <string name="limit_tag_length_summary">1</string>
+    <string name="limit_name_length">1</string>
+    <string name="limit_name_length_summary">1</string>
+    <string name="descending">1</string>
+    <string name="sort">1</string>
+    <string name="created_time_id">1</string>
+    <string name="sorting_complete_msg">1</string>
+    <string name="tag_data_clear_warn">1</string>
+    <string name="keyboard_toolbar_settings">1</string>
+    <string name="keyboard_toolbar_settings_tips">1</string>
+    <string name="more_options_desc">1</string>
+    <string name="group_part_enabled">1</string>
+    <string name="group_all_enabled">1</string>
+    <string name="group_all_disabled">1</string>
+    <string name="edit_desc">1</string>
+    <string name="config_enabled_desc">1</string>
+    <string name="config_disabled_desc">1</string>
+    <string name="plugin_enabled_desc">1</string>
+    <string name="plugin_disabled_desc">1</string>
+    <string name="rule_enabled_desc">1</string>
+    <string name="rule_disabled_desc">1</string>
+    <string name="paste">1</string>
+    <string name="tag_data">1</string>
+    <string name="grant_permission_audio_file">1</string>
+    <string name="grant_permission_storage_file">1</string>
+    <string name="write_plugin_log_to_file">1</string>
+    <string name="add_shortcut_if_fail_tips">1</string>
+</resources>

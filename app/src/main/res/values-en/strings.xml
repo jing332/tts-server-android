@@ -1,5 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string name="app_name">TTS Server</string>
+    <string name="app_name_dev">D·TTS Server</string>
     <string name="app_switch">Switch</string>
     <string name="help">Help</string>
     <string name="warning">Warning</string>
