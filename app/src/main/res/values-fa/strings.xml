@@ -138,10 +138,10 @@
     <string name="systts_secondaryLocale">زبان متوسطه (مهارت های زبانی)</string>
     <string name="systts_voice_data_load_failed">بارگیری داده های صوتی انجام نشد</string>
     <string name="systts_help_sample_rate">سیستم TTS باید نرخ نمونه‌برداری را هنگام شروع پخش مشخص کند. اگر [پخش داخلی] یا [پخش مستقیم] فعال باشد، می‌توانید این گزینه را نادیده بگیرید.</string>
-    <string name="voice_multiple_option">1</string>
-    <string name="voice_multiple_summary">1</string>
-    <string name="groups_multiple">1</string>
-    <string name="groups_multiple_summary">1</string>
+    <string name="voice_multiple_option">برای یک هدف خواندن می توان چندین انتخاب انجام داد</string>
+    <string name="voice_multiple_summary">اهداف خواندن یکسان دیگر حذف نخواهند شد و از چرخش تصادفی استفاده خواهند کرد. (تک صدا از این عملکرد پشتیبانی نمی کند)</string>
+    <string name="groups_multiple">گروه ها را می توان به صورت چندگانه انتخاب کرد</string>
+    <string name="groups_multiple_summary">با علامت زدن، گروه بندی دیگر متقابلاً منحصر به فرد نخواهد بود.</string>
     <string name="systts_test_success">موفقیت در آزمون</string>
     <string name="systts_test_success_info">اندازه صدا: %1$dKiB
 نرخ نمونه صوتی: %2$d
@@ -161,7 +161,7 @@
     <string name="group">گروه</string>
     <string name="belonging_group">گروهی که به آن تعلق دارد</string>
     <string name="msg_group_is_empty">گروه خالی است، لطفاً پیکربندی را اضافه کنید</string>
-    <string name="group_name">1</string>
+    <string name="group_name">اسم گروه</string>
     <string name="default_group">گروه بندی پیش فرض</string>
     <string name="content">محتوا</string>
     <string name="name">نام</string>
@@ -170,7 +170,7 @@
     <string name="test_failed">تست شکست خورد</string>
     <string name="enabled">فعال شد</string>
     <string name="choice_item">انتخاب کنید %1$s</string>
-    <string name="import_failed">واردات انجام نشد</string>
+    <string name="import_failed">درونریزی انجام نشد</string>
     <string name="clipboard">کلیپ بورد</string>
     <string name="type">نوع</string>
     <string name="source">منبع</string>
@@ -195,12 +195,12 @@
     <string name="systts_log_finished_playing">پخش تمام شد: %1$s</string>
     <string name="systts_log_start_retry">شروع %1$d تلاش مجدد</string>
     <string name="unlimited">نامحدود</string>
-    <string name="file">1</string>
+    <string name="file">فایل</string>
     <string name="select_file">یک سند را انتخاب کنید</string>
     <string name="select_file_hint">برای انتخاب فایل روی دکمه سمت راست کلیک کنید ➡️</string>
-    <string name="systts_group_empty_msg">1</string>
+    <string name="systts_group_empty_msg">روی دکمه ➕ در سمت راست نوار بالای برنامه -> افزودن... کلیک کنید و سپس گروهی را که به آن تعلق دارد را در رابط ویرایش تنظیم کنید</string>
     <string name="new_version_available">یک نسخه جدید وجود دارد: %1$s</string>
-    <string name="master_switch">1</string>
+    <string name="master_switch">کلید اصلی</string>
     <string name="upload_to_url">به URL آپلود کنید</string>
     <string name="upload_failed">آپلود انجام نشد: %1$s</string>
     <string name="systts_copied_config">پیکربندی کپی شد</string>
@@ -214,7 +214,7 @@
     <string name="local_tts_engine">موتور محلی</string>
     <string name="add_local_tts">موتور محلی را اضافه کنید</string>
     <string name="local">محلی</string>
-    <string name="edit_local_tts">1</string>
+    <string name="edit_local_tts">موتور محلی را ویرایش کنید</string>
     <string name="label_tts_engine">موتور:</string>
     <string name="type_of_data">نوع داده</string>
     <string name="str_key">کلید</string>
@@ -441,8 +441,8 @@
     <string name="rule_disabled_desc">1</string>
     <string name="paste">1</string>
     <string name="tag_data">1</string>
-    <string name="grant_permission_audio_file">1</string>
-    <string name="grant_permission_storage_file">1</string>
-    <string name="write_plugin_log_to_file">1</string>
-    <string name="add_shortcut_if_fail_tips">1</string>
+    <string name="grant_permission_audio_file">اعطا [مجوز خواندن فایل صوتی]</string>
+    <string name="grant_permission_storage_file">اعطا [مجوز خواندن فایل ذخیره‌سازی]</string>
+    <string name="write_plugin_log_to_file">لاگ افزونه را در فایل بنویسید</string>
+    <string name="add_shortcut_if_fail_tips">اگر ناموفق بود، لطفاً [اضافه کردن مجوز میانبر] را بدهید</string>
 </resources>
