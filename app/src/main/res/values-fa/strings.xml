@@ -19,13 +19,13 @@
     <string name="cannot_empty">نمیتواند خالی باشد!</string>
     <string name="open_web">باز کردن نسخه وب</string>
     <string name="check_update">به روز رسانی را بررسی کنید</string>
-    <string name="wake_lock">ویک لاک</string>
+    <string name="wake_lock">حالت آماده‌باش</string>
     <string name="about">درباره</string>
     <string name="config">پیکربندی</string>
     <string name="log">ورود به سیستم</string>
-    <string name="battery_optimization_whitelist">1</string>
+    <string name="battery_optimization_whitelist">لیست سفید بهینه سازی باتری</string>
     <string name="desktop_shortcut">میانبر دسکتاپ</string>
-    <string name="added_battery_optimization_whitelist">1</string>
+    <string name="added_battery_optimization_whitelist">قبلاً به لیست سفید پس زمینه اضافه شده است</string>
     <string name="kill_process">پایان فرآیند</string>
     <string name="cancel">لغو کنید</string>
     <string name="label_read_aloud_target">اهداف خواندن:</string>
@@ -46,8 +46,8 @@
     <string name="label_port">بندر:</string>
     <string name="systts_api_edge">رابط خواندن با صدای بلند مایکروسافت اج</string>
     <string name="systts_state_idle">موتور بیکار است</string>
-    <string name="systts_state_synthesizing">سنتز TTS در حال انجام است</string>
-    <string name="systts_service">سرویس TTS سیستم</string>
+    <string name="systts_state_synthesizing">سنتز موتور در حال انجام است</string>
+    <string name="systts_service">سرویس موتور سیستم</string>
     <string name="systts_split_long_sentences">جملات طولانی را تقسیم کنید</string>
     <string name="system_not_support_please_manual_set">سیستم از آن پشتیبانی نمی کند، لطفا به صورت دستی کار کنید.</string>
     <string name="service_started">خدمات شروع شده است</string>
@@ -59,12 +59,12 @@
     <string name="server_set_token">توکن را تنظیم کنید</string>
     <string name="server_token_set_to">توکن به صورت زیر تنظیم شده است:</string>
     <string name="system_tts">تی‌تی‌اس‌فارسی سرور</string>
-    <string name="settings">برپایی</string>
-    <string name="global_settings">تنظیمات جهانی</string>
+    <string name="settings">تنظیمات</string>
+    <string name="global_settings">تنظیمات عمومی</string>
     <string name="copy_address">آدرس را کپی کنید</string>
     <string name="check_update_failed">بررسی به‌روزرسانی انجام نشد</string>
     <string name="current_is_last_version">در حال حاضر آخرین نسخه است</string>
-    <string name="edit_builtin_tts">1</string>
+    <string name="edit_builtin_tts">موتور داخلی را ویرایش کنید</string>
     <string name="title_activity_replace_edit">قوانین جایگزینی را ویرایش کنید</string>
     <string name="title_activity_replace_manager">مدیریت قوانین جایگزین</string>
     <string name="display_name">نام نمایشی</string>
@@ -76,9 +76,9 @@
     <string name="desc_seekbar_add">لغزنده +1</string>
     <string name="desc_seekbar_remove">لغزنده -1</string>
     <string name="add_config">اضافه‌کردن تنظیمات</string>
-    <string name="import_config">وارد كردن</string>
-    <string name="export_config">صادرات</string>
-    <string name="copy" tools:ignore="PrivateResource">کپی 🀄</string>
+    <string name="import_config">درونریزی</string>
+    <string name="export_config">برونبری پیکربندی</string>
+    <string name="copy" tools:ignore="PrivateResource">کپی</string>
     <string name="follow_system_or_read_aloud_app">سیستم را دنبال کنید یا برنامه را با صدای بلند بخوانید</string>
     <string name="raw_format_is_play_while_downloading">فرمت خام حالت پخش در حین دانلود است</string>
     <string name="is_confirm_delete">تایید حذف؟</string>
@@ -94,14 +94,14 @@
     <string name="web">صفحه وب</string>
     <string name="clear_web_data">پاک کردن داده های صفحه وب</string>
     <string name="cleared">پاک شد</string>
-    <string name="import_from_clipboard">وارد کردن از کلیپ بورد</string>
+    <string name="import_from_clipboard">درونریزی از کلیپ بورد</string>
     <string name="url_net">اتصال اینترنت</string>
-    <string name="import_from_url">از URL بالا وارد کنید</string>
+    <string name="import_from_url">درونریزی از لینک</string>
     <string name="retry">دوباره امتحان کنید</string>
     <string name="test">تست</string>
-    <string name="audition_text">1</string>
+    <string name="audition_text">متن شنفتنی</string>
     <!-- 替换管理 -->
-    <string name="replace_rule_manager">1</string>
+    <string name="replace_rule_manager">مدیریت قوانین جایگزین</string>
     <string name="systts_replace_add_rule">قوانین جایگزین را اضافه کنید</string>
     <string name="systts_replace_rule">قوانین تعویض</string>
     <string name="replacement">جایگزینی</string>
@@ -110,8 +110,8 @@
     <!-- 系统TTS 设置 -->
     <string name="systts_set_dialogue_min_match_word_count">حداقل تعداد حروف چینی منطبق را در گفتگو تنظیم کنید</string>
     <string name="systts_set_dialogue_min_info">تعداد حروف چینی در دیالوگ کاراکترها (شامل نمادهای چینی) یعنی فقط در صورتی که بیشتر یا مساوی این مقدار باشد به صورت دیالوگ خوانده می شود و در غیر این صورت از نریشن استفاده می شود.</string>
-    <string name="request_timeout">1</string>
-    <string name="request_timeout_summary">1</string>
+    <string name="request_timeout">زمان درخواست را تنظیم کنید</string>
+    <string name="request_timeout_summary">پس از اینکه زمان انتظار برای درخواست صدا از مقدار تعیین شده فراتر رفت، درخواست لغو شده و به طور خودکار مجددا امتحان می شود.</string>
     <string name="systts_http_edit_title">موتور سفارشی را ویرایش کنید</string>
     <string name="systts_http_request_header">هدر درخواست</string>
     <string name="systts_sample_test_text">برای تست و بازی روی دکمه سمت راست کلیک کنید</string>
@@ -124,15 +124,14 @@
     <string name="pref_title_global_edge">رابط Global-Edge</string>
     <string name="systts_multi_voice_option">چندصدایی (روایت/گفتگو)</string>
     <string name="systts_use_internal_audio_player">از پخش کننده داخلی استفاده کنید</string>
-    <string name="systts_in_app_play_info_html">&lt;DATA&gt;<![CDATA[        打开此选项后，将直接<b>使用本程序内置的音频播放器</b>，而非转由系统TTS组件播放。
-        <br>由于无需手动解码，且采样率也可在播放中变更，可解决<b>多语音采样率不同时</b>和<b>部分设备的webm格式</b>播放异常问题。
-        <br><br>当然，直接播放也有兼容性问题：
-        <br> - 由于并未将原始音频发送到系统TTS组件，所以如果调用TTS者是先缓存后播放机制，即并非由系统播放时，这将会导致缓存时音频为空和意外播放。
-        <br> - raw格式依旧不支持，由系统播放。
-        <br> - 性能方面相较系统播放略低。
-        <br> - 由于内置播放器无音频缓冲，故<b>段落</b>与<b>句子(如已启用分割长句)</b>之间的间隔时间相较系统播放会<b>多出几百毫秒的延迟</b>。
-        ]]>    &lt;/DATA&gt;
-    </string>
+    <string name="systts_in_app_play_info_html">&lt;DATA&gt;<![CDATA[        پس از روشن کردن این گزینه، پخش کننده صوتی تعبیه شده در این برنامه به جای پخش شدن توسط مؤلفه TTS سیستم <b>مستقیماً</b> استفاده می شود.
+        <br>از آنجایی که نیازی به رمزگشایی دستی نیست و نرخ نمونه‌برداری را نیز می‌توان در حین پخش تغییر داد، می‌تواند مشکل پخش غیرعادی <b>صداهای متعدد با نرخ نمونه‌برداری متفاوت</b> و <b>وب را حل کند. قالب</b>در برخی از دستگاه ها.
+        <br><br>البته پخش مستقیم مشکلات سازگاری نیز دارد:
+        <br> - از آنجایی که صدای اصلی به کامپوننت TTS سیستم ارسال نمی شود، اگر تماس گیرنده TTS ابتدا کش و سپس مکانیزم را پخش کند، یعنی توسط سیستم پخش نشود، باعث خالی شدن صدا و خالی شدن صدا می شود. به طور غیرمنتظره ای در حین کش پخش شد.
+        <br> - فرمت خام هنوز پشتیبانی نمی شود و توسط سیستم پخش می شود.
+        <br> - عملکرد کمی کمتر از پخش سیستم است.
+        <br> - از آنجایی که پخش کننده داخلی دارای بافر صوتی نیست، پخش سیستم <b> کندتر از فاصله بین <b>بند</b> و <b> جمله خواهد بود (اگر تقسیم جملات طولانی فعال باشد) </b> >صدها میلی ثانیه تاخیر بیشتر</b>.
+        ]]>    &lt;/DATA&gt;</string>
     <string name="systts_help_secondary_locale">زبان سطح دوم را انتخاب کنید، یعنی هنگام خواندن با صدای بلند از این زبان استفاده کنید.در حال حاضر، مایکروسافت فقط از en-US-JennyMultilingualNeural پشتیبانی می کند.</string>
     <string name="systts_sample_rate">نرخ نمونه برداری (هرتز)</string>
     <string name="systts_secondaryLocale">زبان متوسطه (مهارت های زبانی)</string>
@@ -175,9 +174,9 @@
     <string name="type">نوع</string>
     <string name="source">منبع</string>
     <string name="legado">لگادو را بخوانید</string>
-    <string name="str_import">وارد كردن</string>
+    <string name="str_import">درونریزی</string>
     <string name="please_choose">لطفا انتخاب کنید</string>
-    <string name="config_import">واردات پیکربندی</string>
+    <string name="config_import">درونریزی پیکربندی</string>
     <string name="systts_play_params_description">سرعت صحبت کردن:%1$s | میزان صدا:%2$s | زیر و بم:%3$s</string>
     <string name="systts_ms_express_as_description">%1$s-%2$s | قدرت:%3$s</string>
     <string name="server_log_service_running">سرویس از قبل در حال اجرا است، آدرس گوش دادن: %1$s</string>
@@ -225,25 +224,25 @@
     <string name="direct_play">مستقیم پخش کنید</string>
     <string name="systts_direct_play_help">درباره [پخش مستقیم]</string>
     <string name="systts_direct_play_help_msg">پس از روشن شدن گزینه، مستقیماً توسط موتور TTS آن پخش می شود.
-پس از خاموش کردن گزینه، صدا از طریق سرور TTS رله می شود که باعث کاهش عملکرد (خواندن و نوشتن حافظه پنهان) می شود، اما در شرایط چندصدایی، می تواند تاخیر اولیه سازی ناشی از همان موتور را هنگام تعویض صداها کاهش دهد. .</string>
+پس از خاموش کردن گزینه، صدا از طریق سرور TTS رله می شود که باعث کاهش عملکرد (خواندن و نوشتن حافظه پنهان) می شود، اما در شرایط چندصدایی، می تواند تاخیر اولیه سازی ناشی از همان موتور را هنگام تعویض صداها کاهش دهد.</string>
     <string name="systts_replace_please_on_switch">⚠️منوی را در گوشه سمت راست بالا باز کنید [سوئیچ اصلی]</string>
     <string name="md_checkbox_checked">1</string>
-    <string name="md_checkbox_unchecked">1</string>
+    <string name="md_checkbox_unchecked">همه انتخاب نشده اند</string>
     <string name="md_checkbox_indeterminate">1</string>
     <string name="systts_local_test_msg">پخش مستقیم بسته است
 اندازه: %1$d کیلوبایت
 نرخ نمونه برداری: %2$d هرتز</string>
     <string name="systts_set_standby">موتور پشتیبان را تنظیم کنید</string>
     <string name="systts_local_params_int_must">باید درست یا 1، نادرست یا 0 باشد</string>
-    <string name="internal_player">1</string>
+    <string name="internal_player">پخش کننده داخلی</string>
     <string name="built_in_player_not_enabled">⚠️پخش داخلی فعال نیست، لطفا به منوی گوشه سمت راست بالا بروید تا به صورت دستی فعال شود.</string>
     <string name="please_turn_off_direct_play">لطفاً گزینه [پخش مستقیم] را خاموش کنید</string>
     <string name="systts_as_standby_help">درباره 【به عنوان پشتیبان】</string>
     <string name="systts_standby">آماده کردن</string>
     <string name="decode">رمزگشایی</string>
     <string name="systts_log_replace_failed">جایگزینی انجام نشد: %1$s</string>
-    <string name="systts_standby_triggered_retry_index">1</string>
-    <string name="systts_standby_triggered_retry_index_summary">1</string>
+    <string name="systts_standby_triggered_retry_index">شرایط استفاده از پیکربندی جایگزین</string>
+    <string name="systts_standby_triggered_retry_index_summary">در چند بار تلاش مجدد، پیکربندی پشتیبان فعال می شود؟ پیش‌فرض 1 است، به این معنی که هنگام تلاش مجدد در اولین شکست، از پیکربندی پشتیبان استفاده می‌شود.</string>
     <string name="systts_ms_webm_warn_msg">⚠️پس از تست، ترافیک واقعی مصرف شده توسط فرمت صوتی webm..-24kbps-.. بیش از سه برابر حجم صداست توصیه نمی شود!</string>
     <string name="search_filter">فیلتر جستجو</string>
     <string name="follow_system">سیستم را دنبال کنید</string>
@@ -267,12 +266,12 @@
     <string name="select_plugin">افزونه را انتخاب کنید</string>
     <string name="audition">آزمون</string>
     <string name="no_plugins">بدون پلاگین</string>
-    <string name="systts_interface_preference">1</string>
+    <string name="systts_interface_preference">سیستم TTS - رابط</string>
     <string name="pref_swap_listen_and_edit_button">جای دکمه های گوش دادن و ویرایش را عوض کنید</string>
     <string name="plugin_bad_format">خطای قالب نسخه، باید یک عدد صحیح باشد</string>
-    <string name="import_replace_rule">قوانین جایگزینی واردات</string>
-    <string name="select_import">واردات را انتخاب کنید</string>
-    <string name="config_import_success_msg">در مجموع %1$d پیکربندی وارد شد</string>
+    <string name="import_replace_rule">درونریزی قوانین جایگزینی</string>
+    <string name="select_import">درونریزی را انتخاب کنید</string>
+    <string name="config_import_success_msg">در مجموع %1$d پیکربندی درونریزی شد</string>
     <string name="file_save_failed">ذخیره فایل انجام نشد: %1$s</string>
     <string name="save_success">با موفقیت ذخیره شد</string>
     <string name="failed_timed_out">زمان تمام شد: %1$dms</string>
@@ -287,7 +286,7 @@
     <string name="theme">موضوع</string>
     <string name="add_folder">اضافه کردن پوشه</string>
     <string name="add_bgm_tts">اضافه‌کردن موسیقی پس‌زمینه</string>
-    <string name="edit_bgm_tts">1</string>
+    <string name="edit_bgm_tts">موسیقی پس زمینه را ویرایش کنید</string>
     <string name="add_bgm_tip">اضافه‌کردن تیپ‌موسیقی پس‌زمینه</string>
     <string name="grant_permission_all_file">لطفاً به [تمام دسترسی به فایل] اجازه دهید</string>
     <string name="go_to_settings">به تنظیمات بروید</string>
@@ -295,11 +294,11 @@
     <string name="bgm_settings">تنظیمات موسیقی پس زمینه</string>
     <string name="bgm_settings_tip">نکته: موسیقی پس‌زمینه را با علامت مثبت در گوشه سمت راست بالا اضافه کنید.</string>
     <string name="bgm">موسیقی پس زمینه</string>
-    <string name="exo_player_title">1</string>
+    <string name="exo_player_title">دستگاه پخش رسانه ای</string>
     <string name="remote_sync_service">همگام سازی از راه دور</string>
     <string name="clear_cache">کش را خالی کنید</string>
     <string name="listen_port">پورت گوش دادن</string>
-    <string name="remote_sync_service_description">1</string>
+    <string name="remote_sync_service_description">سرویس همگام سازی کد ویرایش و به روز رسانی کد افزونه را برای اشکال زدایی در رایانه شخصی آسان می کند. \n⚠️تنظیمات پس از راه اندازی مجدد ویرایشگر اعمال می شوند</string>
     <string name="learn_more">بیشتر بدانید</string>
     <string name="systts_bgm_description">حجم:%1$s</string>
     <string name="total_n_folders">کل پوشه %1$s</string>
@@ -310,23 +309,23 @@
     <string name="copied_url">لینک کپی شد</string>
     <string name="direct_link_settings">تنظیم زنجیره مستقیم</string>
     <string name="set_sample_text_param">تنظیم پارامترهای متن</string>
-    <string name="import_plugin">وارد کردن افزونه</string>
+    <string name="import_plugin">درونریزی افزونه</string>
     <string name="systts_drag_tip_msg">برای کشیدن، کادر انتخاب را طولانی فشار دهید</string>
     <string name="code_editor">ویرایشگر کد</string>
     <string name="check_update_summary">هنگام باز کردن رابط اصلی، به‌روزرسانی‌ها را بررسی کنید</string>
     <string name="edit_read_rule">قوانین خواندن با صدای بلند را ویرایش کنید</string>
-    <string name="speech_rule_manager">1</string>
+    <string name="speech_rule_manager">مدیریت قوانین خواندن</string>
     <string name="speech_rule_script">اسکریپت قانون</string>
     <string name="empty_list">لیست خالی است</string>
-    <string name="max_retry_count">1</string>
+    <string name="max_retry_count">حداکثر تعداد تلاش مجدد</string>
     <string name="sys_doc_picker_error">انتخابگر فایل سیستم باز نشد، به طور خودکار از انتخابگر داخلی استفاده می کند.</string>
     <string name="add_file">فایل ها را اضافه کنید</string>
     <string name="path_is_empty">مسیر خالی است</string>
-    <string name="file_picker_mode">1</string>
-    <string name="file_picker">1</string>
-    <string name="file_picker_mode_system">1</string>
-    <string name="file_picker_mode_builtin">1</string>
-    <string name="file_picker_mode_prompt">1</string>
+    <string name="file_picker_mode">حالت انتخابگر فایل</string>
+    <string name="file_picker">انتخابگر فایل</string>
+    <string name="file_picker_mode_system">انتخابگر فایل سیستم</string>
+    <string name="file_picker_mode_builtin">انتخابگر فایل داخلی</string>
+    <string name="file_picker_mode_prompt">اعلان انتخاب پاپ آپ</string>
     <string name="no_retries">دوباره امتحان نکنید</string>
     <string name="systts_no_custom_tag_config_warn">⚠️بدون پیکربندی برچسب، لطفا تنظیمات را اضافه کنید یا گزینه چند صدایی را خاموش کنید!</string>
     <string name="tip">اشاره</string>
@@ -337,7 +336,7 @@
     <string name="click_play">برای پخش کلیک کنید</string>
     <string name="app_language_update_warn">قبل از اینکه زبان جدید به طور کامل نمایش داده شود، باید برنامه را به اجبار متوقف کنید!</string>
     <string name="wake_lock_summary">روشن کردن wake lock می تواند از خوابیدن CPU پس از قفل کردن صفحه جلوگیری کند، اما برخی از سیستم ها ممکن است باعث از بین رفتن پس زمینه شوند.</string>
-    <string name="foreground_service_and_notification_summary">1</string>
+    <string name="foreground_service_and_notification_summary">به عنوان سرویس پیش زمینه تنظیم کنید و اعلان ها را نمایش دهید تا اولویت فرآیند افزایش یابد.</string>
     <string name="foreground_service_and_notification">خدمات و اطلاعیه های میز جلو</string>
     <string name="grant_permission_all_file_msg">در غیر این صورت در برخی از سیستم ها فایل های موسیقی خوانده نمی شود و پخش نمی شود!</string>
     <string name="format_error">فرمت اشتباه</string>
@@ -355,21 +354,21 @@
     <string name="invalid_scheme_msg">طرح نامعتبر: %1$s</string>
     <string name="invalid_url_msg">URL نامعتبر: %1$s</string>
     <string name="invalid_path_msg">مسیر نامعتبر: %1$s</string>
-    <string name="import_file_as">فایل واردات …</string>
+    <string name="import_file_as">درونریزی فایل به عنوان…</string>
     <string name="systts_no_speech_target_all">⚠️ {Read All} وجود ندارد، از پیش‌فرض استفاده کنید! حتما گزینه چند صدایی را روشن کنید.</string>
     <string name="stream_audio_mode">پخش جریانی صدا</string>
     <string name="stream_audio_mode_summary">یعنی پخش در حین دانلود که مستلزم پایداری شبکه بالاست. (بعد از فعال شدن، امتحان مجدد خودکار شکست / پشتیبان گیری TTS امکان پذیر نخواهد بود)</string>
     <string name="use_exo_decoder">استفاده از رمزگشای ExoPlayer</string>
     <string name="use_exo_decoder_summary">ExoPlayer یک مدیا پلیر است که توسط گوگل توسعه یافته و سازگاری بالاتری دارد. پس از روشن شدن، رسیور داخلی آن مستقیماً برای رمزگشایی صدا استفاده می شود.</string>
     <string name="plugin_not_define_vars">این افزونه هیچ متغیر تعریف شده ای ندارد</string>
-    <string name="export_vars">متغیرهای صادراتی</string>
+    <string name="export_vars">برونبری متغیرها</string>
     <string name="skip_request_silent_text">از درخواست متن بی‌صدا رد شوید</string>
     <string name="skip_request_silent_text_summary">وقتی روشن است، متنی مانند نمادهای خالص به طور جداگانه درخواست نمی شود.</string>
     <string name="retry_count_when_audio_empty">تعداد دفعات تکرار وقتی صدا خالی است</string>
-    <string name="retry_count_when_audio_empty_summary">1</string>
+    <string name="retry_count_when_audio_empty_summary">این مقدار باید کمتر یا مساوی با [حداکثر تعداد تکرار] باشد.</string>
     <string name="backup_restore">پشتیبان گیری و بازیابی</string>
     <string name="backup">پشتیبان گیری</string>
-    <string name="preference_settings">اولویت ها</string>
+    <string name="preference_settings">اولویت‌ها</string>
     <string name="restart">راه اندازی مجدد</string>
     <string name="restore_finished">بازیابی تکمیل شد</string>
     <string name="restore_restart_msg">تنظیمات برگزیده باید دوباره راه اندازی شوند تا اعمال شوند</string>
@@ -377,27 +376,27 @@
     <string name="restore_confirm">داده ها را از این فایل بازیابی کنید؟</string>
     <string name="js_file_type_not_recognized">نوع فایل JS شناسایی نشد</string>
     <string name="spinner_drop_down_max_count">حداکثر تعداد محتویات جعبه کشویی</string>
-    <string name="spinner_drop_down_max_count_summary">1</string>
+    <string name="spinner_drop_down_max_count_summary">هنگامی که تعداد محتویات در کادر کشویی از مقدار تنظیم شده بیشتر شود، یک کادر محاوره ای پاپ آپ نمایش داده می شود.</string>
     <string name="systts_plugin_please_set_vars">لطفا برای تنظیم متغیرها اینجا را کلیک کنید</string>
     <string name="clear_log">پاک کردن گزارش</string>
     <string name="nav_app_bar_open_drawer_description" tools:ignore="PrivateResource">کشوی ناوبری را باز کنید</string>
     <string name="import_config_type_not_match_msg">خطای قالب (مورد انتظار: [%1$s]).
-قالبی که وارد کردید [%2$s] است، لطفاً برای وارد کردن آن به رابط مدیریت مربوطه بروید.</string>
-    <string name="import_config_type_unknown_msg">قالب ناشناخته است، لطفاً پیکربندی صحیح را وارد کنید.</string>
-    <string name="still_to_import">هنوز هم می خواهید وارد کنید</string>
+قالبی که وارد کردید [%2$s] است، لطفاً برای درونریزی آن به رابط مدیریت مربوطه بروید</string>
+    <string name="import_config_type_unknown_msg">قالب ناشناخته است، لطفاً پیکربندی صحیح را درونریزی کنید.</string>
+    <string name="still_to_import">هنوز هم می خواهید درونریزی کنید</string>
     <string name="app_help_document">اسناد راهنما</string>
-    <string name="replace_rule_after_execute">1</string>
-    <string name="voice_name_bad_format">1</string>
-    <string name="import_hanlp_zip">1</string>
-    <string name="hanlp_settings">1</string>
-    <string name="hanlp_tips">1</string>
-    <string name="copy_group">1</string>
-    <string name="no_audio_data_head_warn">1</string>
-    <string name="theme_default">1</string>
-    <string name="dynamic_color">1</string>
+    <string name="replace_rule_after_execute">بعد از بلندخوانی قوانین اجرا کنید</string>
+    <string name="voice_name_bad_format">خطای قالب voiceName</string>
+    <string name="import_hanlp_zip">بسته تحلیل نحوی Hanlp را وارد کنید</string>
+    <string name="hanlp_settings">تنظیمات Hanlp</string>
+    <string name="hanlp_tips">یا به صورت دستی آن را در حافظه خارجی/Android/data/com.github.jing332.tts_server_android/files/hanlp استخراج کنید.\nتوجه: لطفاً مطمئن شوید که یک پوشه فرهنگ لغت در فهرست راهنمای hanlp وجود دارد.</string>
+    <string name="copy_group">گروه کپی</string>
+    <string name="no_audio_data_head_warn">⚠️ این صدا هدر داده ای ندارد، بنابراین نمی توان اطلاعات را به دست آورد.</string>
+    <string name="theme_default">پیش فرض</string>
+    <string name="dynamic_color">رنگ پویا</string>
     <string name="orange">پرتقال سوخته زیبایی</string>
-    <string name="green">1</string>
-    <string name="red">1</string>
+    <string name="green">سبز</string>
+    <string name="red">قرمز</string>
     <string name="pink">1</string>
     <string name="blue">1</string>
     <string name="cyan">بای چینگ</string>
