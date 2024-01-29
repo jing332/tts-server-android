@@ -87,9 +87,10 @@ jobs:
 
       - name: Init environment variable
         run: |
-          echo "ver_name=$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
+          verName="$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)"
+          echo "ver_name=${{ verName }}" >> $GITHUB_ENV
           
-          echo "apk_path=${{env.outputs_dir}}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk" > $GITHUB_ENV
+          echo "apk_path=${{env.outputs_dir}}/apk/${{ env.product }}/release/*${{ verName }}.apk" > $GITHUB_ENV
 
       #      - name: Upload Mappings to Artifact
       #        uses: actions/upload-artifact@v3
@@ -105,7 +106,9 @@ jobs:
 
       - name: Upload APK To Lanzouyun
         run: |
-          python3 $GITHUB_WORKSPACE/.github/scripts/lzy_web.py "${{ env.apk_path }}" "${{ env.lzy_folder_id }}"
+          mkdir apk
+          cp ${{ env.apk_path }} "${{ GITHUB_WORKSPACE }}/apk/"
+          python3 $GITHUB_WORKSPACE/.github/scripts/lzy_web.py "${{ $GITHUB_WORKSPACE }}/apk" "${{ env.lzy_folder_id }}"
           
           echo "app: https://jing332.lanzn.com/b09jpjd2d"
           echo "dev: https://jing332.lanzn.com/b09ig9qla"
