@@ -14,13 +14,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Input
+import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCard
 import androidx.compose.material.icons.filled.AppShortcut
-import androidx.compose.material.icons.filled.Input
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Output
-import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -156,7 +156,7 @@ internal fun ManagerScreen(vm: ReplaceRuleManagerViewModel = viewModel(), finish
                                         navigateToEdit()
                                     },
                                     leadingIcon = {
-                                        Icon(Icons.Default.PlaylistAdd, null)
+                                        Icon(Icons.AutoMirrored.Filled.PlaylistAdd, null)
                                     }
                                 )
                                 DropdownMenuItem(
@@ -195,7 +195,7 @@ internal fun ManagerScreen(vm: ReplaceRuleManagerViewModel = viewModel(), finish
                                     showOptions = false
                                     showImportSheet = true
                                 },
-                                leadingIcon = { Icon(Icons.Default.Input, null) }
+                                leadingIcon = { Icon(Icons.AutoMirrored.Filled.Input, null) }
                             )
 
                             DropdownMenuItem(
@@ -295,6 +295,8 @@ internal fun ManagerScreen(vm: ReplaceRuleManagerViewModel = viewModel(), finish
                             onEdit = { showGroupEditDialog = g },
                             onDelete = {
                                 vm.deleteGroup(groupWithRules)
+                                if (groupWithRules.list.find { it.isEnabled } != null)
+                                    SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)
                             },
                             onExport = { showExportSheet = listOf(groupWithRules) },
                             onSort = { showSortDialog = groupWithRules.list }
@@ -318,7 +320,11 @@ internal fun ManagerScreen(vm: ReplaceRuleManagerViewModel = viewModel(), finish
                                 },
                                 onClick = { },
                                 onEdit = { navigateToEdit(rule) },
-                                onDelete = { vm.deleteRule(rule) },
+                                onDelete = {
+                                    vm.deleteRule(rule)
+                                    if (rule.isEnabled)
+                                        SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)
+                                },
                                 onMoveTop = { vm.moveTop(rule) },
                                 onMoveBottom = { vm.moveBottom(rule) }
                             )

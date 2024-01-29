@@ -16,6 +16,7 @@ import com.github.jing332.tts_server_android.compose.systts.replace.edit.RuleEdi
 import com.github.jing332.tts_server_android.compose.theme.AppTheme
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
+import com.github.jing332.tts_server_android.service.systts.SystemTtsService
 
 class ReplaceManagerActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
@@ -42,6 +43,8 @@ class ReplaceManagerActivity : AppCompatActivity() {
                             }
                             RuleEditScreen(rule, onRuleChange = { rule = it }, onSave = {
                                 appDb.replaceRuleDao.insert(rule)
+                                if (rule.isEnabled)
+                                    SystemTtsService.notifyUpdateConfig(isOnlyReplacer = true)
                             })
                         }
                     }
