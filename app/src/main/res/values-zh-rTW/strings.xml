@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">TTS Server</string>
     <string name="app_name_dev">D·TTS Server</string>
@@ -9,16 +10,13 @@
     <string name="copied">已複製</string>
     <string name="ok_reset">已重置</string>
     <string name="loading">載入中</string>
-
     <string name="selected">已選擇</string>
-
     <string name="close">關閉</string>
     <string name="start">啟動</string>
     <string name="follow">跟隨</string>
     <string name="custom">自定義</string>
     <string name="app_down_again_to_exit">再按一次退出程式</string>
     <string name="cannot_empty">不可為空！</string>
-
     <string name="open_web">打開網頁版</string>
     <string name="check_update">檢查更新</string>
     <string name="wake_lock">喚醒鎖</string>
@@ -28,10 +26,8 @@
     <string name="battery_optimization_whitelist">電池優化白名單</string>
     <string name="desktop_shortcut">桌面快捷方式</string>
     <string name="added_battery_optimization_whitelist">已加入後台白名單</string>
-
     <string name="kill_process">結束程序</string>
     <string name="cancel">取消</string>
-
     <string name="label_read_aloud_target">朗讀目標：</string>
     <string name="label_api">接口：</string>
     <string name="label_language">語言：</string>
@@ -48,15 +44,12 @@
     <string name="label_result">結果：</string>
     <string name="label_audio_sample_rate">音頻採樣率(hz)：</string>
     <string name="label_port">端口:</string>
-
     <string name="systts_api_edge">微軟Edge：大聲朗讀接口</string>
     <string name="systts_state_idle">TTS空閒中</string>
     <string name="systts_state_synthesizing">TTS合成中</string>
     <string name="systts_service">系統TTS服務</string>
-
     <string name="systts_split_long_sentences">分割長句</string>
     <string name="system_not_support_please_manual_set">系統不支援，請手動操作</string>
-
     <string name="service_started">服務已啟動</string>
     <string name="service_closed">服務已關閉</string>
     <string name="forwarder_ms">微軟TTS轉發器</string>
@@ -65,18 +58,15 @@
     <string name="server_restart_service_to_update">重啟服務以生效</string>
     <string name="server_set_token">設置Token</string>
     <string name="server_token_set_to">Token已設為：</string>
-
     <string name="system_tts">系統TTS</string>
     <string name="settings">設置</string>
     <string name="global_settings">全局設置</string>
     <string name="copy_address">複製地址</string>
     <string name="check_update_failed">檢查更新失敗</string>
     <string name="current_is_last_version">當前已是最新版</string>
-
     <string name="edit_builtin_tts">編輯內置TTS</string>
     <string name="title_activity_replace_edit">編輯替換規則</string>
     <string name="title_activity_replace_manager">替換規則管理</string>
-
     <string name="display_name">顯示名稱</string>
     <string name="save">儲存</string>
     <string name="desc_switch_item">啟用或關閉本項目</string>
@@ -85,7 +75,6 @@
     <string name="desc_delete_item">刪除本項目</string>
     <string name="desc_seekbar_add">滑動條 +1</string>
     <string name="desc_seekbar_remove">滑動條 -1</string>
-
     <string name="add_config">新增配置</string>
     <string name="import_config">導入配置</string>
     <string name="export_config">導出配置</string>
@@ -97,55 +86,45 @@
     <string name="ra_all">朗讀全部</string>
     <string name="ra_aside">僅旁白</string>
     <string name="ra_dialogue">僅對話</string>
-
     <string name="all">全部</string>
     <string name="aside">旁白</string>
     <string name="dialogue">對話</string>
     <string name="none">無</string>
     <string name="default_str">預設</string>
-
     <string name="web">網頁</string>
     <string name="clear_web_data">清空網頁數據</string>
     <string name="cleared">已清空</string>
-
     <string name="import_from_clipboard">從剪貼板導入</string>
     <string name="url_net">網絡鏈接</string>
     <string name="import_from_url">從上方URL導入</string>
     <string name="retry">重試</string>
     <string name="test">測試</string>
     <string name="audition_text">測試文字</string>
-
-    <!-- 替換管理 -->
+    <!-- 替换管理 -->
     <string name="replace_rule_manager">替換規則管理</string>
     <string name="systts_replace_add_rule">新增替換規則</string>
     <string name="systts_replace_rule">替換規則</string>
     <string name="replacement">替換為</string>
     <string name="systts_replace_insert_pinyin">插入拼音聲調</string>
     <string name="systts_replace_use_regex">使用正則表達式</string>
-
-    <!-- 系统TTS 設定 -->
+    <!-- 系统TTS 设置 -->
     <string name="systts_set_dialogue_min_match_word_count">設置對話最小匹配漢字數</string>
     <string name="systts_set_dialogue_min_info">人物對話的漢字數（包括中文符號），即只有在大於等於此值時才作為對話朗讀，反之使用旁白。</string>
     <string name="request_timeout">設定請求逾時</string>
     <string name="request_timeout_summary">請求音訊的等待時間超過設定值後，將取消請求並自動重試。</string>
-
     <string name="systts_http_edit_title">編輯自定義TTS</string>
     <string name="systts_http_request_header">頭欄位</string>
-
     <string name="systts_sample_test_text">按一下右側按鈕即可測試並播放</string>
-
     <string name="systts_decode_audio">解碼音訊</string>
     <string name="systts_add_internal_tts">新增內置TTS</string>
     <string name="systts_add_custom_tts">新增自定義TTS</string>
     <string name="off_multi_voice_use_global">請關閉多語音選項以使用單語音模式</string>
-
     <string name="use_dns_lookup_ip">使用DNS解析介面IP</string>
     <string name="pref_edge_dns_summary">而非內置北京微軟雲節點</string>
     <string name="pref_title_global_edge">全域：Edge介面</string>
-
     <string name="systts_multi_voice_option">多語音（旁白/對白）</string>
     <string name="systts_use_internal_audio_player">使用內置播放器</string>
-    <string name="systts_in_app_play_info_html"><DATA><![CDATA[打開此選項後，將直接<b>使用本程式內置的音訊播放器</b>，而非轉由系統TTS組件播放。]]></DATA>
+    <string name="systts_in_app_play_info_html">&lt;DATA&gt;<![CDATA[打開此選項後，將直接<b>使用本程式內置的音訊播放器</b>，而非轉由系統TTS組件播放。]]>&lt;/DATA&gt;
     </string>
     <string name="systts_help_secondary_locale">選擇二級語言，即在朗讀時使用此語言，現時微軟只支持en-US-JennyMultilingualNeural。</string>
     <string name="systts_sample_rate">取樣速率（hz）</string>
@@ -156,19 +135,15 @@
     <string name="voice_multiple_summary">相同朗讀目標將不再排斥，並使用隨機輪播。 （單語音不支持此功能）</string>
     <string name="groups_multiple">分組可多選</string>
     <string name="groups_multiple_summary">⚠ ️勾選分組時將不再互相排斥。</string>
-
     <string name="systts_test_success">測試成功</string>
     <string name="systts_test_success_info">音频大小: %1$s \n音频采样率：%2$d \n音频格式: %3$s</string>
-
     <string name="systts_http_test_msg">音訊大小：%1$d Kib \n格式：%2$s \n取樣速率：%3$d HZ \nContent-Type:%4$s</string>
-
     <string name="systts_please_check_multi_voice_option">請先在右上角選單勾選多語音選項！</string>
     <string name="systts_sample_rate_different_in_enabled_list">檢測到已啟用配置中的格式/取樣速率不同，</string>
     <string name="group_expanded">已展開 %1$s</string>
     <string name="group_collapsed">已收合 %1$s</string>
     <string name="systts_desc_list_count_info">共%1$d項，已啟用%2$d項</string>
     <string name="systts_list_item_desc">目標%1$s，介面%2$s，内容：%3$s，格式：%4$s</string>
-
     <string name="more_options">更多選項</string>
     <string name="add_group">新增群組</string>
     <string name="group">群組</string>
@@ -176,7 +151,6 @@
     <string name="msg_group_is_empty">群組為空，請添加配置</string>
     <string name="group_name">群組名稱</string>
     <string name="default_group">預設群組</string>
-
     <string name="content">內容</string>
     <string name="name">名稱</string>
     <string name="unnamed">未命名</string>
@@ -185,7 +159,6 @@
     <string name="enabled">已啟用</string>
     <string name="choice_item">選擇%1$s</string>
     <string name="import_failed">導入失敗</string>
-
     <string name="clipboard">剪貼簿</string>
     <string name="type">類型</string>
     <string name="source">來源</string>
@@ -193,7 +166,6 @@
     <string name="str_import">導入</string>
     <string name="please_choose">請選擇</string>
     <string name="config_import">配置導入</string>
-
     <string name="systts_play_params_description">語速：%1$s |音量：%2$s |音調：%3$s</string>
     <string name="systts_ms_express_as_description">%1$s-%2$s |强度：%3$s</string>
     <string name="server_log_service_running">服務已在運行中，監聽地址：%1$s</string>
@@ -207,11 +179,10 @@
     <string name="systts_log_finished_playing">播放完畢：%1$s</string>
     <string name="systts_log_start_retry">開始第%1$d次重試</string>
     <string name="unlimited">無限制</string>
-    <string name="tag">標籤</string>
     <string name="file">文件</string>
     <string name="select_file">選擇檔案</string>
     <string name="select_file_hint">按一下右側按鈕選擇檔案 ➡️</string>
-    <string name="systts_group_empty_msg"><![CDATA[按一下頂部應用欄右側的 ➕ 按鈕->添加TTS，然後在編輯介面設定所屬群組。]]></string>
+    <string name="systts_group_empty_msg">按一下頂部應用欄右側的 ➕ 按鈕->添加TTS，然後在編輯介面設定所屬群組。</string>
     <string name="new_version_available">有新版本：%1$s</string>
     <string name="master_switch">總開關</string>
     <string name="upload_to_url">上傳到URL</string>
@@ -336,9 +307,9 @@
     <string name="file_picker_mode_builtin">内置文件选择器</string>
     <string name="file_picker_mode_prompt">弹出选择提示</string>
     <string name="no_retries">不重试</string>
-
     <string name="systts_no_custom_tag_config_warn">⚠️无标签配置，请添加配置或关闭多语音选项！</string>
     <string name="tip">提示</string>
+    <string name="tag">標籤</string>
     <string name="systts_split_text_tip_msg">多语音选项开启时优先使用朗读规则中的分割脚本；关闭时使用内置分割规则。</string>
     <string name="systts_not_found_speech_rule_tag">⚠️未找到朗读规则</string>
     <string name="no_files_in_dir">此目录下无文件</string>
@@ -389,7 +360,6 @@
     <string name="systts_plugin_please_set_vars">请单击此处设置变量</string>
     <string name="clear_log">清空日志</string>
     <string name="nav_app_bar_open_drawer_description" tools:ignore="PrivateResource">打开抽屉式导航栏</string>
-
     <string name="import_config_type_not_match_msg">格式错误(预期为: 【%1$s】)。\n您输入的格式为 【%2$s】, 请前往对应管理界面进行导入。</string>
     <string name="import_config_type_unknown_msg">格式未知，请输入正确的配置。</string>
     <string name="still_to_import">仍要导入</string>
@@ -401,7 +371,6 @@
     <string name="hanlp_tips">或手动解压到 外部存储/Android/data/com.github.jing332.tts_server_android/files/hanlp 中，\n注意：请确保hanlp目录下有 dictionary 文件夹。</string>
     <string name="copy_group">复制分组</string>
     <string name="no_audio_data_head_warn">⚠️ 该音频没有数据头，故无法获取信息。</string>
-
     <string name="theme_default">默认</string>
     <string name="dynamic_color">动态颜色</string>
     <string name="orange">橙色</string>
