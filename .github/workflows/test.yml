@@ -38,13 +38,16 @@ jobs:
     needs: go-lib
     strategy:
       matrix:
-        product: [ { name: "App原版", value: app }, { name: "Dev共存版", value: dev } ]
+        product: [ { name: "App原版", value: app, lzyId: "9493563" }, { name: "Dev共存版", value: dev, lzyId: "7381570" } ]
 
       fail-fast: false
     runs-on: ubuntu-latest
     env:
       product: ${{ matrix.product.value }}
-      product_name: ${{matrix.product.value}}
+      product_name: ${{ matrix.product.value }}
+      lzy_folder_id: ${{ matrix.product.lzyId }}
+      ylogin: ${{ secrets.LANZOU_ID }}
+      phpdisk_info: ${{ secrets.LANZOU_PSD }}
       outputs_dir: "${{ github.workspace }}/app/build/outputs"
       ver_name: ""
 
@@ -85,15 +88,27 @@ jobs:
       - name: Init environment variable
         run: |
           echo "ver_name=$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
+          
+          echo "apk_path=${{env.outputs_dir}}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk" > $GITHUB_ENV
 
-#      - name: Upload Mappings to Artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: mappings_${{ env.product }}_${{ env.ver_name }}
-#          path: ${{ env.outputs_dir }}/mapping/*/*.txt
+      #      - name: Upload Mappings to Artifact
+      #        uses: actions/upload-artifact@v3
+      #        with:
+      #          name: mappings_${{ env.product }}_${{ env.ver_name }}
+      #          path: ${{ env.outputs_dir }}/mapping/*/*.txt
 
       - name: Upload APK To Artifact
         uses: actions/upload-artifact@v3
         with:
           name: "TTS-Server_${{ env.product }}_${{ env.ver_name }}"
-          path: ${{env.outputs_dir}}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk
+          path: ${{ env.apk_path }}
+
+      - name: Upload APK To Lanzouyun
+        run: |
+          python3 $GITHUB_WORKSPACE/.github/scripts/lzy_web.py "${{ env.apk_path }}" "${{ env.lzy_folder_id }}"
+          
+          echo "app: https://jing332.lanzn.com/b09jpjd2d"
+          echo "dev: https://jing332.lanzn.com/b09ig9qla"
+          echo "密码PWD: 1234"
+
+
