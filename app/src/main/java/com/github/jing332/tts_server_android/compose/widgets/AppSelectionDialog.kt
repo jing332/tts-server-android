@@ -44,7 +44,6 @@ import com.github.jing332.tts_server_android.utils.performLongPress
 import com.github.jing332.tts_server_android.utils.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlin.math.max
 
 @Composable
 fun AppSelectionDialog(
@@ -108,10 +107,8 @@ fun AppSelectionDialog(
                     }
                 }
 
-                val listState = rememberLazyListState()
-
                 val isEmpty by remember {
-                    derivedStateOf { listState.layoutInfo.viewportSize == IntSize.Zero }
+                    derivedStateOf { state.layoutInfo.viewportSize == IntSize.Zero }
                 }
 
                 if (searchText.isNotBlank() && isEmpty)
@@ -132,11 +129,11 @@ fun AppSelectionDialog(
                     isLoading = isLoading
                 ) {
                     LazyColumn(state = state) {
-                        itemsIndexed(entries) { i, entry ->
-                            if (searchEnabled && searchText.isNotBlank() &&
-                                !entry.contains(searchText, ignoreCase = true)
-                            ) return@itemsIndexed
-
+                        val items = entries.filterNot {
+                            searchEnabled && searchText.isNotBlank() &&
+                                    !it.contains(searchText, ignoreCase = true)
+                        }
+                        itemsIndexed(items) { i, entry ->
                             val current = values[i]
                             val isSelected = onValueSame(value, current)
                             Row(

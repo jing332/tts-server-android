@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HelpOutline
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.Checkbox
@@ -211,7 +211,7 @@ fun BasicInfoEditScreen(
                         Text(stringResource(id = R.string.as_standby))
                         IconButton(onClick = { showStandbyHelpDialog = true }) {
                             Icon(
-                                Icons.Default.HelpOutline,
+                                Icons.AutoMirrored.Filled.HelpOutline,
                                 stringResource(id = R.string.systts_as_standby_help)
                             )
                         }
@@ -334,6 +334,7 @@ fun BasicInfoEditScreen(
                             values = speechRules.map { it.ruleId },
                             entries = speechRules.map { it.name },
                             onSelectedChange = { k, v ->
+                                if (systts.speechRule.target != SpeechTarget.CUSTOM_TAG) return@AppSpinner
                                 onSysttsChange(
                                     systts.copy(
                                         speechRule = systts.speechRule.copy(
@@ -354,6 +355,7 @@ fun BasicInfoEditScreen(
                                 values = speechRule.tags.keys.toList(),
                                 entries = speechRule.tags.values.toList(),
                                 onSelectedChange = { k, _ ->
+                                    if (systts.speechRule.target != SpeechTarget.CUSTOM_TAG) return@AppSpinner
                                     onSysttsChange(
                                         systts.copy(
                                             speechRule = systts.speechRule.copy(tag = k as String)
@@ -368,7 +370,10 @@ fun BasicInfoEditScreen(
                 speechRule?.let {
                     CustomTagScreen(
                         systts = systts,
-                        onSysttsChange = onSysttsChange,
+                        onSysttsChange = {
+                            if (systts.speechRule.target == SpeechTarget.CUSTOM_TAG)
+                                onSysttsChange(it)
+                        },
                         speechRule = it
                     )
                 }
@@ -430,7 +435,10 @@ private fun CustomTagScreen(
                     leadingIcon = {
                         if (hint.isNotEmpty())
                             IconButton(onClick = { showHelpDialog = label to hint }) {
-                                Icon(Icons.Default.HelpOutline, stringResource(id = R.string.help))
+                                Icon(
+                                    Icons.AutoMirrored.Filled.HelpOutline,
+                                    stringResource(id = R.string.help)
+                                )
                             }
                     },
                     label = { Text(label) },
@@ -464,7 +472,10 @@ private fun CustomTagScreen(
                     leadingIcon = {
                         if (hint.isNotEmpty())
                             IconButton(onClick = { showHelpDialog = label to hint }) {
-                                Icon(Icons.Default.HelpOutline, stringResource(id = R.string.help))
+                                Icon(
+                                    Icons.AutoMirrored.Filled.HelpOutline,
+                                    stringResource(id = R.string.help)
+                                )
                             }
                     },
                     onSelectedChange = { k, _ ->
