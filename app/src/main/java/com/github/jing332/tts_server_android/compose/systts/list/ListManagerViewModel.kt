@@ -51,6 +51,7 @@ class ListManagerViewModel : ViewModel() {
                     if (systts.speechRule.tagRuleId == item.speechRule.tagRuleId
                         && systts.speechRule.tag == item.speechRule.tag
                         && systts.speechRule.tagName == item.speechRule.tagName
+                        && systts.speechRule.isStandby == item.speechRule.isStandby
                     )
                         appDb.systemTtsDao.updateTts(systts.copy(isEnabled = false))
                 }
