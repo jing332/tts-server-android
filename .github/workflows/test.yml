@@ -84,7 +84,6 @@ jobs:
           chmod +x gradlew
           ./gradlew assemble${{ env.product }}release --build-cache --parallel --daemon --warning-mode all
 
-
       - name: Init environment variable
         run: |
           verName="$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)"
@@ -113,5 +112,3 @@ jobs:
           echo "app: https://jing332.lanzn.com/b09jpjd2d"
           echo "dev: https://jing332.lanzn.com/b09ig9qla"
           echo "密码PWD: 1234"
-
-
