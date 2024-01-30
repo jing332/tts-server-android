@@ -109,9 +109,9 @@ jobs:
         run: |
           mkdir apk
           cp "${{ env.outputs_dir }}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk" "${{ GITHUB_WORKSPACE }}/apk"
-          path="$GITHUB_WORKSPACE/apk"
-          python3 $GITHUB_WORKSPACE/.github/scripts/lzy_web.py $path "${{ env.lzy_folder_id }}"
+#          path="$GITHUB_WORKSPACE/apk"
+#          python3 $GITHUB_WORKSPACE/.github/scripts/lzy_web.py $path "${{ env.lzy_folder_id }}"
           
-          echo "app: https://jing332.lanzn.com/b09jpjd2d"
-          echo "dev: https://jing332.lanzn.com/b09ig9qla"
-          echo "密码PWD: 1234"
+#          echo "app: https://jing332.lanzn.com/b09jpjd2d"
+#          echo "dev: https://jing332.lanzn.com/b09ig9qla"
+#          echo "密码PWD: 1234"
