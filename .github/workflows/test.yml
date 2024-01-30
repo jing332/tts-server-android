@@ -109,8 +109,8 @@ jobs:
         run: |
           mkdir apk
           cp "${{ env.outputs_dir }}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk" "${{ github.workspace }}/apk"
-#          path="$GITHUB_WORKSPACE/apk"
-#          python3 $GITHUB_WORKSPACE/.github/scripts/lzy_web.py $path "${{ env.lzy_folder_id }}"
+          path="${{ github.workspace }}/apk"
+          python3 ${{ github.workspace }}/.github/scripts/lzy_web.py $path "${{ env.lzy_folder_id }}"
           
 #          echo "app: https://jing332.lanzn.com/b09jpjd2d"
 #          echo "dev: https://jing332.lanzn.com/b09ig9qla"
