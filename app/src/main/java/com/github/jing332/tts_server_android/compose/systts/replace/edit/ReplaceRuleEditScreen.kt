@@ -2,6 +2,7 @@
 
 package com.github.jing332.tts_server_android.compose.systts.replace.edit
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialogDefaults
@@ -32,9 +34,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -54,12 +56,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.compose.LocalNavController
+import com.github.jing332.tts_server_android.compose.systts.AuditionDialog
 import com.github.jing332.tts_server_android.compose.widgets.AppSpinner
 import com.github.jing332.tts_server_android.compose.widgets.TextCheckBox
 import com.github.jing332.tts_server_android.conf.ReplaceRuleConfig
 import com.github.jing332.tts_server_android.data.appDb
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRule
 import com.github.jing332.tts_server_android.data.entities.replace.ReplaceRuleGroup
+import com.github.jing332.tts_server_android.data.entities.systts.SystemTts
 import androidx.compose.material3.AlertDialog as AlertDialog1
 
 
@@ -98,7 +102,7 @@ fun RuleEditScreen(
     val group = remember(rule.groupId) { groups.find { it.id == rule.groupId } ?: groups.first() }
 
     val vm: RuleEditViewModel = viewModel()
-    var inputKeyState = remember { mutableStateOf("") }
+    val inputKeyState = remember { mutableStateOf("") }
 //    var toolbarKeyList: List<Pair<String, String>> by rememberDataSaverState(
 //        key = ConfigConst.KEY_SOFT_KEYBOARD_TOOLBAR,
 //        default = emptyList()
@@ -205,10 +209,10 @@ fun RuleEditScreen(
 }
 
 private object InputFieldID {
-    const val NAME = 0
-    const val PATTERN = 1
-    const val REPLACEMENT = 2
-    const val SAMPLE_TEXT = 3
+    const val NAME = "name"
+    const val PATTERN = "pattern"
+    const val REPLACEMENT = "replacement"
+    const val SAMPLE_TEXT = "sample_text"
 }
 
 /**
@@ -240,47 +244,6 @@ private fun Screen(
 
     onTest: (String) -> String,
 ) {
-    var currentInputFocus by remember { mutableIntStateOf(-1) }
-
-    var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(nameValue)) }
-    fun setName(value: TextFieldValue) {
-        nameTextFieldValue = value
-        onNameValueChange.invoke(value.text)
-    }
-
-    var patternTextFieldValue by remember { mutableStateOf(TextFieldValue(patternValue)) }
-    fun setPattern(value: TextFieldValue) {
-        patternTextFieldValue = value
-        onReplaceValueChange.invoke(value.text)
-    }
-
-    var replacementTextFieldValue by remember { mutableStateOf(TextFieldValue(replacementValue)) }
-    fun setReplacement(value: TextFieldValue) {
-        replacementTextFieldValue = value
-        onReplacementValueChange.invoke(value.text)
-    }
-
-    var sampleTextFieldValue by remember { mutableStateOf(TextFieldValue("")) }
-    if (insertKeyState.value.isNotEmpty()) {
-        when (currentInputFocus) {
-            InputFieldID.NAME ->
-                setName(nameTextFieldValue.newValueOfInsertText(insertKeyState.value))
-
-            InputFieldID.PATTERN -> setPattern(
-                patternTextFieldValue.newValueOfInsertText(insertKeyState.value)
-            )
-
-            InputFieldID.REPLACEMENT ->
-                setReplacement(replacementTextFieldValue.newValueOfInsertText(insertKeyState.value))
-
-            InputFieldID.SAMPLE_TEXT ->
-                sampleTextFieldValue =
-                    sampleTextFieldValue.newValueOfInsertText(insertKeyState.value)
-        }
-        insertKeyState.value = ""
-    }
-
-
     var isVisiblePinyinDialog by remember { mutableStateOf(false) }
     if (isVisiblePinyinDialog) PinyinDialog({ isVisiblePinyinDialog = false }, onInput = {
         isVisiblePinyinDialog = false
@@ -303,46 +266,42 @@ private fun Screen(
             }
         )
 
-        OutlinedTextField(
+        TextFieldInsert(
             label = { Text(stringResource(R.string.name)) },
-            value = nameTextFieldValue,
-            onValueChange = { setName(it) },
+            value = nameValue,
+            onValueChange = onNameValueChange,
             modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { focusState ->
-                    if (focusState.isFocused) currentInputFocus = InputFieldID.NAME
-                },
+                .fillMaxWidth(),
+            inertKeyState = insertKeyState,
         )
 
-        OutlinedTextField(label = { Text(stringResource(R.string.replace_rule)) },
-            value = patternTextFieldValue,
-            onValueChange = { setPattern(it) },
+        TextFieldInsert(
+            label = { Text(stringResource(R.string.replace_rule)) },
+            value = patternValue,
+            onValueChange = onReplaceValueChange,
             modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { focusState ->
-                    if (focusState.isFocused) currentInputFocus = InputFieldID.PATTERN
-                },
+                .fillMaxWidth(),
+            inertKeyState = insertKeyState,
             trailingIcon = {
                 IconButton(onClick = { isVisiblePinyinDialog = true }) {
                     Icon(Icons.Filled.Abc, stringResource(R.string.systts_replace_insert_pinyin))
                 }
-            })
-        OutlinedTextField(label = { Text(stringResource(R.string.replacement)) },
-            value = replacementTextFieldValue,
-            onValueChange = {
-                replacementTextFieldValue = it
-                onReplacementValueChange.invoke(it.text)
-            },
+            }
+        )
+
+        TextFieldInsert(
+            label = { Text(stringResource(R.string.replacement)) },
+            value = replacementValue,
+            onValueChange = onReplacementValueChange,
             modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { focusState ->
-                    if (focusState.isFocused) currentInputFocus = InputFieldID.REPLACEMENT
-                },
+                .fillMaxWidth(),
+            inertKeyState = insertKeyState,
             trailingIcon = {
                 IconButton(onClick = { isVisiblePinyinDialog = true }) {
                     Icon(Icons.Filled.Abc, stringResource(R.string.systts_replace_insert_pinyin))
                 }
-            })
+            }
+        )
 
         TextCheckBox(text = {
             Text(text = stringResource(R.string.systts_replace_use_regex))
@@ -355,26 +314,91 @@ private fun Screen(
         )
 
         var testResult by remember { mutableStateOf("") }
-
-        OutlinedTextField(
+        var sampleTextFieldValue by remember { mutableStateOf("") }
+        TextFieldInsert(
             label = { Text(stringResource(R.string.test)) },
             value = sampleTextFieldValue,
             onValueChange = {
                 sampleTextFieldValue = it
-                testResult = onTest.invoke(it.text)
+                testResult = onTest(it)
             },
             modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { focusState ->
-                    if (focusState.isFocused) currentInputFocus = InputFieldID.SAMPLE_TEXT
-                },
+                .fillMaxWidth(),
+            inertKeyState = insertKeyState,
+            trailingIcon = {
+                var showAuditionDialog by remember { mutableStateOf<SystemTts?>(null) }
+                if (showAuditionDialog != null) {
+                    AuditionDialog(
+                        onDismissRequest = { showAuditionDialog = null },
+                        systts = showAuditionDialog!!,
+                        text = testResult,
+                    )
+                }
+
+                var showTtsSelectDialog by remember { mutableStateOf(false) }
+                if (showTtsSelectDialog) {
+                    TtsConfigSelectDialog(onDismissRequest = { showTtsSelectDialog = false }) {
+                        showTtsSelectDialog = false
+                        showAuditionDialog = it
+                    }
+                }
+
+                AnimatedVisibility(visible = testResult.isNotBlank()) {
+                    IconButton(onClick = {
+                        showTtsSelectDialog = true
+                    }) {
+                        Icon(Icons.Filled.Headset, stringResource(R.string.click_play))
+                    }
+                }
+            }
         )
 
-        if (sampleTextFieldValue.text.isNotEmpty()) Text(stringResource(R.string.label_result))
+        if (sampleTextFieldValue.isNotEmpty()) Text(stringResource(R.string.label_result))
         SelectionContainer {
             Text(text = testResult, style = MaterialTheme.typography.bodyMedium)
         }
     }
+}
+
+
+@Composable
+fun TextFieldInsert(
+    modifier: Modifier = Modifier,
+    label: @Composable (() -> Unit)? = null,
+    value: String,
+    onValueChange: (String) -> Unit,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+
+    inertKeyState: MutableState<String>,
+) {
+    var fieldValue by remember() { mutableStateOf(TextFieldValue()) }
+    LaunchedEffect(key1 = value) {
+        fieldValue = fieldValue.copy(text = value)
+    }
+    var isFocused by remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = inertKeyState.value) {
+        if (!isFocused || inertKeyState.value.isEmpty()) return@LaunchedEffect
+
+        fieldValue = fieldValue.newValueOfInsertText(inertKeyState.value)
+        onValueChange(fieldValue.text)
+
+        inertKeyState.value = ""
+    }
+    OutlinedTextField(
+        label = label,
+        value = fieldValue,
+        modifier = modifier
+            .onFocusChanged {
+                isFocused = it.isFocused
+            },
+        onValueChange = {
+            fieldValue = it
+            onValueChange.invoke(it.text)
+        },
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+    )
 }
 
 @Composable

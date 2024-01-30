@@ -1,4 +1,4 @@
-package com.github.jing332.tts_server_android.compose.systts.list
+package com.github.jing332.tts_server_android.compose.systts
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,7 +37,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun AuditionDialog(systts: SystemTts, onDismissRequest: () -> Unit) {
+fun AuditionDialog(
+    systts: SystemTts,
+    text: String = AppConfig.testSampleText.value,
+    onDismissRequest: () -> Unit
+) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val audioPlayer = remember { AudioPlayer(context) }
@@ -50,7 +54,7 @@ fun AuditionDialog(systts: SystemTts, onDismissRequest: () -> Unit) {
         scope.launch(Dispatchers.IO) {
             kotlin.runCatching {
                 systts.tts.onLoad()
-                systts.tts.getAudioWithSystemParams(com.github.jing332.tts_server_android.conf.AppConfig.testSampleText.value)
+                systts.tts.getAudioWithSystemParams(text)
                     ?.use { ins ->
                         val audio = ins.readBytes()
                         val info = AudioDecoder.getSampleRateAndMime(audio)
@@ -86,7 +90,7 @@ fun AuditionDialog(systts: SystemTts, onDismissRequest: () -> Unit) {
         content = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 Text(
-                    error.ifEmpty { AppConfig.testSampleText.value },
+                    error.ifEmpty { text },
                     color = if (error.isEmpty()) Color.Unspecified else MaterialTheme.colorScheme.error,
 //                    maxLines = if (error.isEmpty()) Int.MAX_VALUE else 1,
                     style = MaterialTheme.typography.bodySmall

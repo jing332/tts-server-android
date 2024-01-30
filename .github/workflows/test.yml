@@ -108,7 +108,7 @@ jobs:
       - name: Upload APK To Lanzouyun
         run: |
           mkdir apk
-          cp "${{ env.outputs_dir }}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk" "${{ github.workspace }}/apk"
+          cp ${{ env.outputs_dir }}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk "${{ github.workspace }}/apk"
           path="${{ github.workspace }}/apk"
           python3 ${{ github.workspace }}/.github/scripts/lzy_web.py $path "${{ env.lzy_folder_id }}"
           
