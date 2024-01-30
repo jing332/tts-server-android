@@ -433,4 +433,5 @@
     <string name="grant_permission_storage_file">Grant [Read Storage File Permission]  </string>
     <string name="write_plugin_log_to_file">写入插件日志到文件</string>
     <string name="add_shortcut_if_fail_tips">If that fails, grant the Add Shortcut permission</string>
+    <string name="clear_text_content">清空文本内容</string>
 </resources>
