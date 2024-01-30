@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.Checkbox
@@ -397,6 +398,14 @@ fun BasicInfoEditScreen(
                 .padding(top = 8.dp),
             value = systts.displayName ?: "", onValueChange = {
                 onSysttsChange(systts.copy(displayName = it))
+            },
+            trailingIcon = {
+                if (systts.displayName?.isNotEmpty() == true)
+                    IconButton(onClick = {
+                        onSysttsChange(systts.copy(displayName = ""))
+                    }) {
+                        Icon(Icons.Default.Clear, stringResource(id = R.string.clear_text_content))
+                    }
             }
         )
     }

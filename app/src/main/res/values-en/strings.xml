@@ -431,6 +431,7 @@
     <string name="tag_data">Tag data</string>
     <string name="grant_permission_audio_file">Grant [Read Audio File Permission]  </string>
     <string name="grant_permission_storage_file">Grant [Read Storage File Permission]  </string>
-    <string name="write_plugin_log_to_file">写入插件日志到文件</string>
+    <string name="write_plugin_log_to_file">Write plugin log to file</string>
     <string name="add_shortcut_if_fail_tips">If that fails, grant the Add Shortcut permission</string>
+    <string name="clear_text_content">Clear the text</string>
 </resources>

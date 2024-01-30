@@ -5,8 +5,8 @@ import android.widget.LinearLayout
 import com.github.jing332.tts_server_android.constant.AppConst
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.utils.dp
-import org.mozilla.javascript.NativeMap
 import org.mozilla.javascript.NativeObject
+import java.util.Locale
 
 class TtsPluginUiEngine(
     private val pluginTts: PluginTTS,
@@ -72,11 +72,23 @@ class TtsPluginUiEngine(
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun getLocales(): List<String> {
+    fun getLocales(): Map<String, String> {
         return rhino.invokeMethod(editUiJsObject, FUNC_LOCALES).run {
-            if (this == null) emptyList()
-            else this as List<String>
+            when (this) {
+                is List<*> -> this.associate {
+                    it.toString() to Locale.forLanguageTag(it.toString()).run {
+                        this.getDisplayName(this)
+                    }
+                }
+
+                is Map<*, *> -> {
+                    this.map { (key, value) ->
+                        key.toString() to value.toString()
+                    }.toMap()
+                }
+
+                else -> emptyMap()
+            }
         }
     }
 

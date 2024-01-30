@@ -429,4 +429,5 @@
     <string name="grant_permission_storage_file">授予【读取存储文件权限】</string>
     <string name="write_plugin_log_to_file">写入插件日志到文件</string>
     <string name="add_shortcut_if_fail_tips">如果失败，请授予【添加快捷方式权限】</string>
+    <string name="clear_text_content">清空文本内容</string>
 </resources>

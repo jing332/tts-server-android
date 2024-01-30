@@ -11,7 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,7 +39,6 @@ import com.github.jing332.tts_server_android.model.speech.tts.BaseAudioFormat
 import com.github.jing332.tts_server_android.model.speech.tts.PluginTTS
 import com.github.jing332.tts_server_android.ui.view.AppDialogs.displayErrorDialog
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class PluginTtsUI : TtsUI() {
     companion object {
@@ -239,8 +237,8 @@ class PluginTtsUI : TtsUI() {
                                 .padding(top = 4.dp),
                             label = { Text(stringResource(id = R.string.language)) },
                             value = tts.locale,
-                            values = vm.locales,
-                            entries = vm.locales.map { Locale.forLanguageTag(it).displayName },
+                            values = vm.locales.map { it.first },
+                            entries = vm.locales.map { it.second },
                             onSelectedChange = { locale, _ ->
                                 Log.d("PluginTtsUI", "locale onSelectedChange: $locale")
                                 if (locale.toString().isBlank()) return@AppSpinner

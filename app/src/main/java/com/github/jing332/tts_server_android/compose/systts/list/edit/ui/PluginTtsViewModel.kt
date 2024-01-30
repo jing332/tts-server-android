@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.LinearLayout
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.drake.net.utils.withIO
@@ -23,7 +24,7 @@ class PluginTtsViewModel : BaseViewModel() {
 
     var isLoading by mutableStateOf(true)
 
-    val locales = mutableStateListOf<String>()
+    val locales = mutableStateListOf<Pair<String, String>>()
     val voices = mutableStateListOf<Pair<String, String>>()
 
     suspend fun load(context: Context, tts: PluginTTS, linearLayout: LinearLayout) {
@@ -45,7 +46,7 @@ class PluginTtsViewModel : BaseViewModel() {
 
     private fun updateLocales() {
         locales.clear()
-        locales.addAll(engine.getLocales())
+        locales.addAll(engine.getLocales().toList())
     }
 
     fun updateVoices(locale: String) {
