@@ -84,11 +84,13 @@ jobs:
           chmod +x gradlew
           ./gradlew assemble${{ env.product }}release --build-cache --parallel --daemon --warning-mode all
 
-      - name: Init environment variable
+      - name: Set Version Name
         run: |
-          verName="$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)"
-          echo "ver_name=${{ verName }}" >> $GITHUB_ENV
-          echo "apk_path=${{ env.outputs_dir }}/apk/${{ env.product }}/release/*${{ verName }}.apk" >> $GITHUB_ENV
+          echo "ver_name=$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
+
+      - name: Set APK Path
+        run: |
+          echo "apk_path=${{ env.outputs_dir }}/apk/${{ env.product }}/release/${{ env.product }}-release.apk" >> $GITHUB_ENV    
 
       #      - name: Upload Mappings to Artifact
       #        uses: actions/upload-artifact@v3
