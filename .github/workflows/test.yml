@@ -87,27 +87,28 @@ jobs:
       - name: Set Version Name
         run: |
           echo "ver_name=$(grep -m 1 'versionName' ${{ env.outputs_dir }}/apk/${{ env.product }}/release/output-metadata.json | cut -d\" -f4)" >> $GITHUB_ENV
-
-      - name: Set APK Path
-        run: |
-          echo "apk_path=${{ env.outputs_dir }}/apk/${{ env.product }}/release/${{ env.product }}-release.apk" >> $GITHUB_ENV    
-
-      #      - name: Upload Mappings to Artifact
-      #        uses: actions/upload-artifact@v3
-      #        with:
-      #          name: mappings_${{ env.product }}_${{ env.ver_name }}
-      #          path: ${{ env.outputs_dir }}/mapping/*/*.txt
+          
+          #      - name: Set APK Path
+          #        run: |
+          #          echo "apk_path=${{ env.outputs_dir }}/apk/${{ env.product }}/release/${{ env.product }}-release.apk" >> $GITHUB_ENV    
+          
+          #            - name: Upload Mappings to Artifact
+          #              uses: actions/upload-artifact@v3
+          #              with:
+          #                name: mappings_${{ env.product }}_${{ env.ver_name }}
+          #                path: ${{ env.outputs_dir }}/mapping/*/*.txt
 
       - name: Upload APK To Artifact
         uses: actions/upload-artifact@v3
         with:
           name: "TTS-Server_${{ env.product }}_${{ env.ver_name }}"
-          path: ${{ env.apk_path }}
+          path: ${{env.outputs_dir}}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk
+
 
       - name: Upload APK To Lanzouyun
         run: |
           mkdir apk
-          cp ${{ env.apk_path }} "${{ GITHUB_WORKSPACE }}/apk/"
+          cp "${{env.outputs_dir}}/apk/${{ env.product }}/release/*${{ env.ver_name }}.apk" "${{ GITHUB_WORKSPACE }}/apk"
           python3 $GITHUB_WORKSPACE/.github/scripts/lzy_web.py "${{ $GITHUB_WORKSPACE }}/apk" "${{ env.lzy_folder_id }}"
           
           echo "app: https://jing332.lanzn.com/b09jpjd2d"
