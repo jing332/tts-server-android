@@ -128,27 +128,11 @@ class MsTtsUI : TtsUI() {
                     .padding(paddingValues)
                     .verticalScroll(rememberScrollState())
             ) {
-                BasicInfoEditScreen(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    systts = systts,
-                    onSysttsChange = onSysttsChange
-                )
-
                 Content(
                     modifier = Modifier
                         .padding(8.dp),
                     systts = systts,
                     onSysttsChange = onSysttsChange,
-                )
-
-                ParamsEditScreen(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    systts = systts,
-                    onSysttsChange = onSysttsChange
                 )
             }
         }
@@ -185,6 +169,14 @@ class MsTtsUI : TtsUI() {
         }
 
         Column(modifier) {
+            BasicInfoEditScreen(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                systts = systts,
+                onSysttsChange = onSysttsChange
+            )
+
             AuditionTextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp), onAudition = {
@@ -244,7 +236,9 @@ class MsTtsUI : TtsUI() {
                                 vm.voices.find { it.voiceName == tts.voiceName }?.name() ?: ""
                             onSysttsChange(
                                 systts.copy(
-                                    displayName = if (lastName == systts.displayName) name else systts.displayName,
+                                    displayName =
+                                    if (systts.displayName.isNullOrBlank() || lastName == systts.displayName) name
+                                    else systts.displayName,
                                     tts = tts.copy(voiceName = voice as String)
                                 )
                             )
@@ -256,6 +250,14 @@ class MsTtsUI : TtsUI() {
 
                 }
             }
+
+            ParamsEditScreen(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                systts = systts,
+                onSysttsChange = onSysttsChange
+            )
         }
 
     }
