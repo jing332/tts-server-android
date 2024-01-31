@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.activity.compose.setContent
@@ -126,6 +127,22 @@ class FilePickerActivity : AppCompatActivity() {
 
     }
 
+    private fun checkPermission(permission: String): Boolean {
+        val extPermission = ActivityCompat.checkSelfPermission(
+            this, permission
+        )
+        if (extPermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    permission,
+                ), 1
+            )
+            return false
+        }
+
+        return true
+    }
+
     private var useSystem = false
 
     @Suppress("DEPRECATION")
@@ -136,6 +153,11 @@ class FilePickerActivity : AppCompatActivity() {
         window.attributes = lp
 
         requestData = intent.getParcelableExtra(KEY_REQUEST_DATA)!!
+
+        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkPermission(Manifest.permission.READ_MEDIA_AUDIO)
+        }
 
         if (requestData is RequestSaveFile) {
             val permission = ActivityCompat.checkSelfPermission(

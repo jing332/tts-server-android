@@ -175,6 +175,6 @@ object SystemTtsConfig {
     val isExoDecoderEnabled = mutableDataSaverStateOf(
         dataSaverInterface = dataSaverPref,
         key = "isExoDecoderEnabled",
-        initialValue = false
+        initialValue = true
     )
 }
