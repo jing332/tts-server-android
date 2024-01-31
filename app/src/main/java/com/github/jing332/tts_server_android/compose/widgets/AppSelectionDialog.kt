@@ -129,11 +129,10 @@ fun AppSelectionDialog(
                     isLoading = isLoading
                 ) {
                     LazyColumn(state = state) {
-                        val items = entries.filterNot {
-                            searchEnabled && searchText.isNotBlank() &&
-                                    !it.contains(searchText, ignoreCase = true)
-                        }
-                        itemsIndexed(items) { i, entry ->
+                        itemsIndexed(entries) { i, entry ->
+                            if (searchEnabled && searchText.isNotBlank() &&
+                                !entry.contains(searchText, ignoreCase = true)) return@itemsIndexed
+
                             val current = values[i]
                             val isSelected = onValueSame(value, current)
                             Row(

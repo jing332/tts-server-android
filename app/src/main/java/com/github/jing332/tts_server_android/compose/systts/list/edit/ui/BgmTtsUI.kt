@@ -81,8 +81,11 @@ class BgmTtsUI : TtsUI() {
             onSysttsChange(systts.copy(speechRule = SpeechRuleInfo(target = SpeechTarget.BGM)))
         }
 
-        val volStr = if (tts.volume == 0) stringResource(id = R.string.follow)
-        else stringResource(id = R.string.label_speech_volume, tts.volume.toString())
+        val volStr =
+            stringResource(
+                id = R.string.label_speech_volume,
+                if (tts.volume == 0) stringResource(id = R.string.follow) else tts.volume.toString()
+            )
         IntSlider(
             modifier = Modifier.padding(top = 8.dp),
             label = volStr, value = tts.volume.toFloat(),

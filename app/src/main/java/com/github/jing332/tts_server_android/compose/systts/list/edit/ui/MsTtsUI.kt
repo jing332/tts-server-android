@@ -41,9 +41,8 @@ class MsTtsUI : TtsUI() {
         systts: SystemTts,
         onSysttsChange: (SystemTts) -> Unit
     ) {
-        val context = LocalContext.current
         val tts = (systts.tts as MsTTS)
-        Column {
+        Column(modifier) {
             val formats = remember { MsTtsFormatManger.getFormatsByApiType(MsTtsApiType.EDGE) }
             AppSpinner(
                 label = { Text(stringResource(id = R.string.label_audio_format)) },
@@ -53,7 +52,7 @@ class MsTtsUI : TtsUI() {
                 onSelectedChange = { k, v ->
                     onSysttsChange(systts.copy(tts = tts.copy(format = k as String)))
                 },
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier,
             )
 
             val speechRate = tts.prosody.rate
@@ -171,8 +170,7 @@ class MsTtsUI : TtsUI() {
         Column(modifier) {
             BasicInfoEditScreen(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
+                    .fillMaxWidth(),
                 systts = systts,
                 onSysttsChange = onSysttsChange
             )
@@ -253,8 +251,7 @@ class MsTtsUI : TtsUI() {
 
             ParamsEditScreen(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .fillMaxWidth().padding(top = 8.dp),
                 systts = systts,
                 onSysttsChange = onSysttsChange
             )

@@ -46,13 +46,12 @@ fun QuickEditBottomSheet(
         Column(
             Modifier
                 .padding(top = 12.dp)
+                .padding(horizontal = 4.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             CompositionLocalProvider(LocalSaveCallBack provides callbacks) {
                 BasicInfoEditScreen(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     systts = systts,
                     onSysttsChange = onSysttsChange,
                     showSpeechTarget = systts.tts !is BgmTTS
