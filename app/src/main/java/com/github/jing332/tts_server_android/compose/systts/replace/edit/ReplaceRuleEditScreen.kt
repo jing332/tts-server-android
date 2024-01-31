@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Headset
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -148,11 +147,11 @@ fun RuleEditScreen(
                     Icon(Icons.Filled.Save, stringResource(id = R.string.save))
                 }
 
-                IconButton(onClick = {}) {
-                    Icon(
-                        Icons.Filled.MoreVert, stringResource(id = R.string.more_options)
-                    )
-                }
+//                IconButton(onClick = {}) {
+//                    Icon(
+//                        Icons.Filled.MoreVert, stringResource(id = R.string.more_options)
+//                    )
+//                }
             })
     }, bottomBar = {
         SoftKeyboardInputToolbar(symbols = toolBarSymbols, onClick = {
@@ -337,7 +336,7 @@ private fun Screen(
 
                 var showTtsSelectDialog by remember { mutableStateOf(false) }
                 if (showTtsSelectDialog) {
-                    TtsConfigSelectDialog(onDismissRequest = { showTtsSelectDialog = false }) {
+                    SysttsSelectBottomSheet(onDismissRequest = { showTtsSelectDialog = false }) {
                         showTtsSelectDialog = false
                         showAuditionDialog = it
                     }
