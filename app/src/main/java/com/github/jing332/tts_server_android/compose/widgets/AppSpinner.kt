@@ -39,6 +39,7 @@ private fun TextFieldSelectionDialog(
     value: Any,
     values: List<Any>,
     entries: List<String>,
+    enabled: Boolean = true,
 
     onSelectedChange: (key: Any, value: String) -> Unit,
     onValueSame: (current: Any, new: Any) -> Boolean = { current, new -> current == new },
@@ -52,94 +53,14 @@ private fun TextFieldSelectionDialog(
         }
     }
     if (expanded) {
-        /*AppDialog(onDismissRequest = { expanded = false },
-            title = label,
-            content = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    var searchText by rememberSaveable { mutableStateOf("") }
-
-                    DenseOutlinedField(
-                        value = searchText, onValueChange = { searchText = it },
-                        label = { Text(stringResource(id = R.string.search)) },
-                    )
-
-                    val listState = rememberLazyListState(
-                        initialFirstVisibleItemIndex = max(0, values.indexOf(value))
-                    )
-
-                    val isEmpty by remember {
-                        derivedStateOf { listState.layoutInfo.viewportSize == IntSize.Zero }
-                    }
-
-                    if (searchText.isNotBlank() && isEmpty)
-                        Text(
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                                .minimumInteractiveComponentSize()
-                                .align(Alignment.CenterHorizontally),
-                            text = stringResource(id = R.string.empty_list),
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.error,
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                    LazyColumn(
-                        Modifier
-                            .padding(top = 4.dp)
-                            .simpleVerticalScrollbar(listState),
-                        state = listState
-                    ) {
-                        itemsIndexed(entries) { index, str ->
-                            if (searchText.isNotBlank() && !str.contains(searchText)) return@itemsIndexed
-
-                            val current = values[index]
-                            val selected = onKeySame.invoke(value, current)
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(MaterialTheme.shapes.medium)
-                                    .background(
-                                        if (selected) MaterialTheme.colorScheme.primaryContainer
-                                        else Color.Unspecified
-                                    )
-                                    .clickableRipple {
-                                        onSelectedChange.invoke(current, str)
-                                        expanded = false
-                                    },
-                            ) {
-                                Text(
-                                    modifier = Modifier
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                                        .minimumInteractiveComponentSize()
-                                        .align(Alignment.CenterVertically),
-                                    text = str,
-                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                                    textAlign = TextAlign.Start,
-                                )
-                            }
-                        }
-                    }
-                }
-            },
-            buttons = {
-                TextButton(onClick = { expanded = false }) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            }
-        )*/
         AppSelectionDialog(
             onDismissRequest = { expanded = false },
             title = label,
             value = value,
             values = values,
             entries = entries,
-            onClick = { value, entry ->
-                onSelectedChange.invoke(value, entry)
+            onClick = { v, entry ->
+                onSelectedChange.invoke(v, entry)
                 expanded = false
             },
             onValueSame = onValueSame,
@@ -149,6 +70,7 @@ private fun TextFieldSelectionDialog(
     Box(
         modifier = modifier
             .clickable(
+                enabled = enabled,
                 role = Role.DropdownList,
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
@@ -161,7 +83,7 @@ private fun TextFieldSelectionDialog(
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = false,
-                colors = OutlinedTextFieldDefaults.colors(
+                colors = if (enabled) OutlinedTextFieldDefaults.colors(
                     disabledContainerColor = Color.Transparent,
                     disabledTextColor = MaterialTheme.colorScheme.onSurface,
                     disabledLabelColor = MaterialTheme.colorScheme.onSurface,
@@ -174,7 +96,9 @@ private fun TextFieldSelectionDialog(
 
                     disabledPrefixColor = MaterialTheme.colorScheme.onSurface,
                     disabledSuffixColor = MaterialTheme.colorScheme.onSurface,
-                ),
+                )
+                else
+                    OutlinedTextFieldDefaults.colors(),
 
                 leadingIcon = leadingIcon,
                 readOnly = true,
@@ -199,6 +123,7 @@ fun AppSpinner(
     values: List<Any>,
     entries: List<String>,
     maxDropDownCount: Int = AppConfig.spinnerMaxDropDownCount.value,
+    enabled: Boolean = true,
 
     onValueSame: (current: Any, new: Any) -> Boolean = { current, new -> current == new },
     onSelectedChange: (key: Any, value: String) -> Unit,
@@ -215,6 +140,7 @@ fun AppSpinner(
             value = value,
             values = values,
             entries = entries,
+            enabled = enabled,
             onValueSame = onValueSame,
             onSelectedChange = onSelectedChange,
         )
@@ -226,6 +152,7 @@ fun AppSpinner(
             value = value,
             values = values,
             entries = entries,
+            enabled = enabled,
             onSelectedChange = onSelectedChange,
             onValueSame = onValueSame,
         )

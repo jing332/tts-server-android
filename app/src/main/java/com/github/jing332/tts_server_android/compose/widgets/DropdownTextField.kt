@@ -32,6 +32,7 @@ fun DropdownTextField(
     value: Any,
     values: List<Any>,
     entries: List<String>,
+    enabled: Boolean = true,
     leadingIcon: @Composable (() -> Unit)? = null,
     onValueSame: (current: Any, new: Any) -> Boolean = { current, new -> current == new },
     onSelectedChange: (value: Any, entry: String) -> Unit,
@@ -52,7 +53,7 @@ fun DropdownTextField(
             modifier = modifier,
             expanded = expanded,
             onExpandedChange = {
-                expanded = !expanded
+                if (enabled) expanded = !expanded
             },
         ) {
             OutlinedTextField(
@@ -61,6 +62,7 @@ fun DropdownTextField(
                     .fillMaxWidth(),
                 leadingIcon = leadingIcon,
                 readOnly = true,
+                enabled = enabled,
                 value = selectedText,
                 onValueChange = { },
                 label = label,

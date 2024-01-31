@@ -157,9 +157,6 @@ class PluginTtsUI : TtsUI() {
         val context = LocalContext.current
 
         SaveActionHandler {
-            if (systts.displayName.isNullOrBlank())
-                onSysttsChange(systts.copy(displayName = displayName))
-
             val sampleRate = try {
                 withIO { vm.engine.getSampleRate(tts.locale, tts.voice) ?: 16000 }
             } catch (e: Exception) {
@@ -183,6 +180,7 @@ class PluginTtsUI : TtsUI() {
             if (sampleRate != null && isNeedDecode != null) {
                 onSysttsChange(
                     systts.copy(
+                        displayName = if (systts.displayName.isNullOrBlank()) displayName else systts.displayName,
                         tts = tts.copy(
                             audioFormat = BaseAudioFormat(
                                 sampleRate = sampleRate,
@@ -272,7 +270,9 @@ class PluginTtsUI : TtsUI() {
                                     vm.voices.find { it.first == tts.voice }?.second ?: ""
                                 onSysttsChange(
                                     systts.copy(
-                                        displayName = if (lastName == systts.displayName) name else systts.displayName,
+                                        displayName =
+                                        if (systts.displayName.isNullOrBlank() || lastName == systts.displayName) name
+                                        else systts.displayName,
                                         tts = tts.copy(voice = voice as String)
                                     )
                                 )
