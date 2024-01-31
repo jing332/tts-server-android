@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">TTS Server</string>
-    <string name="app_name_dev">D·TTS Server</string>
+    <string name="app_name_dev">دی‌تی‌تی‌اس سرور</string>
     <string name="app_switch">تعویض</string>
     <string name="help">کمک</string>
     <string name="warning">هشدار دهد</string>
     <string name="reset">تنظیم مجدد</string>
     <string name="exit">خروج</string>
-    <string name="copied">کپی شده</string>
+    <string name="copied">کپی شد</string>
     <string name="ok_reset">بازنشانی کنید</string>
     <string name="loading">بارگذاری</string>
     <string name="selected">انتخاب شده است</string>
-    <string name="close">بسته</string>
+    <string name="close">بستن</string>
     <string name="start">استارت آپ</string>
     <string name="follow">دنبال کردن</string>
     <string name="custom">شخصی سازی</string>
@@ -76,7 +76,7 @@
     <string name="desc_seekbar_add">لغزنده +1</string>
     <string name="desc_seekbar_remove">لغزنده -1</string>
     <string name="add_config">اضافه‌کردن تنظیمات</string>
-    <string name="import_config">درونریزی</string>
+    <string name="import_config">درونریزی پیکربندی</string>
     <string name="export_config">برونبری پیکربندی</string>
     <string name="copy" tools:ignore="PrivateResource">کپی</string>
     <string name="follow_system_or_read_aloud_app">سیستم را دنبال کنید یا برنامه را با صدای بلند بخوانید</string>
@@ -142,13 +142,8 @@
     <string name="groups_multiple">گروه ها را می توان به صورت چندگانه انتخاب کرد</string>
     <string name="groups_multiple_summary">با علامت زدن، گروه بندی دیگر متقابلاً منحصر به فرد نخواهد بود.</string>
     <string name="systts_test_success">موفقیت در آزمون</string>
-    <string name="systts_test_success_info">اندازه صدا: %1$dKiB
-نرخ نمونه صوتی: %2$d
-قالب صوتی: %3$s</string>
-    <string name="systts_http_test_msg">اندازه صدا: %1$d کیلوبایت
-قالب: %2$s
-نرخ نمونه برداری: %3$d هرتز
-نوع محتوا: %4$s</string>
+    <string name="systts_test_success_info">اندازه صدا: %1$s\nنرخ نمونه صوتی: %2$d\nقالب صوتی: %3$s</string>
+    <string name="systts_http_test_msg">اندازه صدا: %1$d کیلوبایت\nقالب: %2$s\nنرخ نمونه برداری: %3$d هرتز\nنوع محتوا: %4$s</string>
     <string name="systts_please_check_multi_voice_option">لطفاً ابتدا گزینه چند صدایی را در منوی گوشه سمت راست بالا بررسی کنید!</string>
     <string name="systts_sample_rate_different_in_enabled_list">تشخیص داده شده است که فرمت/نرخ نمونه برداری در پیکربندی فعال متفاوت است، که باعث ایجاد زنگ های غیرعادی (صدای ضخیم یا کوچک) می شود. لطفاً به صورت دستی به همان قالب/نرخ نمونه برداری تغییر دهید یا گزینه [استفاده از پخش کننده داخلی] را روشن کنید. در گوشه سمت راست بالا</string>
     <string name="group_expanded">گروه گسترش یافته است</string>
@@ -237,8 +232,8 @@
     <string name="internal_player">پخش کننده داخلی</string>
     <string name="built_in_player_not_enabled">⚠️پخش داخلی فعال نیست، لطفا به منوی گوشه سمت راست بالا بروید تا به صورت دستی فعال شود.</string>
     <string name="please_turn_off_direct_play">لطفاً گزینه [پخش مستقیم] را خاموش کنید</string>
-    <string name="systts_as_standby_help">درباره 【به عنوان پشتیبان】</string>
-    <string name="systts_standby">آماده کردن</string>
+    <string name="systts_as_standby_help">کمک 【به عنوان پشتیبان】</string>
+    <string name="systts_standby">آماده‌باش</string>
     <string name="decode">رمزگشایی</string>
     <string name="systts_log_replace_failed">جایگزینی انجام نشد: %1$s</string>
     <string name="systts_standby_triggered_retry_index">شرایط استفاده از پیکربندی جایگزین</string>
@@ -335,7 +330,7 @@
     <string name="no_files_in_dir">هیچ فایلی در این فهرست وجود ندارد</string>
     <string name="click_play">برای پخش کلیک کنید</string>
     <string name="app_language_update_warn">قبل از اینکه زبان جدید به طور کامل نمایش داده شود، باید برنامه را به اجبار متوقف کنید!</string>
-    <string name="wake_lock_summary">روشن کردن wake lock می تواند از خوابیدن CPU پس از قفل کردن صفحه جلوگیری کند، اما برخی از سیستم ها ممکن است باعث از بین رفتن پس زمینه شوند.</string>
+    <string name="wake_lock_summary">روشن کردن حالت آماده‌باش می‌تواند از خوابیدن Cpu پس از قفل کردن صفحه جلوگیری کند، اما برخی از سیستم ها ممکن است باعث از بین رفتن پس‌زمینه شوند.</string>
     <string name="foreground_service_and_notification_summary">به عنوان سرویس پیش زمینه تنظیم کنید و اعلان ها را نمایش دهید تا اولویت فرآیند افزایش یابد.</string>
     <string name="foreground_service_and_notification">خدمات و اطلاعیه های میز جلو</string>
     <string name="grant_permission_all_file_msg">در غیر این صورت در برخی از سیستم ها فایل های موسیقی خوانده نمی شود و پخش نمی شود!</string>
@@ -432,8 +427,8 @@
     <string name="group_all_enabled">1</string>
     <string name="group_all_disabled">1</string>
     <string name="edit_desc">1</string>
-    <string name="config_enabled_desc">1</string>
-    <string name="config_disabled_desc">1</string>
+    <string name="config_enabled_desc">پیکربندی فعال شد: %1$s</string>
+    <string name="config_disabled_desc">پیکربندی غیرفعال شده: %1$s</string>
     <string name="plugin_enabled_desc">1</string>
     <string name="plugin_disabled_desc">1</string>
     <string name="rule_enabled_desc">1</string>
