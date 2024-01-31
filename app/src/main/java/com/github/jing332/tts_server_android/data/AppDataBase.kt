@@ -22,7 +22,7 @@ import com.github.jing332.tts_server_android.data.entities.systts.SystemTtsGroup
 val appDb by lazy { AppDatabase.createDatabase(App.context) }
 
 @Database(
-    version = 23,
+    version = 24,
     entities = [
         SystemTts::class,
         SystemTtsGroup::class,
@@ -48,6 +48,7 @@ val appDb by lazy { AppDatabase.createDatabase(App.context) }
         AutoMigration(from = 20, to = 21),
         AutoMigration(from = 21, to = 22),
         AutoMigration(from = 22, to = 23),
+        AutoMigration(from = 23, to = 24),
     ]
 )
 abstract class AppDatabase : RoomDatabase() {

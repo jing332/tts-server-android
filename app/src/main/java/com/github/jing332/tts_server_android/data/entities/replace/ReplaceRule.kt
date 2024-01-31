@@ -32,4 +32,7 @@ data class ReplaceRule(
     // 索引 排序用
     @ColumnInfo(defaultValue = "0")
     var order: Int = 0,
+
+    @ColumnInfo(defaultValue = "")
+    var sampleText: String = ""
 ) : Parcelable
