@@ -95,7 +95,7 @@
     <string name="clear_web_data">پاک کردن داده های صفحه وب</string>
     <string name="cleared">پاک شد</string>
     <string name="import_from_clipboard">درونریزی از کلیپ بورد</string>
-    <string name="url_net">اتصال اینترنت</string>
+    <string name="url_net">لینک</string>
     <string name="import_from_url">درونریزی از لینک</string>
     <string name="retry">دوباره امتحان کنید</string>
     <string name="test">تست</string>
