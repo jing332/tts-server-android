@@ -90,9 +90,7 @@ class LocalTtsUI : TtsUI() {
                         )
                     )
                 )
-            }, valueRange = 0f..2f, text = {
-                Text(pitchStr)
-            })
+            }, valueRange = 0f..2f, text = pitchStr)
 
             Row {
                 var sampleRateStr by remember { mutableStateOf(tts.audioFormat.sampleRate.toString()) }

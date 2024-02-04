@@ -62,10 +62,9 @@ fun BasicAudioParamsDialog(
                 LabelSlider(
                     value = speed,
                     onValueChange = { onSpeedChange(it.toScale(2)) },
-                    valueRange = speedRange
-                ) {
-                    Text(str)
-                }
+                    valueRange = speedRange,
+                    text = str
+                )
 
                 val volStr =
                     stringResource(
@@ -75,8 +74,9 @@ fun BasicAudioParamsDialog(
                 LabelSlider(
                     value = volume,
                     onValueChange = { onVolumeChange(it.toScale(2)) },
-                    valueRange = volumeRange
-                ) { Text(volStr) }
+                    valueRange = volumeRange,
+                    text = volStr
+                )
 
                 val pitchStr =
                     stringResource(
@@ -86,10 +86,9 @@ fun BasicAudioParamsDialog(
                 LabelSlider(
                     value = pitch,
                     onValueChange = { onPitchChange(it.toScale(2)) },
-                    valueRange = pitchRange
-                ) {
-                    Text(pitchStr)
-                }
+                    valueRange = pitchRange,
+                    text = pitchStr
+                )
 
             }
         },

@@ -158,6 +158,7 @@ internal fun BasePreferenceWidget(
     }
 }
 
+
 @Composable
 internal fun SliderPreference(
     title: @Composable () -> Unit,
@@ -167,29 +168,30 @@ internal fun SliderPreference(
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
-    label: @Composable (title: @Composable () -> Unit) -> Unit,
+    label: String,
 ) {
     val view = LocalView.current
     LaunchedEffect(value) {
         view.announceForAccessibility(value.toString())
     }
 
-    PreferenceDialog(title = title, subTitle = subTitle, dialogContent = {
-        LabelSlider(
-            modifier = Modifier.padding(vertical = 16.dp),
-            value = value,
-            onValueChange = onValueChange,
-            valueRange = valueRange,
-            steps = steps,
-            buttonSteps = 1f,
-            buttonLongSteps = 2f
-        ) {
-            label(title)
-        }
-    }, icon = icon,
-        endContent = {
-            label(title)
-        }
+    PreferenceDialog(
+        title = title,
+        subTitle = subTitle,
+        dialogContent = {
+            LabelSlider(
+                modifier = Modifier.padding(vertical = 16.dp),
+                value = value,
+                onValueChange = onValueChange,
+                valueRange = valueRange,
+                steps = steps,
+                buttonSteps = 1f,
+                buttonLongSteps = 2f,
+                text = label
+            )
+        },
+        icon = icon,
+        endContent = { Text(label) }
     )
 }
 

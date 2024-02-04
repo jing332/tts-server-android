@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.compose.systts.list
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
@@ -18,8 +17,7 @@ fun IntSlider(
         value = value,
         onValueChange = onValueChange,
         valueRange = valueRange,
-        text = { Text(label) },
-        a11yDescription = label,
+        text = label,
         buttonSteps = 1f,
         buttonLongSteps = 10f
     )

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuOpen
+import androidx.compose.material.icons.automirrored.filled.TextSnippet
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.Audiotrack
@@ -16,7 +18,6 @@ import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MenuOpen
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.filled.Repeat
@@ -45,8 +46,8 @@ import com.github.jing332.tts_server_android.AppLocale
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.app
 import com.github.jing332.tts_server_android.compose.backup.BackupRestoreActivity
-import com.github.jing332.tts_server_android.compose.systts.directlink.LinkUploadRuleActivity
 import com.github.jing332.tts_server_android.compose.nav.NavTopAppBar
+import com.github.jing332.tts_server_android.compose.systts.directlink.LinkUploadRuleActivity
 import com.github.jing332.tts_server_android.compose.theme.getAppTheme
 import com.github.jing332.tts_server_android.compose.theme.setAppTheme
 import com.github.jing332.tts_server_android.conf.AppConfig
@@ -220,9 +221,9 @@ fun SettingsScreen(drawerState: DrawerState) {
                 onValueChange = {
                     maxDropdownCount = it.toInt()
                 },
-                label = { Text(if (maxDropdownCount == 0) stringResource(id = R.string.unlimited) else maxDropdownCount.toString()) },
+                label = if (maxDropdownCount == 0) stringResource(id = R.string.unlimited) else maxDropdownCount.toString(),
                 valueRange = 0f..50f,
-                icon = { Icon(Icons.Default.MenuOpen, null) }
+                icon = { Icon(Icons.AutoMirrored.Filled.MenuOpen, null) }
             )
 
             DividerPreference {
@@ -253,7 +254,7 @@ fun SettingsScreen(drawerState: DrawerState) {
                 subTitle = { Text(stringResource(id = R.string.skip_request_silent_text_summary)) },
                 checked = skipSilentText,
                 onCheckedChange = { skipSilentText = it },
-                icon = { Icon(Icons.Default.TextSnippet, null) }
+                icon = { Icon(Icons.AutoMirrored.Filled.TextSnippet, null) }
             )
 
             var foregroundService by remember { SystemTtsConfig.isForegroundServiceEnabled }
@@ -284,7 +285,8 @@ fun SettingsScreen(drawerState: DrawerState) {
                 onValueChange = { maxRetry = it.toInt() },
                 valueRange = 0f..10f,
                 icon = { Icon(Icons.Default.Repeat, null) },
-            ) { Text(maxRetryValue) }
+                label = maxRetryValue,
+            )
 
             var emptyAudioCount by remember { SystemTtsConfig.maxEmptyAudioRetryCount }
             val emptyAudioCountValue =
@@ -296,7 +298,8 @@ fun SettingsScreen(drawerState: DrawerState) {
                 onValueChange = { emptyAudioCount = it.toInt() },
                 valueRange = 0f..10f,
                 icon = { Icon(Icons.Default.Audiotrack, null) },
-            ) { Text(emptyAudioCountValue) }
+                label = emptyAudioCountValue
+            )
 
             var standbyTriggeredIndex by remember { SystemTtsConfig.standbyTriggeredRetryIndex }
             val standbyTriggeredIndexValue = standbyTriggeredIndex.toString()
@@ -307,7 +310,8 @@ fun SettingsScreen(drawerState: DrawerState) {
                 onValueChange = { standbyTriggeredIndex = it.toInt() },
                 valueRange = 0f..10f,
                 icon = { Icon(Icons.Default.Repeat, null) },
-            ) { Text(standbyTriggeredIndexValue) }
+                label = standbyTriggeredIndexValue
+            )
 
 
             var requestTimeout by remember { SystemTtsConfig.requestTimeout }
@@ -319,7 +323,8 @@ fun SettingsScreen(drawerState: DrawerState) {
                 onValueChange = { requestTimeout = it.toInt() * 1000 },
                 valueRange = 1f..30f,
                 icon = { Icon(Icons.Default.AccessTime, null) },
-            ) { Text(requestTimeoutValue) }
+                label = requestTimeoutValue
+            )
 
             DividerPreference {
                 Text(stringResource(id = R.string.systts_interface_preference))
@@ -335,7 +340,7 @@ fun SettingsScreen(drawerState: DrawerState) {
                 onValueChange = { limitTagLen = it.toInt() },
                 valueRange = 0f..50f,
                 icon = { Icon(Icons.Default.Tag, null) },
-                label = { Text(limitTagLenString) }
+                label = limitTagLenString
             )
 
             var limitNameLen by remember { AppConfig.limitNameLength }
@@ -348,7 +353,7 @@ fun SettingsScreen(drawerState: DrawerState) {
                 onValueChange = { limitNameLen = it.toInt() },
                 valueRange = 0f..50f,
                 icon = { Icon(Icons.Default.TextFields, null) },
-                label = { Text(limitNameLenString) }
+                label = limitNameLenString
             )
 
             var wrapButton by remember { AppConfig.isSwapListenAndEditButton }

@@ -28,36 +28,26 @@ fun InternalPlayerDialog(onDismissRequest: () -> Unit) {
                     onValueChange = {
                         speed = it.toScale(2)
                     },
-                    valueRange = 0.1f..3.0f
-                ) {
-                    val str = stringResource(id = R.string.label_speed) + speed
-                    Text(str)
-                    str
-                }
-
+                    valueRange = 0.1f..3.0f,
+                    text = stringResource(id = R.string.label_speed) + speed
+                )
                 LabelSlider(
                     value = volume,
                     onValueChange = {
                         volume = it.toScale(2)
                     },
-                    valueRange = 0.1f..1.0f
-                ) {
-                    val str = stringResource(id = R.string.label_volume) + volume
-                    Text(str)
-                    str
-                }
+                    valueRange = 0.1f..1.0f,
+                    text = stringResource(id = R.string.label_volume) + volume
+                )
 
                 LabelSlider(
                     value = pitch,
                     onValueChange = {
                         pitch = it.toScale(2)
                     },
-                    valueRange = 0.1f..3.0f
-                ) {
-                    val str = stringResource(id = R.string.label_pitch) + pitch
-                    Text(str)
-                    str
-                }
+                    valueRange = 0.1f..3.0f,
+                    text = stringResource(id = R.string.label_pitch) + pitch
+                )
 
             }
         },

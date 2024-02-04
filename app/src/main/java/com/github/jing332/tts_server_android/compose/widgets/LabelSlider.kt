@@ -1,6 +1,5 @@
 package com.github.jing332.tts_server_android.compose.widgets
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
@@ -16,10 +15,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,12 +29,62 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.jing332.tts_server_android.R
 import com.github.jing332.tts_server_android.utils.performLongPress
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LabelSlider(
-    value: Float,
-    onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    steps: Int = 0,
+    onValueChangeFinished: (() -> Unit)? = null,
+
+    showButton: Boolean = true,
+    buttonSteps: Float = 0.01f,
+    buttonLongSteps: Float = 0.1f,
+
+    valueChange: (Float) -> Unit = {
+        if (it < valueRange.start) onValueChange(valueRange.start)
+        else if (it > valueRange.endInclusive) onValueChange(valueRange.endInclusive)
+        else onValueChange(it)
+    },
+
+    onValueRemove: (longClick: Boolean) -> Unit = {
+        valueChange(value - (if (it) buttonLongSteps else buttonSteps))
+    },
+    onValueAdd: (longClick: Boolean) -> Unit = {
+        valueChange(value + if (it) buttonLongSteps else buttonSteps)
+    },
+
+    text: String,
+) {
+    LabelSlider(
+        modifier = modifier,
+        enabled = enabled,
+        value = value,
+        onValueChange = onValueChange,
+        valueRange = valueRange,
+        steps = steps,
+        onValueChangeFinished = onValueChangeFinished,
+        showButton = showButton,
+        buttonSteps = buttonSteps,
+        buttonLongSteps = buttonLongSteps,
+        valueChange = valueChange,
+        onValueRemove = onValueRemove,
+        onValueAdd = onValueAdd,
+        a11yDescription = text,
+    ) {
+        Text(text = text, modifier = Modifier.semantics { invisibleToUser() })
+    }
+}
+
+@Composable
+fun LabelSlider(
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    value: Float,
+    onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
@@ -88,7 +139,6 @@ fun LabelSlider(
                     enabled = value > valueRange.start,
                     modifier = Modifier
                         .semantics {
-                            stateDescription = a11yDescription
                             contentDescription = a11yDescription
                         }
                 ) {
@@ -124,7 +174,6 @@ fun LabelSlider(
                     enabled = value < valueRange.endInclusive,
                     modifier = Modifier
                         .semantics {
-                            stateDescription = a11yDescription
                             contentDescription = a11yDescription
                         }
                 ) {

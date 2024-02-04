@@ -3,7 +3,6 @@ package com.github.jing332.tts_server_android.model.rhino.core.type.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.FrameLayout
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -12,8 +11,6 @@ import androidx.compose.ui.platform.ComposeView
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
 import com.github.jing332.tts_server_android.utils.ThrottleUtil
 import com.github.jing332.tts_server_android.utils.toScale
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 @Suppress("unused")
 @SuppressLint("ViewConstructor")
@@ -79,11 +76,8 @@ class JSeekBar(context: Context, val hint: CharSequence) : FrameLayout(context) 
                     mListener?.onStopTrackingTouch(this@JSeekBar)
                 }
             },
-        ) {
-            Text(
-                hint.toString() + value.toScale(n)
-            )
-        }
+            text = hint.toString() + value.toScale(n)
+        )
     }
 
 }
