@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import com.github.jing332.tts_server_android.compose.widgets.LabelSlider
 import com.github.jing332.tts_server_android.utils.ThrottleUtil
+import com.github.jing332.tts_server_android.utils.toScale
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -80,7 +81,7 @@ class JSeekBar(context: Context, val hint: CharSequence) : FrameLayout(context) 
             },
         ) {
             Text(
-                hint.toString() + BigDecimal(value.toDouble()).setScale(n, RoundingMode.HALF_UP)
+                hint.toString() + value.toScale(n)
             )
         }
     }
