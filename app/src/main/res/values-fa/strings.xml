@@ -4,7 +4,7 @@
     <string name="app_name_dev">دی‌تی‌تی‌اس سرور</string>
     <string name="app_switch">تعویض</string>
     <string name="help">کمک</string>
-    <string name="warning">هشدار دهد</string>
+    <string name="warning">هشدار</string>
     <string name="reset">تنظیم مجدد</string>
     <string name="exit">خروج</string>
     <string name="copied">کپی شد</string>
@@ -95,7 +95,7 @@
     <string name="clear_web_data">پاک کردن داده های صفحه وب</string>
     <string name="cleared">پاک شد</string>
     <string name="import_from_clipboard">درونریزی از کلیپ بورد</string>
-    <string name="url_net">اتصال اینترنت</string>
+    <string name="url_net">لینک</string>
     <string name="import_from_url">درونریزی از لینک</string>
     <string name="retry">دوباره امتحان کنید</string>
     <string name="test">تست</string>
@@ -439,5 +439,5 @@
     <string name="grant_permission_storage_file">اعطا [مجوز خواندن فایل ذخیره‌سازی]</string>
     <string name="write_plugin_log_to_file">لاگ افزونه را در فایل بنویسید</string>
     <string name="add_shortcut_if_fail_tips">اگر ناموفق بود، لطفاً [اضافه کردن مجوز میانبر] را بدهید</string>
-    <string name="clear_text_content">清空文本内容</string>
+    <string name="clear_text_content">محتوای متنی را پاک کنید</string>
 </resources>
