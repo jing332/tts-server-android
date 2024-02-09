@@ -439,5 +439,5 @@
     <string name="grant_permission_storage_file">اعطا [مجوز خواندن فایل ذخیره‌سازی]</string>
     <string name="write_plugin_log_to_file">لاگ افزونه را در فایل بنویسید</string>
     <string name="add_shortcut_if_fail_tips">اگر ناموفق بود، لطفاً [اضافه کردن مجوز میانبر] را بدهید</string>
-    <string name="clear_text_content">محتوای متنی را پاک کنید</string>
+    <string name="clear_text_content">محتوای متن را پاک کنید</string>
 </resources>
