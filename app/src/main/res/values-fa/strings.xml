@@ -367,7 +367,7 @@
     <string name="restart">راه اندازی مجدد</string>
     <string name="restore_finished">بازیابی تکمیل شد</string>
     <string name="restore_restart_msg">تنظیمات برگزیده باید دوباره راه اندازی شوند تا اعمال شوند</string>
-    <string name="restore">بهبود می یابند</string>
+    <string name="restore">بازیابی</string>
     <string name="restore_confirm">داده ها را از این فایل بازیابی کنید؟</string>
     <string name="js_file_type_not_recognized">نوع فایل JS شناسایی نشد</string>
     <string name="spinner_drop_down_max_count">حداکثر تعداد محتویات جعبه کشویی</string>
@@ -439,5 +439,5 @@
     <string name="grant_permission_storage_file">اعطا [مجوز خواندن فایل ذخیره‌سازی]</string>
     <string name="write_plugin_log_to_file">لاگ افزونه را در فایل بنویسید</string>
     <string name="add_shortcut_if_fail_tips">اگر ناموفق بود، لطفاً [اضافه کردن مجوز میانبر] را بدهید</string>
-    <string name="clear_text_content">محتوای متنی را پاک کنید</string>
+    <string name="clear_text_content">محتوای متن را پاک کنید</string>
 </resources>
