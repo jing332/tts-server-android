@@ -21,6 +21,7 @@ import com.github.jing332.tts_server_android.constant.LogLevel
 import com.github.jing332.tts_server_android.ui.ImportConfigActivity
 import com.github.jing332.tts_server_android.utils.ClipboardUtils
 import com.github.jing332.tts_server_android.utils.registerGlobalReceiver
+import com.github.jing332.tts_server_android.utils.startForegroundCompat
 import com.github.jing332.tts_server_android.utils.toast
 import splitties.systemservices.powerManager
 import tts_server_lib.Tts_server_lib
@@ -189,7 +190,7 @@ abstract class AbsForwarderService(
             .build()
 
         // 前台服务
-        startForeground(id, notification)
+        startForegroundCompat(id, notification)
     }
 
     inner class NotificationActionReceiver : BroadcastReceiver() {

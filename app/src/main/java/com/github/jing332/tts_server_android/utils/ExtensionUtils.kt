@@ -1,11 +1,14 @@
 package com.github.jing332.tts_server_android.utils
 
 import android.app.Activity
+import android.app.Notification
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ServiceInfo
 import android.content.res.Resources
 import android.graphics.Rect
 import android.graphics.Typeface
@@ -59,6 +62,21 @@ import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import com.github.jing332.tts_server_android.constant.KeyConst
 import java.lang.reflect.ParameterizedType
+
+fun Service.startForegroundCompat(
+    notificationId: Int,
+    notification: Notification
+) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // A14
+        startForeground(
+            notificationId,
+            notification,
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+        )
+    } else {
+        startForeground(notificationId, notification)
+    }
+}
 
 @Composable
 fun Modifier.simpleVerticalScrollbar(

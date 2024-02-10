@@ -44,6 +44,7 @@ import com.github.jing332.tts_server_android.utils.longToast
 import com.github.jing332.tts_server_android.utils.registerGlobalReceiver
 import com.github.jing332.tts_server_android.utils.rootCause
 import com.github.jing332.tts_server_android.utils.runOnUI
+import com.github.jing332.tts_server_android.utils.startForegroundCompat
 import com.github.jing332.tts_server_android.utils.toHtmlBold
 import com.github.jing332.tts_server_android.utils.toHtmlItalic
 import com.github.jing332.tts_server_android.utils.toHtmlSmall
@@ -309,7 +310,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                     getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 mNotificationManager.createNotificationChannel(chan)
             }
-            startForeground(SystemNotificationConst.ID_SYSTEM_TTS, getNotification())
+            startForegroundCompat(SystemNotificationConst.ID_SYSTEM_TTS, getNotification())
             mNotificationDisplayed = true
         }
     }
@@ -327,7 +328,7 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
                     }
 
                     builder.setContentTitle(title)
-                    startForeground(
+                    startForegroundCompat(
                         SystemNotificationConst.ID_SYSTEM_TTS,
                         builder.build()
                     )
