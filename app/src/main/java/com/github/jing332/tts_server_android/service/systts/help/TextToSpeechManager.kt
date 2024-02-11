@@ -438,14 +438,15 @@ class TextToSpeechManager(val context: Context) : ITextToSpeechSynthesizer<IText
                 else Sonic(txtTts.tts.audioFormat.sampleRate, 1)
             txtTts.playAudio(
                 sysRate, sysPitch, data.audio,
-                onDone = { data.done.invoke() }) { pcmAudio ->
+                onDone = { data.done.invoke() })
+            { pcmAudio ->
                 if (sonic == null) onPcmAudio.invoke(pcmAudio)
                 else {
                     sonic.volume = audioParams.volume
                     sonic.speed = audioParams.speed
                     sonic.pitch = audioParams.pitch
                     sonic.rate = srcSampleRate.toFloat() / targetSampleRate.toFloat()
-                    sonic.flushStream()
+
                     sonic.writeBytesToStream(pcmAudio, pcmAudio.size)
                     onPcmAudio.invoke(sonic.readBytesFromStream(sonic.samplesAvailable()))
                 }
