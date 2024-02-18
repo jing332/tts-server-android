@@ -231,8 +231,8 @@ class SystemTtsService : TextToSpeechService(), TextToSpeechManager.Listener {
 
         // 调用者指定ID
         var ttsId = -1L
-        if (request.voiceName.isNotEmpty()) {
-            val voiceSplitList = request.voiceName.split("_")
+        if (!request.voiceName.isNullOrEmpty()) {
+            val voiceSplitList = request.voiceName?.split("_") ?: emptyList()
             if (voiceSplitList.isEmpty()) {
                 longToast(R.string.voice_name_bad_format)
                 voiceSplitList.getOrNull(voiceSplitList.size - 1)?.let { idStr ->
