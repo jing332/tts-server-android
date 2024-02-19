@@ -30,6 +30,15 @@
 
 * [Dev - 开发版(Actions 需登陆Github账户)](https://github.com/jing332/tts-server-android/actions)
 
+## Actions mirror
+
+app: https://jing332.lanzn.com/b09jpjd2d
+
+dev: https://jing332.lanzn.com/b09ig9qla
+
+密码Password: 1234
+
+
 # JS
 
 #### 朗读规则
