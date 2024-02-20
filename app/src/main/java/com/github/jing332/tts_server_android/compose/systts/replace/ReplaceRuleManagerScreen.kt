@@ -305,7 +305,7 @@ internal fun ManagerScreen(vm: ReplaceRuleManagerViewModel = viewModel(), finish
                 }
 
                 if (g.isExpanded) {
-                    items(groupWithRules.list.sortedBy { it.order }, key = { it.id }) { rule ->
+                    items(groupWithRules.list, key = { it.id }) { rule ->
                         ShadowReorderableItem(reorderableState = reorderState, key = rule.id) { _ ->
                             Item(
                                 name = rule.name,

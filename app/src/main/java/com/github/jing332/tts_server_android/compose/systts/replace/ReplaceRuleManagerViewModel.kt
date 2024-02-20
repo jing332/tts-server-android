@@ -40,7 +40,7 @@ internal class ReplaceRuleManagerViewModel : ViewModel() {
             }
 
             appDb.replaceRuleDao.updateAllOrder()
-            appDb.replaceRuleDao.flowAllGroupWithReplaceRules().conflate().collectLatest {
+            appDb.replaceRuleDao.flowAllGroupWithReplaceRules().collectLatest {
                 allList = it
                 updateSearchResult()
             }

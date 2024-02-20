@@ -9,7 +9,7 @@ class TextReplacer {
         const val TAG = "ReplaceHelper"
     }
 
-    private var map: MutableMap<Int, List<ReplaceRule>> = mutableMapOf()
+    private var map: MutableMap<Int, MutableList<ReplaceRule>> = mutableMapOf()
 
     fun load() {
         map.clear()
@@ -17,8 +17,8 @@ class TextReplacer {
             if (map[groupWithRules.group.onExecution] == null)
                 map[groupWithRules.group.onExecution] = mutableListOf()
 
-            (map[groupWithRules.group.onExecution] as MutableList).addAll(
-                groupWithRules.list.filter { it.isEnabled }.sortedBy { it.order }
+            map[groupWithRules.group.onExecution]?.addAll(
+                groupWithRules.list.filter { it.isEnabled }
             )
         }
     }
