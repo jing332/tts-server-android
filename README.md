@@ -53,6 +53,25 @@ dev: https://jing332.lanzn.com/b09ig9qla
 
 2. 5种语言检测： 复制 [此链接](https://jt12.de/SYV2_1/2023/04/16/10/08/08/1681610888643b588876c09.json),
    规则管理界面选择网络链接导入。
+   
+##### Small Example Js Rule:
+```javascript
+let SpeechRuleJS = {
+    name: "Fesgheli" ,
+    id: "ir.masoudsoft.ttsfarsi.rr.fesgheli",
+    author: "Masoud Azizi",
+    telegram: "@ttsfarsi",
+    version: 1,
+    tags: {en: "English", fa: "Farsi"},
+
+    handleText(text) {
+       return text.split(/([a-zA-Z]+)/).map(part => ({
+          text: part,
+          tag: /[a-zA-Z]+/.test(part) ? "en" : "fa"
+       }));
+    },
+};
+```
 
 #### TTS插件
 
