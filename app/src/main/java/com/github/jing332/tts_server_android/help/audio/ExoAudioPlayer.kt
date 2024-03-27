@@ -29,7 +29,7 @@ class ExoAudioPlayer(val context: Context) {
 
     // APP内音频播放器 必须在主线程调用
     private val exoPlayer by lazy {
-        ExoPlayer.Builder(context).build().apply {
+        ExoPlayer.Builder(context).setSkipSilenceEnabled(true).build().apply {
             playWhenReady = true
             addListener(object : Player.Listener {
                 @SuppressLint("SwitchIntDef")

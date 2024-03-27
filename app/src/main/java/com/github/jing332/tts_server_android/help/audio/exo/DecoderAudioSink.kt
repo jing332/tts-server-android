@@ -74,7 +74,7 @@ class DecoderAudioSink(private val onPcmBuffer: (ByteBuffer) -> Unit) : AudioSin
 
     }
 
-    override fun getSkipSilenceEnabled(): Boolean = false
+    override fun getSkipSilenceEnabled(): Boolean = true
 
     override fun setAudioAttributes(audioAttributes: AudioAttributes) {
 

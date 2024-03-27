@@ -64,7 +64,7 @@ let PluginJS = {
 }
 
 function escapeXml(s) {
-    return s.replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/\//g, '').replace(/\\/g, '');
+    return s.replace("&", "&amp;").replace(">", "&gt;").replace("<", "&lt;");
 }
 
 function checkKeyRegion() {

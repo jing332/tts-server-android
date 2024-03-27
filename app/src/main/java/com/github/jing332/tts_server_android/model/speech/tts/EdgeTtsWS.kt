@@ -168,8 +168,7 @@ class EdgeTtsWS : WebSocketListener() {
     }
 
     private fun xmlEscape(s: String): String {
-        return s.replace("'", "&apos;").replace("\"", "&quot;").replace("<", "&lt;")
-            .replace(">", "&gt;").replace("&", "&amp;").replace("/", "").replace("\\", "")
+        return s.replace("&", "&amp;").replace(">", "&gt;").replace("<", "&lt;")
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {

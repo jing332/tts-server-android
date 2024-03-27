@@ -40,7 +40,7 @@ import com.github.jing332.tts_server_android.utils.ASFUriUtils.getPath
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
 class ExoPlayerActivity : AppCompatActivity(), Player.Listener {
     private val exoPlayer by lazy {
-        ExoPlayer.Builder(this).build().apply {
+        ExoPlayer.Builder(this).setSkipSilenceEnabled(true).build().apply {
             addListener(this@ExoPlayerActivity)
         }
     }
