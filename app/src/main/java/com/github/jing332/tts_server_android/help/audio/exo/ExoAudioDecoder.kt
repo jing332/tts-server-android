@@ -37,7 +37,7 @@ class ExoAudioDecoder(val context: Context) {
             }
         }
 
-        ExoPlayer.Builder(context, rendererFactory).build().apply {
+        ExoPlayer.Builder(context, rendererFactory).setSkipSilenceEnabled(true).build().apply {
             addListener(object : Player.Listener {
                 @SuppressLint("SwitchIntDef")
                 override fun onPlaybackStateChanged(playbackState: Int) {

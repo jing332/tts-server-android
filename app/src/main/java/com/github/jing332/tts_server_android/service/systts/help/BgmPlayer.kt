@@ -19,7 +19,7 @@ class BgmPlayer(val context: Context) {
     }
 
     private val exoPlayer by lazy {
-        ExoPlayer.Builder(context).build().apply {
+        ExoPlayer.Builder(context).setSkipSilenceEnabled(true).build().apply {
             addListener(object : Player.Listener {
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                     super.onMediaItemTransition(mediaItem, reason)
