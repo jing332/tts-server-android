@@ -182,7 +182,7 @@
     <string name="file">文件</string>
     <string name="select_file">選擇檔案</string>
     <string name="select_file_hint">按一下右側按鈕選擇檔案 ➡️</string>
-    <string name="systts_group_empty_msg">按一下頂部應用欄右側的 ➕ 按鈕->添加TTS，然後在編輯介面設定所屬群組。</string>
+    <string name="systts_group_empty_msg">按一下頂部應用欄右側的 ➕ 按鈕-&gt;添加TTS，然後在編輯介面設定所屬群組。</string>
     <string name="new_version_available">有新版本：%1$s</string>
     <string name="master_switch">總開關</string>
     <string name="upload_to_url">上傳到URL</string>
