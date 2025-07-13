@@ -473,4 +473,5 @@
     <string name="quick_edit">快捷編輯</string>
     <string name="switch_tag">切換標籤</string>
     <string name="get_tag_name_failed">獲取標籤名失敗</string>
+    <string name="text_processor_init_failed">文本处理器在初始化阶段出现错误，无法继续执行。可能的原因：开启多语音但未指定配置、朗读规则</string>
 </resources>
