@@ -463,7 +463,7 @@
     <string name="login">登录</string>
     <string name="reload">重新加载</string>
     <string name="current_playing_bgm">当前背景音乐：%1$s</string>
-    <string name="expended">已展开</string>
+    <string name="expended">expanded</string>
     <string name="collapsed">已收起</string>
     <string name="no_new_version">无新版本</string>
     <string name="battery_optimization_whitelist_desc">非常重要，后台保活必要设置</string>
