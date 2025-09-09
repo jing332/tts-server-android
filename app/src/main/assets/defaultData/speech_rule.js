@@ -1,52 +1,80 @@
 let SpeechRuleJS = {
-    name: "旁白/对话",
+    name: "MultiVoice",
     id: "ttsrv.multi_voice",
-    author: "TTS Server",
-    version: 4,
-    tags: {narration: "旁白", dialogue: "对话"},
+    author: "samsonsin",
+    version: 1,
+    tags: {
+        narration: "Narration",
+        dialogue: "Dialogue",
+        squareBrackets: "Square Brackets",
+        curlyBrackets: "Curly Brackets",
+    },
 
     handleText(text) {
-        const list = [];
-        let tmpStr = "";
-        let endTag = "narration";
+        //Define regex patterns for different text types. The order matters, as the first match takes precedence.
+        let regexExpressions = [
+            { regex: /.+/g, tag: "narration" },
+            { regex: /["“][^"“”]*["”]?/g, tag: "dialogue" },
+            { regex: /\[[^\]\[]*(\[[^\]\[]*(\[[^\]\[]*\])*[^\]\[]*\])*[^\]\[]*(\[[^\]\[]*(\[[^\]\[]*\])*[^\]\[]*\])*[^\]\[]*(\[[^\]\[]*(\[[^\]\[]*\])*[^\]\[]*\])*[^\]\[]*\]/g, tag: "squareBrackets" }, 
+            { regex: /{[^}]*?}/g, tag: "curlyBrackets" },
 
-        text.split("").forEach((char, index) => {
-            tmpStr += char;
+            //Final rule to match and ignore specific characters by assigning them a null tag.
+            { regex: /[•*{}"“”]/g, tag: null}
+        ];
 
-            if (char === '“') {
-                endTag = "dialogue";
-                list.push({text: tmpStr, tag: "narration"});
-                tmpStr = "";
-            } else if (char === '”') {
-                endTag = "narration";
-                tmpStr = tmpStr.slice(0, -1)
-                list.push({text: tmpStr, tag: "dialogue"});
-                tmpStr = "";
-            } else if (index === text.length - 1) {
-                list.push({text: tmpStr, tag: endTag});
+        //Initialize an array to hold the regex matches.
+        let regexMatches = new Array(text.length + 1).fill(null);
+
+        //Iterate through each regex pattern and assign the corresponding tag to the matched char in the regexMatches array
+        regexExpressions.forEach((rule) => {
+            while ((queryResult = rule.regex.exec(text)) !== null) {
+                //If the match is empty, increment the last index of the regex and continue to the next iteration, skipping the char
+                if (queryResult[0].length === 0) {
+                    rule.regex.lastIndex++;
+                    continue;
+                }
+                regexMatches.fill(
+                    rule.tag,
+                    queryResult.index,
+                    rule.regex.lastIndex
+                );
             }
         });
 
-        return list;
+        //two moving indices to track the current position in the text and the end of last segment. When discovering a new segment,
+        //push current segment to output array and update the previous tag and index. regexMatches final index is null to ensure the last segment is captured.
+        let previousTag = regexMatches[0];
+        let previousIndex = 0;
+        let textSegments = [];
+        for (let i = 1; i < regexMatches.length; i++) {
+            var isInMiddleOfTextSegment = previousTag === regexMatches[i];
+            var isCurrentSelectionEmptyOrContainsNull =
+                text.slice(previousIndex, i).trim().length === 0 ||
+                previousTag === null;
+
+            if (isInMiddleOfTextSegment) continue;
+            if (isCurrentSelectionEmptyOrContainsNull) {
+                previousTag = regexMatches[i];
+                previousIndex = i;
+                continue;
+            }
+
+            textSegments.push({
+                text: text.slice(previousIndex, i).trim(),
+                tag: previousTag,
+            });
+            previousTag = regexMatches[i];
+            previousIndex = i;
+        }
+        return textSegments;
     },
 
     splitText(text) {
-        let separatorStr = "。？?！!;；"
-
-        let list = []
-        let tmpStr = ""
-        text.split("").forEach((char, index) => {
-            tmpStr += char
-
-            if (separatorStr.includes(char)) {
-                list.push(tmpStr)
-                tmpStr = ""
-            } else if (index === text.length - 1) {
-                list.push(tmpStr);
-            }
-        })
-
-        return list.filter(item =>  item.replace(/[“”]/g, '').trim().length > 0);
-    }
-
+        //Regex matches immediately after specific characters, splitting the text into segments.
+        //Then asserts that each segment, after removing some characters, is non-empty.
+        //This implementation leverages regex operations rather than custom made logic, and is equivalent to the original in my testing
+        return (text
+            .split(/[。？?！!;；]\\K/g)
+            .filter((item) => item.replace(/[“”]/g, "").trim().length > 0));
+    },
 };
