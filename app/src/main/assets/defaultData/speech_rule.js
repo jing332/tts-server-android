@@ -15,7 +15,7 @@ let SpeechRuleJS = {
         let regexExpressions = [
             { regex: /.+/g, tag: "narration" },
             { regex: /["“][^"“”]*["”]?/g, tag: "dialogue" },
-            { regex: /\\[([^\\]]*?\\s+[^\\]]*?\\s+[^\\]]*?)\\]/g, tag: "squareBrackets" }, 
+            { regex: /\[[^\]\[]*(\[[^\]\[]*(\[[^\]\[]*\])*[^\]\[]*\])*[^\]\[]*(\[[^\]\[]*(\[[^\]\[]*\])*[^\]\[]*\])*[^\]\[]*(\[[^\]\[]*(\[[^\]\[]*\])*[^\]\[]*\])*[^\]\[]*\]/g, tag: "squareBrackets" }, 
             { regex: /{[^}]*?}/g, tag: "curlyBrackets" },
 
             //Final rule to match and ignore specific characters by assigning them a null tag.
