@@ -76,9 +76,10 @@ android {
             storePassword pro.getProperty("KEY_PASSWORD")
             keyAlias pro.getProperty("ALIAS_NAME")
             keyPassword pro.getProperty("ALIAS_PASSWORD")
-            v1SigningEnabled true
-            v2SigningEnabled true
-            v3SigningEnabled false // 禁用v3签名以避免Tag number over 30错误
+            enableV1Signing true
+            enableV2Signing true
+            enableV3Signing false // 禁用v3签名以避免Tag number over 30错误
+            enableV4Signing false
         }
     }
 
