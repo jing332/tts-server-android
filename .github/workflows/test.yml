@@ -47,7 +47,24 @@ jobs:
           echo KEY_PASSWORD='${{ secrets.KEY_PASSWORD }}' >> local.properties
           echo KEY_PATH='../key.jks' >> local.properties
           # 从Secrets读取无换行符Base64解码, 然后保存到到key.jks
+          echo "DEBUG: Checking GitHub Secrets availability"
+          echo "DEBUG: ALIAS_NAME length: ${#ALIAS_NAME}"
+          echo "DEBUG: KEY_PASSWORD length: ${#KEY_PASSWORD}"
+          echo "DEBUG: KEY_STORE length: ${#KEY_STORE}"
+          
+          # 生成key.jks文件
           echo ${{ secrets.KEY_STORE }} | base64 --decode > $GITHUB_WORKSPACE/key.jks
+          
+          echo "DEBUG: Checking generated key.jks file"
+          ls -la $GITHUB_WORKSPACE/key.jks
+          file $GITHUB_WORKSPACE/key.jks
+          
+          # 验证key.jks文件是否有效
+          echo "DEBUG: Verifying key.jks file with keytool"
+          keytool -list -v -keystore $GITHUB_WORKSPACE/key.jks -storetype JKS -storepass ${{ secrets.KEY_PASSWORD }} 2>&1 || echo "WARNING: keytool verification failed, but proceeding with build"
+          
+          echo "DEBUG: local.properties content"
+          cat local.properties
 
       - name: Build with Gradle
         run: |
