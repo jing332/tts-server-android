@@ -45,7 +45,7 @@ jobs:
           echo ALIAS_NAME='${{ secrets.ALIAS_NAME }}' >> local.properties
           echo ALIAS_PASSWORD='${{ secrets.ALIAS_PASSWORD }}' >> local.properties
           echo KEY_PASSWORD='${{ secrets.KEY_PASSWORD }}' >> local.properties
-          echo KEY_PATH='./key.p12' >> local.properties
+          echo KEY_PATH='../key.p12' >> local.properties
           # 从Secrets读取无换行符Base64解码, 然后保存到到key.p12
           echo ${{ secrets.KEY_STORE }} | base64 --decode > $GITHUB_WORKSPACE/key.p12
 
