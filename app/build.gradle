@@ -72,7 +72,7 @@ android {
             Properties pro = new Properties()
             InputStream input = project.rootProject.file("local.properties").newDataInputStream()
             pro.load(input)
-            storeFile file(pro.getProperty("KEY_PATH"))
+            storeFile file("${project.rootDir}/${pro.getProperty("KEY_PATH")}")
             storePassword pro.getProperty("KEY_PASSWORD")
             keyAlias pro.getProperty("ALIAS_NAME")
             keyPassword pro.getProperty("ALIAS_PASSWORD")
@@ -119,10 +119,20 @@ android {
         variant.outputs.configureEach { output ->
             //noinspection GrDeprecatedAPIUsage
             def abiName = output.getFilter(com.android.build.OutputFile.ABI)
-            if (abiName == null)
-                output.outputFileName = "TTS-Server-v${variant.versionName}.apk"
-            else
-                output.outputFileName = "TTS-Server-v${variant.versionName}_${abiName}.apk"
+            def flavorName = variant.flavorName
+            def fileName = "TTS-Server-v${variant.versionName}"
+            
+            // 添加风味后缀
+            if (flavorName == "dev") {
+                fileName += "_dev"
+            }
+            
+            // 添加ABI后缀（如果有）
+            if (abiName != null) {
+                fileName += "_${abiName}"
+            }
+            
+            output.outputFileName = "${fileName}.apk"
         }
     }
 
