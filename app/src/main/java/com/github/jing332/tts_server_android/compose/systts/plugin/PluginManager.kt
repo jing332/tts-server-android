@@ -5,7 +5,7 @@ import com.github.jing332.tts_server_android.constant.AppConst
 import java.io.File
 
 class PluginManager(private val plugin: Plugin) {
-    private val cacheDir = File(AppConst.externalCacheDir.absolutePath + "/${plugin.pluginId}")
+    private val cacheDir = File(AppConst.externalFilesDir.absolutePath + "/plugin/${plugin.pluginId}")
     fun hasCache(): Boolean {
         return try {
             cacheDir.list()?.isNotEmpty() == true

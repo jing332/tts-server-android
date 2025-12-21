@@ -19,15 +19,38 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Clear Invalid JDK Environment Variables
+        run: |
+          # 清除可能导致构建失败的无效JDK路径配置
+          unset ORG_GRADLE_JAVA_HOME
+          echo "ORG_GRADLE_JAVA_HOME=" >> $GITHUB_ENV
+
       - name: Init Signature
         run: |
           touch local.properties
           echo ALIAS_NAME='${{ secrets.ALIAS_NAME }}' >> local.properties
           echo ALIAS_PASSWORD='${{ secrets.ALIAS_PASSWORD }}' >> local.properties
           echo KEY_PASSWORD='${{ secrets.KEY_PASSWORD }}' >> local.properties
-          echo KEY_PATH='./key.jks' >> local.properties
-          # 从Secrets读取无换行符Base64解码, 然后保存到到app/key.jks
-          echo ${{ secrets.KEY_STORE }} | base64 --decode > $GITHUB_WORKSPACE/app/key.jks
+          echo KEY_PATH='../key.jks' >> local.properties
+          # 从Secrets读取无换行符Base64解码, 然后保存到到key.jks
+          echo "DEBUG: Checking GitHub Secrets availability"
+          echo "DEBUG: ALIAS_NAME length: ${#ALIAS_NAME}"
+          echo "DEBUG: KEY_PASSWORD length: ${#KEY_PASSWORD}"
+          echo "DEBUG: KEY_STORE length: ${#KEY_STORE}"
+          
+          # 生成key.jks文件
+          echo ${{ secrets.KEY_STORE }} | base64 --decode > $GITHUB_WORKSPACE/key.jks
+          
+          echo "DEBUG: Checking generated key.jks file"
+          ls -la $GITHUB_WORKSPACE/key.jks
+          file $GITHUB_WORKSPACE/key.jks
+          
+          # 验证key.jks文件是否有效
+          echo "DEBUG: Verifying key.jks file with keytool"
+          keytool -list -v -keystore $GITHUB_WORKSPACE/key.jks -storetype JKS -storepass ${{ secrets.KEY_PASSWORD }} 2>&1 || echo "WARNING: keytool verification failed, but proceeding with build"
+          
+          echo "DEBUG: local.properties content"
+          cat local.properties
 
       - name: Build with Gradle
         run: |

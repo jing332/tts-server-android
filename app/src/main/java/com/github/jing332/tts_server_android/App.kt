@@ -63,6 +63,11 @@ class App : Application() {
                 .build()
         )
 
+        // 自动启动TTS转发器服务
+        GlobalScope.launch {
+            val intent = Intent(this@App, com.github.jing332.tts_server_android.service.forwarder.system.SysTtsForwarderService::class.java)
+            ContextCompat.startForegroundService(this@App, intent)
+        }
 
         GlobalScope.launch {
             HanlpManager.initDir(

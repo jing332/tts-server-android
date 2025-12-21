@@ -35,7 +35,7 @@ import kotlin.coroutines.resume
  */
 class AndroidTtsEngine(
     val context: Context,
-    val cacheDir: String = context.externalCacheDir!!.absolutePath + "${File.separator}AndroidTTS",
+    val cacheDir: String = context.getExternalFilesDir("AndroidTTS")?.absolutePath ?: context.filesDir.absolutePath + "${File.separator}AndroidTTS",
 ) {
     companion object {
     }
