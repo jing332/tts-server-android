@@ -7,8 +7,7 @@ import com.github.jing332.script.simple.ext.JsExtensions
 class CompatScriptRuntime(val ttsrv: JsExtensions) :
     RhinoScriptRuntime(
         environment = Environment(
-            ttsrv.context.externalCacheDir?.absolutePath
-                ?: throw IllegalArgumentException("context.externalCacheDir is null"),
+            ttsrv.context.getExternalFilesDir("script")?.absolutePath ?: ttsrv.context.filesDir.absolutePath + "/script",
             ttsrv.engineId
         )
     ) {

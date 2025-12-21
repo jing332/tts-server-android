@@ -55,7 +55,7 @@ open class JsExtensions(open val context: Context, open val engineId: String = "
      */
     @ScriptInterface
     fun getFile(path: String): File {
-        val cachePath = "${context.externalCacheDir!!.absolutePath}/${engineId}"
+        val cachePath = "${context.getExternalFilesDir(engineId)?.absolutePath ?: context.filesDir.absolutePath + File.separator + engineId}"
         if (!FileUtils.exists(cachePath)) File(cachePath).mkdirs()
         val aPath = if (path.startsWith(File.separator)) {
             cachePath + path
